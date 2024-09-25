@@ -2,16 +2,9 @@
 
 use App\Http\Controllers\Cooperation;
 use App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationController;
-use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Cooperation\Auth\RegisteredUserController;
-use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
-use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
-use Laravel\Fortify\Http\Controllers\NewPasswordController;
-use Laravel\Fortify\Http\Controllers\VerifyEmailController;
+
 
 /** @noinspection PhpParamsInspection */
 
@@ -29,14 +22,18 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
     Route::middleware('cooperation')->name('cooperation.')->group(function () {
         if ('local' == app()->environment()) {
             Route::get('mail', function () {
-//            return new \App\Mail\UserCreatedEmail(\App\Models\Cooperation::find(1), \App\Models\User::find(1), 'sdfkhasgdfuiasdgfyu');
-//            return new \App\Mail\UserAssociatedWithCooperation(\App\Models\Cooperation::find(1), \App\Models\User::find(1));
-//            return new \App\Mail\UserChangedHisEmail(\App\Models\User::find(1), \App\Models\Account::find(1), 'demo@eg.com', 'bier@pils.com');
-                return new  \App\Mail\UnreadMessagesEmail(\App\Models\User::find(1), \App\Models\Cooperation::find(1), 10);
-//            return new \App\Mail\ResetPasswordRequest(\App\Models\Cooperation::find(1), \App\Models\Account::find(1), 'sfklhasdjkfhsjkf');
-//            return new \App\Mail\RequestAccountConfirmationEmail(\App\Models\User::find(1), \App\Models\Cooperation::find(1));
+                //return new \App\Mail\UserCreatedEmail(\App\Models\Cooperation::find(1), \App\Models\User::find(1), 'sdfkhasgdfuiasdgfyu');
+                //return new \App\Mail\UserAssociatedWithCooperation(\App\Models\Cooperation::find(1), \App\Models\User::find(1));
+                //return new \App\Mail\UserChangedHisEmail(\App\Models\User::find(1), \App\Models\Account::find(1), 'demo@eg.com', 'bier@pils.com');
+                //return new  \App\Mail\UnreadMessagesEmail(\App\Models\User::find(1), \App\Models\Cooperation::find(1), 10);
+                //return new \App\Mail\ResetPasswordRequest(\App\Models\Cooperation::find(1), \App\Models\Account::find(1), 'sfklhasdjkfhsjkf');
+                //return new \App\Mail\RequestAccountConfirmationEmail(\App\Models\User::find(1), \App\Models\Cooperation::find(1));
+                //return new \App\Mail\User\NotifyCoachParticipantAdded(\App\Models\User::first(), \App\Models\User::skip(1)->first());
+                return new \App\Mail\User\NotifyResidentParticipantAdded(\App\Models\User::first(), \App\Models\User::skip(1)->first());
             });
         }
+
+        Route::group([], base_path('routes/auth.php'));
 
         Route::view('styleguide', 'cooperation.frontend.styleguide');
         Route::view('input-guide', 'cooperation.frontend.input-guide');
@@ -47,48 +44,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
         Route::get('switch-language/{locale}', [Cooperation\UserLanguageController::class, 'switchLanguage'])->name('switch-language');
 
-        Route::get('check-existing-mail/{forCooperation?}', [RegisteredUserController::class, 'checkExistingEmail'])->name('check-existing-email');
-
-        // Fortify auth routes start
-        Route::get('/register', [RegisteredUserController::class, 'index'])
-            ->middleware(['guest:' . config('fortify.guard')])
-            ->name('register');
-        Route::post('/register', [RegisteredUserController::class, 'store'])
-            ->middleware(['guest:' . config('fortify.guard')]);
-
-        Route::as('auth.')->group(function () {
-            $limiter = config('fortify.limiters.login');
-            $guard = config('fortify.guard');
-            $verificationLimiter = config('fortify.limiters.verification', '6,1');
-
-            Route::get('/email/verify', [EmailVerificationPromptController::class, '__invoke'])
-                ->middleware([config('fortify.auth_middleware', 'auth') . ':' . $guard])
-                ->name('verification.notice');
-            Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
-                ->middleware([config('fortify.auth_middleware', 'auth') . ':' . $guard, 'signed', 'throttle:' . $verificationLimiter])
-                ->name('verification.verify');
-            Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-                ->middleware([config('fortify.auth_middleware', 'auth') . ':' . $guard, 'throttle:' . $verificationLimiter])
-                ->name('verification.send');
-
-            Route::get('login', [AuthenticatedSessionController::class, 'create'])->middleware(['guest:' . $guard])
-                ->name('login');
-            Route::post('login', [AuthenticatedSessionController::class, 'store'])->middleware(array_filter([
-                'guest:' . $guard, $limiter ? 'throttle:' . $limiter : null,
-            ]))->name('login.submit');
-
-            Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-
-            Route::get('password/request', [PasswordResetLinkController::class, 'create'])->middleware(['guest:' . $guard])
-                ->name('password.request.index');
-            Route::post('password/request', [PasswordResetLinkController::class, 'store'])->middleware(['guest:' . $guard])
-                ->name('password.request.store');
-            Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->middleware(['guest:' . $guard])
-                ->name('password.reset');
-            Route::post('reset-password', [NewPasswordController::class, 'store'])->middleware(['guest:' . $guard])
-                ->name('password.update');
-        });
-        // Fortify auth routes end
 
         Route::prefix('create-building')->name('create-building.')->group(function () {
             Route::get('', [Cooperation\CreateBuildingController::class, 'index'])->name('index');
@@ -139,6 +94,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
             // my account
             Route::name('my-account.')->prefix('my-account')->middleware('track-visited-url', 'deny-if-filling-for-other-building')->group(function () {
+                Route::resource('two-factor-authentication', Cooperation\MyAccount\TwoFactorAuthenticationController::class);
                 Route::get('', [Cooperation\MyAccount\MyAccountController::class, 'index'])->name('index');
 
                 Route::prefix('settings')->name('settings.')->group(function () {
@@ -213,6 +169,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                                 Route::get('', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'index'])->name('index');
                                 Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'media'])->name('media');
                             });
+
+                            Route::as('my-regulations.')->prefix('mijn-regelingen')->group(function () {
+                                Route::get('', [Cooperation\Frontend\Tool\SimpleScan\MyRegulationsController::class, 'index'])->name('index');
+                            });
                         });
 
                     //TODO: Bind by expert shorts and route bind steps also (perhaps we can merge with above code to
@@ -235,14 +195,15 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
             Route::prefix('tool')->name('tool.')->middleware('ensure-quick-scan-completed', 'track-visited-url')->group(function () {
                 Route::get('/', function () {
-                    return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index');
+                    // Usually we check the scans. However, the lite scan can't come here anyway.
+                    $scan = \App\Models\Scan::findByShort(\App\Models\Scan::QUICK);
+                    return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
                 })->name('index');
 
                 Route::prefix('questionnaire')->name('questionnaire.')->group(function () {
                     Route::post('', [Cooperation\Tool\QuestionnaireController::class, 'store'])->name('store');
                 });
 
-                Route::resource('example-building', Cooperation\Tool\ExampleBuildingController::class)->only('store');
                 Route::resource('building-type', Cooperation\Tool\BuildingTypeController::class)->only('store');
 
                 Route::get('heat-pump', function () {
@@ -313,7 +274,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
             Route::prefix('admin')->name('admin.')->middleware('role:cooperation-admin|coordinator|coach|super-admin|superuser', 'restore-building-session-if-filling-for-other-building')->group(function () {
                 Route::get('/', [Cooperation\Admin\AdminController::class, 'index'])->name('index');
-                Route::get('stop-session', [Cooperation\Admin\AdminController::class, 'stopSession'])->name('stop-session');
+                Route::get('stop-session', [Cooperation\Admin\AdminController::class, 'stopSession'])
+                    ->withoutMiddleware('restore-building-session-if-filling-for-other-building')
+                    ->name('stop-session');
                 Route::get('/switch-role/{role}', [Cooperation\Admin\SwitchRoleController::class, 'switchRole'])->name('switch-role');
 
                 Route::prefix('roles')->name('roles.')->group(function () {
@@ -322,12 +285,18 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 Route::middleware('current-role:cooperation-admin|super-admin')->group(function () {
-                    Route::resource('example-buildings', Cooperation\Admin\ExampleBuildingController::class)->parameter('example-buildings', 'exampleBuilding');
+                    Route::resource('example-buildings', Cooperation\Admin\ExampleBuildingController::class)
+                        ->parameter('example-buildings', 'exampleBuilding')
+                        ->only(['index', 'create', 'edit', 'destroy']);
                     Route::get('example-buildings/{exampleBuilding}/copy', [Cooperation\Admin\ExampleBuildingController::class, 'copy'])->name('example-buildings.copy');
                 });
 
                 /* Section that a coach, coordinator and cooperation-admin can access */
                 Route::middleware('current-role:cooperation-admin|coach|coordinator')->group(function () {
+                    Route::prefix('actions')->as('actions.')->group(function () {
+                        Route::get('{account}/verify-email', [Cooperation\Admin\ActionController::class, 'verifyEmail'])->name('verify-email');
+                    });
+
                     Route::resource('messages', Cooperation\Admin\MessagesController::class)->only('index');
 
                     Route::prefix('tool')->name('tool.')->group(function () {
@@ -367,6 +336,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 /* Section for the cooperation-admin and coordinator */
                 Route::prefix('cooperatie')->name('cooperation.')->middleware('current-role:cooperation-admin|coordinator')->group(function () {
+                    Route::post('accounts/disable-2fa', [Cooperation\Admin\Cooperation\CooperationAdmin\AccountController::class, 'disableTwoFactorAuthentication'])
+                        ->middleware('current-role:cooperation-admin')
+                        ->name('accounts.disable-2fa');
+
                     Route::resource('coaches', Cooperation\Admin\Cooperation\CoachController::class)->only(['index', 'show'])
                         ->parameter('coaches', 'user');
                     Route::resource('residents', Cooperation\Admin\Cooperation\ResidentController::class)->only(['index'])
@@ -432,78 +405,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 /* Section for the super admin */
-                Route::prefix('super-admin')->name('super-admin.')->middleware('current-role:super-admin')->group(function () {
-
-                    Route::resource('clients', Cooperation\Admin\SuperAdmin\ClientController::class);
-
-                    Route::resource('tool-questions', Cooperation\Admin\SuperAdmin\ToolQuestionController::class)
-                        ->parameter('tool-questions', 'toolQuestion')
-                        ->only(['index', 'edit', 'update']);
-
-                    Route::resource('tool-calculation-results', Cooperation\Admin\SuperAdmin\ToolCalculationResultController::class)
-                        ->parameter('tool-calculation-results', 'toolCalculationResult')
-                        ->only(['index', 'edit', 'update']);
-
-                    Route::resource('measure-applications', Cooperation\Admin\SuperAdmin\MeasureApplicationController::class)
-                        ->parameter('measure-applications', 'measureApplication')
-                        ->only(['index', 'edit', 'update']);
-
-                    Route::prefix('{client}/api')->as('clients.personal-access-tokens.')->group(function () {
-                        Route::get('', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'index'])->name('index');
-                        Route::post('', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'store'])->name('store');
-                        Route::get('create', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'create'])->name('create');
-                        Route::delete('destroy/{personalAccessToken}', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'destroy'])->name('destroy');
-                        Route::get('{personalAccessToken}/edit', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'edit'])->name('edit');
-                        Route::put('{personalAccessToken}', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'update'])->name('update');
-                    });
-
-                    Route::get('home', [Cooperation\Admin\SuperAdmin\SuperAdminController::class, 'index'])->name('index');
-
-                    Route::name('users.')->prefix('users')->group(function () {
-                        Route::get('', [Cooperation\Admin\SuperAdmin\UserController::class, 'index'])->name('index');
-                        Route::get('search', [Cooperation\Admin\SuperAdmin\UserController::class, 'filter'])->name('filter');
-                    });
-
-                    Route::resource('questionnaires', Cooperation\Admin\SuperAdmin\QuestionnaireController::class)->parameter('questionnaires', 'questionnaire');
-                    Route::post('questionnaires/copy', [Cooperation\Admin\SuperAdmin\QuestionnaireController::class, 'copy'])->name('questionnaire.copy');
-//                    Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire'], function () {
-//                        Route::get('', 'QuestionnaireController@index')->name('index');
-//                        Route::get('show', 'QuestionnaireController@show')->name('show');
-//                    });
-
-                    Route::resource('key-figures', Cooperation\Admin\SuperAdmin\KeyFiguresController::class)->only('index');
-                    Route::resource('translations', Cooperation\Admin\SuperAdmin\TranslationController::class)
-                        ->only(['index', 'edit', 'update'])
-                        ->parameter('translations', 'group');
-
-                    /* Section for the cooperations */
-                    Route::prefix('cooperations')->name('cooperations.')->group(function () {
-                        Route::get('', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'index'])->name('index');
-                        Route::delete('destroy/{cooperationToDestroy}', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'destroy'])->name('destroy');
-                        Route::get('edit/{cooperationToEdit}', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'edit'])->name('edit');
-                        Route::get('create', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'create'])->name('create');
-                        Route::post('', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'store'])->name('store');
-                        Route::post('edit', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'update'])->name('update');
-
-                        /* Actions that will be done per cooperation */
-                        Route::prefix('{cooperationToManage}/')->name('cooperation-to-manage.')->group(function () {
-                            Route::resource('home', Cooperation\Admin\SuperAdmin\Cooperation\HomeController::class)
-                                ->only('index');
-
-                            Route::resource('cooperation-admin',
-                                Cooperation\Admin\SuperAdmin\Cooperation\CooperationAdminController::class)
-                                ->only(['index']);
-                            Route::resource('coordinator',
-                                Cooperation\Admin\SuperAdmin\Cooperation\CoordinatorController::class)
-                                ->only(['index']);
-                            Route::resource('users', Cooperation\Admin\SuperAdmin\Cooperation\UserController::class)
-                                ->only(['index', 'show', 'create', 'store']);
-                            Route::post('users/{id}/confirm', [
-                                Cooperation\Admin\SuperAdmin\Cooperation\UserController::class, 'confirm',])
-                                ->name('users.confirm');
-                        });
-                    });
-                });
+                Route::prefix('super-admin')->name('super-admin.')
+                    ->middleware('current-role:super-admin')
+                    ->group(base_path('routes/super-admin.php'));
 
                 /* Section for the coach */
                 Route::prefix('coach')->name('coach.')->middleware('current-role:coach')->group(function () {

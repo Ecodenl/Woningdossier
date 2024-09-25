@@ -7,7 +7,10 @@ use App\Http\Requests\Cooperation\Admin\BuildingCoachStatusRequest;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Status;
+use App\Services\Models\BuildingService;
+use App\Services\Models\BuildingStatusService;
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Http\Request;
 
 class BuildingStatusController extends Controller
@@ -15,10 +18,10 @@ class BuildingStatusController extends Controller
     /**
      * Set an status for an building.
      */
-    public function setStatus(Cooperation $cooperation, BuildingCoachStatusRequest $request)
+    public function setStatus(BuildingStatusService $buildingStatusService, Cooperation $cooperation, BuildingCoachStatusRequest $request)
     {
-        $statusId = $request->get('status_id');
-        $buildingId = $request->get('building_id');
+        $statusId = $request->input('status_id');
+        $buildingId = $request->input('building_id');
         $status = Status::findOrFail($statusId);
 
         /** @var Building $building */
@@ -26,7 +29,7 @@ class BuildingStatusController extends Controller
 
         $this->authorize('set-status', $building);
 
-        $building->setStatus($status);
+        $buildingStatusService->forBuilding($building)->setStatus($status);
     }
 
     /**
@@ -34,14 +37,32 @@ class BuildingStatusController extends Controller
      */
     public function setAppointmentDate(Cooperation $cooperation, Request $request)
     {
-        $buildingId = $request->get('building_id');
-        $appointmentDate = $request->get('appointment_date');
+        $buildingId = $request->input('building_id');
+        $appointmentDate = $request->input('appointment_date');
+
+        if (! is_null($appointmentDate)) {
+            try {
+                $appointmentDate = Carbon::parse($appointmentDate);
+            } catch (InvalidFormatException $e) {
+                // Invalid date given; we will try the format that has basically thrown all exceptions:
+                try {
+                    $appointmentDate = Carbon::createFromFormat('d-m-Y H', $appointmentDate);
+                } catch (InvalidFormatException $e) {
+                    // Now we could keep trying different formats, but if this happens it's basically because the end
+                    // user hasn't properly used the datepicker, so we will just redirect back and tell them to
+                    // use the datepicker.
+
+                    return response()->json("Invalid format", 422);
+                }
+            }
+        }
 
         /** @var Building $building */
         $building = Building::withTrashed()->findOrFail($buildingId);
 
         $this->authorize('set-appointment', $building);
 
-        $building->setAppointmentDate(is_null($appointmentDate) ? null : Carbon::parse($appointmentDate));
+        app(BuildingService::class, compact('building'))
+            ->setAppointmentDate($appointmentDate);
     }
 }

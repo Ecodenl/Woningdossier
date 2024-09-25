@@ -1,5 +1,5 @@
 # Decisions
-#### This file will contain important decisions being made throughout the development of Hoomdossier. This will mainly contain decisions made by Hoom itself. 
+#### This file will contain important decisions being made throughout the development of Hoomdossier. 
 
 ## Internal logic
 ### Answer structure
@@ -56,7 +56,8 @@ In odd cases a build year can be `null`, if that happens we have a fallback.
 
 ## Reports
 ### CSV Total report.
-The total-report contains all the data from a cooperation. On 12-11-2021 we decided to only show master input source data. Previously we would show the coach or resident data based on what was available.
+The total-report contains all the data from a cooperation. On 12-11-2021 we decided to only show master input source
+data. Previously we would show the coach or resident data based on what was available.
 
 ### PDF Report
 #### Input source
@@ -86,3 +87,21 @@ This is basically what happens in the Quick scan, but since the Lite scan can't 
 added as such. In the code we refer to these measures as "extensive". The old, non-extensive measures are referred 
 to as "small", but technically that's not correct. They are actually the cooperation's "own" measures, however in 
 the code we use "small" as that makes more sense, as to being the opposite of "extensive".
+
+## MapQuickScanToExpert
+When a user has a heat pump advisable in his action plan, we will apply a mapping if the heating expert step has not 
+yet been completed. This is to ensure the action plan stays the same if the expert step is answered for the first 
+time (without making any changes). The mapping is as following (also defined in the code, of course):
+
+- `new-heat-source` (Wat moet er komen voor verwarming): If advisable is hybrid heat pump: `hr-boiler` and `heat-pump`, 
+  else `heat-pump`
+- `new-heat-source-warm-tap-water` (Wat moet er komen voor warm tapwater): Hybrid heat-pump: `hr-boiler`, else `heat-pump`
+- `new-building-heating-application` (Hoe is de verwarming in de nieuwe situatie): Copy directly
+- `new-boiler-setting-comfort-heat` (Stooktemperatuur): Copy directly (if `unsure`, value will be `temp-high`)
+- `new-water-comfort` (Comfortniveau warm tapwater): Copy directly
+- `new-cook-type` (Hoe wordt er gekookt in de nieuwe situatie): Copy directly
+- `new-heat-pump-type` (Welke warmtepomp moet er komen): Same as advisable
+- `heat-pump-replace` (Wil je de huidige warmtepomp vervangen): always `true`
+- `new-boiler-type` (Welke ketel moet er komen): Copy directly, by no value use `hr107`
+- `hr-boiler-replace` (Wil je de huidige ketel vervangen): `true` if placing year is 10 or more years ago
+- `heat-pump-preferred-power` (Gewenst vermogen): Based on calculations with set answers

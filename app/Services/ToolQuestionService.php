@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
+use App\Helpers\Sanitizers\HtmlSanitizer;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
 use App\Models\Building;
@@ -17,8 +19,8 @@ use App\Traits\FluentCaller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-class ToolQuestionService {
-
+class ToolQuestionService
+{
     use FluentCaller;
 
     public ?Building $building;
@@ -27,10 +29,15 @@ class ToolQuestionService {
     public ?InputSource $currentInputSource;
     public bool $applyExampleBuilding = false;
 
-    public function __construct(ToolQuestion $toolQuestion)
+    public function __construct()
+    {
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+    }
+
+    public function toolQuestion(ToolQuestion $toolQuestion): self
     {
         $this->toolQuestion = $toolQuestion;
-        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        return $this;
     }
 
     public function building(Building $building): self
@@ -53,12 +60,18 @@ class ToolQuestionService {
 
     public function save($givenAnswer)
     {
+        if ($this->toolQuestion->data_type === Caster::HTML_STRING) {
+            // Sanitize HTML (just in case)
+            $givenAnswer = (new HtmlSanitizer())->sanitize($givenAnswer);
+        }
+
         if (is_null($this->toolQuestion->save_in)) {
             $this->saveToolQuestionCustomValues($givenAnswer);
         } else {
             // this *can't* handle a checkbox / multiselect answer.
             $this->saveToolQuestionValuables($givenAnswer);
         }
+        UserToolDataChanged::dispatch($this->building->user);
     }
 
     public function saveToolQuestionCustomValues($givenAnswer)
@@ -288,7 +301,7 @@ class ToolQuestionService {
 
         // If we have tool questions to unset, and we're not on the example building right now, we will delete the
         // sub steps
-        if (! empty($toolQuestionsToUnset) && $this->currentInputSource->short !== InputSource::EXAMPLE_BUILDING) {
+        if (! empty($toolQuestionsToUnset) && $this->currentInputSource->short !== InputSource::EXAMPLE_BUILDING_SHORT) {
             $processedIds = [];
             $processedSubSteps = [];
 
@@ -323,7 +336,7 @@ class ToolQuestionService {
     {
         if (is_null($toolQuestion->save_in)) {
             // We don't want to mess with the master if it's the example building
-            $whereIn = $this->currentInputSource->short === InputSource::EXAMPLE_BUILDING
+            $whereIn = $this->currentInputSource->short === InputSource::EXAMPLE_BUILDING_SHORT
                 ? [$this->currentInputSource->id]
                 : [$this->masterInputSource->id, $this->currentInputSource->id];
 

@@ -23,7 +23,7 @@ class ExampleBuildingController extends Controller
         $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id')
             ->orderBy('order');
 
-        if (HoomdossierSession::getRole(true)->name !== RoleHelper::ROLE_SUPER_ADMIN) {
+        if (HoomdossierSession::currentRole() !== RoleHelper::ROLE_SUPER_ADMIN) {
             $exampleBuildingsQuery->forMyCooperation();
         }
 
@@ -40,34 +40,19 @@ class ExampleBuildingController extends Controller
      */
     public function create(Cooperation $cooperation)
     {
-        $buildingTypes = BuildingType::all();
-        $cooperations = Cooperation::all();
-
-        return view('cooperation.admin.example-buildings.create',
-            compact(
-                'buildingTypes', 'cooperations')
-        );
+        return view('cooperation.admin.example-buildings.create');
     }
 
-
-
-
-    public function edit(Cooperation $cooperation, $exampleBuilding)
+    public function edit(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
-        /** @var ExampleBuilding $exampleBuilding */
-        $exampleBuilding = ExampleBuilding::with([
+        $exampleBuilding->load([
             'contents' => function (Relation $query) {
                 $query->orderBy('build_year');
-            },])->findOrFail($exampleBuilding);
-        $buildingTypes = BuildingType::all();
-        $cooperations = Cooperation::all();
+            },
+        ]);
 
-        return view('cooperation.admin.example-buildings.edit',
-            compact(
-                'exampleBuilding', 'buildingTypes', 'cooperations')
-        );
+        return view('cooperation.admin.example-buildings.edit', compact('exampleBuilding'));
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -77,12 +62,12 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public
-    function destroy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
+    public function destroy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
         $exampleBuilding->delete();
 
-        return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building deleted');
+        return redirect()->route('cooperation.admin.example-buildings.index')
+            ->with('success', __('cooperation/admin/example-buildings.destroy.success'));
     }
 
     /**
@@ -92,8 +77,7 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public
-    function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
+    public function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuildingContents = $exampleBuilding->contents;

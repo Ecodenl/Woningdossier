@@ -33,16 +33,16 @@ class ToolQuestionHelper
         'building_roof_types' => ['roof_type_id'],
         'building_services' => ['service_id'],
         'considerables' => ['considerable_type', 'considerable_id'],
-        'step_comments' => [
-            'step_id',
-            'short',
-        ],
+        'user_costs' => ['advisable_type', 'advisable_id'],
+        'step_comments' => ['step_id', 'short'],
     ];
 
     /**
      * An array map of tool questions that should do a full recalculate on change.
      */
     const TOOL_QUESTION_FULL_RECALCULATE = [
+        'gas-price-euro',
+        'electricity-price-euro',
         'thermostat-high',
         'thermostat-low',
         'hours-high',
@@ -321,16 +321,22 @@ class ToolQuestionHelper
                 // If there are no question values, then it's user input
                 $humanReadableAnswer = $answer;
 
-                if ($toolQuestion->data_type == Caster::STRING ) {
-                    $humanReadableAnswer = strip_tags($answer);
+                if ($toolQuestion->data_type == Caster::STRING) {
+                    $humanReadableAnswer = htmlspecialchars($answer);
                 }
             }
 
             // Format answers
             if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                $humanReadableAnswer = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getFormatForUser();
+                $humanReadableAnswer = Caster::init()
+                    ->dataType($toolQuestion->data_type)
+                    ->value($humanReadableAnswer)
+                    ->getFormatForUser();
             } elseif ($toolQuestion->data_type === Caster::JSON) {
-                $humanReadableAnswerArray = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getCast();
+                $humanReadableAnswerArray = Caster::init()
+                    ->dataType($toolQuestion->data_type)
+                    ->value($humanReadableAnswer)
+                    ->getCast();
                 $humanReadableAnswer = [];
                 foreach ($toolQuestion->options as $option) {
                     $humanReadableAnswer[$option['name']] = $humanReadableAnswerArray[$option['short']];

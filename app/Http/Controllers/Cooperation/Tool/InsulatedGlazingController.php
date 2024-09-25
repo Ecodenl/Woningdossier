@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\InsulatedGlazing;
+use App\Events\UserToolDataChanged;
 use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -16,9 +17,13 @@ use App\Models\Element;
 use App\Models\InsulatingGlazing;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
+use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Models\WoodRotStatus;
 use App\Services\ConsiderableService;
+use App\Services\LegacyService;
 use App\Services\StepCommentService;
+use App\Services\ToolQuestionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str as SupportStr;
 
@@ -29,7 +34,7 @@ class InsulatedGlazingController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(LegacyService $legacyService)
     {
         /**
          * @var Building
@@ -86,11 +91,16 @@ class InsulatedGlazingController extends ToolController
 
         $myBuildingElements = BuildingElement::forMe()->get();
 
+        $measureRelatedAnswers = $legacyService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
+            ->getMeasureRelatedAnswers(Step::findByShort('insulated-glazing'));
+
         return view('cooperation.tool.insulated-glazing.index', compact(
             'building', 'myBuildingElements', 'buildingOwner',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
-            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility'
+            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility',
+            'measureRelatedAnswers'
         ));
     }
 
@@ -113,13 +123,14 @@ class InsulatedGlazingController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(InsulatedGlazingFormRequest $request)
+    public function store(InsulatedGlazingFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        foreach ($request->validated()['considerables'] as $considerableId => $considerableData) {
+        $considerables = $request->validated()['considerables'];
+        foreach ($considerables as $considerableId => $considerableData) {
             // so we can determine the highest interest level later on.
             ConsiderableService::save(MeasureApplication::findOrFail($considerableId), $user, $inputSource, $considerableData);
         }
@@ -127,7 +138,24 @@ class InsulatedGlazingController extends ToolController
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('insulated-glazing'));
+        foreach ($measureRelatedShorts as $measureId => $tqShorts) {
+            if ($considerables[$measureId]['is_considering']) {
+                foreach ($tqShorts as $tqShort) {
+                    // Subsidy question might have been removed and thus not saveable.
+                    if (array_key_exists($tqShort, $request->validated())) {
+                        $tq = ToolQuestion::findByShort($tqShort);
+                        $toolQuestionService->toolQuestion($tq)->save($request->validated()[$tqShort]);
+                    }
+                }
+            }
+        }
+
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        if (!empty($dirtyAttributes)) {
+            UserToolDataChanged::dispatch($user);
+        }
 
         // Time to check for building_insulated_glazings in the dirtyAttributes
         // We don't care for the values attached, if they're here, it means the user has messed with them

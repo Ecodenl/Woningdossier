@@ -12,7 +12,6 @@ use App\Calculations\SolarPanel;
 use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
 use App\Helpers\Conditions\ConditionEvaluator;
-use App\Helpers\ConsiderableHelper;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
@@ -23,38 +22,16 @@ use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
 use App\Helpers\ToolQuestionHelper;
-use App\Helpers\Translation;
 use App\Models\Building;
-use App\Models\BuildingElement;
-use App\Models\BuildingFeature;
-use App\Models\buildingHeater;
-use App\Models\BuildingHeating;
-use App\Models\BuildingInsulatedGlazing;
-use App\Models\BuildingPaintworkStatus;
-use App\Models\BuildingPvPanel;
-use App\Models\BuildingRoofType;
-use App\Models\BuildingService;
 use App\Models\BuildingStatus;
-use App\Models\BuildingVentilation;
-use App\Models\Cooperation;
-use App\Models\ElementValue;
-use App\Models\EnergyLabel;
-use App\Models\FacadeDamagedPaintwork;
-use App\Models\FacadePlasteredSurface;
-use App\Models\FacadeSurface;
 use App\Models\InputSource;
-use App\Models\MeasureApplication;
-use App\Models\RoofTileStatus;
-use App\Models\RoofType;
 use App\Models\Status;
 use App\Models\Step;
 use App\Models\SubSteppable;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
-use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
-use App\Models\UserEnergyHabit;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -145,17 +122,16 @@ class DumpService
     /**
      * Create the header structure.
      *
-     * @param  bool  $setStepPrefix
-     *
      * @return $this
      */
-    public function createHeaderStructure(string $short, bool $setStepPrefix = true): self
+    public function createHeaderStructure(string $short): self
     {
         //TODO: See if we can use some dedicated keys so it's easier to remove these if not needed (as of right now,
         // in the PDF).
         if ($this->anonymize) {
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.updated-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
@@ -164,6 +140,7 @@ class DumpService
         } else {
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.updated-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.coach-appointment-date'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -183,7 +160,7 @@ class DumpService
 
         $structure = ToolHelper::getContentStructure($short, $this->mode);
         // If we should set the step prefix, we want to add the step name to each field
-        if ($setStepPrefix) {
+        if ($this->setStepPrefix()) {
             foreach ($structure as $stepShort => $content) {
                 $step = Step::findByShort($stepShort);
 
@@ -214,6 +191,10 @@ class DumpService
         $inputSource = $this->inputSource;
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
+        $updatedAt = $this->user->userActionPlanAdvices()
+            ->forInputSource($inputSource)
+            ->orderByDesc('updated_at')
+            ->value('updated_at');
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
 
         if (! $mostRecentStatus instanceof BuildingStatus) {
@@ -230,7 +211,7 @@ class DumpService
 
         if ($this->anonymize) {
             $data = [
-                $createdAt, $buildingStatus, $postalCode, $city,
+                $createdAt, $updatedAt, $buildingStatus, $postalCode, $city,
             ];
         } else {
             $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
@@ -253,7 +234,7 @@ class DumpService
             $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
 
             $data = [
-                $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
+                $createdAt, $updatedAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
                 $firstName, $lastName, $email, $phoneNumber,
                 $street, trim($number . ' ' . $extension), $postalCode, $city,
             ];
@@ -540,5 +521,10 @@ class DumpService
     private function removeUnconditionals(): bool
     {
         return $this->mode === self::MODE_PDF;
+    }
+
+    private function setStepPrefix(): bool
+    {
+        return $this->mode === self::MODE_CSV;
     }
 }

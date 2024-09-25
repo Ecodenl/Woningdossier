@@ -3,9 +3,12 @@
 namespace App\Jobs;
 
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
+use App\Helpers\MyRegulationHelper;
 use App\Helpers\NumberFormatter;
+use App\Helpers\Queue;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolHelper;
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\CooperationMeasureApplication;
 use App\Models\FileStorage;
 use App\Models\FileType;
@@ -17,13 +20,10 @@ use App\Models\User;
 use App\Scopes\GetValueScope;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
+use App\Services\Kengetallen\KengetallenService;
 use App\Services\Models\AlertService;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -31,13 +31,8 @@ use Illuminate\Support\Str;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Throwable;
 
-class PdfReport implements ShouldQueue
+class PdfReport extends NonHandleableJobAfterReset
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
-
     protected User $user;
     protected FileType $fileType;
     protected FileStorage $fileStorage;
@@ -48,6 +43,8 @@ class PdfReport implements ShouldQueue
      */
     public function __construct(User $user, FileType $fileType, FileStorage $fileStorage, Scan $scan)
     {
+        parent::__construct();
+        $this->onQueue(Queue::EXPORTS);
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;
         $this->user = $user;
@@ -59,7 +56,7 @@ class PdfReport implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(KengetallenService $kengetallenService)
     {
         if (App::runningInConsole()) {
             Log::debug(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
@@ -86,19 +83,20 @@ class PdfReport implements ShouldQueue
             ->inputSource($inputSource)
             ->setMode(DumpService::MODE_PDF)
             ->anonymize() // See comment above unset below
-            ->createHeaderStructure($short, false);
+            ->createHeaderStructure($short);
 
         // Retrieve headers AFTER the dump is done, as conditionally incorrect data will be removed.
         $dump = $dumpService->generateDump();
         $headers = $dumpService->headerStructure;
 
         // So we don't use the initial headers (currently). Therefore, we anonymize, as then we only have to unset
-        // the first four keys.
+        // the first five keys.
         unset(
             $dump[0],
             $dump[1],
             $dump[2],
             $dump[3],
+            $dump[4],
         );
 
         $simpleDump = [];
@@ -263,6 +261,15 @@ class PdfReport implements ShouldQueue
             ->building($building)
             ->getAlerts();
 
+        $subsidyRegulations = MyRegulationHelper::getRelevantRegulations(
+            $building,
+            $inputSource
+        )[RegulationService::SUBSIDY] ?? [];
+
+        $kengetallenService = $kengetallenService
+            ->forInputSource($inputSource)
+            ->forBuilding($building);
+
         // https://github.com/mccarlosen/laravel-mpdf
         // To style container margins of the PDF, see config/pdf.php
         $pdf = LaravelMpdf::loadView('cooperation.pdf.user-report.index', compact(
@@ -281,6 +288,8 @@ class PdfReport implements ShouldQueue
             'smallMeasureAdvices',
             'adviceComments',
             'alerts',
+            'subsidyRegulations',
+            'kengetallenService'
         ))->output();
 
         // save the pdf report
@@ -293,8 +302,11 @@ class PdfReport implements ShouldQueue
     {
         $this->fileStorage->delete();
 
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
+    }
+
+    public function middleware(): array
+    {
+        return [new CheckLastResetAt($this->user->building)];
     }
 }

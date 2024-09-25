@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\App;
@@ -31,6 +32,7 @@ use Illuminate\Support\Facades\App;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestion[] $toolQuestions
  * @property-read int|null $tool_questions_count
  * @method static Builder|SubStep bySlug(string $slug, string $locale = 'nl')
+ * @method static \Database\Factories\SubStepFactory factory(...$parameters)
  * @method static Builder|SubStep forScan(\App\Models\Scan $scan)
  * @method static Builder|SubStep newModelQuery()
  * @method static Builder|SubStep newQuery()
@@ -49,7 +51,8 @@ use Illuminate\Support\Facades\App;
  */
 class SubStep extends Model
 {
-    use HasTranslations;
+    use HasFactory,
+        HasTranslations;
 
     protected $fillable = [
         'name',
@@ -79,7 +82,7 @@ class SubStep extends Model
         return $this->slug;
     }
 
-    # Scopes
+    // Scopes
     public function scopeOrdered(Builder $query)
     {
         return $query->orderBy('order');
@@ -98,7 +101,7 @@ class SubStep extends Model
         });
     }
 
-    # Relations
+    // Relations
     public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);

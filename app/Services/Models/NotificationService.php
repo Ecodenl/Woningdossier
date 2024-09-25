@@ -2,43 +2,50 @@
 
 namespace App\Services\Models;
 
-use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Notification;
 use App\Traits\FluentCaller;
+use App\Traits\Services\HasBuilding;
+use App\Traits\Services\HasInputSources;
 
 class NotificationService
 {
-    use FluentCaller;
+    use FluentCaller,
+        HasBuilding,
+        HasInputSources;
 
-    protected InputSource $inputSource;
-    protected Building $building;
     protected string $type;
-
-    public function forInputSource(InputSource $inputSource): self
-    {
-        $this->inputSource = $inputSource;
-
-        return $this;
-    }
-
-    public function forBuilding(Building $building): self
-    {
-        $this->building = $building;
-
-        return $this;
-    }
+    protected string $uuid;
 
     public function setType(string $type): self
     {
         $this->type = $type;
-
         return $this;
+    }
+
+    public function setUuid(string $uuid): self
+    {
+        $this->uuid = $uuid;
+        return $this;
+    }
+
+    public function hasActiveTypes(array $types): bool
+    {
+        // TODO: Should we "reset" the type to the type we had before calling this method?
+        $isActive = false;
+        foreach ($types as $type) {
+            if ($this->setType($type)->isActive()) {
+                $isActive = true;
+                break;
+            }
+        }
+
+        return $isActive;
     }
 
     public function isActive(): bool
     {
-        return (bool) optional($this->getNotification())->is_active;
+        return $this->getNotification() instanceof Notification;
     }
 
     public function isNotActive(): bool
@@ -46,60 +53,54 @@ class NotificationService
         return ! $this->isActive();
     }
 
-    public function setActive(int $count = 1)
+    public function setActive(array $uuids = [])
     {
-        // Get current count. This is because we could have 2 RecalculateForUser processes being dispatched at the
-        // same time. It wouldn't make sense to show the action plan if one process is still running.
-        $count = $count + (optional($this->getNotification())->active_count ?? 0);
-        $active = $count > 0;
-
-        Notification::allInputSources()->updateOrCreate(
-            [
-                'input_source_id' => $this->inputSource->id,
-                'type' => $this->type,
-                'building_id' => $this->building->id,
-            ],
-            [
-                'is_active' => $active,
-                'active_count' => $count,
-            ]
-        );
+        foreach ($uuids as $uuid) {
+            Notification::allInputSources()->updateOrCreate(
+                [
+                    'input_source_id' => optional($this->inputSource)->id,
+                    'type' => $this->type,
+                    'uuid' => $uuid,
+                    'building_id' => $this->building->id,
+                ],
+            );
+        }
     }
 
     /**
-     * Decrement the active count by one, and deactivate the notification if the count reaches 0.
-     *
-     * @param bool $force If true the notification will be deactivated regardless of count.
+     * Deactivate the notification.
      *
      * @return void
      */
-    public function deactivate(bool $force = false)
+    public function deactivate()
     {
-        $notification = $this->getNotification();
-
-        // If there's no notification there's nothing to deactivate
-        if ($notification instanceof Notification) {
-            if ($force) {
-                $notification->update([
-                    'active_count' => 0,
-                    'is_active' => false,
-                ]);
-            } else {
-                $notification->active_count--;
-                if ($notification->active_count === 0) {
-                    $notification->is_active = false;
-                }
-
-                $notification->save();
-            }
-        }
+        optional($this->getNotification())->delete();
     }
 
     protected function getNotification(): ?Notification
     {
-        return Notification::forBuilding($this->building)
-            ->forType($this->type)
-            ->forInputSource($this->inputSource)
-            ->first();
+        $query = Notification::forBuilding($this->building)
+            ->forType($this->type);
+
+        // Master gets created automatically due to GetMyValuesTrait, even if input source is null. Therefore, if you
+        // explicitly want to check for master, ensure so via static::forInputSource, otherwise we will ignore master,
+        // so we get the row with non-master/null input source (since even when deleting a null input source row, it
+        // will delete the master due to uuid).
+        $this->inputSource instanceof InputSource
+            ? $query->forInputSource($this->inputSource)
+            : $query->allInputSources()->where(function ($query) {
+                // LME: MySQL treats NULL not as undefined but as unknown. When we query "not equals", the
+                // values that are NULL are not returned, as MySQL is not sure if it matches or not. This is a failsafe.
+                // By querying as OR on the same column, we get the required result. We could also use the null safe
+                // operator ( <=> ), but that reads awkward.
+                $query->where('input_source_id', '!=', InputSource::master()->id)
+                    ->orWhereNull('input_source_id');
+            });
+
+        if (isset($this->uuid)) {
+            $query->forUuid($this->uuid);
+        }
+
+        return $query->first();
     }
 }

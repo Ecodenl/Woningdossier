@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphPivot;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read \App\Models\SubStep $subStep
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subSteppable
  * @property-read \App\Models\ToolQuestionType|null $toolQuestionType
+ * @method static \Database\Factories\SubSteppableFactory factory(...$parameters)
  * @method static Builder|SubSteppable forScan(\App\Models\Scan $scan)
  * @method static Builder|SubSteppable newModelQuery()
  * @method static Builder|SubSteppable newQuery()
@@ -41,6 +43,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class SubSteppable extends MorphPivot
 {
+    use HasFactory;
+
     protected $table = 'sub_steppables';
 
     protected $casts = [

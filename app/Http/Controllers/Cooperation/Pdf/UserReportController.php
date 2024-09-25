@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Pdf;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
+use App\Helpers\MyRegulationHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolHelper;
@@ -18,8 +19,10 @@ use App\Models\User;
 use App\Scopes\GetValueScope;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
+use App\Services\Kengetallen\KengetallenService;
 use App\Services\Models\AlertService;
 use App\Services\UserActionPlanAdviceService;
+use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Support\Str;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 
@@ -28,7 +31,7 @@ class UserReportController extends Controller
     /**
      * TESTING only.
      */
-    public function index(Cooperation $userCooperation, ?string $scanShort = null)
+    public function index(KengetallenService $kengetallenService, Cooperation $userCooperation, ?string $scanShort = null)
     {
         $scanShort ??= Scan::QUICK;
         if ($scanShort === Scan::LITE) {
@@ -47,19 +50,21 @@ class UserReportController extends Controller
             ->inputSource($inputSource)
             ->setMode(DumpService::MODE_PDF)
             ->anonymize() // See comment above unset below
-            ->createHeaderStructure($short, false);
+            ->createHeaderStructure($short);
 
+        $dump = [];
         // Retrieve headers AFTER the dump is done, as conditionally incorrect data will be removed.
         $dump = $dumpService->generateDump();
         $headers = $dumpService->headerStructure;
 
         // So we don't use the initial headers (currently). Therefore, we anonymize, as then we only have to unset
-        // the first four keys.
+        // the first five keys.
         unset(
             $dump[0],
             $dump[1],
             $dump[2],
             $dump[3],
+            $dump[4],
         );
 
         $simpleDump = [];
@@ -224,8 +229,34 @@ class UserReportController extends Controller
             ->building($building)
             ->getAlerts();
 
+        $subsidyRegulations = MyRegulationHelper::getRelevantRegulations(
+            $building,
+            $inputSource
+        )[RegulationService::SUBSIDY] ?? [];
+
+        $kengetallenService = $kengetallenService
+            ->forInputSource($inputSource)
+            ->forBuilding($building);
         // https://github.com/mccarlosen/laravel-mpdf
         // To style container margins of the PDF, see config/pdf.php
+//        return  view('cooperation.pdf.user-report.index', compact(
+//            'scanShort',
+//            'userCooperation',
+//            'building',
+//            'user',
+//            'inputSource',
+//            'connectedCoachNames',
+//            // 'headers',
+//            'simpleDump',
+//            'expertDump',
+//            'coachHelp',
+//            'categorizedAdvices',
+//            'measureSteps',
+//            'smallMeasureAdvices',
+//            'adviceComments',
+//            'alerts',
+//            'subsidyRegulations'));
+
         return LaravelMpdf::loadView('cooperation.pdf.user-report.index', compact(
             'scanShort',
             'userCooperation',
@@ -242,6 +273,8 @@ class UserReportController extends Controller
             'smallMeasureAdvices',
             'adviceComments',
             'alerts',
+            'subsidyRegulations',
+            'kengetallenService'
         ))->stream();
     }
 }

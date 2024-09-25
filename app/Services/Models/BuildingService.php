@@ -2,30 +2,83 @@
 
 namespace App\Services\Models;
 
+use App\Events\BuildingAppointmentDateUpdated;
+use App\Helpers\KengetallenCodes;
 use App\Helpers\ToolQuestionHelper;
+use App\Jobs\CheckBuildingAddress;
+use App\Jobs\RefreshRegulationsForBuildingUser;
 use App\Models\Building;
+use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Scan;
+use App\Models\ToolQuestion;
+use App\Services\Kengetallen\KengetallenService;
+use App\Services\Kengetallen\Resolvers\RvoDefined;
+use App\Services\ToolQuestionService;
 use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
+use App\Traits\Services\HasBuilding;
+use App\Traits\Services\HasInputSources;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BuildingService
 {
-    use FluentCaller;
+    use FluentCaller,
+        HasBuilding,
+        HasInputSources;
 
-    public ?Building $building;
-
-    public function __construct(Building $building)
+    public function __construct(?Building $building = null)
     {
         $this->building = $building;
+    }
+
+    /**
+     * convenient way of setting a appointment date on a building.
+     *
+     * @param  string
+     *
+     * @return void
+     */
+    public function setAppointmentDate($appointmentDate): void
+    {
+        $this->building->buildingStatuses()->create([
+            'status_id' => $this->building->getMostRecentBuildingStatus()->status_id,
+            'appointment_date' => $appointmentDate,
+        ]);
+        Log::debug(__METHOD__);
+        Log::debug("dispatching BuildingAppointmentDateUpdated for building {$this->building->id}");
+
+        BuildingAppointmentDateUpdated::dispatch($this->building);
+    }
+
+    /**
+     * This method will set the BuildingDefined kengetallen to the "default" (RvoDefined) kengetallen
+     *
+     * @return void
+     */
+    public function setBuildingDefinedKengetallen(): void
+    {
+        $kengetallenService = app(KengetallenService::class)->forBuilding($this->building);
+        $toolQuestionService = ToolQuestionService::init()
+            ->building($this->building)
+            ->currentInputSource(InputSource::resident());
+
+        // force to resolve through the code defined kengetallen.
+        $toolQuestionService
+            ->toolQuestion(ToolQuestion::findByShort('electricity-price-euro'))
+            ->save($kengetallenService->get(new RvoDefined(), KengetallenCodes::EURO_SAVINGS_ELECTRICITY));
+
+        $toolQuestionService
+            ->toolQuestion(ToolQuestion::findByShort('gas-price-euro'))
+            ->save($kengetallenService->get(new RvoDefined(), KengetallenCodes::EURO_SAVINGS_GAS));
     }
 
     public function canCalculate(Scan $scan): bool
     {
         if ($scan->isQuickScan()) {
-            $quickScan       = Scan::findByShort(Scan::QUICK);
+            $quickScan = Scan::findByShort(Scan::QUICK);
             $woonplanService = WoonplanService::init($this->building)->scan($quickScan);
             // iknow, the variable is not needed.
             // just got it here as a description since this same statement is found in different context.
@@ -50,7 +103,7 @@ class BuildingService
     public function getSourcedAnswers(Collection $toolQuestions): Collection
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $exampleBuildingInputSource = InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
+        $exampleBuildingInputSource = InputSource::findByShort(InputSource::EXAMPLE_BUILDING_SHORT);
 
         $ids = $toolQuestions->whereNull('save_in')->pluck('id')->toArray();
 
@@ -84,7 +137,13 @@ class BuildingService
             $answersForTqa = DB::table('tool_question_answers AS tqa')
                 ->select('tqa.tool_question_id', 'tqa.answer', 'nma.input_source_id', 'is.name AS input_source_name')
                 ->selectSub(
-                    fn ($query) => $query->selectRaw($selectQuery, [$this->building->id, $exampleBuildingInputSource->id, $exampleBuildingInputSource->id, $this->building->id, $masterInputSource->id]),
+                    fn($query) => $query->selectRaw($selectQuery, [
+                        $this->building->id,
+                        $exampleBuildingInputSource->id,
+                        $exampleBuildingInputSource->id,
+                        $this->building->id,
+                        $masterInputSource->id
+                    ]),
                     'latest_source_id'
                 )
                 ->where('tqa.building_id', $this->building->id)
@@ -99,7 +158,7 @@ class BuildingService
                 ->havingRaw('nma.input_source_id = latest_source_id')
                 ->get()
                 ->groupBy('tool_question_id')
-                ->map(fn($val) => $val->map(fn($subVal) => (array) $subVal)->toArray());
+                ->map(fn($val) => $val->map(fn($subVal) => (array)$subVal)->toArray());
         }
 
         $ids = $toolQuestions->whereNotNull('save_in')->pluck('id')->toArray();
@@ -112,11 +171,11 @@ class BuildingService
                 $resolved = ToolQuestionHelper::resolveSaveIn($saveIn, $this->building);
                 // Note: Where could contain extra queryable, e.g. service. If empty, the query builder
                 // will safely discard the where statement. If not empty, it gets added to the query.
-                $where        = $resolved['where'];
-                $table        = $resolved['table'];
+                $where = $resolved['where'];
+                $table = $resolved['table'];
                 $answerColumn = $resolved['column'];
-                $whereColumn  = array_key_exists('user_id', $where) ? 'user_id' : 'building_id';
-                $value        = data_get($resolved, "where.{$whereColumn}");
+                $whereColumn = array_key_exists('user_id', $where) ? 'user_id' : 'building_id';
+                $value = data_get($resolved, "where.{$whereColumn}");
                 unset($where[$whereColumn]);
 
                 $append = '';
@@ -153,7 +212,13 @@ class BuildingService
                 $answersForResolved = DB::table("{$table} as tbl")
                     ->select("tbl.{$answerColumn} AS answer", 'nma.input_source_id', 'is.name AS input_source_name')
                     ->selectSub(
-                        fn ($query) => $query->selectRaw($selectQuery, [$value, $exampleBuildingInputSource->id, $exampleBuildingInputSource->id, $value, $masterInputSource->id]),
+                        fn($query) => $query->selectRaw($selectQuery, [
+                            $value,
+                            $exampleBuildingInputSource->id,
+                            $exampleBuildingInputSource->id,
+                            $value,
+                            $masterInputSource->id
+                        ]),
                         'latest_source_id'
                     )
                     ->where("tbl.{$whereColumn}", $value)
@@ -166,7 +231,7 @@ class BuildingService
                     ->leftJoin('input_sources AS is', 'nma.input_source_id', '=', 'is.id')
                     ->havingRaw('nma.input_source_id = latest_source_id')
                     ->get()
-                    ->map(fn($val) => (array) $val)
+                    ->map(fn($val) => (array)$val)
                     ->toArray();
 
                 $answersForSaveIn->put($toolQuestionId, $answersForResolved);
@@ -176,6 +241,26 @@ class BuildingService
         return $answersForTqa->union($answersForSaveIn);
     }
 
+    public function performMunicipalityCheck()
+    {
+        $building = $this->building;
+
+        $currentMunicipality = $building->municipality_id;
+        CheckBuildingAddress::dispatchSync($building, $this->inputSource);
+        // Get a fresh (and updated) building instance
+        $building = $building->fresh();
+        $newMunicipality = $building->municipality_id;
+
+        // Check if a municipality was attached. If not, dispatch it on the regular queue so it retries.
+        // If the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated will be fired from the attachMunicipality method.
+        // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job.
+        // If the municipality hasn't changed, however, we will manually dispatch a refresh.
+        if (is_null($newMunicipality)) {
+            CheckBuildingAddress::dispatch($building, $this->inputSource);
+        } elseif ($currentMunicipality === $newMunicipality) {
+            RefreshRegulationsForBuildingUser::dispatch($building);
+        }
+    }
 
     public static function deleteBuilding(Building $building)
     {
@@ -185,8 +270,16 @@ class BuildingService
 
         $building->stepComments()->withoutGlobalScopes()->delete();
 
+        // Remove all mappings related to custom measure applications. Custom measures will get "auto deleted" due
+        // to cascade on delete, but mappings are a morph relation without foreign key constraints, so we must
+        // delete them ourselves.
+        DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
+            ->whereIn('from_model_id',
+                $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray())
+            ->delete();
+
         // table will be removed anyways.
-        \DB::table('building_appliances')->whereBuildingId($building->id)->delete();
+        DB::table('building_appliances')->whereBuildingId($building->id)->delete();
 
         $building->forceDelete();
     }

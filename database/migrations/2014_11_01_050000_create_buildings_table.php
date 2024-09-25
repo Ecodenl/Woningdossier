@@ -19,6 +19,9 @@ class CreateBuildingsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
+            $table->unsignedBigInteger('municipality_id')->nullable()->default(null);
+            $table->foreign('municipality_id')->references('id')->on('municipalities')->nullOnDelete();
+
             $table->string('street')->default('');
             $table->string('number')->default('');
             $table->string('extension')->default('');
@@ -31,6 +34,7 @@ class CreateBuildingsTable extends Migration
             $table->boolean('primary')->default(false);
 
             $table->string('bag_addressid')->default('');
+            $table->string('bag_woonplaats_id')->nullable()->default(null);
 
             $table->timestamps();
             $table->softDeletes();

@@ -2,20 +2,17 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Middleware\CheckLastResetAt;
+use App\Helpers\Queue;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\Cloning\CloneDataService;
-use App\Services\Models\NotificationService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Traits\Queue\HasNotifications;
 use Throwable;
 
-class CloneOpposingInputSource implements ShouldQueue
+class CloneOpposingInputSource extends NonHandleableJobAfterReset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use HasNotifications;
 
     public Building $building;
     public InputSource $inputSource;
@@ -23,9 +20,13 @@ class CloneOpposingInputSource implements ShouldQueue
 
     public function __construct(Building $building, InputSource $inputSource, InputSource $cloneableInputSource)
     {
+        parent::__construct();
+        $this->queue = Queue::APP_HIGH;
         $this->building = $building;
         $this->inputSource = $inputSource;
         $this->cloneableInputSource = $cloneableInputSource;
+
+        $this->setUuid();
     }
 
     /**
@@ -41,14 +42,8 @@ class CloneOpposingInputSource implements ShouldQueue
 
     public function failed(Throwable $exception)
     {
-        NotificationService::init()
-            ->forBuilding($this->building)
-            ->forInputSource($this->inputSource)
-            ->setType(CloneOpposingInputSource::class)
-            ->deactivate(true);
+        $this->deactivateNotification();
 
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Events\UserToolDataChanged;
+use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoofInsulation;
@@ -14,8 +16,12 @@ use App\Models\Element;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
+use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
+use App\Services\LegacyService;
 use App\Services\StepCommentService;
+use App\Services\ToolQuestionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -26,7 +32,7 @@ class RoofInsulationController extends ToolController
      *
      * return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(LegacyService $legacyService)
     {
         $typeIds = [5];
 
@@ -74,10 +80,24 @@ class RoofInsulationController extends ToolController
             }
         }
 
+        $measureRelatedAnswers = $legacyService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
+            ->getMeasureRelatedAnswers(Step::findByShort('roof-insulation'));
+
+        $measureRelatedAnswersCategorized = [];
+
+        foreach (RoofInsulation::getMeasureApplicationsAdviceMap() as $cat => $measures) {
+            foreach ($measures as $measureApplication) {
+                $measureRelatedAnswersCategorized[$cat][$measureApplication->id] = $measureRelatedAnswers[$measureApplication->id];
+            }
+        }
+
         return view('cooperation.tool.roof-insulation.index', compact(
             'building', 'primaryRoofTypes', 'secondaryRoofTypes', 'typeIds',
             'buildingFeaturesForMe', 'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
-            'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
+            'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe',
+            'measureRelatedAnswersCategorized'
+        ));
     }
 
     public function calculate(Request $request)
@@ -96,19 +116,40 @@ class RoofInsulationController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(RoofInsulationFormRequest $request)
+    public function store(RoofInsulationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        ConsiderableService::save($this->step, $user, $inputSource,
-            $request->validated()['considerables'][$this->step->id]);
+        $considerables = $request->validated()['considerables'];
+        ConsiderableService::save($this->step, $user, $inputSource, $considerables[$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('roof-insulation'));
+        if ($considerables[$this->step->id]['is_considering']) {
+            $measureIds = array_filter(Arr::pluck($request->validated()['building_roof_types'], 'extra.measure_application_id'));
+
+            foreach ($measureRelatedShorts as $measureId => $tqShorts) {
+                if (in_array($measureId, $measureIds)) {
+                    foreach ($tqShorts as $tqShort) {
+                        // Subsidy question might have been removed and thus not saveable.
+                        if (array_key_exists($tqShort, $request->validated())) {
+                            $tq = ToolQuestion::findByShort($tqShort);
+                            $toolQuestionService->toolQuestion($tq)->save($request->validated()[$tqShort]);
+                        }
+                    }
+                }
+            }
+        }
+
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        if (!empty($dirtyAttributes)) {
+            UserToolDataChanged::dispatch($user);
+        }
         $dirtyNames = array_keys($dirtyAttributes);
         $updatedMeasureIds = [];
 
@@ -123,19 +164,21 @@ class RoofInsulationController extends ToolController
             $updatedMeasureIds = MeasureApplication::findByShorts([
                 'roof-insulation-pitched-inside', 'roof-insulation-pitched-replace-tiles',
                 'roof-insulation-flat-current', 'roof-insulation-flat-replace-current',
-                'replace-tiles', 'replace-roof-insulation', 'replace-zinc-pitched',
-                'replace-zinc-flat',
+                'replace-tiles', 'replace-roof-insulation',
+                //'replace-zinc-pitched',
+                //'replace-zinc-flat',
             ])->pluck('id')->toArray();
         } else {
             if ($dirtyFlat) {
                 $updatedMeasureIds = MeasureApplication::findByShorts([
                     'roof-insulation-flat-current', 'roof-insulation-flat-replace-current', 'replace-roof-insulation',
-                    'replace-zinc-flat',
+                    //'replace-zinc-flat',
                 ])->pluck('id')->toArray();
             } elseif ($dirtyPitched) {
                 $updatedMeasureIds = MeasureApplication::findByShorts([
                     'roof-insulation-pitched-inside', 'roof-insulation-pitched-replace-tiles',
-                    'replace-tiles', 'replace-zinc-pitched',
+                    'replace-tiles',
+                    //'replace-zinc-pitched',
                 ])->pluck('id')->toArray();
             }
         }

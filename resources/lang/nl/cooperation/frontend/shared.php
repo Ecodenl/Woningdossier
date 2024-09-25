@@ -14,9 +14,11 @@ return [
         'add-measure' => [
             'subject' => 'Onderwerp',
             'subject-placeholder' => 'Nieuwe vloer, WC, tochtstrips..',
+            'measure-category' => 'Maatregelcategorie',
             'info' => 'Beschrijving',
             'info-placeholder' => 'Beschrijving over de maatregel',
             'costs' => 'Kosten in €',
+            'hide-costs' => 'Geen kosten',
             'savings-money' => 'Verwachte besparing in €',
             'save' => 'Voeg maatregel toe',
             'update' => 'Werk maatregel bij',

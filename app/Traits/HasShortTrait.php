@@ -13,7 +13,7 @@ trait HasShortTrait
      *
      * @param $short
      *
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return static|null
      */
     public static function findByShort($short): ?Model
     {

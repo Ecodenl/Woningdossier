@@ -1,9 +1,9 @@
 @extends('cooperation.frontend.layouts.app')
 
 @section('main')
-    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20 "
+    <div class="w-full min-h-screen flex justify-center items-center flex-col py-10 md:py-20"
          x-data="register('{{route('cooperation.check-existing-email')}}')">
-        <div class="bg-white rounded-3xl p-20 text-center space-y-10 w-3/4">
+        <div class="bg-white rounded-3xl p-4 md:p-20 text-center space-y-6 md:space-y-10 w-3/4">
             @include('cooperation.frontend.layouts.parts.logo')
             <h1 class="heading-1">
                 @lang('auth.register.form.header')
@@ -14,10 +14,8 @@
                 @endcomponent
             @endif
             <form class="w-full flex flex-wrap justify-center" method="POST" id="register"
-                  action="{{ route('cooperation.register') }}"
-                  x-data="picoAddress('{{ route('api.get-address-data') }}')">
+                  action="{{ route('cooperation.register') }}">
                 @csrf
-                <input type="hidden" name="addressid" x-bind="addressId" value="{{ old('addressid') }}">
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
                     'class' => 'w-full',
@@ -25,13 +23,13 @@
                 ])
                     <input class="form-input" type="text" name="email" value="{{ old('email') }}"
                            placeholder="@lang('auth.register.form.email')" x-on:change="checkEmail($el)">
-                    <p class="text-red w-full text-left" x-show="showEmailWarning">
+                    <p class="text-red w-full text-left" x-show="showEmailWarning" x-cloak>
                         @lang('auth.register.form.possible-wrong-email')
                     </p>
-                    <p class="text-blue-800 w-full text-left" x-show="alreadyMember">
+                    <p class="text-blue-800 w-full text-left" x-show="alreadyMember" x-cloak>
                         @lang('auth.register.form.already-member')
                     </p>
-                    <p class="text-blue-800 w-full text-left" x-show="emailExists">
+                    <p class="text-blue-800 w-full text-left" x-show="emailExists" x-cloak>
                         @lang('auth.register.form.email-exists')
                     </p>
                 @endcomponent
@@ -53,56 +51,12 @@
                     <input class="form-input" type="text" name="last_name" value="{{ old('last_name') }}"
                            placeholder="@lang('auth.register.form.last-name')">
                 @endcomponent
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'withInputSource' => false,
-                    'class' => 'w-full -mt-5  lg:w-1/2 lg:pr-3',
-                    'inputName' => 'postal_code',
+
+                @include('cooperation.layouts.address', [
                     'attr' => 'x-show="! alreadyMember"',
+                    'withLabels' => false,
                 ])
-                    <input class="form-input" type="text" name="postal_code" value="{{ old('postal_code') }}"
-                           placeholder="@lang('auth.register.form.postal-code')" x-bind="postcode">
-                    <p class="text-blue-800 -mt-2 w-full" x-show="showPossibleError">
-                        @lang('auth.register.form.possible-wrong-postal-code')
-                    </p>
-                @endcomponent
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'withInputSource' => false,
-                    'class' => 'w-full -mt-5  lg:w-1/4 lg:px-3',
-                    'inputName' => 'number',
-                    'attr' => 'x-show="! alreadyMember"',
-                ])
-                    <input class="form-input" type="text" name="number" value="{{ old('number') }}"
-                           placeholder="@lang('auth.register.form.number')" x-bind="houseNumber">
-                @endcomponent
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'withInputSource' => false,
-                    'class' => 'w-full -mt-5 lg:w-1/4 lg:pl-3',
-                    'inputName' => 'house_number_extension',
-                    'attr' => 'x-show="! alreadyMember"',
-                ])
-                    <input class="form-input" type="text" name="house_number_extension"
-                           value="{{ old('house_number_extension') }}"
-                           placeholder="@lang('auth.register.form.house-number-extension')"
-                           x-bind="houseNumberExtension">
-                @endcomponent
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'withInputSource' => false,
-                    'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
-                    'inputName' => 'street',
-                    'attr' => 'x-show="! alreadyMember"',
-                ])
-                    <input class="form-input" type="text" name="street" value="{{ old('street') }}"
-                           placeholder="@lang('auth.register.form.street')" x-bind="street">
-                @endcomponent
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'withInputSource' => false,
-                    'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
-                    'inputName' => 'city',
-                    'attr' => 'x-show="! alreadyMember"',
-                ])
-                    <input class="form-input" type="text" name="city" value="{{ old('city') }}"
-                           placeholder="@lang('auth.register.form.city')" x-bind="city">
-                @endcomponent
+
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5',
@@ -112,7 +66,7 @@
                     <input class="form-input" type="text" name="phone_number" value="{{ old('phone_number') }}"
                            placeholder="@lang('auth.register.form.phone-number')">
                 @endcomponent
-                <div class="flex w-full flex-col">
+                <div class="flex w-full flex-col" x-show="! alreadyMember && ! emailExists">
                     <div class="flex justify-start">
                         <span class="text-green text-sm">@lang('validation.custom.password.min')</span>
                     </div>
@@ -121,8 +75,7 @@
                              'withInputSource' => false,
                              'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
                              'inputName' => 'password',
-                             'attr' => 'x-show="! alreadyMember && ! emailExists"',
-                         ])
+                        ])
 
                             <div class="flex w-full" x-data="{showPass: false}">
                                 <input class="form-input" type="password" name="password"
@@ -139,9 +92,9 @@
                             'withInputSource' => false,
                             'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
                             'inputName' => 'password_confirmation',
-                            'attr' => 'x-show="! alreadyMember && ! emailExists"',
                         ])
-                            <input class="form-input" type="password" name="password_confirmation" placeholder="@lang('auth.register.form.password-confirmation')">
+                            <input class="form-input" type="password" name="password_confirmation"
+                                   placeholder="@lang('auth.register.form.password-confirmation')">
                         @endcomponent
                     </div>
                 </div>
@@ -163,7 +116,9 @@
                     <p class="text-left">@lang('conversation-requests.index.text', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name])</p>
                 @endcomponent
 
-                <button class="btn btn-purple w-full mt-3" type="submit" x-bind:disabled="! allowAccess || alreadyMember">
+                {{-- When clicking the button, we disable it. We don't have to do anything fancy, since it won't have pointer events when disabled --}}
+                <button class="btn btn-purple w-full mt-3" type="submit" x-on:click="setTimeout(() => {submitted = true;});"
+                        x-bind:disabled="! allowAccess || alreadyMember || submitted">
                     @lang('auth.register.form.submit')
                 </button>
             </form>

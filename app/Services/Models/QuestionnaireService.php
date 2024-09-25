@@ -4,22 +4,22 @@ namespace App\Services\Models;
 
 use App\Models\CompletedQuestionnaire;
 use App\Models\Cooperation;
-use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Models\User;
 use App\Traits\FluentCaller;
+use App\Traits\Services\HasInputSources;
 use Illuminate\Support\Collection;
 
 class QuestionnaireService
 {
-    use FluentCaller;
+    use FluentCaller,
+        HasInputSources;
 
     protected ?Questionnaire $questionnaire = null;
     protected Cooperation $cooperation;
     protected Step $step;
     protected User $user;
-    protected InputSource $inputSource;
 
     public function questionnaire(Questionnaire $questionnaire): self
     {
@@ -42,12 +42,6 @@ class QuestionnaireService
     public function step(Step $step): self
     {
         $this->step = $step;
-        return $this;
-    }
-
-    public function forInputSource(InputSource $inputSource): self
-    {
-        $this->inputSource = $inputSource;
         return $this;
     }
 

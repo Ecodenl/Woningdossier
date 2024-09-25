@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Scopes\VisibleScope;
+use App\Traits\Models\HasMappings;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -29,6 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
  * @method static Builder|CooperationMeasureApplication extensiveMeasures()
+ * @method static \Database\Factories\CooperationMeasureApplicationFactory factory(...$parameters)
  * @method static Builder|CooperationMeasureApplication newModelQuery()
  * @method static Builder|CooperationMeasureApplication newQuery()
  * @method static \Illuminate\Database\Query\Builder|CooperationMeasureApplication onlyTrashed()
@@ -52,7 +55,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class CooperationMeasureApplication extends Model
 {
-    use HasTranslations, SoftDeletes;
+    use HasFactory,
+        HasTranslations,
+        SoftDeletes,
+        HasMappings;
 
     protected $translatable = ['name', 'info'];
 

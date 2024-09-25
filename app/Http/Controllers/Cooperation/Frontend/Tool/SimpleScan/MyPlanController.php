@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
+use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -21,7 +22,6 @@ class MyPlanController extends Controller
     {
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
-
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $woonplanService = WoonplanService::init($building)
@@ -49,20 +49,11 @@ class MyPlanController extends Controller
             }
         }
 
-        $types = [\App\Jobs\RecalculateStepForUser::class];
-
-        $service = NotificationService::init()
+        $activeNotification = NotificationService::init()
             ->forInputSource($masterInputSource)
-            ->forBuilding($building);
-
-        $activeNotification = false;
-
-        foreach ($types as $type) {
-            if ($service->setType($type)->isActive()) {
-                $activeNotification = true;
-                break;
-            }
-        }
+            ->forBuilding($building)
+            ->setType(RecalculateStepForUser::class)
+            ->isActive();
 
         $inputSource = HoomdossierSession::getInputSource(true);
 
@@ -71,10 +62,12 @@ class MyPlanController extends Controller
 
     public function media(Request $request, Cooperation $cooperation, Scan $scan, ?Building $building = null)
     {
-        $this->authorize('viewAny', [Media::class, HoomdossierSession::getInputSource(true), HoomdossierSession::getBuilding(true)]);
+        $currentBuilding = HoomdossierSession::getBuilding(true);
+
+        $this->authorize('viewAny', [Media::class, HoomdossierSession::getInputSource(true), $currentBuilding]);
 
         if (! $building instanceof Building) {
-            $building = HoomdossierSession::getBuilding(true);
+            $building = $currentBuilding;
         }
 
         return view('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan', 'building'));

@@ -16,6 +16,7 @@
 
 @import "misc";
 
+// Custom
 @import "views/cooperation/auth/register";
 
 @import "views/cooperation/help/index";
@@ -38,7 +39,6 @@
 
 @import "select2";
 
-
 .navbar-default .navbar-nav > li > a {
   color: #2d2c2c;
   text-rendering: optimizeLegibility !important;
@@ -52,6 +52,9 @@
   -webkit-font-smoothing: antialiased !important;
   font-weight: 400;
 }
+
+// Frontend compatibility
+@import "frontend-compat";
 
 // Icons from frontend
 @import '../../css/shared/components/icons.css';

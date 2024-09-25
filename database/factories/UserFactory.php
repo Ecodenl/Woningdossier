@@ -3,7 +3,8 @@
 namespace Database\Factories;
 
 use App\Helpers\RoleHelper;
-use App\Models\Building;
+use App\Models\Account;
+use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -28,8 +29,6 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'account_id' => \App\Models\Account::factory(),
-            'cooperation_id' => \App\Models\Cooperation::factory(),
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'phone_number' => $this->faker->phoneNumber,
@@ -37,33 +36,36 @@ class UserFactory extends Factory
         ];
     }
 
-    public function asCoach()
+    public function asCoach(): UserFactory
+    {
+        return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COACH));
+    }
+
+    public function asResident(): UserFactory
+    {
+        return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_RESIDENT));
+    }
+
+    public function asCooperationAdmin(): UserFactory
+    {
+        return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COOPERATION_ADMIN));
+    }
+
+    public function withAccount(): UserFactory
     {
         return $this->state(function (array $attributes) {
             return [
-                // We need this state for an after hook
+                'account_id' => Account::factory()->create()->id,
             ];
-        })->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COACH));
+        });
     }
 
-    public function asResident()
+    public function withCooperation(): UserFactory
     {
         return $this->state(function (array $attributes) {
             return [
-                // We need this state for an after hook
+                'cooperation_id' => Cooperation::factory()->create()->id,
             ];
-        })->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_RESIDENT));
-    }
-
-
-    public function configure()
-    {
-        return $this->afterCreating(function (User $user) {
-            // Ensure we always have a building
-            $building = Building::factory()->create(['user_id' => $user]);
         });
     }
 }
-
-
-

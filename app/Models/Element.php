@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Element
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property array $info
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ElementValue[] $elementValues
+ * @property-read int|null $element_values_count
  * @property-read array $translations
  * @property-read \App\Models\ServiceType $serviceType
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ElementValue[] $values
@@ -52,7 +55,16 @@ class Element extends Model
         return $this->belongsTo(ServiceType::class);
     }
 
+    /**
+     * @deprecated
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function values()
+    {
+        return $this->hasMany(ElementValue::class);
+    }
+
+    public function elementValues(): HasMany
     {
         return $this->hasMany(ElementValue::class);
     }

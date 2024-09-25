@@ -19,10 +19,16 @@ class ExampleBuildingService
     const NEVER_OVERWRITE_TOOL_QUESTION_SHORTS = [
         'building-type-category',
         // 'building-type',
+        'building-contract-type',
         'build-year',
         'specific-example-building',
         'surface',
     ];
+
+    const SOURCE_FROM_EXTERN_TOOL_QUESTION_SHORTS = [
+        'energy-label',
+    ];
+
 
     /**
      * Apply an example building on the given building.
@@ -80,16 +86,15 @@ class ExampleBuildingService
         );
 
 
-        // there are some fixed tool questions which are NOT allowed to be overwritten by the example building
+        // There are some fixed tool questions which are NOT allowed to be overwritten by the example building
         // we collect them here, and possibly overwrite the example building data if the user his answer is not null
         $fixedToolQuestionShorts = array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS, static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS);
         foreach ($fixedToolQuestionShorts as $toolQuestionShort) {
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
-            if ($inputSource->short !== InputSource::EXAMPLE_BUILDING && in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
-
+            if ($inputSource->short !== InputSource::EXAMPLE_BUILDING_SHORT) {
                 $answer = $building->getAnswer($inputSource, $toolQuestion);
-                if (!is_null($answer)) {
+                if (! is_null($answer)) {
                     // You may ask yourself; why not just unset the question ?
                     // excellent question!
                     // The clearExampleBuilding method will remove all the user its input
@@ -99,13 +104,23 @@ class ExampleBuildingService
             }
         }
 
+        // There are also some tool questions that may be filled externally. The data from external is prioritized.
+        foreach (static::SOURCE_FROM_EXTERN_TOOL_QUESTION_SHORTS as $toolQuestionShort) {
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+
+            $answer = $building->getAnswer(InputSource::external(), $toolQuestion);
+            if (! is_null($answer)) {
+                $exampleData[$toolQuestionShort] = $answer;
+            }
+        }
+
         // We already checked the non overwritteable tool questions
         // now its safe to clear it.
         self::clearBuilding($building, $inputSource);
 
-
-        Log::debug($exampleBuilding);
-
+        $toolQuestionService = ToolQuestionService::init()
+            ->building($building)
+            ->currentInputSource($inputSource);
         foreach ($exampleData as $toolQuestionShort => $value) {
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             $shouldSave = true;
@@ -116,18 +131,14 @@ class ExampleBuildingService
             }
 
             if ($shouldSave) {
-                ToolQuestionService::init($toolQuestion)
-                    ->building($building)
-                    ->currentInputSource($inputSource)
+                $toolQuestionService->toolQuestion($toolQuestion)
                     ->save($value);
             }
         }
 
 
         // the building type is a part of the example building, not the example building its content.
-        ToolQuestionService::init(ToolQuestion::findByShort('building-type'))
-            ->building($building)
-            ->currentInputSource($inputSource)
+        $toolQuestionService->toolQuestion(ToolQuestion::findByShort('building-type'))
             ->save($exampleBuilding->building_type_id);
     }
 

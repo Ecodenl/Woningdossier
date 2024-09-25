@@ -21,16 +21,14 @@
     </div>
 
     <!-- This example requires Tailwind CSS v2.0+ -->
-    <div x-data="{ active: '{{$subSteps->first()->slug}}'}"
+    <div x-data="tabs('{{$subSteps->first()->slug}}')"
          x-on:scroll-to-top.window="window.scrollTo({ top: 0, behavior: 'smooth' })"
          wire:ignore.self>
 
         <div class="hidden sm:block">
-            <nav class="flex border-b border-blue border-opacity-50" aria-label="Tabs">
+            <nav class="nav-tabs" aria-label="Tabs">
                 @foreach($subSteps as $subStep)
-                    <a x-on:click="active = '{{$subStep->slug}}'; triggerCustomEvent(window, 'tab-switched');" href="#"
-                       x-bind:class="{ 'bg-green': active === '{{$subStep->slug}}', 'bg-blue-500': active !== '{{$subStep->slug}}' }"
-                       class="no-underline rounded-t-md p-2 text-white" wire:ignore>
+                    <a x-bind="tab" data-tab="{{ $subStep->slug }}" href="#" wire:ignore>
                         {{$subStep->name}}
                     </a>
                 @endforeach
@@ -38,33 +36,43 @@
         </div>
 
         @foreach($subSteps as $subStep)
-             <div x-show="active == '{{$subStep->slug}}'" wire:ignore.self>
+            <div x-bind="container" data-tab="{{$subStep->slug}}" wire:ignore.self>
                  @include('cooperation.frontend.tool.expert-scan.parts.sub-steppable', [
                     'subSteppables' => $this->subSteppables->where('sub_step_id', $subStep->id)
                  ])
-             </div>
-         @endforeach
+            </div>
+        @endforeach
     </div>
 </div>
 
 @push('js')
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            document.addEventListener('change', (event) => {
-                let target = event.target;
+        document.addEventListener('change', (event) => {
+            let target = event.target;
 
-                let hasWireModel = false;
-                for (const attr of target.attributes) {
-                    if (attr.name.startsWith('wire:model')) {
+            let hasWireModel = false;
+            for (const attr of target.attributes) {
+                if (attr.name.startsWith('wire:model')) {
+                    // Ensure we don't trigger updates if it's deferred to maintain defer logic.
+                    if (! attr.name.includes('defer')) {
                         hasWireModel = true;
                         break;
                     }
                 }
+            }
 
-                if (hasWireModel) {
-                    triggerCustomEvent(window, 'input-updated');
-                    livewire.emit('inputUpdated');
-                }
+            if (hasWireModel) {
+                triggerCustomEvent(window, 'input-updated');
+                livewire.emit('inputUpdated');
+            }
+        });
+
+        document.addEventListener('input-update-processed', () => {
+            tinymce.remove();
+            setTimeout(() => {
+                initTinyMCE({
+                    content_css: '{{ asset('css/frontend/tinymce.css') }}',
+                });
             });
         });
     </script>

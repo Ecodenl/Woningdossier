@@ -14,31 +14,28 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $building_id
  * @property int|null $input_source_id
  * @property string $type
- * @property bool $is_active
- * @property int $active_count
+ * @property string $uuid
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $inputSource
- * @method static Builder|Notification active()
- * @method static Builder|Notification activeNotifications(\App\Models\Building $building, \App\Models\InputSource $inputSource)
  * @method static Builder|Notification allInputSources()
  * @method static Builder|Notification forBuilding($building)
  * @method static Builder|Notification forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder|Notification forMe(?\App\Models\User $user = null)
  * @method static Builder|Notification forType(string $type)
  * @method static Builder|Notification forUser($user)
+ * @method static Builder|Notification forUuid(string $uuid)
  * @method static Builder|Notification newModelQuery()
  * @method static Builder|Notification newQuery()
  * @method static Builder|Notification query()
  * @method static Builder|Notification residentInput()
- * @method static Builder|Notification whereActiveCount($value)
  * @method static Builder|Notification whereBuildingId($value)
  * @method static Builder|Notification whereCreatedAt($value)
  * @method static Builder|Notification whereId($value)
  * @method static Builder|Notification whereInputSourceId($value)
- * @method static Builder|Notification whereIsActive($value)
  * @method static Builder|Notification whereType($value)
  * @method static Builder|Notification whereUpdatedAt($value)
+ * @method static Builder|Notification whereUuid($value)
  * @mixin \Eloquent
  */
 class Notification extends Model
@@ -50,29 +47,17 @@ class Notification extends Model
         'type',
         'building_id',
         'input_source_id',
-        'is_active',
-        'active_count',
+        'uuid',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
-
-    public function scopeActive(Builder $query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    public function scopeActiveNotifications(Builder $query, Building $building, InputSource $inputSource)
-    {
-        return $query
-            ->active()
-            ->forBuilding($building)
-            ->forInputSource($inputSource);
-    }
-
-    public function scopeForType(Builder $query, string $type)
+    # Scopes
+    public function scopeForType(Builder $query, string $type): Builder
     {
         return $query->where('type', $type);
+    }
+
+    public function scopeForUuid(Builder $query, string $uuid): Builder
+    {
+        return $query->where('uuid', $uuid);
     }
 }

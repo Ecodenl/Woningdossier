@@ -17,6 +17,12 @@ class ToolLabelsTableSeeder extends Seeder
         $labels = [
             [
                 'name' => [
+                    'nl' => 'Standaard energieprijzen: gas = €1,45, elektra = €0,40',
+                ],
+                'short' => 'gas-electricity-price-explain'
+            ],
+            [
+                'name' => [
                     'nl' => 'Verwarming en warm water',
                 ],
                 'short' => 'heat-source',
@@ -131,7 +137,7 @@ class ToolLabelsTableSeeder extends Seeder
             ],
         ];
 
-        foreach($labels as $data) {
+        foreach ($labels as $data) {
             $data['name'] = json_encode($data['name']);
             DB::table('tool_labels')->updateOrInsert(['short' => $data['short']], $data);
         }

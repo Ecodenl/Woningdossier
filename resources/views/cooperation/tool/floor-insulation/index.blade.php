@@ -252,6 +252,10 @@
                 </div>
             </div>
 
+            @include('cooperation.tool.includes.measure-related-questions', [
+                'measureRelatedAnswers' => $measureRelatedAnswers
+            ])
+
             <div class="flex flex-row flex-wrap w-full hidden" id="no-crawlspace-error">
                 <div class="w-full">
                     @component('cooperation.frontend.layouts.parts.alert', [
@@ -304,6 +308,7 @@
             $("select, input[type=radio], input[type=text]").change(() => formChange());
 
             function formChange() {
+                checkMeasureRelatedQuestions();
 
                 var formData = $('#floor-insulation-form').serialize();
                 $.ajax({
@@ -417,6 +422,26 @@
             }
         });
 
+        function checkMeasureRelatedQuestions() {
+            if ($('.considerable input:checked').val() == 1 && $('#has_crawlspace').val() !== 'no') {
+                $('.measure-related-questions').show();
+            } else {
+                $('.measure-related-questions').hide();
+            }
+
+            let idMap = {
+                37: '{{ \App\Models\MeasureApplication::findByShort(\App\Helpers\KeyFigures\FloorInsulation\Temperature::FLOOR_INSULATION_FLOOR)->id }}',
+                38: '{{ \App\Models\MeasureApplication::findByShort(\App\Helpers\KeyFigures\FloorInsulation\Temperature::FLOOR_INSULATION_BOTTOM)->id }}'
+            };
+
+            let research = '{{ \App\Models\MeasureApplication::findByShort(\App\Helpers\KeyFigures\FloorInsulation\Temperature::FLOOR_INSULATION_RESEARCH)->id }}';
+
+            $('[id^="measure-related-question-"]').hide();
+            let crawlspaceHeight = $('#crawlspace_height').val()
+            let id = idMap[crawlspaceHeight] || research;
+
+            $(`[id^="measure-related-question-${id}"]`).show();
+        }
     </script>
 @endpush
 

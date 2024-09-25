@@ -14,15 +14,15 @@ return [
         'front-page' => [
             'date' => 'Datum:',
             'connected-coaches' => 'Energiecoach:|Energiecoaches:',
-            'title' => 'Stappenplan voor het verduurzamen van jouw woning',
+            'title' => 'Stappenplan voor het verduurzamen<br>van jouw woning',
             'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.',
         ],
         'action-plan' => [
-            'title' => 'Dit is jouw woonplan',
-            'text' => 'Je hebt het Hoomdossier voor je woning ingevuld. Hieronder zie je een samenvatting van het woonplan zoals je die hebt ingericht.',
+            'title' => 'Dit is jouw Woonplan',
+            'text' => 'Je hebt het Hoomdossier voor je woning ingevuld. Hieronder zie je een samenvatting van het Woonplan zoals je die hebt ingericht.',
             'usage' => [
                 'current' => 'Dit is je huidig energiegebruik:',
-                'kengetallen' => 'In deze samenvatting hebben we met de volgende energieprijzen gerekend:',
+                'kengetallen' => 'In jouw Woonplan hebben we met de volgende energieprijzen gerekend:',
             ],
             'categories' => [
                 UserActionPlanAdviceService::CATEGORY_COMPLETE => 'De volgende maatregelen heb je al gedaan:',
@@ -34,9 +34,15 @@ return [
                 'cost-indication' => 'Kostenindicatie [ € ]',
                 'savings' => 'Besparing [ € / jaar ]',
             ],
-            'comment' => 'Toelichting op het woonplan',
+            'comment' => 'Toelichting op het Woonplan',
         ],
         'info-page' => [
+            'subsidy' => [
+                'title' => 'Subsidie en financiering',
+                'available-for' => 'Je kunt subsidie aanvragen voor de volgende maatregelen:',
+                'none-available' => 'Voor de gekozen maatregelen zijn geen subsidies gevonden.',
+                'text' => 'Meer informatie over de regelingen kun je in de online-versie van jouw Hoomdossier of op de site <a href="https://www.verbeterjehuis.nl/energiesubsidiewijzer" target="_blank" rel="nofollow">https://www.verbeterjehuis.nl/energiesubsidiewijzer</a> vinden.'
+            ],
             'calculations-are-indicative' => [
                 'title' => 'Berekeningen zijn indicatief',
                 'text' => 'Met het Hoomdossier proberen we een zo goed mogelijke inschatting te maken van de kansen en mogelijkheden om jouw huis te verduurzamen. Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier inzicht geeft in de mogelijke impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. De feitelijke kosten en opbrengsten van een investering bepaal je vervolgens op basis van offertes. Je kunt het wel gebruiken als basis voor een keukentafelgesprek of een professioneel advies. Er kan geen garantie worden ontleend aan de resultaten van het Hoomdossier ten aanzien van de daadwerkelijke energieprestaties, berekend energiegebruik of besparingen. De essentie van werken met Hoomdossier is het krijgen van inzicht in de kosten en baten van energiebesparende maatregelen.',
@@ -48,12 +54,12 @@ return [
             ],
         ],
         'simple-scan-answers' => [
-            'title' => 'Bijlage 1',
+            'title' => 'Samenvatting woongegevens',
             'text' => 'De volgende gegevens heb je ingevuld in het Hoomdossier:',
         ],
         'expert-scan-answers' => [
-            'title' => 'Bijlage 2',
-            'text' => 'Op de volgende bladzijden zie je voor de maatregelen die in jouw woonplan staan een samenvatting van de ingevoerde gegevens en de gedetailleerde uitkomst van de berekeningen. Meer informatie over de maatregelen kun je ook vinden op de website van Milieucentraal <a href="www.milieucentraal.nl" target="_blank" rel="nofollow">www.milieucentraal.nl</a>.',
+            'title' => 'Jouw uitgebreide Woonplan',
+            'text' => 'Op de volgende bladzijden zie je voor de maatregelen die in jouw Woonplan staan een samenvatting van de ingevoerde gegevens en de gedetailleerde uitkomst van de berekeningen. Meer informatie over de maatregelen kun je ook vinden op de website van Milieucentraal <a href="www.milieucentraal.nl" target="_blank" rel="nofollow">www.milieucentraal.nl</a>.',
             'action-plan' => 'In deze bijlage vind je de gegevens van de volgende maatregelen',
         ],
         'small-measures' => [

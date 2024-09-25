@@ -3,20 +3,20 @@
 namespace App\Helpers\QuestionValues;
 
 use App\Helpers\Conditions\ConditionEvaluator;
-use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\Cooperation;
-use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Traits\FluentCaller;
-use App\Traits\HasDynamicAnswers;
+use App\Traits\Services\HasBuilding;
+use App\Traits\Services\HasInputSources;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class QuestionValue
 {
-    use FluentCaller;
+    use FluentCaller,
+        HasBuilding,
+        HasInputSources;
 
     public ToolQuestion $toolQuestion;
     public Cooperation $cooperation;
@@ -25,25 +25,11 @@ class QuestionValue
     // this bool will determine if we will "dumbly" return all the available options
     // or check if we should only return specific options.
     public bool $customEvaluation = false;
-    public ?Building $building = null;
-    public InputSource $inputSource;
 
     public function __construct(Cooperation $cooperation, ToolQuestion $toolQuestion)
     {
         $this->cooperation = $cooperation;
         $this->toolQuestion = $toolQuestion;
-    }
-
-    public function forInputSource(InputSource $inputSource): self
-    {
-        $this->inputSource = $inputSource;
-        return $this;
-    }
-
-    public function forBuilding(Building $building): self
-    {
-        $this->building = $building;
-        return $this;
     }
 
     public function answers(Collection $answers): self
@@ -88,7 +74,6 @@ class QuestionValue
         }
 
         if ($this->customEvaluation) {
-
             $evaluator = ConditionEvaluator::init()
                 ->inputSource($this->inputSource)
                 ->building($this->building);

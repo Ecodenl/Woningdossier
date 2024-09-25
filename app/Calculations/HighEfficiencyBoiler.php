@@ -3,13 +3,15 @@
 namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\UserEnergyHabit;
+use App\Services\CalculatorService;
+use App\Services\Kengetallen\KengetallenService;
 
-class HighEfficiencyBoiler extends \App\Calculations\Calculator
+class HighEfficiencyBoiler extends Calculator
 {
     public function performCalculations(): array
     {
@@ -41,12 +43,14 @@ class HighEfficiencyBoiler extends \App\Calculations\Calculator
         $result['amount_gas'] = $this->getAnswer('amount-gas');
         $result['amount_electricity'] = $this->getAnswer('amount-electricity');
 
-        $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
-        $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
+        $result['savings_co2'] = RawCalculator::calculateCo2Savings($result['savings_gas']);
+        $result['savings_money'] = round(app(CalculatorService::class)
+            ->forBuilding($this->building)
+            ->calculateMoneySavings($result['savings_gas']));
 
         $year = $this->getAnswer('boiler-placed-date');
         $result['replace_year'] = $hrBoilerCalculator->determineApplicationYear($measure, $year);
-        $result['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year'],
+        $result['cost_indication'] = RawCalculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year'],
             false);
         $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'],
             $result['savings_money']), 1, '.', '');

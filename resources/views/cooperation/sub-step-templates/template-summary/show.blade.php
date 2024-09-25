@@ -50,7 +50,7 @@
                         </div>
 
                         <div class="w-1/2">
-                            <p class="flex items-center">
+                            <p class="flex flex-wrap items-center space-y-1">
                                 @php
                                     $advisables = [];
                                     $type = \App\Helpers\Models\CooperationMeasureApplicationHelper::getTypeForScan($scan);
@@ -187,11 +187,9 @@
                     </p>
                 @endslot
 
-
                 @include("cooperation.tool-question-type-templates.{$subSteppablePivot->toolQuestionType->short}.show", [
                     'disabled' => $disabled,
                 ])
-
             @endcomponent
         @endforeach
     </div>

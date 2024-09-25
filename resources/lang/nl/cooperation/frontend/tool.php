@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\InputSource;
+use App\Services\Verbeterjehuis\RegulationService;
 
 return [
     'step-count' => 'Stap :current van :total',
@@ -24,7 +25,6 @@ return [
             'quick-scan' => 'Uw quickscan Woonplan',
             'expert' => 'Uw Woonplan',
         ],
-        'help' => 'Wilt u iets aanpassen? Sleep dan de maatregelen naar de gewenste kolom',
         'info' => [
             'quick-scan' => '<p>Voor een gedetailleerd advies, kunt u de verdiepingsvragen invullen. U kunt ook de hulp van een <a href=":link">energiecoach</a> inroepen.</p>',
             'expert' => '<p>U kunt hulp van een <a href=":link">energiecoach</a> aanvragen voor extra advies</p>',
@@ -52,13 +52,12 @@ return [
                         'button' => 'Eigen maatregel toevoegen',
                     ],
                 ],
-
-
-
             ],
             'see-info' => 'Zie info',
-            'subsidy' => [
-                // Todo when constants are available
+            'regulations' => [
+                'subsidy-available' => 'Subsidie mogelijk',
+                'after-subsidy-cut' => 'Na aftrek subsidie',
+                'loan-available' => 'Lening mogelijk',
             ],
             'investment' => 'Investering',
             'savings' => 'Besparing per jaar',
@@ -127,5 +126,29 @@ return [
             'download-report' => 'Download bestaande rapportage',
             'create-report' => 'Maak rapportage',
         ],
+    ],
+    'my-regulations' => [
+        'loading' => 'Maatregelen worden berekend...',
+        'provider' => [
+            'to' => 'Naar aanbieder',
+        ],
+        'refreshed' => [
+            'not' => 'Regelingen zijn nog niet opgehaald',
+            'last' => 'Laatst geupdate om :date',
+            'busy' => 'Wordt ververst..',
+            'ready' => 'Ververs regelingen'
+        ],
+        'categories' => [
+            RegulationService::SUBSIDY => 'Subsidies (:count)',
+            RegulationService::LOAN => 'Leningen (:count)',
+            RegulationService::OTHER => 'Overige (:count)',
+        ],
+        'container' => [
+            'intro' => [
+                RegulationService::SUBSIDY => 'Er zijn de volgende subsidieregelingen beschikbaar voor jouw situatie:',
+                RegulationService::LOAN => 'Er zijn de volgende leningen beschikbaar in jouw gemeente:',
+                RegulationService::OTHER => 'Andere beschikbare regelingen:',
+            ],
+        ]
     ],
 ];

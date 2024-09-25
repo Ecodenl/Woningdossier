@@ -74,15 +74,13 @@
                     </div>
 
                     @foreach($secondaryRoofTypes->whereIn('short', ['flat', 'pitched']) as $roofType)
+                        @php
+                            $roofCat = $roofType->short;
 
-                        <?php
-                        $roofCat = $roofType->short;
-
-                        $buildingRoofTypesOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
-                            $building->roofTypes()->where('roof_type_id', $roofType->id)
-                        )->get();
-                        ?>
-
+                            $buildingRoofTypesOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+                                $building->roofTypes()->where('roof_type_id', $roofType->id)
+                            )->get();
+                        @endphp
                         <div class="{{ $roofCat }}-roof">
 
                             @include('cooperation.tool.includes.section-title', [
@@ -171,29 +169,29 @@
                                 </div>
                             </div>
 
-                            <div class="flex flex-row flex-wrap w-full">
-                                <div class="w-full">
-                                    @component('cooperation.tool.components.step-question', [
-                                        'id' => 'building_roof_types.' . $roofCat . '.extra.zinc_replaced_date',
-                                        'translation' => 'roof-insulation.current-situation.zinc-replaced',
-                                        'required' => false
-                                    ])
+{{--                            <div class="flex flex-row flex-wrap w-full">--}}
+{{--                                <div class="w-full">--}}
+{{--                                    @component('cooperation.tool.components.step-question', [--}}
+{{--                                        'id' => 'building_roof_types.' . $roofCat . '.extra.zinc_replaced_date',--}}
+{{--                                        'translation' => 'roof-insulation.current-situation.zinc-replaced',--}}
+{{--                                        'required' => false--}}
+{{--                                    ])--}}
 
-                                        @slot('sourceSlot')
-                                            @include('cooperation.tool.components.source-list', [
-                                                'inputType' => 'input',
-                                                'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat],
-                                                'userInputColumn' => 'extra.zinc_replaced_date'
-                                            ])
-                                        @endslot
+{{--                                        @slot('sourceSlot')--}}
+{{--                                            @include('cooperation.tool.components.source-list', [--}}
+{{--                                                'inputType' => 'input',--}}
+{{--                                                'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat],--}}
+{{--                                                'userInputColumn' => 'extra.zinc_replaced_date'--}}
+{{--                                            ])--}}
+{{--                                        @endslot--}}
 
-                                        <span class="input-group-prepend">@lang('general.unit.year.title')</span>
-                                        <input type="text" class="form-input"
-                                               name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]"
-                                               value="{{ old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'extra.zinc_replaced_date')) }}">
-                                    @endcomponent
-                                </div>
-                            </div>
+{{--                                        <span class="input-group-prepend">@lang('general.unit.year.title')</span>--}}
+{{--                                        <input type="text" class="form-input"--}}
+{{--                                               name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]"--}}
+{{--                                               value="{{ old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'extra.zinc_replaced_date')) }}">--}}
+{{--                                    @endcomponent--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                             <div class="flex flex-row flex-wrap w-full cover-bitumen">
                                 <div class="w-full">
                                     @component('cooperation.tool.components.step-question', [
@@ -272,7 +270,7 @@
                                             @endslot
 
                                             @component('cooperation.frontend.layouts.components.alpine-select')
-                                                <select id="flat_roof_insulation" class="form-input"
+                                                <select id="{{$roofCat}}-measure" class="form-input"
                                                         name="building_roof_types[{{ $roofCat }}][extra][measure_application_id]">
                                                     <option value="0" @if($default == 0) selected @endif>
                                                         @lang('roof-insulation.measure-application.no.title')
@@ -391,6 +389,10 @@
                             ])
                         </div>
                     </div>
+
+                    @include('cooperation.tool.includes.measure-related-questions', [
+                        'measureRelatedAnswers' => $measureRelatedAnswersCategorized[$roofCat],
+                    ])
                 </div>
             </div>
         @endforeach
@@ -424,6 +426,14 @@
 
             $('#roof-insulation-form').submit(function () {
                 $('input[name="dirty_attributes"]').val(JSON.stringify(data));
+                // We want the user to be able to see their own old values for user costs. We don't want them submitted
+                // however, as it could interfere with the validation.
+                $('.measure-related-questions input:not(.source-select-input)').each(function () {
+                    // offsetParent is null when hidden
+                    if (null === this.offsetParent) {
+                        $(this).val(null);
+                    }
+                });
                 return true;
             });
             //$('select[name*=element_value_id]').trigger('change');
@@ -431,6 +441,7 @@
             $('#main-tab form input, select').change(() => formChange())
 
             function formChange() {
+                checkMeasureRelatedQuestionss();
 
                 let form = $('#roof-insulation-form').serialize();
                 $.ajax({
@@ -574,5 +585,20 @@
                 }
             }
         });
+
+        function checkMeasureRelatedQuestionss() {
+            if ($('.considerable input:checked').val() == 1) {
+                $('.measure-related-questions').show();
+            } else {
+                $('.measure-related-questions').hide();
+            }
+
+            $('[id^="measure-related-question-"]').hide();
+            let pitchedId = $('#pitched-measure').val();
+            let flatId = $('#flat-measure').val();
+
+            $(`[id^="measure-related-question-${pitchedId}"]`).show();
+            $(`[id^="measure-related-question-${flatId}"]`).show();
+        }
     </script>
 @endpush

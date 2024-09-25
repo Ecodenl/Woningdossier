@@ -9,7 +9,7 @@ use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\ToolQuestion;
 use App\Rules\HouseNumber;
-use App\Rules\Api\V1\HouseNumberExtension;
+use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +19,6 @@ use Illuminate\Validation\Validator;
 class RegisterFormRequest extends ApiRequest
 {
     private ?Cooperation $cooperation = null;
-
 
     /**
      * Determine if the user is authorized to make this request.
@@ -86,13 +85,6 @@ class RegisterFormRequest extends ApiRequest
         }
 
         return $rules;
-    }
-
-    public function messages()
-    {
-        return [
-            'allow_access.required' => __('auth.register.validation.allow_access'),
-        ];
     }
 
     public function withValidator(Validator $validator)

@@ -3,17 +3,21 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
+use App\Services\Models\BuildingService;
 use App\Models\InputSource;
 
 class ObservingToolForUserListener
 {
+    protected BuildingService $buildingService;
+
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(BuildingService $buildingService)
     {
+        $this->buildingService = $buildingService;
     }
 
     /**
@@ -36,7 +40,9 @@ class ObservingToolForUserListener
         HoomdossierSession::setInputSource($inputSource);
         HoomdossierSession::setInputSourceValue($inputSourceValue);
 
-        // so the user isnt able to save anything
+        // so the user isn't able to save anything
         HoomdossierSession::setIsObserving(true);
+
+        $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
     }
 }

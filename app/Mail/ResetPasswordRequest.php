@@ -2,19 +2,19 @@
 
 namespace App\Mail;
 
+use App\Helpers\Queue;
 use App\Models\Account;
 use App\Models\Cooperation;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ResetPasswordRequest extends Mailable
+class ResetPasswordRequest extends Mailable implements ShouldQueue
 {
-    use Queueable;
-    use SerializesModels;
+    use Queueable, SerializesModels;
 
     public $userCooperation;
-    public $email;
     public $account;
     public $user;
     public $token;
@@ -26,8 +26,8 @@ class ResetPasswordRequest extends Mailable
      */
     public function __construct(Cooperation $cooperation, Account $account, $token)
     {
+        $this->onQueue(Queue::APP_HIGH);
         $this->token = $token;
-        $this->email = encrypt($account->email);
         $this->account = $account;
         $this->user = $account->user();
         $this->userCooperation = $cooperation;

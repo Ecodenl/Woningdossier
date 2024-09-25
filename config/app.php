@@ -184,9 +184,12 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        App\Providers\ExternalServiceProvider::class,
+        App\Providers\EconobisServiceProvider::class,
         App\Providers\WoningdossierServiceProvider::class,
         App\Providers\MacroServiceProvider::class,
         App\Providers\ViewServiceProvider::class,
+
     ],
 
     /*
@@ -207,6 +210,7 @@ return [
         'RouteLogic' => \App\Helpers\Blade\RouteLogic::class,
 //        'NumberFormatter' => \App\Helpers\NumberFormatter::class, // We cannot alias NumberFormatter due to the native PHP class (https://www.php.net/manual/en/class.numberformatter.php)
         'Hoomdossier' => \App\Helpers\Hoomdossier::class,
+        'HoomdossierSession' => \App\Helpers\HoomdossierSession::class,
         'CooperationSettingHelper' => \App\Helpers\Models\CooperationSettingHelper::class,
         'Kengetallen' => \App\Helpers\Kengetallen::class,
         'Caster' => \App\Helpers\DataTypes\Caster::class,

@@ -5,6 +5,9 @@ namespace App\Http\Requests\Cooperation\Tool;
 use App\Helpers\ConsiderableHelper;
 use App\Http\Requests\DecimalReplacementTrait;
 use App\Models\Interest;
+use App\Models\Step;
+use App\Models\ToolQuestion;
+use App\Services\LegacyService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
@@ -35,10 +38,12 @@ class InsulatedGlazingFormRequest extends FormRequest
         ]);
     }
 
-    public function rules()
+    public function rules(LegacyService $legacyService)
     {
         $max = Carbon::now()->year;
         /** @var Collection $noInterests */
+
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('insulated-glazing'));
 
         // m2 and window rules in the withValidator
         $rules = [
@@ -50,6 +55,13 @@ class InsulatedGlazingFormRequest extends FormRequest
             'building_paintwork_statuses.paintwork_status_id' => 'required|exists:paintwork_statuses,id',
             'building_paintwork_statuses.last_painted_year' => 'nullable|numeric|between:1990,'.$max,
         ];
+
+        foreach ($measureRelatedShorts as $tqShorts) {
+            $toolQuestions = ToolQuestion::findByShorts($tqShorts);
+            foreach ($toolQuestions as $toolQuestion) {
+                $rules[$toolQuestion->short] = $toolQuestion->validation;
+            }
+        }
 
         return $rules;
     }

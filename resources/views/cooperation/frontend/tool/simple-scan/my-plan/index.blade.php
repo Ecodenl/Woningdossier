@@ -3,8 +3,8 @@
 @section('content')
     @if($activeNotification)
         <livewire:cooperation.frontend.layouts.parts.notifications
-                :nextUrl="route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'))"
                 :types="[\App\Jobs\RecalculateStepForUser::class]"
+                :nextUrl="route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'))"
         />
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
     @else
@@ -14,9 +14,6 @@
                 <h4 class="heading-4">
                     {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}
                 </h4>
-                <p>
-                    @lang('cooperation/frontend/tool.my-plan.help')
-                </p>
             </div>
             <div class="w-full flex flex-wrap mb-5">
                 {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", [

@@ -335,9 +335,13 @@
             </div>
         </div>
 
+        @include('cooperation.tool.includes.measure-related-questions', [
+            'measureRelatedAnswers' => $measureRelatedAnswers
+        ])
+
         @include('cooperation.tool.includes.comment', [
-             'translation' => 'solar-panels.index.specific-situation'
-         ])
+            'translation' => 'solar-panels.index.specific-situation'
+        ])
 
         @component('cooperation.tool.components.panel', [
             'label' => __('default.buttons.download'),
@@ -363,12 +367,30 @@
 
             $('#solar-panels-form').submit(function () {
                 $('input[name="dirty_attributes"]').val(JSON.stringify(data));
+                // We want the user to be able to see their own old values for user costs. We don't want them submitted
+                // however, as it could interfere with the validation.
+                $('.measure-related-questions input:not(.source-select-input)').each(function () {
+                    // offsetParent is null when hidden
+                    if (null === this.offsetParent) {
+                        $(this).val(null);
+                    }
+                });
+
+                // Set hidden fields null so validation doesn't error on something the user can't see
+                let answer = $('[name="filledInAnswers[{{$toolQuestion['id']}}]"]:checked').val();
+                if (answer === 'no') {
+                    $('[name="building_pv_panels[total_installed_power]"]').val('');
+                    $('[name="building_services[7][extra][year]"]').val('');
+                    $('[name="building_services[7][extra][value]"]').val('');
+                }
                 return true;
             });
 
             $("select, input[type=radio], input[type=text]").change(() => formChange());
 
             function formChange() {
+                checkMeasureRelatedQuestions();
+
                 var form = $('#solar-panels-form').serialize();
                 $.ajax({
                     type: "POST",
@@ -418,5 +440,13 @@
 
             formChange();
         });
+
+        function checkMeasureRelatedQuestions() {
+            if ($('.considerable input:checked').val() == 1) {
+                $('.measure-related-questions').show();
+            } else {
+                $('.measure-related-questions').hide();
+            }
+        }
     </script>
 @endpush

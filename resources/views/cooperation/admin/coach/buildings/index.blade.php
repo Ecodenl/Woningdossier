@@ -17,13 +17,14 @@
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.zip-code')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.city')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.date')</th>
+                            <th>@lang('cooperation/admin/cooperation/residents.index.table.columns.email-verified')</th>
                         </tr>
                         </thead>
                         <tbody>
 
 
                         @foreach($buildings as $building)
-                            <?php
+                            @php
                                 /** @var \App\Models\Building $building */
                                 $user = $building->user;
 
@@ -37,7 +38,7 @@
                                 }
 
                                 $appointmentDateStrotime = strtotime($appointmentDateFormatted);
-                            ?>
+                            @endphp
                             <tr>
                                 <td data-sort="{{$appointmentDateStrotime ?? '-'}}">
                                     {{$appointmentDateFormatted ?? '-'}}
@@ -55,8 +56,18 @@
                                 <td>
                                     {{$building->city}}
                                 </td>
-                                <td data-sort="{{$appointmentDateStrotime ?? '-'}}">
+                                <td data-sort="{{$userCreatedAtStrotime ?? '-'}}">
                                     {{$userCreatedAtFormatted ?? '-'}}
+                                </td>
+                                <td>
+                                    @can('verifyEmail', $user->account)
+                                        <a class="btn btn-success"
+                                           href="{{ route('cooperation.admin.actions.verify-email', ['account' => $user->account]) }}">
+                                            @lang('default.verify')
+                                        </a>
+                                    @else
+                                        {{ is_null($user->account->email_verified_at) ? __('default.no') : $user->account->email_verified_at->format('d-m-Y') }}
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

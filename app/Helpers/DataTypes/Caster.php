@@ -9,10 +9,14 @@ class Caster
 {
     use FluentCaller;
 
+    // TODO: Convert these into custom classes
+
     public const STRING = 'string';
+    public const HTML_STRING = 'html_string'; // String that contains HTML and should be sanitized
     public const INT = 'int';
     public const INT_5 = 'int_5'; // INT with bucket 5 for rounding
     public const FLOAT = 'float';
+    public const NON_ROUNDING_FLOAT = 'non_rounding_float';
     public const BOOL = 'bool';
     public const ARRAY = 'array';
     public const JSON = 'json';
@@ -22,12 +26,23 @@ class Caster
     protected $value;
     protected bool $force = false;
 
-    public function __construct(string $dataType, $value)
+    public function dataType(string $dataType): self
     {
         $this->dataType = $dataType;
-        $this->value = $value;
+        return $this;
     }
 
+    public function value($value): self
+    {
+        $this->value = $value;
+        return $this;
+    }
+
+    /**
+     * Force defines whether or not converting data should be forced if the value is null.
+     *
+     * @return $this
+     */
     public function force(): self
     {
         $this->force = true;
@@ -47,17 +62,20 @@ class Caster
 
         switch ($this->dataType) {
             case static::STRING:
+            case static::HTML_STRING:
                 $this->value = (string) $this->value;
+                break;
+
+            case static::INT:
+                // TODO: If the value is too large, it will bitshift into negative. This might be unexpected behaviour.
+                $this->value = (int) round((float) $this->value);
                 break;
 
             case static::INT_5:
                 $this->value = (int) NumberFormatter::round((float) $this->value, 5);
                 break;
 
-            case static::INT:
-                $this->value = (int) round((float) $this->value);
-                break;
-
+            case static::NON_ROUNDING_FLOAT:
             case static::FLOAT:
                 $this->value = (float) $this->value;
                 break;
@@ -87,15 +105,21 @@ class Caster
     {
         // if needed, the cast can be applied per datatype. (like the forUser method)
         $value = $this->value;
+        if (is_null($value) && ! $this->force) {
+            return null;
+        }
 
         switch ($this->dataType) {
             case static::INT:
+                // Note that the dot is replaced with nothing. We expect a Dutch format.
                 $value = (int) NumberFormatter::mathableFormat(str_replace('.', '', ($value ?? 0)), 0);
                 break;
-            case static::FLOAT:
-                $value = (float) NumberFormatter::mathableFormat(str_replace('.', '', ($value ?? 0)), 2);
+            case static::NON_ROUNDING_FLOAT:
+                $value = (float) str_replace(',', '.', ($value ?? 0));
                 break;
-            default:
+            case static::FLOAT:
+                // Note that the dot is replaced with nothing. We expect a Dutch format.
+                $value = (float) NumberFormatter::mathableFormat(str_replace('.', '', ($value ?? 0)), 2);
                 break;
         }
 
@@ -114,11 +138,8 @@ class Caster
         }
 
         switch ($this->dataType) {
-            case static::INT_5:
-                $value = NumberFormatter::formatNumberForUser($value, true, false);
-                break;
-
             case static::INT:
+            case static::INT_5:
                 $value = NumberFormatter::formatNumberForUser($value, true, false);
                 break;
 

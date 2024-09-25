@@ -7,8 +7,9 @@
                 'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city,
+                'municipality' => optional($building->municipality)->name ?? __('cooperation/admin/buildings.show.unknown-municipality'),
                 'email' => $user->account->email,
-                'phone-number' => $user->phone_number
+                'phone-number' => $user->phone_number,
             ])
         </div>
 
@@ -36,6 +37,7 @@
                             </button>
                         @endcan
                         @can('access-building', $building)
+                            @if($scans->count() > 1)
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         @lang('cooperation/admin/buildings.show.observe-building.label')
@@ -45,8 +47,8 @@
                                     <ul class="dropdown-menu">
                                         @foreach($scans as $scan)
                                             @php
-                                                $transShort = \App\Services\Models\ScanService::init()
-                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                $transShort = app(\App\Services\Models\ScanService::class)
+                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
                                                     ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                             @endphp
                                             <li>
@@ -57,28 +59,51 @@
                                         @endforeach
                                     </ul>
                                 </div>
+                            @else
+                                @foreach($scans as $scan)
+                                    <a class="btn btn-primary" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
+                                        @lang('cooperation/admin/buildings.show.observe-building.label')
+                                        @lang('cooperation/admin/buildings.show.observe-building.button')
+                                    </a>
+                                @endforeach
+                            @endif
+                            {{-- TODO: This should be a policy --}}
                             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        @lang('cooperation/admin/buildings.show.fill-for-user.label')
-                                        @lang('cooperation/admin/buildings.show.fill-for-user.button')
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        @foreach($scans as $scan)
+                                @if($scans->count() > 1)
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            @lang('cooperation/admin/buildings.show.fill-for-user.label')
+                                            @lang('cooperation/admin/buildings.show.fill-for-user.button')
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            @foreach($scans as $scan)
+                                                @php
+                                                    $transShort = app(\App\Services\Models\ScanService::class)
+                                                        ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
+                                                        ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                                                @endphp
+                                                <li>
+                                                    <a href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
+                                                        @lang($transShort, ['scan' => $scan->name])
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @else
+                                    @foreach($scans as $scan)
+                                        <a class="btn btn-warning" href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
                                             @php
-                                                $transShort = \App\Services\Models\ScanService::init()
-                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                $transShort = app(\App\Services\Models\ScanService::class)
+                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
                                                     ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                             @endphp
-                                            <li>
-                                                <a href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
-                                                    @lang($transShort, ['scan' => $scan->name])
-                                                </a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
+                                            @lang($transShort, ['scan' => $scan->name])
+                                            @lang('cooperation/admin/buildings.show.fill-for-user.button')
+                                        </a>
+                                    @endforeach
+                                @endif
                             @endif
                         @endcan
                         @can('edit', $building)
@@ -134,6 +159,7 @@
                     </div>
                 </div>
             </div>
+
             {{--coaches and role--}}
             <div class="row">
                 @if($publicMessages->isNotEmpty())
@@ -154,22 +180,33 @@
                         </div>
                     </div>
                 @endif
+
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
-                        <select @if($building->id == \App\Helpers\HoomdossierSession::getBuilding() || Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif
-                                class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+
+                        <select @cannot('editAny',$userCurrentRole) disabled="disabled" @endcannot class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
-                                <option @if($user->hasNotMultipleRoles()) locked="locked"
-                                        @endif @if($user->hasRole($role)) selected="selected"
+                                @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
+                                <option
+                                        @cannot('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $building->user]))
+                                            locked="locked" disabled="disabled"
+                                        @endcannot
+                                        @if($user->hasRole($role))
+                                            selected="selected"
                                         @endif value="{{$role->id}}">
                                     {{$role->human_readable_name}}
                                 </option>
+                                @endcan
                             @endforeach
                         </select>
                     </div>
                 </div>
             </div>
+
+            @can('create', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building, MediaHelper::BUILDING_IMAGE])
+                <livewire:cooperation.admin.buildings.uploader :building="$building" tag="{{ MediaHelper::BUILDING_IMAGE }}">
+            @endcan
         </div>
 
         <ul class="nav nav-tabs">
@@ -204,6 +241,11 @@
                     </a>
                 </li>
             @endif
+            <li>
+                <a data-toggle="tab" href="#2fa">
+                    @lang('cooperation/admin/buildings.show.tabs.2fa.title')
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -218,6 +260,30 @@
                 </div>
             @endcan
 
+            <div id="2fa" class="tab-pane fade @if(session('fragment') == '2fa' ) in active @endif">
+                <div class="panel">
+                    <div class="panel-body">
+                        @if($building->user->account->hasEnabledTwoFactorAuthentication())
+                            <div class="alert alert-success" role="alert">
+                                @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.title')
+                            </div>
+
+                            <form action="{{route('cooperation.admin.cooperation.accounts.disable-2fa')}}" method="post">
+                                @csrf
+                                @method('post')
+                                <input type="hidden" name="accounts[id]" value="{{$building->user->account_id}}">
+                                <button type="submit" class="btn btn-danger">
+                                    @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.button')
+                                </button>
+                            </form>
+                        @else
+                            <div class="alert alert-info" role="alert">
+                                @lang('cooperation/admin/buildings.show.tabs.2fa.status.inactive.title')
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
 
             {{-- comments on the building, read only. --}}
             <div id="comments-on-building" class="tab-pane fade @if(session('fragment') == 'comments-on-building' ) in active @endif">
@@ -301,16 +367,16 @@
 @push('js')
     <script>
         // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
-        var originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}' @else '' @endif;
+        let originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}' @else '' @endif;
 
         $(document).ready(function () {
 
             // get some basic information
-            var buildingOwnerId = $('input[name=building\\[id\\]]').val();
-            var userId = $('input[name=user\\[id\\]]').val();
-            var cooperationId = $('#cooperation-id').val();
+            let buildingOwnerId = $('input[name=building\\[id\\]]').val();
+            let userId = $('input[name=user\\[id\\]]').val();
+            let cooperationId = $('#cooperation-id').val();
 
-            var appointmentDate = $('#appointment-date');
+            let appointmentDate = $('#appointment-date');
 
             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
             $('#log-table').DataTable({
@@ -331,7 +397,7 @@
 
             $('.nav-tabs .active a').trigger('shown.bs.tab');
 
-            var currentDate = new Date();
+            let currentDate = new Date();
             currentDate.setDate(currentDate.getDate() - 1);
 
             appointmentDate.datetimepicker({
@@ -341,35 +407,40 @@
                 // format: 'L',
                 showClear: true,
             }).on('dp.hide', function (event) {
-                // this way the right events get triggerd so we will always get a nice formatted date
+                // This way the right events get triggered so we will always get a nice formatted date
                 appointmentDate.find('input').blur();
 
-                var date = appointmentDate.find('input').val();
+                // Queue the confirm so the DOM is properly updated for the browsers which seem to ignore the blur.
+                setTimeout(() => {
+                    let date = appointmentDate.find('input').val();
 
-                if (date !== originalAppointmentDate) {
-                    var confirmMessage = "@lang('cooperation/admin/buildings.show.set-empty-appointment-date')";
+                    if (date !== originalAppointmentDate) {
+                        let confirmMessage = "@lang('cooperation/admin/buildings.show.set-empty-appointment-date')";
 
-                    if (date.length > 0) {
-                        confirmMessage = "@lang('cooperation/admin/buildings.show.set-appointment-date')"
+                        if (date.length > 0) {
+                            confirmMessage = "@lang('cooperation/admin/buildings.show.set-appointment-date')"
+                        }
+
+                        if (confirm(confirmMessage)) {
+                            $.ajax({
+                                method: 'POST',
+                                url: '{{route('cooperation.admin.building-status.set-appointment-date')}}',
+                                data: {
+                                    building_id: buildingOwnerId,
+                                    appointment_date: date
+                                },
+                            }).fail(function (response) {
+                                appointmentDate.find('input').get(0).addError('Invalid format');
+                            }).done(function () {
+                                location.reload();
+                            })
+                        } else {
+                            // if the user does not want to set / change the appointment date
+                            // we set the date back to the one we got onload.
+                            appointmentDate.find('input').val(originalAppointmentDate);
+                        }
                     }
-
-                    if (confirm(confirmMessage)) {
-                        $.ajax({
-                            method: 'POST',
-                            url: '{{route('cooperation.admin.building-status.set-appointment-date')}}',
-                            data: {
-                                building_id: buildingOwnerId,
-                                appointment_date: date
-                            },
-                        }).done(function () {
-                            location.reload();
-                        })
-                    } else {
-                        // if the user does not want to set / change the appointment date
-                        // we set the date back to the one we got onload.
-                        appointmentDate.find('input').val(originalAppointmentDate);
-                    }
-                }
+                });
             });
 
             // delete the current user
@@ -390,7 +461,7 @@
             });
 
             $('#building-status').select2({}).on('select2:selecting', function (event) {
-                var statusToSelect = $(event.params.args.data.element);
+                let statusToSelect = $(event.params.args.data.element);
 
                 if (confirm('@lang('cooperation/admin/buildings.show.set-status')')) {
                     $.ajax({
@@ -410,7 +481,7 @@
             });
             $('#associated-coaches').select2({
                 templateSelection: function (tag, container) {
-                    var option = $('#associated-coaches option[value="' + tag.id + '"]');
+                    let option = $('#associated-coaches option[value="' + tag.id + '"]');
                     if (option.attr('locked')) {
                         $(container).addClass('select2-locked-tag');
                         tag.locked = true
@@ -419,7 +490,7 @@
                     return tag.text;
                 }
             }).on('select2:unselecting', function (event) {
-                var optionToUnselect = $(event.params.args.data.element);
+                let optionToUnselect = $(event.params.args.data.element);
 
                 // check if the option is locked
                 if (typeof optionToUnselect.attr('locked') === "undefined") {
@@ -444,7 +515,7 @@
                     return false;
                 }
             }).on('select2:selecting', function (event) {
-                var optionToSelect = $(event.params.args.data.element);
+                let optionToSelect = $(event.params.args.data.element);
 
                 if (confirm('@lang('cooperation/admin/buildings.show.add-with-building-access')')) {
                     $.ajax({
@@ -466,7 +537,7 @@
 
             $('#role-select').select2({
                 templateSelection: function (tag, container) {
-                    var option = $('#role-select option[value="' + tag.id + '"]');
+                    let option = $('#role-select option[value="' + tag.id + '"]');
                     if (option.attr('locked')) {
                         $(container).addClass('select2-locked-tag');
                         tag.locked = true
@@ -476,7 +547,7 @@
                 }
             })
                 .on('select2:selecting', function (event) {
-                    var roleToSelect = $(event.params.args.data.element);
+                    let roleToSelect = $(event.params.args.data.element);
 
                     if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {
                         $.ajax({
@@ -497,7 +568,7 @@
                     }
                 })
                 .on('select2:unselecting', function (event) {
-                    var roleToUnselect = $(event.params.args.data.element);
+                    let roleToUnselect = $(event.params.args.data.element);
 
                     if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {
                         $.ajax({
@@ -523,15 +594,15 @@
         function scrollChatToMostRecentMessage() {
             $('.nav-tabs a').on('shown.bs.tab', function () {
 
-                var tabId = $(this).attr('href');
-                var tab = $(tabId);
-                var chat = tab.find('.panel-chat-body')[0];
+                let tabId = $(this).attr('href');
+                let tab = $(tabId);
+                let chat = tab.find('.panel-chat-body')[0];
 
                 if (typeof chat !== "undefined") {
                     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
 
-                    var isChatPublic = tab.find('[name=is_public]').val();
-                    var buildingId = tab.find('[name=building_id]').val();
+                    let isChatPublic = tab.find('[name=is_public]').val();
+                    let buildingId = tab.find('[name=building_id]').val();
 
                     $.ajax({
                         url: '{{route('cooperation.messages.participants.set-read')}}',

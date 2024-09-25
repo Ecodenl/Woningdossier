@@ -10,6 +10,7 @@ use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\User;
 use App\Services\AddressService;
+use App\Services\Lvbag\BagService;
 
 class CreateBuildingController extends Controller
 {
@@ -28,7 +29,7 @@ class CreateBuildingController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(CreateBuildingFormRequest $request, Cooperation $cooperation)
+    public function store(CreateBuildingFormRequest $request, Cooperation $cooperation, BagService $bagService)
     {
         $email = $request->get('email');
 
@@ -39,9 +40,9 @@ class CreateBuildingController extends Controller
         $data = $request->all();
 
         // now get the picoaddress data.
-        AddressService::init()->first($data['postal_code'], $data['number']);
+        $bagService->addressExpanded($data['postal_code'], $data['number'])->prepareForBuilding();
 
-        $data['bag_addressid'] = isset($picoAddressData['bag_adresid']) ? $picoAddressData['bag_adresid'] : '';
+        $data['bag_addressid'] = $picoAddressData['bag_adresid'] ?? '';
 
         $features = new BuildingFeature([
             'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],

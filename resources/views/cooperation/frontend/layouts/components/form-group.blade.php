@@ -1,9 +1,11 @@
-<div class="form-group {{ $class ?? '' }}" {!! $attr ?? '' !!}>
+<div class="form-group {{ $class ?? '' }}" @if(! empty($attr)) {!! $attr !!} @endif>
     <div class="form-header">
         @if(! empty($route))
             <a href="{{$route}}" class="no-underline">
         @endif
-                <label class="form-label {{$labelClass ?? ''}} @if(! ($withInputSource ?? true)) max-w-16/20 @endif @if(! empty($route)) cursor-pointer @endif" for="{{ $id ?? '' }}">
+                <label class="form-label {{$labelClass ?? ''}} @if(! ($withInputSource ?? true)) max-w-16/20 @endif @if(! empty($route)) cursor-pointer @endif"
+                       @if(! empty($labelAttr)) {!! $labelAttr !!} @endif
+                       for="{{ $id ?? '' }}">
                     {!! $label ?? '' !!}
                 </label>
         @if(! empty($route))

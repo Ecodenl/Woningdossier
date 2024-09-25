@@ -18,6 +18,13 @@ return [
     'throttle' => 'Te veel login pogingen. U kunt het opniew proberen over :seconds seconde(n).',
     'inactive' => 'U kunt nog niet inloggen omdat uw account nog niet is bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail. <a href=":resend-link">Niet ontvangen?</a>',
 
+    'confirm-password' => [
+        'title' => 'Bevestig wachtwoord',
+        'password' => [
+            'title' => 'Bevestig voor uw eigen veiligheid nogmaals u wachtwoord.',
+            'placeholder' => 'Wachtwoord..'
+        ],
+    ],
     'register' => [
         'form' => [
             'allow-access' => 'Geef toestemming om te kunnen registreren',
@@ -36,6 +43,7 @@ return [
             'postal-code' => 'Postcode',
             'number' => 'Huisnummer',
             'house-number-extension' => 'Toevoeging',
+            'no-extension' => 'Geen toevoeging',
             'street' => 'Straat',
             'city' => 'Plaats',
             'phone-number' => 'Telefoonnummer',
@@ -46,7 +54,8 @@ return [
             ],
 
             'possible-wrong-email' => 'Het lijkt er op dat er een fout in het e-mailadres zit, weet je zeker dat het opgegeven e-mailadres juist is ?',
-            'possible-wrong-postal-code' => 'De postcode die is opgegeven lijkt fout te zijn, weet u zeker dat deze correct is ingevuld ? Als u hiervan zeker bent kunt u doorgaan.',
+            'possible-wrong-postal-code' => 'Het opgegeven adres hebben wij niet herkend. Controleer uw postcode en huisnummer. Bij twijfel kunt u contact opnemen met uw cooperatie.',
+            'duplicate-address' => 'Er bestaat al een gebruiker met dit adres (voor deze cooperatie). Weet u zeker dat u een nieuwe gebruiker wilt aanmaken?'
         ],
         'validation' => [
             'allow_access' => 'U moet toestemming geven om het Hoomdossier te gebruiken.',
@@ -64,6 +73,11 @@ return [
         ],
         'no-account' => 'Nog geen account?',
         'warning' => 'Er is geen woning gekoppeld aan uw account, om het Hoomdossier goed te gebruiken hebben wij uw adres nodig.',
+    ],
+    'two-factor-challenge' => [
+        'recovery-code-label' => 'Vul hier 1 van de 8 herstel codes in',
+        'use-recovery-code' => 'Ik wil mijn herstelcode gebruiken',
+        'use-code' => 'Ik wil toch mijn 2FA code gebruiken'
     ],
     'logout' => [
         'form' => [

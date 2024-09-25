@@ -9,7 +9,6 @@ use App\Helpers\RoleHelper;
 use App\Models\Cooperation;
 use App\Models\CooperationRedirect;
 use App\Models\Role;
-use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -63,7 +62,7 @@ class Handler extends ExceptionHandler
             return redirect()->route('index');
         }
 
-        return redirect()->route('cooperation.auth.login', compact('cooperation'));
+        return redirect()->guest($exception->redirectTo() ?? route('cooperation.auth.login', compact('cooperation')));
     }
 
 

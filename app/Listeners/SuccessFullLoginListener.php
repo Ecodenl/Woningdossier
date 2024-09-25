@@ -9,17 +9,23 @@ use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\DiscordNotifier;
+use App\Services\Models\BuildingService;
+use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Support\Facades\Auth;
 
 class SuccessFullLoginListener
 {
+    protected BuildingService $buildingService;
+
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(BuildingService $buildingService)
     {
+        $this->buildingService = $buildingService;
     }
 
     /**
@@ -48,7 +54,25 @@ class SuccessFullLoginListener
             Auth::logout();
             $account->setRememberToken(null);
             $account->save();
-            header('Location: '.route('cooperation.welcome'));
+
+            try {
+                $route = route('cooperation.welcome');
+            } catch (UrlGenerationException $e) {
+                $coop = request()->route('cooperation');
+
+                $label = is_string($coop) ? $coop : null;
+                if ($coop instanceof Cooperation) {
+                    $label = $coop->name;
+                    $route = route('cooperation.welcome', ['cooperation' => $coop]);
+                } else {
+                    $route = route('index');
+                }
+
+                DiscordNotifier::init()
+                    ->notify('No cooperation during invalid login? Cooperation: ' . $label);
+            }
+
+            header('Location: ' . $route);
             exit;
         }
 
@@ -69,8 +93,8 @@ class SuccessFullLoginListener
         $inputSource = $role->inputSource;
 
         // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-        if (! $role->inputSource instanceof InputSource) {
-            $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        if (! $inputSource instanceof InputSource) {
+            $inputSource = InputSource::resident();
         }
 
         // set the required sessions
@@ -84,6 +108,8 @@ class SuccessFullLoginListener
                 'full_name' => $user->getFullName(),
             ]),
         ]);
+
+        $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
     }
 
     /**

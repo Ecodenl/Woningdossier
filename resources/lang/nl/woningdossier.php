@@ -61,6 +61,7 @@ return [
 
         'navbar' => [
             'my-account' => 'Mijn account',
+            'two-factor-authentication' => '2FA Instellingen',
             'disclaimer' => 'Disclaimer',
             'privacy' => 'Privacy',
             'help' => 'Help',
@@ -428,6 +429,7 @@ return [
                     'csv-columns' => [
                         'input-source' => 'Rol',
                         'created-at' => 'Datum account',
+                        'updated-at' => 'Laatste wijziging',
                         'coach-appointment-date' => 'Datum afspraak coachgesprek',
                         'status' => 'Status',
                         'allow-access' => 'Toestemming aanwezig',

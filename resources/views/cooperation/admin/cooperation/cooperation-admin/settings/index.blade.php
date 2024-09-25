@@ -13,34 +13,34 @@
                           enctype="multipart/form-data" method="post">
                         @csrf
                         <div class="row">
-                            <div class="col-md-4">
-                                <label for="file-logo">
-                                    @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.logo')
-                                </label>
-                                <input name="medias[logo]" id="file-logo" type="file"/>
+                            @foreach(MediaHelper::getFillableTagsForClass(\App\Models\Cooperation::class) as $tag)
+                                <div class="col-md-4">
+                                    <label for="file-{{ $tag }}">
+                                        @lang("cooperation/admin/cooperation/cooperation-admin/settings.index.{$tag}")
+                                    </label>
+                                    <input name="medias[{{ $tag }}]" id="file-{{ $tag }}" type="file"/>
 
-                                <span class="label label-primary">
-                                    @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
-                                    {{optional($cooperation->firstMedia(MediaHelper::LOGO))->filename}}
-                                </span>
+                                    @if(($image = $cooperation->firstMedia($tag)) instanceof \App\Models\Media)
+                                        <input type="hidden" name="medias[{{ $tag }}_current]" value="{{ $image->id }}"
+                                               id="current-{{ $tag }}">
+                                        <div style="display: flex; align-items: center;">
+                                            <span class="label label-primary">
+                                                @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
+                                                {{$image->filename}}
+                                            </span>
+                                            <span class="text-danger"
+                                                  style="cursor: pointer; font-weight: bold; margin-left: 0.5rem;"
+                                                  onclick="let currentImage = document.getElementById('current-{{ $tag }}'); currentImage.value = null; currentImage.nextElementSibling.style.display = 'none';">
+                                                X
+                                            </span>
+                                        </div>
+                                    @endif
 
-                                @if($errors->has('medias.logo'))
-                                    {{$errors->first('medias.logo')}}
-                                @endif
-                            </div>
-                            <div class="col-md-4">
-                                <label for="file-background">
-                                    @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.background')
-                                </label>
-                                <input name="medias[background]" id="file-background" type="file"/>
-                                <span class="label label-primary">
-                                   @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
-                                    {{optional($cooperation->firstMedia(MediaHelper::BACKGROUND))->filename}}
-                                </span>
-                                @if($errors->has('medias.background'))
-                                    {{$errors->first('medias.background')}}
-                                @endif
-                            </div>
+                                    @if($errors->has("medias.{$tag}"))
+                                        {{$errors->first("medias.{$tag}")}}
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
 
                         <div class="row" style="margin-top: 1rem;">

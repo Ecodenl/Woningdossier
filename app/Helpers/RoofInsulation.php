@@ -36,12 +36,12 @@ class RoofInsulation
     {
         return [
             'flat' => [
-                Temperature::ROOF_INSULATION_FLAT_ON_CURRENT => MeasureApplication::where('short', 'roof-insulation-flat-current')->first(),
-                Temperature::ROOF_INSULATION_FLAT_REPLACE => MeasureApplication::where('short', 'roof-insulation-flat-replace-current')->first(),
+                Temperature::ROOF_INSULATION_FLAT_ON_CURRENT => MeasureApplication::findByShort('roof-insulation-flat-current'),
+                Temperature::ROOF_INSULATION_FLAT_REPLACE => MeasureApplication::findByShort('roof-insulation-flat-replace-current'),
             ],
             'pitched' => [
-                Temperature::ROOF_INSULATION_PITCHED_INSIDE => MeasureApplication::where('short', 'roof-insulation-pitched-inside')->first(),
-                Temperature::ROOF_INSULATION_PITCHED_REPLACE_TILES => MeasureApplication::where('short', 'roof-insulation-pitched-replace-tiles')->first(),
+                Temperature::ROOF_INSULATION_PITCHED_INSIDE => MeasureApplication::findByShort('roof-insulation-pitched-inside'),
+                Temperature::ROOF_INSULATION_PITCHED_REPLACE_TILES => MeasureApplication::findByShort('roof-insulation-pitched-replace-tiles'),
             ],
         ];
     }

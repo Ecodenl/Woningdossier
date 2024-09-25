@@ -41,10 +41,16 @@ class NumberFormatterTest extends TestCase
             ['nl', '20.6', '20.6'],
             ['nl', '0', '0'],
             ['nl', '16.482.0', '16482.0'],
+            ['nl', '', '0'],
+            ['nl', null, '0'],
+            ['nl', 'test', '0'],
             ['en', '0', '0'],
             ['en', '16,482,00', '1648200'],
             ['en', '123.456', '123.456'],
             ['en', '123, 456. 789', '123456.789'],
+            ['en', '', '0'],
+            ['en', null, '0'],
+            ['en', 'test', '0'],
         ];
     }
 
@@ -98,6 +104,18 @@ class NumberFormatterTest extends TestCase
             [2541512045, 5, 2541512045.0],
             ['10,5', 5, 10],
             ['108,5', 5, 110.0],
+            ['-0,92', 5, 0.0],
+            ['-0.92', 5, 0.0],
+            ['-0.92', 0, -1.0],
+            ['-0,92', 1, -1.0],
+            [-0.92, 5, 0.0],
+            [-1.2, 5, 0.0],
+            [-1.2, 0, -1],
+            [-1.2, 1, -1],
+            [-1.5, 1, -2],
+            ['', 5, 0],
+            [null, 5, 0],
+            ['test', 5, 0],
         ];
     }
 
@@ -179,6 +197,7 @@ class NumberFormatterTest extends TestCase
      */
     public function testFormatNumberForUser($number, $isInteger, $alwaysNumber, $expected)
     {
+        // Note: Test currently does not support locale. When we do add a second locale, this will need revisiting.
         $this->assertEquals($expected, NumberFormatter::formatNumberForUser($number, $isInteger, $alwaysNumber));
     }
 }

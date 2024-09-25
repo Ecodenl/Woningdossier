@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\SolarPanel;
+use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\SolarPanelHelper;
 use App\Helpers\Hoomdossier;
@@ -11,8 +12,10 @@ use App\Http\Requests\Cooperation\Tool\SolarPanelFormRequest;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelOrientation;
 use App\Models\Service;
+use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
+use App\Services\LegacyService;
 use App\Services\StepCommentService;
 use App\Services\ToolQuestionService;
 use Illuminate\Http\Request;
@@ -24,7 +27,7 @@ class SolarPanelsController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(LegacyService $legacyService)
     {
         $typeIds = [7];
 
@@ -56,12 +59,15 @@ class SolarPanelsController extends ToolController
                 ->where('building_id', $building->id)
         )->get();
 
+        $measureRelatedAnswers = $legacyService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
+            ->getMeasureRelatedAnswers(Step::findByShort('solar-panels'));
 
         return view('cooperation.tool.solar-panels.index',
             compact(
                 'building', 'pvPanelOrientations', 'buildingOwner', 'typeIds', 'totalSolarPanelService',
                 'energyHabitsOrderedOnInputSourceCredibility', 'pvPanelsOrderedOnInputSourceCredibility', 'totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility',
-                'hasSolarPanelsToolQuestion', 'hasSolarAnswersOrderedOnInputSourceCredibility'
+                'hasSolarPanelsToolQuestion', 'hasSolarAnswersOrderedOnInputSourceCredibility', 'measureRelatedAnswers'
             )
         );
     }
@@ -81,16 +87,32 @@ class SolarPanelsController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(SolarPanelFormRequest $request)
+    public function store(SolarPanelFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
+        $considerables = $request->validated()['considerables'];
+        ConsiderableService::save($this->step, $user, $inputSource, $considerables[$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
+
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('solar-panels'));
+        // Only one. Save if considering
+        if ($considerables[$this->step->id]['is_considering']) {
+            foreach ($measureRelatedShorts as $measureId => $tqShorts) {
+                foreach ($tqShorts as $tqShort) {
+                    // Subsidy question might have been removed and thus not saveable.
+                    if (array_key_exists($tqShort, $request->validated())) {
+                        $tq = ToolQuestion::findByShort($tqShort);
+                        $toolQuestionService->toolQuestion($tq)->save($request->validated()[$tqShort]);
+                    }
+                }
+            }
+        }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
         $updatedMeasureIds = [];
@@ -101,13 +123,15 @@ class SolarPanelsController extends ToolController
             ])
                 ->pluck('id')
                 ->toArray();
+
+            UserToolDataChanged::dispatch($user);
         }
 
+        $toolQuestionService->building($building)
+            ->currentInputSource($inputSource);
         // now attempt to save the "dynamic" questions.
         foreach ($request->validated()['filledInAnswers'] as $toolQuestionId => $givenAnswer) {
-            ToolQuestionService::init(ToolQuestion::find($toolQuestionId))
-                ->building($building)
-                ->currentInputSource($inputSource)
+            $toolQuestionService->toolQuestion(ToolQuestion::find($toolQuestionId))
                 ->saveToolQuestionCustomValues($givenAnswer);
         }
 
@@ -123,7 +147,7 @@ class SolarPanelsController extends ToolController
             Arr::set($values, 'building_pv_panels.total_installed_power', null);
         }
         $values['updated_measure_ids'] = $updatedMeasureIds;
-
+        
         (new SolarPanelHelper($user, $inputSource))
             ->setValues($values)
             ->saveValues()

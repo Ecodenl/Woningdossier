@@ -45,6 +45,7 @@ use Illuminate\Support\Collection;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionValuable[] $toolQuestionValuables
  * @property-read int|null $tool_question_valuables_count
  * @method static \Database\Factories\ToolQuestionFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion findByShortsOrdered($shorts)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion query()
@@ -125,7 +126,8 @@ class ToolQuestion extends Model
 
                         // these will also be available in the frontend, to the user.
                         // be careful choosing what you allow.
-                        $questionValue = Arr::only($valuable->toArray(), ['calculate_value', 'short', 'building_type_id', 'cooperation_id']);
+                        $questionValue = Arr::only($valuable->toArray(),
+                            ['calculate_value', 'short', 'building_type_id', 'cooperation_id']);
                         $questionValue['extra'] = $toolQuestionValuable->extra;
                         // the humane readable name is either set in the name or value column.
                         $questionValue['name'] = $valuable->name ?? $valuable->value ?? $valuable->measure_name;
@@ -173,6 +175,15 @@ class ToolQuestion extends Model
         return $this->morphToMany(SubStep::class, 'sub_steppable')
             ->using(SubSteppable::class)
             ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
+    }
+
+    public function scopeFindByShortsOrdered($builder, $shorts)
+    {
+        $questionMarks = substr(str_repeat('?, ', count($shorts)), 0, -2);
+
+        return $builder
+            ->orderByRaw("FIELD(short, {$questionMarks})", $shorts)
+            ->whereIn('short', $shorts);
     }
 
     /**

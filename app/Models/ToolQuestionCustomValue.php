@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Traits\HasShortTrait;
+use App\Traits\Models\HasOrder;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -23,9 +25,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read array $translations
  * @property-read \App\Models\ToolQuestion $toolQuestion
+ * @method static \Database\Factories\ToolQuestionCustomValueFactory factory(...$parameters)
  * @method static Builder|ToolQuestionCustomValue newModelQuery()
  * @method static Builder|ToolQuestionCustomValue newQuery()
- * @method static Builder|ToolQuestionCustomValue ordered()
+ * @method static Builder|ToolQuestionCustomValue ordered(string $direction = 'asc')
  * @method static Builder|ToolQuestionCustomValue query()
  * @method static Builder|ToolQuestionCustomValue visible()
  * @method static Builder|ToolQuestionCustomValue whereConditions($value)
@@ -42,7 +45,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ToolQuestionCustomValue extends Model
 {
-    use HasTranslations, HasShortTrait;
+    use HasFactory,
+        HasTranslations,
+        HasShortTrait,
+        HasOrder;
 
     protected $translatable = [
         'name'
@@ -69,11 +75,6 @@ class ToolQuestionCustomValue extends Model
     public function scopeVisible(Builder $query): Builder
     {
         return $query->where('show', true);
-    }
-
-    public function scopeOrdered(Builder $query): Builder
-    {
-        return $query->orderBy('order');
     }
 
     # Relations

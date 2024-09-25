@@ -3,9 +3,9 @@
 namespace App\Console\Commands\Tool;
 
 use App\Helpers\Queue;
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Jobs\ProcessRecalculate;
 use App\Jobs\RecalculateStepForUser;
-use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Step;
@@ -22,11 +22,11 @@ class RecalculateForUser extends Command
      * @var string
      */
     protected $signature = 'tool:recalculate 
-                                            {--user=* : The ID\'s of the users }
-                                            {--input-source=* : Input source shorts, will only use the given input sources. When left empty all input sources will be used.} 
-                                            {--cooperation= : Expects a cooperation ID, will be used to recalculate each user from the cooperation, can be combined with step short, input source and old advice params.}
-                                            {--with-old-advices=true : If you want to keep the current categories, keep this set on true.}
-                                            {--step-short=* : If you only want to recalculate specific steps, pass the shorts here.}';
+    {--user=* : The ID\'s of the users }
+    {--input-source=* : Input source shorts, will only use the given input sources. When left empty all input sources will be used.} 
+    {--cooperation= : Expects a cooperation ID, will be used to recalculate each user from the cooperation, can be combined with step short, input source and old advice params.}
+    {--with-old-advices=true : If you want to keep the current categories, keep this set on true.}
+    {--step-short=* : If you only want to recalculate specific steps, pass the shorts here.}';
 
     /**
      * The console command description.
@@ -52,13 +52,13 @@ class RecalculateForUser extends Command
      */
     public function handle()
     {
-        $userIds           = $this->option('user');
+        $userIds = $this->option('user');
         $inputSourceShorts = $this->option('input-source');
         // default to resident.
         $inputSourcesToRecalculate = empty($inputSourceShorts) ? [InputSource::RESIDENT_SHORT] : $inputSourceShorts;
-        $withOldAdvices            = $this->option('with-old-advices');
-        $stepShorts                = $this->option('step-short');
-        $cooperationId             = $this->option('cooperation');
+        $withOldAdvices = $this->option('with-old-advices');
+        $stepShorts = $this->option('step-short');
+        $cooperationId = $this->option('cooperation');
 
         if (! is_null($cooperationId)) {
             $cooperation = Cooperation::find($cooperationId);
@@ -87,7 +87,7 @@ class RecalculateForUser extends Command
         $bar->setFormat("%message%\n %current%/%max% [%bar%] %percent:3s%%");
         $bar->setMessage('Queuing up the recalculate..');
 
-        $inputSources = InputSource::whereIn('short', $inputSourcesToRecalculate)->get();
+        $inputSources = InputSource::findByShorts($inputSourcesToRecalculate);
 
         $withOldAdvices = filter_var($withOldAdvices, FILTER_VALIDATE_BOOL);
 
@@ -106,23 +106,20 @@ class RecalculateForUser extends Command
                 }
 
                 foreach ($stepsToRecalculate as $stepToRecalculate) {
-                    $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $stepToRecalculate,
-                        $withOldAdvices))
-                        ->onQueue(Queue::ASYNC);
+                    $stepsToRecalculateChain[] = (
+                        new RecalculateStepForUser($user, $inputSource, $stepToRecalculate, $withOldAdvices)
+                    );
                 }
-
-                Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id} | total: {$stepsToRecalculate->count()}");
 
                 NotificationService::init()
                     ->forBuilding($user->building)
                     ->forInputSource($inputSource)
                     ->setType(RecalculateStepForUser::class)
-                    ->setActive($stepsToRecalculate->count());
+                    ->setActive(collect($stepsToRecalculateChain)->pluck('uuid')->all());
 
                 Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
 
                 ProcessRecalculate::withChain($stepsToRecalculateChain)
-                    ->onQueue(Queue::ASYNC)
                     ->dispatch();
             }
         }

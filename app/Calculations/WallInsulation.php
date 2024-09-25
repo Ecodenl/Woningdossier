@@ -3,7 +3,7 @@
 namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Models\Building;
 use App\Models\ElementValue;
@@ -13,6 +13,7 @@ use App\Models\FacadeSurface;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
+use App\Services\CalculatorService;
 use Carbon\Carbon;
 
 class WallInsulation
@@ -41,13 +42,10 @@ class WallInsulation
                 'year' => 0,
             ],
         ];
-        $cavityWallAdvice = [
-            1 => Temperature::WALL_INSULATION_JOINTS,
-            2 => Temperature::WALL_INSULATION_FACADE,
-            0 => Temperature::WALL_INSULATION_RESEARCH,
-        ];
+        $cavityWallAdvice = Temperature::CAVITY_WALL_ADVICE;
 
         $advice = $cavityWallAdvice[$cavityWall] ?? Temperature::WALL_INSULATION_JOINTS;
+        $result['measure'] = $advice;
 
         $insulationAdvice = MeasureApplication::findByShort($advice);
 
@@ -57,18 +55,20 @@ class WallInsulation
         // 1 = yes
         if ($isPlastered && $cavityWall == 1) {
             $advice = "alerts.description.title";
+            //$result['measure'] = null;
         }
         $result['insulation_advice'] = __('wall-insulation.'.$advice);
 
+        $calculator = app(CalculatorService::class)->forBuilding($building);
         $elementValueId = array_shift($elements);
         $elementValue = ElementValue::find($elementValueId);
         if ($elementValue instanceof ElementValue && $energyHabit instanceof UserEnergyHabit) {
-            $result['savings_gas'] = Calculator::calculateGasSavings($building, $inputSource, $elementValue, $energyHabit, $facadeSurface, $advice);
+            $result['savings_gas'] = RawCalculator::calculateGasSavings($building, $inputSource, $elementValue, $energyHabit, $facadeSurface, $advice);
         }
 
-        $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
-        $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
-        $result['cost_indication'] = Calculator::calculateCostIndication($facadeSurface, $insulationAdvice);
+        $result['savings_co2'] = RawCalculator::calculateCo2Savings($result['savings_gas']);
+        $result['savings_money'] = $calculator->calculateMoneySavings($result['savings_gas']);
+        $result['cost_indication'] = RawCalculator::calculateCostIndication($facadeSurface, $insulationAdvice);
         $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
         $measureApplication = MeasureApplication::where('short', '=', 'repair-joint')->first();
@@ -81,7 +81,7 @@ class WallInsulation
             $number = $wallJointsSurface->calculate_value;
             $year = Carbon::now()->year + $wallJointsSurface->term_years;
         }
-        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
+        $costs = RawCalculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
         $result['repair_joint'] = compact('costs', 'year');
 
         $measureApplication = MeasureApplication::where('short', '=', 'clean-brickwork')->first();
@@ -94,7 +94,7 @@ class WallInsulation
             $number = $wallJointsSurface->calculate_value;
             $year = Carbon::now()->year + $wallJointsSurface->term_years;
         }
-        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
+        $costs = RawCalculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
         $result['clean_brickwork'] = compact('costs', 'year');
 
         $measureApplication = MeasureApplication::where('short', '=', 'impregnate-wall')->first();
@@ -107,7 +107,7 @@ class WallInsulation
             $number = $wallJointsSurface->calculate_value;
             $year = Carbon::now()->year + $wallJointsSurface->term_years;
         }
-        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
+        $costs = RawCalculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
 
         $result['impregnate_wall'] = compact('costs', 'year');
 
@@ -125,7 +125,7 @@ class WallInsulation
                 //$year = Carbon::now()->year + $facadePlasteredSurface->term_years;
                 $year = Carbon::now()->year + $facadeDamagedPaintwork->term_years;
             }
-            $costs = Calculator::calculateMeasureApplicationCosts($measureApplication,
+            $costs = RawCalculator::calculateMeasureApplicationCosts($measureApplication,
                 $number,
                 $year, false);
             $result['paint_wall'] = compact('costs', 'year');

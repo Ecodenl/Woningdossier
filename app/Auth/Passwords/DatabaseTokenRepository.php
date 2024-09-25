@@ -17,6 +17,8 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
     {
         $email = $user->getEmailForPasswordReset();
 
+        // Unlike the vendor, we do not delete the old token!
+
         // We will create a new, random token for the user so that we can e-mail them
         // a safe link to the password reset form. Then we will insert a record in
         // the database so that we can verify the token within the actual reset.
@@ -38,9 +40,11 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
     {
         // retrieve all the password resets
         $records = $this->getTable()->where(
-                'email', $user->getEmailForPasswordReset()
+            'email', $user->getEmailForPasswordReset()
         )->get();
 
+        // Loop all tokens because there could be more than one for this e-mail. We can't just check the first
+        // like the vendor, because that one might not be the one we're looking for.
         foreach ($records as $record) {
             if (! $this->tokenExpired($record->created_at) && $this->hasher->check($token, $record->token)) {
                 return true;
@@ -49,20 +53,4 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
 
         return false;
     }
-
-    /**
-     * Determine if the given user recently created a password reset token.
-     *
-     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
-     * @return bool
-     */
-    public function recentlyCreatedToken(CanResetPasswordContract $user)
-    {
-        $record = (array) $this->getTable()->where(
-            'email', $user->getEmailForPasswordReset()
-        )->first();
-
-        return $record && $this->tokenRecentlyCreated($record['created_at']);
-    }
-
 }

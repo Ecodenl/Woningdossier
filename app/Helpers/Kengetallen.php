@@ -5,9 +5,10 @@ namespace App\Helpers;
 class Kengetallen
 {
     // D95 (Energiekosten gas)
-    const EURO_SAVINGS_GAS = 1.50; // euro / m3 gas
+    // this is still being used, however it wont be called manually. See KengetallenService and related resolvers
+    const EURO_SAVINGS_GAS = 1.45; // euro / m3 gas
     // D96 (Energiekosten elektra)
-    const EURO_SAVINGS_ELECTRICITY = 0.35; // euro / kWh
+    const EURO_SAVINGS_ELECTRICITY = 0.40; // euro / kWh
 
     // D99 (CO2 Besparing gas)
     const CO2_SAVING_GAS = 1.88; // kg / m3 gas

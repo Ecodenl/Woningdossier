@@ -28,8 +28,9 @@ class FillAddressRequest extends FormRequest
     public function rules()
     {
         return [
-            'number' => ['required', new HouseNumber('nl'), 'numeric'],
             'postal_code' => ['required', new PostalCode('nl')],
+            'number' => ['required', new HouseNumber('nl'), 'numeric'],
+            'extension' => ['nullable'], // Should be returned from the BAG so it doesn't need further validation
         ];
     }
 }

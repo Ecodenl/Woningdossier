@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Str;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\CompletedSubStep;
@@ -28,8 +29,6 @@ class Form extends Scannable
 
     public function mount(Scan $scan, Step $step, SubStep $subStep)
     {
-        Log::debug("mounting form [Step: {$step->id}] [SubStep: {$subStep->id}]");
-
         // Only load in properties that are not order inclusive
         $subStep->load([
             'toolQuestions' => function ($query) {
@@ -69,10 +68,11 @@ class Form extends Scannable
 
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
-            if ($toolQuestion->data_type === Caster::FLOAT) {
-                $this->filledInAnswers[$toolQuestion->short] = Caster::init(
-                    $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
-                )->reverseFormatted();
+            if (in_array($toolQuestion->data_type, [Caster::FLOAT, Caster::NON_ROUNDING_FLOAT])) {
+                $this->filledInAnswers[$toolQuestion->short] = Caster::init()
+                    ->dataType($toolQuestion->data_type)
+                    ->value($this->filledInAnswers[$toolQuestion->short])
+                    ->reverseFormatted();
             }
         }
 
@@ -94,7 +94,10 @@ class Form extends Scannable
                 // Validator failed, let's put it back as the user format
                 foreach ($this->toolQuestions as $toolQuestion) {
                     if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                        $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
+                        $this->filledInAnswers[$toolQuestion->short] = Caster::init()
+                            ->dataType($toolQuestion->data_type)
+                            ->value($this->filledInAnswers[$toolQuestion->short])
+                            ->getFormatForUser();
                     }
                 }
 
@@ -124,7 +127,7 @@ class Form extends Scannable
                     // Master input source is important. Ensure both are set
                     if (is_null($currentAnswer) || is_null($masterAnswer)) {
                         $this->setDirty(true);
-                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        $dirtyToolQuestions[$toolQuestion->short] = $givenAnswer;
                         break;
                     }
                 }
@@ -137,35 +140,45 @@ class Form extends Scannable
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
-                // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                // Rules are conditionally unset. We don't want to save unvalidated answers, but don't want to just
+                // clear them either. In the case of a JSON question, the short will have sub-shorts, so we check
+                // at least one starts with the tool question short
+                if (array_key_exists("filledInAnswers.$toolQuestionShort", $this->rules)
+                    || ($toolQuestion->data_type === Caster::JSON && Str::arrKeyStartsWith(
+                        $this->rules,
+                        "filledInAnswers.$toolQuestionShort"
+                    ))
+                ) {
+                    // Define if we should answer this question...
+                    if ($this->building->user->account->can('answer', $toolQuestion)) {
+                        $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                        if ($masterAnswer !== $givenAnswer) {
+                            $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        }
 
-                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-                    if ($masterAnswer !== $givenAnswer) {
-                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        ToolQuestionService::init()
+                            ->toolQuestion($toolQuestion)
+                            ->building($this->building)
+                            ->currentInputSource($this->currentInputSource)
+                            ->applyExampleBuilding()
+                            ->save($givenAnswer);
+
+
+                        if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
+                            Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
+                            $shouldDoFullRecalculate = true;
+                        }
+
+                        $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                     }
-
-                    ToolQuestionService::init($toolQuestion)
-                        ->building($this->building)
-                        ->currentInputSource($this->currentInputSource)
-                        ->applyExampleBuilding()
-                        ->save($givenAnswer);
-
-
-                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
-                        Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
-                        $shouldDoFullRecalculate = true;
-                    }
-
-                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                 }
             }
         }
 
         // Now mark the sub step as complete
-        $completedSubStep = CompletedSubStep::firstOrCreate([
+        $completedSubStep = CompletedSubStep::allInputSources()->firstOrCreate([
             'sub_step_id' => $this->subStep->id,
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id
@@ -187,7 +200,7 @@ class Form extends Scannable
         $buildingService = BuildingService::init($this->building);
 
 
-        // so this is another exception to the rule which needs some explaination..
+        // so this is another exception to the rule which needs some explanation..
         // we will only calculate the small measure when the user is currently on the lite scan and did not complete the quick-scan
         // this is done so when the user only uses the lite-scan the woonplan only gets small-measure, measureApplications.
         // else we will just do the regular recalculate/
@@ -198,7 +211,7 @@ class Form extends Scannable
                 // when the user is on the lite scan and its uncomplete
                 // we are only allowed to recalculate the small measures
                 // however, when the user complete the quick scan we CAN recalculate other steps.
-                $userHasUncompletedQuickScan = $this->building->hasNotCompletedScan($quickScan,  $this->masterInputSource);
+                $userHasUncompletedQuickScan = $this->building->hasNotCompletedScan($quickScan, $this->masterInputSource);
                 $cooperationDoesntHaveQuickScan = $this->cooperation->scans()->where('scans.id', $quickScan->id)->doesntExist();
                 if ($userHasUncompletedQuickScan || $cooperationDoesntHaveQuickScan) {
                     $shouldDoFullRecalculate = false;

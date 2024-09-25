@@ -38,7 +38,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'floor-insulation',
                 'application' => 'place',
-                'costs' => 42, // euro
+                'costs' => 58, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -63,7 +63,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'bottom-insulation',
                 'application' => 'place',
-                'costs' => 37, // euro
+                'costs' => 46, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -88,7 +88,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'floor-insulation-research',
                 'application' => 'place',
-                'costs' => 37, // euro
+                'costs' => 46, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -113,7 +113,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'cavity-wall-insulation',
                 'application' => 'place',
-                'costs' => 30, // euro
+                'costs' => 28, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -138,7 +138,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'facade-wall-insulation',
                 'application' => 'place',
-                'costs' => 104, // euro
+                'costs' => 157, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -163,7 +163,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation-research',
                 'application' => 'place',
-                'costs' => 30, // euro
+                'costs' => 28, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -188,7 +188,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'glass-in-lead',
                 'application' => 'replace',
-                'costs' => 182, // euro
+                'costs' => 219, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -213,7 +213,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'hrpp-glass-only',
                 'application' => 'place',
-                'costs' => 163, // euro
+                'costs' => 193, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -238,7 +238,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'hrpp-glass-frames',
                 'application' => 'place',
-                'costs' => 780, // euro
+                'costs' => 860, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -263,7 +263,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'hr3p-frames',
                 'application' => 'place',
-                'costs' => 484, // euro
+                'costs' => 880, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -288,7 +288,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'crack-sealing',
                 'application' => 'place',
-                'costs' => 1200, // euro
+                'costs' => 1434, // euro
                 'cost_unit' => [
                     'nl' => 'per stuk',
                 ],
@@ -297,7 +297,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'maintenance_unit' => [
                     'nl' => 'jaar',
                 ],
-                'step' => 'insulated-glazing',
+                'step' => 'ventilation',
                 'configurations' => [
                     'comfort' => 3,
                     'icon' => 'icon-cracks-seams',
@@ -313,7 +313,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation-pitched-inside',
                 'application' => 'place',
-                'costs' => 84, // euro
+                'costs' => 101, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -338,7 +338,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation-pitched-replace-tiles',
                 'application' => 'replace',
-                'costs' => 213, // euro
+                'costs' => 186, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -363,7 +363,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation-flat-current',
                 'application' => 'place',
-                'costs' => 234, // euro
+                'costs' => 262, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -388,7 +388,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation-flat-replace-current',
                 'application' => 'replace',
-                'costs' => 295, // euro
+                'costs' => 345, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -413,7 +413,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'high-efficiency-boiler-replace',
                 'application' => 'replace',
-                'costs' => 2400, // euro
+                'costs' => 2859, // euro
                 'cost_unit' => [
                     'nl' => 'per stuk',
                 ],
@@ -438,7 +438,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'heater-place-replace',
                 'application' => 'place',
-                'costs' => 3100, // euro
+                'costs' => 3735, // euro
                 'cost_unit' => [
                     'nl' => 'per installatie',
                 ],
@@ -463,7 +463,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'solar-panels-place-replace',
                 'application' => 'place',
-                'costs' => 545, // euro
+                'costs' => 440, // euro
                 'cost_unit' => [
                     'nl' => 'per paneel',
                 ],
@@ -563,7 +563,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'hybrid-heat-pump-outside-air',
                 'application' => 'place',
-                'costs' => 7400,
+                'costs' => 6527,
                 'cost_unit' => [
                     'nl' => 'per stuk',
                 ],
@@ -588,7 +588,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'hybrid-heat-pump-ventilation-air',
                 'application' => 'place',
-                'costs' => 5500,
+                'costs' => 6441,
                 'cost_unit' => [
                     'nl' => 'per stuk',
                 ],
@@ -638,7 +638,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'full-heat-pump-outside-air',
                 'application' => 'place',
-                'costs' => 16000,
+                'costs' => 17776,
                 'cost_unit' => [
                     'nl' => 'per stuk',
                 ],
@@ -663,7 +663,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'full-heat-pump-ground-heat',
                 'application' => 'place',
-                'costs' => 27500,
+                'costs' => 29052,
                 'cost_unit' => [
                     'nl' => 'per stuk',
                 ],
@@ -688,7 +688,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'full-heat-pump-pvt-panels',
                 'application' => 'place',
-                'costs' => 26500,
+                'costs' => 34740,
                 'cost_unit' => [
                     'nl' => 'per stuk',
                 ],
@@ -713,7 +713,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump-boiler-place-replace',
                 'application' => 'place',
-                'costs' => 7400,
+                'costs' => 7788,
                 'cost_unit' => [
                     'nl' => 'per stuk',
                 ],
@@ -949,7 +949,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'repair-joint',
                 'application' => 'repair',
-                'costs' => 67, // euro
+                'costs' => 72, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -974,7 +974,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'clean-brickwork',
                 'application' => 'repair',
-                'costs' => 18, // euro
+                'costs' => 19, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -999,7 +999,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'impregnate-wall',
                 'application' => 'place',
-                'costs' => 12, // euro
+                'costs' => 13, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -1024,7 +1024,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'paint-wall',
                 'application' => 'place',
-                'costs' => 43, // euro
+                'costs' => 46, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -1049,7 +1049,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'paint-wood-elements',
                 'application' => 'place',
-                'costs' => 171, // euro
+                'costs' => 184, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -1074,7 +1074,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'replace-tiles',
                 'application' => 'replace',
-                'costs' => 165, // euro
+                'costs' => 178, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -1099,7 +1099,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'replace-roof-insulation',
                 'application' => 'replace',
-                'costs' => 122, // euro
+                'costs' => 131, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -1124,7 +1124,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'inspect-repair-roofs',
                 'application' => 'replace',
-                'costs' => 244, // euro
+                'costs' => 263, // euro
                 'cost_unit' => [
                     'nl' => 'per stuk',
                 ],
@@ -1149,7 +1149,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'replace-zinc-pitched',
                 'application' => 'replace',
-                'costs' => 125, // euro
+                'costs' => 135, // euro
                 'cost_unit' => [
                     'nl' => 'per m',
                 ],
@@ -1174,7 +1174,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'replace-zinc-flat',
                 'application' => 'replace',
-                'costs' => 31, // euro
+                'costs' => 33, // euro
                 'cost_unit' => [
                     'nl' => 'per m',
                 ],

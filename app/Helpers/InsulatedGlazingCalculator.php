@@ -31,7 +31,7 @@ class InsulatedGlazingCalculator
         $calcM2 = $windows * $m2PerWindow;
         self::debug(__METHOD__.' '.$calcM2.' = '.$windows.' * '.$m2PerWindow);
 
-        return Calculator::calculateMeasureApplicationCosts($measureApplication, $calcM2, null, false);
+        return RawCalculator::calculateMeasureApplicationCosts($measureApplication, $calcM2, null, false);
     }
 
     /**
@@ -67,7 +67,7 @@ class InsulatedGlazingCalculator
         $element = Element::where('short', '=', 'living-rooms-windows')->first();
 
         if ($energyHabit instanceof UserEnergyHabit) {
-            $maxGasSavings = Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element);
+            $maxGasSavings = RawCalculator::maxGasSavings($building, $inputSource, $energyHabit, $element);
         }
         $result = min($saving, $maxGasSavings);
 

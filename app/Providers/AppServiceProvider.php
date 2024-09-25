@@ -2,20 +2,13 @@
 
 namespace App\Providers;
 
-use App\Jobs\CloneOpposingInputSource;
-use App\Jobs\RecalculateStepForUser;
 use App\Models\PersonalAccessToken;
 use App\Rules\MaxFilenameLength;
-use App\Services\Models\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Queue\Events\JobProcessed;
-use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
@@ -74,45 +67,6 @@ class AppServiceProvider extends ServiceProvider
                     }
                 }
             }, $boolean);
-        });
-
-        Queue::before(function (JobProcessing $event) {
-            $payload = $event->job->payload();
-            /** @var RecalculateStepForUser $command */
-            $command = unserialize($payload['data']['command']);
-            $jobName = get_class($command);
-            if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
-                $building = $command->user->building ?? $command->building;
-                Log::debug("JOB {$jobName} started | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-                $service = NotificationService::init()
-                    ->forBuilding($building)
-                    ->forInputSource($command->inputSource)
-                    ->setType($jobName);
-
-                // We only active the notification if it isn't already. This is because it will increment the count of
-                // the current active notification, and we don't want to do that.
-                if ($service->isNotActive()) {
-                    Log::debug("None active, setting active");
-                    $service->setActive();
-                }
-            }
-
-        });
-
-        Queue::after(function (JobProcessed $event) {
-            $payload = $event->job->payload();
-            /** @var RecalculateStepForUser $command */
-            $command = unserialize($payload['data']['command']);
-            $jobName = get_class($command);
-            if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
-                $building = $command->user->building ?? $command->building;
-                Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-                NotificationService::init()
-                    ->forBuilding($building)
-                    ->forInputSource($command->inputSource)
-                    ->setType($jobName)
-                    ->deactivate();
-            }
         });
 
         Paginator::useBootstrapThree();

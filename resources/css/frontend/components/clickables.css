@@ -8,6 +8,7 @@ a {
 
 /* Hyperlink in paragraph */
 p a,
+.as-text a,
 a.in-text {
     @apply text-purple no-underline font-medium;
 }
@@ -105,21 +106,14 @@ a.in-text {
 
 /* Navigation tabs */
 .nav-tabs {
-    @apply pl-0 pb-0 list-none w-full;
+    @apply flex border-b border-blue border-opacity-50;
 }
 
-.nav-tabs li {
-    @apply float-left relative block;
+.nav-tabs a {
+    @apply no-underline rounded-t-md py-2 px-4 text-white bg-blue-500;
 }
 
-.nav-tabs li a {
-    @apply no-underline relative block py-2 px-4 mr-1 text-sm text-green border border-solid border-transparent rounded-t bg-transparent;
-}
-
-.nav-tabs li.completed a {
-    @apply text-white bg-blue-800;
-}
-.nav-tabs li.active a {
+.nav-tabs a.active {
     @apply text-white bg-green;
 }
 
@@ -138,4 +132,10 @@ a.in-text {
 
 #app-body .disabled {
     @apply cursor-not-allowed bg-gray bg-opacity-50 pointer-events-none;
+}
+
+/* Allow making disabled items clickable specifically */
+#app-body .disabled.pointer-events-auto {
+    /* can't use @apply pointer-events-auto here as it somehow seems to conflict with itself */
+    pointer-events: auto;
 }

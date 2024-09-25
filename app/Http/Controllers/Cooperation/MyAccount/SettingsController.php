@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Events\UserToolDataChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
+use App\Jobs\CheckBuildingAddress;
+use App\Jobs\ResetDossierForUser;
 use App\Models\Account;
 use App\Models\InputSource;
-use App\Services\AddressService;
+use App\Models\Municipality;
+use App\Services\DossierSettingsService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -25,35 +29,23 @@ class SettingsController extends Controller
         $user = Hoomdossier::user();
         $building = HoomdossierSession::getBuilding(true);
 
-        $data = $request->all();
+        $data = $request->validated();
 
-        $buildingData = $data['building'];
-        $userData = $data['user'];
+        // Update user data
+        $user->update($data['user']);
+        // Update building address
+        $data['address']['extension'] ??= null;
+        $building->update($data['address']);
 
-        // now get the pico address data.
-        $picoAddressData = AddressService::init()->first(
-            $buildingData['postal_code'], $buildingData['house_number'], $buildingData['extension']
-        );
+        $currentInputSource = HoomdossierSession::getInputSource(true);
 
-        $userData['phone_number'] = $userData['phone_number'] ?? '';
-        $buildingData['extension'] = $buildingData['extension'] ?? '';
-        $buildingData['number'] = $buildingData['house_number'] ?? '';
-        // try to obtain the address id from the api, else get the one from the request.
-        $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'] ?? '';
-
-        // update the user stuff
-        $user->update($userData);
-        // now update the building itself
-        $building->update($buildingData);
-
-        // and update the building features with the data from pico.
-        $building->buildingFeatures()->update([
-            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
-            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
-        ]);
+        CheckBuildingAddress::dispatchSync($building, $currentInputSource);
+        if (! $building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building, $currentInputSource);
+        }
 
         return redirect()->route('cooperation.my-account.index')
-                         ->with('success', __('my-account.settings.store.success'));
+            ->with('success', __('my-account.settings.store.success'));
     }
 
     /**
@@ -61,19 +53,27 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function resetFile(Request $request)
+    public function resetFile(Request $request, DossierSettingsService $dossierSettingsService)
     {
         $user = Hoomdossier::user();
 
         $inputSourceIds = $request->input('input_sources.id');
 
-        // Reset master first.
-        UserService::resetUser($user, InputSource::findByShort(InputSource::MASTER_SHORT));
-
+        $masterInputSource = InputSource::master();
+        ResetDossierForUser::dispatchSync($user, $masterInputSource);
         foreach ($inputSourceIds as $inputSourceId) {
-            Log::debug("resetting for input source " . $inputSourceId);
-            UserService::resetUser($user, InputSource::find($inputSourceId));
+            Log::debug("resetting for input source ".$inputSourceId);
+            $relevantInputSource = InputSource::find($inputSourceId);
+            ResetDossierForUser::dispatchSync($user, $relevantInputSource);
         }
+
+        $dossierSettingsService
+            ->forType(ResetDossierForUser::class)
+            ->forBuilding($user->building)
+            ->forInputSource($masterInputSource)
+            ->justDone();
+
+        UserToolDataChanged::dispatch($user);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }

@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Helpers\Queue;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Mail\Mailable;

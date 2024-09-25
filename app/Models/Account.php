@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
 /**
  * App\Models\Account
@@ -53,9 +55,7 @@ use Illuminate\Support\Collection;
  */
 class Account extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory;
-
-    use Notifiable;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     protected $fillable = ['email', 'password', 'email_verified_at', 'old_email', 'old_email_token',
     ];
@@ -76,6 +76,7 @@ class Account extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'is_admin' => 'boolean',
+        'email_verified_at' => 'datetime',
     ];
 
     /**
@@ -118,30 +119,24 @@ class Account extends Authenticatable implements MustVerifyEmail
      * Will return the user from the account and cooperation that is being used.
      *
      * This will work because the global cooperation scope is applied.
-     *
-     * @return User|null
      */
-    public function user()
+    public function user(): ?User
     {
         return \App\Helpers\Cache\Account::user($this);
     }
 
     /**
      * Will return all the users from the account.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function users()
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
 
     /**
      * Returns whether or not a user is associated with a particular Cooperation.
-     *
-     * @return bool
      */
-    public function isAssociatedWith(Cooperation $cooperation)
+    public function isAssociatedWith(Cooperation $cooperation): bool
     {
         return $this->users()->withoutGlobalScopes()->where('cooperation_id', '=', $cooperation->id)->count() > 0;
     }

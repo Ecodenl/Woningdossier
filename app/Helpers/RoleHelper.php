@@ -34,14 +34,19 @@ class RoleHelper
 
         $user = Hoomdossier::user();
 
-        if (!$checkUser || ($user instanceof User && $user->roles()->where('name', $roleName)->first() instanceof Role)) {
+        if (! $checkUser ||
+            ($user instanceof User && $user->roles()->where('name', $roleName)->first() instanceof Role)
+        ) {
             // the resident may be redirect to his last visited url.
-            if ($roleName === self::ROLE_RESIDENT && !empty($user->last_visited_url)) {
+            if ($roleName === self::ROLE_RESIDENT && ! empty($user->last_visited_url)) {
+                // For now just local; if host mismatches (e.g. due to DB dump) don't redirect externally
+                if (app()->isLocal() && request()->getHost() !== parse_url($user->last_visited_url, PHP_URL_HOST)) {
+                    return route($redirectMap[$roleName]);
+                }
                 return $user->last_visited_url;
             }
             return route($redirectMap[$roleName]);
         }
-
 
         Log::debug("check user is true");
         return route('cooperation.home');

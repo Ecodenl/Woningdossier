@@ -57,7 +57,7 @@ class ToolQuestionsTableSeeder extends Seeder
 
         // Wall insulation
         $wallInsulation = Element::findByShort('wall-insulation');
-        $energyLabels = EnergyLabel::ordered()->get();
+        $energyLabels = EnergyLabel::ordered('desc')->get();
         $comfortLevelsTapWater = ComfortLevelTapWater::where('calculate_value', '<=', 3)->get();
 
         // Insulated glazing
@@ -135,6 +135,8 @@ class ToolQuestionsTableSeeder extends Seeder
                 'name' => 'Niet van toepassing'
             ],
         ];
+        // Note: These are also used for the expert execute-{measure}-how questions since they use the same values.
+        // Take note of this if there needs to be a change on only one scan.
         $smallMeasureExecuteValues = [
             'do-self' => [
                 'name' => 'Dat ga ik zelf doen',
@@ -240,7 +242,7 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ],
                     'rented' => [
-                        'name' => 'Huurwoning cooperatie',
+                        'name' => 'Huurwoning corporatie',
                         'extra' => [
                             'icon' => 'icon-placeholder',
                         ],
@@ -315,7 +317,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['numeric', 'in:1,2,0', 'exists:tool_question_custom_values,short'],
+                'validation' => ['numeric', 'in:1,2,0,3', 'exists:tool_question_custom_values,short'],
                 'save_in' => 'building_features.monument',
                 'short' => 'monument',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument',
@@ -330,6 +332,10 @@ class ToolQuestionsTableSeeder extends Seeder
                     ],
                     0 => [
                         'name' => __('woningdossier.cooperation.radiobutton.unknown'),
+                        'extra' => [],
+                    ],
+                    3 => [
+                        'name' => 'Beschermd stads- of dorpsgezicht',
                         'extra' => [],
                     ],
                 ],
@@ -368,6 +374,9 @@ class ToolQuestionsTableSeeder extends Seeder
                         '?' => [
                             'icon' => 'icon-label-unknown',
                         ],
+                        'X' => [
+                            'icon' => 'icon-label-none',
+                        ],
                     ],
                 ],
             ],
@@ -380,16 +389,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepBuildingData->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'building-data-comment-resident',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepBuildingData->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'building-data-comment-coach',
@@ -550,7 +559,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ['required', 'numeric', 'integer', 'min:0', 'max:10000'],
+                'validation' => ['required', 'numeric', 'integer', 'min:0',  'max:9999999999'],
                 'save_in' => 'user_energy_habits.amount_gas',
                 'short' => 'amount-gas',
                 'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.gas-usage',
@@ -558,23 +567,37 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ['required', 'numeric', 'integer', 'min:-10000', 'max:25000'],
+                'validation' => ['required', 'numeric', 'integer', 'min:-10000', 'max:9999999999'],
                 'save_in' => 'user_energy_habits.amount_electricity',
                 'short' => 'amount-electricity',
                 'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.amount-electricity',
                 'unit_of_measure' => 'kWh'
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::NON_ROUNDING_FLOAT,
+                'validation' => ['required', 'numeric', 'min:0', 'max:10'],
+                'short' => 'gas-price-euro',
+                'translation' => 'Eigen gasprijs per m3',
+                'unit_of_measure' => "€ / " . __('general.unit.cubic-meters.title'),
+            ],
+            [
+                'data_type' => Caster::NON_ROUNDING_FLOAT,
+                'validation' => ['required', 'numeric', 'min:0', 'max:10'],
+                'short' => 'electricity-price-euro',
+                'translation' => 'Eigen stroomprijs per kWh',
+                'unit_of_measure' => "€ / " . __('general.unit.kwh.title'),
+            ],
+            [
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'usage-quick-scan-comment-resident',
                 'translation' => 'cooperation/tool/general-data/usage.index.comment',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'usage-quick-scan-comment-coach',
@@ -642,16 +665,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'living-requirements-comment-resident',
                 'translation' => 'cooperation/tool/general-data/interest.index.comment',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'living-requirements-comment-coach',
@@ -853,7 +876,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'heat-source-warm-tap-water',
                 'translation' => "Wat word er gebruikt voor warm tapwater",
-                'options' => ['value' => ['hr-boiler'],],
+                'options' => [],
                 'tool_question_custom_values' => [
                     'hr-boiler' => [
                         'name' => 'Gasketel',
@@ -1270,7 +1293,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ['required', 'numeric', 'integer', 'min:1', 'max:50'],
+                'validation' => ['required', 'numeric', 'integer', 'min:1', 'max:500'],
                 'save_in' => "building_services.{$solarPanels->id}.extra.value",
                 'short' => 'solar-panel-count',
                 // was current-state -> hoeveel zonnepanelen zijn er aanwezig
@@ -1342,32 +1365,32 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.element.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'residential-status-element-comment-resident',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.element.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'residential-status-element-comment-coach',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.service.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'residential-status-service-comment-resident',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.service.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'residential-status-service-comment-coach',
@@ -1499,6 +1522,97 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
             ],
+
+
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'isolating-window-foil',
+                'translation' => 'Isolerende raamfolie',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'isolating-window-foil-how',
+                'translation' => 'Hoe wil je het uitvoeren',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'isolating-window-foil-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-caulk',
+                'translation' => 'Kitwerk kieren',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-caulk-how',
+                'translation' => 'Hoe wil je het uitvoeren',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-caulk-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-foam',
+                'translation' => 'Afschuimen kieren',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-foam-how',
+                'translation' => 'Hoe wil je het uitvoeren',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-foam-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'door-silicone-strip',
+                'translation' => 'Deur siliconestrip',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'door-silicone-strip-how',
+                'translation' => 'Hoe wil je het uitvoeren',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'door-silicone-strip-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+
+
             [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
@@ -1773,16 +1887,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepSmallMeasures->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'small-measures-comment-resident',
                 'translation' => 'Toelichting op de kleine maatregelen',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepSmallMeasures->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'small-measures-comment-coach',
@@ -2330,48 +2444,48 @@ class ToolQuestionsTableSeeder extends Seeder
             // TODO: If we were to delete these steps, besides the obvious calculator refactor, we should
             // move these to the heating step with a short for the context
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$hrBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'hr-boiler-comment-resident',
                 'translation' => 'Toelichting op de CV ketel',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$hrBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'hr-boiler-comment-coach',
                 'translation' => 'Toelichting op de CV ketel',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$heatPumpStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'heat-pump-comment-resident',
                 'translation' => 'Toelichting op de warmtepomp',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$heatPumpStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'heat-pump-comment-coach',
                 'translation' => 'Toelichting op de warmtepomp',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$sunBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'sun-boiler-comment-resident',
                 'translation' => 'Toelichting op de zonneboiler',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$sunBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'sun-boiler-comment-coach',
@@ -2462,16 +2576,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$ventilationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'ventilation-comment-resident',
                 'translation' => 'Toelichting op de ventilatie',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$ventilationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'ventilation-comment-coach',
@@ -2566,16 +2680,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$wallInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'wall-insulation-comment-resident',
                 'translation' => 'Toelichting op de muurisolatie',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$wallInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'wall-insulation-comment-coach',
@@ -2636,7 +2750,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "considerables.App\\Models\\MeasureApplication.{$hrppGlassFrames->id}.is_considering",
                 'translation' => 'HR++ glas + kozijn: Meenemen in berekening',
-                'short' => 'hrpp-glass-frame-considerable',
+                'short' => 'hrpp-glass-frame-considerable', // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2684,7 +2798,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$hr3pFrames->id}.is_considering",
                 "translation" => "HR+++ glas + kozijn: Meenemen in berekening",
-                "short" => "hr3p-glass-frame-considerable",
+                "short" => "hr3p-glass-frame-considerable", // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2732,7 +2846,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$glassInLead->id}.is_considering",
                 "translation" => "Glas-in-lood vervangen: Meenemen in berekening",
-                "short" => "glass-in-lead-replace-considerable",
+                "short" => "glass-in-lead-replace-considerable", // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2833,16 +2947,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_values' => \App\Models\WoodRotStatus::all(),
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$insulatedGlazingStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'insulated-glazing-comment-resident',
                 'translation' => 'Toelichting op de isolerende beglazing',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$insulatedGlazingStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'insulated-glazing-comment-coach',
@@ -2907,16 +3021,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$floorInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'floor-insulation-comment-resident',
                 'translation' => 'Toelichting op de vloerisolatie',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$floorInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'floor-insulation-comment-coach',
@@ -2987,7 +3101,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required', 'numeric', 'integer',
                 ],
                 'save_in' => "building_roof_types.{$pitchedRoof->id}.zinc_surface",
-                'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+                'translation' => 'Wat is de oppervlakte van het zinkwerk?',
                 'short' => 'pitched-roof-zinc-surface',
             ],
             [
@@ -3098,16 +3212,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_values' => BuildingHeating::all(),
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$roofInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'roof-insulation-comment-resident',
                 'translation' => 'Toelichting op de dakisolatie',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$roofInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'roof-insulation-comment-coach',
@@ -3120,7 +3234,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "considerables.App\\Models\\Step.{$solarPanelStep->id}.is_considering",
                 'translation' => 'Zonnepanelen: Meenemen in berekening',
-                'short' => 'solar-panels-considerable',
+                'short' => 'solar-panels-considerable', // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -3135,7 +3249,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required', 'numeric', 'integer',
+                    'required', 'numeric', 'integer', 'min:0',
                 ],
                 'save_in' => 'building_pv_panels.number',
                 'translation' => 'Hoeveel zonnepanelen moeten er komen?',
@@ -3161,16 +3275,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'solar-panel-angle',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$solarPanelStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'solar-panels-comment-resident',
                 'translation' => 'Toelichting op de zonnepanelen',
             ],
             [
-                'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'data_type' => Caster::HTML_STRING,
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$solarPanelStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'solar-panels-comment-coach',
@@ -3178,11 +3292,51 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
         ];
 
+        #######
+        #
+        # README:
+        # For ease of seeding: user cost questions are related to energy saving measures that have expert related
+        # questions. Therefore, we simply loop through all of them. This means it's easily expanded for future added
+        # measures, as well as being simple in the code. This seeder is large enough already.
+        #
+        #######
+
+        $allExpertEnergySavingMeasures = MeasureApplication::measureType(MeasureApplication::ENERGY_SAVING)
+            ->where('step_id', '!=', $stepSmallMeasures->id)->get();
+
+        foreach ($allExpertEnergySavingMeasures as $measure) {
+            $questions[] = [
+                'data_type' => Caster::INT,
+                'validation' => [
+                    'nullable', 'numeric', 'integer', 'gt:0',
+                ],
+                'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.own_total",
+                'translation' => 'Eigen kosten (voor aftrek subsidie)',
+                'help_text' => 'In het geval dat je al weet hoeveel een maatregel gaat kosten (bijvoorbeeld door een opgevraagde offerte), kun je hier dat bedrag invullen.',
+                'short' => "user-costs-{$measure->short}-own-total",
+            ];
+            $questions[] = [
+                'data_type' => Caster::INT,
+                'validation' => [
+                    'nullable', 'numeric', 'integer', 'gt:0',
+                ],
+                'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.subsidy_total",
+                'translation' => 'Subsidiebedrag (zelf invullen)',
+                'help_text' => 'In het geval dat je al weet hoeveel subsidie je terugkrijgt op een maatregel, kun je dit hier invullen.',
+                'short' => "user-costs-{$measure->short}-subsidy-total",
+            ];
+            $questions[] = [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => "execute-{$measure->short}-how",
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+                'options' => ['value' => 'let-do'],
+            ];
+        }
 
         foreach ($questions as $questionData) {
             if ($questionData['short'] != "") {
-
-
                 // Create the question itself
 
                 // Translation can be a key or text. We compare the results, because if it's a key, then the

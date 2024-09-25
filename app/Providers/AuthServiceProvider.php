@@ -2,25 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Building;
-use App\Models\Cooperation;
-use App\Models\FileStorage;
-use App\Models\Media;
-use App\Models\PrivateMessage;
-use App\Models\Questionnaire;
-use App\Models\SubStep;
-use App\Models\ToolQuestion;
-use App\Models\User;
-use App\Models\UserActionPlanAdvice;
 use App\Policies\BuildingPolicy;
-use App\Policies\CooperationPolicy;
-use App\Policies\FileStoragePolicy;
-use App\Policies\MediaPolicy;
-use App\Policies\PrivateMessagePolicy;
-use App\Policies\QuestionnairePolicy;
-use App\Policies\SubStepPolicy;
-use App\Policies\ToolQuestionPolicy;
-use App\Policies\UserActionPlanAdvicePolicy;
+use App\Policies\RolePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -33,16 +16,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        SubStep::class => SubStepPolicy::class,
-        ToolQuestion::class => ToolQuestionPolicy::class,
-        PrivateMessage::class => PrivateMessagePolicy::class,
-        Questionnaire::class => QuestionnairePolicy::class,
-        Cooperation::class => CooperationPolicy::class,
-        User::class => UserPolicy::class,
-        Building::class => BuildingPolicy::class,
-        FileStorage::class => FileStoragePolicy::class,
-        UserActionPlanAdvice::class => UserActionPlanAdvicePolicy::class,
-        Media::class => MediaPolicy::class,
+        // Use auto discovery
     ];
 
     /**
@@ -54,6 +28,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Gate::guessPolicyNamesUsing(function ($modelClass) {
+            return 'App\\Policies\\'.class_basename($modelClass).'Policy';
+        });
+
         Gate::define('talk-to-resident', BuildingPolicy::class.'@talkToResident');
         Gate::define('access-building', BuildingPolicy::class.'@accessBuilding');
         Gate::define('set-appointment', BuildingPolicy::class.'@setAppointment');
@@ -64,5 +42,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('access-admin', UserPolicy::class.'@accessAdmin');
         Gate::define('delete-user', UserPolicy::class.'@deleteUser');
         Gate::define('remove-participant-from-chat', UserPolicy::class.'@removeParticipantFromChat');
+
+        Gate::define('send-user-information-to-econobis', [UserPolicy::class, 'sendUserInformationToEconobis']);
+        Gate::define('editAny', [RolePolicy::class, 'editAny']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\Cache\BaseCache;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
@@ -12,6 +13,7 @@ use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\Notification;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionAnswer;
 use App\Models\User;
@@ -22,35 +24,38 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
 trait GetMyValuesTrait
 {
-
     /**
-     * boot this trait
+     * Boot this trait.
      * (https://www.archybold.com/blog/post/booting-eloquent-model-traits)
      */
     public static function bootGetMyValuesTrait()
     {
         static::saved(function (Model $model) {
             // might be handy to prevent getting into an infinite loop (-:>
-            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
+            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT, InputSource::EXTERNAL_SHORT])) {
                 $model->saveForMasterInputSource();
             }
         });
 
         static::deleting(function (Model $model) {
             // might be handy to prevent getting into an infinite loop (-:>
-            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
+            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT, InputSource::EXTERNAL_SHORT])) {
                 $supportedClasses = [
                     BuildingRoofType::class,
                     ToolQuestionAnswer::class,
                     CompletedStep::class,
                     CompletedSubStep::class,
+                    Notification::class,
                 ];
 
-                // TODO: This needs to work for all models
+                // TODO: This needs to work for all models.
+                //TODO: We need a way to detect if we _should_ delete. A row can exist for multiple sources, so
+                // deleting one should only delete the master if there's no other row.
                 if (in_array(get_class($model), $supportedClasses)) {
                     $model->deleteForMasterInputSource();
                 }
@@ -69,7 +74,7 @@ trait GetMyValuesTrait
      */
     public function hasAttribute(string $attribute): bool
     {
-        return (Schema::hasColumn($this->getTable(), $attribute));
+        return \App\Helpers\Cache\Schema::hasColumn($this->getTable(), $attribute);
     }
 
     protected function saveForMasterInputSource()
@@ -82,6 +87,10 @@ trait GetMyValuesTrait
         if (! in_array($this->getTable(), $tablesToIgnore)) {
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             $data = $this->attributesToArray();
+            // In case there's attributes we don't want to copy over
+            foreach (($this->ignoreAttributes ?? []) as $ignoreAttribute) {
+                unset($data[$ignoreAttribute]);
+            }
 
             $data['input_source_id'] = $masterInputSource->id;
             unset($data['id']);
@@ -93,11 +102,13 @@ trait GetMyValuesTrait
             $crucialRelationCombinationIds = [
                 'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id',
                 'service_id', 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
-                'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id',
+                'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id', 'uuid', 'advisable_type',
+                'advisable_id',
             ];
             $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
 
             if ($this instanceof UserActionPlanAdvice) {
+                // TODO: Should this check the model input source (`->forInputSource($this->inputSource)`)?
                 $advisable = $this->userActionPlanAdvisable;
                 if ($advisable instanceof MeasureApplication || $advisable instanceof CooperationMeasureApplication) {
                     $crucialRelationCombinationIds[] = 'user_action_plan_advisable_id';
@@ -147,7 +158,6 @@ trait GetMyValuesTrait
 
     protected function deleteForMasterInputSource()
     {
-        // TODO: Logic might not be complete
         $tablesToIgnore = [
             'user_action_plan_advice_comments', 'step_comments',
         ];
@@ -166,7 +176,8 @@ trait GetMyValuesTrait
             $crucialRelationCombinationIds = [
                 'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id',
                 'service_id', 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
-                'considerable_id', 'considerable_type',
+                'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id', 'uuid', 'advisable_type',
+                'advisable_id',
             ];
             $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
 
@@ -273,7 +284,7 @@ trait GetMyValuesTrait
         $building = $user->building ?? HoomdossierSession::getBuilding(true);
 
         // determine what table we are using
-        $currentTable = $this->table ?? $this->getTable();
+        $currentTable = $this->getTable();
 
         // determine which column we should use.
         if (Schema::hasColumn($currentTable, 'building_id')) {

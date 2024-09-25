@@ -95,6 +95,12 @@
                 @endcomponent
             @endif
 
+            <div>
+                <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('scan')) }}"
+                   class="flex flex-wrap justify-center items-center">
+                    <i class="icon-md icon-euro"></i>
+                </a>
+            </div>
 
             <livewire:cooperation.frontend.layouts.parts.alerts :building="$building"
                                                                 :inputSource="$masterInputSource"/>
@@ -136,6 +142,15 @@
                 @endforeach
             @endcomponent
 
+            @if(app()->isLocal())
+                <div>
+                    <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')) }}"
+                       class="flex flex-wrap justify-center items-center">
+                        <i class="icon-md icon-house"></i>
+                    </a>
+                </div>
+            @endif
+
             @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
                 <div>
                     <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan')) }}"
@@ -151,6 +166,20 @@
                         <a href="{{ route('cooperation.my-account.index', compact('cooperation')) }}"
                            class="in-text">
                             @lang('woningdossier.cooperation.navbar.my-account')
+                        </a>
+
+                        @if(app()->isLocal())
+                            <p>
+                                B: {{ $building->id }}
+                                <br>
+                                U: {{ $building->user->id }}
+                            </p>
+                        @endif
+                    </li>
+                        <li>
+                        <a href="{{ route('cooperation.my-account.two-factor-authentication.index', compact('cooperation')) }}"
+                           class="in-text">
+                            @lang('woningdossier.cooperation.navbar.two-factor-authentication')
                         </a>
                     </li>
                     <li>

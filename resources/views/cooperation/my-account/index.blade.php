@@ -15,8 +15,6 @@
                 @method('PUT')
                 @csrf
 
-                <input type="hidden" id="addressid" name="building[addressid]" value="{{$building->bag_addressid}}">
-
                 <div class="flex flex-row flex-wrap w-full border border-solid border-blue-500 border-opacity-50 rounded-lg">
                     <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 h-11 rounded-t-lg border-b border-solid border-blue-500 border-opacity-50">
                         @lang('my-account.settings.index.header')
@@ -76,75 +74,12 @@
                                     @lang('my-account.settings.index.header-building')
                                 </h4>
                             </div>
-
-                            <div class="w-full sm:w-1/3 sm:pr-3">
-                                @component('cooperation.frontend.layouts.components.form-group', [
-                                    'withInputSource' => false,
-                                    'label' => __('my-account.settings.index.form.building.postal-code'),
-                                    'inputName' => 'building.postal_code',
-                                    'id' => 'postal_code',
-                                ])
-                                    <input type="text" class="form-input" name="building[postal_code]"
-                                           id="postal_code"
-                                           value="{{ old('building.postal_code', $building->postal_code) }}"
-                                           required autofocus>
-                                @endcomponent
-                            </div>
-
-                            <div class="w-full sm:w-1/3 sm:px-3">
-                                @component('cooperation.frontend.layouts.components.form-group', [
-                                    'withInputSource' => false,
-                                    'label' => __('my-account.settings.index.form.building.number'),
-                                    'inputName' => 'building.number',
-                                    'id' => 'number',
-                                ])
-                                    <input type="text" class="form-input" name="building[house_number]"
-                                           id="number"
-                                           value="{{ old('building.house_number', $building->number) }}" required
-                                           autofocus>
-                                @endcomponent
-                            </div>
-
-                            <div class="w-full sm:w-1/3 sm:pl-3">
-                                @component('cooperation.frontend.layouts.components.form-group', [
-                                    'withInputSource' => false,
-                                    'label' => __('my-account.settings.index.form.building.extension'),
-                                    'inputName' => 'building.extension',
-                                    'id' => 'extension',
-                                ])
-                                    <input type="text" class="form-input" name="building[extension]"
-                                           id="house_number_extension"
-                                           value="{{ old('building.extension', $building->extension) }}" autofocus>
-                                @endcomponent
-                            </div>
                         </div>
 
-                        <div class="w-full flex flex-row flex-wrap">
-                            <div class="w-full sm:w-1/2 sm:pr-3">
-                                @component('cooperation.frontend.layouts.components.form-group', [
-                                    'withInputSource' => false,
-                                    'label' => __('my-account.settings.index.form.building.street'),
-                                    'inputName' => 'building.street',
-                                    'id' => 'street',
-                                ])
-                                    <input type="text" class="form-input" name="building[street]" id="street"
-                                           value="{{ old('building.street', $building->street) }}" required
-                                           autofocus>
-                                @endcomponent
-                            </div>
-
-                            <div class="w-full sm:w-1/2 sm:pl-3">
-                                @component('cooperation.frontend.layouts.components.form-group', [
-                                    'withInputSource' => false,
-                                    'label' => __('my-account.settings.index.form.building.city'),
-                                    'inputName' => 'building.city',
-                                    'id' => 'city',
-                                ])
-                                    <input type="text" class="form-input" name="building[city]" id="city"
-                                           value="{{ old('building.city', $building->city) }}" required autofocus>
-                                @endcomponent
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.address', [
+                            'withLabels' => true,
+                            'defaults' => $building,
+                        ])
 
                         <hr class="w-full">
 

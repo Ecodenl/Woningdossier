@@ -189,39 +189,43 @@ class Form extends Scannable
             // Answers have been updated, we save them and dispatch a recalculate
             // at this point we already know that the form is dirty, otherwise this event wouldnt have been dispatched
             foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
-                // Define if we should answer this question...
-                /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                // Rules are conditionally unset. We don't want to save unvalidated answers, but don't want to just
+                // clear them either.
+                if (array_key_exists("filledInAnswers.$toolQuestionShort", $this->rules)) {
+                    // Define if we should answer this question...
+                    /** @var ToolQuestion $toolQuestion */
+                    $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+                    if ($this->building->user->account->can('answer', $toolQuestion)) {
 
-                    // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
-                    // so when we actually start saving it we have to format it one more time
-                    if ($toolQuestion->data_type === Caster::FLOAT) {
-                        $givenAnswer = Caster::init(
-                            $toolQuestion->data_type, $givenAnswer
-                        )->reverseFormatted();
+                        // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
+                        // so when we actually start saving it we have to format it one more time
+                        if ($toolQuestion->data_type === Caster::FLOAT) {
+                            $givenAnswer = Caster::init(
+                                $toolQuestion->data_type, $givenAnswer
+                            )->reverseFormatted();
+                        }
+
+                        // TODO: this is a horrible way to trace dirty answers
+                        $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                        if ($masterAnswer !== $givenAnswer) {
+                            $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        }
+
+                        ToolQuestionService::init($toolQuestion)
+                            ->building($this->building)
+                            ->currentInputSource($this->currentInputSource)
+                            ->applyExampleBuilding()
+                            ->save($givenAnswer);
+
+                        if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
+                            Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
+                            $shouldDoFullRecalculate = true;
+                        }
+
+                        // get the expert step equivalent
+                        // we will filter out duplicates later on.
+                        $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                     }
-
-                    // TODO: this is a horrible way to trace dirty answers
-                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-                    if ($masterAnswer !== $givenAnswer) {
-                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
-                    }
-
-                    ToolQuestionService::init($toolQuestion)
-                        ->building($this->building)
-                        ->currentInputSource($this->currentInputSource)
-                        ->applyExampleBuilding()
-                        ->save($givenAnswer);
-
-                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
-                        Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
-                        $shouldDoFullRecalculate = true;
-                    }
-
-                    // get the expert step equivalent
-                    // we will filter out duplicates later on.
-                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                 }
             }
 

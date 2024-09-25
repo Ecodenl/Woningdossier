@@ -62,17 +62,19 @@ Route::prefix('cooperations')->name('cooperations.')->group(function () {
         Route::resource('home', Cooperation\Admin\SuperAdmin\Cooperation\HomeController::class)
             ->only('index');
 
-        Route::resource('cooperation-admin',
-            Cooperation\Admin\SuperAdmin\Cooperation\CooperationAdminController::class)
+        Route::resource('cooperation-admin', Cooperation\Admin\SuperAdmin\Cooperation\CooperationAdminController::class)
             ->only(['index']);
-        Route::resource('coordinator',
-            Cooperation\Admin\SuperAdmin\Cooperation\CoordinatorController::class)
+        Route::resource('coordinator', Cooperation\Admin\SuperAdmin\Cooperation\CoordinatorController::class)
             ->only(['index']);
         Route::resource('users', Cooperation\Admin\SuperAdmin\Cooperation\UserController::class)
             ->only(['index', 'show', 'create', 'store']);
         Route::post('users/{id}/confirm', [
             Cooperation\Admin\SuperAdmin\Cooperation\UserController::class, 'confirm',])
             ->name('users.confirm');
+        Route::prefix('settings')->as('settings.')->group(function () {
+            Route::get('', [Cooperation\Admin\SuperAdmin\Cooperation\SettingsController::class, 'index'])->name('index');
+            Route::post('', [Cooperation\Admin\SuperAdmin\Cooperation\SettingsController::class, 'store'])->name('store');
+        });
     });
 });
 

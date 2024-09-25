@@ -4,6 +4,7 @@ namespace App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\MediaHelper;
 use App\Helpers\Models\CooperationSettingHelper;
+use App\Helpers\Str;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -28,6 +29,15 @@ class SettingsFormRequest extends FormRequest
     {
         $rules = [
             'cooperation_settings.' . CooperationSettingHelper::SHORT_REGISTER_URL => ['nullable', 'url'],
+            'cooperation_settings.' . CooperationSettingHelper::SHORT_VERIFICATION_EMAIL_TEXT => [
+                'nullable', 'string', 'max:1000', function ($attribute, $value, $fail) {
+                    if (! Str::contains($value, ':verify_link')) {
+                        $fail('Tekst moet ":verify_link" bevatten!');
+                    } elseif (Str::substrCount($value, ':verify_link') > 1) {
+                        $fail('Tekst mag maar 1 keer ":verify_link" bevatten!');
+                    }
+                }
+            ],
         ];
 
         foreach (MediaHelper::getFillableTagsForClass(Cooperation::class) as $tag) {

@@ -43,43 +43,44 @@ class SyncMeasures extends Command
      */
     public function handle(MappingService $mappingService)
     {
+        // Only energy saving measure applications. The maintenace ones don't have subsidy.
         $map = [
-            'floor-insulation' => [2834, 2934],
-            'bottom-insulation' => [2834, 2934],
-            'floor-insulation-research' => [2834, 2934],
-            'cavity-wall-insulation' => [2834, 2933],
-            'facade-wall-insulation' => [2834, 2933],
-            'wall-insulation-research' => [2834, 2933],
-            'glass-in-lead' => [2834, 2936],
-            'hrpp-glass-only' => [2834, 2936],
-            'hrpp-glass-frames' => [2834, 2936],
-            'hr3p-frames' => [2834, 2936],
-            'crack-sealing' => [], // TODO: Nothing in the mapping, but seeing we have a small-measures crack sealing, could this not apply for 4483 also? Or otherwise 4655 (overige energie maatregelen)?
-            'roof-insulation-pitched-inside' => [2834, 2935],
-            'roof-insulation-pitched-replace-tiles' => [2834, 2935],
-            'roof-insulation-flat-current' => [2834, 2935],
-            'roof-insulation-flat-replace-current' => [2834, 2935],
+            'floor-insulation' => [1503, 1555], // Woningisolatie / Vloer
+            'bottom-insulation' => [1503, 1555], // Woningisolatie / Vloer
+            'floor-insulation-research' => [1503, 1555], // Woningisolatie / Vloer
+            'cavity-wall-insulation' => [1503, 1608], // Woningisolatie / Groene daken/gevels
+            'facade-wall-insulation' => [1503, 1608], // Woningisolatie / Groene daken/gevels
+            'wall-insulation-research' => [1503, 1608], // Woningisolatie / Groene daken/gevels
+            'glass-in-lead' => [1503, 1545], // Woningisolatie / Glas
+            'hrpp-glass-only' => [1503, 1545], // Woningisolatie / Glas
+            'hrpp-glass-frames' => [1503, 1545], // Woningisolatie / Glas
+            'hr3p-frames' => [1503, 1545], // Woningisolatie / Glas
+            'crack-sealing' => [],
+            'roof-insulation-pitched-inside' => [1503, 1532], // Woningisolatie / Dak
+            'roof-insulation-pitched-replace-tiles' => [1503, 1532], // Woningisolatie / Dak
+            'roof-insulation-flat-current' => [1503, 1532], // Woningisolatie / Dak
+            'roof-insulation-flat-replace-current' => [1503, 1532], // Woningisolatie / Dak
             'high-efficiency-boiler-replace' => [],
-            'heater-place-replace' => [2837],
-            'solar-panels-place-replace' => [2836],
-            'ventilation-balanced-wtw' => [2937, 2941],
-            'ventilation-decentral-wtw' => [2937, 2941],
-            'ventilation-demand-driven' => [2937],
-            'hybrid-heat-pump-outside-air' => [2835],
-            'hybrid-heat-pump-ventilation-air' => [2835, 2941],
-            'hybrid-heat-pump-pvt-panels' => [2835, 2836],
-            'full-heat-pump-outside-air' => [2835],
-            'full-heat-pump-ground-heat' => [2835],
-            'full-heat-pump-pvt-panels' => [2835, 2836],
-            'heat-pump-boiler-place-replace' => [2941],
-            'save-energy-with-light' => [4483],
-            'energy-efficient-equipment' => [4483],
-            'energy-efficient-installations' => [4483],
-            'save-energy-with-crack-sealing' => [4483],
-            'improve-radiators' => [4483],
-            'improve-heating-installations' => [4483],
-            'save-energy-with-warm-tap-water' => [4483],
-            'general' => [4483],
+            'heater-place-replace' => [1584], // Zonneboiler
+            'solar-panels-place-replace' => [1571], // Zonnepanelen
+            'ventilation-balanced-wtw' => [1581, 1600], // Ventilatie / Warmte-teruglevering uit ventilatielucht
+            'ventilation-decentral-wtw' => [1581, 1600], // Ventilatie / Warmte-teruglevering uit ventilatielucht
+            'ventilation-demand-driven' => [1581], // Ventilatie
+            'hybrid-heat-pump-outside-air' => [1564], // Warmtepomp
+            'hybrid-heat-pump-ventilation-air' => [1564, 1600], // Warmtepomp / Warmte-teruglevering uit ventilatielucht
+            'hybrid-heat-pump-pvt-panels' => [1564, 1571], // Warmtepomp / Zonnepanelen
+            'full-heat-pump-outside-air' => [1564], // Warmtepomp
+            'full-heat-pump-ground-heat' => [1564], // Warmtepomp
+            'full-heat-pump-pvt-panels' => [1564, 1571], // Warmtepomp / Zonnepanelen
+            'heat-pump-boiler-place-replace' => [1564, 1600], // Warmtepomp / Warmte-teruglevering uit ventilatielucht
+            'save-energy-with-light' => [1603], // Kleine energiebesparende maatregelen
+            'energy-efficient-equipment' => [1603], // Kleine energiebesparende maatregelen
+            'energy-efficient-installations' => [1603], // Kleine energiebesparende maatregelen
+            'save-energy-with-crack-sealing' => [1603], // Kleine energiebesparende maatregelen
+            'improve-radiators' => [1603], // Kleine energiebesparende maatregelen
+            'improve-heating-installations' => [1603], // Kleine energiebesparende maatregelen
+            'save-energy-with-warm-tap-water' => [1603], // Kleine energiebesparende maatregelen
+            'general' => [1603] // Kleine energiebesparende maatregelen
         ];
 
         Wrapper::wrapCall(function () use ($map, $mappingService) {

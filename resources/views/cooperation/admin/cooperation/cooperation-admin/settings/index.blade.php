@@ -9,7 +9,13 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.cooperation.cooperation-admin.settings.store')}}"
+                    @php
+                        $action = isset($cooperationToManage) && $cooperationToManage instanceof \App\Models\Cooperation
+                            ? route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.settings.store', compact('cooperation', 'cooperationToManage'))
+                            : route('cooperation.admin.cooperation.cooperation-admin.settings.store');
+                    @endphp
+
+                    <form action="{{ $action }}"
                           enctype="multipart/form-data" method="post">
                         @csrf
                         <div class="row">
@@ -44,23 +50,39 @@
                         </div>
 
                         <div class="row" style="margin-top: 1rem;">
-                            @foreach(CooperationSettingHelper::getAvailableSettings() as $short)
-                                @php 
+                            @foreach(CooperationSettingHelper::getAvailableSettings() as $short => $type)
+                                @php
                                     $kebabShort = Str::kebab(Str::studly($short));
                                     $setting = $cooperationSettings->where('short', $short)->first();
+                                    $colClass = $type === 'input' ? 'col-md-4' : 'col-xs-12';
                                 @endphp
-                                <div class="col-md-4">
+                                <div class="{{ $colClass }}">
                                     @component('layouts.parts.components.form-group', [
                                         'input_name' => "cooperation_settings.{$short}",
                                     ])
                                         <label for="{{$kebabShort}}">
                                             @lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.label")
                                         </label>
-                                        <input id="{{$kebabShort}}" type="text"
-                                               value="{{old("cooperation_settings.{$short}", optional($setting)->value)}}"
-                                               class="form-control"
-                                               placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
-                                               name="cooperation_settings[{{$short}}]">
+                                        <small>
+                                            <br>
+                                            @lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.help")
+                                        </small>
+                                        @switch($type)
+                                            @case('input')
+                                                <input id="{{$kebabShort}}" type="text"
+                                                       value="{{old("cooperation_settings.{$short}", optional($setting)->value)}}"
+                                                       class="form-control"
+                                                       placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
+                                                       name="cooperation_settings[{{$short}}]">
+                                                @break
+                                            @case('textarea')
+                                                <textarea id="{{$kebabShort}}" type="text"
+                                                       class="form-control" rows="10"
+                                                       placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
+                                                       name="cooperation_settings[{{$short}}]"
+                                                >{{old("cooperation_settings.{$short}", optional($setting)->value)}}</textarea>
+                                                @break
+                                        @endswitch
                                     @endcomponent
                                 </div>
                             @endforeach
@@ -73,7 +95,6 @@
                                 </button>
                             </div>
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -81,3 +102,16 @@
     </div>
 @endsection
 
+@push('js')
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
+            let id = '{{ Str::kebab(Str::studly(CooperationSettingHelper::SHORT_VERIFICATION_EMAIL_TEXT)) }}';
+
+            document.getElementById(id).addEventListener('mousedown', function () {
+                if (! this.value) {
+                    this.value = this.placeholder;
+                }
+            }, {once: true});
+        });
+    </script>
+@endpush

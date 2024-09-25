@@ -34,7 +34,6 @@ abstract class Scannable extends Component
     public array $filledInAnswersForAllInputSources = [];
 
     public bool $dirty = false;
-    public bool $automaticallyEvaluate = true;
 
     public function build()
     {
@@ -46,19 +45,17 @@ abstract class Scannable extends Component
         // after that we can fill up the user his given answers
         $this->setFilledInAnswers();
 
-        if ($this->automaticallyEvaluate) {
-            // add the validation for the tool questions
-            $this->setValidationForToolQuestions();
-            // and evaluate the conditions for the tool questions, because we may have to hide questions upon load.
-            $this->evaluateToolQuestions();
-        }
+        // add the validation for the tool questions
+        $this->setValidationForToolQuestions();
+        // and evaluate the conditions for the tool questions, because we may have to hide questions upon load.
+        $this->evaluateToolQuestions();
     }
 
-    abstract function getSubSteppablesProperty();
+    abstract public function getSubSteppablesProperty();
 
-    abstract function getToolQuestionsProperty();
+    abstract public function getToolQuestionsProperty();
 
-    abstract function save();
+    abstract public function save();
 
     protected function setValidationForToolQuestions()
     {
@@ -116,10 +113,8 @@ abstract class Scannable extends Component
             }
         }
 
-        if ($this->automaticallyEvaluate) {
-            $this->setValidationForToolQuestions();
-            $this->evaluateToolQuestions();
-        }
+        $this->setValidationForToolQuestions();
+        $this->evaluateToolQuestions();
 
         $this->refreshAlerts();
 
@@ -136,11 +131,6 @@ abstract class Scannable extends Component
         $conditionsForAllSubSteppables = $this->subSteppables->pluck('conditions')->flatten(1)->filter()->all();
 
         $answers = collect($this->filledInAnswers);
-        // The expert scan has flown over answers. We want to add those for evaluation also, if they exist.
-        // This way, we can reuse this method in both cases.
-        if ($this->hasProperty('intercontinentalAnswers')) {
-            $answers = $answers->merge(collect($this->intercontinentalAnswers));
-        }
 
         $answersForAllSubSteppables = $evaluator->getToolAnswersForConditions(
             $conditionsForAllSubSteppables,
@@ -224,7 +214,6 @@ abstract class Scannable extends Component
                     $this->filledInAnswers[$toolQuestion->short] = Caster::init()->dataType($toolQuestion->data_type)->value($this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
                 }
 
-                // TODO: Check if this should be subject to $this->automaticallyEvaluate
                 $this->setValidationForToolQuestions();
 
                 $this->evaluateToolQuestions();

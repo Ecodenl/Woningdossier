@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OwenIt\Auditing\Contracts\Auditable;
 use Plank\Mediable\Mediable;
 
 /**
@@ -39,9 +40,10 @@ use Plank\Mediable\Mediable;
  * @method static Builder|CooperationSetting withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @mixin \Eloquent
  */
-class CooperationSetting extends Model
+class CooperationSetting extends Model implements Auditable
 {
-    use Mediable;
+    use Mediable,
+        \App\Traits\Models\Auditable;
 
     public $fillable = [
         'cooperation_id', 'short', 'value',

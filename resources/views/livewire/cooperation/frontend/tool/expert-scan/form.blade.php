@@ -21,13 +21,13 @@
     </div>
 
     <!-- This example requires Tailwind CSS v2.0+ -->
-    <div x-data="tabs('{{$step->subSteps->first()->slug}}')"
+    <div x-data="tabs('{{$subSteps->first()->slug}}')"
          x-on:scroll-to-top.window="window.scrollTo({ top: 0, behavior: 'smooth' })"
          wire:ignore.self>
 
         <div class="hidden sm:block">
             <nav class="nav-tabs" aria-label="Tabs">
-                @foreach($step->subSteps as $subStep)
+                @foreach($subSteps as $subStep)
                     <a x-bind="tab" data-tab="{{ $subStep->slug }}" href="#" wire:ignore>
                         {{$subStep->name}}
                     </a>
@@ -35,10 +35,11 @@
             </nav>
         </div>
 
-        @foreach($step->subSteps as $subStep)
+        @foreach($subSteps as $subStep)
             <div x-bind="container" data-tab="{{$subStep->slug}}" wire:ignore.self>
-                <livewire:cooperation.frontend.tool.expert-scan.sub-steppable :step="$step" :subStep="$subStep"
-                                                                              :wire:key="$subStep->id"/>
+                 @include('cooperation.frontend.tool.expert-scan.parts.sub-steppable', [
+                    'subSteppables' => $this->subSteppables->where('sub_step_id', $subStep->id)
+                 ])
             </div>
         @endforeach
     </div>

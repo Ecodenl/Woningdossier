@@ -57,7 +57,7 @@
                                             @lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.label")
                                         </label>
                                         <input id="{{$kebabShort}}" type="text"
-                                               value="{{old("cooperation_settings.{$short}", optional($setting)->value)}}"
+                                               value="{{old("cooperation_settings.{$short}", $setting?->value)}}"
                                                class="form-control"
                                                placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
                                                name="cooperation_settings[{{$short}}]">

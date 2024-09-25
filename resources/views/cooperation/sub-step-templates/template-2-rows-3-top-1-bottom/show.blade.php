@@ -3,14 +3,14 @@
     @php
         // some necessary crap to display the toolQuestions in the right manor
         $topLeftPivot = $this->subSteppables->where('order', 0)->first();
-        $topLeft = optional($topLeftPivot)->subSteppable;
+        $topLeft = $topLeftPivot?->subSteppable;
         $topRightFirstPivot = $this->subSteppables->where('order', 1)->first();
-        $topRightFirst = optional($topRightFirstPivot)->subSteppable;
+        $topRightFirst = $topRightFirstPivot?->subSteppable;
         $topRightSecondPivot = $this->subSteppables->where('order', 2)->first();
-        $topRightSecond = optional($topRightSecondPivot)->subSteppable;
+        $topRightSecond = $topRightSecondPivot?->subSteppable;
 
         $bottomLeftPivot = $this->subSteppables->where('order', 3)->first();
-        $bottomLeft = optional($bottomLeftPivot)->subSteppable;
+        $bottomLeft = $bottomLeftPivot?->subSteppable;
     @endphp
     <div class="w-full flex flex-wrap">
         @if($topLeft instanceof \App\Models\ToolQuestion)

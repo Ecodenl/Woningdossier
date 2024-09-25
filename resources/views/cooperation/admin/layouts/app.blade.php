@@ -53,7 +53,7 @@
                     <div class="row">
                         <div class="col-md-2">
                             <a class="btn btn-default btn-block" style="white-space: normal"
-                               href="{{route('cooperation.admin.super-admin.cooperations.index', ['search' => optional($cooperationToManage)->name])}}">
+                               href="{{route('cooperation.admin.super-admin.cooperations.index', ['search' => $cooperationToManage?->name])}}">
                                 @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.back-to-normal-environment')
                             </a>
                         </div>

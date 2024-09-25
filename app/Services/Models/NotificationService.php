@@ -58,7 +58,7 @@ class NotificationService
         foreach ($uuids as $uuid) {
             Notification::allInputSources()->updateOrCreate(
                 [
-                    'input_source_id' => optional($this->inputSource)->id,
+                    'input_source_id' => $this->inputSource?->id,
                     'type' => $this->type,
                     'uuid' => $uuid,
                     'building_id' => $this->building->id,
@@ -74,7 +74,7 @@ class NotificationService
      */
     public function deactivate()
     {
-        optional($this->getNotification())->delete();
+        $this->getNotification()?->delete();
     }
 
     protected function getNotification(): ?Notification

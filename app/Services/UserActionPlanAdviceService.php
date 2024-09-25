@@ -486,7 +486,7 @@ class UserActionPlanAdviceService
                             ->where('roof_type_id', $roofType->id)
                             ->first();
 
-                        $elementValueId = optional($buildingRoofType)->element_value_id;
+                        $elementValueId = $buildingRoofType?->element_value_id;
                     } else {
                         // Still a quick-scan newbie, we check the tool question
                         $relevantQuestion = ToolQuestion::findByShort('current-roof-insulation');

@@ -54,14 +54,7 @@
             ])
         @endcomponent
 
-        @component('cooperation.mail.parts.centered-button', ['href' => $verifyUrl, 'width' => '200'])
-            @lang('cooperation/mail/confirm-account.button')
-        @endcomponent
-
-        @component('cooperation.mail.components.text')
-            @lang('cooperation/mail/changed-email.button-does-not-work')
-            @include('cooperation.mail.parts.long-ahref', ['href' => $verifyUrl])
-        @endcomponent
+        {!! $verifyLinkContent !!}
 
         @component('cooperation.mail.components.text')
             @lang('cooperation/mail/confirm-account.any-questions', ['cooperation_link' => $cooperationWebsiteHref])

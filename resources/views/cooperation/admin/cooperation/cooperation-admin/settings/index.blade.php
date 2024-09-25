@@ -70,7 +70,7 @@
                                         @switch($type)
                                             @case('input')
                                                 <input id="{{$kebabShort}}" type="text"
-                                                       value="{{old("cooperation_settings.{$short}", optional($setting)->value)}}"
+                                                       value="{{old("cooperation_settings.{$short}", $setting?->value)}}"
                                                        class="form-control"
                                                        placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
                                                        name="cooperation_settings[{{$short}}]">
@@ -80,7 +80,7 @@
                                                        class="form-control" rows="10"
                                                        placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
                                                        name="cooperation_settings[{{$short}}]"
-                                                >{{old("cooperation_settings.{$short}", optional($setting)->value)}}</textarea>
+                                                >{{old("cooperation_settings.{$short}", $setting?->value)}}</textarea>
                                                 @break
                                         @endswitch
                                     @endcomponent

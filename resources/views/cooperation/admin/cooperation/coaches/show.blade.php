@@ -37,7 +37,7 @@
                              */
                             $user = $building->user;
 
-                            $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
+                            $userCreatedAtFormatted = $user->created_at?->format('d-m-Y');
                             $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
 
                             $appointmentDateFormatted = null;

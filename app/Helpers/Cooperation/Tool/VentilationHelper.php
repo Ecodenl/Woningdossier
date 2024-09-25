@@ -104,9 +104,9 @@ class VentilationHelper extends ToolHelper
         $this->setValues([
             'considerables' => $considerables,
             'building_ventilations' => [
-                'how' => optional($buildingVentilation)->how,
-                'living_situation' => optional($buildingVentilation)->living_situation,
-                'usage' => optional($buildingVentilation)->usage,
+                'how' => $buildingVentilation?->how,
+                'living_situation' => $buildingVentilation?->living_situation,
+                'usage' => $buildingVentilation?->usage,
             ],
             'updated_measure_ids' => [],
         ]);

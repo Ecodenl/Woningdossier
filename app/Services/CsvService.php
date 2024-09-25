@@ -101,7 +101,7 @@ class CsvService
 //                }
 
                 /** @var Collection $conversationRequestsForBuilding */
-                $createdAt = optional($user->created_at)->format('Y-m-d');
+                $createdAt = $user->created_at?->format('Y-m-d');
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
                 $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
 

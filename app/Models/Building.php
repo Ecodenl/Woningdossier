@@ -254,7 +254,7 @@ class Building extends Model
                 ->get();
 
             foreach ($toolQuestionAnswers as $index => $toolQuestionAnswer) {
-                $answer = optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer;
+                $answer = $toolQuestionAnswer->toolQuestionCustomValue?->name ?? $toolQuestionAnswer->answer;
                 $answers[$toolQuestionAnswer->inputSource->short][$index] = [
                     'answer' => $answer,
                     'value' => $toolQuestionAnswer->toolQuestionCustomValue->short ?? $answer,
@@ -737,7 +737,7 @@ class Building extends Model
      */
     public function getAppointmentDate()
     {
-        return optional($this->getMostRecentBuildingStatus())->appointment_date;
+        return $this->getMostRecentBuildingStatus()?->appointment_date;
     }
 
     public function getFirstIncompleteStep(Scan $scan, InputSource $inputSource): ?Step

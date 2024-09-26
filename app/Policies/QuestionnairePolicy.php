@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\Question;
@@ -63,6 +64,6 @@ class QuestionnairePolicy
         $cooperationFromQuestionnaire = $questionnaire->cooperation;
 
         // check if the user has the right roles
-        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $cooperationFromQuestionnaire->slug == $currentCooperation->slug;
+        return $user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN]) && $cooperationFromQuestionnaire->slug == $currentCooperation->slug;
     }
 }

@@ -19,12 +19,12 @@ class FileStoragePolicy
     {
         $user = $account->user();
 
-        if ($user->hasRoleAndIsCurrentRole(['super-admin']) && $fileStorage->fileType->short === 'example-building-overview') {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_SUPER_ADMIN]) && $fileStorage->fileType->short === 'example-building-overview') {
             return true;
         }
 
         // some other logic for resident wil come in the near future.
-        if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && $fileStorage->cooperation_id == HoomdossierSession::getCooperation()) {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_COORDINATOR]) && $fileStorage->cooperation_id == HoomdossierSession::getCooperation()) {
             return true;
         }
 

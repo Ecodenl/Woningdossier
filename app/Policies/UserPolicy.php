@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
@@ -29,7 +30,7 @@ class UserPolicy
      */
     public function accessAdmin(User $user): bool
     {
-        return $user->hasAnyRole(['coordinator', 'superuser', 'super-admin', 'coach', 'cooperation-admin']);
+        return $user->hasAnyRole(RoleHelper::ADMIN_ROLES);
     }
 
     public function sendUserInformationToEconobis(Account $account, User $user)
@@ -48,7 +49,9 @@ class UserPolicy
             return false;
         }
 
-        if ($user->hasRoleAndIsCurrentRole(['super-admin', 'cooperation-admin']) && $userToDelete->id != $user->id) {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_SUPER_ADMIN, RoleHelper::ROLE_COOPERATION_ADMIN])
+            && $userToDelete->id != $user->id
+        ) {
             return true;
         }
 
@@ -62,7 +65,7 @@ class UserPolicy
      */
     public function deleteOwnAccount(Account $account)
     {
-        return ! $account->user()->hasRole(['cooperation-admin']);
+        return ! $account->user()->hasRole([RoleHelper::ROLE_COOPERATION_ADMIN]);
     }
 
     /**
@@ -86,9 +89,9 @@ class UserPolicy
     {
         $user = $account->user();
         // if the user is a coach and has a active building coach status, return true
-        if ($user->hasRole('coach') && $user->isNotRemovedFromBuildingCoachStatus($buildingId)) {
+        if ($user->hasRole(RoleHelper::ROLE_COACH) && $user->isNotRemovedFromBuildingCoachStatus($buildingId)) {
             return true;
-        } elseif ($user->hasRole('resident') && HoomdossierSession::getBuilding() == $buildingId) {
+        } elseif ($user->hasRole(RoleHelper::ROLE_RESIDENT) && HoomdossierSession::getBuilding() == $buildingId) {
             return true;
         }
 
@@ -105,7 +108,8 @@ class UserPolicy
     {
         // a coordinator and resident can remove a coach from a conversation
         // also check if the current building id is from the $groupParticipant, cause ifso we cant remove him because he is the building owner
-        return $account->user()->hasRoleAndIsCurrentRole(['resident', 'coordinator', 'cooperation-admin']) && $groupParticipant->hasRole(['coach']);
+        return $account->user()->hasRoleAndIsCurrentRole([RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COACH, RoleHelper::ROLE_COOPERATION_ADMIN])
+               && $groupParticipant->hasRole([RoleHelper::ROLE_COACH]);
     }
 
     /**
@@ -119,14 +123,14 @@ class UserPolicy
     public function assignRole(Account $account, Role $role)
     {
         $user = $account->user();
-        if ($user->hasRoleAndIsCurrentRole('super-admin')) {
-            return in_array($role->name, ['cooperation-admin', 'coordinator', 'coach', 'resident']);
+        if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_SUPER_ADMIN)) {
+            return in_array($role->name, [RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT]);
         }
-        if ($user->hasRoleAndIsCurrentRole('cooperation-admin')) {
-            return in_array($role->name, ['coordinator', 'coach', 'resident']);
+        if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN)) {
+            return in_array($role->name, [RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT]);
         }
-        if ($user->hasRoleAndIsCurrentRole('coordinator')) {
-            return in_array($role->name, ['coordinator', 'coach', 'resident']);
+        if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COORDINATOR)) {
+            return in_array($role->name, [RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT]);
         }
 
         return false;

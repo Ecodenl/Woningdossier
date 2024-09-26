@@ -17,7 +17,7 @@ class CooperationController extends Controller
 
     public function create()
     {
-        $this->authorize('updateOrCreate', Cooperation::class);
+        $this->authorize('create', Cooperation::class);
 
         return view('cooperation.admin.super-admin.cooperations.create');
     }
@@ -25,7 +25,7 @@ class CooperationController extends Controller
 
     public function edit(Cooperation $cooperation, Cooperation $cooperationToEdit)
     {
-        $this->authorize('updateOrCreate', $cooperationToEdit);
+        $this->authorize('update', $cooperationToEdit);
 
         return view('cooperation.admin.super-admin.cooperations.edit', compact('cooperationToEdit'));
     }

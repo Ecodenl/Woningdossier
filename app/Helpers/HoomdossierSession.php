@@ -228,6 +228,17 @@ class HoomdossierSession extends Session
         return '';
     }
 
+    public static function currentRoleIs($role): bool
+    {
+        if (! (\App\Helpers\Cache\Role::findByName($role) instanceof Role)) {
+            return false;
+        }
+
+        $currentRole = self::currentRole('name');
+
+        return $currentRole == $role;
+    }
+
     /**
      * Get the input source id.
      *

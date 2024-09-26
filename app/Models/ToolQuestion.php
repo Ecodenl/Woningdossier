@@ -34,17 +34,17 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $forSpecificInputSource
  * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubSteppable[] $subSteppables
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionAnswer[] $toolQuestionAnswers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestionAnswer> $toolQuestionAnswers
  * @property-read int|null $tool_question_answers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionCustomValue[] $toolQuestionCustomValues
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestionCustomValue> $toolQuestionCustomValues
  * @property-read int|null $tool_question_custom_values_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionValuable[] $toolQuestionValuables
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestionValuable> $toolQuestionValuables
  * @property-read int|null $tool_question_valuables_count
- * @method static \Database\Factories\ToolQuestionFactory factory(...$parameters)
+ * @method static \Database\Factories\ToolQuestionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion findByShortsOrdered($shorts)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newQuery()

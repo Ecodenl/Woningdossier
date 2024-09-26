@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $token
  * @property array|null $abilities
  * @property \Illuminate\Support\Carbon|null $last_used_at
+ * @property \Illuminate\Support\Carbon|null $expires_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Model|\Eloquent $tokenable
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken query()
  * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereAbilities($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereExpiresAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereLastUsedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereName($value)

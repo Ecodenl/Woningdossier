@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read array $translations
  * @property-read \App\Models\ServiceType $serviceType
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ServiceValue[] $values
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ServiceValue> $values
  * @property-read int|null $values_count
  * @method static \Illuminate\Database\Eloquent\Builder|Service newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Service newQuery()

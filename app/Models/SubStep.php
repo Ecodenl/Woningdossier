@@ -22,17 +22,17 @@ use Illuminate\Support\Facades\App;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Model|\Eloquent $commentable
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedSubStep[] $completedSubSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompletedSubStep> $completedSubSteps
  * @property-read int|null $completed_sub_steps_count
  * @property-read array $translations
  * @property-read \App\Models\Step $step
  * @property-read \App\Models\SubStepTemplate|null $subStepTemplate
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubSteppable[] $subSteppables
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestion[] $toolQuestions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestion> $toolQuestions
  * @property-read int|null $tool_questions_count
  * @method static Builder|SubStep bySlug(string $slug, string $locale = 'nl')
- * @method static \Database\Factories\SubStepFactory factory(...$parameters)
+ * @method static \Database\Factories\SubStepFactory factory($count = null, $state = [])
  * @method static Builder|SubStep forScan(\App\Models\Scan $scan)
  * @method static Builder|SubStep newModelQuery()
  * @method static Builder|SubStep newQuery()

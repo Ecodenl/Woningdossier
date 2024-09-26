@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read LanguageLine|null $helpText
- * @property-read \Illuminate\Database\Eloquent\Collection|LanguageLine[] $subQuestions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, LanguageLine> $subQuestions
  * @property-read int|null $sub_questions_count
  * @method static Builder|LanguageLine forGroup($group)
  * @method static Builder|LanguageLine mainQuestions()

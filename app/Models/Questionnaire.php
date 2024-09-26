@@ -14,22 +14,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property array $name
- * @property int|null $step_id
  * @property int $cooperation_id
- * @property int $order
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cooperation $cooperation
  * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionnaireStep[] $questionnaireSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionnaireStep> $questionnaireSteps
  * @property-read int|null $questionnaire_steps_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Question> $questions
  * @property-read int|null $questions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Step> $steps
  * @property-read int|null $steps_count
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire active()
- * @method static \Database\Factories\QuestionnaireFactory factory(...$parameters)
+ * @method static \Database\Factories\QuestionnaireFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forAllCooperations()
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forMyCooperation($cooperationId)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire newModelQuery()
@@ -40,8 +38,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereIsActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereStepId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereUpdatedAt($value)
  * @mixin \Eloquent
  */

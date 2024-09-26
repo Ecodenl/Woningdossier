@@ -26,11 +26,11 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $input_source_id
  * @property string $user_action_plan_advisable_type
  * @property int $user_action_plan_advisable_id
+ * @property int $order
  * @property string|null $category
  * @property bool $visible
  * @property bool $subsidy_available
  * @property bool $loan_available
- * @property int $order
  * @property array|null $costs
  * @property string|null $savings_gas
  * @property string|null $savings_electricity
@@ -41,7 +41,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $step_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\Step|null $step
@@ -50,7 +50,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder|UserActionPlanAdvice allInputSources()
  * @method static Builder|UserActionPlanAdvice category(string $category)
  * @method static Builder|UserActionPlanAdvice cooperationMeasureForType(string $type, \App\Models\InputSource $inputSource)
- * @method static \Database\Factories\UserActionPlanAdviceFactory factory(...$parameters)
+ * @method static \Database\Factories\UserActionPlanAdviceFactory factory($count = null, $state = [])
  * @method static Builder|UserActionPlanAdvice forAdvisable(\Illuminate\Database\Eloquent\Model $advisable)
  * @method static Builder|UserActionPlanAdvice forBuilding($building)
  * @method static Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)

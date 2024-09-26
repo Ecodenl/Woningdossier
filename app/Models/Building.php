@@ -41,52 +41,52 @@ use OwenIt\Auditing\Models\Audit;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[] $buildingCoachStatuses
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingCoachStatus> $buildingCoachStatuses
  * @property-read int|null $building_coach_statuses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingElement> $buildingElements
  * @property-read int|null $building_elements_count
  * @property-read \App\Models\BuildingFeature|null $buildingFeatures
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingNotes> $buildingNotes
  * @property-read int|null $building_notes_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingPermission> $buildingPermissions
  * @property-read int|null $building_permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingService> $buildingServices
  * @property-read int|null $building_services_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[] $buildingStatuses
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingStatus> $buildingStatuses
  * @property-read int|null $building_statuses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingVentilation[] $buildingVentilations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingVentilation> $buildingVentilations
  * @property-read int|null $building_ventilations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[] $completedSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompletedStep> $completedSteps
  * @property-read int|null $completed_steps_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedSubStep[] $completedSubSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompletedSubStep> $completedSubSteps
  * @property-read int|null $completed_sub_steps_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingInsulatedGlazing> $currentInsulatedGlazing
  * @property-read int|null $current_insulated_glazing_count
  * @property-read \App\Models\BuildingPaintworkStatus|null $currentPaintworkStatus
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomMeasureApplication[] $customMeasureApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CustomMeasureApplication> $customMeasureApplications
  * @property-read int|null $custom_measure_applications_count
  * @property-read \App\Models\BuildingHeater|null $heater
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
  * @property-read \App\Models\Municipality|null $municipality
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PrivateMessage> $privateMessages
  * @property-read int|null $private_messages_count
  * @property-read \App\Models\BuildingPvPanel|null $pvPanels
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionsAnswer> $questionAnswers
  * @property-read int|null $question_answers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingRoofType> $roofTypes
  * @property-read int|null $roof_types_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\StepComment[] $stepComments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StepComment> $stepComments
  * @property-read int|null $step_comments_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionAnswer[] $toolQuestionAnswers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestionAnswer> $toolQuestionAnswers
  * @property-read int|null $tool_question_answers_count
  * @property-read \App\Models\User|null $user
- * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
- * @method static \Database\Factories\BuildingFactory factory(...$parameters)
- * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
+ * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
+ * @method static \Database\Factories\BuildingFactory factory($count = null, $state = [])
+ * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
  * @method static Builder|Building newModelQuery()
  * @method static Builder|Building newQuery()
- * @method static \Illuminate\Database\Query\Builder|Building onlyTrashed()
+ * @method static Builder|Building onlyTrashed()
  * @method static Builder|Building query()
  * @method static Builder|Building whereBagAddressid($value)
  * @method static Builder|Building whereBagWoonplaatsId($value)
@@ -111,8 +111,8 @@ use OwenIt\Auditing\Models\Audit;
  * @method static Builder|Building withMediaAndVariantsMatchAll($tags = [])
  * @method static Builder|Building withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @method static Builder|Building withRecentBuildingStatusInformation()
- * @method static \Illuminate\Database\Query\Builder|Building withTrashed()
- * @method static \Illuminate\Database\Query\Builder|Building withoutTrashed()
+ * @method static Builder|Building withTrashed()
+ * @method static Builder|Building withoutTrashed()
  * @mixin \Eloquent
  */
 class Building extends Model

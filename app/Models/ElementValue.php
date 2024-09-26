@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Element $element
  * @property-read int $insulation_factor
  * @property-read array $translations
- * @method static \Database\Factories\ElementValueFactory factory(...$parameters)
+ * @method static \Database\Factories\ElementValueFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue query()

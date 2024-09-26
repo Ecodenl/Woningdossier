@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Model|\Eloquent $mappable
  * @property-read Model|\Eloquent $resolvable
- * @method static \Database\Factories\MappingFactory factory(...$parameters)
+ * @method static \Database\Factories\MappingFactory factory($count = null, $state = [])
  * @method static Builder|Mapping forType(string $type)
  * @method static Builder|Mapping newModelQuery()
  * @method static Builder|Mapping newQuery()

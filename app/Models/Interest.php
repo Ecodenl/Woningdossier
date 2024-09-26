@@ -16,11 +16,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Step> $steps
  * @property-read int|null $steps_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
- * @method static \Database\Factories\InterestFactory factory(...$parameters)
+ * @method static \Database\Factories\InterestFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Interest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Interest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Interest query()

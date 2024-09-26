@@ -25,17 +25,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $scan_id
  * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeasureApplication> $measureApplications
  * @property-read int|null $measure_applications_count
  * @property-read Step|null $parentStep
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $questionnaires
  * @property-read int|null $questionnaires_count
  * @property-read \App\Models\Scan|null $scan
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
  * @method static Builder|Step childrenForStep(\App\Models\Step $step)
  * @method static Builder|Step expert()
- * @method static \Database\Factories\StepFactory factory(...$parameters)
+ * @method static \Database\Factories\StepFactory factory($count = null, $state = [])
  * @method static Builder|Step forScan(\App\Models\Scan $scan)
  * @method static Builder|Step newModelQuery()
  * @method static Builder|Step newQuery()

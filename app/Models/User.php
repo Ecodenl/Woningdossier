@@ -24,57 +24,56 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $first_name
  * @property string $last_name
  * @property string $phone_number
- * @property string|null $last_visited_url
  * @property array|null $extra
  * @property bool $allow_access
  * @property \Illuminate\Support\Carbon|null $tool_last_changed_at
+ * @property string|null $last_visited_url
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $refreshing_regulations
  * @property-read \App\Models\Account|null $account
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $actionPlanAdvices
  * @property-read int|null $action_plan_advices_count
  * @property-read \App\Models\Building|null $building
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingNotes> $buildingNotes
  * @property-read int|null $building_notes_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingPermission> $buildingPermissions
  * @property-read int|null $building_permissions_count
- * @property-read \Plank\Mediable\MediableCollection|\App\Models\Building[] $buildings
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Building> $buildings
  * @property-read int|null $buildings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $completedQuestionnaires
  * @property-read int|null $completed_questionnaires_count
  * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read \Plank\Mediable\MediableCollection|\App\Models\Cooperation[] $cooperations
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Cooperation> $cooperations
  * @property-read int|null $cooperations_count
  * @property-read \App\Models\UserEnergyHabit|null $energyHabit
  * @property-read mixed $email
  * @property-read mixed $is_admin
  * @property-read mixed $old_email_token
  * @property-read mixed $oldemail
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Interest> $interests
  * @property-read int|null $interests_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Log> $logs
  * @property-read int|null $logs_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserMotivation> $motivations
  * @property-read int|null $motivations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NotificationSetting[] $notificationSettings
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationSetting> $notificationSettings
  * @property-read int|null $notification_settings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Role> $roles
  * @property-read int|null $roles_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdviceComments> $userActionPlanAdviceComments
  * @property-read int|null $user_action_plan_advice_comments_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserCost[] $userCosts
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserCost> $userCosts
  * @property-read int|null $user_costs_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserInterest> $userInterests
  * @property-read int|null $user_interests_count
  * @method static Builder|User byContact($contact)
  * @method static Builder|User econobisContacts()
- * @method static \Database\Factories\UserFactory factory(...$parameters)
+ * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static Builder|User forAllCooperations()
  * @method static Builder|User forMyCooperation($cooperationId)
  * @method static Builder|User newModelQuery()
@@ -92,7 +91,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder|User whereLastName($value)
  * @method static Builder|User whereLastVisitedUrl($value)
  * @method static Builder|User wherePhoneNumber($value)
- * @method static Builder|User whereRefreshingRegulations($value)
  * @method static Builder|User whereRegulationsRefreshedAt($value)
  * @method static Builder|User whereToolLastChangedAt($value)
  * @method static Builder|User whereUpdatedAt($value)

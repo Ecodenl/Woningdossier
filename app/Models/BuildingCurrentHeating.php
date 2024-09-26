@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\BuildingCurrentHeating
  *
  * @property int $id
- * @property string $name
+ * @property mixed $name
  * @property int $calculate_value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

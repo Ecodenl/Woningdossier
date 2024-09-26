@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CooperationPresetContent[] $cooperationPresetContents
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CooperationPresetContent> $cooperationPresetContents
  * @property-read int|null $cooperation_preset_contents_count
  * @method static \Illuminate\Database\Eloquent\Builder|CooperationPreset newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CooperationPreset newQuery()

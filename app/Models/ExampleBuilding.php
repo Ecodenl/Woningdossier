@@ -19,7 +19,7 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\BuildingType|null $buildingType
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExampleBuildingContent> $contents
  * @property-read int|null $contents_count
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read array $translations

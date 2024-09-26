@@ -28,13 +28,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Cooperation $cooperation
  * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
  * @method static Builder|CooperationMeasureApplication extensiveMeasures()
- * @method static \Database\Factories\CooperationMeasureApplicationFactory factory(...$parameters)
+ * @method static \Database\Factories\CooperationMeasureApplicationFactory factory($count = null, $state = [])
  * @method static Builder|CooperationMeasureApplication newModelQuery()
  * @method static Builder|CooperationMeasureApplication newQuery()
- * @method static \Illuminate\Database\Query\Builder|CooperationMeasureApplication onlyTrashed()
+ * @method static Builder|CooperationMeasureApplication onlyTrashed()
  * @method static Builder|CooperationMeasureApplication query()
  * @method static Builder|CooperationMeasureApplication smallMeasures()
  * @method static Builder|CooperationMeasureApplication whereCooperationId($value)
@@ -49,8 +49,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder|CooperationMeasureApplication whereName($value)
  * @method static Builder|CooperationMeasureApplication whereSavingsMoney($value)
  * @method static Builder|CooperationMeasureApplication whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|CooperationMeasureApplication withTrashed()
- * @method static \Illuminate\Database\Query\Builder|CooperationMeasureApplication withoutTrashed()
+ * @method static Builder|CooperationMeasureApplication withTrashed()
+ * @method static Builder|CooperationMeasureApplication withoutTrashed()
  * @mixin \Eloquent
  */
 class CooperationMeasureApplication extends Model

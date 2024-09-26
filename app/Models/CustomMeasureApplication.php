@@ -24,10 +24,10 @@ use Spatie\Translatable\HasTranslations;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read array $translations
  * @property-read \App\Models\InputSource $inputSource
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
  * @method static Builder|CustomMeasureApplication allInputSources()
- * @method static \Database\Factories\CustomMeasureApplicationFactory factory(...$parameters)
+ * @method static \Database\Factories\CustomMeasureApplicationFactory factory($count = null, $state = [])
  * @method static Builder|CustomMeasureApplication forBuilding($building)
  * @method static Builder|CustomMeasureApplication forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder|CustomMeasureApplication forMe(?\App\Models\User $user = null)

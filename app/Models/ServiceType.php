@@ -14,12 +14,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $iso
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingService> $buildingServices
  * @property-read int|null $building_services_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Element[] $elements
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Element> $elements
  * @property-read int|null $elements_count
  * @property-read array $translations
- * @method static \Database\Factories\ServiceTypeFactory factory(...$parameters)
+ * @method static \Database\Factories\ServiceTypeFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceType query()

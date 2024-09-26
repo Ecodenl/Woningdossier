@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\BuildingHeating|null $heating
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\ElementValue|null $insulation
- * @property-read \App\Models\MeasureApplication $measureApplication
+ * @property-read \App\Models\MeasureApplication|null $measureApplication
  * @property-read \App\Models\RoofType $roofType
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forBuilding($building)

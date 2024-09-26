@@ -38,10 +38,10 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read string $info
  * @property-read string $name
  * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Interest> $interests
  * @property-read int|null $interests_count
  * @property-read \App\Models\Step $step
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
  * @method static Builder|MeasureApplication measureType(string $measureType)
  * @method static Builder|MeasureApplication newModelQuery()

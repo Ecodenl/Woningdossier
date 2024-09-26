@@ -1,5 +1,5 @@
 @push('css')
-    {{-- Styling so hidden select2 doesn't get crappy width --}}
+    {{-- Styling to ensure the hidden select2 element doesn't inherit an incorrect width --}}
     <style>
         span.select2-container {
             width: 100% !important;

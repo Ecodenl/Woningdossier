@@ -36,8 +36,8 @@ class UserActionPlanAdvicePolicy
     {
         $authorize = $user->users()->pluck('id')->contains($userActionPlanAdvice->user_id);
 
-        // we want to log this, as this is not meant to happen
-        // it means the user is trying to fuck up hoomdossier
+        // we want to log this, as this is not meant to happen,
+        // it means the user is trying to mess up hoomdossier
         // or something is wrong with our own code.
         if (! $authorize) {
             // Okay, so the user isn't a direct owner of the advice, but perhaps it's a coach, editing for the user...

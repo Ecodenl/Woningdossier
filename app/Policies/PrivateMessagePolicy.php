@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\PrivateMessage;
 use App\Models\User;
@@ -33,15 +34,15 @@ class PrivateMessagePolicy
         $buildingId = $message->building_id;
 
         // note the order
-        if ($user->hasRoleAndIsCurrentRole(['coordinator', 'coordinator-admin'])) {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_SUPER_ADMIN])) {
             return true;
         }
 
-        if ($user->hasRoleAndIsCurrentRole(['coach'])) {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH])) {
             return $user->isNotRemovedFromBuildingCoachStatus($buildingId);
         }
 
-        if ($user->hasRoleAndIsCurrentRole(['resident'])) {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_RESIDENT])) {
             if (in_array(HoomdossierSession::getBuilding(), compact('buildingId'))) {
                 return true;
             }

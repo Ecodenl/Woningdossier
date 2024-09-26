@@ -13,30 +13,21 @@ class PrivateMessagePolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
-    /**
-     * Determine if the given message can be edited by the user.
-     *
-     * @return bool
-     */
-    public function edit(Account $account, PrivateMessage $message)
+    public function isAllowed(Account $account, PrivateMessage|string|null $message)
     {
         $user = $account->user();
-        // get the building id from the message
-        $buildingId = $message->building_id;
 
         // note the order
         if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN])) {
             return true;
         }
+
+        if (! $message instanceof PrivateMessage) {
+            return false;
+        }
+
+        // get the building id from the message
+        $buildingId = $message->building_id;
 
         if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH])) {
             return $user->isNotRemovedFromBuildingCoachStatus($buildingId);
@@ -49,5 +40,15 @@ class PrivateMessagePolicy
         }
 
         return false;
+    }
+
+    public function view(Account $account)
+    {
+        return $this->isAllowed($account, PrivateMessage::class);
+    }
+
+    public function edit(Account $account, PrivateMessage $message)
+    {
+        return $this->isAllowed($account, $message);
     }
 }

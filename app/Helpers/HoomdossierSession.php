@@ -60,7 +60,7 @@ class HoomdossierSession extends Session
      *
      * @return int|Cooperation|null
      */
-    public static function getCooperation($object = false)
+    public static function getCooperation($object = false): int|Cooperation|null
     {
         $cooperation = self::get('cooperation');
 
@@ -246,7 +246,7 @@ class HoomdossierSession extends Session
      *
      * @return int|InputSource|null
      */
-    public static function getInputSource($object = false)
+    public static function getInputSource($object = false): int|InputSource|null
     {
         $id = self::getHoomdossierSession('input_source_id');
         if (! $object) {

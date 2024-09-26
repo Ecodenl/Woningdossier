@@ -73,7 +73,7 @@ class RolePolicy
     public function delete(Account $account, Role $role, User $user, Role $currentUserRole, User $userToRemoveRoleFrom)
     {
         // its not possible to delete the user its only available role
-        if ($userToRemoveRoleFrom->hasNotMultipleRoles() && $role->id === $userToRemoveRoleFrom->roles->first()->id) {
+        if ($userToRemoveRoleFrom->hasNotMultipleRoles() && $role->id === $userToRemoveRoleFrom->roles->first()?->id) {
             return false;
         }
         if ($this->userRoleService->forCurrentRole($currentUserRole)->canManage($role)) {

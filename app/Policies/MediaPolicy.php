@@ -18,7 +18,7 @@ class MediaPolicy
     public function before(Account $user, $ability, $media, InputSource $inputSource, Building $building)
     {
         // If user owns the building he can do everything.
-        if ($building->id === $user->user()->building->id) {
+        if ($building->id === $user->user()->building?->id) {
             return true;
         } elseif ($inputSource->short === InputSource::COACH_SHORT) {
             // A coach is not allowed to do anything if he isn't coupled.
@@ -110,7 +110,7 @@ class MediaPolicy
 
     public function shareWithCooperation(Account $user, Media $media, InputSource $inputSource, Building $building): bool
     {
-        return $building->id === $user->user()->building->id;
+        return $building->id === $user->user()->building?->id;
     }
 
     private function isCooperation(InputSource $inputSource): bool

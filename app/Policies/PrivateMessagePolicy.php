@@ -34,7 +34,7 @@ class PrivateMessagePolicy
         $buildingId = $message->building_id;
 
         // note the order
-        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_SUPER_ADMIN])) {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN])) {
             return true;
         }
 

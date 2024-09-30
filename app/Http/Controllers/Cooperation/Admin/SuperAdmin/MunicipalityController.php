@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\MappingHelper;
 use App\Helpers\Wrapper;
 use App\Http\Controllers\Controller;
@@ -37,12 +39,12 @@ class MunicipalityController extends Controller
         ));
     }
     
-    public function create(Cooperation $cooperation)
+    public function create(Cooperation $cooperation): View
     {
         return view('cooperation.admin.super-admin.municipalities.create');
     }
 
-    public function store(MunicipalityRequest $request, Cooperation $cooperation)
+    public function store(MunicipalityRequest $request, Cooperation $cooperation): RedirectResponse
     {
         $data = $request->validated()['municipalities'];
         $municipality = Municipality::create($data);
@@ -51,7 +53,7 @@ class MunicipalityController extends Controller
             ->with('success', __('cooperation/admin/super-admin/municipalities.store.success'));
     }
 
-    public function show(Cooperation $cooperation, Municipality $municipality, MunicipalityService $municipalityService)
+    public function show(Cooperation $cooperation, Municipality $municipality, MunicipalityService $municipalityService): View
     {
         $municipalityService->forMunicipality($municipality);
         $bagMunicipalities = $municipalityService->getAvailableBagMunicipalities();
@@ -64,12 +66,12 @@ class MunicipalityController extends Controller
         );
     }
 
-    public function edit(Cooperation $cooperation, Municipality $municipality)
+    public function edit(Cooperation $cooperation, Municipality $municipality): View
     {
         return view('cooperation.admin.super-admin.municipalities.edit', compact('municipality'));
     }
 
-    public function update(MunicipalityRequest $request, Cooperation $cooperation, Municipality $municipality)
+    public function update(MunicipalityRequest $request, Cooperation $cooperation, Municipality $municipality): RedirectResponse
     {
         $data = $request->validated()['municipalities'];
         $municipality->update($data);
@@ -78,7 +80,7 @@ class MunicipalityController extends Controller
             ->with('success', __('cooperation/admin/super-admin/municipalities.update.success'));
     }
 
-    public function couple(MunicipalityCoupleRequest $request, Cooperation $cooperation, Municipality $municipality)
+    public function couple(MunicipalityCoupleRequest $request, Cooperation $cooperation, Municipality $municipality): RedirectResponse
     {
         $data = $request->validated();
 

@@ -136,7 +136,7 @@ return new class extends Migration
      * @param string $userColumn
      * @param string $tablePrimaryKey
      */
-    protected function copyTableDataForSiblings($table, $userColumn = 'user_id', $tablePrimaryKey = 'id')
+    protected function copyTableDataForSiblings(string $table, string $userColumn = 'user_id', string $tablePrimaryKey = 'id')
     {
         $rows = DB::table($table)->get();
         /** @var stdClass $row */

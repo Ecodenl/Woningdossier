@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingNoteRequest;
@@ -14,7 +15,7 @@ class BuildingNoteController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(BuildingNoteRequest $request)
+    public function store(BuildingNoteRequest $request): RedirectResponse
     {
         $note = $request->input('building.note');
         $buildingId = $request->input('building.id');

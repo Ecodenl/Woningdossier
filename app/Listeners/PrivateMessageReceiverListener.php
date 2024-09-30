@@ -29,7 +29,7 @@ class PrivateMessageReceiverListener
      *
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         $authenticatedUser = $event->authenticatable;
         $isClient = $authenticatedUser instanceof Client;

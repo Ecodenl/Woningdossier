@@ -196,7 +196,7 @@ class UserService
      *
      * @return User
      */
-    public static function register(Cooperation $cooperation, array $roles, array $registerData)
+    public static function register(Cooperation $cooperation, array $roles, array $registerData): User
     {
         $email = $registerData['email'];
         // try to obtain the existing account
@@ -299,7 +299,7 @@ class UserService
      *
      * @throws \Exception
      */
-    public static function deleteUser(User $user, $shouldForceDeleteBuilding = false)
+    public static function deleteUser(User $user, bool $shouldForceDeleteBuilding = false)
     {
         $accountId = $user->account_id;
         $building = $user->building;
@@ -361,7 +361,7 @@ class UserService
      * @throws \Exception
      *
      */
-    public static function merge(User $user1, User $user2)
+    public static function merge(User $user1, User $user2): User
     {
         // The simple cases: where we can just update the user_id or coach_id
         $tables = [

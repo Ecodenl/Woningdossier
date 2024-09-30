@@ -19,7 +19,7 @@ class HouseNumberExtension extends LocaleBasedRule implements Rule
      *
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         if (empty($this->country)) {
             return false;
@@ -37,7 +37,7 @@ class HouseNumberExtension extends LocaleBasedRule implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return trans('validation.house_number_extension');
     }

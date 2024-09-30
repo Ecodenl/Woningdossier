@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class PhoneNumberTest extends TestCase
 {
-    public static function phoneNumberProvider()
+    public static function phoneNumberProvider(): array
     {
         return [
             ['nl', '+31612345678', true],

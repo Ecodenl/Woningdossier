@@ -22,7 +22,7 @@ class SetMessagesReadForBuilding
      *
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         $building = $event->building;
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 use App\Calculations\WallInsulation;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
@@ -32,7 +34,7 @@ class WallInsulationController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(LegacyService $legacyService)
+    public function index(LegacyService $legacyService): View
     {
         $typeIds = [3];
 
@@ -137,7 +139,7 @@ class WallInsulationController extends ToolController
         return $this->completeStore($this->step, $building, $inputSource);
     }
 
-    public function calculate(WallInsulationRequest $request)
+    public function calculate(WallInsulationRequest $request): JsonResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;

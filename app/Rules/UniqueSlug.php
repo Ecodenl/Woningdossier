@@ -30,7 +30,7 @@ class UniqueSlug extends LocaleBasedRule implements Rule
      *
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         $instance = new $this->class;
 
@@ -57,7 +57,7 @@ class UniqueSlug extends LocaleBasedRule implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return __('validation.unique');
     }

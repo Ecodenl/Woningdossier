@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation;
 
+use Illuminate\View\View;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
@@ -16,7 +17,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);

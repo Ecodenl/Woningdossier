@@ -32,7 +32,7 @@ class BuildingStatusService
      *
      * @return void
      */
-    public function setStatus($status)
+    public function setStatus($status): void
     {
         $statusModel = $this->resolveStatusModel($status);
 

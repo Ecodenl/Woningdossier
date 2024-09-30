@@ -57,7 +57,7 @@ class QuestionnaireRequest extends FormRequest
      *
      * @return array
      */
-    public function makeRules()
+    public function makeRules(): array
     {
         $validationRules = [];
 

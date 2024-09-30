@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\MappingHelper;
 use App\Helpers\Wrapper;
 use App\Http\Controllers\Controller;
@@ -14,21 +16,21 @@ use Illuminate\Support\Arr;
 
 class MeasureCategoryController extends Controller
 {
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         $measureCategories = MeasureCategory::all();
 
         return view('cooperation.admin.super-admin.measure-categories.index', compact('measureCategories'));
     }
     
-    public function create(Cooperation $cooperation)
+    public function create(Cooperation $cooperation): View
     {
         $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
 
         return view('cooperation.admin.super-admin.measure-categories.create', compact('measures'));
     }
 
-    public function store(MeasureCategoryRequest $request, Cooperation $cooperation, MappingService $mappingService)
+    public function store(MeasureCategoryRequest $request, Cooperation $cooperation, MappingService $mappingService): RedirectResponse
     {
         $data = $request->validated();
         $categoryData = $data['measure_categories'];
@@ -49,7 +51,7 @@ class MeasureCategoryController extends Controller
             ->with('success', __('cooperation/admin/super-admin/measure-categories.store.success'));
     }
 
-    public function edit(Cooperation $cooperation, MeasureCategory $measureCategory, MappingService $mappingService)
+    public function edit(Cooperation $cooperation, MeasureCategory $measureCategory, MappingService $mappingService): View
     {
         $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
         $currentMapping = $mappingService
@@ -61,7 +63,7 @@ class MeasureCategoryController extends Controller
         return view('cooperation.admin.super-admin.measure-categories.edit', compact('measureCategory', 'measures', 'currentMapping'));
     }
 
-    public function update(MeasureCategoryRequest $request, Cooperation $cooperation, MeasureCategory $measureCategory, MappingService $mappingService)
+    public function update(MeasureCategoryRequest $request, Cooperation $cooperation, MeasureCategory $measureCategory, MappingService $mappingService): RedirectResponse
     {
         $data = $request->validated();
         $categoryData = $data['measure_categories'];

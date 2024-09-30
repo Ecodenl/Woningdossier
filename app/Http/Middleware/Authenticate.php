@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Http\Request;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware
@@ -13,7 +14,7 @@ class Authenticate extends Middleware
      *
      * @return string
      */
-    protected function redirectTo($request): string
+    protected function redirectTo(Request $request): string
     {
         // Apparently the route binding has not happened yet, so we manually set it to the route.
         $params = ['cooperation' => $request->route('cooperation')];

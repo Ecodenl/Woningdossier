@@ -106,7 +106,7 @@ class BuildingRoofType extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function insulation()
+    public function insulation(): BelongsTo
     {
         return $this->elementValue();
     }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
+use Illuminate\View\View;
+use Illuminate\Http\Response;
 use App\Helpers\Arr;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\QuestionnaireRequest;
@@ -21,7 +23,7 @@ class QuestionnaireController extends Controller
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(): View
     {
         $questionnaires = Questionnaire::all();
 
@@ -32,7 +34,7 @@ class QuestionnaireController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('create', Questionnaire::class);
 
@@ -85,7 +87,7 @@ class QuestionnaireController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(Cooperation $cooperation, Questionnaire $questionnaire)
+    public function edit(Cooperation $cooperation, Questionnaire $questionnaire): View
     {
         $this->authorize('update', $questionnaire);
 
@@ -152,7 +154,7 @@ class QuestionnaireController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function destroy(Cooperation $cooperation, Questionnaire $questionnaire)
+    public function destroy(Cooperation $cooperation, Questionnaire $questionnaire): Response
     {
         // TODO: Maybe we want to fix questionnaire_step order?
         $questionnaire->delete();
@@ -169,7 +171,7 @@ class QuestionnaireController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function deleteQuestion(Cooperation $cooperation, $questionId)
+    public function deleteQuestion(Cooperation $cooperation, $questionId): Response
     {
         $question = Question::find($questionId);
 
@@ -195,7 +197,7 @@ class QuestionnaireController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function deleteQuestionOption(Cooperation $cooperation, $questionId, $questionOptionId)
+    public function deleteQuestionOption(Cooperation $cooperation, $questionId, $questionOptionId): Response
     {
         $question = Question::find($questionId);
         // since a newly added question that is not saved yet, can still be deleted. If that happens we would get an exception which we dont want

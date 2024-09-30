@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class BankInterestCalculatorTest extends TestCase
 {
-    public static function dataProvider()
+    public static function dataProvider(): array
     {
         return [
             [

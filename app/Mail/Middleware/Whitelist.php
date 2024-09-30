@@ -25,7 +25,7 @@ class Whitelist
      *
      * @return void
      */
-    public function handle($mail, Closure $next)
+    public function handle($mail, Closure $next): void
     {
         /** @var \Illuminate\Mail\Mailable $mailable */
         $mailable = $mail->mailable;

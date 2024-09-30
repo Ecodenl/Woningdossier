@@ -13,7 +13,7 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
      *
      * @return string
      */
-    public function create(CanResetPasswordContract $user)
+    public function create(CanResetPasswordContract $user): string
     {
         $email = $user->getEmailForPasswordReset();
 
@@ -36,7 +36,7 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
      *
      * @return bool
      */
-    public function exists(CanResetPasswordContract $user, $token)
+    public function exists(CanResetPasswordContract $user, string $token): bool
     {
         // retrieve all the password resets
         $records = $this->getTable()->where(

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use Illuminate\Http\JsonResponse;
 use App\Events\Registered;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
@@ -70,7 +71,7 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function checkExistingEmail(Request $request, Cooperation $cooperation, ?Cooperation $forCooperation = null)
+    public function checkExistingEmail(Request $request, Cooperation $cooperation, ?Cooperation $forCooperation = null): JsonResponse
     {
         $cooperationToCheckFor = $forCooperation instanceof Cooperation ? $forCooperation : $cooperation;
 

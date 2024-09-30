@@ -148,7 +148,7 @@ class Step extends Model
      *
      * @return Builder
      */
-    public function scopeWithoutChildren(Builder $query)
+    public function scopeWithoutChildren(Builder $query): Builder
     {
         return $query->where('parent_id', null);
     }

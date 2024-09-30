@@ -115,7 +115,7 @@ class Question extends Model
      *
      * @return bool
      */
-    public function hasQuestionOptions()
+    public function hasQuestionOptions(): bool
     {
         if ($this->questionOptions()->first() instanceof QuestionOption) {
             return true;

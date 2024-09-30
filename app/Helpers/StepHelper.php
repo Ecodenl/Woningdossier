@@ -77,7 +77,7 @@ class StepHelper
      *
      * @return void
      */
-    public static function complete(Step $step, Building $building, InputSource $inputSource)
+    public static function complete(Step $step, Building $building, InputSource $inputSource): void
     {
         CompletedStep::allInputSources()->firstOrCreate([
             'step_id' => $step->id,
@@ -109,7 +109,7 @@ class StepHelper
      * @return void
      * @throws \Exception
      */
-    public static function incomplete(Step $step, Building $building, InputSource $inputSource)
+    public static function incomplete(Step $step, Building $building, InputSource $inputSource): void
     {
         optional(CompletedStep::allInputSources()->where([
             'step_id' => $step->id,

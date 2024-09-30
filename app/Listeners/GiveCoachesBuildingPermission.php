@@ -20,7 +20,7 @@ class GiveCoachesBuildingPermission
      *
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         $user = $event->user;
         $building = $event->building;

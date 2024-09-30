@@ -26,7 +26,7 @@ class SolarPanel
      *
      * @return array
      */
-    public static function calculate(Building $building, array $calculateData)
+    public static function calculate(Building $building, array $calculateData): array
     {
         $result = [
             'yield_electricity' => 0,

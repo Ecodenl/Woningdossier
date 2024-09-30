@@ -18,7 +18,7 @@ class BuildingDataCopyServiceTest extends TestCase
     }
 
 
-    public function makeTargetsValuesProvider()
+    public function makeTargetsValuesProvider(): array
     {
         return [
             [

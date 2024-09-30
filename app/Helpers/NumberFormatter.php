@@ -73,7 +73,7 @@ class NumberFormatter
      *
      * @return int|string
      */
-    public static function format($number, $decimals = 0, $shouldRoundNumber = false)
+    public static function format($number, int $decimals = 0, bool $shouldRoundNumber = false)
     {
         $locale = app()->getLocale();
         if (is_null($number)) {
@@ -106,7 +106,7 @@ class NumberFormatter
      *
      * @return string
      */
-    public static function mathableFormat($number, $decimals = 0)
+    public static function mathableFormat($number, int $decimals = 0): string
     {
         $number = str_replace(',', '.', $number);
 
@@ -228,7 +228,7 @@ class NumberFormatter
      *
      * @return string
      */
-    protected static function countAndRemoveDownToOne($number, $sign)
+    protected static function countAndRemoveDownToOne(string $number, string $sign): string
     {
         $decimalSignCount = substr_count($number, '.');
 

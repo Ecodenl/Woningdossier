@@ -55,7 +55,7 @@ class KeyFigures implements KeyFiguresInterface
      *
      * @return PvPanelLocationFactor|null
      */
-    public static function getLocationFactor($zipcode)
+    public static function getLocationFactor($zipcode): ?PvPanelLocationFactor
     {
         $pc2 = substr($zipcode, 0, 2);
 
@@ -67,7 +67,7 @@ class KeyFigures implements KeyFiguresInterface
      *
      * @return PvPanelYield|null
      */
-    public static function getYield(PvPanelOrientation $orientation, $angle)
+    public static function getYield(PvPanelOrientation $orientation, $angle): ?PvPanelYield
     {
         return PvPanelYield::where('pv_panel_orientation_id', $orientation->id)
             ->where('angle', $angle)->first();
@@ -88,7 +88,7 @@ class KeyFigures implements KeyFiguresInterface
      *
      * @return array
      */
-    public static function getKeyFigures()
+    public static function getKeyFigures(): array
     {
         return [
             'COST_WP' => self::COST_WP,

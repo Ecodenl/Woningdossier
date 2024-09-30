@@ -27,7 +27,7 @@ class LogFillingToolForUserListener implements ShouldQueue
      *
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         $building = $event->building;
         $buildingOwner = $building->user;

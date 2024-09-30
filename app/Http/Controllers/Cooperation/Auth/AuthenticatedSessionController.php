@@ -47,7 +47,7 @@ class AuthenticatedSessionController extends \Laravel\Fortify\Http\Controllers\A
      *
      * @return array
      */
-    protected function credentials(Request $request)
+    protected function credentials(Request $request): array
     {
         return array_merge($request->only(Fortify::username(), 'password'), ['active' => 1]);
     }

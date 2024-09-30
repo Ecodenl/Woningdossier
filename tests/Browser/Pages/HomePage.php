@@ -11,7 +11,7 @@ class HomePage extends Page
      *
      * @return string
      */
-    public function url()
+    public function url(): string
     {
         return '/';
     }
@@ -21,7 +21,7 @@ class HomePage extends Page
      *
      * @return void
      */
-    public function assert(Browser $browser)
+    public function assert(Browser $browser): void
     {
     }
 
@@ -30,7 +30,7 @@ class HomePage extends Page
      *
      * @return array
      */
-    public function elements()
+    public function elements(): array
     {
         return [
             '@element' => '#selector',

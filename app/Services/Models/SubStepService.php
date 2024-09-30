@@ -45,7 +45,7 @@ class SubStepService
      *
      * @return void
      */
-    public function complete()
+    public function complete(): void
     {
         CompletedSubStep::allInputSources()->firstOrCreate([
             'sub_step_id' => $this->subStep->id,
@@ -59,7 +59,7 @@ class SubStepService
      *
      * @return void
      */
-    public function incomplete()
+    public function incomplete(): void
     {
         optional(CompletedSubStep::allInputSources()->where([
             'sub_step_id' => $this->subStep->id,

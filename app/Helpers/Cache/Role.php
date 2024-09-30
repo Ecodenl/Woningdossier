@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Cache;
 
+use App\Models\Role;
 use Illuminate\Support\Facades\Cache;
 
 class Role extends BaseCache
@@ -14,7 +15,7 @@ class Role extends BaseCache
      *
      * @return \App\Models\Role|null
      */
-    public static function find($id)
+    public static function find(int $id): ?Role
     {
         return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),

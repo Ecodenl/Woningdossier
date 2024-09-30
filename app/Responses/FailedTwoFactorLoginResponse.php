@@ -2,6 +2,8 @@
 
 namespace App\Responses;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\FailedTwoFactorLoginResponse as FailedTwoFactorLoginResponseContract;
 
@@ -13,7 +15,7 @@ class FailedTwoFactorLoginResponse implements FailedTwoFactorLoginResponseContra
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function toResponse($request)
+    public function toResponse(Request $request): Response
     {
         [$key, $message] = $request->filled('recovery_code')
             ? ['recovery_code', __('validation.custom.recovery_code')]

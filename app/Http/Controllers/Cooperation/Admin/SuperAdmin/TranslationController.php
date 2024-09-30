@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\LanguageLine;
@@ -16,7 +18,7 @@ class TranslationController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(): View
     {
         $steps = Step::whereNotIn('short', [
             'heat-pump', 'heater', 'high-efficiency-boiler',
@@ -82,7 +84,7 @@ class TranslationController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Cooperation $cooperation, $group)
+    public function update(Request $request, Cooperation $cooperation, $group): RedirectResponse
     {
         $languageLinesData = $request->get('language_lines', []);
 

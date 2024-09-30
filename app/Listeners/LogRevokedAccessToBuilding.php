@@ -25,7 +25,7 @@ class LogRevokedAccessToBuilding
      *
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         Log::create([
             'loggable_type' => User::class,

@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Cache;
 
+use App\Models\Status;
 use Illuminate\Support\Facades\Cache;
 
 class Status extends BaseCache
@@ -13,7 +14,7 @@ class Status extends BaseCache
      *
      * @return \App\Models\Status|null
      */
-    public static function find($id)
+    public static function find(int $id): ?Status
     {
         return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),

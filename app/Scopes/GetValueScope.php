@@ -14,7 +14,7 @@ class GetValueScope implements Scope
      *
      * @return void
      */
-    public function apply(Builder $builder, Model $model)
+    public function apply(Builder $builder, Model $model): void
     {
         $inputSourceValueId = HoomdossierSession::getInputSourceValue();
 

@@ -33,7 +33,7 @@ class Str extends \Illuminate\Support\Str
      *
      * @param string $uuid The string to check
      */
-    public static function isValidUuid($uuid): bool
+    public static function isValidUuid(string $uuid): bool
     {
         if (! is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
             return false;
@@ -78,7 +78,7 @@ class Str extends \Illuminate\Support\Str
      *
      * @return string
      */
-    protected static function randomUuid()
+    protected static function randomUuid(): string
     {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
             mt_rand(0, 0xffff), mt_rand(0, 0xffff),
@@ -141,7 +141,7 @@ class Str extends \Illuminate\Support\Str
      *
      * @return bool
      */
-    public static function arrContains(array $array, $needle, bool $ignoreCase = false)
+    public static function arrContains(array $array, $needle, bool $ignoreCase = false): bool
     {
         $needle = $ignoreCase ? strtolower($needle) : $needle;
 
@@ -171,7 +171,7 @@ class Str extends \Illuminate\Support\Str
      *
      * @return bool
      */
-    public static function arrStartsWith(array $array, $needle, bool $ignoreCase = false)
+    public static function arrStartsWith(array $array, $needle, bool $ignoreCase = false): bool
     {
         $needle = $ignoreCase ? strtolower($needle) : $needle;
 

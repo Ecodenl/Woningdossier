@@ -29,7 +29,7 @@ class ValidateElementKey implements Rule
      *
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         $element = Element::findByShort($this->elementShort);
 
@@ -50,7 +50,7 @@ class ValidateElementKey implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'Er is iets fout gegaan, probeer het opnieuw';
     }

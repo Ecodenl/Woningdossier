@@ -24,7 +24,7 @@ class ClauseBuilder
      *
      * @return $this
      */
-    public function orClause(Clause $clause)
+    public function orClause(Clause $clause): static
     {
         $this->clauses [] = $clause;
 
@@ -38,7 +38,7 @@ class ClauseBuilder
      *
      * @return ClauseBuilder
      */
-    public static function fromArray(array $conditions)
+    public static function fromArray(array $conditions): ClauseBuilder
     {
         $clauses = [];
         foreach ($conditions as $andClauses) {
@@ -62,7 +62,7 @@ class ClauseBuilder
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $result = [];
         foreach ($this->clauses as $andClauses) {

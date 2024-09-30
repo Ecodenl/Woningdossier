@@ -13,9 +13,9 @@ class CsvHelper
      * @param bool   $csvHeaderAsArrayKeys
      */
     public static function toArray(
-        $file,
-        $delimiter = ',',
-        $csvHeaderAsArrayKeys = true
+        string $file,
+        string $delimiter = ',',
+        bool $csvHeaderAsArrayKeys = true
     ): array {
         $header = null;
         $updatedHeader = null;

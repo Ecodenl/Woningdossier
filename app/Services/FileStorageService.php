@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Http\RedirectResponse;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
@@ -28,7 +29,7 @@ class FileStorageService
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public static function download($fileStorage)
+    public static function download($fileStorage): RedirectResponse
     {
         // when exist return the download
         if (\Storage::disk('downloads')->exists($fileStorage->filename)) {

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 use App\Calculations\SolarPanel;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
@@ -27,7 +29,7 @@ class SolarPanelsController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(LegacyService $legacyService)
+    public function index(LegacyService $legacyService): View
     {
         $typeIds = [7];
 
@@ -72,7 +74,7 @@ class SolarPanelsController extends ToolController
         );
     }
 
-    public function calculate(Request $request)
+    public function calculate(Request $request): JsonResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         $result = SolarPanel::calculate($building, $request->all());

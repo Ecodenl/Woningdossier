@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
@@ -18,7 +20,7 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id')
             ->orderBy('order');
@@ -38,12 +40,12 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(Cooperation $cooperation)
+    public function create(Cooperation $cooperation): View
     {
         return view('cooperation.admin.example-buildings.create');
     }
 
-    public function edit(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
+    public function edit(Cooperation $cooperation, ExampleBuilding $exampleBuilding): View
     {
         $exampleBuilding->load([
             'contents' => function (Relation $query) {
@@ -62,7 +64,7 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function destroy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
+    public function destroy(Cooperation $cooperation, ExampleBuilding $exampleBuilding): RedirectResponse
     {
         $exampleBuilding->delete();
 
@@ -77,7 +79,7 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
+    public function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding): RedirectResponse
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuildingContents = $exampleBuilding->contents;

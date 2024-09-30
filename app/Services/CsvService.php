@@ -245,7 +245,7 @@ class CsvService
      *
      * @return float|int|string
      */
-    protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false)
+    protected static function formatOutput(string $column, $value, int $decimals = 0, bool $shouldRound = false)
     {
         if (in_array($column, ['percentage_consumption']) ||
             false !== stristr($column, 'savings_') ||
@@ -277,7 +277,7 @@ class CsvService
      *
      * @return bool
      */
-    protected static function isYear($column, $extraValue = '')
+    protected static function isYear(string $column, string $extraValue = ''): bool
     {
         if (!is_null($column)) {
             if (false !== stristr($column, 'year')) {

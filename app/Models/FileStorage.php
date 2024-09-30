@@ -87,7 +87,7 @@ class FileStorage extends Model
      *
      * @return Builder
      */
-    public function scopeWithExpired(Builder $query)
+    public function scopeWithExpired(Builder $query): Builder
     {
         return $query->withoutGlobalScope(new AvailableScope());
     }
@@ -97,7 +97,7 @@ class FileStorage extends Model
      *
      * @return Builder
      */
-    public function scopeLeaveOutPersonalFiles(Builder $query)
+    public function scopeLeaveOutPersonalFiles(Builder $query): Builder
     {
         return $query->whereNull('building_id');
     }
@@ -107,7 +107,7 @@ class FileStorage extends Model
      *
      * @return Builder
      */
-    public function scopeBeingProcessed(Builder $query)
+    public function scopeBeingProcessed(Builder $query): Builder
     {
         return $query->where('is_being_processed', true);
     }
@@ -117,7 +117,7 @@ class FileStorage extends Model
      *
      * @return Builder
      */
-    public function scopeMostRecent(Builder $query, Questionnaire $questionnaire = null)
+    public function scopeMostRecent(Builder $query, Questionnaire $questionnaire = null): Builder
     {
         if ($questionnaire instanceof Questionnaire) {
             return $query->orderByDesc('created_at')->where('questionnaire_id', $questionnaire->id);

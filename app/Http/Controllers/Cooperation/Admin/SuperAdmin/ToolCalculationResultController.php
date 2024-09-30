@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\ToolCalculationResultFormRequest;
 use App\Models\Cooperation;
@@ -13,7 +15,7 @@ class ToolCalculationResultController extends Controller
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(): View
     {
         $toolCalculationResults = ToolCalculationResult::where('short', 'LIKE', '%heat-pump%')
             ->orWhere('short', 'LIKE', '%sun-boiler%')
@@ -29,7 +31,7 @@ class ToolCalculationResultController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function edit(Cooperation $cooperation, ToolCalculationResult $toolCalculationResult)
+    public function edit(Cooperation $cooperation, ToolCalculationResult $toolCalculationResult): View
     {
         return view('cooperation.admin.super-admin.tool-calculation-results.edit', compact('toolCalculationResult'));
     }
@@ -41,7 +43,7 @@ class ToolCalculationResultController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(ToolCalculationResultFormRequest $request, Cooperation $cooperation, ToolCalculationResult $toolCalculationResult)
+    public function update(ToolCalculationResultFormRequest $request, Cooperation $cooperation, ToolCalculationResult $toolCalculationResult): RedirectResponse
     {
         $toolCalculationResult->update($request->validated()['tool_calculation_results']);
 

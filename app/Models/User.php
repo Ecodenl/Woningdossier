@@ -205,7 +205,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userInterestsForSpecificType($interestedInType, $interestedInId, InputSource $inputSource = null)
+    public function userInterestsForSpecificType($interestedInType, $interestedInId, InputSource $inputSource = null): HasMany
     {
         if ($inputSource instanceof InputSource) {
             return $this->userInterests()
@@ -259,7 +259,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return mixed|null
      */
-    public function getAccountProperty($property)
+    public function getAccountProperty(string $property)
     {
         \Log::debug('Account property ' . $property . ' is accessed via User!');
         if ($this->account instanceof Account) {
@@ -299,7 +299,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return bool
      */
-    public function retrievesNotifications($notificationTypeShort)
+    public function retrievesNotifications($notificationTypeShort): bool
     {
         $notificationType = NotificationType::where('short', $notificationTypeShort)->first();
         $notInterestedInterval = NotificationInterval::where('short', 'no-interest')->first();
@@ -533,7 +533,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return bool
      */
-    public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null)
+    public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null): bool
     {
         $query = $this->completedQuestionnaires()
             ->where('questionnaire_id', $questionnaire->id);
@@ -560,7 +560,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return string
      */
-    public function getAuthPassword()
+    public function getAuthPassword(): string
     {
         return $this->account->password;
     }
@@ -570,7 +570,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return string
      */
-    public function getEmailForPasswordReset()
+    public function getEmailForPasswordReset(): string
     {
         return $this->account->email;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\HoomdossierSession;
@@ -67,7 +68,7 @@ class ExampleBuilding extends Model
      *
      * @return void
      */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -102,7 +103,7 @@ class ExampleBuilding extends Model
      *
      * @return ExampleBuildingContent|null
      */
-    public function getContentForYear($year)
+    public function getContentForYear($year): ?ExampleBuildingContent
     {
         $content = $this->contents()
                     ->where('build_year', '<=', $year)
@@ -141,7 +142,7 @@ class ExampleBuilding extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForMyCooperation($query)
+    public function scopeForMyCooperation(Builder $query): Builder
     {
         $cooperationId = ! empty(HoomdossierSession::getCooperation()) ? HoomdossierSession::getCooperation() : 0;
 
@@ -155,7 +156,7 @@ class ExampleBuilding extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForAnyOrMyCooperation($query)
+    public function scopeForAnyOrMyCooperation(Builder $query): Builder
     {
         $cooperationId = \Session::get('cooperation', 0);
 
@@ -169,7 +170,7 @@ class ExampleBuilding extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeGeneric($query)
+    public function scopeGeneric(Builder $query): Builder
     {
         return $query->whereNull('cooperation_id');
     }

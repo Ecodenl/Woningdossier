@@ -29,7 +29,7 @@ class QuestionnairePolicy
      *
      * @return bool
      */
-    public function setActiveStatus(Account $account, Questionnaire $questionnaire)
+    public function setActiveStatus(Account $account, Questionnaire $questionnaire): bool
     {
         // same logic (for now)
         return $this->update($account, $questionnaire);

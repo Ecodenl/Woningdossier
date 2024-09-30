@@ -86,7 +86,7 @@ class Account extends Authenticatable implements MustVerifyEmail
      *
      * @return void
      */
-    public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification(string $token): void
     {
         $this->notify(new ResetPasswordNotification($token, $this, $this->user()->cooperation));
     }
@@ -96,7 +96,7 @@ class Account extends Authenticatable implements MustVerifyEmail
      *
      * @return void
      */
-    public function sendEmailVerificationNotification()
+    public function sendEmailVerificationNotification(): void
     {
         $this->notify(new VerifyEmailNotification($this->user()));
     }

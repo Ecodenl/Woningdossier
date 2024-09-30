@@ -31,7 +31,7 @@ class CreateTargetlessMappingForMunicipality implements ShouldQueue
      * @param  object  $event
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         $this->mappingService
             ->from($event->municipalityName)

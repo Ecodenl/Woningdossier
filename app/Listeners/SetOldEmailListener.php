@@ -28,7 +28,7 @@ class SetOldEmailListener implements ShouldQueue
      *
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         $account = $event->account;
         $user = $event->user;

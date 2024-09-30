@@ -402,7 +402,7 @@ class Building extends Model
      *
      * @return bool
      */
-    public function hasCompleted(Step $step, InputSource $inputSource = null)
+    public function hasCompleted(Step $step, InputSource $inputSource = null): bool
     {
         if ($inputSource instanceof InputSource) {
             return $this->completedSteps()
@@ -477,7 +477,7 @@ class Building extends Model
      *
      * @return bool
      */
-    public function hasNotCompleted(Step $step, InputSource $inputSource = null)
+    public function hasNotCompleted(Step $step, InputSource $inputSource = null): bool
     {
         return !$this->hasCompleted($step, $inputSource);
     }
@@ -545,7 +545,7 @@ class Building extends Model
      *
      * @return BuildingElement|null
      */
-    public function getBuildingElement($short, InputSource $inputSource = null)
+    public function getBuildingElement($short, InputSource $inputSource = null): ?BuildingElement
     {
         if ($inputSource instanceof InputSource) {
             return $this->buildingElements()
@@ -598,7 +598,7 @@ class Building extends Model
      *
      * @return BuildingService|null
      */
-    public function getBuildingService($short, InputSource $inputSource)
+    public function getBuildingService(string $short, InputSource $inputSource): ?BuildingService
     {
         return $this->buildingServices()
             ->forInputSource($inputSource)
@@ -624,7 +624,7 @@ class Building extends Model
      *
      * @return BuildingType|null
      */
-    public function getBuildingType(InputSource $inputSource)
+    public function getBuildingType(InputSource $inputSource): ?BuildingType
     {
         $buildingFeature = $this->buildingFeatures()->forInputSource(
             $inputSource
@@ -726,7 +726,7 @@ class Building extends Model
      *
      * @return BuildingStatus|null
      */
-    public function getMostRecentBuildingStatus()
+    public function getMostRecentBuildingStatus(): ?BuildingStatus
     {
         return $this->buildingStatuses()->with('status')->mostRecent()->first();
     }

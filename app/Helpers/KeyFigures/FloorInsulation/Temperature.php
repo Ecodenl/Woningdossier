@@ -24,7 +24,7 @@ class Temperature implements KeyFiguresInterface
      *
      * @return string|null Null on failure
      */
-    public static function energySavingFigureFloorInsulation($measure)
+    public static function energySavingFigureFloorInsulation(string $measure): ?string
     {
         if (! array_key_exists($measure, self::$calculationValues)) {
             return null;
@@ -38,7 +38,7 @@ class Temperature implements KeyFiguresInterface
      *
      * @return array
      */
-    public static function getKeyFigures()
+    public static function getKeyFigures(): array
     {
         $figures = [];
 

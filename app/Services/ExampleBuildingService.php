@@ -39,7 +39,7 @@ class ExampleBuildingService
      *
      * @return void
      */
-    public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $building, InputSource $inputSource)
+    public static function apply(ExampleBuilding $exampleBuilding, int $buildYear, Building $building, InputSource $inputSource): void
     {
         // used to check if there is a answer available.
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);

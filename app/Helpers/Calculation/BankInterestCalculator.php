@@ -46,7 +46,7 @@ class BankInterestCalculator
      *
      * @return int
      */
-    public static function tw($amountPerTerm, $interest = self::BANK_INTEREST_PER_YEAR, $period = self::INTEREST_PERIOD)
+    public static function tw(float $amountPerTerm, int $interest = self::BANK_INTEREST_PER_YEAR, int $period = self::INTEREST_PERIOD): int
     {
         $amount = $amountPerTerm;
         for ($year = 1; $year < $period; ++$year) {

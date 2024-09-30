@@ -20,7 +20,7 @@ class PrivateMessageService
      *
      * @return bool
      */
-    public static function create(Request $request)
+    public static function create(Request $request): bool
     {
         $message = strip_tags($request->get('message', ''));
 

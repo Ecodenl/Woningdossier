@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
@@ -80,7 +82,7 @@ class BuildingController extends Controller
         );
     }
 
-    public function edit(Cooperation $cooperation, Building $building)
+    public function edit(Cooperation $cooperation, Building $building): View
     {
         $user = $building->user()->with('account')->first();
         $account = $user->account;
@@ -88,7 +90,7 @@ class BuildingController extends Controller
         return view('cooperation.admin.buildings.edit', compact('building', 'user', 'account'));
     }
 
-    public function update(BuildingFormRequest $request, Cooperation $cooperation, Building $building)
+    public function update(BuildingFormRequest $request, Cooperation $cooperation, Building $building): RedirectResponse
     {
         $validatedData = $request->validated();
         if (! is_null($validatedData['users']['extra']['contact_id'] ?? null)) {

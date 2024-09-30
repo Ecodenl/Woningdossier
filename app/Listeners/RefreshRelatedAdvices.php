@@ -35,7 +35,7 @@ class RefreshRelatedAdvices implements ShouldQueue
      * @return void
      * @throws \Exception
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         $measureModel = $event->measureModel;
         $advisableModels = [

@@ -23,7 +23,7 @@ class ParticipantRevokedListener
      *
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         $participantFullName = $event->revokedParticipant->getFullName();
         $message = __('woningdossier.cooperation.chat.messages.participant-removed', ['participant' => $participantFullName]);

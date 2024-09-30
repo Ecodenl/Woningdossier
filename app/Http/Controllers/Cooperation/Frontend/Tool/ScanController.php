@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Frontend\Tool;
 
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Scan;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class ScanController extends Controller
 {
-    public function redirect(Cooperation $cooperation, Scan $scan)
+    public function redirect(Cooperation $cooperation, Scan $scan): RedirectResponse
     {
         Log::debug('ScanController::redirect');
 

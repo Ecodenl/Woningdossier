@@ -60,7 +60,7 @@ class FileStoragePolicy
      *
      * @return bool
      */
-    public function store(Account $account, FileStorage $fileStorage, FileType $fileType)
+    public function store(Account $account, FileStorage $fileStorage, FileType $fileType): bool
     {
         $user = $account->user();
         switch ($fileType->short) {

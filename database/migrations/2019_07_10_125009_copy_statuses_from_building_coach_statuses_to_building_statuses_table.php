@@ -93,7 +93,7 @@ return new class extends Migration
      *
      * @return bool
      */
-    private function statusIsCopyable($buildingCoachStatus)
+    private function statusIsCopyable($buildingCoachStatus): bool
     {
         return ! in_array($buildingCoachStatus->status, ['removed']);
     }

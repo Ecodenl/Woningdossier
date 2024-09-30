@@ -37,7 +37,7 @@ class Kengetallen
      *
      * @return float
      */
-    public static function gasKwhPerM3()
+    public static function gasKwhPerM3(): float
     {
         return self::GAS_CALORIFIC_VALUE / self::GAS_CONVERSION_FACTOR;
     }

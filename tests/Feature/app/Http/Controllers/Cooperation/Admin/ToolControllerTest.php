@@ -40,7 +40,7 @@ class ToolControllerTest extends TestCase
 
     protected $followRedirects = true;
 
-    public function routeProvider()
+    public function routeProvider(): array
     {
         return [
             ['cooperation.admin.tool.fill-for-user'],
@@ -48,7 +48,7 @@ class ToolControllerTest extends TestCase
         ];
     }
 
-    public function routeEventProvider()
+    public function routeEventProvider(): array
     {
         return [
             ['cooperation.admin.tool.fill-for-user', FillingToolForUserEvent::class],

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
@@ -32,7 +34,7 @@ class FileStorageController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function download(Cooperation $cooperation, FileStorage $fileStorage)
+    public function download(Cooperation $cooperation, FileStorage $fileStorage): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         // because of the global scope on the file storage its impossible to retrieve a file from a other cooperation
@@ -47,7 +49,7 @@ class FileStorageController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function checkIfFileIsBeingProcessed(Cooperation $cooperation, FileType $fileType)
+    public function checkIfFileIsBeingProcessed(Cooperation $cooperation, FileType $fileType): JsonResponse
     {
         $user = Hoomdossier::user();
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -83,7 +85,7 @@ class FileStorageController extends Controller
         ]);
     }
 
-    public function store(Cooperation $cooperation, FileType $fileType, FileStorageFormRequest $request)
+    public function store(Cooperation $cooperation, FileType $fileType, FileStorageFormRequest $request): RedirectResponse
     {
         if ($fileType->isBeingProcessed()) {
             return redirect()->back();

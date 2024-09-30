@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\User;
@@ -49,7 +50,7 @@ class CreateBuildingFormRequest extends FormRequest
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function getValidatorInstance()
+    protected function getValidatorInstance(): Validator
     {
         // Add new data field before it gets sent to the validator
         //$this->merge(array('date_of_birth' => 'test'));

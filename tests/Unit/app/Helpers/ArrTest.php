@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class ArrTest extends TestCase
 {
-    public static function isWholeArrayEmptyProvider()
+    public static function isWholeArrayEmptyProvider(): array
     {
         return [
             [

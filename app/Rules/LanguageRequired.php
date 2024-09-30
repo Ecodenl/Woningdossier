@@ -18,7 +18,7 @@ class LanguageRequired implements Rule
      * @param string $requiredLocale
      * @param string $required
      */
-    public function __construct($requiredLocale = 'nl', $required = true)
+    public function __construct(string $requiredLocale = 'nl', string $required = true)
     {
         $this->requiredLocale = $requiredLocale;
         $this->required = $required;
@@ -32,7 +32,7 @@ class LanguageRequired implements Rule
      *
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         $this->attribute = $attribute;
         $requiredTranslation = $value[$this->requiredLocale] ?? null;
@@ -50,7 +50,7 @@ class LanguageRequired implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return __('validation.custom-rules.language-required', [
             'attribute' => __('validation.attributes')[$this->attribute] ?? $this->attribute,

@@ -118,7 +118,7 @@ class SuccessFullLoginListener
      *
      * @return void
      */
-    private function ensureCooperationIsSet()
+    private function ensureCooperationIsSet(): void
     {
         /** @var Cooperation|string $cooperation */
         $cooperation = request()->route('cooperation');

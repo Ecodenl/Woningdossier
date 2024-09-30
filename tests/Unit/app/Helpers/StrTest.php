@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class StrTest extends TestCase
 {
-    public static function isConsideredEmptyAnswerProvider()
+    public static function isConsideredEmptyAnswerProvider(): array
     {
         return [
             [null, true],
@@ -32,7 +32,7 @@ class StrTest extends TestCase
         $this->assertEquals($expected, Str::isConsideredEmptyAnswer($values));
     }
 
-    public static function lcfirstProvider()
+    public static function lcfirstProvider(): array
     {
         return [
             [0, '0'],
@@ -51,7 +51,7 @@ class StrTest extends TestCase
         $this->assertEquals($expected, Str::lcfirst($value));
     }
 
-    public static function isValidJsonProvider()
+    public static function isValidJsonProvider(): array
     {
         return [
             ['{"has_crawlspace":"yes","access":"yes"}', true, true],
@@ -75,7 +75,7 @@ class StrTest extends TestCase
         $this->assertEquals($expected, Str::isValidJson($value, $arrayOnly));
     }
 
-    public static function arrContainsProvider()
+    public static function arrContainsProvider(): array
     {
         return [
             [[], null, false, false],
@@ -109,7 +109,7 @@ class StrTest extends TestCase
         $this->assertEquals($expected, Str::arrContains($array, $needle, $ignoreCase));
     }
 
-    public static function arrStartsWithProvider()
+    public static function arrStartsWithProvider(): array
     {
         return [
             [[], null, false, false],
@@ -143,7 +143,7 @@ class StrTest extends TestCase
         $this->assertEquals($expected, Str::arrStartsWith($array, $needle, $ignoreCase));
     }
 
-    public static function arrKeyStartsWithProvider()
+    public static function arrKeyStartsWithProvider(): array
     {
         return [
             [[], null, false, false],
@@ -182,7 +182,7 @@ class StrTest extends TestCase
         $this->assertEquals($expected, Str::arrKeyStartsWith($array, $needle, $ignoreCase));
     }
 
-    public static function htmlArrToDotProvider()
+    public static function htmlArrToDotProvider(): array
     {
         return [
             ['table[column]', 'table.column'],
@@ -200,7 +200,7 @@ class StrTest extends TestCase
         $this->assertEquals($expected, Str::htmlArrToDot($value));
     }
 
-    public function dotToHtmlProvider()
+    public function dotToHtmlProvider(): array
     {
         return [
             ['', false, ''],
@@ -226,7 +226,7 @@ class StrTest extends TestCase
         $this->assertEquals($expected, Str::dotToHtml($dottedName, $asArray));
     }
 
-    public static function hasReplaceablesProvider()
+    public static function hasReplaceablesProvider(): array
     {
         return [
             ['this is :name', true],

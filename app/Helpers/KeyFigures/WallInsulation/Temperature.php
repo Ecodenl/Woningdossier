@@ -42,7 +42,7 @@ class Temperature implements KeyFiguresInterface
      *
      * @return string|null Null on failure
      */
-    public static function energySavingFigureWallInsulation($measure, $avgHouseTemp)
+    public static function energySavingFigureWallInsulation(string $measure, $avgHouseTemp): ?string
     {
         if (! array_key_exists($measure, self::$calculationValues)) {
             return null;
@@ -58,7 +58,7 @@ class Temperature implements KeyFiguresInterface
      *
      * @return array
      */
-    public static function getKeyFigures()
+    public static function getKeyFigures(): array
     {
         return [
             'AVERAGE_TEMPERATURE_NORM' => self::AVERAGE_TEMPERATURE_NORM,

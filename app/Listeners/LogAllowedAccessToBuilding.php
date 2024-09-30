@@ -23,7 +23,7 @@ class LogAllowedAccessToBuilding
      *
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         /** @var User $user */
         $user = $event->user;

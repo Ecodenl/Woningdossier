@@ -138,7 +138,7 @@ class SendNotifications extends Command
      *
      * @return bool
      */
-    protected function almostMoreThanOneDayAgo(\DateInterval $diff)
+    protected function almostMoreThanOneDayAgo(\DateInterval $diff): bool
     {
         if (! \App::environment('production')) {
             return $diff->h >= 1 || $diff->days >= 1;
@@ -159,7 +159,7 @@ class SendNotifications extends Command
      *
      * @return bool
      */
-    protected function almostMoreThanOneWeekAgo(\DateInterval $diff)
+    protected function almostMoreThanOneWeekAgo(\DateInterval $diff): bool
     {
         if (! \App::environment('production')) {
             return $diff->h >= 4 || $diff->days >= 1;

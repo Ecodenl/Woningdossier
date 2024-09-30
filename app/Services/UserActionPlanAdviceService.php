@@ -227,7 +227,7 @@ class UserActionPlanAdviceService
      *
      * @return array
      */
-    public static function getCategorizedActionPlan(User $user, InputSource $inputSource, $withAdvices = true)
+    public static function getCategorizedActionPlan(User $user, InputSource $inputSource, bool $withAdvices = true): array
     {
         $result = [];
 

@@ -20,7 +20,7 @@ class EnsureCooperationHasEconobisLink
      * @param  callable  $next
      * @return mixed
      */
-    public function handle($job, $next): void
+    public function handle($job, callable $next): void
     {
         $wildcard = $this->cooperation->econobis_wildcard;
         $apiKey = $this->cooperation->econobis_api_key;

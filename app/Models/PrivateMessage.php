@@ -72,7 +72,7 @@ class PrivateMessage extends Model
      *
      * @return bool
      */
-    public static function isPublic(PrivateMessage $privateMessage)
+    public static function isPublic(PrivateMessage $privateMessage): bool
     {
         if ($privateMessage->is_public) {
             return true;
@@ -86,7 +86,7 @@ class PrivateMessage extends Model
      *
      * @return bool
      */
-    public static function isPrivate(PrivateMessage $privateMessage)
+    public static function isPrivate(PrivateMessage $privateMessage): bool
     {
         return ! self::isPublic($privateMessage);
     }
@@ -96,7 +96,7 @@ class PrivateMessage extends Model
      *
      * @return PrivateMessage
      */
-    public function scopeMyPrivateMessages($query)
+    public function scopeMyPrivateMessages($query): PrivateMessage
     {
         return $query->where('to_user_id', Hoomdossier::user()->id);
     }
@@ -106,7 +106,7 @@ class PrivateMessage extends Model
      *
      * @return $this
      */
-    public static function scopeConversation($query, $buildingId)
+    public static function scopeConversation($query, $buildingId): static
     {
         return $query->where('building_id', $buildingId)->orderBy('created_at');
     }
@@ -150,7 +150,7 @@ class PrivateMessage extends Model
      *
      * @return Cooperation|null
      */
-    public function getReceivingCooperation()
+    public function getReceivingCooperation(): ?Cooperation
     {
         $receivingCooperationId = $this->to_cooperation_id;
         if (empty($receivingCooperationId)) {
@@ -165,7 +165,7 @@ class PrivateMessage extends Model
      *
      * @return Cooperation|null
      */
-    public function getSendingCooperation()
+    public function getSendingCooperation(): ?Cooperation
     {
         $sendingCooperationId = $this->from_cooperation_id;
         if (empty($sendingCooperationId)) {

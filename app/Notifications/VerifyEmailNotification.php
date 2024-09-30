@@ -45,7 +45,7 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      *
      * @return string
      */
-    protected function verificationUrl($notifiable)
+    protected function verificationUrl($notifiable): string
     {
         return URL::temporarySignedRoute(
             'cooperation.auth.verification.verify',

@@ -40,7 +40,7 @@ class BuildingPolicy
      *
      * @return bool
      */
-    public function show(Account $account, Building $building)
+    public function show(Account $account, Building $building): bool
     {
         $user = $account->user();
         if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COACH)) {
@@ -62,7 +62,7 @@ class BuildingPolicy
      *
      * @return bool
      */
-    public function talkToResident(Account $account, Building $building)
+    public function talkToResident(Account $account, Building $building): bool
     {
         $user = $account->user();
         if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COACH)) {

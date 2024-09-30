@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class HouseNumberTest extends TestCase
 {
-    public static function houseNumberProvider()
+    public static function houseNumberProvider(): array
     {
         return [
             ['nl', '1', true],

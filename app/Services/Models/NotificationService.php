@@ -72,7 +72,7 @@ class NotificationService
      *
      * @return void
      */
-    public function deactivate()
+    public function deactivate(): void
     {
         $this->getNotification()?->delete();
     }

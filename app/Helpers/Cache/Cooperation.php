@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Cache;
 
+use App\Models\Cooperation;
 use Illuminate\Support\Facades\Cache;
 
 class Cooperation extends BaseCache
@@ -14,7 +15,7 @@ class Cooperation extends BaseCache
      *
      * @return \App\Models\Cooperation|null
      */
-    public static function find($id)
+    public static function find(int $id): ?Cooperation
     {
         return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),

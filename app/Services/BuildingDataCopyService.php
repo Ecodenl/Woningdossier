@@ -261,7 +261,7 @@ class BuildingDataCopyService
      * @param string $buildingOrUserColumn
      * @param string $buildingOrUserId
      */
-    public static function updateOrInsert(InputSource $to, $fromValue, $toValue, $toValueQuery, string $buildingOrUserColumn, string $buildingOrUserId)
+    public static function updateOrInsert(InputSource $to, ?stdClass $fromValue, ?stdClass $toValue, $toValueQuery, string $buildingOrUserColumn, string $buildingOrUserId)
     {
         if ($toValue instanceof \stdClass) {
             // if the source has no valid data we dont do a update
@@ -301,7 +301,7 @@ class BuildingDataCopyService
      *
      * @return bool
      */
-    private static function keyNeedsUpdate($key)
+    private static function keyNeedsUpdate(string $key): bool
     {
         $keysToNotUpdate = [
             'id', 'building_id', 'input_source_id', 'created_at', 'updated_at', 'comment', 'additional_info',
@@ -326,7 +326,7 @@ class BuildingDataCopyService
      *
      * @return bool
      */
-    private static function isRadioInput($key)
+    private static function isRadioInput(string $key): bool
     {
         return in_array($key, ['cavity_wall', 'monument', 'facade_plastered_painted']);
     }

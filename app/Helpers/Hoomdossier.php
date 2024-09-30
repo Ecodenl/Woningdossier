@@ -21,7 +21,7 @@ class Hoomdossier
      * @return bool
      * @deprecated rather use Str::contains
      */
-    public static function columnContains(string $column, string $needle)
+    public static function columnContains(string $column, string $needle): bool
     {
         return false !== stristr($column, $needle);
     }
@@ -85,7 +85,7 @@ class Hoomdossier
      * Return the most credible value from a given collection.
      *
      */
-    public static function getMostCredibleValueFromCollection(Collection $results, $column, $default = null)
+    public static function getMostCredibleValueFromCollection(Collection $results, string $column, $default = null)
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
@@ -175,7 +175,7 @@ class Hoomdossier
      *
      * @return \App\Models\Account|null
      */
-    public static function account()
+    public static function account(): ?Account
     {
         // Note: This could also be a App\Models\Client
         return Auth::user();

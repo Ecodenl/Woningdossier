@@ -386,7 +386,7 @@ class HeatPump extends Calculator
      *
      * @return string
      */
-    private function format($number, int $decimals = 2)
+    private function format($number, int $decimals = 2): string
     {
         return number_format($number, $decimals, '.', '');
     }

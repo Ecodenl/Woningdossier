@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation;
 
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
@@ -17,7 +18,7 @@ class RecoverOldEmailController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function recover(Cooperation $cooperation, $token)
+    public function recover(Cooperation $cooperation, $token): RedirectResponse
     {
         if (\Auth::check()) {
             HoomdossierSession::destroy();

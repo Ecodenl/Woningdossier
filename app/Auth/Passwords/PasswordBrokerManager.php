@@ -2,6 +2,7 @@
 
 namespace App\Auth\Passwords;
 
+use Illuminate\Auth\Passwords\TokenRepositoryInterface;
 use Illuminate\Auth\Passwords\PasswordBrokerManager as BasePasswordBrokerManager;
 use Illuminate\Contracts\Auth\PasswordBrokerFactory as FactoryContract;
 use Illuminate\Support\Str;
@@ -13,7 +14,7 @@ class PasswordBrokerManager extends BasePasswordBrokerManager implements Factory
      *
      * @return \Illuminate\Auth\Passwords\TokenRepositoryInterface
      */
-    protected function createTokenRepository(array $config)
+    protected function createTokenRepository(array $config): TokenRepositoryInterface
     {
         $key = $this->app['config']['app.key'];
 

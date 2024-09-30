@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use Illuminate\Http\RedirectResponse;
 use App\Events\UserChangedHisEmailEvent;
 use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
@@ -14,7 +15,7 @@ class HoomSettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(HoomSettingsRequest $request)
+    public function update(HoomSettingsRequest $request): RedirectResponse
     {
         $user = Hoomdossier::user();
         $account = Hoomdossier::account();

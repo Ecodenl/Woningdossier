@@ -27,7 +27,7 @@ class ObservingToolForUserListener
      *
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         // the building we want to observe
         $building = $event->building;

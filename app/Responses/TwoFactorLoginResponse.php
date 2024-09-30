@@ -2,6 +2,8 @@
 
 namespace App\Responses;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use App\Helpers\RoleHelper;
 use Illuminate\Http\JsonResponse;
 use Laravel\Fortify\Contracts\TwoFactorLoginResponse as TwoFactorLoginResponseContract;
@@ -15,7 +17,7 @@ class TwoFactorLoginResponse implements TwoFactorLoginResponseContract
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function toResponse($request)
+    public function toResponse(Request $request): Response
     {
         // the $request->user() will return the auth model, in our case this is the Account model
         // but we want the user from the account, so that's why we do ->user()->user();

@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class HashCheckTest extends TestCase
 {
-    public static function HashCheckProvider()
+    public static function HashCheckProvider(): array
     {
         return [
             ['secret', 'secret', true],

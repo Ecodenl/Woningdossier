@@ -103,7 +103,7 @@ class PrivateMessageView extends Model
      *
      * @return int
      */
-    public static function getTotalUnreadMessagesForUser(User $user, Cooperation $cooperation)
+    public static function getTotalUnreadMessagesForUser(User $user, Cooperation $cooperation): int
     {
         $cooperationUnreadMessagesCount = 0;
 
@@ -144,7 +144,7 @@ class PrivateMessageView extends Model
      *
      * @param int $cooperationId
      */
-    public static function getTotalUnreadMessagesForCooperation($cooperationId): int
+    public static function getTotalUnreadMessagesForCooperation(int $cooperationId): int
     {
         return static::where('to_cooperation_id', $cooperationId)
                    ->whereNull('input_source_id')

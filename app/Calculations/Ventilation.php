@@ -30,7 +30,7 @@ class Ventilation
     public static function calculate(
         Building $building,
         InputSource $inputSource,
-        $energyHabit,
+        ?UserEnergyHabit $energyHabit,
         array $calculateData
     ): array {
         $step = Step::findByShort('ventilation');

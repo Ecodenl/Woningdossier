@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\Http\JsonResponse;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\BuildingTypeFormRequest;
@@ -15,7 +16,7 @@ class BuildingTypeController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(BuildingTypeFormRequest $request)
+    public function store(BuildingTypeFormRequest $request): JsonResponse
     {
         $buildingTypeId = $request->get('building_type_id');
         $buildYear = $request->get('build_year');

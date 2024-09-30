@@ -160,7 +160,7 @@ class VentilationHelper extends ToolHelper
      *
      * @return array
      */
-    public static function getUsageWarnings()
+    public static function getUsageWarnings(): array
     {
         return [
             'sometimes-off' => 'Laat de ventilatie unit altijd aan staan, anders wordt er helemaal niet geventileerd en hoopt vocht en vieze lucht zich op. Trek alleen bij onderhoud of in geval van een ramp (als de overheid adviseert ramen en deuren te sluiten) de stekker van de ventilatie-unit uit het stopcontact.',
@@ -175,7 +175,7 @@ class VentilationHelper extends ToolHelper
      *
      * @return array
      */
-    public static function getHowWarnings()
+    public static function getHowWarnings(): array
     {
         return [
             'none' => 'Er is op dit moment mogelijkerwijs onvoldoende ventilatie, het kan zinvol zijn om dit door een specialist te laten beoordelen.',

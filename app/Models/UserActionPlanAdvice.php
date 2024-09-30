@@ -159,7 +159,7 @@ class UserActionPlanAdvice extends Model implements Auditable
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeCooperationMeasureForType(Builder $query, string $type, InputSource $inputSource)
+    public function scopeCooperationMeasureForType(Builder $query, string $type, InputSource $inputSource): Builder
     {
         $isExtensive = $type === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
 
@@ -206,7 +206,7 @@ class UserActionPlanAdvice extends Model implements Auditable
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForStep($query, Step $step)
+    public function scopeForStep(Builder $query, Step $step): Builder
     {
         return $query->where('step_id', $step->id);
     }

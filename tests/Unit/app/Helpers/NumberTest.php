@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class NumberTest extends TestCase
 {
-    public static function isNegativeProvider()
+    public static function isNegativeProvider(): array
     {
         return [
             [0.10, false],

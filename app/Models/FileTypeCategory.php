@@ -44,7 +44,7 @@ class FileTypeCategory extends Model
      *
      * @return Builder
      */
-    public function scopeShort(Builder $query, $short)
+    public function scopeShort(Builder $query, $short): Builder
     {
         return $query->where('short', $short);
     }

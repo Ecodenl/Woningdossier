@@ -97,7 +97,7 @@ class QuestionnaireService
      *
      * @return bool
      */
-    public static function hasQuestionOptions($questionType)
+    public static function hasQuestionOptions($questionType): bool
     {
         $questionTypeThatHaveOptions = ['select', 'radio', 'checkbox'];
 
@@ -168,7 +168,7 @@ class QuestionnaireService
      *
      * @param Question $question
      */
-    public static function updateQuestionOptions(array $editedQuestion, $question)
+    public static function updateQuestionOptions(array $editedQuestion, Question $question)
     {
         // $questionOptionId will mostly contain the id of a QuestionOption
         // however, if a new option to a existing question is added, we set a guid.

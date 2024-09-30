@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class CalculatorTest extends TestCase
 {
-    public static function indexCostsProvider()
+    public static function indexCostsProvider(): array
     {
         $year = (int) date('Y');
 

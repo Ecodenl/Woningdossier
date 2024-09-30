@@ -25,7 +25,7 @@ class isUserMemberOfCooperation implements Rule
      *
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         $currentCooperation = \App\Helpers\Hoomdossier::user()->cooperations()->find(session('cooperation'));
 
@@ -41,7 +41,7 @@ class isUserMemberOfCooperation implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return __('validation.custom.is-user-member-of-cooperation');
     }

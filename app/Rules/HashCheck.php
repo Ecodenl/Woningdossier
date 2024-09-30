@@ -32,7 +32,7 @@ class HashCheck implements Rule
      *
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         return Hash::check($value, $this->hashToCheck);
     }
@@ -42,7 +42,7 @@ class HashCheck implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return __('validation.hash_check');
     }

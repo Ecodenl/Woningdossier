@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\View\View;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures as KeyFigures;
@@ -15,7 +16,7 @@ use App\Models\Service;
 
 class KeyFiguresController extends Controller
 {
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         // we handle translations in the view.
         $keyfigures = [

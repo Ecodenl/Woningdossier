@@ -108,7 +108,7 @@ class RawCalculator
      *
      * @return float|int
      */
-    public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, $applicationYear = null, $applyIndexing = true)
+    public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, ?int $applicationYear = null, bool $applyIndexing = true)
     {
         self::debug(__METHOD__.' for measure '.$measure->measure_name);
         if (! is_numeric($number) || $number <= 0) {
@@ -153,7 +153,7 @@ class RawCalculator
      *
      * @return float|int
      */
-    public static function reindexCosts($costs, $fromYear, $toYear, $index = null)
+    public static function reindexCosts($costs, int $fromYear, int $toYear, $index = null)
     {
         if (is_null($fromYear)) {
             $fromYear = Carbon::now()->year;
@@ -190,7 +190,7 @@ class RawCalculator
      *
      * @return float|int
      */
-    public static function indexCosts($costs, $toYear)
+    public static function indexCosts($costs, int $toYear)
     {
         return self::reindexCosts($costs, null, $toYear);
     }
@@ -204,7 +204,7 @@ class RawCalculator
      *
      * @return float|int
      */
-    public static function maxGasSavings(Building $building, InputSource $inputSource, $energyHabit, Element $element)
+    public static function maxGasSavings(Building $building, InputSource $inputSource, ?UserEnergyHabit $energyHabit, Element $element)
     {
         $result = 0;
 

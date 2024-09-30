@@ -384,10 +384,10 @@ return new class extends Migration
      * @param string $buildingColumn
      */
     protected function copyTableDataForSiblings(
-        $table,
-        $fromBuildingId,
-        $toBuildingId,
-        $buildingColumn = 'building_id'
+        string $table,
+        int $fromBuildingId,
+        int $toBuildingId,
+        string $buildingColumn = 'building_id'
     ) {
         $fromBuildingId = (int) $fromBuildingId;
         $toBuildingId = (int) $toBuildingId;

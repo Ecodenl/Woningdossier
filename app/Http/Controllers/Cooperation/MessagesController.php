@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\PrivateMessageView;
 
@@ -12,7 +13,7 @@ class MessagesController extends Controller
      *
      * @return int
      */
-    public function getTotalUnreadMessageCount()
+    public function getTotalUnreadMessageCount(): JsonResponse
     {
         return response()->json(['count' => PrivateMessageView::getTotalUnreadMessagesForCurrentRole()]);
     }

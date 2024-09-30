@@ -28,7 +28,7 @@ class PasswordResetServiceProvider extends \Illuminate\Auth\Passwords\PasswordRe
      *
      * @return void
      */
-    protected function registerPasswordBroker()
+    protected function registerPasswordBroker(): void
     {
         $this->app->singleton('auth.password', function ($app) {
             return new PasswordBrokerManager($app);
@@ -44,7 +44,7 @@ class PasswordResetServiceProvider extends \Illuminate\Auth\Passwords\PasswordRe
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return ['auth.password', 'auth.password.broker'];
     }

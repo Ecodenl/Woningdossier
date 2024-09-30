@@ -268,7 +268,7 @@ trait GetMyValuesTrait
     public function scopeForInputSource(
         Builder $query,
         InputSource $inputSource
-    )
+    ): Builder
     {
         return $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id',
             $inputSource->id);
@@ -373,7 +373,7 @@ trait GetMyValuesTrait
      *
      * @return string name
      */
-    public function getInputSourceName()
+    public function getInputSourceName(): string
     {
         return $this->inputSource->name;
     }

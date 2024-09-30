@@ -23,7 +23,7 @@ class AlphaSpace implements Rule
      *
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         return preg_match('/^[\pL\s]+$/u', $value);
     }
@@ -33,7 +33,7 @@ class AlphaSpace implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return __('validation.custom.alpha_space');
     }

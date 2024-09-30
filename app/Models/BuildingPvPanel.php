@@ -80,7 +80,7 @@ class BuildingPvPanel extends Model implements Auditable
      *
      * @return void
      */
-    public function setNumberAttribute($value)
+    public function setNumberAttribute(string $value): void
     {
         if (is_null($value)) {
             $value = 0;

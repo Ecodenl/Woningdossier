@@ -36,7 +36,7 @@ class UserCreatedEmail extends Mailable implements ShouldQueue
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this
             ->subject(strip_tags(__('cooperation/mail/account-created.subject')))

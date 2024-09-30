@@ -62,7 +62,7 @@ class InsertLogEntry implements ShouldQueue
      *
      * @return array
      */
-    public function middleware() {
+    public function middleware(): array {
         $withoutOverlapping = new WithoutOverlapping(sprintf('insert-log-entry-%s-%s-%s', $this->loggableType, $this->loggableId, $this->buildingId));
         if (!$this->crucial) {
             return [

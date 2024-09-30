@@ -11,7 +11,7 @@ trait GetValueTrait
      *
      * @return void
      */
-    public static function bootGetValueTrait()
+    public static function bootGetValueTrait(): void
     {
         static::addGlobalScope(new GetValueScope());
     }

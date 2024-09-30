@@ -32,7 +32,7 @@ class KeyFigures implements KeyFiguresInterface
      *
      * @return PvPanelLocationFactor|null
      */
-    public static function getLocationFactor($zipcode)
+    public static function getLocationFactor($zipcode): ?PvPanelLocationFactor
     {
         return \App\Helpers\KeyFigures\PvPanels\KeyFigures::getLocationFactor($zipcode);
     }
@@ -42,7 +42,7 @@ class KeyFigures implements KeyFiguresInterface
      *
      * @return PvPanelYield|null
      */
-    public static function getYield(PvPanelOrientation $orientation, $angle)
+    public static function getYield(PvPanelOrientation $orientation, $angle): ?PvPanelYield
     {
         return \App\Helpers\KeyFigures\PvPanels\KeyFigures::getYield($orientation, $angle);
     }
@@ -74,7 +74,7 @@ class KeyFigures implements KeyFiguresInterface
      *
      * @return array
      */
-    public static function getSystemSpecifications($waterConsumption, $helpFactor)
+    public static function getSystemSpecifications(int $waterConsumption, float $helpFactor): array
     {
         $initialHeater = HeaterSpecification::where('liters', $waterConsumption)->first();
 
@@ -103,7 +103,7 @@ class KeyFigures implements KeyFiguresInterface
      *
      * @return float
      */
-    public static function getAdvisedCollectorSize($relativeCollectorSize)
+    public static function getAdvisedCollectorSize(float $relativeCollectorSize): float
     {
         if ($relativeCollectorSize <= 2) {
             return 1.6;
@@ -131,7 +131,7 @@ class KeyFigures implements KeyFiguresInterface
      *
      * @return array
      */
-    public static function getKeyFigures()
+    public static function getKeyFigures(): array
     {
         $figures = [];
 

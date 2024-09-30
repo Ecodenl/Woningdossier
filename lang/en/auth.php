@@ -12,10 +12,10 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
-    'password' => 'The provided password is incorrect.',
+    
+    
     'cooperation' => 'You are not a member of this cooperation.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    
 
     'register' => [
         'form' => [

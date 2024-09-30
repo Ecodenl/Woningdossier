@@ -12,7 +12,7 @@ class HeatingAgesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $heatingAges = [
             [

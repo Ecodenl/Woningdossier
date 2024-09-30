@@ -18,7 +18,7 @@ class PasswordResetServiceProvider extends \Illuminate\Auth\Passwords\PasswordRe
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->registerPasswordBroker();
     }

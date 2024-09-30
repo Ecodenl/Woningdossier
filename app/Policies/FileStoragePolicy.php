@@ -42,7 +42,7 @@ class FileStoragePolicy
      *
      * @return mixed
      */
-    public function view(Account $account, FileStorage $fileStorage)
+    public function view(Account $account, FileStorage $fileStorage): bool
     {
     }
 
@@ -51,7 +51,7 @@ class FileStoragePolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
     }
 
@@ -87,7 +87,7 @@ class FileStoragePolicy
      *
      * @return mixed
      */
-    public function update(Account $account, FileStorage $fileStorage)
+    public function update(Account $account, FileStorage $fileStorage): bool
     {
     }
 
@@ -96,7 +96,7 @@ class FileStoragePolicy
      *
      * @return mixed
      */
-    public function delete(Account $account, FileStorage $fileStorage)
+    public function delete(Account $account, FileStorage $fileStorage): bool
     {
     }
 }

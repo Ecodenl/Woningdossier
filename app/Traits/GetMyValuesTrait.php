@@ -255,7 +255,7 @@ trait GetMyValuesTrait
      *
      * @return BelongsTo
      */
-    public function inputSource()
+    public function inputSource(): BelongsTo
     {
         return $this->belongsTo(InputSource::class);
     }

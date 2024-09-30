@@ -37,7 +37,7 @@ class SendPdfReportToEconobis implements ShouldQueue
      *
      * @return void
      */
-    public function handle(EconobisService $econobisService, EconobisApi $econobis)
+    public function handle(EconobisService $econobisService, EconobisApi $econobis): void
     {
         Log::debug("Processing PDF report payload to Econobis for building {$this->building->id}");
         $this->wrapCall(function () use ($econobis, $econobisService) {

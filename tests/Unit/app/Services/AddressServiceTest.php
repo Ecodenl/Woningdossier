@@ -44,7 +44,7 @@ class AddressServiceTest extends TestCase
     /**
      * @dataProvider normalizeZipcodeProvider
      */
-    public function test_normalize_zipcode($zipcode, $withSpace, $expected)
+    public function test_normalize_zipcode($zipcode, $withSpace, $expected): void
     {
         $normalized = (new AddressService())->normalizeZipcode($zipcode, $withSpace);
         $this->assertEquals($expected, $normalized);

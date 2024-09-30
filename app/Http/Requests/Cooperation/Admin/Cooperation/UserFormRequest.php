@@ -17,7 +17,7 @@ class UserFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // Logic is in middleware on the routes
         return Auth::check();
@@ -28,7 +28,7 @@ class UserFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $cooperationToCheckFor = $this->route('cooperationToManage') instanceof Cooperation
             ? $this->route('cooperationToManage') : $this->route('cooperation');

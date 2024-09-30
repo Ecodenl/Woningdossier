@@ -19,7 +19,7 @@ class ParticipantAddedListener
      *
      * @return void
      */
-    public function handle($event)
+    public function handle($event): void
     {
         $participantFullName = $event->addedParticipant->getFullName();
         $message = __('woningdossier.cooperation.chat.messages.participant-added', ['participant' => $participantFullName]);

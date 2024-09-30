@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('building_paintwork_statuses', function (Blueprint $table) {
             $table->integer('paintwork_status_id')->nullable()->unsigned()->change();
@@ -23,7 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         // We don't want to revert this
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Services\Scans\ScanFlowService;
 use App\Helpers\Conditions\ConditionEvaluator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -391,7 +392,7 @@ class Building extends Model
             ->leftJoin('statuses', 'bs.status_id', '=', 'statuses.id');
     }
 
-    public function stepComments()
+    public function stepComments(): HasMany
     {
         return $this->hasMany(StepComment::class);
     }
@@ -486,7 +487,7 @@ class Building extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function completedSteps()
+    public function completedSteps(): HasMany
     {
         return $this->hasMany(CompletedStep::class);
     }
@@ -500,7 +501,7 @@ class Building extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -508,7 +509,7 @@ class Building extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function buildingFeatures()
+    public function buildingFeatures(): HasOne
     {
         return $this->hasOne(BuildingFeature::class);
     }
@@ -518,7 +519,7 @@ class Building extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function buildingNotes()
+    public function buildingNotes(): HasMany
     {
         return $this->hasMany(BuildingNotes::class);
     }
@@ -526,7 +527,7 @@ class Building extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function buildingElements()
+    public function buildingElements(): HasMany
     {
         return $this->hasMany(BuildingElement::class);
     }
@@ -534,7 +535,7 @@ class Building extends Model
     /**
      * @return HasMany
      */
-    public function buildingVentilations()
+    public function buildingVentilations(): HasMany
     {
         return $this->hasMany(BuildingVentilation::class);
     }
@@ -613,7 +614,7 @@ class Building extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function buildingServices()
+    public function buildingServices(): HasMany
     {
         return $this->hasMany(BuildingService::class);
     }
@@ -639,7 +640,7 @@ class Building extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function currentInsulatedGlazing()
+    public function currentInsulatedGlazing(): HasMany
     {
         return $this->hasMany(BuildingInsulatedGlazing::class);
     }
@@ -647,7 +648,7 @@ class Building extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function currentPaintworkStatus()
+    public function currentPaintworkStatus(): HasOne
     {
         return $this->hasOne(BuildingPaintworkStatus::class);
     }
@@ -655,7 +656,7 @@ class Building extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function pvPanels()
+    public function pvPanels(): HasOne
     {
         return $this->hasOne(BuildingPvPanel::class);
     }
@@ -663,7 +664,7 @@ class Building extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function heater()
+    public function heater(): HasOne
     {
         return $this->hasOne(BuildingHeater::class);
     }
@@ -674,7 +675,7 @@ class Building extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function roofTypes()
+    public function roofTypes(): HasMany
     {
         return $this->hasMany(BuildingRoofType::class);
     }
@@ -684,12 +685,12 @@ class Building extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function buildingCoachStatuses()
+    public function buildingCoachStatuses(): HasMany
     {
         return $this->hasMany(BuildingCoachStatus::class);
     }
 
-    public function buildingPermissions()
+    public function buildingPermissions(): HasMany
     {
         return $this->hasMany(BuildingPermission::class);
     }
@@ -699,7 +700,7 @@ class Building extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function questionAnswers()
+    public function questionAnswers(): HasMany
     {
         return $this->hasMany(QuestionsAnswer::class);
     }

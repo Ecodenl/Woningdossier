@@ -43,7 +43,7 @@ class ScanStatus extends Command
      *
      * @return int
      */
-    public function handle(EconobisService $econobisService, EconobisApi $econobis)
+    public function handle(EconobisService $econobisService, EconobisApi $econobis): int
     {
         $building = Building::findOrFail($this->argument('building'));
 

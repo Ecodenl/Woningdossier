@@ -16,7 +16,7 @@ class EconobisServiceProvider extends ServiceProvider implements DeferrableProvi
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->bind(Client::class, function (Application $app) {
             if ($app->isLocal() || config('hoomdossier.services.econobis.debug', false)) {
@@ -36,7 +36,7 @@ class EconobisServiceProvider extends ServiceProvider implements DeferrableProvi
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         //
     }

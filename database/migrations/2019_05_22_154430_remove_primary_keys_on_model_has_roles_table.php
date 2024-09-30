@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('model_has_roles', function (Blueprint $table) {
             $table->dropForeign(['role_id']);
@@ -27,7 +27,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('model_has_roles', function (Blueprint $table) {
             $table->primary(['role_id', 'model_id', 'model_type']);

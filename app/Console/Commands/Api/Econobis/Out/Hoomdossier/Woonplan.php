@@ -41,7 +41,7 @@ class Woonplan extends Command
      *
      * @return int
      */
-    public function handle(IntegrationProcessService $integrationProcessService)
+    public function handle(IntegrationProcessService $integrationProcessService): int
     {
         $integrationProcessService = $integrationProcessService
             ->forIntegration(Integration::findByShort('econobis'))

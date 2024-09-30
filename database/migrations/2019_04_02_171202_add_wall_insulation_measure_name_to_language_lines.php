@@ -10,7 +10,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         $stepId = null;
         if (DB::table('steps')->where('slug', 'wall-insulation')->first() instanceof \stdClass) {
@@ -44,7 +44,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
 };

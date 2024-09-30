@@ -134,7 +134,7 @@ class FileStorage extends Model
         return $this->belongsTo(Cooperation::class);
     }
 
-    public function fileType()
+    public function fileType(): BelongsTo
     {
         return $this->belongsTo(FileType::class, 'file_type_id');
     }

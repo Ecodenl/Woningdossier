@@ -17,7 +17,7 @@ class ToolQuestionFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'short' => Str::slug($this->faker->sentence(3)),

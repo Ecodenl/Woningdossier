@@ -13,7 +13,7 @@ class MyAccountSettingsFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -23,7 +23,7 @@ class MyAccountSettingsFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return array_merge([
             'user.first_name' => 'required|string|max:255',

@@ -21,7 +21,7 @@ class BuildingCoachStatusServiceTest extends TestCase
         $this->seed(StatusesTableSeeder::class);
     }
 
-    public function testGetConnectedBuildingsByUser()
+    public function testGetConnectedBuildingsByUser(): void
     {
         $cooperation = Cooperation::factory()->create();
 
@@ -64,7 +64,7 @@ class BuildingCoachStatusServiceTest extends TestCase
         $this->assertCount(3, $connectedBuildingsForCoach);
     }
 
-    public function testGetConnectedCoachesByBuildingId()
+    public function testGetConnectedCoachesByBuildingId(): void
     {
         $cooperation = Cooperation::factory()->create();
         $account = Account::factory()->create();

@@ -25,7 +25,7 @@ class RevokeBuildingPermissionForCoaches
      *
      * @return void
      */
-    public function handle($event)
+    public function handle($event): void
     {
         $building = $event->building;
 

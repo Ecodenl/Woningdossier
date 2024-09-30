@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -29,7 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureConsumptionTapWater extends Model
 {
-    public function comfortLevelTapWater()
+    public function comfortLevelTapWater(): BelongsTo
     {
         return $this->belongsTo(ComfortLevelTapWater::class);
     }

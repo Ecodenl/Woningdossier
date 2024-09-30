@@ -12,7 +12,7 @@ class HeaterComponentCostsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $costs = [
             [

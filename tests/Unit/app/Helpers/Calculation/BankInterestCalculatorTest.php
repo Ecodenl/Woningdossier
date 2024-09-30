@@ -28,7 +28,7 @@ class BankInterestCalculatorTest extends TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function testTw($expected, $amount, $interest, $period)
+    public function testTw($expected, $amount, $interest, $period): void
     {
         $this->assertEquals($expected, BankInterestCalculator::tw($amount, $interest, $period));
     }

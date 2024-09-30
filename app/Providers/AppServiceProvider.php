@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         // After L7 it is no longer in the docs, albeit still present
         // https://laravel.com/docs/7.x/validation#using-extensions
@@ -78,7 +78,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         Schema::defaultStringLength(191);
 

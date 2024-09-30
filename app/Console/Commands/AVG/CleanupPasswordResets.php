@@ -37,7 +37,7 @@ class CleanupPasswordResets extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         // Expire is in minutes.
         $expires = config('auth.passwords.users.expire');

@@ -71,7 +71,7 @@ class ArrTest extends TestCase
     /**
      * @dataProvider isWholeArrayEmptyProvider
      */
-    public function testIsWholeArrayEmpty($input, $expected)
+    public function testIsWholeArrayEmpty($input, $expected): void
     {
         $this->assertEquals($expected, Arr::isWholeArrayEmpty($input));
     }

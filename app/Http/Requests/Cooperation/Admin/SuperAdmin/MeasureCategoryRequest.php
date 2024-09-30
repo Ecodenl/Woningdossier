@@ -17,7 +17,7 @@ class MeasureCategoryRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin');
     }
@@ -27,7 +27,7 @@ class MeasureCategoryRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'measure_categories.name' => ['required', new LanguageRequired()],

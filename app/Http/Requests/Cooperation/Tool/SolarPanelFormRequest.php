@@ -18,7 +18,7 @@ class SolarPanelFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::check();
     }
@@ -28,7 +28,7 @@ class SolarPanelFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(LegacyService $legacyService)
+    public function rules(LegacyService $legacyService): array
     {
         $hasSolarPanelsToolQuestion = ToolQuestion::findByShort('has-solar-panels');
         $question = "filledInAnswers.{$hasSolarPanelsToolQuestion['id']}";

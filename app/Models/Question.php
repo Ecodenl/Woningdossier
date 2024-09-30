@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\HoomdossierSession;
 use App\Traits\Models\HasTranslations;
@@ -103,7 +105,7 @@ class Question extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function questionOptions()
+    public function questionOptions(): HasMany
     {
         return $this->hasMany(QuestionOption::class);
     }
@@ -127,7 +129,7 @@ class Question extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function questionAnswers()
+    public function questionAnswers(): HasMany
     {
         // If you're wondering why this is resulting in specific answers, or maybe you want a specific answer, but
         // you're getting a ton of answers, check view composers to see if these might be set to only be for
@@ -169,7 +171,7 @@ class Question extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function questionnaire()
+    public function questionnaire(): BelongsTo
     {
         return $this->belongsTo(Questionnaire::class);
     }

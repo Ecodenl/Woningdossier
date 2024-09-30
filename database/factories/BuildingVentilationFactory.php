@@ -14,7 +14,7 @@ class BuildingVentilationFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'how' => $this->faker->randomElements(["windows", "windows-doors", "other"]),

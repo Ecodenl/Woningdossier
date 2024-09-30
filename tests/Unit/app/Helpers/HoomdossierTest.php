@@ -31,7 +31,7 @@ class HoomdossierTest extends TestCase
         $this->seed(InputSourcesTableSeeder::class);
     }
 
-    public function testGetMostCredibleValue()
+    public function testGetMostCredibleValue(): void
     {
         $cooperation = Cooperation::factory()->create();
 

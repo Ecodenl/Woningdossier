@@ -41,7 +41,7 @@ class AppointmentDate extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         SendAppointmentDateToEconobis::dispatch(
             Building::findOrFail($this->argument('building'))

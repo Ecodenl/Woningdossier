@@ -12,7 +12,7 @@ class BuildingTypesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $apartmentCategory = DB::table('building_type_categories')
             ->where('short', 'apartment')->first();

@@ -12,7 +12,7 @@ class CooperationMeasureApplicationFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => ['nl' => $this->faker->randomElement(['Vloertje', 'Bakstel', 'Nieuwe lampen', 'Keuken', 'Badkamer'])],

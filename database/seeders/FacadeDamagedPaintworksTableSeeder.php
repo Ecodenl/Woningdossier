@@ -12,7 +12,7 @@ class FacadeDamagedPaintworksTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $items = [
             [

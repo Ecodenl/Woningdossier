@@ -28,7 +28,7 @@ class MunicipalityServiceTest extends TestCase
      *
      * @return void
      */
-    public function test_we_get_correct_available_bag_municipalities()
+    public function test_we_get_correct_available_bag_municipalities(): void
     {
         // DB seeding also seeds mappings. We clear them since we're asserting a count.
         DB::table('mappings')->delete();
@@ -78,7 +78,7 @@ class MunicipalityServiceTest extends TestCase
      *
      * @return void
      */
-    public function test_retrieve_bag_municipalities_returns_correct_mapped_municipalities()
+    public function test_retrieve_bag_municipalities_returns_correct_mapped_municipalities(): void
     {
         // DB seeding also seeds mappings. We clear them since we're asserting a count.
         DB::table('mappings')->delete();
@@ -112,7 +112,7 @@ class MunicipalityServiceTest extends TestCase
      *
      * @return void
      */
-    public function test_retrieve_vbjehuis_municipality_returns_correct_mapped_municipality()
+    public function test_retrieve_vbjehuis_municipality_returns_correct_mapped_municipality(): void
     {
         $municipality = Municipality::factory()->create([
             'name' => 'Voorne aan Zee',

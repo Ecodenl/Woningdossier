@@ -9,7 +9,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         $interestTranslationQuery = DB::table('language_lines')->where('group', 'my-plan')->where('key',
             'columns.interest.title');
@@ -23,7 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         $interestTranslationQuery = DB::table('language_lines')->where('group', 'my-plan')->where('key',
             'columns.interest.title');

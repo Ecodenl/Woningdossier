@@ -27,7 +27,7 @@ class WallInsulationRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(LegacyService $legacyService)
+    public function rules(LegacyService $legacyService): array
     {
         $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('wall-insulation'));
 

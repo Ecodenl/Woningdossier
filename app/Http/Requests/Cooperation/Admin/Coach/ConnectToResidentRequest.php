@@ -12,7 +12,7 @@ class ConnectToResidentRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \App\Helpers\Hoomdossier::user();
     }
@@ -22,7 +22,7 @@ class ConnectToResidentRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => 'required',

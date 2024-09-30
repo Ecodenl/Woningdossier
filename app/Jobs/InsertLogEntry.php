@@ -47,7 +47,7 @@ class InsertLogEntry implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         Log::create([
             'loggable_type' => $this->loggableType,

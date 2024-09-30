@@ -22,7 +22,7 @@ class CalculatorTest extends TestCase
     /**
      * @dataProvider indexCostsProvider
      */
-    public function testReindexCosts($costs, $from, $to, $expected, $percentage)
+    public function testReindexCosts($costs, $from, $to, $expected, $percentage): void
     {
         $this->markTestSkipped('must be revisited.');
         $this->assertEquals($expected, RawCalculator::reindexCosts($costs, $from, $to, $percentage));

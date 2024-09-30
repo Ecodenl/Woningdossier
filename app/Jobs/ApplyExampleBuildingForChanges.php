@@ -40,7 +40,7 @@ class ApplyExampleBuildingForChanges
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $exampleBuilding = $this->getExampleBuildingIfChangeIsNeeded($this->changes);
 

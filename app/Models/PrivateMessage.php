@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Services\BuildingCoachStatusService;
@@ -241,7 +242,7 @@ class PrivateMessage extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }

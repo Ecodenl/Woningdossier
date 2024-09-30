@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
@@ -50,7 +51,7 @@ class Element extends Model
         'name', 'info',
     ];
 
-    public function serviceType()
+    public function serviceType(): BelongsTo
     {
         return $this->belongsTo(ServiceType::class);
     }
@@ -59,7 +60,7 @@ class Element extends Model
      * @deprecated
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function values()
+    public function values(): HasMany
     {
         return $this->hasMany(ElementValue::class);
     }

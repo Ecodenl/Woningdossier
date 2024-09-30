@@ -12,7 +12,7 @@ class FileTypeCategoriesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $fileTypeCategories = [
             [

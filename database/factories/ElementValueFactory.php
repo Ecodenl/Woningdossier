@@ -11,7 +11,7 @@ class ElementValueFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'element_id' => \App\Models\Element::factory(),

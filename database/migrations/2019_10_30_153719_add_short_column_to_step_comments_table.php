@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('step_comments', function (Blueprint $table) {
             $table->string('short')->nullable()->after('input_source_id')->default(null);
@@ -23,7 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('step_comments', function (Blueprint $table) {
             $table->dropColumn('short');

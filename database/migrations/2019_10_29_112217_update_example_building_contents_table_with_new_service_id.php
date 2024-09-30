@@ -9,7 +9,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         // since we updated and "merged" 2 services into 1 we have to update the existing example building content data as well
         $exampleBuildingContents = \DB::table('example_building_contents')->get();
@@ -80,7 +80,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
 };

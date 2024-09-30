@@ -11,7 +11,7 @@ class InterestFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => json_encode(['nl' => $this->faker->word()]),

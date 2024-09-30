@@ -39,7 +39,7 @@ class MergeUsers extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $userId1 = (int) $this->argument('userId1');
         $userId2 = (int) $this->argument('userId2');

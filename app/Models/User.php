@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Deprecation\DeprecationLogger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\HoomdossierSession;
@@ -188,7 +192,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userInterests()
+    public function userInterests(): HasMany
     {
         return $this->hasMany(UserInterest::class);
     }
@@ -221,7 +225,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function interests()
+    public function interests(): HasManyThrough
     {
         return $this->hasManyThrough(Interest::class, UserInterest::class, 'user_id', 'id', 'id', 'interest_id');
     }
@@ -266,14 +270,14 @@ class User extends Model implements AuthorizableContract
     }
 
     // ------ End User -> Account table / model migration stuff -------
-    public function buildings()
+    public function buildings(): HasMany
     {
         // TODO: No user has more than one building.
         DeprecationLogger::log(__METHOD__ . ' really shouldn\'t be used anymore...');
         return $this->hasMany(Building::class);
     }
 
-    public function building()
+    public function building(): HasOne
     {
         return $this->hasOne(Building::class);
     }
@@ -283,7 +287,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function notificationSettings()
+    public function notificationSettings(): HasMany
     {
         return $this->hasMany(NotificationSetting::class);
     }
@@ -310,7 +314,7 @@ class User extends Model implements AuthorizableContract
         return $doesUserRetrievesNotifications;
     }
 
-    public function energyHabit()
+    public function energyHabit(): HasOne
     {
         return $this->hasOne(UserEnergyHabit::class);
     }
@@ -334,7 +338,7 @@ class User extends Model implements AuthorizableContract
      * @deprecated use userActionPlanAdvices
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function actionPlanAdvices()
+    public function actionPlanAdvices(): HasMany
     {
         return $this->hasMany(UserActionPlanAdvice::class);
     }
@@ -357,7 +361,7 @@ class User extends Model implements AuthorizableContract
     /**
      * The cooperations the user is associated with.
      */
-    public function cooperations()
+    public function cooperations(): BelongsToMany
     {
         return $this->belongsToMany(Cooperation::class, 'cooperation_user');
     }
@@ -365,7 +369,7 @@ class User extends Model implements AuthorizableContract
     /**
      * The cooperations the user is associated with.
      */
-    public function cooperation()
+    public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class, 'cooperation_id', 'id');
     }
@@ -378,7 +382,7 @@ class User extends Model implements AuthorizableContract
         return "{$this->first_name} {$this->last_name}";
     }
 
-    public function buildingPermissions()
+    public function buildingPermissions(): HasMany
     {
         return $this->hasMany(\App\Models\BuildingPermission::class);
     }
@@ -518,7 +522,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function completedQuestionnaires()
+    public function completedQuestionnaires(): BelongsToMany
     {
         return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires')
             ->using(CompletedQuestionnaire::class);
@@ -546,7 +550,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function account()
+    public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
     }

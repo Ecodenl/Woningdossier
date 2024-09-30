@@ -11,7 +11,7 @@ class HeatSourcesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $heatSources = [
             [

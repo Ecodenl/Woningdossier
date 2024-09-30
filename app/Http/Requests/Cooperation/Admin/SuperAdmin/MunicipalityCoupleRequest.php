@@ -23,7 +23,7 @@ class MunicipalityCoupleRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin');
     }
@@ -33,7 +33,7 @@ class MunicipalityCoupleRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'bag_municipalities' => [

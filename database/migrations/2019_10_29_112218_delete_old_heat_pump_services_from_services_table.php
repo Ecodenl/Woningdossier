@@ -9,7 +9,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         $serviceIdsToDelete = \DB::table('services')
             ->whereIn('short', ['hybrid-heat-pump', 'full-heat-pump'])
@@ -31,7 +31,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
 };

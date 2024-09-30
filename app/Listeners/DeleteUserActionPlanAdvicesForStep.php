@@ -23,7 +23,7 @@ class DeleteUserActionPlanAdvicesForStep
      *
      * @return void
      */
-    public function handle(StepCleared $event)
+    public function handle(StepCleared $event): void
     {
         UserActionPlanAdviceService::clearForStep($event->user, $event->inputSource, $event->step);
     }

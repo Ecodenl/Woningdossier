@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Scopes\VisibleScope;
 use App\Traits\Models\HasMappings;
@@ -93,7 +95,7 @@ class CooperationMeasureApplication extends Model
     }
 
     # Relations
-    public function userActionPlanAdvices()
+    public function userActionPlanAdvices(): MorphMany
     {
         // We need to retrieve this without the visible tag
         // The visible tag defines whether it should be shown on my plan or not, but for other locations
@@ -104,7 +106,7 @@ class CooperationMeasureApplication extends Model
         )->withoutGlobalScope(VisibleScope::class);
     }
 
-    public function cooperation()
+    public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class);
     }

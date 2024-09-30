@@ -41,7 +41,7 @@ class SyncTargetGroups extends Command
      *
      * @return int
      */
-    public function handle(MappingService $mappingService)
+    public function handle(MappingService $mappingService): int
     {
         Wrapper::wrapCall(function () use ($mappingService) {
             $map = [

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\StepHelper;
 use App\Scopes\NoGeneralDataScope;
@@ -132,7 +133,7 @@ class Step extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parentStep()
+    public function parentStep(): BelongsTo
     {
         return $this->belongsTo(Step::class, 'parent_id', 'id');
     }
@@ -190,7 +191,7 @@ class Step extends Model
         );
     }
 
-    public function scan()
+    public function scan(): BelongsTo
     {
         return $this->belongsTo(Scan::class);
     }
@@ -200,7 +201,7 @@ class Step extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function measureApplications()
+    public function measureApplications(): HasMany
     {
         return $this->hasMany(MeasureApplication::class);
     }

@@ -12,7 +12,7 @@ class BuildingTypeFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::check();
     }
@@ -22,7 +22,7 @@ class BuildingTypeFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $max = Carbon::now()->year;
 

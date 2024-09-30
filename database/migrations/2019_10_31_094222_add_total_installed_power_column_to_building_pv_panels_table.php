@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('building_pv_panels', function (Blueprint $table) {
             $table->integer('total_installed_power')->after('input_source_id')->nullable()->default(null);
@@ -23,7 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('building_pv_panels', function (Blueprint $table) {
             $table->dropColumn('total_installed_power');

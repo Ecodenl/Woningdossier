@@ -11,7 +11,7 @@ class ChatRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::check();
     }
@@ -21,7 +21,7 @@ class ChatRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'message' => 'required',

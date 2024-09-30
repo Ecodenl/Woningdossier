@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -56,12 +58,12 @@ class ServiceValue extends Model
     }
 
     # Relations
-    public function keyFigureBoilerEfficiency()
+    public function keyFigureBoilerEfficiency(): HasOne
     {
         return $this->hasOne(KeyFigureBoilerEfficiency::class);
     }
 
-    public function service()
+    public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }

@@ -13,7 +13,7 @@ class MeasureApplicationsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         /*
         $table->enum('measure_type', ['energy_saving', 'maintenance']);

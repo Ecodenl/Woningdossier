@@ -149,7 +149,7 @@ class CooperationMeasureApplicationsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $cooperations = \App\Models\Cooperation::cursor();
         foreach ($cooperations as $cooperation) {

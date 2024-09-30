@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         // Add zinc column to building_roof_types table
         if (! Schema::hasColumn('building_roof_types', 'zinc_surface')) {
@@ -62,7 +62,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         // We don't want this as we rely on it during calculations
         //Schema::table('building_roof_types',function (Blueprint $table){

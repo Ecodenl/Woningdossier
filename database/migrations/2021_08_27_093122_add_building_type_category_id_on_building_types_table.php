@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         // Note: We cannot delete this because the original table cannot create the foreign key constraint (because
         // the categories table doesn't exist yet at that point)
@@ -26,7 +26,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('building_types', function (Blueprint $table) {
             $table->dropForeign(['building_type_category_id']);

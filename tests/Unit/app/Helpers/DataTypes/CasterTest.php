@@ -107,7 +107,7 @@ class CasterTest extends TestCase
     /**
      * @dataProvider getCastProvider
      */
-    public function test_get_cast(string $dataType, $value, bool $force, $expected)
+    public function test_get_cast(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {
@@ -158,7 +158,7 @@ class CasterTest extends TestCase
     /**
      * @dataProvider reverseFormattedProvider
      */
-    public function test_reverse_formatted(string $dataType, $value, bool $force, $expected)
+    public function test_reverse_formatted(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {
@@ -213,7 +213,7 @@ class CasterTest extends TestCase
     /**
      * @dataProvider getFormatForUserProvider
      */
-    public function test_get_format_for_user(string $dataType, $value, bool $force, $expected)
+    public function test_get_format_for_user(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {

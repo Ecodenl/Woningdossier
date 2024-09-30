@@ -12,7 +12,7 @@ class ServiceValuesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $services = [
             [

@@ -42,7 +42,7 @@ class Delete extends Command
      *
      * @return int
      */
-    public function handle(EconobisService $econobisService)
+    public function handle(EconobisService $econobisService): int
     {
         SendUserDeletedToEconobis::dispatch(
             $econobisService->forBuilding(

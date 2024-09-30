@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Traits\Models\HasTranslations;
 use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -43,12 +45,12 @@ class Service extends Model
         'name', 'info',
     ];
 
-    public function serviceType()
+    public function serviceType(): BelongsTo
     {
         return $this->belongsTo(ServiceType::class);
     }
 
-    public function values()
+    public function values(): HasMany
     {
         return $this->hasMany(ServiceValue::class);
     }

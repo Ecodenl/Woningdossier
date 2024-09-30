@@ -38,7 +38,7 @@ class Gebruik extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $relevantLastChangedDate = Carbon::now()->subHours(24);
 

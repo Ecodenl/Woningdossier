@@ -26,7 +26,7 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider formatterProvider
      */
-    public function testFormat($locale, $number, $decimals, $expected)
+    public function testFormat($locale, $number, $decimals, $expected): void
     {
         $this->app->setLocale($locale);
 
@@ -57,7 +57,7 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider reverseFormatterProvider
      */
-    public function testReverseFormat($locale, $number, $expected)
+    public function testReverseFormat($locale, $number, $expected): void
     {
         $this->app->setLocale($locale);
 
@@ -90,7 +90,7 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider mathableFormatterProvider
      */
-    public function testMathableFormat($number, $decimals, $expected)
+    public function testMathableFormat($number, $decimals, $expected): void
     {
         $this->assertEquals($expected, NumberFormatter::mathableFormat($number, $decimals));
     }
@@ -122,7 +122,7 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider roundProvider
      */
-    public function testRound($number, $bucket, $expected)
+    public function testRound($number, $bucket, $expected): void
     {
         $this->assertEquals($expected, NumberFormatter::round($number, $bucket));
     }
@@ -146,7 +146,7 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider rangeProvider
      */
-    public function testRange($from, $to, $decimals, $separator, $prefix, $expected)
+    public function testRange($from, $to, $decimals, $separator, $prefix, $expected): void
     {
         app()->setLocale('en');
 
@@ -167,7 +167,7 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider prefixProvider
      */
-    public function testPrefix($value, $prefix, $expected)
+    public function testPrefix($value, $prefix, $expected): void
     {
         $this->assertEquals($expected, NumberFormatter::prefix($value, $prefix));
     }
@@ -195,7 +195,7 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider formatNumberForUserProvider
      */
-    public function testFormatNumberForUser($number, $isInteger, $alwaysNumber, $expected)
+    public function testFormatNumberForUser($number, $isInteger, $alwaysNumber, $expected): void
     {
         // Note: Test currently does not support locale. When we do add a second locale, this will need revisiting.
         $this->assertEquals($expected, NumberFormatter::formatNumberForUser($number, $isInteger, $alwaysNumber));

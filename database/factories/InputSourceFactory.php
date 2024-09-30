@@ -11,7 +11,7 @@ class InputSourceFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $name = $this->faker->word();
         $short = \Illuminate\Support\Str::slug($name);

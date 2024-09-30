@@ -36,7 +36,7 @@ class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $boilerValues = Service::findByShort('boiler')->values;
 

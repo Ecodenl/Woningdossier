@@ -12,7 +12,7 @@ class PvPanelLocationFactorsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         //$table->integer('pc2', 2)->unsigned();
         //$table->string('location');

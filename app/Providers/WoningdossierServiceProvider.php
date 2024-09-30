@@ -44,7 +44,7 @@ class WoningdossierServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Cooperation::observe(CooperationObserver::class);
         PrivateMessage::observe(PrivateMessageObserver::class);
@@ -81,7 +81,7 @@ class WoningdossierServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->bind('Cooperation', function () {
             $cooperation = null;

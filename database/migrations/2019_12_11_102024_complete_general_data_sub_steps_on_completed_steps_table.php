@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         $counter = 0;
 
@@ -44,7 +44,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         /*
             “Once you are at the point where you can call yourself a writer, there’s no turning back.”

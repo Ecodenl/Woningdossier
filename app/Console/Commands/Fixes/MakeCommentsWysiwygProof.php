@@ -42,7 +42,7 @@ class MakeCommentsWysiwygProof extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $tables = [
             'step_comments',

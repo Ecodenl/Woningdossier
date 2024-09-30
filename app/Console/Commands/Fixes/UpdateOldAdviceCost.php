@@ -37,7 +37,7 @@ class UpdateOldAdviceCost extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         DB::table('user_action_plan_advices')
             ->whereRaw("JSON_EXTRACT(costs, '$.to') IS NULL")

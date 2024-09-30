@@ -14,7 +14,7 @@ class ToolQuestionCustomValueFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             //'tool_question_id'

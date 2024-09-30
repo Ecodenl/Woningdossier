@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\HoomdossierSession;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -80,17 +82,17 @@ class ExampleBuilding extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function contents()
+    public function contents(): HasMany
     {
         return $this->hasMany(ExampleBuildingContent::class);
     }
 
-    public function buildingType()
+    public function buildingType(): BelongsTo
     {
         return $this->belongsTo(BuildingType::class);
     }
 
-    public function cooperation()
+    public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class);
     }

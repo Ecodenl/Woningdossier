@@ -12,7 +12,7 @@ class QuestionnaireRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::check();
     }
@@ -22,7 +22,7 @@ class QuestionnaireRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'questionnaires.steps' => ['required', 'array', 'min:1'],

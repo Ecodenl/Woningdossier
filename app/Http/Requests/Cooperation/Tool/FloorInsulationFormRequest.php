@@ -21,7 +21,7 @@ class FloorInsulationFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -38,7 +38,7 @@ class FloorInsulationFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(LegacyService $legacyService)
+    public function rules(LegacyService $legacyService): array
     {
         $noDatabaseSelectOptions = ['yes', 'no', 'unknown'];
 

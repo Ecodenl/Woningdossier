@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasColumn('building_coach_statuses', 'private_message_id')) {
             Schema::table('building_coach_statuses',
@@ -27,7 +27,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         // We don't know for sure if the migration has run, so don't do anything.
     }

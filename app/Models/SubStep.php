@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -112,7 +115,7 @@ class SubStep extends Model
         return $this->belongsTo(SubStepTemplate::class);
     }
 
-    public function toolQuestions()
+    public function toolQuestions(): MorphToMany
     {
         return $this->morphedByMany(ToolQuestion::class, 'sub_steppable')
             ->using(SubSteppable::class)
@@ -120,12 +123,12 @@ class SubStep extends Model
             ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
     }
 
-    public function completedSubSteps()
+    public function completedSubSteps(): HasMany
     {
         return $this->hasMany(CompletedSubStep::class);
     }
 
-    public function subSteppables()
+    public function subSteppables(): HasMany
     {
         return $this->hasMany(SubSteppable::class);
     }
@@ -133,7 +136,7 @@ class SubStep extends Model
     /**
      * Get the parent commentable model (post or video).
      */
-    public function commentable()
+    public function commentable(): MorphTo
     {
         return $this->morphTo();
     }

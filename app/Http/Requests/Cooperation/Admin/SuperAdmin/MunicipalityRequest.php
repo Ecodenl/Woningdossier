@@ -13,7 +13,7 @@ class MunicipalityRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin');
     }
@@ -23,7 +23,7 @@ class MunicipalityRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'municipalities.name' => ['required', new UniqueSlug(Municipality::class, 'short', $this->route('municipality'))],

@@ -39,7 +39,7 @@ class HandleCooperationMeasureApplicationDeletion implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         // We can't delete the cooperation measure application straight away. We need to check
         // if it's used in any UserActionPlanAdvices.

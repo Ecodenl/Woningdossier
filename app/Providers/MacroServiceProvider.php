@@ -13,7 +13,7 @@ class MacroServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->registerCollectionMacros();
     }
@@ -23,7 +23,7 @@ class MacroServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         // Loading in all macros...
         // They are in a separate folder, so it's less clustered in here.

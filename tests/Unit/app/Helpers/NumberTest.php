@@ -29,7 +29,7 @@ class NumberTest extends TestCase
     /**
      * @dataProvider isNegativeProvider
      */
-    public function testIsNegative($number, $expected)
+    public function testIsNegative($number, $expected): void
     {
         $this->assertEquals($expected, Number::isNegative($number));
     }

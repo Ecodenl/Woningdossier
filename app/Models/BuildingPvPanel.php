@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -67,7 +68,7 @@ class BuildingPvPanel extends Model implements Auditable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
@@ -91,7 +92,7 @@ class BuildingPvPanel extends Model implements Auditable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function orientation()
+    public function orientation(): BelongsTo
     {
         return $this->belongsTo(PvPanelOrientation::class, 'pv_panel_orientation_id', 'id');
     }

@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('private_messages', function (Blueprint $table) {
             // drop columns
@@ -58,7 +58,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('private_messages', function (Blueprint $table) {
             $table->dropColumn('is_public');

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -42,12 +43,12 @@ class Interest extends Model
         'name',
     ];
 
-    public function users()
+    public function users(): MorphToMany
     {
         return $this->morphedByMany(User::class, 'interest', 'user_interests');
     }
 
-    public function steps()
+    public function steps(): MorphToMany
     {
         return $this->morphedByMany(Step::class, 'interest', 'user_interests');
     }

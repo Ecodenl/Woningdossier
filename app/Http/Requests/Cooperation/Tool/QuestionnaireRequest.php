@@ -22,7 +22,7 @@ class QuestionnaireRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -38,7 +38,7 @@ class QuestionnaireRequest extends FormRequest
      *
      * @return array
      */
-    public function attributes()
+    public function attributes(): array
     {
         $questions = $this->questions;
 
@@ -74,7 +74,7 @@ class QuestionnaireRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return $this->makeRules();
     }

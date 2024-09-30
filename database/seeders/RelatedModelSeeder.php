@@ -15,7 +15,7 @@ class RelatedModelSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $stepSmallMeasures = Step::findByShort('small-measures');
         $allExpertEnergySavingMeasures = MeasureApplication::measureType(MeasureApplication::ENERGY_SAVING)

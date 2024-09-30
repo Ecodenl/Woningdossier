@@ -47,7 +47,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         if ($this->building instanceof Building) {
             // send the mail to the user

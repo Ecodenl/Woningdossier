@@ -37,7 +37,7 @@ class DoUpgrade extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $commands = [
             SeedCommand::class => [

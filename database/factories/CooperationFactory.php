@@ -11,7 +11,7 @@ class CooperationFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $name = $this->faker->company();
         return [

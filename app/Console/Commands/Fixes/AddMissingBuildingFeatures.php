@@ -37,7 +37,7 @@ class AddMissingBuildingFeatures extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $buildingsWithoutFeatures = DB::select("SELECT * 
             FROM buildings b WHERE NOT EXISTS (

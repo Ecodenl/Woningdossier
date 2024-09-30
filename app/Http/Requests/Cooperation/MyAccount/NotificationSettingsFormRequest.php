@@ -12,7 +12,7 @@ class NotificationSettingsFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::check();
     }
@@ -22,7 +22,7 @@ class NotificationSettingsFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'notification_setting.*.interval_id' => ['int', 'required', Rule::exists('notification_intervals', 'id')],

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -99,7 +100,7 @@ class UserEnergyHabit extends Model implements Auditable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -107,7 +108,7 @@ class UserEnergyHabit extends Model implements Auditable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function heatingFirstFloor()
+    public function heatingFirstFloor(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'heating_first_floor');
     }
@@ -115,7 +116,7 @@ class UserEnergyHabit extends Model implements Auditable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function heatingSecondFloor()
+    public function heatingSecondFloor(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'heating_second_floor');
     }
@@ -123,7 +124,7 @@ class UserEnergyHabit extends Model implements Auditable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function comfortLevelTapWater()
+    public function comfortLevelTapWater(): BelongsTo
     {
         return $this->belongsTo(ComfortLevelTapWater::class, 'water_comfort_id');
     }

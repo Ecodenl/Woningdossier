@@ -33,7 +33,7 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      *
      * @return array|string
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['mail'];
     }
@@ -65,7 +65,7 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      *
      * @return RequestAccountConfirmationEmail
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): RequestAccountConfirmationEmail
     {
         $verifyUrl = $this->verificationUrl($notifiable);
         return new RequestAccountConfirmationEmail($this->user, $verifyUrl);

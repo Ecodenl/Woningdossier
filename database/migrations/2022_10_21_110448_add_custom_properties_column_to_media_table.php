@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('media', function (Blueprint $table) {
             $table->unsignedInteger('input_source_id')->nullable()->after('original_media_id');
@@ -26,7 +26,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('media', function (Blueprint $table) {
             $table->dropForeign(['input_source_id']);

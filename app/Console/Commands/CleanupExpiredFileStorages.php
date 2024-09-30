@@ -38,7 +38,7 @@ class CleanupExpiredFileStorages extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         // so this withExpired thing is accurate at the moment
         // however the FileStorage::isProcessed set the available_until, which defaults to seven days if not set by file type.

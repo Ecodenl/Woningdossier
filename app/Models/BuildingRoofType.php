@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -81,7 +82,7 @@ class BuildingRoofType extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
@@ -89,7 +90,7 @@ class BuildingRoofType extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function roofType()
+    public function roofType(): BelongsTo
     {
         return $this->belongsTo(RoofType::class);
     }
@@ -97,7 +98,7 @@ class BuildingRoofType extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function elementValue()
+    public function elementValue(): BelongsTo
     {
         return $this->belongsTo(ElementValue::class);
     }
@@ -113,17 +114,17 @@ class BuildingRoofType extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function heating()
+    public function heating(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'building_heating_id');
     }
 
-    public function buildingHeating()
+    public function buildingHeating(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class);
     }
 
-    public function measureApplication()
+    public function measureApplication(): BelongsTo
     {
         \Log::critical(__METHOD__.': Dit werkt niet!!');
 

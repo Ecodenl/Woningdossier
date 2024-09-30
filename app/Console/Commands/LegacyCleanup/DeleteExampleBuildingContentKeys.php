@@ -37,7 +37,7 @@ class DeleteExampleBuildingContentKeys extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
 
         $keysToRemove = [

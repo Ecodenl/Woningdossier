@@ -37,7 +37,7 @@ class CorrectHasSolarPanelsToolQuestionAnswer extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
 
         $toolQuestionAnswersToUpdate = DB::table('building_services')

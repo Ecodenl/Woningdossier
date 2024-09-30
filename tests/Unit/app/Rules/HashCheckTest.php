@@ -22,7 +22,7 @@ class HashCheckTest extends TestCase
     /**
      * @dataProvider HashCheckProvider
      */
-    public function testPasses($valueToCheck, $unhashedValue, $shouldPass)
+    public function testPasses($valueToCheck, $unhashedValue, $shouldPass): void
     {
         $postalCodeRule = new HashCheck(Hash::make($valueToCheck));
         $this->assertEquals($shouldPass, $postalCodeRule->passes('password', $unhashedValue));

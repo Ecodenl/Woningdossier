@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -55,7 +57,7 @@ class UserInterest extends Model
         'user_id', 'interested_in_type', 'interested_in_id', 'interest_id', 'input_source_id',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -65,12 +67,12 @@ class UserInterest extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function interest()
+    public function interest(): BelongsTo
     {
         return $this->belongsTo(Interest::class);
     }
 
-    public function interestedIn()
+    public function interestedIn(): MorphTo
     {
         return $this->morphTo();
     }

@@ -11,7 +11,7 @@ class SqlDumpSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $db = config('database.connections.'.config('database.default'));
 

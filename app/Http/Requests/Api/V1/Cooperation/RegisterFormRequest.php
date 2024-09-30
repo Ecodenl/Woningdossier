@@ -25,7 +25,7 @@ class RegisterFormRequest extends ApiRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -48,7 +48,7 @@ class RegisterFormRequest extends ApiRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             'email' => 'required|string|email|max:255|unique:accounts',

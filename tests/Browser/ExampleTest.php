@@ -12,7 +12,7 @@ class ExampleTest extends DuskTestCase
      *
      * @return void
      */
-    public function testBasicExample()
+    public function testBasicExample(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/')

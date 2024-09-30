@@ -11,7 +11,7 @@ class AccountObserver
         \App\Helpers\Cache\Account::wipe($account->id);
     }
 
-    public function deleted(Account $account)
+    public function deleted(Account $account): void
     {
         \App\Helpers\Cache\Account::wipe($account->id);
     }

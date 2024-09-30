@@ -12,7 +12,7 @@ class BuildingTypeElementMaxSavingTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $maxSavings = [
             'Vrijstaande woning' => [

@@ -13,7 +13,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (Schema::hasColumn('logs', 'user_id')) {
             $tableHasForeign = false;
@@ -50,7 +50,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (! Schema::hasColumn('logs', 'user_id')) {
             Schema::table('logs', function (Blueprint $table) {

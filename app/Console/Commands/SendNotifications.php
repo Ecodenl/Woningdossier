@@ -43,7 +43,7 @@ class SendNotifications extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         // get the current notification type
         $notificationType = NotificationType::where('short',

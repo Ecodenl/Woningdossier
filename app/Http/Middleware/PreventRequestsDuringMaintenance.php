@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as Middleware;
@@ -25,7 +27,7 @@ class PreventRequestsDuringMaintenance extends Middleware
      *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         // If we're not in maintenance mode, there's no point in trying to find a cooperation
         if ($this->app->isDownForMaintenance()) {

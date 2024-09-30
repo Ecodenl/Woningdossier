@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Traits\Models\HasMappings;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Scopes\VisibleScope;
@@ -67,7 +68,7 @@ class CustomMeasureApplication extends Model
         'extra' => 'array',
     ];
 
-    public function userActionPlanAdvices()
+    public function userActionPlanAdvices(): MorphMany
     {
         // We need to retrieve this without the visible tag
         // The visible tag defines whether it should be shown on my plan or not, but for other locations

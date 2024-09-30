@@ -20,7 +20,7 @@ class UserActionPlanAdvicePolicy
      * @param  \App\Models\Account  $user
      * @return mixed
      */
-    public function viewAny(Account $user)
+    public function viewAny(Account $user): bool
     {
         //
     }
@@ -59,7 +59,7 @@ class UserActionPlanAdvicePolicy
      * @param  \App\Models\Account  $user
      * @return mixed
      */
-    public function create(Account $user)
+    public function create(Account $user): bool
     {
         //
     }
@@ -71,7 +71,7 @@ class UserActionPlanAdvicePolicy
      * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
      * @return mixed
      */
-    public function update(Account $user, UserActionPlanAdvice $userActionPlanAdvice)
+    public function update(Account $user, UserActionPlanAdvice $userActionPlanAdvice): bool
     {
         //
     }
@@ -83,7 +83,7 @@ class UserActionPlanAdvicePolicy
      * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
      * @return mixed
      */
-    public function delete(Account $user, UserActionPlanAdvice $userActionPlanAdvice)
+    public function delete(Account $user, UserActionPlanAdvice $userActionPlanAdvice): bool
     {
         //
     }
@@ -95,7 +95,7 @@ class UserActionPlanAdvicePolicy
      * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
      * @return mixed
      */
-    public function restore(Account $user, UserActionPlanAdvice $userActionPlanAdvice)
+    public function restore(Account $user, UserActionPlanAdvice $userActionPlanAdvice): bool
     {
         //
     }
@@ -107,7 +107,7 @@ class UserActionPlanAdvicePolicy
      * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
      * @return mixed
      */
-    public function forceDelete(Account $user, UserActionPlanAdvice $userActionPlanAdvice)
+    public function forceDelete(Account $user, UserActionPlanAdvice $userActionPlanAdvice): bool
     {
         //
     }

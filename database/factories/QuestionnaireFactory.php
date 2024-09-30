@@ -11,7 +11,7 @@ class QuestionnaireFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'cooperation_id' => \App\Models\Cooperation::factory(),

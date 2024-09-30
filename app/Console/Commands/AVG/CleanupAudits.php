@@ -39,7 +39,7 @@ class CleanupAudits extends Command
      *
      * @return mixed
      */
-    public function handle(DiscordNotifier $discordNotifier)
+    public function handle(DiscordNotifier $discordNotifier): void
     {
         $deleteCount = Audit::where('created_at', '<=', Carbon::now()->subMonths(4))->delete();
         if ($deleteCount > 0) {

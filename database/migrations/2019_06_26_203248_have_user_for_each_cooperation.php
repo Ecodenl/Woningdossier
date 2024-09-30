@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasColumn('users', 'cooperation_id')) {
             Schema::table('users', function (Blueprint $table) {
@@ -170,7 +170,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         // put building_user_usages back
         if (! Schema::hasTable('building_user_usages')) {

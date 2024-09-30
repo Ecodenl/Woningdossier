@@ -12,7 +12,7 @@ class CooperationsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $cooperations = [
             [

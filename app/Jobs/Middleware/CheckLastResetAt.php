@@ -26,7 +26,7 @@ class CheckLastResetAt
      * @param  callable  $next
      * @return mixed
      */
-    public function handle($job, $next)
+    public function handle($job, $next): void
     {
         // no logic should be applied when dispatched on sync
         if ($job->connection === "sync") {

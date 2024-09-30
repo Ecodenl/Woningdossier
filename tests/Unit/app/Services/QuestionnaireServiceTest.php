@@ -34,7 +34,7 @@ class QuestionnaireServiceTest extends TestCase
     /**
      * @dataProvider hasQuestionOptionsProvider
      */
-    public function testHasQuestionOptions($input, $expected)
+    public function testHasQuestionOptions($input, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::hasQuestionOptions($input));
     }
@@ -54,7 +54,7 @@ class QuestionnaireServiceTest extends TestCase
     /**
      * @dataProvider createQuestionProvider
      */
-    public function testCreateQuestion($questionData)
+    public function testCreateQuestion($questionData): void
     {
         // first we need to create a questionnaire with a question
         $questionnaire = Questionnaire::factory()->create();
@@ -66,7 +66,7 @@ class QuestionnaireServiceTest extends TestCase
         ]);
     }
 
-    public function testCopyQuestionnaireToCooperation()
+    public function testCopyQuestionnaireToCooperation(): void
     {
         // first we need to create a questionnaire with a question
         $questionnaire = Questionnaire::factory()->create();
@@ -113,7 +113,7 @@ class QuestionnaireServiceTest extends TestCase
     /**
      * @dataProvider isEmptyTranslationProvider
      */
-    public function testIsEmptyTranslation($translations, $expected)
+    public function testIsEmptyTranslation($translations, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
     }
@@ -133,7 +133,7 @@ class QuestionnaireServiceTest extends TestCase
     /**
      * @dataProvider isNotEmptyTranslationProvider
      */
-    public function testisNotEmptyTranslation($translations, $expected)
+    public function testisNotEmptyTranslation($translations, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::isNotEmptyTranslation($translations));
     }

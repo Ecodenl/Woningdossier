@@ -11,7 +11,7 @@ class BuildingHeaterFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'building_id' => \App\Models\Building::factory(),

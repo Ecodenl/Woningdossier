@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('queue_logs', function (Blueprint $table) {
             $table->string('queue')->default(\App\Helpers\Queue::DEFAULT);
@@ -25,7 +25,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('queue_logs');
     }

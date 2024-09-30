@@ -12,7 +12,7 @@ class ModelHasRolesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
 
         // The default (admin) user is promoted to super user

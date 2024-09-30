@@ -13,7 +13,7 @@ class SubSteppableFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'order' => $this->faker->randomDigit(),

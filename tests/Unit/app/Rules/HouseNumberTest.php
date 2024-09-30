@@ -18,7 +18,7 @@ class HouseNumberTest extends TestCase
     /**
      * @dataProvider houseNumberProvider
      */
-    public function testPasses($country, $houseNumber, $shouldPass)
+    public function testPasses($country, $houseNumber, $shouldPass): void
     {
         $houseNumberRule = new HouseNumber($country);
         $this->assertEquals($shouldPass, $houseNumberRule->passes('number', $houseNumber));

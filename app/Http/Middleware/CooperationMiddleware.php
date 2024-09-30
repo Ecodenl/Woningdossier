@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use Closure;
@@ -18,7 +20,7 @@ class CooperationMiddleware
      *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         if ($request->query('test') == "1") {
             Log::channel('single')->debug(__METHOD__);

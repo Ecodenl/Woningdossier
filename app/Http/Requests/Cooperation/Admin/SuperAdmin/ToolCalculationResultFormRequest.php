@@ -12,7 +12,7 @@ class ToolCalculationResultFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin');
     }
@@ -22,7 +22,7 @@ class ToolCalculationResultFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'tool_calculation_results.name.nl' => 'required',

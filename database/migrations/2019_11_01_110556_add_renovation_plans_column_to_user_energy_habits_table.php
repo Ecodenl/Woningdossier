@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('user_energy_habits', function (Blueprint $table) {
             $table->smallInteger('renovation_plans')->after('amount_water')->nullable()->default(null);
@@ -23,7 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('user_energy_habits', function (Blueprint $table) {
             $table->dropColumn('renovation_plans');

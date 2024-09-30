@@ -25,7 +25,7 @@ class TemperatureTest extends TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function testEnergySavingFigureWallInsulation($expected, $measure, $averageHouseTemp)
+    public function testEnergySavingFigureWallInsulation($expected, $measure, $averageHouseTemp): void
     {
         $this->assertEquals($expected, Temperature::energySavingFigureWallInsulation($measure, $averageHouseTemp));
     }

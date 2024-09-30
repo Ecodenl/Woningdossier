@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -40,17 +41,17 @@ class ServiceType extends Model
         'name',
     ];
 
-    public function measures()
+    public function measures(): HasMany
     {
         return $this->hasMany(Measure::class);
     }
 
-    public function elements()
+    public function elements(): HasMany
     {
         return $this->hasMany(Element::class);
     }
 
-    public function buildingServices()
+    public function buildingServices(): HasMany
     {
         return $this->hasMany(BuildingService::class);
     }

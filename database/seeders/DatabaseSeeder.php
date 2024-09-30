@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         //TODO: Convert "PluralModelNameTableSeeder" into "SingularModelNameSeeder"
         // as per L7 convention: UsersTableSeeder to > UserSeeder

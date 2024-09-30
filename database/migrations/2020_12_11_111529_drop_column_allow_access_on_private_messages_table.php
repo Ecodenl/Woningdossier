@@ -12,7 +12,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         // first migrate the allow access to the users table.
         $buildings = Building::all();
@@ -38,7 +38,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('private_messages', function (Blueprint $table) {
             $table->boolean('allow_access')->after('to_cooperation_id');

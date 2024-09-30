@@ -18,7 +18,7 @@ class ExternalServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->app->bind(LvbagClient::class, function (Application $app) {
             $useProductionEndpoint = true;
@@ -59,7 +59,7 @@ class ExternalServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }

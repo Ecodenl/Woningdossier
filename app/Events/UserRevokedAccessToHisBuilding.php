@@ -31,7 +31,7 @@ class UserRevokedAccessToHisBuilding
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
+    public function broadcastOn(): array
     {
         return new PrivateChannel('channel-name');
     }

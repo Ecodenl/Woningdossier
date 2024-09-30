@@ -13,7 +13,7 @@ class MeasureCategoryFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $name = $this->faker->randomElement(['Isolatie', 'Aardgas vrije woning', 'Besparing']);
 

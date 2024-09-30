@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -43,17 +44,17 @@ class BuildingPermission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(\App\Models\Building::class);
     }
 
-    public function buildingCoachStatus()
+    public function buildingCoachStatus(): BelongsTo
     {
         return $this->belongsTo(\App\Models\BuildingCoachStatus::class, 'building_id', 'building_id');
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

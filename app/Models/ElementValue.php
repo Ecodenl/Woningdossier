@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -56,7 +57,7 @@ class ElementValue extends Model
     }
 
     # Relations
-    public function element()
+    public function element(): BelongsTo
     {
         return $this->belongsTo(Element::class);
     }

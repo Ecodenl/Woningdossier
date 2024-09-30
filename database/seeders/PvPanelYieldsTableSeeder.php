@@ -12,7 +12,7 @@ class PvPanelYieldsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $items = [
             'n-o' => [

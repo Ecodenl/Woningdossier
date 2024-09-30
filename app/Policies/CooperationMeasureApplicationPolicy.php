@@ -18,7 +18,7 @@ class CooperationMeasureApplicationPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(Account $account)
+    public function viewAny(Account $account): bool
     {
         //
     }
@@ -31,7 +31,7 @@ class CooperationMeasureApplicationPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(Account $account, CooperationMeasureApplication $cooperationMeasureApplication)
+    public function view(Account $account, CooperationMeasureApplication $cooperationMeasureApplication): bool
     {
         //
     }
@@ -43,7 +43,7 @@ class CooperationMeasureApplicationPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(Account $account)
+    public function create(Account $account): bool
     {
         //
     }
@@ -56,7 +56,7 @@ class CooperationMeasureApplicationPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(Account $account, CooperationMeasureApplication $cooperationMeasureApplication)
+    public function update(Account $account, CooperationMeasureApplication $cooperationMeasureApplication): bool
     {
         //
     }
@@ -69,7 +69,7 @@ class CooperationMeasureApplicationPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(Account $account, CooperationMeasureApplication $cooperationMeasureApplication)
+    public function delete(Account $account, CooperationMeasureApplication $cooperationMeasureApplication): bool
     {
         return $account->user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN) && $cooperationMeasureApplication->is_deletable;
     }
@@ -82,7 +82,7 @@ class CooperationMeasureApplicationPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(Account $account, CooperationMeasureApplication $cooperationMeasureApplication)
+    public function restore(Account $account, CooperationMeasureApplication $cooperationMeasureApplication): bool
     {
         //
     }
@@ -95,7 +95,7 @@ class CooperationMeasureApplicationPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(Account $account, CooperationMeasureApplication $cooperationMeasureApplication)
+    public function forceDelete(Account $account, CooperationMeasureApplication $cooperationMeasureApplication): bool
     {
         //
     }

@@ -142,7 +142,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         \Sentry\configureScope(function (Scope $scope) {
             $scope->setTag('APP_URL', config("app.url"));
@@ -154,7 +154,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return bool
      */
-    public function shouldDiscoverEvents()
+    public function shouldDiscoverEvents(): bool
     {
         return false;
     }

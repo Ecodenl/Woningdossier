@@ -14,7 +14,7 @@ class BuildingCoachStatusFormRequest extends ApiRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -24,7 +24,7 @@ class BuildingCoachStatusFormRequest extends ApiRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'building_coach_statuses.coach_contact_id' => ['required', 'numeric', 'integer', 'gt:0'],

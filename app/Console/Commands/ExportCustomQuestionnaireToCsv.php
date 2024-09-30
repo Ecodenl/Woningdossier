@@ -41,7 +41,7 @@ class ExportCustomQuestionnaireToCsv extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $questionnaire = Questionnaire::find(
             $this->argument('questionnaireId')

@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('building_insulated_glazings', function (Blueprint $table) {
             $table->text('extra')->nullable()->default(null)->change();
@@ -23,7 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('building_insulated_glazings', function (Blueprint $table) {
             $table->string('extra')->nullable()->default(null)->change();

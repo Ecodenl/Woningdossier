@@ -31,7 +31,7 @@ class PhoneNumberTest extends TestCase
     /**
      * @dataProvider phoneNumberProvider
      */
-    public function testPasses($country, $phoneNumber, $shouldPass)
+    public function testPasses($country, $phoneNumber, $shouldPass): void
     {
         $phoneNumberRule = new PhoneNumber($country);
         $this->assertEquals($shouldPass, $phoneNumberRule->passes('phone_number', $phoneNumber));

@@ -41,7 +41,7 @@ class CompleteGasElectricityCostOnRelevantBuildings extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $usageQuickScan = Step::where('short', 'usage-quick-scan')->first();
         $subStepToComplete = $usageQuickScan->subSteps()->where('slug->nl', 'gas-en-elektra-kosten')->first();

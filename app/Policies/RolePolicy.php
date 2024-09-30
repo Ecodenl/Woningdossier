@@ -25,7 +25,7 @@ class RolePolicy
         $this->userRoleService = $userRoleService;
     }
 
-    public function view(Account $account, Role $role, User $user, Role $currentUserRole)
+    public function view(Account $account, Role $role, User $user, Role $currentUserRole): bool
     {
         return $this->userRoleService->forCurrentRole($currentUserRole)->canView($role);
     }
@@ -70,7 +70,7 @@ class RolePolicy
 
     }
 
-    public function delete(Account $account, Role $role, User $user, Role $currentUserRole, User $userToRemoveRoleFrom)
+    public function delete(Account $account, Role $role, User $user, Role $currentUserRole, User $userToRemoveRoleFrom): bool
     {
         // its not possible to delete the user its only available role
         if ($userToRemoveRoleFrom->hasNotMultipleRoles() && $role->id === $userToRemoveRoleFrom->roles->first()?->id) {

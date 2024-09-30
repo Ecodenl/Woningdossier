@@ -2,28 +2,29 @@
 
 namespace App\Policies;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\PrivateMessage;
-use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PrivateMessagePolicy
 {
     use HandlesAuthorization;
 
-    public function isAllowed(Account $account, PrivateMessage|string|null $message)
+    public function viewAny(Account $account): bool
+    {
+        return ! Hoomdossier::user()->isFillingToolForOtherBuilding();
+    }
+
+    public function update(Account $account, PrivateMessage $message): bool
     {
         $user = $account->user();
 
         // note the order
-        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN])) {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_SUPER_ADMIN])) {
             return true;
-        }
-
-        if (! $message instanceof PrivateMessage) {
-            return false;
         }
 
         // get the building id from the message
@@ -32,23 +33,11 @@ class PrivateMessagePolicy
         if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH])) {
             return $user->isNotRemovedFromBuildingCoachStatus($buildingId);
         }
-
         if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_RESIDENT])) {
-            if (in_array(HoomdossierSession::getBuilding(), compact('buildingId'))) {
+            if (HoomdossierSession::getBuilding(false) === $buildingId) {
                 return true;
             }
         }
-
         return false;
-    }
-
-    public function view(Account $account)
-    {
-        return $this->isAllowed($account, PrivateMessage::class);
-    }
-
-    public function edit(Account $account, PrivateMessage $message)
-    {
-        return $this->isAllowed($account, $message);
     }
 }

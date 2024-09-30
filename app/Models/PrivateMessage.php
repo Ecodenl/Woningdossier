@@ -175,13 +175,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Get all the "group members"
-     * returns a collection of all the participants for a chat from a building.
-     *
-     * @param      $buildingId
-     * @param bool $publicConversation
+     * Get all the "group members".
+     * Returns a collection of all the participants for a chat from a building.
      */
-    public static function getGroupParticipants($buildingId, $publicConversation = true): Collection
+    public static function getGroupParticipants(?int $buildingId, bool $publicConversation = true): Collection
     {
         // create a collection of group members
         $groupMembers = collect();

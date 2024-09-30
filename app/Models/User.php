@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Deprecation\DeprecationLogger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\HoomdossierSession;
 use App\Traits\HasCooperationTrait;
@@ -267,6 +268,8 @@ class User extends Model implements AuthorizableContract
     // ------ End User -> Account table / model migration stuff -------
     public function buildings()
     {
+        // TODO: No user has more than one building.
+        DeprecationLogger::log(__METHOD__ . ' really shouldn\'t be used anymore...');
         return $this->hasMany(Building::class);
     }
 

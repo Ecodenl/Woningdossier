@@ -78,9 +78,9 @@
                     {{-- for residents only show 'Start' and 'Basisadvies' --}}
                     @if(Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole('resident'))
                         @if (! Hoomdossier::user()->isFillingToolForOtherBuilding())
-                        <li>
-                            <a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a>
-                        </li>
+                            <li>
+                                <a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a>
+                            </li>
                         @endif
                         <li>
                             <a href="{{route('cooperation.frontend.tool.expert-scan.index', ['step' => 'ventilation'])}}">
@@ -89,49 +89,46 @@
                         </li>
                     @endif
 
-                    @can('view', \App\Models\PrivateMessage::class)
-                        @if (! \Hoomdossier::user()->isFillingToolForOtherBuilding())
+                    @can('viewAny', \App\Models\PrivateMessage::class)
+                        @php
+                            $messageUrl = route('cooperation.my-account.messages.edit');
 
-                            <?php
-                                $messageUrl = route('cooperation.my-account.messages.index');
+                            if (Hoomdossier::user()->can('access-admin') && Hoomdossier::user()->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COACH, RoleHelper::ROLE_COOPERATION_ADMIN])) {
+                                $messageUrl = route('cooperation.admin.messages.index');
+                            }
+                        @endphp
+                        <li>
+                            @include('cooperation.layouts.message-badge', compact('messageUrl'))
+                        </li>
 
-                                if(Hoomdossier::user()->can('access-admin') && Hoomdossier::user()->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COACH, RoleHelper::ROLE_COOPERATION_ADMIN])) {
-                                    $messageUrl = route('cooperation.admin.messages.index');
-                                }
-                            ?>
-                            <li>
-                                @include('cooperation.layouts.message-badge', compact('messageUrl'))
+                        @include('cooperation.admin.layouts.navbar.role-switcher')
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+                                    {{ optional(Hoomdossier::user())->first_name }} {{ optional(Hoomdossier::user())->last_name }}<span class="caret"></span>
+                                </a>
+
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.navbar.my-account')</a></li>
+                                    <li><a href="{{ route('cooperation.privacy.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.navbar.privacy')</a></li>
+                                    <li><a href="{{ route('cooperation.disclaimer.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.navbar.disclaimer')</a></li>
+                                    {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
+                                    <li>
+                                        <a href="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}"
+                                           onclick="event.preventDefault();
+                                                             document.getElementById('logout-form').submit();">
+                                            Logout
+                                        </a>
+
+                                        <form id="logout-form" action="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}" method="POST" style="display: none;">
+                                            {{ csrf_field() }}
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <span class="pull-right" style="padding-right:.5em;line-height:100%;"><small>v{{ config('app.version') }}@if(App::environment() != 'production') - {{ App::environment() }}@endif</small></span>
+                                    </li>
+                                </ul>
                             </li>
-
-                            @include('cooperation.admin.layouts.navbar.role-switcher')
-
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                                        {{ optional(Hoomdossier::user())->first_name }} {{ optional(Hoomdossier::user())->last_name }}<span class="caret"></span>
-                                    </a>
-
-                                    <ul class="dropdown-menu">
-                                        <li><a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.navbar.my-account')</a></li>
-                                        <li><a href="{{ route('cooperation.privacy.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.navbar.privacy')</a></li>
-                                        <li><a href="{{ route('cooperation.disclaimer.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.navbar.disclaimer')</a></li>
-                                        {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
-                                        <li>
-                                            <a href="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}"
-                                               onclick="event.preventDefault();
-                                                                 document.getElementById('logout-form').submit();">
-                                                Logout
-                                            </a>
-
-                                            <form id="logout-form" action="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}" method="POST" style="display: none;">
-                                                {{ csrf_field() }}
-                                            </form>
-                                        </li>
-                                        <li>
-                                            <span class="pull-right" style="padding-right:.5em;line-height:100%;"><small>v{{ config('app.version') }}@if(App::environment() != 'production') - {{ App::environment() }}@endif</small></span>
-                                        </li>
-                                    </ul>
-                                </li>
-                        @endif
                     @endcan
                 @endguest
             </ul>

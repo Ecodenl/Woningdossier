@@ -274,16 +274,12 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Get the building id.
-     *
-     * @param bool $object Set to true if you want to get an object back
-     *
-     * @return int|Building|null
+     * Get the current building ID (or building model if hydrated).
      */
-    public static function getBuilding($object = false)
+    public static function getBuilding(bool $hydrate = false): null|int|Building
     {
         $building = self::getHoomdossierSession('building_id');
-        if ($object) {
+        if ($hydrate) {
             $building = \App\Helpers\Cache\Building::find($building);
         }
 

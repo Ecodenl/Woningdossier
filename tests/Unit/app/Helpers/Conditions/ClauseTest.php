@@ -11,8 +11,6 @@ class ClauseTest extends TestCase
 
     /**
      * A basic unit test example.
-     *
-     * @return void
      */
     public function testSingleClause(): void
     {

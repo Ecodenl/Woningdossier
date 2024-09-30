@@ -38,7 +38,6 @@ class TranslationController extends Controller
 
     /**
      *
-     * @param  \App\Models\Cooperation  $cooperation
      * @param  string  $group  So we can get the translations / questions from language_line table for the step
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -78,11 +77,7 @@ class TranslationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Cooperation  $cooperation
      * @param $group
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Cooperation $cooperation, $group): RedirectResponse
     {

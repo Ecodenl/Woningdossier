@@ -26,8 +26,6 @@ class FileStorageService
      * Method to download a given file.
      *
      * @param $fileStorage
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public static function download($fileStorage): RedirectResponse
     {

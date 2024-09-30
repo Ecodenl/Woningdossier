@@ -23,10 +23,6 @@ class SetOldEmailListener implements ShouldQueue
      * Handle the changed email event.
      *
      * Update data and send a email recovery mail to the user his old email address.
-     *
-     * @param object $event
-     *
-     * @return void
      */
     public function handle(object $event): void
     {

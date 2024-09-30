@@ -41,8 +41,6 @@ class FileTypeCategory extends Model
      * Scope on the short column.
      *
      * @param $short
-     *
-     * @return Builder
      */
     public function scopeShort(Builder $query, $short): Builder
     {

@@ -26,8 +26,6 @@ class QuestionnairePolicy
 
     /**
      * Check if the user is permitted to set the active status of a questionnaire.
-     *
-     * @return bool
      */
     public function setActiveStatus(Account $account, Questionnaire $questionnaire): bool
     {
@@ -37,8 +35,6 @@ class QuestionnairePolicy
 
     /**
      * Check if the user is permitted to create a new questionnaire.
-     *
-     * @return bool
      */
     public function create(Account $account): bool
     {

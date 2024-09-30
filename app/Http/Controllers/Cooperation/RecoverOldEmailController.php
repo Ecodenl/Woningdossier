@@ -15,8 +15,6 @@ class RecoverOldEmailController extends Controller
      * Method to recover the old email adres based on the old_email_token.
      *
      * @param $token
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function recover(Cooperation $cooperation, $token): RedirectResponse
     {

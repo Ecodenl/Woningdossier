@@ -20,8 +20,6 @@ class BuildingPermissionService
 
     /**
      * Give a user permission to a building.
-     *
-     * @return bool
      */
     public static function givePermission(User $user, Building $building): bool
     {

@@ -69,8 +69,6 @@ class PrivateMessage extends Model
 
     /**
      * Determine if a private message is public.
-     *
-     * @return bool
      */
     public static function isPublic(PrivateMessage $privateMessage): bool
     {
@@ -83,8 +81,6 @@ class PrivateMessage extends Model
 
     /**
      * Determine if a private message is private.
-     *
-     * @return bool
      */
     public static function isPrivate(PrivateMessage $privateMessage): bool
     {
@@ -93,8 +89,6 @@ class PrivateMessage extends Model
 
     /**
      * Scope a query to return the messages that are sent to a user / coach.
-     *
-     * @return PrivateMessage
      */
     public function scopeMyPrivateMessages($query): PrivateMessage
     {
@@ -103,8 +97,6 @@ class PrivateMessage extends Model
 
     /**
      * Scope a query to return the conversation ordered on created_at.
-     *
-     * @return $this
      */
     public static function scopeConversation($query, $buildingId): static
     {
@@ -147,8 +139,6 @@ class PrivateMessage extends Model
 
     /**
      * Returns the receiving cooperation of this private message.
-     *
-     * @return Cooperation|null
      */
     public function getReceivingCooperation(): ?Cooperation
     {
@@ -162,8 +152,6 @@ class PrivateMessage extends Model
 
     /**
      * Returns the receiving cooperation of this private message.
-     *
-     * @return Cooperation|null
      */
     public function getSendingCooperation(): ?Cooperation
     {
@@ -239,8 +227,6 @@ class PrivateMessage extends Model
 
     /**
      * Get the building from a message.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function building(): BelongsTo
     {

@@ -100,8 +100,6 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
 
     /**
      * Get the sub questions.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function subQuestions(): HasMany
     {

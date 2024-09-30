@@ -13,8 +13,6 @@ class EconobisServiceProvider extends ServiceProvider implements DeferrableProvi
 {
     /**
      * Register services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -33,8 +31,6 @@ class EconobisServiceProvider extends ServiceProvider implements DeferrableProvi
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
     public function boot(): void
     {

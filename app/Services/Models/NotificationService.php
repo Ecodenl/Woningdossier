@@ -69,8 +69,6 @@ class NotificationService
 
     /**
      * Deactivate the notification.
-     *
-     * @return void
      */
     public function deactivate(): void
     {

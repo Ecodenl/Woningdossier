@@ -18,11 +18,7 @@ class ToolController extends Controller
     /**
      * Set the sessions and after that redirect them to the tool.
      *
-     * @param \App\Models\Cooperation $cooperation
-     * @param \App\Models\Building $building
-     * @param \App\Models\Scan $scan
      *
-     * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function fillForUser(Cooperation $cooperation, Building $building, Scan $scan): RedirectResponse
@@ -40,11 +36,7 @@ class ToolController extends Controller
     /**
      * Sessions that need to be set so we can let a user observe a building / tool.
      *
-     * @param \App\Models\Cooperation $cooperation
-     * @param \App\Models\Building $building
-     * @param \App\Models\Scan $scan
      *
-     * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function observeToolForUser(Cooperation $cooperation, Building $building, Scan $scan): RedirectResponse

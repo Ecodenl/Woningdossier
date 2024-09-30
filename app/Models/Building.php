@@ -274,8 +274,6 @@ class Building extends Model
     }
 
     /**
-     * @param InputSource $inputSource
-     * @param ToolQuestion $toolQuestion
      * @return array|mixed
      */
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
@@ -358,10 +356,6 @@ class Building extends Model
 
     /**
      * Scope to return the buildings with most recent information from the building status.
-     *
-     * @param Builder $query
-     *
-     * @return Builder
      */
     public function scopeWithRecentBuildingStatusInformation(Builder $query
     ): Builder
@@ -399,8 +393,6 @@ class Building extends Model
 
     /**
      * Check if a step is completed for a building with matching input source id.
-     *
-     * @return bool
      */
     public function hasCompleted(Step $step, InputSource $inputSource = null): bool
     {
@@ -419,7 +411,6 @@ class Building extends Model
      *
      * @deprecated
      * @depends-annotations(use hasCompletedScan instead)
-     * @return bool
      */
     public function hasCompletedQuickScan(InputSource $inputSource): bool
     {
@@ -445,10 +436,6 @@ class Building extends Model
 
     /**
      * Check if a building has answered any or a specific expert step
-     *
-     * @param \App\Models\Step|null $step
-     *
-     * @return bool
      */
     public function hasAnsweredExpertQuestion(Step $step = null): bool
     {
@@ -474,8 +461,6 @@ class Building extends Model
 
     /**
      * Check if a step is not completed.
-     *
-     * @return bool
      */
     public function hasNotCompleted(Step $step, InputSource $inputSource = null): bool
     {
@@ -484,8 +469,6 @@ class Building extends Model
 
     /**
      * Returns the user progress.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function completedSteps(): HasMany
     {
@@ -498,17 +481,11 @@ class Building extends Model
     }
 
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
     public function buildingFeatures(): HasOne
     {
         return $this->hasOne(BuildingFeature::class);
@@ -516,25 +493,17 @@ class Building extends Model
 
     /**
      * Return all the building notes.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function buildingNotes(): HasMany
     {
         return $this->hasMany(BuildingNotes::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function buildingElements(): HasMany
     {
         return $this->hasMany(BuildingElement::class);
     }
 
-    /**
-     * @return HasMany
-     */
     public function buildingVentilations(): HasMany
     {
         return $this->hasMany(BuildingVentilation::class);
@@ -542,8 +511,6 @@ class Building extends Model
 
     /**
      * @param $short
-     *
-     * @return BuildingElement|null
      */
     public function getBuildingElement($short, InputSource $inputSource = null): ?BuildingElement
     {
@@ -593,11 +560,6 @@ class Building extends Model
             )->get();
     }
 
-    /**
-     * @param string $short
-     *
-     * @return BuildingService|null
-     */
     public function getBuildingService(string $short, InputSource $inputSource): ?BuildingService
     {
         return $this->buildingServices()
@@ -611,9 +573,6 @@ class Building extends Model
             ->where('s.short', $short)->first(['building_services.*']);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function buildingServices(): HasMany
     {
         return $this->hasMany(BuildingService::class);
@@ -621,8 +580,6 @@ class Building extends Model
 
     /**
      * Return the building type from a builing through the building features.
-     *
-     * @return BuildingType|null
      */
     public function getBuildingType(InputSource $inputSource): ?BuildingType
     {
@@ -637,33 +594,21 @@ class Building extends Model
         return null;
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function currentInsulatedGlazing(): HasMany
     {
         return $this->hasMany(BuildingInsulatedGlazing::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
     public function currentPaintworkStatus(): HasOne
     {
         return $this->hasOne(BuildingPaintworkStatus::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
     public function pvPanels(): HasOne
     {
         return $this->hasOne(BuildingPvPanel::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
     public function heater(): HasOne
     {
         return $this->hasOne(BuildingHeater::class);
@@ -672,8 +617,6 @@ class Building extends Model
     /**
      * Returns all roof types of this building. Get the primary via the
      * building features.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function roofTypes(): HasMany
     {
@@ -682,8 +625,6 @@ class Building extends Model
 
     /**
      * Get all the statuses for a building.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function buildingCoachStatuses(): HasMany
     {
@@ -697,8 +638,6 @@ class Building extends Model
 
     /**
      * Get all the answers for the building.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function questionAnswers(): HasMany
     {
@@ -723,8 +662,6 @@ class Building extends Model
 
     /**
      * Get the most recent BuildingStatus.
-     *
-     * @return BuildingStatus|null
      */
     public function getMostRecentBuildingStatus(): ?BuildingStatus
     {

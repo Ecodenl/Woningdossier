@@ -26,8 +26,6 @@ class MissingVbjehuisMunicipalityMappingEmail extends Mailable implements Should
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
     public function build(): static
     {

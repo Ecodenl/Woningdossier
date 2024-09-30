@@ -41,8 +41,6 @@ class BuildingPermission extends Model
 
     /**
      * Return the building from the permission.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function building(): BelongsTo
     {

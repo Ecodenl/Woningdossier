@@ -130,8 +130,6 @@ class Step extends Model
 
     /**
      * Return the parent of the step.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function parentStep(): BelongsTo
     {
@@ -145,8 +143,6 @@ class Step extends Model
 
     /**
      * Method to leave out the sub steps.
-     *
-     * @return Builder
      */
     public function scopeWithoutChildren(Builder $query): Builder
     {
@@ -198,8 +194,6 @@ class Step extends Model
 
     /**
      * Get the measure applications from a step.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function measureApplications(): HasMany
     {

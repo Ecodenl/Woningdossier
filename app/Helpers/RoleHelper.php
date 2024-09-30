@@ -65,8 +65,6 @@ class RoleHelper
      * Get the right route / url by a role.
      *
      * @param bool Whether or not to check the user's role against the role name. Defaults to true.
-     *
-     * @return string
      */
     public static function getUrlByRole(Role $role, $checkUser = true): string
     {

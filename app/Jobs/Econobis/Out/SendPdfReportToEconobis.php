@@ -34,8 +34,6 @@ class SendPdfReportToEconobis implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(EconobisService $econobisService, EconobisApi $econobis): void
     {
@@ -50,8 +48,6 @@ class SendPdfReportToEconobis implements ShouldQueue
 
     /**
      * Get the middleware the job should pass through.
-     *
-     * @return array
      */
     public function middleware(): array
     {

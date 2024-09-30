@@ -92,8 +92,6 @@ class FloorInsulationController extends ToolController
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(FloorInsulationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService): RedirectResponse
     {

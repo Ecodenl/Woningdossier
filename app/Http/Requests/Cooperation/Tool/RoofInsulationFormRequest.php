@@ -17,8 +17,6 @@ class RoofInsulationFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
@@ -55,8 +53,6 @@ class RoofInsulationFormRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(LegacyService $legacyService): array
     {
@@ -83,8 +79,6 @@ class RoofInsulationFormRequest extends FormRequest
 
     /**
      * small translation of the attribute.
-     *
-     * @return array
      */
     public function attributes(): array
     {

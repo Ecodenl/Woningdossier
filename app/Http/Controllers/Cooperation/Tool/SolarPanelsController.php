@@ -85,7 +85,6 @@ class SolarPanelsController extends ToolController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\Cooperation\Tool\SolarPanelFormRequest  $request
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */

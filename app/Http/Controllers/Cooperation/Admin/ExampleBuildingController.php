@@ -60,7 +60,6 @@ class ExampleBuildingController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @param  $cooperation
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
@@ -76,8 +75,6 @@ class ExampleBuildingController extends Controller
      * Copies over a specific example building configuration (content / structure).
      *
      * @param int $id
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding): RedirectResponse
     {

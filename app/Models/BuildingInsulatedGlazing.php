@@ -78,33 +78,21 @@ class BuildingInsulatedGlazing extends Model
         'measure_application_id',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function measureApplication(): BelongsTo
     {
         return $this->belongsTo(MeasureApplication::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function insulatedGlazing(): BelongsTo
     {
         return $this->belongsTo(InsulatingGlazing::class, 'insulating_glazing_id', 'id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function buildingHeating(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'building_heating_id', 'id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);

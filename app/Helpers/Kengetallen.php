@@ -34,8 +34,6 @@ class Kengetallen
     /**
      * gas (m3) / gasKwhPerM3() = kWh
      * kWh * gasKwhPerM3() = m3
-     *
-     * @return float
      */
     public static function gasKwhPerM3(): float
     {

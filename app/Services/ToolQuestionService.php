@@ -225,7 +225,6 @@ class ToolQuestionService
      *
      * @param $givenAnswer
      *
-     * @return void
      * @throws \Exception
      */
     private function checkConditionalAnswers($givenAnswer): void

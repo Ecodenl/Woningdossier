@@ -9,8 +9,6 @@ return new class extends Migration
      * Run the migrations.
      *
      * @note its not possible to copy the active / inactive status from the building itself.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -90,8 +88,6 @@ return new class extends Migration
 
     /**
      * @param $buildingCoachStatus
-     *
-     * @return bool
      */
     private function statusIsCopyable($buildingCoachStatus): bool
     {
@@ -112,8 +108,6 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

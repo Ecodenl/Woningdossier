@@ -28,9 +28,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PvPanelYield extends Model
 {
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function orientation(): BelongsTo
     {
         return $this->belongsTo(PvPanelOrientation::class);

@@ -22,10 +22,6 @@ class PreventRequestsDuringMaintenance extends Middleware
 
     /**
      * Handle an incoming request. Remove the full handle method after go-live.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return mixed
      */
     public function handle(Request $request, Closure $next): Response
     {

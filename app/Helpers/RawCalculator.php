@@ -103,7 +103,6 @@ class RawCalculator
      *
      * @param MeasureApplication $measure         The measure to apply
      * @param mixed              $number          The amount of measures. (might be m2, pieces, etc.)
-     * @param int|null           $applicationYear
      * @param bool               $applyIndexing   Whether or not to apply indexing
      *
      * @return float|int
@@ -186,7 +185,6 @@ class RawCalculator
      * for this year.
      *
      * @param float|int $costs
-     * @param int       $toYear
      *
      * @return float|int
      */
@@ -200,7 +198,6 @@ class RawCalculator
      * Based on the building, only a max percentage of gas can be saved for
      * particular Elements.
      *
-     * @param UserEnergyHabit|null $energyHabit
      *
      * @return float|int
      */

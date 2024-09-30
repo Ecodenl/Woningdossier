@@ -33,8 +33,6 @@ class SuccessFullLoginListener
      * Handle the event.
      *
      * @param $event
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function handle($event): RedirectResponse
     {
@@ -115,8 +113,6 @@ class SuccessFullLoginListener
 
     /**
      * Method to ensure the cooperation is set in the session.
-     *
-     * @return void
      */
     private function ensureCooperationIsSet(): void
     {

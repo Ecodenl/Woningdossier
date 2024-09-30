@@ -58,7 +58,6 @@ class Element extends Model
 
     /**
      * @deprecated
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function values(): HasMany
     {

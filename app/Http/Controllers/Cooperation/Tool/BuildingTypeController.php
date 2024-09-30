@@ -13,8 +13,6 @@ class BuildingTypeController extends Controller
      * Store the bulding type id, when a user changes his building type id
      * after that selects a example building, the page will be reloaded.
      * but the type wasnt stored. now it is.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(BuildingTypeFormRequest $request): JsonResponse
     {

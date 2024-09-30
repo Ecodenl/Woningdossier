@@ -86,8 +86,6 @@ class Cooperation extends Model
     // Model methods
     /**
      * Return the coaches from the current cooperation.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getCoaches(): Collection
     {

@@ -42,8 +42,6 @@ class SubStepService
 
     /**
      * Complete a sub step for a building.
-     *
-     * @return void
      */
     public function complete(): void
     {
@@ -56,8 +54,6 @@ class SubStepService
 
     /**
      * Incomplete a step for a building.
-     *
-     * @return void
      */
     public function incomplete(): void
     {

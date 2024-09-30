@@ -102,8 +102,6 @@ class Question extends Model
 
     /**
      * Return the options from a questions, a question will have options if its a radio, checkbox or dropdown etc.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function questionOptions(): HasMany
     {
@@ -112,8 +110,6 @@ class Question extends Model
 
     /**
      * Check if a question has a question option.
-     *
-     * @return bool
      */
     public function hasQuestionOptions(): bool
     {
@@ -126,8 +122,6 @@ class Question extends Model
 
     /**
      * Return all the answers for a question.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function questionAnswers(): HasMany
     {
@@ -168,8 +162,6 @@ class Question extends Model
 
     /**
      * Get the questionnaire from a question.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function questionnaire(): BelongsTo
     {

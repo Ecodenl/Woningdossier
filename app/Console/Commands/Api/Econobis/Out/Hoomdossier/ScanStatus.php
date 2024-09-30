@@ -40,8 +40,6 @@ class ScanStatus extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(EconobisService $econobisService, EconobisApi $econobis): int
     {

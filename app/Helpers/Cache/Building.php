@@ -9,11 +9,6 @@ class Building extends BaseCache
 {
     const CACHE_KEY_FIND = 'Building_find_%s';
 
-    /**
-     * @param int $id
-     *
-     * @return \App\Models\InputSource|null
-     */
     public static function find(int $id): ?InputSource
     {
         return Cache::remember(

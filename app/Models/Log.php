@@ -52,8 +52,6 @@ class Log extends Model
 
     /**
      * Return the model that did the action.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function loggable(): MorphTo
     {
@@ -62,8 +60,6 @@ class Log extends Model
 
     /**
      * Return the building whom the action was performed on.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function building(): BelongsTo
     {

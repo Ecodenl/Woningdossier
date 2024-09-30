@@ -31,8 +31,6 @@ class FileStorageController extends Controller
      * Download method to retrieve a file from the storage.
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function download(Cooperation $cooperation, FileStorage $fileStorage): RedirectResponse
     {
@@ -46,8 +44,6 @@ class FileStorageController extends Controller
 
     /**
      * * Check whether a file type is being processed for the user / input source.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function checkIfFileIsBeingProcessed(Cooperation $cooperation, FileType $fileType): JsonResponse
     {
@@ -228,12 +224,6 @@ class FileStorageController extends Controller
         }
     }
 
-    /**
-     * @param \App\Models\Cooperation $cooperation
-     * @param \App\Models\InputSource $inputSource
-     *
-     * @return string
-     */
     private function getRedirectUrl(Cooperation $cooperation, InputSource $inputSource): string
     {
         if (InputSource::COOPERATION_SHORT == $inputSource->short) {

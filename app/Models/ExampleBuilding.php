@@ -65,8 +65,6 @@ class ExampleBuilding extends Model
 
     /**
      * The "booting" method of the model.
-     *
-     * @return void
      */
     protected static function boot(): void
     {
@@ -80,9 +78,6 @@ class ExampleBuilding extends Model
         });
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function contents(): HasMany
     {
         return $this->hasMany(ExampleBuildingContent::class);
@@ -100,8 +95,6 @@ class ExampleBuilding extends Model
 
     /**
      * @param $year
-     *
-     * @return ExampleBuildingContent|null
      */
     public function getContentForYear($year): ?ExampleBuildingContent
     {
@@ -137,10 +130,6 @@ class ExampleBuilding extends Model
 
     /**
      * Scope a query to only include buildings for my cooperation.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeForMyCooperation(Builder $query): Builder
     {
@@ -151,10 +140,6 @@ class ExampleBuilding extends Model
 
     /**
      * Scope a query to only include buildings for my cooperation.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeForAnyOrMyCooperation(Builder $query): Builder
     {
@@ -165,10 +150,6 @@ class ExampleBuilding extends Model
 
     /**
      * Scope on only generic example buildings.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeGeneric(Builder $query): Builder
     {

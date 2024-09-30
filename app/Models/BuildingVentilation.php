@@ -58,9 +58,6 @@ class BuildingVentilation extends Model
         'building_id', 'input_source_id', 'how', 'living_situation', 'usage',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);

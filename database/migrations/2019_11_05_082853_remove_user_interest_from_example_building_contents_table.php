@@ -8,8 +8,6 @@ return new class extends Migration
      * Run the migrations.
      *
      * here we will remove the user_interest values from the content of a example building
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -29,8 +27,6 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

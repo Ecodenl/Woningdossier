@@ -9,8 +9,6 @@ class ClauseBuilder
 
     /**
      * Init optionally with clauses already present.
-     *
-     * @param  array  $clauses
      */
     public function __construct(array $clauses = [])
     {
@@ -19,10 +17,6 @@ class ClauseBuilder
 
     /**
      * Adds an "or" to the builder.
-     *
-     * @param  Clause  $clause
-     *
-     * @return $this
      */
     public function orClause(Clause $clause): static
     {
@@ -33,10 +27,6 @@ class ClauseBuilder
 
     /**
      * Init from array. This is for conditions coming from the database.
-     *
-     * @param  array  $conditions
-     *
-     * @return ClauseBuilder
      */
     public static function fromArray(array $conditions): ClauseBuilder
     {
@@ -59,8 +49,6 @@ class ClauseBuilder
 
     /**
      * Output the full logic in array form.
-     *
-     * @return array
      */
     public function toArray(): array
     {

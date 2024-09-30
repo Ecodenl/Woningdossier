@@ -21,7 +21,6 @@ class WallInsulation
     /**
      * Calculate the wall insulation costs and savings etc.
      *
-     * @param UserEnergyHabit|null $energyHabit
      *
      * @return array;
      */

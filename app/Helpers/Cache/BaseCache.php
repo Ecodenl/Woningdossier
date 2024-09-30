@@ -13,8 +13,6 @@ class BaseCache
      *
      * @param $string
      * @param mixed ...$parameters
-     *
-     * @return string
      */
     public static function getCacheKey($string, ...$parameters): string
     {
@@ -28,8 +26,6 @@ class BaseCache
      *
      * @param $string
      * @param mixed ...$parameters
-     *
-     * @return string
      */
     public static function getCooperationCacheKey($string, ...$parameters): string
     {

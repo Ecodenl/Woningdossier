@@ -12,8 +12,6 @@ class FillAddressRequest extends FormRequest
      * Determine if the user is authorized to make this request.
      *
      * User may do the request if he is not authorized.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
@@ -22,8 +20,6 @@ class FillAddressRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {

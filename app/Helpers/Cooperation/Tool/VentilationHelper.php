@@ -157,8 +157,6 @@ class VentilationHelper extends ToolHelper
 
     /**
      * Method to return the warnings for the selected usages.
-     *
-     * @return array
      */
     public static function getUsageWarnings(): array
     {
@@ -172,8 +170,6 @@ class VentilationHelper extends ToolHelper
 
     /**
      * Method to return the warnings for the selected hows.
-     *
-     * @return array
      */
     public static function getHowWarnings(): array
     {

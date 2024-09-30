@@ -44,8 +44,6 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(): void
     {
@@ -80,7 +78,6 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
 
     /**
      * Defines the uniqueness for the job. Only one job per user per cooperation.
-     * @return string
      */
     public function uniqueId() : string
     {

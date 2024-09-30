@@ -8,8 +8,6 @@ return new class extends Migration
      * Run the migrations.
      *
      * @note we use the LanguageLine model so the cache get flushed.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -99,8 +97,6 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

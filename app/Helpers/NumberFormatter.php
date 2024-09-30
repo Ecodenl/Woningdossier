@@ -43,7 +43,6 @@ class NumberFormatter
      * Round a number.
      *
      * @param $number
-     * @param int $bucket
      *
      * @return float|int
      */
@@ -68,7 +67,6 @@ class NumberFormatter
      * Used to format the given number in a human-readable format, mainly used for frontend display.
      *
      * @param $number
-     * @param int   $decimals
      * @param false $shouldRoundNumber
      *
      * @return int|string
@@ -102,9 +100,6 @@ class NumberFormatter
 
     /**
      * @param $number
-     * @param int $decimals
-     *
-     * @return string
      */
     public static function mathableFormat($number, int $decimals = 0): string
     {
@@ -176,8 +171,6 @@ class NumberFormatter
      * Format a number for user display
      *
      * @param $number
-     * @param bool $isInteger
-     * @param bool $alwaysNumber
      *
      * @return array|int|string|string[]|null
      */
@@ -222,11 +215,6 @@ class NumberFormatter
     /**
      * We use a for while on purpose. In theory one could also use preg_replace,
      * BUT: a dot is treated as a regex operator which is undesired.
-     *
-     * @param string $number
-     * @param string $sign
-     *
-     * @return string
      */
     protected static function countAndRemoveDownToOne(string $number, string $sign): string
     {

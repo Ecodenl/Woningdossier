@@ -42,8 +42,6 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      * Get the verification URL for the given notifiable.
      *
      * @param mixed $notifiable
-     *
-     * @return string
      */
     protected function verificationUrl($notifiable): string
     {
@@ -62,8 +60,6 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      * Build the mail representation of the notification.
      *
      * @param $notifiable
-     *
-     * @return RequestAccountConfirmationEmail
      */
     public function toMail($notifiable): RequestAccountConfirmationEmail
     {

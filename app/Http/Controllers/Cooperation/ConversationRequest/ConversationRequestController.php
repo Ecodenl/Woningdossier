@@ -48,8 +48,6 @@ class ConversationRequestController extends Controller
 
     /**
      * Save the conversation request for whatever the conversation request may be.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(BuildingStatusService $buildingStatusService, ConversationRequest $request, Cooperation $cooperation): RedirectResponse
     {

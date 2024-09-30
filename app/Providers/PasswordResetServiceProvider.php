@@ -15,8 +15,6 @@ class PasswordResetServiceProvider extends \Illuminate\Auth\Passwords\PasswordRe
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -25,8 +23,6 @@ class PasswordResetServiceProvider extends \Illuminate\Auth\Passwords\PasswordRe
 
     /**
      * Register the password broker instance.
-     *
-     * @return void
      */
     protected function registerPasswordBroker(): void
     {
@@ -41,8 +37,6 @@ class PasswordResetServiceProvider extends \Illuminate\Auth\Passwords\PasswordRe
 
     /**
      * Get the services provided by the provider.
-     *
-     * @return array
      */
     public function provides(): array
     {

@@ -38,8 +38,6 @@ class Woonplan extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(IntegrationProcessService $integrationProcessService): int
     {

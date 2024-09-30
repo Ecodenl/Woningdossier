@@ -10,8 +10,6 @@ class ConditionEvaluatorTest extends TestCase
 {
     /**
      * A basic unit test example.
-     *
-     * @return void
      */
     public function test_simple_collection_evaluation(): void
     {

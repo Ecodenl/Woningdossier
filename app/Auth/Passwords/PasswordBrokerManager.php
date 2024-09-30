@@ -11,8 +11,6 @@ class PasswordBrokerManager extends BasePasswordBrokerManager implements Factory
 {
     /**
      * Create a token repository instance based on the given configuration.
-     *
-     * @return \Illuminate\Auth\Passwords\TokenRepositoryInterface
      */
     protected function createTokenRepository(array $config): TokenRepositoryInterface
     {

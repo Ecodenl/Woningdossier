@@ -53,8 +53,6 @@ class PdfReport extends NonHandleableJobAfterReset
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(KengetallenService $kengetallenService): void
     {

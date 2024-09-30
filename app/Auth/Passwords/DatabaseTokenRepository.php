@@ -10,8 +10,6 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
 {
     /**
      * Create a new token record.
-     *
-     * @return string
      */
     public function create(CanResetPasswordContract $user): string
     {
@@ -31,10 +29,6 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
 
     /**
      * Determine if a token record exists and is valid.
-     *
-     * @param string $token
-     *
-     * @return bool
      */
     public function exists(CanResetPasswordContract $user, string $token): bool
     {

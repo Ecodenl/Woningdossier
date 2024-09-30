@@ -9,11 +9,6 @@ class Status extends BaseCache
 {
     const CACHE_KEY_FIND = 'Status_find_%s';
 
-    /**
-     * @param int $id
-     *
-     * @return \App\Models\Status|null
-     */
     public static function find(int $id): ?Status
     {
         return Cache::remember(

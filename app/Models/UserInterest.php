@@ -64,8 +64,6 @@ class UserInterest extends Model
 
     /**
      * Return the user interest.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function interest(): BelongsTo
     {

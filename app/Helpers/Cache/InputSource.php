@@ -21,11 +21,6 @@ class InputSource extends BaseCache
         );
     }
 
-    /**
-     * @param int $id
-     *
-     * @return \App\Models\InputSource|null
-     */
     public static function find(int $id): ?InputSource
     {
         return Cache::remember(

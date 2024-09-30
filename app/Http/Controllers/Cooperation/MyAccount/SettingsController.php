@@ -22,8 +22,6 @@ class SettingsController extends Controller
 {
     /**
      * Update the account.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(MyAccountSettingsFormRequest $request): RedirectResponse
     {
@@ -51,8 +49,6 @@ class SettingsController extends Controller
 
     /**
      * Reset the user his plan / file / dossier.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function resetFile(Request $request, DossierSettingsService $dossierSettingsService): RedirectResponse
     {

@@ -18,10 +18,6 @@ class DeleteUserActionPlanAdvicesForStep
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
     public function handle(StepCleared $event): void
     {

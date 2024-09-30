@@ -11,8 +11,6 @@ return new class extends Migration
      *
      * Since we added a new step_comments table and migrated to comments to that table
      * we can now safely remove the comments from the old columns
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -50,8 +48,6 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

@@ -65,9 +65,6 @@ class BuildingPvPanel extends Model implements Auditable
         'comment',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
@@ -75,10 +72,6 @@ class BuildingPvPanel extends Model implements Auditable
 
     /**
      * Make sure that null is casted to the integer 0.
-     *
-     * @param string $value
-     *
-     * @return void
      */
     public function setNumberAttribute(string $value): void
     {
@@ -89,9 +82,6 @@ class BuildingPvPanel extends Model implements Auditable
         $this->attributes['number'] = $value;
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function orientation(): BelongsTo
     {
         return $this->belongsTo(PvPanelOrientation::class, 'pv_panel_orientation_id', 'id');

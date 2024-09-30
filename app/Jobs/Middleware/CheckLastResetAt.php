@@ -23,8 +23,6 @@ class CheckLastResetAt
      * Process the job.
      *
      * @param  mixed  $job
-     * @param  callable  $next
-     * @return mixed
      */
     public function handle($job, callable $next): void
     {

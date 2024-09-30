@@ -54,8 +54,6 @@ class StepComment extends Model implements Auditable
 
     /**
      * Return the step of a comment.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function step(): BelongsTo
     {

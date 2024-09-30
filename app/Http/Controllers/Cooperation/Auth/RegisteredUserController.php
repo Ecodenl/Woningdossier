@@ -20,7 +20,6 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
     /**
      * Show the registration view.
      *
-     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Laravel\Fortify\Contracts\RegisterViewResponse|mixed
      */
@@ -40,11 +39,6 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
 
     /**
      * Create a new registered user.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \Laravel\Fortify\Contracts\CreatesNewUsers $creator
-     *
-     * @return \Laravel\Fortify\Contracts\RegisterResponse
      */
     public function store(Request $request, CreatesNewUsers $creator): RegisterResponse
     {
@@ -68,8 +62,6 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
 
     /**
      * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function checkExistingEmail(Request $request, Cooperation $cooperation, ?Cooperation $forCooperation = null): JsonResponse
     {

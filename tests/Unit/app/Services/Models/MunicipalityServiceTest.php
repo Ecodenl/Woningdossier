@@ -25,8 +25,6 @@ class MunicipalityServiceTest extends TestCase
      * This test checks whether the `getAvailableBagMunicipalities` method returns the correct BAG municipalities
      * saved in the mappings table. All rows that have no target mapping, or where the target is the passed
      * municipality, should be returned.
-     *
-     * @return void
      */
     public function test_we_get_correct_available_bag_municipalities(): void
     {
@@ -75,8 +73,6 @@ class MunicipalityServiceTest extends TestCase
     /**
      * This test checks of the `retrieveBagMunicipalities` method returns all the BAG municipality rows attached to the
      * passed municipality.
-     *
-     * @return void
      */
     public function test_retrieve_bag_municipalities_returns_correct_mapped_municipalities(): void
     {
@@ -109,8 +105,6 @@ class MunicipalityServiceTest extends TestCase
     /**
      * This test checks of the `retrieveVbjehuisMuncipality` method returns the mapping attached to the passed
      * municipality which links to the Vbjehuis municipality.
-     *
-     * @return void
      */
     public function test_retrieve_vbjehuis_municipality_returns_correct_mapped_municipality(): void
     {

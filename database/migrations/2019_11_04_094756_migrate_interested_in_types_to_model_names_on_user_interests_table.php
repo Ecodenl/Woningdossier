@@ -10,8 +10,6 @@ return new class extends Migration
      * Run the migrations.
      *
      * Migration to migrate the interested_in_type to model names and the interested_in_ids to the matching step ids
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -77,8 +75,6 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

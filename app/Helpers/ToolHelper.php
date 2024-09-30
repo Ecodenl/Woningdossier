@@ -58,11 +58,6 @@ class ToolHelper
      * Create the tool structure, which returns a mapping of shorts with labels attached.
      * These shorts could either be a save_in or a short to a model. If it's a model, a class
      * will be defined.
-     *
-     * @param string $short
-     * @param string $mode
-     *
-     * @return array
      */
     public static function getContentStructure(string $short, string $mode): array
     {

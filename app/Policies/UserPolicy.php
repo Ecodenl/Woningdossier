@@ -60,8 +60,6 @@ class UserPolicy
 
     /**
      * Determine if a user is authorize to delete his own account.
-     *
-     * @return bool
      */
     public function deleteOwnAccount(Account $account): bool
     {
@@ -70,8 +68,6 @@ class UserPolicy
 
     /**
      * Check if a user is authorized to destroy a user.
-     *
-     * @return bool
      */
     public function destroy(Account $account, User $userToDestroy): bool
     {
@@ -114,8 +110,6 @@ class UserPolicy
      * allowed to assign roles).
      *
      * @param Role $role The role which is to be assigned
-     *
-     * @return bool
      */
     public function assignRole(Account $account, Role $role): bool
     {

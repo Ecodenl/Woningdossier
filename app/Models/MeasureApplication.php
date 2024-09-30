@@ -149,8 +149,6 @@ class MeasureApplication extends Model
 
     /**
      * Returns all the interest levels given for the interest.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function interests(): MorphToMany
     {

@@ -39,8 +39,6 @@ class Delete extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(EconobisService $econobisService): int
     {

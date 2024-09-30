@@ -8,8 +8,6 @@ trait GetValueTrait
 {
     /**
      * Boot the scope.
-     *
-     * @return void
      */
     public static function bootGetValueTrait(): void
     {

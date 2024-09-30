@@ -108,8 +108,6 @@ class ToolQuestion extends Model
 
     /**
      * Method to return the question values  (morphed models / the options for the question)
-     *
-     * @return mixed
      */
     public function getQuestionValues(): Collection
     {
@@ -188,8 +186,6 @@ class ToolQuestion extends Model
 
     /**
      * Method to return the intermediary morph table
-     *
-     * @return HasMany
      */
     public function toolQuestionValuables(): HasMany
     {

@@ -65,9 +65,6 @@ class ExcelExample
         return $b;
     }
 
-    /**
-     * @return User
-     */
     public static function user(): User
     {
         $u = User::firstOrCreate(['first_name' => 'Foo', 'last_name' => 'Bar'], ['phone_number' => '1111111111']);
@@ -75,9 +72,6 @@ class ExcelExample
         return $u;
     }
 
-    /**
-     * @return UserEnergyHabit
-     */
     public static function userEnergyHabits(): UserEnergyHabit
     {
         // 'user_id','input_source_id','resident_count',

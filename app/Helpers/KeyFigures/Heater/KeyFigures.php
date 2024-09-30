@@ -29,8 +29,6 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * @param $zipcode
-     *
-     * @return PvPanelLocationFactor|null
      */
     public static function getLocationFactor($zipcode): ?PvPanelLocationFactor
     {
@@ -39,8 +37,6 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * @param $angle
-     *
-     * @return PvPanelYield|null
      */
     public static function getYield(PvPanelOrientation $orientation, $angle): ?PvPanelYield
     {
@@ -49,11 +45,6 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * Get the key figure for the current water consumption.
-     *
-     * @param int|null $residentCount
-     * @param \App\Models\ComfortLevelTapWater $comfortLevel
-     *
-     * @return \App\Models\KeyFigureConsumptionTapWater|null
      */
     public static function getCurrentConsumption(?int $residentCount, ComfortLevelTapWater $comfortLevel): ?KeyFigureConsumptionTapWater
     {
@@ -68,12 +59,6 @@ class KeyFigures implements KeyFiguresInterface
 
     }
 
-    /**
-     * @param int   $waterConsumption
-     * @param float $helpFactor
-     *
-     * @return array
-     */
     public static function getSystemSpecifications(int $waterConsumption, float $helpFactor): array
     {
         $initialHeater = HeaterSpecification::where('liters', $waterConsumption)->first();
@@ -98,10 +83,6 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * Return the advised collector size based on the relative collector size.
-     *
-     * @param float $relativeCollectorSize
-     *
-     * @return float
      */
     public static function getAdvisedCollectorSize(float $relativeCollectorSize): float
     {
@@ -128,8 +109,6 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * Returns the key figures from this class.
-     *
-     * @return array
      */
     public static function getKeyFigures(): array
     {

@@ -100,8 +100,6 @@ class PrivateMessageView extends Model
 
     /**
      * Get the total unread messages for a user, this also counts the unread messages from the admin side.
-     *
-     * @return int
      */
     public static function getTotalUnreadMessagesForUser(User $user, Cooperation $cooperation): int
     {
@@ -141,8 +139,6 @@ class PrivateMessageView extends Model
 
     /**
      * Get the number messages that have been sent to the cooperation.
-     *
-     * @param int $cooperationId
      */
     public static function getTotalUnreadMessagesForCooperation(int $cooperationId): int
     {

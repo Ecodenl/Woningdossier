@@ -8,9 +8,6 @@ use PHPUnit\Framework\TestCase;
 class ClauseBuilderTest extends TestCase
 {
 
-    /**
-     * @return void
-     */
     public function testFromArrayInitResultsInSameStructure(): void
     {
         $arrayForms = [

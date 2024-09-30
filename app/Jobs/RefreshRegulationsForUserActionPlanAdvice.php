@@ -41,8 +41,6 @@ class RefreshRegulationsForUserActionPlanAdvice extends NonHandleableJobAfterRes
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(): void
     {

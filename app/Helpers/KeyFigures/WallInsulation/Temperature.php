@@ -55,8 +55,6 @@ class Temperature implements KeyFiguresInterface
 
     /**
      * Returns the key figures from this class.
-     *
-     * @return array
      */
     public static function getKeyFigures(): array
     {

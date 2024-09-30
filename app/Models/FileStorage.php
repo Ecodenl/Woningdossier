@@ -84,8 +84,6 @@ class FileStorage extends Model
 
     /**
      * Query to scope the expired files.
-     *
-     * @return Builder
      */
     public function scopeWithExpired(Builder $query): Builder
     {
@@ -94,8 +92,6 @@ class FileStorage extends Model
 
     /**
      * Query to leave out the personal files.
-     *
-     * @return Builder
      */
     public function scopeLeaveOutPersonalFiles(Builder $query): Builder
     {
@@ -104,8 +100,6 @@ class FileStorage extends Model
 
     /**
      * Query to scope the file's that are being processed.
-     *
-     * @return Builder
      */
     public function scopeBeingProcessed(Builder $query): Builder
     {
@@ -114,8 +108,6 @@ class FileStorage extends Model
 
     /**
      * Query to scope the most recent report.
-     *
-     * @return Builder
      */
     public function scopeMostRecent(Builder $query, Questionnaire $questionnaire = null): Builder
     {

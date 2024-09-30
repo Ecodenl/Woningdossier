@@ -6,8 +6,6 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -377,11 +375,6 @@ return new class extends Migration
 
     /**
      * Creates separate copies a table row for all buildings.
-     *
-     * @param string $table
-     * @param int    $fromBuildingId
-     * @param int    $toBuildingId
-     * @param string $buildingColumn
      */
     protected function copyTableDataForSiblings(
         string $table,
@@ -409,8 +402,6 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

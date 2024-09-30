@@ -11,10 +11,6 @@ class RoleMiddleware
 {
     /**
      * Handle an incoming request.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return mixed
      */
     public function handle(Request $request, Closure $next, $role): Response
     {

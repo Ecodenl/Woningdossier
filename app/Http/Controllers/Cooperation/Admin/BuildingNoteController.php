@@ -12,8 +12,6 @@ class BuildingNoteController extends Controller
 {
     /**
      * Method to store a note for a building.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(BuildingNoteRequest $request): RedirectResponse
     {

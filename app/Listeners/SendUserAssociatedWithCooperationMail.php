@@ -13,10 +13,6 @@ class SendUserAssociatedWithCooperationMail implements ShouldQueue
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
     public function handle(UserAssociatedWithOtherCooperation $event): void
     {

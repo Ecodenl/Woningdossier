@@ -94,8 +94,6 @@ class QuestionnaireService
      * Determine whether a question has options based on the type.
      *
      * @param $questionType
-     *
-     * @return bool
      */
     public static function hasQuestionOptions($questionType): bool
     {
@@ -165,8 +163,6 @@ class QuestionnaireService
 
     /**
      * Update the options from a question.
-     *
-     * @param Question $question
      */
     public static function updateQuestionOptions(array $editedQuestion, Question $question)
     {
@@ -259,10 +255,6 @@ class QuestionnaireService
 
     /**
      * Returns the inverse of isEmptyTranslation.
-     *
-     * @param  array  $translations
-     *
-     * @return bool
      */
     public static function isNotEmptyTranslation(array $translations): bool
     {
@@ -271,10 +263,6 @@ class QuestionnaireService
 
     /**
      * Check if the translations from the request are empty.
-     *
-     * @param  array  $translations
-     *
-     * @return bool
      */
     public static function isEmptyTranslation(array $translations): bool
     {

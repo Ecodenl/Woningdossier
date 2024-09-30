@@ -12,8 +12,6 @@ class HoomSettingsController extends Controller
 {
     /**
      * Update the account settings.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(HoomSettingsRequest $request): RedirectResponse
     {

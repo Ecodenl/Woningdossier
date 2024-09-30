@@ -23,8 +23,6 @@ class ToolQuestionController extends Controller
     }
 
     /**
-     * @param \App\Models\Cooperation $cooperation
-     * @param \App\Models\ToolQuestion $toolQuestion
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
@@ -33,13 +31,6 @@ class ToolQuestionController extends Controller
         return view('cooperation.admin.super-admin.tool-questions.edit', compact('toolQuestion'));
     }
 
-    /**
-     * @param \App\Http\Requests\Cooperation\Admin\SuperAdmin\ToolQuestionFormRequest $request
-     * @param \App\Models\Cooperation $cooperation
-     * @param \App\Models\ToolQuestion $toolQuestion
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function update(ToolQuestionFormRequest $request, Cooperation $cooperation, ToolQuestion $toolQuestion): RedirectResponse
     {
         $toolQuestion->update($request->validated()['tool_questions']);

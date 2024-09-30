@@ -7,10 +7,6 @@ class CsvHelper
     /**
      * Convert a csv to a associative array with the header / first row of the csv as array keys.
      * when $csvHeaderAsArrayKeys is set to false it will use normal array indexes.
-     *
-     * @param string $file
-     * @param string $delimiter
-     * @param bool   $csvHeaderAsArrayKeys
      */
     public static function toArray(
         string $file,

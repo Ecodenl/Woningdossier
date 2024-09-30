@@ -26,7 +26,6 @@ class ToolCalculationResultController extends Controller
     }
 
     /**
-     * @param \App\Models\Cooperation $cooperation
      * @param \App\Models\ToolCalculationResult $toolQuestion
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -37,11 +36,7 @@ class ToolCalculationResultController extends Controller
     }
 
     /**
-     * @param \App\Http\Requests\Cooperation\Admin\SuperAdmin\ToolCalculationResultFormRequest $request
-     * @param \App\Models\Cooperation $cooperation
      * @param \App\Models\ToolCalculationResult $toolQuestion
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(ToolCalculationResultFormRequest $request, Cooperation $cooperation, ToolCalculationResult $toolCalculationResult): RedirectResponse
     {

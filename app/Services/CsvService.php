@@ -238,10 +238,7 @@ class CsvService
     /**
      * Format the output of the given column and value.
      *
-     * @param string $column
      * @param mixed $value
-     * @param int $decimals
-     * @param bool $shouldRound
      *
      * @return float|int|string
      */
@@ -271,11 +268,6 @@ class CsvService
 
     /**
      * Returns whether or not two (optional!) columns contain a year or not.
-     *
-     * @param string $column
-     * @param string $extraValue
-     *
-     * @return bool
      */
     protected static function isYear(string $column, string $extraValue = ''): bool
     {

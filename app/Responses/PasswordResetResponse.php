@@ -19,7 +19,6 @@ class PasswordResetResponse implements \Laravel\Fortify\Contracts\PasswordResetR
     /**
      * Create a new response instance.
      *
-     * @param  string  $status
      * @return void
      */
     public function __construct(string $status)
@@ -29,9 +28,6 @@ class PasswordResetResponse implements \Laravel\Fortify\Contracts\PasswordResetR
 
     /**
      * Create an HTTP response that represents the object.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function toResponse(Request $request): Response
     {

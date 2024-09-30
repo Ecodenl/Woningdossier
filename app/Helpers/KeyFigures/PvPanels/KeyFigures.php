@@ -52,8 +52,6 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * @param $zipcode
-     *
-     * @return PvPanelLocationFactor|null
      */
     public static function getLocationFactor($zipcode): ?PvPanelLocationFactor
     {
@@ -64,8 +62,6 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * @param $angle
-     *
-     * @return PvPanelYield|null
      */
     public static function getYield(PvPanelOrientation $orientation, $angle): ?PvPanelYield
     {
@@ -85,8 +81,6 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * Returns the key figures from this class.
-     *
-     * @return array
      */
     public static function getKeyFigures(): array
     {

@@ -97,33 +97,22 @@ class UserEnergyHabit extends Model implements Auditable
 
     /**
      * Get the user that belongsTo this habit.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function heatingFirstFloor(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'heating_first_floor');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function heatingSecondFloor(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'heating_second_floor');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function comfortLevelTapWater(): BelongsTo
     {
         return $this->belongsTo(ComfortLevelTapWater::class, 'water_comfort_id');

@@ -81,10 +81,6 @@ class Account extends Authenticatable implements MustVerifyEmail
 
     /**
      * Send the password reset notification.
-     *
-     * @param string $token
-     *
-     * @return void
      */
     public function sendPasswordResetNotification(string $token): void
     {
@@ -93,8 +89,6 @@ class Account extends Authenticatable implements MustVerifyEmail
 
     /**
      * Send the email verification notification.
-     *
-     * @return void
      */
     public function sendEmailVerificationNotification(): void
     {

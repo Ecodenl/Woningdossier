@@ -17,8 +17,6 @@ class PrivateMessageService
 
     /**
      * Create a new message between a user and user.
-     *
-     * @return bool
      */
     public static function create(Request $request): bool
     {

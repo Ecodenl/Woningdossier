@@ -193,8 +193,6 @@ class UserService
 
     /**
      * Method to register a user.
-     *
-     * @return User
      */
     public static function register(Cooperation $cooperation, array $roles, array $registerData): User
     {
@@ -295,7 +293,6 @@ class UserService
     /**
      * Method to delete a user and its user info.
      *
-     * @param  bool  $shouldForceDeleteBuilding
      *
      * @throws \Exception
      */
@@ -357,9 +354,7 @@ class UserService
      * input sources will be combined. If not possible, the data of $user1 will be
      * leading and the data of user2 will be deleted.
      *
-     * @return User
      * @throws \Exception
-     *
      */
     public static function merge(User $user1, User $user2): User
     {

@@ -37,8 +37,6 @@ class BuildingPolicy
 
     /**
      * Determine if a user is allowed to see a building overview.
-     *
-     * @return bool
      */
     public function show(Account $account, Building $building): bool
     {
@@ -59,8 +57,6 @@ class BuildingPolicy
      * Determine if its possible / authorized to talk to a resident.
      *
      * Its possible when there is 1 public message from the resident itself.
-     *
-     * @return bool
      */
     public function talkToResident(Account $account, Building $building): bool
     {

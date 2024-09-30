@@ -27,8 +27,6 @@ class ResetDossierForUser
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(UserService $userService): void
     {

@@ -123,8 +123,6 @@ class InsulatedGlazingController extends ToolController
 
     /**
      * Store the incoming request and redirect to the next step.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(InsulatedGlazingFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService): RedirectResponse
     {

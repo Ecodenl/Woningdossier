@@ -79,41 +79,26 @@ class BuildingRoofType extends Model
         'roof_type_id',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function roofType(): BelongsTo
     {
         return $this->belongsTo(RoofType::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function elementValue(): BelongsTo
     {
         return $this->belongsTo(ElementValue::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function insulation(): BelongsTo
     {
         return $this->elementValue();
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function heating(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'building_heating_id');

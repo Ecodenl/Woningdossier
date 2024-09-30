@@ -16,8 +16,6 @@ return new class extends Migration
      * renaming hr-boiler.service.boilerid.extra.year to hr-boiler.service.boilerid.extra.date
      *
      * elements and services
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -111,8 +109,6 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

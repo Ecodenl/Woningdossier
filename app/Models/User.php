@@ -158,10 +158,6 @@ class User extends Model implements AuthorizableContract
             ->withPivot(['is_considering', 'input_source_id']);
     }
 
-    /**
-     * @param Model $related
-     * @return MorphToMany
-     */
     public function considerablesForModel(Model $related): MorphToMany
     {
         return $this->considerables($related->getMorphClass())->wherePivot('considerable_id', $related->id);
@@ -189,8 +185,6 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Return the intermediary table of the interests.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function userInterests(): HasMany
     {
@@ -202,8 +196,6 @@ class User extends Model implements AuthorizableContract
      *
      * @param $interestedInType
      * @param $interestedInId
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function userInterestsForSpecificType($interestedInType, $interestedInId, InputSource $inputSource = null): HasMany
     {
@@ -222,8 +214,6 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Return all the interest levels of a user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function interests(): HasManyThrough
     {
@@ -255,7 +245,6 @@ class User extends Model implements AuthorizableContract
     /**
      * Quick short hand helper for user to account data migration.
      *
-     * @param string $property
      *
      * @return mixed|null
      */
@@ -284,8 +273,6 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Return the notification settings from a user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function notificationSettings(): HasMany
     {
@@ -296,8 +283,6 @@ class User extends Model implements AuthorizableContract
      * Determine if a user retrieves a notification.
      *
      * @param $notificationTypeShort
-     *
-     * @return bool
      */
     public function retrievesNotifications($notificationTypeShort): bool
     {
@@ -321,8 +306,6 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Return all the building notes a user has created.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function buildingNotes(): HasMany
     {
@@ -336,7 +319,6 @@ class User extends Model implements AuthorizableContract
 
     /**
      * @deprecated use userActionPlanAdvices
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function actionPlanAdvices(): HasMany
     {
@@ -519,8 +501,6 @@ class User extends Model implements AuthorizableContract
      * Retrieve the completed questionnaires from the user.
      *
      * @param InputSource $inputSource
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function completedQuestionnaires(): BelongsToMany
     {
@@ -530,8 +510,6 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Check whether a user completed a questionnaire.
-     *
-     * @return bool
      */
     public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null): bool
     {
@@ -547,8 +525,6 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Return the user its account information.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function account(): BelongsTo
     {
@@ -557,8 +533,6 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Get the user its bcrypted password from the accounts table.
-     *
-     * @return string
      */
     public function getAuthPassword(): string
     {
@@ -567,8 +541,6 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Get the user its email from the accounts table.
-     *
-     * @return string
      */
     public function getEmailForPasswordReset(): string
     {

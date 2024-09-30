@@ -14,9 +14,6 @@ class LanguageRequired implements Rule
 
     /**
      * Create a new rule instance.
-     *
-     * @param string $requiredLocale
-     * @param string $required
      */
     public function __construct(string $requiredLocale = 'nl', string $required = true)
     {
@@ -27,10 +24,7 @@ class LanguageRequired implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
      * @param mixed  $value
-     *
-     * @return bool
      */
     public function passes(string $attribute, $value): bool
     {
@@ -47,8 +41,6 @@ class LanguageRequired implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
     public function message(): string
     {

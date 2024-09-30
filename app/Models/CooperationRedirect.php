@@ -29,9 +29,6 @@ use Illuminate\Database\Eloquent\Model;
 class CooperationRedirect extends Model
 {
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class);

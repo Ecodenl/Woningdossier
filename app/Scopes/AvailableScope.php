@@ -13,8 +13,6 @@ class AvailableScope implements Scope
      * Apply the scope to a given Eloquent query builder.
      *
      * Global scope so it will only show file's that are available
-     *
-     * @return void
      */
     public function apply(Builder $builder, Model $model): void
     {

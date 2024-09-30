@@ -44,8 +44,6 @@ class BuildingCoachStatus extends Model
 
     /**
      * Get the building from the status.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function building(): BelongsTo
     {
@@ -54,8 +52,6 @@ class BuildingCoachStatus extends Model
 
     /**
      * Get the user / coach from the status this does NOT return the owner from the building.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -64,8 +60,6 @@ class BuildingCoachStatus extends Model
 
     /**
      * Get the coach from the status.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function coach(): BelongsTo
     {

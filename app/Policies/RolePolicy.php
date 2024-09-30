@@ -40,7 +40,6 @@ class RolePolicy
 
 
     /**
-     * @param  Account  $account
      * @param  Role  $role  the role that should be checked.
      * @param  User  $user  the authenticated user
      * @param  Role  $currentUserRole  the current role of the authenticated user.

@@ -66,8 +66,6 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
      * Build the mail representation of the notification.
      *
      * @param mixed $notifiable
-     *
-     * @return Mailable
      */
     public function toMail($notifiable): Mailable
     {

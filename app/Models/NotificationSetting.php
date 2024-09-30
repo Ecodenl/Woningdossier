@@ -45,8 +45,6 @@ class NotificationSetting extends Model
 
     /**
      * Get the interval of the notification.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function interval(): BelongsTo
     {
@@ -55,8 +53,6 @@ class NotificationSetting extends Model
 
     /**
      * Get the type of notification.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function type(): BelongsTo
     {

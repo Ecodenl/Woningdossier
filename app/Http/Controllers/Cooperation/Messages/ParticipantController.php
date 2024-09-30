@@ -25,8 +25,6 @@ class ParticipantController extends Controller
 {
     /**
      * Remove a participant from a group chat and revoke his building access permissions.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function revokeAccess(Cooperation $cooperation, Request $request): RedirectResponse
     {
@@ -53,8 +51,6 @@ class ParticipantController extends Controller
 
     /**
      * Add a user / participant to a group chat and give him building access permission.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function addWithBuildingAccess(Cooperation $cooperation, Request $request): RedirectResponse
     {

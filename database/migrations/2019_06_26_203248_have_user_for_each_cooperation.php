@@ -8,8 +8,6 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -131,10 +129,6 @@ return new class extends Migration
 
     /**
      * Creates separate copies a table row for all users of an account.
-     *
-     * @param string $table
-     * @param string $userColumn
-     * @param string $tablePrimaryKey
      */
     protected function copyTableDataForSiblings(string $table, string $userColumn = 'user_id', string $tablePrimaryKey = 'id')
     {
@@ -167,8 +161,6 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

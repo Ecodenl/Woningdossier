@@ -35,9 +35,6 @@ class ToolController extends Controller
     /**
      * Instead of doing the same thing in all expert controllers, localize the logic to here.
      *
-     * @param  \App\Models\Step  $step
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */

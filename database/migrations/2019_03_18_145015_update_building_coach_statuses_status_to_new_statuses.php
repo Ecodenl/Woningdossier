@@ -6,8 +6,6 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -59,8 +57,6 @@ return new class extends Migration
      * But, the pending can be changed back to the active
      * the in_progress will be changed to appointment
      * and executed will be changed to done
-     *
-     * @return void
      */
     public function down(): void
     {

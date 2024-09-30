@@ -40,8 +40,6 @@ class SendNotifications extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle(): void
     {
@@ -135,8 +133,6 @@ class SendNotifications extends Command
      *
      * On local / test environments the diff for one day is set to one hour
      * (Hoom logic)
-     *
-     * @return bool
      */
     protected function almostMoreThanOneDayAgo(\DateInterval $diff): bool
     {
@@ -156,8 +152,6 @@ class SendNotifications extends Command
      *
      * On local / test environments the diff for one week is set to 4 hours
      * (Hoom logic)
-     *
-     * @return bool
      */
     protected function almostMoreThanOneWeekAgo(\DateInterval $diff): bool
     {

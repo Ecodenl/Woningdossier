@@ -30,8 +30,6 @@ class QuestionnaireController extends Controller
 
     /**
      * Copy the questionnaire to other cooperations.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function copy(Request $request): RedirectResponse
     {

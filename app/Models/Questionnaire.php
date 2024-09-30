@@ -62,8 +62,6 @@ class Questionnaire extends Model
 
     /**
      * Return the step that belongs to this questionnaire.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function steps(): BelongsToMany
     {
@@ -79,8 +77,6 @@ class Questionnaire extends Model
 
     /**
      * Return the cooperation that belongs to this questionnaire.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function cooperation(): BelongsTo
     {
@@ -102,8 +98,6 @@ class Questionnaire extends Model
 
     /**
      * Return all the questions from the questionnaire.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function questions(): HasMany
     {

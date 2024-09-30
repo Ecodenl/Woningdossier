@@ -24,8 +24,6 @@ class MunicipalityService
 
     /**
      * Get all available municipalities from BAG.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getAvailableBagMunicipalities(): Collection
     {
@@ -41,8 +39,6 @@ class MunicipalityService
 
     /**
      * Retrieve all BAG municipalities belonging to this municipality.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function retrieveBagMunicipalities(): Collection
     {
@@ -54,8 +50,6 @@ class MunicipalityService
 
     /**
      * Retrieve the VerbeterJeHuis municipality belonging to this municipality.
-     *
-     * @return \App\Models\Mapping|null
      */
     public function retrieveVbjehuisMuncipality(): ?Mapping
     {

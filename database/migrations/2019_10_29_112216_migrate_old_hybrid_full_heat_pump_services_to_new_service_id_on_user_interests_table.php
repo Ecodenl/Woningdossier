@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable extends Migration
+return new class extends Migration
 {
     use \App\Traits\DebugableMigrationTrait;
 
@@ -13,7 +13,7 @@ class MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable ext
      */
     public function up()
     {
-        // $this->line(MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable::class);
+        // $this->line(self::class);
 
         $interestInIdsToMigrate = \DB::table('services')
             ->whereIn('short', ['hybrid-heat-pump', 'full-heat-pump'])
@@ -68,4 +68,4 @@ class MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable ext
     public function down()
     {
     }
-}
+};

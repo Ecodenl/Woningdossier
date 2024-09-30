@@ -17,9 +17,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int $level
  * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Account[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Account> $users
  * @property-read int|null $users_count
  * @method static Builder|Role byName(string $name)
  * @method static Builder|Role newModelQuery()

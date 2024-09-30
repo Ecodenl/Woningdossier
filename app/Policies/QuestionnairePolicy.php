@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\Question;
@@ -51,7 +52,7 @@ class QuestionnairePolicy
         $currentCooperation = HoomdossierSession::getCooperation(true);
 
         // check if the cooperation from the requested questionnaire is the same as the cooperation from the authenticated user
-        return $questionnaire->cooperation->slug == $currentCooperation->slug;
+        return $questionnaire->cooperation->slug == $currentCooperation?->slug;
     }
 
     public function delete(Account $account, Questionnaire $questionnaire)
@@ -63,6 +64,6 @@ class QuestionnairePolicy
         $cooperationFromQuestionnaire = $questionnaire->cooperation;
 
         // check if the user has the right roles
-        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $cooperationFromQuestionnaire->slug == $currentCooperation->slug;
+        return $user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN]) && $cooperationFromQuestionnaire->slug == $currentCooperation?->slug;
     }
 }

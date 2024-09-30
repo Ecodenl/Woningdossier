@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class AddStepCommentTranslationToLanguageLinesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -33,4 +33,4 @@ class AddStepCommentTranslationToLanguageLinesTable extends Migration
     {
         // sike.
     }
-}
+};

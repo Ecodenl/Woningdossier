@@ -35,7 +35,7 @@ class RegisterControllerTest extends TestCase
         parent::setUp();
 
         $this->formData = [
-            "email" => $this->faker->email,
+            "email" => $this->faker->email(),
             "first_name" => "Demo",
             "last_name" => "Example",
             "postal_code" => "1234AB",

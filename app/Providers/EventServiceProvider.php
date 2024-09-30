@@ -148,4 +148,15 @@ class EventServiceProvider extends ServiceProvider
             $scope->setTag('APP_URL', config("app.url"));
         });
     }
+
+    /**
+     * Determine if events and listeners should be automatically discovered.
+     *
+     * @return bool
+     */
+    public function shouldDiscoverEvents()
+    {
+        return false;
+    }
 }
+

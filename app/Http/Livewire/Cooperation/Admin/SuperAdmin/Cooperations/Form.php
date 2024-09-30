@@ -32,8 +32,8 @@ class Form extends Component
                     'slug',
                     'website_url',
                     'cooperation_email',
-                    'econobis_wildcard'
-                ])
+                    'econobis_wildcard',
+                ]),
             ]);
             $this->hasApiKey = ! is_null($cooperationToEdit->econobis_api_key);
         }
@@ -56,7 +56,9 @@ class Form extends Component
     public function slugify()
     {
         if (empty($this->cooperationToEditFormData['slug'] ?? [])) {
-            $this->fill(['cooperationToEditFormData.slug' => Str::slug($this->cooperationToEditFormData['name'] ?? '')]);
+            $this->fill([
+                'cooperationToEditFormData.slug' => Str::slug($this->cooperationToEditFormData['name'] ?? ''),
+            ]);
         }
     }
 
@@ -82,14 +84,23 @@ class Form extends Component
         // just to be sure.
         $validatedData['cooperationToEditFormData']['slug'] = Str::slug($validatedData['cooperationToEditFormData']['slug']);
         $cooperationToEditFormData = $validatedData['cooperationToEditFormData'];
+
         // when you can create, you can update.
-        $this->authorize('updateOrCreate', Cooperation::class);
+        $authAbility = $this->cooperationToEdit instanceof Cooperation && $this->cooperationToEdit->exists
+            ? 'update'
+            : 'create';
+        $authArg = match ($authAbility) {
+            'update' => $this->cooperationToEdit,
+            'create' => Cooperation::class,
+        };
+
+        $this->authorize($authAbility, $authArg);
 
         // prev update method
         if ($this->clearApiKey) {
             $cooperationToEditFormData['econobis_api_key'] = null;
         } else {
-            if ( ! empty($cooperationToEditFormData['econobis_api_key'])) {
+            if (! empty($cooperationToEditFormData['econobis_api_key'])) {
                 $cooperationToEditFormData['econobis_api_key'] = Crypt::encrypt($cooperationToEditFormData['econobis_api_key']);
             } else {
                 // If it's empty we want to unset it, because we don't want to nullify the API key.

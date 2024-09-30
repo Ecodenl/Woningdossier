@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read array $translations
  * @property-read \App\Models\ToolQuestion $toolQuestion
- * @method static \Database\Factories\ToolQuestionCustomValueFactory factory(...$parameters)
+ * @method static \Database\Factories\ToolQuestionCustomValueFactory factory($count = null, $state = [])
  * @method static Builder|ToolQuestionCustomValue newModelQuery()
  * @method static Builder|ToolQuestionCustomValue newQuery()
  * @method static Builder|ToolQuestionCustomValue ordered(string $direction = 'asc')

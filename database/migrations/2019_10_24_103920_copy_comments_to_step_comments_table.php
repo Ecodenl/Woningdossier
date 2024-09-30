@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class CopyCommentsToStepCommentsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -118,4 +118,4 @@ class CopyCommentsToStepCommentsTable extends Migration
     public function down()
     {
     }
-}
+};

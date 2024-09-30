@@ -29,10 +29,10 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'phone_number' => $this->faker->phoneNumber,
-            'allow_access' => $this->faker->boolean,
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'phone_number' => $this->faker->phoneNumber(),
+            'allow_access' => $this->faker->boolean(),
         ];
     }
 

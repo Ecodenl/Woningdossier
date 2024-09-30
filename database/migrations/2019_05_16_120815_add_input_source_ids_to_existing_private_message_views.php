@@ -5,7 +5,7 @@ use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use Illuminate\Database\Migrations\Migration;
 
-class AddInputSourceIdsToExistingPrivateMessageViews extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -64,4 +64,4 @@ class AddInputSourceIdsToExistingPrivateMessageViews extends Migration
     {
         DB::table('private_message_views')->update(['input_source_id'=> null]);
     }
-}
+};

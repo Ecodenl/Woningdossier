@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class DeleteOldHeatPumpServicesFromServicesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -34,4 +34,4 @@ class DeleteOldHeatPumpServicesFromServicesTable extends Migration
     public function down()
     {
     }
-}
+};

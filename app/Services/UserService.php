@@ -230,6 +230,7 @@ class UserService
         Log::debug('account id for registration: '.$account->id);
 
         // Create the user for an account
+        /** @var User $user */
         $user = User::create(
             [
                 'extra' => $data['extra'] ?? null,
@@ -249,6 +250,18 @@ class UserService
 
         // We need an input source. From the API, roles are passed as string. From the other sources as ID. We just
         // fetch them all and grab the first one.
+        /**
+         * @TODO Check $roles:
+         * Due to improved ULID/UUID/GUID support, package methods that accept a Permission or Role ID
+         * must receive the ID as an integer. If a numeric string is passed, the functions will attempt
+         * to look up the role/permission as a string. This may lead to errors such as:
+         *
+         * "There is no permission named '123' for guard 'web'."
+         *
+         * This happens because '123' is treated as a string, not an integer.<br>
+         *
+         * @see https://spatie.be/docs/laravel-permission/v6/upgrading
+         */
         $rolesWithSources = Role::has('inputSource')->with('inputSource')->where(
             fn (Builder $q) => $q->whereIn('id', $roles)->orWhereIn('name', $roles)
         )->get();

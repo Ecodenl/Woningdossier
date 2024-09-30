@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddOldEmailColumnToUsersTable extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -26,4 +26,4 @@ class AddOldEmailColumnToUsersTable extends Migration
             $table->dropColumn('old_email_token');
         });
     }
-}
+};

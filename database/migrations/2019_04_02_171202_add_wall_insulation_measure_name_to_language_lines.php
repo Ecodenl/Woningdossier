@@ -3,7 +3,7 @@
 use App\Models\LanguageLine;
 use Illuminate\Database\Migrations\Migration;
 
-class AddWallInsulationMeasureNameToLanguageLines extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -47,4 +47,4 @@ class AddWallInsulationMeasureNameToLanguageLines extends Migration
     public function down()
     {
     }
-}
+};

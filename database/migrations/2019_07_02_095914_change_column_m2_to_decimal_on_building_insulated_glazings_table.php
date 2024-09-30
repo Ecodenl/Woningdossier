@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeColumnM2ToDecimalOnBuildingInsulatedGlazingsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -29,4 +29,4 @@ class ChangeColumnM2ToDecimalOnBuildingInsulatedGlazingsTable extends Migration
             $table->integer('m2')->unsigned()->nullable()->default(null)->change();
         });
     }
-}
+};

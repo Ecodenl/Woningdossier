@@ -3,7 +3,7 @@
 use Database\Seeders\StatusesTableSeeder;
 use Illuminate\Database\Migrations\Migration;
 
-class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -118,4 +118,4 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
     public function down()
     {
     }
-}
+};

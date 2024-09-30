@@ -7,7 +7,7 @@ use App\Models\PrivateMessage;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 
-class SetMessagesReadFromRemovedCoachesOnPrivateMessageViewsTable extends Migration
+return new class extends Migration
 {
     use \App\Traits\DebugableMigrationTrait;
 
@@ -95,4 +95,4 @@ class SetMessagesReadFromRemovedCoachesOnPrivateMessageViewsTable extends Migrat
     {
         // thats quit hard to do.
     }
-}
+};

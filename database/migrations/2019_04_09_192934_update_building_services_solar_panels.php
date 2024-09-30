@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateBuildingServicesSolarPanels extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -41,4 +41,4 @@ class UpdateBuildingServicesSolarPanels extends Migration
     {
         // Not needed
     }
-}
+};

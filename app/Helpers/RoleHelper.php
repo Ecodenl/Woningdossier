@@ -15,6 +15,14 @@ class RoleHelper
     const ROLE_RESIDENT = 'resident';
     const ROLE_COORDINATOR = 'coordinator';
 
+    const ADMIN_ROLES = [
+        self::ROLE_COORDINATOR,
+        self::ROLE_SUPERUSER,
+        self::ROLE_SUPER_ADMIN,
+        self::ROLE_COACH, // TODO: Check if we should keep this one here, not really an admin role
+        self::ROLE_COOPERATION_ADMIN
+    ];
+
     /**
      * Get the right route / url by a role name.
      *

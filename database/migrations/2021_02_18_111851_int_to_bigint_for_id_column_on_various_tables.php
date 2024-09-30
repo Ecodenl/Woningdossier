@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class IntToBigintForIdColumnOnVariousTables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -61,4 +61,4 @@ class IntToBigintForIdColumnOnVariousTables extends Migration
             $table->foreign('building_service_id')->on('building_services')->references('id')->onDelete('cascade');
         });
     }
-}
+};

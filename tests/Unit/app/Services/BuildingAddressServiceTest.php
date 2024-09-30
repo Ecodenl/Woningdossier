@@ -65,11 +65,11 @@ class BuildingAddressServiceTest extends TestCase
     public function test_update_address_uses_fallback_on_empty_bag_response()
     {
         $fallbackData = [
-            'street' => $this->faker->streetName,
+            'street' => $this->faker->streetName(),
             'number' => $this->faker->numberBetween(3, 22),
             'city' => 'bubba',
             'extension' => 'd',
-            'postal_code' => $this->faker->postcode,
+            'postal_code' => $this->faker->postcode(),
         ];
 
         $user = User::factory()->create();
@@ -152,11 +152,11 @@ class BuildingAddressServiceTest extends TestCase
     public function test_update_address_uses_bag_as_truth_when_available()
     {
         $fallbackData = [
-            'street' => $this->faker->streetName,
+            'street' => $this->faker->streetName(),
             'number' => $this->faker->numberBetween(3, 22),
             'city' => 'bubba',
             'extension' => 'd',
-            'postal_code' => $this->faker->postcode,
+            'postal_code' => $this->faker->postcode(),
         ];
 
         $user = User::factory()->create();
@@ -224,11 +224,11 @@ class BuildingAddressServiceTest extends TestCase
     public function test_update_building_features_does_not_overwrite_present_data_with_bag()
     {
         $fallbackData = [
-            'street' => $this->faker->streetName,
+            'street' => $this->faker->streetName(),
             'number' => $this->faker->numberBetween(3, 22),
             'city' => 'bubba',
             'extension' => 'd',
-            'postal_code' => $this->faker->postcode,
+            'postal_code' => $this->faker->postcode(),
         ];
 
         $user = User::factory()->create();
@@ -275,11 +275,11 @@ class BuildingAddressServiceTest extends TestCase
     public function test_update_building_features_sets_data_from_bag_when_data_empty()
     {
         $fallbackData = [
-            'street' => $this->faker->streetName,
+            'street' => $this->faker->streetName(),
             'number' => $this->faker->numberBetween(3, 22),
             'city' => 'bubba',
             'extension' => 'd',
-            'postal_code' => $this->faker->postcode,
+            'postal_code' => $this->faker->postcode(),
         ];
 
         $user = User::factory()->create();

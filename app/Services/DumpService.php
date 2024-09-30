@@ -190,7 +190,7 @@ class DumpService
         $building = $this->building;
         $inputSource = $this->inputSource;
 
-        $createdAt = optional($user->created_at)->format('Y-m-d');
+        $createdAt = $user->created_at?->format('Y-m-d');
         $updatedAt = $this->user->userActionPlanAdvices()
             ->forInputSource($inputSource)
             ->orderByDesc('updated_at')
@@ -231,7 +231,7 @@ class DumpService
             $number = $building->number;
             $extension = $building->extension ?? '';
 
-            $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
+            $appointmentDate = $mostRecentStatus->appointment_date?->format('Y-m-d');
 
             $data = [
                 $createdAt, $updatedAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,

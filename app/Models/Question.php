@@ -22,15 +22,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionsAnswer> $questionAnswers
  * @property-read int|null $question_answers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionOption[] $questionOptions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionOption> $questionOptions
  * @property-read int|null $question_options_count
  * @property-read \App\Models\Questionnaire $questionnaire
- * @method static \Database\Factories\QuestionFactory factory(...$parameters)
+ * @method static \Database\Factories\QuestionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Question newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
- * @method static \Illuminate\Database\Query\Builder|Question onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Question query()
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereDeletedAt($value)
@@ -42,8 +42,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereValidation($value)
- * @method static \Illuminate\Database\Query\Builder|Question withTrashed()
- * @method static \Illuminate\Database\Query\Builder|Question withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question withoutTrashed()
  * @mixin \Eloquent
  */
 class Question extends Model

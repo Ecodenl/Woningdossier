@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class CompleteGeneralDataSubStepsOnCompletedStepsTable extends Migration
+return new class extends Migration
 {
     use \App\Traits\DebugableMigrationTrait;
 
@@ -51,4 +51,4 @@ class CompleteGeneralDataSubStepsOnCompletedStepsTable extends Migration
             ― A.D. Posey
         */
     }
-}
+};

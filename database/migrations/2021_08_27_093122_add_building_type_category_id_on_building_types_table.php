@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBuildingTypeCategoryIdOnBuildingTypesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -33,4 +33,4 @@ class AddBuildingTypeCategoryIdOnBuildingTypesTable extends Migration
             $table->dropColumn('building_type_category_id');
         });
     }
-}
+};

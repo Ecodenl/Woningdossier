@@ -66,7 +66,7 @@ class CooperationMeasureApplicationController extends Controller
             ->resolveMapping()
             ->first();
         if ($mapping instanceof Mapping) {
-            $currentMeasure = optional($mapping->mappable)->id;
+            $currentMeasure = $mapping->mappable?->id;
         }
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', compact('cooperationMeasureApplication', 'type', 'measures', 'currentMeasure'));
     }

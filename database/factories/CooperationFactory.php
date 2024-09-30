@@ -13,12 +13,12 @@ class CooperationFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->company;
+        $name = $this->faker->company();
         return [
             'name' => $name,
             'slug' => \Illuminate\Support\Str::slug($name),
-            'website_url' => $this->faker->url,
-            'cooperation_email' => $this->faker->email,
+            'website_url' => $this->faker->url(),
+            'cooperation_email' => $this->faker->email(),
         ];
     }
 }

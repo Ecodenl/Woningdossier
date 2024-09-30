@@ -20,14 +20,14 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property array|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\Element $element
  * @property-read \App\Models\ElementValue|null $elementValue
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement allInputSources()
- * @method static \Database\Factories\BuildingElementFactory factory(...$parameters)
+ * @method static \Database\Factories\BuildingElementFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forMe(?\App\Models\User $user = null)

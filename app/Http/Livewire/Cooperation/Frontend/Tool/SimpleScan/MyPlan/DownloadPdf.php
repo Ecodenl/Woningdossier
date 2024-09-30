@@ -87,8 +87,10 @@ class DownloadPdf extends Component
 
         $fileStorage->save();
 
-        // so this could be more elegant with camelsnakekebakstrcase the crap out of it
-        // that's for later.
+        // This could be made more elegant by applying different string casings such as:
+        // camelCase, snake_case and kebab-case.
+        //
+        // However, this improvement can be addressed later.
         PdfReport::dispatch($this->user, $this->fileType, $fileStorage, $this->scan);
     }
 

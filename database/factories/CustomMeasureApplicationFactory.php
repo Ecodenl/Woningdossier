@@ -17,7 +17,7 @@ class CustomMeasureApplicationFactory extends Factory
         return [
             'name' => ['nl' => $this->faker->randomElement(['Vloertje', 'Bakstel', 'Nieuwe lampen'])],
             'info' => ['nl' => $this->faker->randomElement(['Vloertje', 'Bakstel', 'Nieuwe lampen'])],
-            'hash' => $this->faker->uuid,
+            'hash' => $this->faker->uuid(),
         ];
     }
 }

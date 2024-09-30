@@ -27,8 +27,8 @@ class ToolQuestionFactory extends Factory
             'help_text' => ['nl' => $this->faker->text(240)],
             'placeholder' => ['nl' => $this->faker->text(60)],
             'data_type' => Caster::STRING, // Default, like in the DB
-            'coach' => $this->faker->boolean,
-            'resident' => $this->faker->boolean,
+            'coach' => $this->faker->boolean(),
+            'resident' => $this->faker->boolean(),
             'options' => null,
             'validation' => ['required', 'string'],
             'unit_of_measure' => $this->faker->randomElement(['m2', 'graden']),

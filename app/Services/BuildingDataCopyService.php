@@ -76,7 +76,7 @@ class BuildingDataCopyService
                 ->where($buildingOrUserColumn, $buildingOrUserId)
                 ->get();
 
-            // if the target has no values at all, we can just do a plain copy without any crap in between
+            // If the target has no values, we can simply perform a direct copy without any additional processing.
             if ($targetValues->isEmpty()) {
                 // transform the source values to a insertable format for the target.
                 $insertableTargetValues = $sourceValues

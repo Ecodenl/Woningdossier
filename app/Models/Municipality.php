@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Database\Factories\MunicipalityFactory factory(...$parameters)
+ * @method static \Database\Factories\MunicipalityFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Municipality newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Municipality newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Municipality query()

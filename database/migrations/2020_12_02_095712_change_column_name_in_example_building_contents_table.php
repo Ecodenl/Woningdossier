@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class ChangeColumnNameInExampleBuildingContentsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -58,4 +58,4 @@ class ChangeColumnNameInExampleBuildingContentsTable extends Migration
     public function down()
     {
     }
-}
+};

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateBuildingToUserAccountStructure extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -415,4 +415,4 @@ class UpdateBuildingToUserAccountStructure extends Migration
     public function down()
     {
     }
-}
+};

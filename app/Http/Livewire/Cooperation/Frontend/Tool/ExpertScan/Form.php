@@ -198,8 +198,9 @@ class Form extends Scannable
                     $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                     if ($this->building->user->account->can('answer', $toolQuestion)) {
 
-                        // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
-                        // so when we actually start saving it we have to format it one more time
+                        // Although redundant, this step is necessary.
+                        // The sub steppable component 'reverseFormats' converts the data back to a human-readable form.
+                        // So when we actually start saving it we have to format it one more time
                         if ($toolQuestion->data_type === Caster::FLOAT) {
                             $givenAnswer = Caster::init()
                                 ->dataType($toolQuestion->data_type)

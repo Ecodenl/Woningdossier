@@ -35,7 +35,7 @@ class FloorInsulationController extends ToolController
         $buildingInsulation = $building->getBuildingElement('floor-insulation', $this->masterInputSource);
         $buildingInsulationForMe = $building->getBuildingElementsForMe('floor-insulation');
 
-        $floorInsulation = optional($buildingInsulation)->element;
+        $floorInsulation = $buildingInsulation?->element;
 
         $crawlspace = Element::where('short', 'crawlspace')->first();
         $buildingCrawlspace = $building->getBuildingElement($crawlspace->short, $this->masterInputSource);

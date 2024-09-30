@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingFeature[] $buildingFeatures
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingFeature> $buildingFeatures
  * @property-read int|null $building_features_count
  * @property-read array $translations
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType newModelQuery()

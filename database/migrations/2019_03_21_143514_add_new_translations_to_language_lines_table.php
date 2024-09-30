@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class AddNewTranslationsToLanguageLinesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -105,4 +105,4 @@ class AddNewTranslationsToLanguageLinesTable extends Migration
     public function down()
     {
     }
-}
+};

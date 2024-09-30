@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class ChangeMyPlanInterestedTitleTranslation extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -31,4 +31,4 @@ class ChangeMyPlanInterestedTitleTranslation extends Migration
             $interestTranslationQuery->update(['text' => json_encode(['nl' => 'Interesse'])]);
         }
     }
-}
+};

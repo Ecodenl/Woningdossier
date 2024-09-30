@@ -19,7 +19,7 @@ class MyAccountController extends Controller
         $building = HoomdossierSession::getBuilding(true);
 
         // for the notification settings
-        $notificationSettings = Hoomdossier::user()->notificationSettings;
+        $notificationSettings = $user->notificationSettings;
         $notificationIntervals = NotificationInterval::all();
 
         // for the access parts

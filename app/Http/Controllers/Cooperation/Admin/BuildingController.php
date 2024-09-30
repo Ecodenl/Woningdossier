@@ -104,7 +104,7 @@ class BuildingController extends Controller
             ->orderByDesc('updated_at')
             ->first();
 
-        $inputSource = optional($buildingFeature)->inputSource ?? InputSource::resident();
+        $inputSource = $buildingFeature?->inputSource ?? InputSource::resident();
 
         CheckBuildingAddress::dispatchSync($building, $inputSource);
         if (! $building->municipality()->first() instanceof Municipality) {

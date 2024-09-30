@@ -17,12 +17,14 @@ use Plank\Mediable\Mediable;
  * @property string|null $value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
+ * @property-read int|null $audits_count
  * @property-read \App\Models\Cooperation $cooperation
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
- * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
+ * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
  * @method static Builder|CooperationSetting forShort(string $short)
- * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
+ * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
  * @method static Builder|CooperationSetting newModelQuery()
  * @method static Builder|CooperationSetting newQuery()
  * @method static Builder|CooperationSetting query()

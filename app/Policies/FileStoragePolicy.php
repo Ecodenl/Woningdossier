@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\FileStorage;
@@ -18,12 +19,12 @@ class FileStoragePolicy
     {
         $user = $account->user();
 
-        if ($user->hasRoleAndIsCurrentRole(['super-admin']) && $fileStorage->fileType->short === 'example-building-overview') {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_SUPER_ADMIN]) && $fileStorage->fileType->short === 'example-building-overview') {
             return true;
         }
 
         // some other logic for resident wil come in the near future.
-        if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && $fileStorage->cooperation_id == HoomdossierSession::getCooperation()) {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_COORDINATOR]) && $fileStorage->cooperation_id == HoomdossierSession::getCooperation()) {
             return true;
         }
 
@@ -64,15 +65,15 @@ class FileStoragePolicy
         $user = $account->user();
         switch ($fileType->short) {
             case 'pdf-report':
-                if ($user->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin'])) {
+                if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN])) {
                     return true;
                 }
                 break;
             case 'example-building-overview':
-                return $user->hasRoleAndIsCurrentRole('super-admin');
+                return $user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_SUPER_ADMIN);
             default:
                 // for now default, in the future more cases may be specified.
-                if ($user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+                if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN])) {
                     return true;
                 }
                 break;

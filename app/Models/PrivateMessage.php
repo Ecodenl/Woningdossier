@@ -23,7 +23,7 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building|null $building
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PrivateMessageView> $privateMessageViews
  * @property-read int|null $private_message_views_count
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage conversation($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage forMyCooperation()
@@ -175,13 +175,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Get all the "group members"
-     * returns a collection of all the participants for a chat from a building.
-     *
-     * @param      $buildingId
-     * @param bool $publicConversation
+     * Get all the "group members".
+     * Returns a collection of all the participants for a chat from a building.
      */
-    public static function getGroupParticipants($buildingId, $publicConversation = true): Collection
+    public static function getGroupParticipants(?int $buildingId, bool $publicConversation = true): Collection
     {
         // create a collection of group members
         $groupMembers = collect();

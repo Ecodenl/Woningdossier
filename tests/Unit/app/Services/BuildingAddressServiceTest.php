@@ -32,10 +32,10 @@ class BuildingAddressServiceTest extends TestCase
     public $seed = true;
     public $seeder = DatabaseSeeder::class;
 
-    public function test_municipality_attaches_when_mapping_available(): void
+    public function testMunicipalityAttachesWhenMappingAvailable(): void
     {
         // We don't want to send emails, etc.
-        $this->withoutEvents();
+        Event::fake();
 
         $user = User::factory()->create();
         $building = Building::factory()->create(['user_id' => $user->id]);
@@ -62,7 +62,7 @@ class BuildingAddressServiceTest extends TestCase
         $this->assertDatabaseHas('buildings', ['id' => $building->id, 'municipality_id' => $municipality->id]);
     }
 
-    public function test_update_address_uses_fallback_on_empty_bag_response(): void
+    public function testUpdateAddressUsesFallbackOnEmptyBagResponse(): void
     {
         $fallbackData = [
             'street' => $this->faker->streetName(),
@@ -89,7 +89,7 @@ class BuildingAddressServiceTest extends TestCase
         $this->assertDatabaseHas('buildings', $fallbackData);
     }
 
-    public function test_building_address_updated_dispatches_after_municipality_changed(): void
+    public function testBuildingAddressUpdatedDispatchesAfterMunicipalityChanged(): void
     {
         // this woonplaats should be "Goeree-Overflakkee"
         $user = User::factory()->create();
@@ -118,7 +118,7 @@ class BuildingAddressServiceTest extends TestCase
         Event::assertDispatched(BuildingAddressUpdated::class);
     }
 
-    public function test_building_address_updated_does_not_dispatch_after_no_change_in_municipality(): void
+    public function testBuildingAddressUpdatedDoesNotDispatchAfterNoChangeInMunicipality(): void
     {
         // this woonplaats should be "Goeree-Overflakkee"
         $user = User::factory()->create();
@@ -149,7 +149,7 @@ class BuildingAddressServiceTest extends TestCase
         Event::assertNotDispatched(BuildingAddressUpdated::class);
     }
 
-    public function test_update_address_uses_bag_as_truth_when_available(): void
+    public function testUpdateAddressUsesBagAsTruthWhenAvailable(): void
     {
         $fallbackData = [
             'street' => $this->faker->streetName(),
@@ -180,7 +180,7 @@ class BuildingAddressServiceTest extends TestCase
         $this->assertDatabaseMissing('buildings', $fallbackData);
     }
 
-    public function test_empty_bag_woonplaats_id_doesnt_call_bag(): void
+    public function testEmptyBagWoonplaatsIdDoesntCallBag(): void
     {
         $user = User::factory()->create();
         $building = Building::factory()->create([
@@ -198,7 +198,7 @@ class BuildingAddressServiceTest extends TestCase
         $spy->shouldNotHaveReceived('showCity');
     }
 
-    public function test_wrong_bag_woonplaats_id_throws_error(): void
+    public function testWrongBagWoonplaatsIdThrowsError(): void
     {
         $user = User::factory()->create();
         $building = Building::factory()->create([
@@ -221,7 +221,7 @@ class BuildingAddressServiceTest extends TestCase
             ->once();
     }
 
-    public function test_update_building_features_does_not_overwrite_present_data_with_bag(): void
+    public function testUpdateBuildingFeaturesDoesNotOverwritePresentDataWithBag(): void
     {
         $fallbackData = [
             'street' => $this->faker->streetName(),
@@ -272,7 +272,7 @@ class BuildingAddressServiceTest extends TestCase
         ]);
     }
 
-    public function test_update_building_features_sets_data_from_bag_when_data_empty(): void
+    public function testUpdateBuildingFeaturesSetsDataFromBagWhenDataEmpty(): void
     {
         $fallbackData = [
             'street' => $this->faker->streetName(),

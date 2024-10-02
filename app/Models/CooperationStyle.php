@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -35,7 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CooperationStyle extends Model
 {
-    public function cooperation()
+    public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class);
     }

@@ -51,7 +51,7 @@ class RegisterControllerTest extends TestCase
         $this->mockLvbagClientAdresUitgebreid($this->formData)->createLvbagMock();
     }
 
-    public function test_valid_data_registers_new_account()
+    public function test_valid_data_registers_new_account(): void
     {
         /** @var Cooperation $cooperation */
         $cooperation = Cooperation::factory()->create();
@@ -71,7 +71,7 @@ class RegisterControllerTest extends TestCase
         $this->assertDatabaseHas('users', ['allow_access' => 1]);
     }
 
-    public function test_valid_data_with_tool_question_answers_registers_new_account()
+    public function test_valid_data_with_tool_question_answers_registers_new_account(): void
     {
         /** @var Cooperation $cooperation */
         $cooperation = Cooperation::factory()->create();
@@ -105,7 +105,7 @@ class RegisterControllerTest extends TestCase
         ]);
     }
 
-    public function test_restricted_client_cannot_access_cooperation()
+    public function test_restricted_client_cannot_access_cooperation(): void
     {
         /** @var Cooperation $cooperation */
         Cooperation::factory()->create(['slug' => 'groen-is-gras']);
@@ -124,7 +124,7 @@ class RegisterControllerTest extends TestCase
 
     }
 
-    public function test_restricted_client_can_access_cooperation()
+    public function test_restricted_client_can_access_cooperation(): void
     {
         /** @var Cooperation $cooperation */
         Cooperation::factory()->create(['slug' => 'groen-is-gras']);
@@ -141,7 +141,7 @@ class RegisterControllerTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_existing_account_will_register_user_on_other_cooperation()
+    public function test_existing_account_will_register_user_on_other_cooperation(): void
     {
         /** @var Client $client */
         $client = Client::factory()->create();
@@ -170,7 +170,7 @@ class RegisterControllerTest extends TestCase
         $this->assertDatabaseHas('accounts', ['email' => $this->formData['email']]);
     }
 
-    public function test_invalid_data_returns_422()
+    public function test_invalid_data_returns_422(): void
     {
         /** @var Cooperation $cooperation */
         $cooperation = Cooperation::factory()->create();

@@ -43,7 +43,6 @@ class NumberFormatter
      * Round a number.
      *
      * @param $number
-     * @param int $bucket
      *
      * @return float|int
      */
@@ -68,12 +67,11 @@ class NumberFormatter
      * Used to format the given number in a human-readable format, mainly used for frontend display.
      *
      * @param $number
-     * @param int   $decimals
      * @param false $shouldRoundNumber
      *
      * @return int|string
      */
-    public static function format($number, $decimals = 0, $shouldRoundNumber = false)
+    public static function format($number, int $decimals = 0, bool $shouldRoundNumber = false)
     {
         $locale = app()->getLocale();
         if (is_null($number)) {
@@ -102,11 +100,8 @@ class NumberFormatter
 
     /**
      * @param $number
-     * @param int $decimals
-     *
-     * @return string
      */
-    public static function mathableFormat($number, $decimals = 0)
+    public static function mathableFormat($number, int $decimals = 0): string
     {
         $number = str_replace(',', '.', $number);
 
@@ -176,8 +171,6 @@ class NumberFormatter
      * Format a number for user display
      *
      * @param $number
-     * @param bool $isInteger
-     * @param bool $alwaysNumber
      *
      * @return array|int|string|string[]|null
      */
@@ -222,13 +215,8 @@ class NumberFormatter
     /**
      * We use a for while on purpose. In theory one could also use preg_replace,
      * BUT: a dot is treated as a regex operator which is undesired.
-     *
-     * @param string $number
-     * @param string $sign
-     *
-     * @return string
      */
-    protected static function countAndRemoveDownToOne($number, $sign)
+    protected static function countAndRemoveDownToOne(string $number, string $sign): string
     {
         $decimalSignCount = substr_count($number, '.');
 

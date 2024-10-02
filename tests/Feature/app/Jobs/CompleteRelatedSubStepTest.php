@@ -24,7 +24,7 @@ class CompleteRelatedSubStepTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_related_sub_steps_get_completed()
+    public function test_related_sub_steps_get_completed(): void
     {
         $this->seed(ToolQuestionTypesTableSeeder::class);
         $this->seed(ScansTableSeeder::class);

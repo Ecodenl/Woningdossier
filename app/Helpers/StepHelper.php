@@ -41,10 +41,7 @@ class StepHelper
     /**
      * Get all the comments categorized under step and input source.
      *
-     * @param  \App\Models\Building  $building
      * @param $specificInputSource
-     *
-     * @return array
      */
     public static function getAllCommentsByStep(Building $building, $specificInputSource = null): array
     {
@@ -70,14 +67,8 @@ class StepHelper
 
     /**
      * Complete a step for a building.
-     *
-     * @param  \App\Models\Step  $step
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     *
-     * @return void
      */
-    public static function complete(Step $step, Building $building, InputSource $inputSource)
+    public static function complete(Step $step, Building $building, InputSource $inputSource): void
     {
         CompletedStep::allInputSources()->firstOrCreate([
             'step_id' => $step->id,
@@ -102,14 +93,10 @@ class StepHelper
     /**
      * Incomplete a step for a building.
      *
-     * @param  \App\Models\Step  $step
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
      *
-     * @return void
      * @throws \Exception
      */
-    public static function incomplete(Step $step, Building $building, InputSource $inputSource)
+    public static function incomplete(Step $step, Building $building, InputSource $inputSource): void
     {
         optional(CompletedStep::allInputSources()->where([
             'step_id' => $step->id,
@@ -119,10 +106,6 @@ class StepHelper
     }
 
     /**
-     * @param \App\Models\Step $step
-     * @param \App\Models\Building $building
-     * @param \App\Models\InputSource $inputSource
-     * @param \App\Models\User $authUser
      *
      * @return bool True if the step can be completed, false if it can't be completed.
      */

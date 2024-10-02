@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class CasterTest extends TestCase
 {
-    public function getCastProvider()
+    public function getCastProvider(): array
     {
         return [
             [Caster::STRING, 10, false, '10'],
@@ -107,7 +107,7 @@ class CasterTest extends TestCase
     /**
      * @dataProvider getCastProvider
      */
-    public function test_get_cast(string $dataType, $value, bool $force, $expected)
+    public function test_get_cast(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {
@@ -117,7 +117,7 @@ class CasterTest extends TestCase
         $this->assertEquals($expected, $caster->getCast());
     }
 
-    public function reverseFormattedProvider()
+    public function reverseFormattedProvider(): array
     {
         // Provider note: The code only reverse formats ints and floats, as they are the only  user input that require
         // formatting. Therefore, this test is limited to these 2 only (in detail).
@@ -158,7 +158,7 @@ class CasterTest extends TestCase
     /**
      * @dataProvider reverseFormattedProvider
      */
-    public function test_reverse_formatted(string $dataType, $value, bool $force, $expected)
+    public function test_reverse_formatted(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {
@@ -168,7 +168,7 @@ class CasterTest extends TestCase
         $this->assertEquals($expected, $caster->reverseFormatted());
     }
 
-    public function getFormatForUserProvider()
+    public function getFormatForUserProvider(): array
     {
         // Provider note: The code only formats ints (and bucketed ints) and floats, as they are the only that
         // (currently) require formatting. The other values apply a `getCast()`. See other tests on those results.
@@ -213,7 +213,7 @@ class CasterTest extends TestCase
     /**
      * @dataProvider getFormatForUserProvider
      */
-    public function test_get_format_for_user(string $dataType, $value, bool $force, $expected)
+    public function test_get_format_for_user(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {

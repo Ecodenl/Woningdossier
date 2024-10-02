@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -30,12 +31,12 @@ class UserMotivation extends Model
 {
     protected $fillable = ['user_id', 'motivation_id', 'order'];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function motivation()
+    public function motivation(): BelongsTo
     {
         return $this->belongsTo(Motivation::class);
     }

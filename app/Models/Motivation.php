@@ -14,13 +14,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read array $translations
+ * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation query()
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereUpdatedAt($value)

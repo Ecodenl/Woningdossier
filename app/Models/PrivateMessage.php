@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Services\BuildingCoachStatusService;
@@ -68,10 +69,8 @@ class PrivateMessage extends Model
 
     /**
      * Determine if a private message is public.
-     *
-     * @return bool
      */
-    public static function isPublic(PrivateMessage $privateMessage)
+    public static function isPublic(PrivateMessage $privateMessage): bool
     {
         if ($privateMessage->is_public) {
             return true;
@@ -82,30 +81,24 @@ class PrivateMessage extends Model
 
     /**
      * Determine if a private message is private.
-     *
-     * @return bool
      */
-    public static function isPrivate(PrivateMessage $privateMessage)
+    public static function isPrivate(PrivateMessage $privateMessage): bool
     {
         return ! self::isPublic($privateMessage);
     }
 
     /**
      * Scope a query to return the messages that are sent to a user / coach.
-     *
-     * @return PrivateMessage
      */
-    public function scopeMyPrivateMessages($query)
+    public function scopeMyPrivateMessages($query): PrivateMessage
     {
         return $query->where('to_user_id', Hoomdossier::user()->id);
     }
 
     /**
      * Scope a query to return the conversation ordered on created_at.
-     *
-     * @return $this
      */
-    public static function scopeConversation($query, $buildingId)
+    public static function scopeConversation($query, $buildingId): static
     {
         return $query->where('building_id', $buildingId)->orderBy('created_at');
     }
@@ -146,10 +139,8 @@ class PrivateMessage extends Model
 
     /**
      * Returns the receiving cooperation of this private message.
-     *
-     * @return Cooperation|null
      */
-    public function getReceivingCooperation()
+    public function getReceivingCooperation(): ?Cooperation
     {
         $receivingCooperationId = $this->to_cooperation_id;
         if (empty($receivingCooperationId)) {
@@ -161,10 +152,8 @@ class PrivateMessage extends Model
 
     /**
      * Returns the receiving cooperation of this private message.
-     *
-     * @return Cooperation|null
      */
-    public function getSendingCooperation()
+    public function getSendingCooperation(): ?Cooperation
     {
         $sendingCooperationId = $this->from_cooperation_id;
         if (empty($sendingCooperationId)) {
@@ -238,10 +227,8 @@ class PrivateMessage extends Model
 
     /**
      * Get the building from a message.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }

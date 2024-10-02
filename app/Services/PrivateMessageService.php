@@ -17,10 +17,8 @@ class PrivateMessageService
 
     /**
      * Create a new message between a user and user.
-     *
-     * @return bool
      */
-    public static function create(Request $request)
+    public static function create(Request $request): bool
     {
         $message = strip_tags($request->get('message', ''));
 

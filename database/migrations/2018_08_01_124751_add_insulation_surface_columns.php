@@ -8,10 +8,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('building_features', function (Blueprint $table) {
             // add insulation_wall_surface to the building feature table
@@ -33,10 +31,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('building_features', function (Blueprint $table) {
             $table->dropColumn('insulation_wall_surface');

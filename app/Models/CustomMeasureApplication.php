@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Traits\Models\HasMappings;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Scopes\VisibleScope;
@@ -22,8 +23,8 @@ use Spatie\Translatable\HasTranslations;
  * @property int $input_source_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read array $translations
  * @property-read \App\Models\InputSource $inputSource
+ * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
  * @method static Builder|CustomMeasureApplication allInputSources()
@@ -42,6 +43,10 @@ use Spatie\Translatable\HasTranslations;
  * @method static Builder|CustomMeasureApplication whereId($value)
  * @method static Builder|CustomMeasureApplication whereInfo($value)
  * @method static Builder|CustomMeasureApplication whereInputSourceId($value)
+ * @method static Builder|CustomMeasureApplication whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder|CustomMeasureApplication whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder|CustomMeasureApplication whereLocale(string $column, string $locale)
+ * @method static Builder|CustomMeasureApplication whereLocales(string $column, array $locales)
  * @method static Builder|CustomMeasureApplication whereName($value)
  * @method static Builder|CustomMeasureApplication whereUpdatedAt($value)
  * @mixin \Eloquent
@@ -67,7 +72,7 @@ class CustomMeasureApplication extends Model
         'extra' => 'array',
     ];
 
-    public function userActionPlanAdvices()
+    public function userActionPlanAdvices(): MorphMany
     {
         // We need to retrieve this without the visible tag
         // The visible tag defines whether it should be shown on my plan or not, but for other locations

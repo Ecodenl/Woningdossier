@@ -27,10 +27,8 @@ class ResetDossierForUser
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle(UserService $userService)
+    public function handle(UserService $userService): void
     {
         $userService->forUser($this->user)->resetUser($this->inputSource);
     }

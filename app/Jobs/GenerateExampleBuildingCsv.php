@@ -44,10 +44,8 @@ class GenerateExampleBuildingCsv implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $contentStructure = ContentStructureService::init(
             ToolHelper::getContentStructure(ToolHelper::STRUCT_TOTAL, DumpService::MODE_CSV)

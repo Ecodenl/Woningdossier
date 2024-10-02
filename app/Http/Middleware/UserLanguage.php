@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -12,12 +13,8 @@ class UserLanguage
 {
     /**
      * Handle an incoming request.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         if ($request->query('test') == "1") {
             Log::channel('single')->debug(__METHOD__);

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -51,8 +52,6 @@ class Log extends Model
 
     /**
      * Return the model that did the action.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function loggable(): MorphTo
     {
@@ -61,10 +60,8 @@ class Log extends Model
 
     /**
      * Return the building whom the action was performed on.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class, 'building_id', 'id');
     }

@@ -11,9 +11,6 @@ class TwoFactorAuthenticatedSessionController extends FortifiesTwoFactorAuthenti
 {
     /**
      * Show the two factor authentication challenge view.
-     *
-     * @param  \Laravel\Fortify\Http\Requests\TwoFactorLoginRequest  $request
-     * @return \Laravel\Fortify\Contracts\TwoFactorChallengeViewResponse
      */
     public function create(TwoFactorLoginRequest $request): TwoFactorChallengeViewResponse
     {

@@ -9,10 +9,8 @@ return new class extends Migration
      * Run the migrations.
      *
      * @note its not possible to copy the active / inactive status from the building itself.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $buildingCoachStatuses = DB::table('building_coach_statuses')->get();
 
@@ -90,10 +88,8 @@ return new class extends Migration
 
     /**
      * @param $buildingCoachStatus
-     *
-     * @return bool
      */
-    private function statusIsCopyable($buildingCoachStatus)
+    private function statusIsCopyable($buildingCoachStatus): bool
     {
         return ! in_array($buildingCoachStatus->status, ['removed']);
     }
@@ -112,10 +108,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
 };

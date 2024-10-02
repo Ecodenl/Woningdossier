@@ -18,10 +18,9 @@ class Hoomdossier
     /**
      * Check if a column contains a needle, wrapper for stristr.
      *
-     * @return bool
      * @deprecated rather use Str::contains
      */
-    public static function columnContains(string $column, string $needle)
+    public static function columnContains(string $column, string $needle): bool
     {
         return false !== stristr($column, $needle);
     }
@@ -77,15 +76,13 @@ class Hoomdossier
     }
 
     /**
-     * @param  string  $column
      * @param  null  $default
      *
      * @return mixed|null
      * @deprecated
      * Return the most credible value from a given collection.
-     *
      */
-    public static function getMostCredibleValueFromCollection(Collection $results, $column, $default = null)
+    public static function getMostCredibleValueFromCollection(Collection $results, string $column, $default = null)
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
@@ -162,8 +159,6 @@ class Hoomdossier
 
     /**
      * Returns the current user.
-     *
-     * @return \App\Models\User|null
      */
     public static function user(): ?User
     {
@@ -172,10 +167,8 @@ class Hoomdossier
 
     /**
      * Returns the current account.
-     *
-     * @return \App\Models\Account|null
      */
-    public static function account()
+    public static function account(): ?Account
     {
         // Note: This could also be a App\Models\Client
         return Auth::user();

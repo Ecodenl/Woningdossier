@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\StepHelper;
 use App\Scopes\NoGeneralDataScope;
@@ -24,7 +25,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $scan_id
- * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeasureApplication> $measureApplications
  * @property-read int|null $measure_applications_count
  * @property-read Step|null $parentStep
@@ -33,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\Scan|null $scan
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
+ * @property-read mixed $translations
  * @method static Builder|Step childrenForStep(\App\Models\Step $step)
  * @method static Builder|Step expert()
  * @method static \Database\Factories\StepFactory factory($count = null, $state = [])
@@ -45,6 +46,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder|Step recalculable()
  * @method static Builder|Step whereCreatedAt($value)
  * @method static Builder|Step whereId($value)
+ * @method static Builder|Step whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder|Step whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder|Step whereLocale(string $column, string $locale)
+ * @method static Builder|Step whereLocales(string $column, array $locales)
  * @method static Builder|Step whereName($value)
  * @method static Builder|Step whereOrder($value)
  * @method static Builder|Step whereParentId($value)
@@ -129,10 +134,8 @@ class Step extends Model
 
     /**
      * Return the parent of the step.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parentStep()
+    public function parentStep(): BelongsTo
     {
         return $this->belongsTo(Step::class, 'parent_id', 'id');
     }
@@ -144,10 +147,8 @@ class Step extends Model
 
     /**
      * Method to leave out the sub steps.
-     *
-     * @return Builder
      */
-    public function scopeWithoutChildren(Builder $query)
+    public function scopeWithoutChildren(Builder $query): Builder
     {
         return $query->where('parent_id', null);
     }
@@ -190,17 +191,15 @@ class Step extends Model
         );
     }
 
-    public function scan()
+    public function scan(): BelongsTo
     {
         return $this->belongsTo(Scan::class);
     }
 
     /**
      * Get the measure applications from a step.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function measureApplications()
+    public function measureApplications(): HasMany
     {
         return $this->hasMany(MeasureApplication::class);
     }

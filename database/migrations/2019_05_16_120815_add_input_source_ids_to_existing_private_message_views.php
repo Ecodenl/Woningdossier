@@ -9,10 +9,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // get the private messages where we know we can get the used id from
         $privateMessages = DB::table('private_messages')
@@ -57,10 +55,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         DB::table('private_message_views')->update(['input_source_id'=> null]);
     }

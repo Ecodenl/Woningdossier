@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\User;
@@ -14,10 +15,8 @@ class CreateBuildingFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         $account = Account::where('email', $this->get('email'))->first();
         $user = $account->user();
@@ -28,10 +27,8 @@ class CreateBuildingFormRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'email' => 'required|email|exists:accounts,email',
@@ -46,10 +43,8 @@ class CreateBuildingFormRequest extends FormRequest
     /**
      * Extend the default getValidatorInstance method
      * so fields can be modified or added before validation.
-     *
-     * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function getValidatorInstance()
+    protected function getValidatorInstance(): Validator
     {
         // Add new data field before it gets sent to the validator
         //$this->merge(array('date_of_birth' => 'test'));

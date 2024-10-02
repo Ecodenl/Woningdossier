@@ -33,7 +33,7 @@ class Str extends \Illuminate\Support\Str
      *
      * @param string $uuid The string to check
      */
-    public static function isValidUuid($uuid): bool
+    public static function isValidUuid(string $uuid): bool
     {
         if (! is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
             return false;
@@ -75,10 +75,8 @@ class Str extends \Illuminate\Support\Str
     /**
      * Returns a random UUID. Only used as a fallback in case all other methods
      * don't work.
-     *
-     * @return string
      */
-    protected static function randomUuid()
+    protected static function randomUuid(): string
     {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
             mt_rand(0, 0xffff), mt_rand(0, 0xffff),
@@ -135,13 +133,9 @@ class Str extends \Illuminate\Support\Str
     /**
      * Check if a needle is somewhere (partially) in an array.
      *
-     * @param  array  $array
      * @param  $needle
-     * @param  bool  $ignoreCase
-     *
-     * @return bool
      */
-    public static function arrContains(array $array, $needle, bool $ignoreCase = false)
+    public static function arrContains(array $array, $needle, bool $ignoreCase = false): bool
     {
         $needle = $ignoreCase ? strtolower($needle) : $needle;
 
@@ -165,13 +159,9 @@ class Str extends \Illuminate\Support\Str
     /**
      * Check if a needle is somewhere at the start in an array.
      *
-     * @param  array  $array
      * @param $needle
-     * @param  bool  $ignoreCase
-     *
-     * @return bool
      */
-    public static function arrStartsWith(array $array, $needle, bool $ignoreCase = false)
+    public static function arrStartsWith(array $array, $needle, bool $ignoreCase = false): bool
     {
         $needle = $ignoreCase ? strtolower($needle) : $needle;
 
@@ -195,11 +185,7 @@ class Str extends \Illuminate\Support\Str
     /**
      * Check if a needle is somewhere at the start of the keys in an array.
      *
-     * @param  array  $array
      * @param $needle
-     * @param  bool  $ignoreCase
-     *
-     * @return bool
      */
     public static function arrKeyStartsWith(array $array, $needle, bool $ignoreCase = false): bool
     {
@@ -208,10 +194,6 @@ class Str extends \Illuminate\Support\Str
 
     /**
      * Convert HTML array format to dot
-     *
-     * @param  string  $htmlArray
-     *
-     * @return string
      */
     public static function htmlArrToDot(string $htmlArray): string
     {
@@ -224,11 +206,6 @@ class Str extends \Illuminate\Support\Str
 
     /**
      * Convert a dotted string to a valid HTML input name.
-     *
-     * @param  string|null  $dottedName
-     * @param  bool  $asArray
-     *
-     * @return string|null
      */
     public static function dotToHtml(?string $dottedName, bool $asArray = false): ?string
     {
@@ -257,10 +234,6 @@ class Str extends \Illuminate\Support\Str
 
     /**
      * Check if a string has replaceables.
-     *
-     * @param  string  $string
-     *
-     * @return bool
      */
     public static function hasReplaceables(string $string): bool
     {
@@ -275,10 +248,6 @@ class Str extends \Illuminate\Support\Str
     /**
      * Prepare a JSON string for dropping in HTML.
      * TODO: Tests
-     *
-     * @param  string  $json
-     *
-     * @return string
      */
     public static function prepareJsonForHtml(string $json): string
     {

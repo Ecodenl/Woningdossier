@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class NumberTest extends TestCase
 {
-    public static function isNegativeProvider()
+    public static function isNegativeProvider(): array
     {
         return [
             [0.10, false],
@@ -29,7 +29,7 @@ class NumberTest extends TestCase
     /**
      * @dataProvider isNegativeProvider
      */
-    public function testIsNegative($number, $expected)
+    public function testIsNegative($number, $expected): void
     {
         $this->assertEquals($expected, Number::isNegative($number));
     }

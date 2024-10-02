@@ -6,10 +6,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // the old statuses
         $statusActive = 'active';
@@ -59,10 +57,8 @@ return new class extends Migration
      * But, the pending can be changed back to the active
      * the in_progress will be changed to appointment
      * and executed will be changed to done
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // the old statuses
         $statusDone = 'done';

@@ -35,10 +35,8 @@ class Gebruik extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $relevantLastChangedDate = Carbon::now()->subHours(24);
 

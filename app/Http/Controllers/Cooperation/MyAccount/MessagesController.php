@@ -18,7 +18,7 @@ use Illuminate\View\View;
 
 class MessagesController extends Controller
 {
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): RedirectResponse
     {
         DeprecationLogger::log(__METHOD__ . ' used!');
         return redirect(route('cooperation.my-account.messages.edit'));

@@ -35,10 +35,8 @@ class BuildingStatus extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         Log::debug(__CLASS__);
         SendBuildingStatusToEconobis::dispatch(

@@ -48,7 +48,7 @@ class BuildingObserver
         $building->currentPaintworkStatus()->allInputSources()->delete();
     }
 
-    public function deleted(Building $building)
+    public function deleted(Building $building): void
     {
         \App\Helpers\Cache\Building::wipe($building->id);
     }

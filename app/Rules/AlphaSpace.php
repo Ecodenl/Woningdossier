@@ -2,9 +2,11 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+// use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class AlphaSpace implements Rule
+class AlphaSpace implements ValidationRule
 {
     /**
      * Create a new rule instance.
@@ -18,23 +20,25 @@ class AlphaSpace implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
      * @param mixed  $value
-     *
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         return preg_match('/^[\pL\s]+$/u', $value);
     }
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
-    public function message()
+    public function message(): string
     {
         return __('validation.custom.alpha_space');
+    }
+
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (! $this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 }

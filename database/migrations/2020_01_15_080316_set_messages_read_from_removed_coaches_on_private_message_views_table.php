@@ -51,10 +51,8 @@ return new class extends Migration
 
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $users = User::withoutGlobalScopes()->get();
         foreach ($users as $user) {
@@ -88,10 +86,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // thats quit hard to do.
     }

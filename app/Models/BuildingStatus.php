@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -52,7 +53,7 @@ class BuildingStatus extends Model
         return $this->appointment_date instanceof \DateTime;
     }
 
-    public function status()
+    public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class);
     }

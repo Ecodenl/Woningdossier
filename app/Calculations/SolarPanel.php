@@ -23,10 +23,8 @@ class SolarPanel
      * Calculate the savings for the solar panel.
      *
      * @param User $user
-     *
-     * @return array
      */
-    public static function calculate(Building $building, array $calculateData)
+    public static function calculate(Building $building, array $calculateData): array
     {
         $result = [
             'yield_electricity' => 0,

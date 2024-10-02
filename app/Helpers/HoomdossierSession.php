@@ -14,7 +14,7 @@ class HoomdossierSession extends Session
     /**
      * Set all the required values.
      */
-    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role)
+    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role): void
     {
         self::setBuilding($building);
         self::setInputSource($inputSource);
@@ -60,7 +60,7 @@ class HoomdossierSession extends Session
      *
      * @return int|Cooperation|null
      */
-    public static function getCooperation($object = false): int|Cooperation|null
+    public static function getCooperation(bool $object = false): int|Cooperation|null
     {
         $cooperation = self::get('cooperation');
 
@@ -202,7 +202,7 @@ class HoomdossierSession extends Session
      *
      * @return int|Role|null
      */
-    public static function getRole($object = false)
+    public static function getRole(bool $object = false)
     {
         $id = self::getHoomdossierSession('role_id');
         if (! $object) {
@@ -246,7 +246,7 @@ class HoomdossierSession extends Session
      *
      * @return int|InputSource|null
      */
-    public static function getInputSource($object = false): int|InputSource|null
+    public static function getInputSource(bool $object = false): int|InputSource|null
     {
         $id = self::getHoomdossierSession('input_source_id');
         if (! $object) {

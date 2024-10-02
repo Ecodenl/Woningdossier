@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class NumberFormatterTest extends TestCase
 {
-    public static function formatterProvider()
+    public static function formatterProvider(): array
     {
         return [
             ['nl', '123.456', 0, '123'],
@@ -26,14 +26,14 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider formatterProvider
      */
-    public function testFormat($locale, $number, $decimals, $expected)
+    public function testFormat($locale, $number, $decimals, $expected): void
     {
         $this->app->setLocale($locale);
 
         $this->assertEquals($expected, NumberFormatter::format($number, $decimals));
     }
 
-    public static function reverseFormatterProvider()
+    public static function reverseFormatterProvider(): array
     {
         return [
             ['nl', '123,456', '123.456'],
@@ -57,14 +57,14 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider reverseFormatterProvider
      */
-    public function testReverseFormat($locale, $number, $expected)
+    public function testReverseFormat($locale, $number, $expected): void
     {
         $this->app->setLocale($locale);
 
         $this->assertEquals($expected, NumberFormatter::reverseFormat($number));
     }
 
-    public static function mathableFormatterProvider()
+    public static function mathableFormatterProvider(): array
     {
         return [
             ['125.400', 2, 125.40],
@@ -90,12 +90,12 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider mathableFormatterProvider
      */
-    public function testMathableFormat($number, $decimals, $expected)
+    public function testMathableFormat($number, $decimals, $expected): void
     {
         $this->assertEquals($expected, NumberFormatter::mathableFormat($number, $decimals));
     }
 
-    public static function roundProvider()
+    public static function roundProvider(): array
     {
         return [
             [154, 5, 155.0],
@@ -122,12 +122,12 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider roundProvider
      */
-    public function testRound($number, $bucket, $expected)
+    public function testRound($number, $bucket, $expected): void
     {
         $this->assertEquals($expected, NumberFormatter::round($number, $bucket));
     }
 
-    public static function rangeProvider()
+    public static function rangeProvider(): array
     {
         // Expected is in locale en
         return [
@@ -146,14 +146,14 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider rangeProvider
      */
-    public function testRange($from, $to, $decimals, $separator, $prefix, $expected)
+    public function testRange($from, $to, $decimals, $separator, $prefix, $expected): void
     {
         app()->setLocale('en');
 
         $this->assertEquals($expected, NumberFormatter::range($from, $to, $decimals, $separator, $prefix));
     }
 
-    public static function prefixProvider()
+    public static function prefixProvider(): array
     {
         return [
             [50, '€', '€50'],
@@ -167,12 +167,12 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider prefixProvider
      */
-    public function testPrefix($value, $prefix, $expected)
+    public function testPrefix($value, $prefix, $expected): void
     {
         $this->assertEquals($expected, NumberFormatter::prefix($value, $prefix));
     }
 
-    public static function formatNumberForUserProvider()
+    public static function formatNumberForUserProvider(): array
     {
         return [
             ['0,00', true, true, '0'],
@@ -195,7 +195,7 @@ class NumberFormatterTest extends TestCase
     /**
      * @dataProvider formatNumberForUserProvider
      */
-    public function testFormatNumberForUser($number, $isInteger, $alwaysNumber, $expected)
+    public function testFormatNumberForUser($number, $isInteger, $alwaysNumber, $expected): void
     {
         // Note: Test currently does not support locale. When we do add a second locale, this will need revisiting.
         $this->assertEquals($expected, NumberFormatter::formatNumberForUser($number, $isInteger, $alwaysNumber));

@@ -57,7 +57,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
      *
      * @return array|string
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['mail'];
     }
@@ -66,10 +66,8 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
      * Build the mail representation of the notification.
      *
      * @param mixed $notifiable
-     *
-     * @return Mailable
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): Mailable
     {
         return new ResetPasswordRequest($this->cooperation, $this->account, $this->token);
     }

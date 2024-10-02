@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
@@ -21,7 +23,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage)
+    public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage): View
     {
         $users = $cooperationToManage->users()->withoutGlobalScopes()->get();
 
@@ -44,7 +46,7 @@ class UserController extends Controller
             compact('users', 'breadcrumbs', 'cooperationToManage'));
     }
 
-    public function create(Cooperation $cooperation, Cooperation $cooperationToManage)
+    public function create(Cooperation $cooperation, Cooperation $cooperationToManage): View
     {
         $userCurrentRole = HoomdossierSession::getRole(true);
         $roles = Role::orderByDesc('level')->get();
@@ -53,7 +55,7 @@ class UserController extends Controller
         return view('cooperation.admin.users.create', compact('userCurrentRole', 'roles', 'coaches', 'cooperationToManage'));
     }
 
-    public function store(UserFormRequest $request, Cooperation $cooperation, Cooperation $cooperationToManage)
+    public function store(UserFormRequest $request, Cooperation $cooperation, Cooperation $cooperationToManage): RedirectResponse
     {
         $this->createUser($request, $cooperationToManage);
 
@@ -63,7 +65,7 @@ class UserController extends Controller
             ->with('success', __('cooperation/admin/users.store.success'));
     }
 
-    public function show(Cooperation $currentCooperation, Cooperation $cooperationToManage, $userId)
+    public function show(Cooperation $currentCooperation, Cooperation $cooperationToManage, $userId): View
     {
         $user = User::withoutGlobalScopes()->findOrFail($userId);
         $building = $user->building;
@@ -74,7 +76,7 @@ class UserController extends Controller
             compact('user', 'cooperationToManage', 'roles', 'userCurrentRole', 'building'));
     }
 
-    public function confirm(Cooperation $currentCooperation, Cooperation $cooperationToManage, $accountId)
+    public function confirm(Cooperation $currentCooperation, Cooperation $cooperationToManage, $accountId): RedirectResponse
     {
         $account = Account::findOrFail($accountId);
         $account->markEmailAsVerified();

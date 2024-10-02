@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\View\View;
 use App\Helpers\Hoomdossier;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
@@ -15,7 +16,7 @@ use Illuminate\Http\RedirectResponse;
 
 class MessagesController extends Controller
 {
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         if (Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COACH)) {
             $connectedBuildingsByUserId = BuildingCoachStatusService::getConnectedBuildingsByUser(Hoomdossier::user());

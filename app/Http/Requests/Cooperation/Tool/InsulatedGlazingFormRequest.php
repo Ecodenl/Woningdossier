@@ -22,10 +22,8 @@ class InsulatedGlazingFormRequest extends FormRequest
 
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -38,7 +36,7 @@ class InsulatedGlazingFormRequest extends FormRequest
         ]);
     }
 
-    public function rules(LegacyService $legacyService)
+    public function rules(LegacyService $legacyService): array
     {
         $max = Carbon::now()->year;
         /** @var Collection $noInterests */

@@ -8,10 +8,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('user_energy_habits', function (Blueprint $table) {
             $table->longText('building_complaints')->change();
@@ -20,10 +18,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('user_energy_habits', function (Blueprint $table) {
             $table->string('building_complaints')->change();

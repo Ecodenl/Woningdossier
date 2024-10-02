@@ -44,10 +44,8 @@ class InsertLogEntry implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         Log::create([
             'loggable_type' => $this->loggableType,
@@ -59,10 +57,8 @@ class InsertLogEntry implements ShouldQueue
 
     /**
      * Get the middleware the job should pass through.
-     *
-     * @return array
      */
-    public function middleware() {
+    public function middleware(): array {
         $withoutOverlapping = new WithoutOverlapping(sprintf('insert-log-entry-%s-%s-%s', $this->loggableType, $this->loggableId, $this->buildingId));
         if (!$this->crucial) {
             return [

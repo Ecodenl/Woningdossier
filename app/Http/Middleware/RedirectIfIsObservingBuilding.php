@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use Closure;
@@ -11,12 +13,8 @@ class RedirectIfIsObservingBuilding
 {
     /**
      * Handle an incoming request.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         if (HoomdossierSession::isUserObserving()) {
             $user = Hoomdossier::user();

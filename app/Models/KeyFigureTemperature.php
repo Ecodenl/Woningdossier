@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -31,26 +32,17 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureTemperature extends Model
 {
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function measureApplication()
+    public function measureApplication(): BelongsTo
     {
         return $this->belongsTo(MeasureApplication::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function insulatingGlazing()
+    public function insulatingGlazing(): BelongsTo
     {
         return $this->belongsTo(InsulatingGlazing::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function buildingHeating()
+    public function buildingHeating(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class);
     }

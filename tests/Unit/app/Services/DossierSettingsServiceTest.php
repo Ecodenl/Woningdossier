@@ -30,7 +30,7 @@ class DossierSettingsServiceTest extends TestCase
 
         $this->building = Building::factory()->create(['user_id' => User::factory()->create()]);
     }
-    public function test_that_datetime_before_done_at_returns_true_on_is_done_after()
+    public function test_that_datetime_before_done_at_returns_true_on_is_done_after(): void
     {
         $resident = InputSource::resident();
         // this doesn't matter to the code, but this makes the test more read/understandable.
@@ -56,7 +56,7 @@ class DossierSettingsServiceTest extends TestCase
 
         $this->assertTrue($actionDoneAfterJobQueuedAt);
     }
-    public function test_that_is_done_after_returns_false_on_empty_dossier_setting()
+    public function test_that_is_done_after_returns_false_on_empty_dossier_setting(): void
     {
         $resident = InputSource::resident();
         // this doesn't matter to the code, but this makes the test more read/understandable.
@@ -76,7 +76,7 @@ class DossierSettingsServiceTest extends TestCase
         $this->assertFalse($actionDoneAfterJobQueuedAt);
     }
 
-    public function test_that_datetime_after_done_at_returns_false_on_is_done_after()
+    public function test_that_datetime_after_done_at_returns_false_on_is_done_after(): void
     {
         $resident = InputSource::resident();
         // this doesn't matter to the code, but this makes the test more read/understandable.

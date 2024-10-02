@@ -8,11 +8,8 @@ class RefreshBuildingUserHisAdvices extends NonHandleableListenerAfterReset
 {
     /**
      * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         $this->checkLastResetAt(function () use ($event) {
             RefreshRegulationsForBuildingUser::dispatch($event->building);

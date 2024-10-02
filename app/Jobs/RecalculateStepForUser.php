@@ -36,10 +36,8 @@ class RecalculateStepForUser extends NonHandleableJobAfterReset
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         Log::debug('Recalculating step: '.$this->step->name);
         $stepClass = 'App\\Helpers\\Cooperation\Tool\\'.Str::singular(Str::studly($this->step->short)).'Helper';

@@ -19,14 +19,6 @@ use Spatie\Permission\Exceptions\UnauthorizedException as SpatieUnauthorizedExce
 class Handler extends ExceptionHandler
 {
     /**
-     * A list of the exception types that are not reported.
-     *
-     * @var array
-     */
-    protected $dontReport = [
-    ];
-
-    /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
      * @var array
@@ -66,7 +58,7 @@ class Handler extends ExceptionHandler
     }
 
 
-    public function register()
+    public function register(): void
     {
         $this->reportable(function (Throwable $e) {
             if (app()->bound('sentry') && $this->shouldReport($e)) {
@@ -128,10 +120,10 @@ class Handler extends ExceptionHandler
 
                 if ($redirect instanceof CooperationRedirect) {
                     Log::debug("Redirect to " . str_ireplace(
-                            $cooperation,
-                            $redirect->cooperation->slug,
-                            $request->url()
-                        ));
+                        $cooperation,
+                        $redirect->cooperation->slug,
+                        $request->url()
+                    ));
                     return redirect(
                         str_ireplace(
                             $cooperation,

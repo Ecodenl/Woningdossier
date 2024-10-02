@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -43,30 +44,24 @@ class BuildingCoachStatus extends Model
 
     /**
      * Get the building from the status.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
     /**
      * Get the user / coach from the status this does NOT return the owner from the building.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'coach_id', 'id');
     }
 
     /**
      * Get the coach from the status.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function coach()
+    public function coach(): BelongsTo
     {
         return $this->belongsTo(User::class, 'coach_id', 'id');
     }

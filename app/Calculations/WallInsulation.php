@@ -21,11 +21,10 @@ class WallInsulation
     /**
      * Calculate the wall insulation costs and savings etc.
      *
-     * @param UserEnergyHabit|null $energyHabit
      *
      * @return array;
      */
-    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, array $calculateData): array
+    public static function calculate(Building $building, InputSource $inputSource, ?UserEnergyHabit $energyHabit, array $calculateData): array
     {
         $buildingFeatureData = $calculateData['building_features'];
         $cavityWall = $buildingFeatureData['cavity_wall'] ?? -1;

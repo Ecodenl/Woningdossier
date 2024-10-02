@@ -33,7 +33,7 @@ class ToolQuestionHelperTest extends TestCase
         $this->seed(InputSourcesTableSeeder::class);
     }
 
-    public function testResolveSaveIn()
+    public function testResolveSaveIn(): void
     {
         $cooperation = Cooperation::factory()->create();
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -18,13 +19,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingFeature> $buildingFeatures
  * @property-read int|null $building_features_count
- * @property-read array $translations
+ * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType query()
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereShort($value)
@@ -64,7 +69,7 @@ class RoofType extends Model
         'name',
     ];
 
-    public function buildingFeatures()
+    public function buildingFeatures(): HasMany
     {
         return $this->hasMany(BuildingFeature::class);
     }

@@ -40,8 +40,6 @@ class Caster
 
     /**
      * Force defines whether or not converting data should be forced if the value is null.
-     *
-     * @return $this
      */
     public function force(): self
     {

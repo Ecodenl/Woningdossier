@@ -81,22 +81,16 @@ class Account extends Authenticatable implements MustVerifyEmail
 
     /**
      * Send the password reset notification.
-     *
-     * @param string $token
-     *
-     * @return void
      */
-    public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($token, $this, $this->user()->cooperation));
     }
 
     /**
      * Send the email verification notification.
-     *
-     * @return void
      */
-    public function sendEmailVerificationNotification()
+    public function sendEmailVerificationNotification(): void
     {
         $this->notify(new VerifyEmailNotification($this->user()));
     }

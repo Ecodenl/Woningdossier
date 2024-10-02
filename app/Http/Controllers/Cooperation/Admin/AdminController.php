@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
@@ -9,7 +10,7 @@ use App\Helpers\Hoomdossier;
 
 class AdminController extends Controller
 {
-    public function stopSession(Cooperation $cooperation)
+    public function stopSession(Cooperation $cooperation): RedirectResponse
     {
         $user = \App\Helpers\Hoomdossier::user();
         $building = $user->building;

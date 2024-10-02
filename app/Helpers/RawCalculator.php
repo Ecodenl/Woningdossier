@@ -103,12 +103,11 @@ class RawCalculator
      *
      * @param MeasureApplication $measure         The measure to apply
      * @param mixed              $number          The amount of measures. (might be m2, pieces, etc.)
-     * @param int|null           $applicationYear
      * @param bool               $applyIndexing   Whether or not to apply indexing
      *
      * @return float|int
      */
-    public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, $applicationYear = null, $applyIndexing = true)
+    public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, ?int $applicationYear = null, bool $applyIndexing = true)
     {
         self::debug(__METHOD__.' for measure '.$measure->measure_name);
         if (! is_numeric($number) || $number <= 0) {
@@ -153,7 +152,7 @@ class RawCalculator
      *
      * @return float|int
      */
-    public static function reindexCosts($costs, $fromYear, $toYear, $index = null)
+    public static function reindexCosts($costs, int $fromYear, int $toYear, $index = null)
     {
         if (is_null($fromYear)) {
             $fromYear = Carbon::now()->year;
@@ -186,11 +185,10 @@ class RawCalculator
      * for this year.
      *
      * @param float|int $costs
-     * @param int       $toYear
      *
      * @return float|int
      */
-    public static function indexCosts($costs, $toYear)
+    public static function indexCosts($costs, int $toYear)
     {
         return self::reindexCosts($costs, null, $toYear);
     }
@@ -200,11 +198,10 @@ class RawCalculator
      * Based on the building, only a max percentage of gas can be saved for
      * particular Elements.
      *
-     * @param UserEnergyHabit|null $energyHabit
      *
      * @return float|int
      */
-    public static function maxGasSavings(Building $building, InputSource $inputSource, $energyHabit, Element $element)
+    public static function maxGasSavings(Building $building, InputSource $inputSource, ?UserEnergyHabit $energyHabit, Element $element)
     {
         $result = 0;
 

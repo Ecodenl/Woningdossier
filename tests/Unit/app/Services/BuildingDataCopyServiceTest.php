@@ -18,7 +18,7 @@ class BuildingDataCopyServiceTest extends TestCase
     }
 
 
-    public function makeTargetsValuesProvider()
+    public function makeTargetsValuesProvider(): array
     {
         return [
             [
@@ -129,7 +129,7 @@ class BuildingDataCopyServiceTest extends TestCase
     /**
      * @dataProvider makeTargetsValuesProvider
      */
-    public function testMakeTargetValues($sourceValue, $targetValues, $whereColumn, $additionalWhereColumn, $expected)
+    public function testMakeTargetValues($sourceValue, $targetValues, $whereColumn, $additionalWhereColumn, $expected): void
     {
         $possibleTargetValues = BuildingDataCopyService::getPossibleTargetValues(
             $sourceValue,

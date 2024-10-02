@@ -34,10 +34,8 @@ class DoUpgrade extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $commands = [
             SeedCommand::class => [

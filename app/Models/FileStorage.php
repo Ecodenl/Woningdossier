@@ -84,40 +84,32 @@ class FileStorage extends Model
 
     /**
      * Query to scope the expired files.
-     *
-     * @return Builder
      */
-    public function scopeWithExpired(Builder $query)
+    public function scopeWithExpired(Builder $query): Builder
     {
         return $query->withoutGlobalScope(new AvailableScope());
     }
 
     /**
      * Query to leave out the personal files.
-     *
-     * @return Builder
      */
-    public function scopeLeaveOutPersonalFiles(Builder $query)
+    public function scopeLeaveOutPersonalFiles(Builder $query): Builder
     {
         return $query->whereNull('building_id');
     }
 
     /**
      * Query to scope the file's that are being processed.
-     *
-     * @return Builder
      */
-    public function scopeBeingProcessed(Builder $query)
+    public function scopeBeingProcessed(Builder $query): Builder
     {
         return $query->where('is_being_processed', true);
     }
 
     /**
      * Query to scope the most recent report.
-     *
-     * @return Builder
      */
-    public function scopeMostRecent(Builder $query, Questionnaire $questionnaire = null)
+    public function scopeMostRecent(Builder $query, Questionnaire $questionnaire = null): Builder
     {
         if ($questionnaire instanceof Questionnaire) {
             return $query->orderByDesc('created_at')->where('questionnaire_id', $questionnaire->id);
@@ -134,7 +126,7 @@ class FileStorage extends Model
         return $this->belongsTo(Cooperation::class);
     }
 
-    public function fileType()
+    public function fileType(): BelongsTo
     {
         return $this->belongsTo(FileType::class, 'file_type_id');
     }

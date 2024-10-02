@@ -12,7 +12,7 @@ class CooperationPolicy
 {
     use HandlesAuthorization;
 
-    public function create(Account $account)
+    public function create(Account $account): bool
     {
         return HoomdossierSession::currentRoleIs(RoleHelper::ROLE_SUPER_ADMIN);
     }
@@ -22,7 +22,7 @@ class CooperationPolicy
         return HoomdossierSession::currentRoleIs(RoleHelper::ROLE_SUPER_ADMIN);
     }
 
-    public function delete(Account $account, Cooperation $cooperation)
+    public function delete(Account $account, Cooperation $cooperation): bool
     {
         // hoom mag niet.
         if ('hoom' !== $cooperation->slug) {

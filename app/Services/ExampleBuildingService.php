@@ -33,13 +33,10 @@ class ExampleBuildingService
     /**
      * Apply an example building on the given building.
      *
-     * @param ExampleBuilding $exampleBuilding
      * @param int $buildYear Build year for selecting the appropriate example building content
      * @param Building $building Target building to apply to
-     *
-     * @return void
      */
-    public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $building, InputSource $inputSource)
+    public static function apply(ExampleBuilding $exampleBuilding, int $buildYear, Building $building, InputSource $inputSource): void
     {
         // used to check if there is a answer available.
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);

@@ -18,7 +18,7 @@ class AuditedListener implements ShouldQueue
         // ...
     }
 
-    public function handle(Audited $event)
+    public function handle(Audited $event): void
     {
         // the audit model
         $audit = $event->audit;

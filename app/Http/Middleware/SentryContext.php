@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
@@ -17,12 +19,8 @@ class SentryContext
 {
     /**
      * Handle an incoming request.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         // If logged in and sentry is found, add extra contextual information
         // which helps debugging exceptions

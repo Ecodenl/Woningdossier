@@ -8,10 +8,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasColumn('building_coach_statuses', 'appointment_date')) {
             Schema::table('building_coach_statuses',
@@ -23,10 +21,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (Schema::hasColumn('building_coach_statuses', 'appointment_date')) {
             // just in case

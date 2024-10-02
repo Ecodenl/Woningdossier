@@ -15,9 +15,6 @@ class PasswordResetLinkController extends \Laravel\Fortify\Http\Controllers\Pass
 {
     /**
      * Send a reset link to the given user.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Contracts\Support\Responsable
      */
     public function store(Request $request): Responsable
     {

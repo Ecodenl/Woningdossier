@@ -38,10 +38,8 @@ class ImportToolQuestionTranslations extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle(Excel $excel)
+    public function handle(Excel $excel): int
     {
         if (! Storage::disk('local')->exists('tool-questions.csv')) {
             $this->error('"tool-questions.csv" not found at /storage/app!');

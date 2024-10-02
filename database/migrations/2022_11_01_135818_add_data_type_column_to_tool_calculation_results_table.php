@@ -9,10 +9,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasColumn('tool_calculation_results', 'data_type')) {
             Schema::table('tool_calculation_results', function (Blueprint $table) {
@@ -23,10 +21,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (Schema::hasColumn('tool_calculation_results', 'data_type')) {
             Schema::table('tool_calculation_results', function (Blueprint $table) {

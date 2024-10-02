@@ -16,8 +16,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int $id
  * @property int|null $building_id
  * @property int|null $input_source_id
- * @property int|null $building_heating_application_id
  * @property int|null $example_building_id
+ * @property int|null $building_heating_application_id
  * @property int|null $building_category_id
  * @property int|null $building_type_category_id
  * @property int|null $building_type_id

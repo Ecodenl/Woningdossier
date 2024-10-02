@@ -6,10 +6,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // migration to migrate the service value from the "demand driven" option to the extra column.
         // when that option is selected we will change the value to the "mechanical extraction" and demand_driven set to true in the extra column.
@@ -43,10 +41,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
 };

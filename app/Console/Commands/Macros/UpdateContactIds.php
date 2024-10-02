@@ -32,7 +32,7 @@ class UpdateContactIds extends Command
      */
     protected $description = 'Update contact IDs in the database using file in storage';
 
-    public function handle()
+    public function handle(): void
     {
         $cooperationSlug = $this->argument('cooperation');
         $cooperation = Cooperation::where('slug', $cooperationSlug)->first();

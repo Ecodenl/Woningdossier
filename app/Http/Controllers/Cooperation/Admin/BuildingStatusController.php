@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingCoachStatusRequest;
 use App\Models\Building;
@@ -35,7 +36,7 @@ class BuildingStatusController extends Controller
     /**
      * Set an appointment date for a building.
      */
-    public function setAppointmentDate(Cooperation $cooperation, Request $request)
+    public function setAppointmentDate(Cooperation $cooperation, Request $request): JsonResponse
     {
         $buildingId = $request->input('building_id');
         $appointmentDate = $request->input('appointment_date');

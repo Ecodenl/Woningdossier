@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class ArrTest extends TestCase
 {
-    public static function isWholeArrayEmptyProvider()
+    public static function isWholeArrayEmptyProvider(): array
     {
         return [
             [
@@ -71,7 +71,7 @@ class ArrTest extends TestCase
     /**
      * @dataProvider isWholeArrayEmptyProvider
      */
-    public function testIsWholeArrayEmpty($input, $expected)
+    public function testIsWholeArrayEmpty($input, $expected): void
     {
         $this->assertEquals($expected, Arr::isWholeArrayEmpty($input));
     }

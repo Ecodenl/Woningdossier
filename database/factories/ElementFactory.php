@@ -8,10 +8,8 @@ class ElementFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $name = $this->faker->word();
         $short = \Illuminate\Support\Str::slug($name);

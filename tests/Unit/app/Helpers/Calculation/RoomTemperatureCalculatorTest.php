@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class RoomTemperatureCalculatorTest extends TestCase
 {
-    public function testGetAverageHouseTemperature()
+    public function testGetAverageHouseTemperature(): void
     {
         $habits = new UserEnergyHabit([
             'thermostat_high' => 20,

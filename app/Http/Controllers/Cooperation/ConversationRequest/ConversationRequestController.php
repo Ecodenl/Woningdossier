@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
@@ -23,7 +24,7 @@ class ConversationRequestController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function index(Cooperation $cooperation, $requestType, $measureApplicationShort = null)
+    public function index(Cooperation $cooperation, ?string $requestType, ?string $measureApplicationShort = null)
     {
         $scan = $cooperation->scans()->where('scans.short', '!=', Scan::EXPERT)->first();
 
@@ -47,10 +48,8 @@ class ConversationRequestController extends Controller
 
     /**
      * Save the conversation request for whatever the conversation request may be.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(BuildingStatusService $buildingStatusService, ConversationRequest $request, Cooperation $cooperation)
+    public function store(BuildingStatusService $buildingStatusService, ConversationRequest $request, Cooperation $cooperation): RedirectResponse
     {
         PrivateMessageService::createConversationRequest(HoomdossierSession::getBuilding(true), Hoomdossier::user(), $request);
 

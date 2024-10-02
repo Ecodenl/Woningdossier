@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $is_default
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read array $translations
+ * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating query()
@@ -24,6 +24,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating whereDegree($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating whereIsDefault($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeating whereUpdatedAt($value)
  * @mixin \Eloquent

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
@@ -32,7 +34,7 @@ class RoofInsulationController extends ToolController
      *
      * return \Illuminate\Http\Response
      */
-    public function index(LegacyService $legacyService)
+    public function index(LegacyService $legacyService): View
     {
         $typeIds = [5];
 
@@ -100,7 +102,7 @@ class RoofInsulationController extends ToolController
         ));
     }
 
-    public function calculate(Request $request)
+    public function calculate(Request $request): JsonResponse
     {
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);

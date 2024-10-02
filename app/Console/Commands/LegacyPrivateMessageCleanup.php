@@ -33,10 +33,8 @@ class LegacyPrivateMessageCleanup extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $buildings = Building::withTrashed()->whereNotNull('deleted_at')->get();
         $this->line('Got '.$buildings->count().' buildings that have been deleted');

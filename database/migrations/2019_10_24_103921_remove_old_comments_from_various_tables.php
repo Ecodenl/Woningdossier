@@ -11,10 +11,8 @@ return new class extends Migration
      *
      * Since we added a new step_comments table and migrated to comments to that table
      * we can now safely remove the comments from the old columns
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $tablesThatHaveComments = [
             'user_energy_habits' => 'living_situation_extra',
@@ -50,10 +48,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
 };

@@ -23,12 +23,8 @@ class StepDataHasBeenChangedListener
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         dispatch(new InsertLogEntry(User::class, $event->user->id, $event->building->id, __('woningdossier.log-messages.step-data-has-been-changed', [
             'full_name' => $event->user->getFullName(),

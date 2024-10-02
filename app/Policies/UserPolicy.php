@@ -60,20 +60,16 @@ class UserPolicy
 
     /**
      * Determine if a user is authorize to delete his own account.
-     *
-     * @return bool
      */
-    public function deleteOwnAccount(Account $account)
+    public function deleteOwnAccount(Account $account): bool
     {
         return ! $account->user()->hasRole([RoleHelper::ROLE_COOPERATION_ADMIN]);
     }
 
     /**
      * Check if a user is authorized to destroy a user.
-     *
-     * @return bool
      */
-    public function destroy(Account $account, User $userToDestroy)
+    public function destroy(Account $account, User $userToDestroy): bool
     {
         // check if the user can delete a user, and if the user to be destroyed is a member of the user his cooperation
         // remove the cooperations stuff
@@ -114,10 +110,8 @@ class UserPolicy
      * allowed to assign roles).
      *
      * @param Role $role The role which is to be assigned
-     *
-     * @return bool
      */
-    public function assignRole(Account $account, Role $role)
+    public function assignRole(Account $account, Role $role): bool
     {
         $user = $account->user();
         if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_SUPER_ADMIN)) {

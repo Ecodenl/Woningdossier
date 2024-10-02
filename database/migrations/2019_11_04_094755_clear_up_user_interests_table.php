@@ -10,10 +10,8 @@ return new class extends Migration
      * Run the migrations.
      *
      * Migration to clean up the table from duplicate answers and such
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $this->cleanUpUserInterestDuplicates();
     }
@@ -61,10 +59,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
 };

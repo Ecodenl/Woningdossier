@@ -30,12 +30,10 @@ class RefreshRelatedAdvices implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param object $event
      *
-     * @return void
      * @throws \Exception
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         $measureModel = $event->measureModel;
         $advisableModels = [

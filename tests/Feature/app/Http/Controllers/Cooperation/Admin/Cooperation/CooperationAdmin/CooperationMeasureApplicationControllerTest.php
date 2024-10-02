@@ -32,7 +32,7 @@ class CooperationMeasureApplicationControllerTest extends TestCase
 
     protected $followRedirects = true;
 
-    public function test_destroying_a_measure_properly_converts_related_advices()
+    public function test_destroying_a_measure_properly_converts_related_advices(): void
     {
         $cooperationAdminAccount = Account::factory()->create(['password' => Hash::make('secret')]);
         $residentAccount = Account::factory()->create(['password' => Hash::make('secret')]);

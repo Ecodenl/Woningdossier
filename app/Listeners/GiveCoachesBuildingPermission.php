@@ -15,12 +15,8 @@ class GiveCoachesBuildingPermission
 {
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         $user = $event->user;
         $building = $event->building;

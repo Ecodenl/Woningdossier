@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -62,22 +63,22 @@ class BuildingService extends Model implements Auditable
 
     protected $fillable = ['service_value_id', 'input_source_id', 'extra', 'building_id', 'service_id'];
 
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
-    public function serviceType()
+    public function serviceType(): BelongsTo
     {
         return $this->belongsTo(ServiceType::class);
     }
 
-    public function service()
+    public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
 
-    public function serviceValue()
+    public function serviceValue(): BelongsTo
     {
         return $this->belongsTo(ServiceValue::class);
     }

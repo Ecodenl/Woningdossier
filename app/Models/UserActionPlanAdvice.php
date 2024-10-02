@@ -26,11 +26,11 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $input_source_id
  * @property string $user_action_plan_advisable_type
  * @property int $user_action_plan_advisable_id
- * @property int $order
  * @property string|null $category
  * @property bool $visible
  * @property bool $subsidy_available
  * @property bool $loan_available
+ * @property int $order
  * @property array|null $costs
  * @property string|null $savings_gas
  * @property string|null $savings_electricity
@@ -152,14 +152,8 @@ class UserActionPlanAdvice extends Model implements Auditable
 
     /**
      * Method to scope the advices without its deleted cooperation measure applications and for given type.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $type
-     * @param  \App\Models\InputSource  $inputSource
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeCooperationMeasureForType(Builder $query, string $type, InputSource $inputSource)
+    public function scopeCooperationMeasureForType(Builder $query, string $type, InputSource $inputSource): Builder
     {
         $isExtensive = $type === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
 
@@ -190,9 +184,6 @@ class UserActionPlanAdvice extends Model implements Auditable
 
     /**
      * Method to only scope the invisible rows
-     *
-     * @param  Builder  $query
-     * @return mixed
      */
     public function scopeInvisible(Builder $query): Builder
     {
@@ -201,12 +192,8 @@ class UserActionPlanAdvice extends Model implements Auditable
 
     /**
      * Scope a query to only include results for the particular step.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForStep($query, Step $step)
+    public function scopeForStep(Builder $query, Step $step): Builder
     {
         return $query->where('step_id', $step->id);
     }
@@ -236,8 +223,6 @@ class UserActionPlanAdvice extends Model implements Auditable
 
     /**
      * Check if the costs are a valid range.
-     *
-     * @return bool
      */
     public function costIsRange(): bool
     {
@@ -247,8 +232,6 @@ class UserActionPlanAdvice extends Model implements Auditable
 
     /**
      * Get average of the from and to values of the costs.
-     *
-     * @return int
      */
     public function getCostAverage(): int
     {
@@ -260,8 +243,6 @@ class UserActionPlanAdvice extends Model implements Auditable
     /**
      * Get the most logical cost value (if not range) and format it accordingly.
      *
-     * @param  bool  $range
-     * @param  bool  $prefixUnit
      *
      * @return string|void
      */

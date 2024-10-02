@@ -38,10 +38,8 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $rows = CsvService::dumpForQuestionnaire($this->questionnaire, $this->anonymizeData);
 

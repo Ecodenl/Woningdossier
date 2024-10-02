@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class TemperatureTest extends TestCase
 {
-    public static function dataProvider()
+    public static function dataProvider(): array
     {
         return [
             [
@@ -25,7 +25,7 @@ class TemperatureTest extends TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function testEnergySavingFigureWallInsulation($expected, $measure, $averageHouseTemp)
+    public function testEnergySavingFigureWallInsulation($expected, $measure, $averageHouseTemp): void
     {
         $this->assertEquals($expected, Temperature::energySavingFigureWallInsulation($measure, $averageHouseTemp));
     }

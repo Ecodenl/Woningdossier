@@ -24,7 +24,7 @@ class BagServiceTest extends TestCase
         Artisan::call('cache:clear');
     }
 
-    public function test_list_address_expanded_should_not_clear_bag_fields_on_endpoint_exception()
+    public function test_list_address_expanded_should_not_clear_bag_fields_on_endpoint_exception(): void
     {
         $this->partialMock(
             Client::class,
@@ -47,7 +47,7 @@ class BagServiceTest extends TestCase
         $this->assertArrayNotHasKey('bag_woonplaats_id', $buildingData);
     }
 
-    public function test_list_address_expanded_should_clear_bag_fields_on_empty_response()
+    public function test_list_address_expanded_should_clear_bag_fields_on_empty_response(): void
     {
         $this->partialMock(
             Client::class,
@@ -70,7 +70,7 @@ class BagServiceTest extends TestCase
         $this->assertEmpty($buildingData['bag_woonplaats_id']);
     }
 
-    public function test_list_address_expanded_has_bag_ids_on_filled_response()
+    public function test_list_address_expanded_has_bag_ids_on_filled_response(): void
     {
         $mockedApiData = [
             "_embedded" => [

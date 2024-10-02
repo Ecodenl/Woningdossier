@@ -8,10 +8,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('user_energy_habits', function (Blueprint $table) {
             $table->integer('input_source_id')->unsigned()->nullable()->default(1)->after('user_id');
@@ -21,10 +19,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('user_energy_habits', function (Blueprint $table) {
             $table->dropForeign('user_energy_habits_input_source_id_foreign');

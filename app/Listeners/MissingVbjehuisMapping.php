@@ -23,11 +23,8 @@ class MissingVbjehuisMapping implements ShouldQueue
 
     /**
      * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         $recipients = explode(',', config('hoomdossier.contact.email.admin'));
         foreach ($recipients as $recipient) {

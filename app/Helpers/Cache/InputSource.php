@@ -21,7 +21,7 @@ class InputSource extends BaseCache
         );
     }
 
-    public static function find(int $id): ?InputSource
+    public static function find(int $id): ?InputModel
     {
         return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),

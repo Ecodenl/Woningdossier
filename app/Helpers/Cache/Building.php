@@ -10,7 +10,7 @@ class Building extends BaseCache
 {
     const CACHE_KEY_FIND = 'Building_find_%s';
 
-    public static function find(int $id): ?InputSource
+    public static function find(int $id): ?BuildingModel
     {
         return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),

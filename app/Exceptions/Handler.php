@@ -120,10 +120,10 @@ class Handler extends ExceptionHandler
 
                 if ($redirect instanceof CooperationRedirect) {
                     Log::debug("Redirect to " . str_ireplace(
-                            $cooperation,
-                            $redirect->cooperation->slug,
-                            $request->url()
-                        ));
+                        $cooperation,
+                        $redirect->cooperation->slug,
+                        $request->url()
+                    ));
                     return redirect(
                         str_ireplace(
                             $cooperation,

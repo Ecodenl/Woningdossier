@@ -10,7 +10,7 @@ class Cooperation extends BaseCache
     const CACHE_KEY_FIND = 'Cooperation_find_%s';
     const CACHE_KEY_GET_STYLE = 'Cooperation_getStyle_%s';
 
-    public static function find(int $id): ?Cooperation
+    public static function find(int $id): ?CooperationModel
     {
         return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),

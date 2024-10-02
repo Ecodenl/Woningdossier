@@ -14,7 +14,7 @@ class HoomdossierSession extends Session
     /**
      * Set all the required values.
      */
-    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role)
+    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role): void
     {
         self::setBuilding($building);
         self::setInputSource($inputSource);

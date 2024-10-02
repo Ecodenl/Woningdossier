@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\Sanctum;
+use Spatie\Translatable\Facades\Translatable;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -69,6 +71,10 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrapThree();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+        /**
+         * @see  https://spatie.be/docs/laravel-translatable/v6/basic-usage/handling-missing-translations
+         */
+        Translatable::fallback(App::getFallbackLocale());
     }
 
     /**

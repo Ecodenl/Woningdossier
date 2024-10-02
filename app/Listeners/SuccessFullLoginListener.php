@@ -34,7 +34,7 @@ class SuccessFullLoginListener
      *
      * @param $event
      */
-    public function handle($event): RedirectResponse
+    public function handle($event): ?RedirectResponse
     {
         /** @var Account $account */
         $account = $event->user;
@@ -71,8 +71,9 @@ class SuccessFullLoginListener
                     ->notify('No cooperation during invalid login? Cooperation: ' . $label);
             }
 
-            header('Location: ' . $route);
-            exit;
+
+            return redirect()->to($route);
+            // header('Location: ' . $route);
         }
 
         // cooperation is set, so we can safely retrieve the user from the account.

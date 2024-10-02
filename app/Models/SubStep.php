@@ -27,13 +27,13 @@ use Illuminate\Support\Facades\App;
  * @property-read Model|\Eloquent $commentable
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompletedSubStep> $completedSubSteps
  * @property-read int|null $completed_sub_steps_count
- * @property-read array $translations
  * @property-read \App\Models\Step $step
  * @property-read \App\Models\SubStepTemplate|null $subStepTemplate
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestion> $toolQuestions
  * @property-read int|null $tool_questions_count
+ * @property-read mixed $translations
  * @method static Builder|SubStep bySlug(string $slug, string $locale = 'nl')
  * @method static \Database\Factories\SubStepFactory factory($count = null, $state = [])
  * @method static Builder|SubStep forScan(\App\Models\Scan $scan)
@@ -44,6 +44,10 @@ use Illuminate\Support\Facades\App;
  * @method static Builder|SubStep whereConditions($value)
  * @method static Builder|SubStep whereCreatedAt($value)
  * @method static Builder|SubStep whereId($value)
+ * @method static Builder|SubStep whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder|SubStep whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder|SubStep whereLocale(string $column, string $locale)
+ * @method static Builder|SubStep whereLocales(string $column, array $locales)
  * @method static Builder|SubStep whereName($value)
  * @method static Builder|SubStep whereOrder($value)
  * @method static Builder|SubStep whereSlug($value)

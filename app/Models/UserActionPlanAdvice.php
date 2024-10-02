@@ -26,11 +26,11 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $input_source_id
  * @property string $user_action_plan_advisable_type
  * @property int $user_action_plan_advisable_id
- * @property int $order
  * @property string|null $category
  * @property bool $visible
  * @property bool $subsidy_available
  * @property bool $loan_available
+ * @property int $order
  * @property array|null $costs
  * @property string|null $savings_gas
  * @property string|null $savings_electricity

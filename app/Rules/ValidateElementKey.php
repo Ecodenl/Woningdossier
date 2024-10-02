@@ -5,9 +5,10 @@ namespace App\Rules;
 use App\Helpers\HoomdossierSession;
 use App\Models\Element;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Log;
 
-class ValidateElementKey implements Rule
+class ValidateElementKey implements ValidationRule
 {
     protected $elementShort;
 
@@ -26,7 +27,7 @@ class ValidateElementKey implements Rule
      *
      * @param mixed  $value
      */
-    public function passes(string $attribute, $value): bool
+    public function passes($attribute, $value): bool
     {
         $element = Element::findByShort($this->elementShort);
 
@@ -48,5 +49,12 @@ class ValidateElementKey implements Rule
     public function message(): string
     {
         return 'Er is iets fout gegaan, probeer het opnieuw';
+    }
+
+    public function validate(string $attribute, mixed $value, \Closure $fail): void
+    {
+        if (! $this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 }

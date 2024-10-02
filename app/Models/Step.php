@@ -25,7 +25,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $scan_id
- * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeasureApplication> $measureApplications
  * @property-read int|null $measure_applications_count
  * @property-read Step|null $parentStep
@@ -34,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\Scan|null $scan
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
+ * @property-read mixed $translations
  * @method static Builder|Step childrenForStep(\App\Models\Step $step)
  * @method static Builder|Step expert()
  * @method static \Database\Factories\StepFactory factory($count = null, $state = [])
@@ -46,6 +46,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder|Step recalculable()
  * @method static Builder|Step whereCreatedAt($value)
  * @method static Builder|Step whereId($value)
+ * @method static Builder|Step whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder|Step whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder|Step whereLocale(string $column, string $locale)
+ * @method static Builder|Step whereLocales(string $column, array $locales)
  * @method static Builder|Step whereName($value)
  * @method static Builder|Step whereOrder($value)
  * @method static Builder|Step whereParentId($value)

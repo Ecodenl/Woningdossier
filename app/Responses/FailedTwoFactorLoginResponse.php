@@ -12,7 +12,7 @@ class FailedTwoFactorLoginResponse implements FailedTwoFactorLoginResponseContra
     /**
      * Create an HTTP response that represents the object.
      */
-    public function toResponse(Request $request): Response
+    public function toResponse($request): Response
     {
         [$key, $message] = $request->filled('recovery_code')
             ? ['recovery_code', __('validation.custom.recovery_code')]
@@ -24,6 +24,8 @@ class FailedTwoFactorLoginResponse implements FailedTwoFactorLoginResponseContra
             ]);
         }
 
-        return redirect()->route('cooperation.auth.two-factor.login')->withErrors([$key => $message]);
+        return redirect()
+            ->route('cooperation.auth.two-factor.login')
+            ->withErrors([$key => $message]);
     }
 }

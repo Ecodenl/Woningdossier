@@ -3,6 +3,7 @@
 namespace App\Helpers\Cache;
 
 use Illuminate\Support\Facades\Cache;
+use App\Models\Interest as InterestModel;
 
 class Interest extends BaseCache
 {
@@ -13,7 +14,7 @@ class Interest extends BaseCache
         return Cache::rememberForever(
             self::getCacheKey(static::CACHE_KEY_GET_ORDERED),
             function () {
-                return \App\Models\Interest::orderBy('order')->get();
+                return InterestModel::orderBy('order')->get();
             }
         );
     }

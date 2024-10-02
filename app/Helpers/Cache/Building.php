@@ -4,6 +4,7 @@ namespace App\Helpers\Cache;
 
 use App\Models\InputSource;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Building as BuildingModel;
 
 class Building extends BaseCache
 {
@@ -15,7 +16,7 @@ class Building extends BaseCache
             self::getCacheKey(static::CACHE_KEY_FIND, $id),
             config('hoomdossier.cache.times.default'),
             function () use ($id) {
-                return \App\Models\Building::find($id);
+                return BuildingModel::find($id);
             }
         );
     }

@@ -12,7 +12,7 @@ class LogoutResponse implements \Laravel\Fortify\Contracts\LogoutResponse
     /**
      * Create an HTTP response that represents the object.
      */
-    public function toResponse(Request $request): Response
+    public function toResponse($request): Response
     {
         $cooperation = $request->route('cooperation');
 

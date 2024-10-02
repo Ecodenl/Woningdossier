@@ -16,16 +16,20 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
+ * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel query()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereShort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereUpdatedAt($value)

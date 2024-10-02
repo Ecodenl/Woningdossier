@@ -17,13 +17,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FileType> $fileTypes
  * @property-read int|null $file_types_count
- * @property-read array $translations
+ * @property-read mixed $translations
  * @method static Builder|FileTypeCategory newModelQuery()
  * @method static Builder|FileTypeCategory newQuery()
  * @method static Builder|FileTypeCategory query()
  * @method static Builder|FileTypeCategory short($short)
  * @method static Builder|FileTypeCategory whereCreatedAt($value)
  * @method static Builder|FileTypeCategory whereId($value)
+ * @method static Builder|FileTypeCategory whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder|FileTypeCategory whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder|FileTypeCategory whereLocale(string $column, string $locale)
+ * @method static Builder|FileTypeCategory whereLocales(string $column, array $locales)
  * @method static Builder|FileTypeCategory whereName($value)
  * @method static Builder|FileTypeCategory whereShort($value)
  * @method static Builder|FileTypeCategory whereUpdatedAt($value)

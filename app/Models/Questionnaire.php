@@ -20,13 +20,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cooperation $cooperation
- * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionnaireStep> $questionnaireSteps
  * @property-read int|null $questionnaire_steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Question> $questions
  * @property-read int|null $questions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Step> $steps
  * @property-read int|null $steps_count
+ * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire active()
  * @method static \Database\Factories\QuestionnaireFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forAllCooperations()
@@ -38,6 +38,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereUpdatedAt($value)
  * @mixin \Eloquent

@@ -14,7 +14,7 @@ class TwoFactorLoginResponse implements TwoFactorLoginResponseContract
     /**
      * Create an HTTP response that represents the object.
      */
-    public function toResponse(Request $request): Response
+    public function toResponse($request): Response
     {
         // the $request->user() will return the auth model, in our case this is the Account model
         // but we want the user from the account, so that's why we do ->user()->user();

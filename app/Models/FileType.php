@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\FileTypeCategory|null $category
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FileStorage> $files
  * @property-read int|null $files_count
- * @property-read array $translations
+ * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder|FileType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|FileType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|FileType query()
@@ -31,6 +31,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|FileType whereDuration($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FileType whereFileTypeCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FileType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FileType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|FileType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|FileType whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|FileType whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|FileType whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FileType whereShort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FileType whereUpdatedAt($value)

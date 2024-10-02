@@ -30,7 +30,7 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
     /**
      * Determine if a token record exists and is valid.
      */
-    public function exists(CanResetPasswordContract $user, string $token): bool
+    public function exists(CanResetPasswordContract $user, $token): bool
     {
         // retrieve all the password resets
         $records = $this->getTable()->where(

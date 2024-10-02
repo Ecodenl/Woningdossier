@@ -12,7 +12,7 @@ class RegisterResponse implements \Laravel\Fortify\Contracts\RegisterResponse
     /**
      * Create an HTTP response that represents the object.
      */
-    public function toResponse(Request $request): Response
+    public function toResponse($request): Response
     {
         if ($request->wantsJson()) {
             return new JsonResponse('', 201);

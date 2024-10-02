@@ -2,7 +2,7 @@
 
 namespace App\Helpers\Cache;
 
-use App\Models\Cooperation;
+use App\Models\Cooperation as CooperationModel;
 use Illuminate\Support\Facades\Cache;
 
 class Cooperation extends BaseCache
@@ -16,18 +16,18 @@ class Cooperation extends BaseCache
             self::getCacheKey(static::CACHE_KEY_FIND, $id),
             config('hoomdossier.cache.times.default'),
             function () use ($id) {
-                return \App\Models\Cooperation::where('id', '=', $id)->with('style')->first();
+                return CooperationModel::where('id', '=', $id)->with('style')->first();
             }
         );
     }
 
     public static function getStyle($cooperation)
     {
-        if (! $cooperation instanceof \App\Models\Cooperation) {
+        if (! $cooperation instanceof CooperationModel) {
             $cooperation = self::find($cooperation);
         }
 
-        if (! $cooperation instanceof \App\Models\Cooperation) {
+        if (! $cooperation instanceof CooperationModel) {
             return null;
         }
 

@@ -25,21 +25,25 @@ use Illuminate\Support\Collection;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExampleBuildingContent> $contents
  * @property-read int|null $contents_count
  * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read array $translations
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding forAnyOrMyCooperation()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding forMyCooperation()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding generic()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding query()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereBuildingTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereIsDefault($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereUpdatedAt($value)
+ * @property-read mixed $translations
+ * @method static Builder|ExampleBuilding forAnyOrMyCooperation()
+ * @method static Builder|ExampleBuilding forMyCooperation()
+ * @method static Builder|ExampleBuilding generic()
+ * @method static Builder|ExampleBuilding newModelQuery()
+ * @method static Builder|ExampleBuilding newQuery()
+ * @method static Builder|ExampleBuilding query()
+ * @method static Builder|ExampleBuilding whereBuildingTypeId($value)
+ * @method static Builder|ExampleBuilding whereCooperationId($value)
+ * @method static Builder|ExampleBuilding whereCreatedAt($value)
+ * @method static Builder|ExampleBuilding whereId($value)
+ * @method static Builder|ExampleBuilding whereIsDefault($value)
+ * @method static Builder|ExampleBuilding whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder|ExampleBuilding whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder|ExampleBuilding whereLocale(string $column, string $locale)
+ * @method static Builder|ExampleBuilding whereLocales(string $column, array $locales)
+ * @method static Builder|ExampleBuilding whereName($value)
+ * @method static Builder|ExampleBuilding whereOrder($value)
+ * @method static Builder|ExampleBuilding whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ExampleBuilding extends Model

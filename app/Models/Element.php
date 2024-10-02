@@ -22,8 +22,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ElementValue> $elementValues
  * @property-read int|null $element_values_count
- * @property-read array $translations
  * @property-read \App\Models\ServiceType $serviceType
+ * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ElementValue> $values
  * @property-read int|null $values_count
  * @method static \Database\Factories\ElementFactory factory($count = null, $state = [])
@@ -33,6 +33,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Element whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Element whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Element whereInfo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Element whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Element whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Element whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|Element whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|Element whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Element whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Element whereServiceTypeId($value)

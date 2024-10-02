@@ -3,9 +3,10 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Http\UploadedFile;
 
-class MaxFilenameLength implements Rule
+class MaxFilenameLength implements ValidationRule
 {
     protected int $maxLength = 255;
 
@@ -29,5 +30,12 @@ class MaxFilenameLength implements Rule
         return __('validation.custom-rules.max-filename-length', [
             'length' => $this->maxLength,
         ]);
+    }
+
+    public function validate(string $attribute, mixed $value, \Closure $fail): void
+    {
+        if (! $this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 }

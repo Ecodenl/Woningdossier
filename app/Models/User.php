@@ -29,10 +29,10 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $first_name
  * @property string $last_name
  * @property string $phone_number
+ * @property string|null $last_visited_url
  * @property array|null $extra
  * @property bool $allow_access
  * @property \Illuminate\Support\Carbon|null $tool_last_changed_at
- * @property string|null $last_visited_url
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

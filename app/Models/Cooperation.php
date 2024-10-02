@@ -19,12 +19,12 @@ use Illuminate\Support\Facades\DB;
  * @property int $id
  * @property string $name
  * @property string $slug
- * @property string|null $cooperation_email
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $website_url
  * @property string|null $econobis_wildcard
  * @property string|null $econobis_api_key
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $cooperation_email
  * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Building> $buildings
  * @property-read int|null $buildings_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CooperationMeasureApplication> $cooperationMeasureApplications

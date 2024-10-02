@@ -29,7 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Cooperation $cooperation
- * @property-read array $translations
+ * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
  * @method static Builder|CooperationMeasureApplication extensiveMeasures()
@@ -48,6 +48,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder|CooperationMeasureApplication whereInfo($value)
  * @method static Builder|CooperationMeasureApplication whereIsDeletable($value)
  * @method static Builder|CooperationMeasureApplication whereIsExtensiveMeasure($value)
+ * @method static Builder|CooperationMeasureApplication whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder|CooperationMeasureApplication whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder|CooperationMeasureApplication whereLocale(string $column, string $locale)
+ * @method static Builder|CooperationMeasureApplication whereLocales(string $column, array $locales)
  * @method static Builder|CooperationMeasureApplication whereName($value)
  * @method static Builder|CooperationMeasureApplication whereSavingsMoney($value)
  * @method static Builder|CooperationMeasureApplication whereUpdatedAt($value)

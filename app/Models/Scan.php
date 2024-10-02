@@ -21,11 +21,11 @@ use Illuminate\Support\Facades\App;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompletedStep> $completedSteps
  * @property-read int|null $completed_steps_count
- * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Step> $steps
  * @property-read int|null $steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
+ * @property-read mixed $translations
  * @method static Builder|Scan bySlug(string $slug, string $locale = 'nl')
  * @method static Builder|Scan expert()
  * @method static Builder|Scan newModelQuery()
@@ -34,6 +34,10 @@ use Illuminate\Support\Facades\App;
  * @method static Builder|Scan simple()
  * @method static Builder|Scan whereCreatedAt($value)
  * @method static Builder|Scan whereId($value)
+ * @method static Builder|Scan whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder|Scan whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder|Scan whereLocale(string $column, string $locale)
+ * @method static Builder|Scan whereLocales(string $column, array $locales)
  * @method static Builder|Scan whereName($value)
  * @method static Builder|Scan whereShort($value)
  * @method static Builder|Scan whereSlug($value)

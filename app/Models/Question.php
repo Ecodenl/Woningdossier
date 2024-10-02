@@ -23,12 +23,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionsAnswer> $questionAnswers
  * @property-read int|null $question_answers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionOption> $questionOptions
  * @property-read int|null $question_options_count
  * @property-read \App\Models\Questionnaire $questionnaire
+ * @property-read mixed $translations
  * @method static \Database\Factories\QuestionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Question newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
@@ -37,6 +37,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereQuestionnaireId($value)

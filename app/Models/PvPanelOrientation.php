@@ -15,13 +15,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read array $translations
+ * @property-read mixed $translations
  * @method static \Database\Factories\PvPanelOrientationFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation query()
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereShort($value)

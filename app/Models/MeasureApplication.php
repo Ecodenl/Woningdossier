@@ -37,10 +37,10 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string $info
  * @property-read string $name
- * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Interest> $interests
  * @property-read int|null $interests_count
  * @property-read \App\Models\Step $step
+ * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
  * @method static Builder|MeasureApplication measureType(string $measureType)
@@ -55,6 +55,10 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @method static Builder|MeasureApplication whereCreatedAt($value)
  * @method static Builder|MeasureApplication whereHasCalculations($value)
  * @method static Builder|MeasureApplication whereId($value)
+ * @method static Builder|MeasureApplication whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder|MeasureApplication whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder|MeasureApplication whereLocale(string $column, string $locale)
+ * @method static Builder|MeasureApplication whereLocales(string $column, array $locales)
  * @method static Builder|MeasureApplication whereMaintenanceInterval($value)
  * @method static Builder|MeasureApplication whereMaintenanceUnit($value)
  * @method static Builder|MeasureApplication whereMeasureInfo($value)

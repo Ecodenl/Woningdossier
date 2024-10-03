@@ -1,6 +1,6 @@
-<div wire:init="init()">
+<div>
     <div class="grid grid-cols-6 gap-x-6 gap-y-2">
-        @foreach($this->subSteppables as $subSteppablePivot)
+        @foreach($subSteppables as $subSteppablePivot)
             @switch($subSteppablePivot->sub_steppable_type)
                 @case(\App\Models\ToolQuestion::class)
                     @include('cooperation.frontend.tool.expert-scan.parts.tool-question')

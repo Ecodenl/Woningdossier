@@ -141,8 +141,8 @@ class ConditionEvaluator
 
     /**
      * @deprecated Use setAnswers instead + evaluate!
-     * Deprecated label to make more distinct that it needs to be updated.
-     * The $collection parameter should be replaced with $this->answers also.
+     * Deprecated label to make more distinct that it needs to be updated
+     * Todo: the $collection parameter should be replaced with $this->answers and the method should become protected.
      */
     public function evaluateCollection(array $conditions, Collection $collection)
     {

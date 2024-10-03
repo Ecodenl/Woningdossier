@@ -180,7 +180,7 @@ class ToolQuestionService
             // which will trigger the observer, which will start applying the
             // example building, which will delete and recreate records, which will
             // trigger the observer.. ah well: you get the idea.
-            if (in_array($table, ['building_features']) && Arr::inArrayAny(['build_year', 'building_type_id', 'example_building_id'], array_keys($answerData))) {
+            if ($table == 'building_features' && Arr::inArrayAny(['build_year', 'building_type_id', 'example_building_id'], array_keys($answerData))) {
                 // set the boolean to the appropriate value. Example building will
                 // be applied AFTER saving the current form (for getting the
                 // appropriate values).

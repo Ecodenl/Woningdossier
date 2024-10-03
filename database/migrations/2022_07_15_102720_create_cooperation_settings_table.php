@@ -18,7 +18,7 @@ class CreateCooperationSettingsTable extends Migration
             $table->unsignedInteger('cooperation_id');
             $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
             $table->string('short');
-            $table->string('value')->nullable();
+            $table->string('value', 1000)->nullable();
             $table->timestamps();
         });
     }

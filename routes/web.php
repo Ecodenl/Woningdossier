@@ -27,7 +27,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 //return new \App\Mail\UserChangedHisEmail(\App\Models\User::find(1), \App\Models\Account::find(1), 'demo@eg.com', 'bier@pils.com');
                 //return new  \App\Mail\UnreadMessagesEmail(\App\Models\User::find(1), \App\Models\Cooperation::find(1), 10);
                 //return new \App\Mail\ResetPasswordRequest(\App\Models\Cooperation::find(1), \App\Models\Account::find(1), 'sfklhasdjkfhsjkf');
-                //return new \App\Mail\RequestAccountConfirmationEmail(\App\Models\User::find(1), \App\Models\Cooperation::find(1));
+                //return new \App\Mail\RequestAccountConfirmationEmail(\App\Models\User::find(1), url('verify'));
                 //return new \App\Mail\User\NotifyCoachParticipantAdded(\App\Models\User::first(), \App\Models\User::skip(1)->first());
                 return new \App\Mail\User\NotifyResidentParticipantAdded(\App\Models\User::first(), \App\Models\User::skip(1)->first());
             });
@@ -376,8 +376,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             Route::post('', [Cooperation\Admin\Cooperation\CooperationAdmin\SettingsController::class, 'store'])->name('store');
                         });
 
-                            Route::resource('scans', Cooperation\Admin\Cooperation\CooperationAdmin\ScanController::class)
-                                ->only(['index', 'store']);
+                        Route::resource('scans', Cooperation\Admin\Cooperation\CooperationAdmin\ScanController::class)
+                            ->only(['index', 'store']);
 
                         Route::resource('cooperation-measure-applications', CooperationMeasureApplicationController::class)
                             ->except(['index', 'create', 'store', 'show'])

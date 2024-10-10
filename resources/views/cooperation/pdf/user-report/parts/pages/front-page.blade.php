@@ -33,7 +33,7 @@
                     <br>
                     @php
                         $coachNames = implode(', ', $connectedCoachNames);
-                        $coachNames = str_repeat($coachNames, 2);
+
                         // A H2 tag by default has a font size of 20px (per pdf.css).
                         // The first row supports about 10 chars and the lines after that 30 (based on 20px font size).
                         // When the size reduces, the amount of chars that fit changes. There's also unknown cut-off

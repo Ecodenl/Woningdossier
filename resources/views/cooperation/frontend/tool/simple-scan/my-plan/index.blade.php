@@ -9,7 +9,7 @@
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
     @else
         <div class="w-full">
-            @php $langShort = $building->hasAnsweredExpertQuestion() ? 'expert' : 'quick-scan'; @endphp
+            @php $langShort = $building->hasAnsweredExpertQuestion() ? 'expert' : 'quick-scan'; $langShort = 'quick-scan' @endphp
             <div class="w-full flex flex-wrap justify-between mb-5">
                 <h4 class="heading-4">
                     {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}
@@ -17,7 +17,7 @@
             </div>
             <div class="w-full flex flex-wrap mb-5">
                 {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", [
-                    'link' => route('cooperation.conversation-requests.index', ['cooperation' => $cooperation, 'requestType' => \App\Services\PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION])
+                    'link' => route('cooperation.my-account.messages.edit', ['cooperation' => $cooperation])
                 ]) !!}
             </div>
 

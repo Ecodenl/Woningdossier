@@ -50,7 +50,7 @@
                     @endphp
                     @if(! empty($coachNames))
                         <span style="font-size: {{"{$fontSize}px"}};">
-                            {{ trans_choice('pdf/user-report.pages.front-page.connected-coaches', count($connectedCoachNames)) . ' ' . $coachNames }}
+                            {{ strip_tags(trans_choice('pdf/user-report.pages.front-page.connected-coaches', count($connectedCoachNames))) . ' ' . $coachNames }}
                         </span>
                     @endif
                 </h2>

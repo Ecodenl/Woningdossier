@@ -9,7 +9,7 @@
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
     @else
         <div class="w-full">
-            @php $langShort = $building->hasAnsweredExpertQuestion() ? 'expert' : 'quick-scan'; $langShort = 'quick-scan' @endphp
+            @php $langShort = $building->hasAnsweredExpertQuestion() ? 'expert' : 'quick-scan'; @endphp
             <div class="w-full flex flex-wrap justify-between mb-5">
                 <h4 class="heading-4">
                     {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}

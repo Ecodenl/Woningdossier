@@ -2,7 +2,7 @@
     <div class="pull-right">
         <p class="text-right">
             <small>
-                {{ $userCooperation->name . ' - ' . __('pdf/user-report.defaults.page') }} {PAGENO}
+                {{ $userCooperation->name . ' - ' . strip_tags(__('pdf/user-report.defaults.page')) }} {PAGENO}
                 <br>
                 {{ date('d-m-Y') }}
             </small>

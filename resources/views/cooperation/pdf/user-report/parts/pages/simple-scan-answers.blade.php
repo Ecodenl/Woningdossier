@@ -1,6 +1,6 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'simple-scan-answers'])
     <h1 class="my-2">
-        @lang('pdf/user-report.pages.simple-scan-answers.title')
+        {{ strip_tags(__('pdf/user-report.pages.simple-scan-answers.title')) }}
     </h1>
     <p>
         @lang('pdf/user-report.pages.simple-scan-answers.text')
@@ -21,7 +21,7 @@
 
         <div class="group">
             <h4>
-                @lang('pdf/user-report.alerts.title')
+                {{ strip_tags(__('pdf/user-report.alerts.title')) }}
             </h4>
             @foreach($alerts as $alert)
                 <p class="{{ \App\Services\Models\AlertService::TYPE_MAP[$alert->type] }}">

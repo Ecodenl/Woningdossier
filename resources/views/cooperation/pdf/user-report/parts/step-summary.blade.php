@@ -11,7 +11,7 @@
         {{-- Labels get extra styling --}}
         <div class="row">
             <h5>
-                {{ $headers["{$stepShort}.{$key}"] }}
+                {{ strip_tags($headers["{$stepShort}.{$key}"]) }}
             </h5>
         </div>
     @else

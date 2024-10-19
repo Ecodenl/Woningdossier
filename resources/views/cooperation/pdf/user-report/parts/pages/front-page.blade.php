@@ -75,7 +75,7 @@
     </div>
 
     <h1 class="text-center">
-        @lang('pdf/user-report.pages.front-page.title')
+        {{ strip_tags(__('pdf/user-report.pages.front-page.title')) }}
     </h1>
 
 @endcomponent

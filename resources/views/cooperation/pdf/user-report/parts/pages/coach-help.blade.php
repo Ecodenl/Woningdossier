@@ -1,6 +1,6 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'coach-help'])
     <h4>
-        @lang('pdf/user-report.pages.coach-help.title')
+        {{ strip_tags(__('pdf/user-report.pages.coach-help.title')) }}
     </h4>
 
     <div class="group">

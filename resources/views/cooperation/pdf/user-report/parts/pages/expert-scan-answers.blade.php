@@ -8,7 +8,7 @@
 
     <div class="group">
         <h4>
-            @lang('pdf/user-report.pages.expert-scan-answers.action-plan')
+            {{ strip_tags(__('pdf/user-report.pages.expert-scan-answers.action-plan')) }}
         </h4>
         <p>
             @foreach($categorizedAdvices as $category => $advices)

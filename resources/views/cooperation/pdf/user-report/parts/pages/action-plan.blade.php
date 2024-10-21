@@ -86,12 +86,12 @@
                         </div>
                         <div class="col-3 text-center">
                             <h4>
-                                {{ strip_tags(__('pdf/user-report.pages.action-plan.advices.cost-indication')) }}
+                                {!! strip_tags(__('pdf/user-report.pages.action-plan.advices.cost-indication')) !!}
                             </h4>
                         </div>
                         <div class="col-3 text-center">
                             <h4>
-                                {{ strip_tags(__('pdf/user-report.pages.action-plan.advices.savings')) }}
+                                {!! strip_tags(__('pdf/user-report.pages.action-plan.advices.savings')) !!}
                             </h4>
                         </div>
                     </div>

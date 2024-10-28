@@ -105,14 +105,12 @@ class CsvService
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
                 $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
 
-                $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
-                $connectedCoachNames = [];
-                // get the names from the coaches and add them to a array
-                foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
-                    array_push($connectedCoachNames, User::forMyCooperation($cooperation->id)->find($coachId)->getFullName());
-                }
-                // implode it.
-                $connectedCoachNames = implode(', ', $connectedCoachNames);
+                $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building);
+                $connectedCoachNames = User::forMyCooperation($cooperation->id)
+                    ->whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
+                    ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
+                    ->pluck('full_name')
+                    ->implode(', ');
 
                 $firstName = $user->first_name;
                 $lastName = $user->last_name;

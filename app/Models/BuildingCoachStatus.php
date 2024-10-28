@@ -51,6 +51,7 @@ class BuildingCoachStatus extends Model
     }
 
     /**
+     * @deprecated use coach()!
      * Get the user / coach from the status this does NOT return the owner from the building.
      */
     public function user(): BelongsTo
@@ -64,22 +65,5 @@ class BuildingCoachStatus extends Model
     public function coach(): BelongsTo
     {
         return $this->belongsTo(User::class, 'coach_id', 'id');
-    }
-
-    /**
-     * Get the current status for a given building id, can return the translation or the status key
-     * will return the translation by default.
-     */
-    public static function getCurrentStatusForBuildingId(int $buildingId, bool $returnTranslation = true): string
-    {
-        \Illuminate\Support\Facades\Log::debug(__METHOD__.' is still being used, remove it as soon as possible.');
-        // get the building, even if its deleted.
-        $building = Building::withTrashed()->find($buildingId);
-
-        if ($building instanceof Building) {
-            return $building->getMostRecentBuildingStatus()->status->name;
-        }
-
-        return '';
     }
 }

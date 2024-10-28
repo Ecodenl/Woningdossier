@@ -248,7 +248,7 @@ class PdfReport extends NonHandleableJobAfterReset
             ->where('comment', '!=', '')
             ->get();
 
-        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building);
         $connectedCoachNames = User::whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
             ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
             ->pluck('full_name')

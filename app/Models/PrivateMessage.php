@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -62,7 +63,7 @@ class PrivateMessage extends Model
         'is_public'    => 'boolean',
     ];
 
-    public function scopeForMyCooperation($query)
+    public function scopeForMyCooperation(Builder $query): Builder
     {
         return $query->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
@@ -90,7 +91,7 @@ class PrivateMessage extends Model
     /**
      * Scope a query to return the messages that are sent to a user / coach.
      */
-    public function scopeMyPrivateMessages($query): PrivateMessage
+    public function scopeMyPrivateMessages(Builder $query): Builder
     {
         return $query->where('to_user_id', Hoomdossier::user()->id);
     }
@@ -98,41 +99,28 @@ class PrivateMessage extends Model
     /**
      * Scope a query to return the conversation ordered on created_at.
      */
-    public static function scopeConversation($query, $buildingId): static
+    public function scopeConversation(Builder $query, int $buildingId): Builder
     {
         return $query->where('building_id', $buildingId)->orderBy('created_at');
     }
 
     /**
      * Scope the public messages.
-     *
-     * @param $query
-     *
-     * @return mixed
      */
-    public function scopePublic($query)
+    public function scopePublic(Builder $query): Builder
     {
         return $query->where('is_public', true);
     }
 
     /**
      * Scope the private messages.
-     *
-     * @param $query
-     *
-     * @return mixed
      */
-    public function scopePrivate($query)
+    public function scopePrivate(Builder $query): Builder
     {
         return $query->where('is_public', false);
     }
 
-    /**
-     * Return the full name, just a wrap.
-     *
-     * @return mixed
-     */
-    public function getSender()
+    public function getSender(): string
     {
         return $this->from_user;
     }
@@ -176,7 +164,7 @@ class PrivateMessage extends Model
 
         if ($building instanceof Building) {
             // get the coaches with access to the building
-            $coachesWithAccess = BuildingCoachStatusService::getConnectedCoachesByBuildingId($buildingId);
+            $coachesWithAccess = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building, true);
 
             // if its a public conversation we push the building owner in it
             if ($publicConversation) {
@@ -188,7 +176,7 @@ class PrivateMessage extends Model
 
             // put the coaches with access to the groupmembers
             foreach ($coachesWithAccess as $coachWithAccess) {
-                $groupMembers->push(User::find($coachWithAccess->coach_id));
+                $groupMembers->push($coachWithAccess->coach);
             }
         }
 

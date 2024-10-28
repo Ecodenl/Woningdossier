@@ -192,11 +192,10 @@ class DumpService
         } else {
             $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
             $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
-            $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
-                ->map(function ($user) {
-                    return $user->getFullName();
-                })->implode(', ');
-
+            $connectedCoachNames = User::whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
+                ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
+                ->pluck('full_name')
+                ->implode(', ');
 
             $firstName = $user->first_name;
             $lastName = $user->last_name;

@@ -130,7 +130,6 @@ class Building extends Model
         'bag_addressid',
         'municipality_id',
         'bag_woonplaats_id',
-        'building_coach_status_id',
         'extension',
         'is_active',
     ];
@@ -624,7 +623,7 @@ class Building extends Model
     }
 
     /**
-     * Get all the statuses for a building.
+     * Get all the coach statuses for a building.
      */
     public function buildingCoachStatuses(): HasMany
     {

@@ -25,7 +25,7 @@ class ExcelExample
 
         $u = self::user();
 
-        // 'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active'
+        // 'street', 'number', 'city', 'postal_code', 'bag_addressid', 'extension', 'is_active'
         $b = new \App\Models\Building([
             'street'      => 'Straat', 'number' => 1, 'city' => 'Nowhere',
             'postal_code' => '2013 BC', 'bag_addressid' => '01234',

@@ -271,6 +271,11 @@ class User extends Model implements AuthorizableContract
         return $this->hasOne(Building::class);
     }
 
+    public function buildingCoachStatuses(): HasMany
+    {
+        return $this->hasMany(BuildingCoachStatus::class, 'coach_id');
+    }
+
     /**
      * Return the notification settings from a user.
      */
@@ -366,7 +371,7 @@ class User extends Model implements AuthorizableContract
 
     public function buildingPermissions(): HasMany
     {
-        return $this->hasMany(\App\Models\BuildingPermission::class);
+        return $this->hasMany(BuildingPermission::class);
     }
 
     public function isBuildingOwner(Building $building)

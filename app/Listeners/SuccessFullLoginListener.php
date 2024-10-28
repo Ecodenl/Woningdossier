@@ -110,6 +110,7 @@ class SuccessFullLoginListener
         ]);
 
         $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
+        return null;
     }
 
     /**

@@ -46,12 +46,12 @@ class BuildingCoachStatusFormRequest extends ApiRequest
 
                 if (! $coach instanceof User) {
                     $validator->errors()->add('building_coach_statuses.coach_contact_id', __('validation.custom.contact-id.not-found', ['attribute' => $coachAttr]));
-                } elseif($coach->hasNotRole(RoleHelper::ROLE_COACH)) {
+                } elseif ($coach->hasNotRole(RoleHelper::ROLE_COACH)) {
                     $validator->errors()->add('building_coach_statuses.coach_contact_id', __('validation.custom.users.incorrect-role', ['attribute' => $coachAttr, 'role' => RoleHelper::ROLE_COACH]));
                 } elseif ($resident instanceof User) {
-                    $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($resident->building->id);
+                    $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($resident->building);
                     $foundCoach = $connectedCoaches->first(function ($connectedCoach) use ($coach) {
-                        return $connectedCoach->coach_id == $coach->id;
+                        return $connectedCoach->coach_id === $coach->id;
                     });
 
                     if (! is_null($foundCoach)) {

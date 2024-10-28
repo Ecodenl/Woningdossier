@@ -97,7 +97,7 @@ class BuildingCoachStatusServiceTest extends TestCase
             ++$i;
         });
 
-        $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($residentUser->building->id);
+        $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($residentUser->building);
 
         $this->assertCount(3, $connectedCoachesForBuilding);
     }

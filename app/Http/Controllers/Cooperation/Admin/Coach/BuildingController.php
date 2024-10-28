@@ -16,7 +16,6 @@ class BuildingController extends Controller
             Hoomdossier::user()
         )->pluck('building_id');
 
-
         $buildings = Building::withRecentBuildingStatusInformation()
             ->whereIn('buildings.id', $connectedBuildingsForUser)
             ->orderByDesc('appointment_date')

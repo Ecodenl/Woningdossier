@@ -57,7 +57,7 @@ class BuildingController extends Controller
 
         $statuses = Status::ordered()->get();
 
-        $coachesWithActiveBuildingCoachStatus = BuildingCoachStatusService::getConnectedCoachesByBuildingId($buildingId);
+        $coachesWithActiveBuildingCoachStatus = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building);
 
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
 

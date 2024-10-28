@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Sentry\Laravel\Integration;
 use Throwable;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -61,9 +62,7 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            if (app()->bound('sentry') && $this->shouldReport($e)) {
-                app('sentry')->captureException($e);
-            }
+            Integration::captureUnhandledException($e);
         });
     }
 

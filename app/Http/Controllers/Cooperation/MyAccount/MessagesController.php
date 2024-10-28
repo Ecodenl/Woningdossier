@@ -15,6 +15,9 @@ use Illuminate\Http\Request;
 
 class MessagesController extends Controller
 {
+    /**
+     * @deprecated literally a redirect to edit
+     */
     public function index(Cooperation $cooperation)
     {
         return redirect(route('cooperation.my-account.messages.edit'));

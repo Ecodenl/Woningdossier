@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -49,17 +50,17 @@ class BuildingPaintworkStatus extends Model
 
     protected $fillable = ['building_id', 'input_source_id', 'last_painted_year',  'paintwork_status_id', 'wood_rot_status_id'];
 
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
-    public function paintworkStatus()
+    public function paintworkStatus(): BelongsTo
     {
         return $this->belongsTo(PaintworkStatus::class);
     }
 
-    public function woodRotStatus()
+    public function woodRotStatus(): BelongsTo
     {
         return $this->belongsTo(WoodRotStatus::class);
     }

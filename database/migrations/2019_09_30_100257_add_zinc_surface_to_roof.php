@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddZincSurfaceToRoof extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // Add zinc column to building_roof_types table
         if (! Schema::hasColumn('building_roof_types', 'zinc_surface')) {
@@ -59,14 +57,12 @@ class AddZincSurfaceToRoof extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // We don't want this as we rely on it during calculations
         //Schema::table('building_roof_types',function (Blueprint $table){
         //    $table->dropColumn('zinc_surface');
         //});
     }
-}
+};

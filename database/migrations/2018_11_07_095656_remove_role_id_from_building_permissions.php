@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveRoleIdFromBuildingPermissions extends Migration
+return new class extends Migration
 {
     /**
      * Only applies to accept and local currently. So no rollback is required.
@@ -12,10 +12,8 @@ class RemoveRoleIdFromBuildingPermissions extends Migration
 
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (Schema::hasColumn('building_permissions', 'role_id')) {
             Schema::table('building_permissions',
@@ -43,10 +41,8 @@ class RemoveRoleIdFromBuildingPermissions extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('building_permissions',
             function (Blueprint $table) {
@@ -59,4 +55,4 @@ class RemoveRoleIdFromBuildingPermissions extends Migration
                 $table->text('permissions');
             });
     }
-}
+};

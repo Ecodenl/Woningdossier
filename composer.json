@@ -10,42 +10,43 @@
     "license": "OSL-3.0",
     "type": "project",
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^8.1",
         "ext-json": "*",
         "carlos-meneses/laravel-mpdf": "^2.1",
         "darkaonline/l5-swagger": "^8.0",
-        "doctrine/dbal": "^2.13",
+        "doctrine/dbal": "^3.5",
         "ecodenl/ep-online-php-wrapper": "^3.0",
         "ecodenl/lvbag-php-wrapper": "^2.0",
-        "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
-        "laravel/fortify": "^1.13",
-        "laravel/framework": "^8.83",
-        "laravel/sanctum": "^2.9",
-        "laravel/tinker": "^2.5",
-        "livewire/livewire": "^2.10",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/fortify": "^1.16",
+        "laravel/framework": "^10.48",
+        "laravel/sanctum": "^3.3",
+        "laravel/tinker": "^2.8",
+        "livewire/livewire": "^2.11",
         "maatwebsite/excel": "^3.1.8",
         "mpdf/mpdf": "^8.1",
-        "owen-it/laravel-auditing": "^12",
-        "plank/laravel-mediable": "^5.3",
+        "owen-it/laravel-auditing": "^13.1",
+        "plank/laravel-mediable": "^5.9",
         "predis/predis": "^1.1",
-        "sentry/sentry-laravel": "^2.1",
-        "spatie/laravel-permission": "^3.17",
-        "spatie/laravel-translatable": "^4.6",
-        "spatie/laravel-translation-loader": "^2.6",
-        "wedesignit/laravel-translations-import": "^0.1.8"
+        "sentry/sentry-laravel": "^3.2",
+        "spatie/laravel-permission": "^5.8",
+        "spatie/laravel-translatable": "^6.3",
+        "spatie/laravel-translation-loader": "^2.7",
+        "wedesignit/laravel-translations-import": "^1.1",
+        "league/flysystem-aws-s3-v3": "^3.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.5",
-        "barryvdh/laravel-ide-helper": "^2.8",
+        "barryvdh/laravel-debugbar": "^3.8",
+        "barryvdh/laravel-ide-helper": "^2.13",
         "fakerphp/faker": "^1.9.1",
-        "laravel/sail": "^1.16",
+        "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^5.10",
-        "nunomaduro/larastan": "^1.0",
+        "nunomaduro/collision": "^6.3",
+        "larastan/larastan": "^2.4",
         "phpunit/phpunit": "^9.5.10",
         "squizlabs/php_codesniffer": "*",
-        "tinymce/tinymce": "^6.7"
+        "tinymce/tinymce": "^6.7",
+        "spatie/laravel-ignition": "^2.0"
     },
     "autoload": {
         "files": [
@@ -88,7 +89,10 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "repositories": [
         {
@@ -96,6 +100,6 @@
             "url": "https://github.com/Ecodenl/PicoWrapper"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

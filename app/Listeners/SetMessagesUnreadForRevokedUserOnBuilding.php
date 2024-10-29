@@ -19,12 +19,8 @@ class SetMessagesUnreadForRevokedUserOnBuilding
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         /** @var User $revokedParticipant */
         $revokedParticipant = $event->revokedParticipant;

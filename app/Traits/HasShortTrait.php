@@ -12,8 +12,6 @@ trait HasShortTrait
      * Find a record by its short.
      *
      * @param $short
-     *
-     * @return static|null
      */
     public static function findByShort($short): ?Model
     {
@@ -28,10 +26,6 @@ trait HasShortTrait
 
     /**
      * Find multiple records by a set of shorts
-     *
-     * @param array  $shorts
-     *
-     * @return \Illuminate\Support\Collection
      */
     public static function findByShorts(array $shorts): Collection
     {

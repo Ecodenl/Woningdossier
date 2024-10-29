@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -19,8 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Element $element
  * @property-read int $insulation_factor
- * @property-read array $translations
- * @method static \Database\Factories\ElementValueFactory factory(...$parameters)
+ * @property-read mixed $translations
+ * @method static \Database\Factories\ElementValueFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue query()
@@ -29,6 +30,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereElementId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereValue($value)
@@ -56,7 +61,7 @@ class ElementValue extends Model
     }
 
     # Relations
-    public function element()
+    public function element(): BelongsTo
     {
         return $this->belongsTo(Element::class);
     }

@@ -55,7 +55,7 @@ class RoofInsulationHelper extends ToolHelper
         if ($this->considers($step)) {
             foreach (array_keys($result) as $roofCat) {
                 $primaryRoof = RoofType::find($this->getValues('building_features')['roof_type_id']);
-                $primaryRoofShort = optional($primaryRoof)->short;
+                $primaryRoofShort = $primaryRoof?->short;
 
                 $roofStep = Step::findByShort('roof-insulation');
                 // If the user has answered the step about roof insulation, we will continue with both possible roof

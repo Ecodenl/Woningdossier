@@ -16,7 +16,6 @@ class AuthenticatedSessionController extends \Laravel\Fortify\Http\Controllers\A
     /**
      * Attempt to authenticate a new session.
      *
-     * @param  \Laravel\Fortify\Http\Requests\LoginRequest  $request
      * @return mixed
      */
     public function store(LoginRequest $request)
@@ -44,10 +43,8 @@ class AuthenticatedSessionController extends \Laravel\Fortify\Http\Controllers\A
 
     /**
      * Get the needed authorization credentials from the request.
-     *
-     * @return array
      */
-    protected function credentials(Request $request)
+    protected function credentials(Request $request): array
     {
         return array_merge($request->only(Fortify::username(), 'password'), ['active' => 1]);
     }

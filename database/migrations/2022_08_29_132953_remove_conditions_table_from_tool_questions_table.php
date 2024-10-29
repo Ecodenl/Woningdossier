@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveConditionsTableFromToolQuestionsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (Schema::hasColumn('tool_questions', 'conditions')) {
             Schema::table('tool_questions', function (Blueprint $table) {
@@ -22,10 +20,8 @@ class RemoveConditionsTableFromToolQuestionsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (! Schema::hasColumn('tool_questions', 'conditions')) {
             Schema::table('tool_questions', function (Blueprint $table) {
@@ -33,4 +29,4 @@ class RemoveConditionsTableFromToolQuestionsTable extends Migration
             });
         }
     }
-}
+};

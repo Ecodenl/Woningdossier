@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use App\Calculations\InsulatedGlazing;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
@@ -34,7 +37,7 @@ class InsulatedGlazingController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(LegacyService $legacyService)
+    public function index(LegacyService $legacyService): View
     {
         /**
          * @var Building
@@ -104,7 +107,7 @@ class InsulatedGlazingController extends ToolController
         ));
     }
 
-    public function calculate(Request $request)
+    public function calculate(Request $request): JsonResponse
     {
         $building = HoomdossierSession::getBuilding(true);
 
@@ -120,10 +123,8 @@ class InsulatedGlazingController extends ToolController
 
     /**
      * Store the incoming request and redirect to the next step.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(InsulatedGlazingFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
+    public function store(InsulatedGlazingFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);

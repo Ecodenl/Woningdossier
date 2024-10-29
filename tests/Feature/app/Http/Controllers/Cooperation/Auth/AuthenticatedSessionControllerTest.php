@@ -30,7 +30,7 @@ class AuthenticatedSessionControllerTest extends TestCase
 
     protected $followRedirects = true;
 
-    public function test_login_succeeds_with_valid_credentials()
+    public function test_login_succeeds_with_valid_credentials(): void
     {
         $account = Account::factory()->create(['password' => Hash::make('secret')]);
         $cooperation = Cooperation::factory()->create();
@@ -51,7 +51,7 @@ class AuthenticatedSessionControllerTest extends TestCase
         $this->assertAuthenticatedAs($account);
     }
 
-    public function test_after_login_it_tries_to_attach_municipality_when_no_attached()
+    public function test_after_login_it_tries_to_attach_municipality_when_no_attached(): void
     {
         Bus::fake(CheckBuildingAddress::class);
         $account = Account::factory()->create(['password' => Hash::make('secret')]);
@@ -74,14 +74,14 @@ class AuthenticatedSessionControllerTest extends TestCase
         Bus::assertDispatched(CheckBuildingAddress::class);
     }
 
-    public function test_regulations_refresh_after_municipality_has_been_attached_after_login()
+    public function test_regulations_refresh_after_municipality_has_been_attached_after_login(): void
     {
         $fallbackData = [
-            'street' => $this->faker->streetName,
+            'street' => $this->faker->streetName(),
             'number' => $this->faker->numberBetween(3, 22),
             'city' => 'bubba',
             'extension' => 'd',
-            'postal_code' => $this->faker->postcode,
+            'postal_code' => $this->faker->postcode(),
         ];
 
         Bus::fake([RefreshRegulationsForBuildingUser::class]);
@@ -128,7 +128,7 @@ class AuthenticatedSessionControllerTest extends TestCase
         Bus::assertDispatched(RefreshRegulationsForBuildingUser::class);
     }
 
-    public function test_regulations_do_not_refresh_when_no_municipality_attached()
+    public function test_regulations_do_not_refresh_when_no_municipality_attached(): void
     {
         Bus::fake([RefreshRegulationsForBuildingUser::class]);
         $account = Account::factory()->create(['password' => Hash::make('secret')]);
@@ -152,7 +152,7 @@ class AuthenticatedSessionControllerTest extends TestCase
         Bus::assertNotDispatched(RefreshRegulationsForBuildingUser::class);
     }
 
-    public function test_regulations_only_refresh_when_municipality_attached()
+    public function test_regulations_only_refresh_when_municipality_attached(): void
     {
         Bus::fake([RefreshRegulationsForBuildingUser::class]);
         $account = Account::factory()->create(['password' => Hash::make('secret')]);

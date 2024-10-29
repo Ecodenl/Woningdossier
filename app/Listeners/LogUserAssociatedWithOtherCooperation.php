@@ -12,12 +12,8 @@ class LogUserAssociatedWithOtherCooperation implements ShouldQueue
     public $queue = Queue::LOGS;
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         Log::create([
             'loggable_type' => User::class,

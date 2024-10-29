@@ -21,9 +21,6 @@ class ModelService
      * Delete the records with the matching the attributes and create it with the given values
      *
      * @param $model
-     * @param  array  $attributes
-     * @param  array  $values
-     * @param  bool  $withEvents
      */
     public static function deleteAndCreate($model, array $attributes, array $values, bool $withEvents = false)
     {

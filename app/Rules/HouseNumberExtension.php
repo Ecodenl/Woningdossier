@@ -3,8 +3,9 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class HouseNumberExtension extends LocaleBasedRule implements Rule
+class HouseNumberExtension extends LocaleBasedRule implements ValidationRule
 {
     protected $countryRegexes = [
         // This regex supports alphanumeric keys up to 5 characters (including spaces and forward slashes), and the word "beneden"
@@ -14,12 +15,9 @@ class HouseNumberExtension extends LocaleBasedRule implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
      * @param mixed $value
-     *
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         if (empty($this->country)) {
             return false;
@@ -34,11 +32,16 @@ class HouseNumberExtension extends LocaleBasedRule implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
-    public function message()
+    public function message(): string
     {
         return trans('validation.house_number_extension');
+    }
+
+    public function validate(string $attribute, mixed $value, \Closure $fail): void
+    {
+        if (! $this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 }

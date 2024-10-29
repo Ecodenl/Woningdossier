@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -47,12 +48,12 @@ class QuestionsAnswer extends Model
         'question_id', 'building_id', 'input_source_id', 'answer',
     ];
 
-    public function question()
+    public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);
     }
 
-    public function inputSource()
+    public function inputSource(): BelongsTo
     {
         return $this->belongsTo(InputSource::class);
     }

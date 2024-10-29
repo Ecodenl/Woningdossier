@@ -25,26 +25,26 @@ use Illuminate\Support\Facades\DB;
  * @property string|null $econobis_wildcard
  * @property string|null $econobis_api_key
  * @property string|null $cooperation_email
- * @property-read \Plank\Mediable\MediableCollection|\App\Models\Building[] $buildings
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Building> $buildings
  * @property-read int|null $buildings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CooperationMeasureApplication[] $cooperationMeasureApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CooperationMeasureApplication> $cooperationMeasureApplications
  * @property-read int|null $cooperation_measure_applications_count
- * @property-read \Plank\Mediable\MediableCollection|\App\Models\CooperationSetting[] $cooperationSettings
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\CooperationSetting> $cooperationSettings
  * @property-read int|null $cooperation_settings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuilding[] $exampleBuildings
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExampleBuilding> $exampleBuildings
  * @property-read int|null $example_buildings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $questionnaires
  * @property-read int|null $questionnaires_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Scan[] $scans
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Scan> $scans
  * @property-read int|null $scans_count
  * @property-read \App\Models\CooperationStyle|null $style
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
- * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
- * @method static \Database\Factories\CooperationFactory factory(...$parameters)
- * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
+ * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
+ * @method static \Database\Factories\CooperationFactory factory($count = null, $state = [])
+ * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation query()
@@ -86,8 +86,6 @@ class Cooperation extends Model
     // Model methods
     /**
      * Return the coaches from the current cooperation.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getCoaches(): Collection
     {

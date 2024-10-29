@@ -20,7 +20,6 @@ class BuildingDataCopyService
      * If the source has data the target does not have, we copy it to the target
      * if the source has the same data as the target, we replace the target its value
      *
-     * @param Building $building
      * @param InputSource $from
      * @param InputSource $to
      */
@@ -76,7 +75,7 @@ class BuildingDataCopyService
                 ->where($buildingOrUserColumn, $buildingOrUserId)
                 ->get();
 
-            // if the target has no values at all, we can just do a plain copy without any crap in between
+            // If the target has no values, we can simply perform a direct copy without any additional processing.
             if ($targetValues->isEmpty()) {
                 // transform the source values to a insertable format for the target.
                 $insertableTargetValues = $sourceValues
@@ -124,10 +123,6 @@ class BuildingDataCopyService
 
     /**
      * Complicates copy because it updates data based on target and source data.
-     *
-     * @param Building $building
-     * @param InputSource $from
-     * @param InputSource $to
      */
     public static function complicatedCopy(Building $building, InputSource $from, InputSource $to)
     {
@@ -215,10 +210,6 @@ class BuildingDataCopyService
 
     /**
      * Method which will return insertable data, it updates/deletes a few params.
-     *
-     * @param array $fromData
-     * @param InputSource $to
-     * @return array
      */
     public static function createInsertFromSourceArray(array $fromData, InputSource $to): array
     {
@@ -254,14 +245,9 @@ class BuildingDataCopyService
     /**
      * Method to updateOrInsert the source to the destination
      *
-     * @param InputSource $to
-     * @param \stdClass|null $fromValue
-     * @param \stdClass|null $toValue
      * @param $toValueQuery
-     * @param string $buildingOrUserColumn
-     * @param string $buildingOrUserId
      */
-    public static function updateOrInsert(InputSource $to, $fromValue, $toValue, $toValueQuery, string $buildingOrUserColumn, string $buildingOrUserId)
+    public static function updateOrInsert(InputSource $to, ?stdClass $fromValue, ?stdClass $toValue, $toValueQuery, string $buildingOrUserColumn, string $buildingOrUserId)
     {
         if ($toValue instanceof \stdClass) {
             // if the source has no valid data we dont do a update
@@ -298,10 +284,8 @@ class BuildingDataCopyService
      * Check if a key / column name needs a update.
      *
      * @param string $key Column name
-     *
-     * @return bool
      */
-    private static function keyNeedsUpdate($key)
+    private static function keyNeedsUpdate(string $key): bool
     {
         $keysToNotUpdate = [
             'id', 'building_id', 'input_source_id', 'created_at', 'updated_at', 'comment', 'additional_info',
@@ -321,12 +305,8 @@ class BuildingDataCopyService
      * might have a value of 0, which is considered empty, but in the context of
      * radio buttons they should not be considered empty. We define these
      * fields here so we can test for !empty OR radio input.
-     *
-     * @param string $key
-     *
-     * @return bool
      */
-    private static function isRadioInput($key)
+    private static function isRadioInput(string $key): bool
     {
         return in_array($key, ['cavity_wall', 'monument', 'facade_plastered_painted']);
     }

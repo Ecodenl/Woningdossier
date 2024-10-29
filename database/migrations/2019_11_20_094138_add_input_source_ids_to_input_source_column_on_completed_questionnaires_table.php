@@ -2,14 +2,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class AddInputSourceIdsToInputSourceColumnOnCompletedQuestionnairesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $residentInputSource = DB::table('input_sources')->where('short', \App\Models\InputSource::RESIDENT_SHORT)->first();
 
@@ -22,10 +20,8 @@ class AddInputSourceIdsToInputSourceColumnOnCompletedQuestionnairesTable extends
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class PostalCodeTest extends TestCase
 {
-    public static function postalCodeProvider()
+    public static function postalCodeProvider(): array
     {
         return [
             ['nl', '1000 AA', true],
@@ -22,7 +22,7 @@ class PostalCodeTest extends TestCase
     /**
      * @dataProvider postalCodeProvider
      */
-    public function testPasses($country, $postalCode, $shouldPass)
+    public function testPasses($country, $postalCode, $shouldPass): void
     {
         $postalCodeRule = new PostalCode($country);
         $this->assertEquals($shouldPass, $postalCodeRule->passes('postal_code', $postalCode));

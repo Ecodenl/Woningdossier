@@ -9,10 +9,8 @@ class RoleTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $superAdmin = \Spatie\Permission\Models\Role::updateOrCreate(
             [

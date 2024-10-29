@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use App\Calculations\FloorInsulation;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
@@ -26,7 +29,7 @@ class FloorInsulationController extends ToolController
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(LegacyService $legacyService)
+    public function index(LegacyService $legacyService): View
     {
         $typeIds = [4];
         /** @var Building $building */
@@ -35,7 +38,7 @@ class FloorInsulationController extends ToolController
         $buildingInsulation = $building->getBuildingElement('floor-insulation', $this->masterInputSource);
         $buildingInsulationForMe = $building->getBuildingElementsForMe('floor-insulation');
 
-        $floorInsulation = optional($buildingInsulation)->element;
+        $floorInsulation = $buildingInsulation?->element;
 
         $crawlspace = Element::where('short', 'crawlspace')->first();
         $buildingCrawlspace = $building->getBuildingElement($crawlspace->short, $this->masterInputSource);
@@ -69,7 +72,7 @@ class FloorInsulationController extends ToolController
         ));
     }
 
-    public function calculate(FloorInsulationFormRequest $request)
+    public function calculate(FloorInsulationFormRequest $request): JsonResponse
     {
         /**
          * @var Building
@@ -89,10 +92,8 @@ class FloorInsulationController extends ToolController
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(FloorInsulationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
+    public function store(FloorInsulationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;

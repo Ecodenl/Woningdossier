@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeOndeleteCompletedQuestionnaires extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('completed_questionnaires', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
@@ -24,10 +22,8 @@ class ChangeOndeleteCompletedQuestionnaires extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('completed_questionnaires', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
@@ -37,4 +33,4 @@ class ChangeOndeleteCompletedQuestionnaires extends Migration
             $table->foreign('questionnaire_id')->references('id')->on('questionnaires')->onDelete('restrict');
         });
     }
-}
+};

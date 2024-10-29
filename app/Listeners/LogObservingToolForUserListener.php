@@ -22,12 +22,8 @@ class LogObservingToolForUserListener implements ShouldQueue
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         $building = $event->building;
         $buildingOwner = $building->user;

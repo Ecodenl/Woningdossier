@@ -46,11 +46,6 @@ class HeatPump extends Calculator
 
     private KengetallenService $kengetallenService;
 
-    /**
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \Illuminate\Support\Collection|null  $answers
-     */
     public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         parent::__construct($building, $inputSource, $answers);
@@ -135,7 +130,7 @@ class HeatPump extends Calculator
 
         // use netto
         $electricalReheating = 0;
-        if (optional($characteristics)->type === HeatPumpCharacteristic::TYPE_FULL) {
+        if ($characteristics?->type === HeatPumpCharacteristic::TYPE_FULL) {
             $electricalReheating = $newNettoGasUsageHeating * KeyFigures::M3_GAS_TO_KWH;
             $newNettoGasUsageHeating = 0;
         }
@@ -182,7 +177,7 @@ class HeatPump extends Calculator
         // if volledige warmtepomp: D2
         // else: D2 - (C68+C69+C70)
 //        $savingsGas = $amountGas;
-//        if (optional($characteristics)->type !== HeatPumpCharacteristic::TYPE_FULL) {
+//        if ($characteristics?->type !== HeatPumpCharacteristic::TYPE_FULL) {
 //            Log::debug("C76: not full heatpump: savingsGas = " . $amountGas . ' - (' . $gasUsageHeating . ' + ' . $newNettoGasUsageTapWater . ' + ' . $newNettoGasUsageCooking . ')');
 //            $savingsGas = $amountGas - ($gasUsageHeating + $newNettoGasUsageTapWater + $newNettoGasUsageCooking);
 //        }
@@ -361,7 +356,7 @@ class HeatPump extends Calculator
             /** @var ElementValue $elementValue */
             $elementValue = ElementValue::find($this->getAnswer($toolQuestion));
 
-            $factor = optional($elementValue)->insulation_factor ?? 1;
+            $factor = $elementValue?->insulation_factor ?? 1;
             if ($factor <= 1) {
                 // If the state of this element is bad we want to advise the user to fix this first
                 $this->advices[$toolQuestion] = $toolQuestion;
@@ -382,11 +377,8 @@ class HeatPump extends Calculator
      * math.
      *
      * @param $number
-     * @param  int  $decimals
-     *
-     * @return string
      */
-    private function format($number, int $decimals = 2)
+    private function format($number, int $decimals = 2): string
     {
         return number_format($number, $decimals, '.', '');
     }

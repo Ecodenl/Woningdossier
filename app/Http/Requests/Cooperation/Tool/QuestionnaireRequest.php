@@ -19,10 +19,8 @@ class QuestionnaireRequest extends FormRequest
 
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -35,10 +33,8 @@ class QuestionnaireRequest extends FormRequest
 
     /**
      * Customize the error messages.
-     *
-     * @return array
      */
-    public function attributes()
+    public function attributes(): array
     {
         $questions = $this->questions;
 
@@ -54,10 +50,8 @@ class QuestionnaireRequest extends FormRequest
 
     /**
      * Make the rules for the questions.
-     *
-     * @return array
      */
-    public function makeRules()
+    public function makeRules(): array
     {
         $validationRules = [];
 
@@ -71,10 +65,8 @@ class QuestionnaireRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return $this->makeRules();
     }

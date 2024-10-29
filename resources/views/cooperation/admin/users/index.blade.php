@@ -33,7 +33,7 @@
                                 $building = $user->building;
                                 $mostRecentBuildingStatus = $building->buildingStatuses->last();
 
-                                $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
+                                $userCreatedAtFormatted = $user->created_at?->format('d-m-Y');
                                 $userCreatedAtStrToTime = strtotime($userCreatedAtFormatted);
                             @endphp
                             <tr>

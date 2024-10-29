@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class PhoneNumberTest extends TestCase
 {
-    public static function phoneNumberProvider()
+    public static function phoneNumberProvider(): array
     {
         return [
             ['nl', '+31612345678', true],
@@ -31,7 +31,7 @@ class PhoneNumberTest extends TestCase
     /**
      * @dataProvider phoneNumberProvider
      */
-    public function testPasses($country, $phoneNumber, $shouldPass)
+    public function testPasses($country, $phoneNumber, $shouldPass): void
     {
         $phoneNumberRule = new PhoneNumber($country);
         $this->assertEquals($shouldPass, $phoneNumberRule->passes('phone_number', $phoneNumber));

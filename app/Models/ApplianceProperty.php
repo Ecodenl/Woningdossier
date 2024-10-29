@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -27,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ApplianceProperty extends Model
 {
-    public function appliance()
+    public function appliance(): BelongsTo
     {
         return $this->belongsTo(Appliance::class);
     }

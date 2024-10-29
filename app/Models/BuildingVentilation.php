@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -21,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Building $building
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation allInputSources()
- * @method static \Database\Factories\BuildingVentilationFactory factory(...$parameters)
+ * @method static \Database\Factories\BuildingVentilationFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forMe(?\App\Models\User $user = null)
@@ -57,10 +58,7 @@ class BuildingVentilation extends Model
         'building_id', 'input_source_id', 'how', 'living_situation', 'usage',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }

@@ -8,17 +8,15 @@ class CooperationFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
-        $name = $this->faker->company;
+        $name = $this->faker->company();
         return [
             'name' => $name,
             'slug' => \Illuminate\Support\Str::slug($name),
-            'website_url' => $this->faker->url,
-            'cooperation_email' => $this->faker->email,
+            'website_url' => $this->faker->url(),
+            'cooperation_email' => $this->faker->email(),
         ];
     }
 }

@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBuildingTypeCategoryIdToBuildingFeaturesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // Note: We cannot delete this because the original table cannot create the foreign key constraint (because
         // the categories table doesn't exist yet at that point)
@@ -23,14 +21,12 @@ class AddBuildingTypeCategoryIdToBuildingFeaturesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('building_features', function (Blueprint $table) {
             $table->dropForeign('building_features_building_type_category_id_foreign');
             $table->dropColumn('building_type_category_id');
         });
     }
-}
+};

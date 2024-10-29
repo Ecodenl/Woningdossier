@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Events\CooperationMeasureApplicationUpdated;
 use App\Helpers\MappingHelper;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
@@ -16,7 +18,7 @@ use App\Services\MappingService;
 
 class CooperationMeasureApplicationController extends Controller
 {
-    public function index(Cooperation $cooperation, string $type)
+    public function index(Cooperation $cooperation, string $type): View
     {
         $scope = "{$type}Measures";
 
@@ -25,13 +27,13 @@ class CooperationMeasureApplicationController extends Controller
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', compact('cooperationMeasureApplications', 'type'));
     }
 
-    public function create(Cooperation $cooperation, string $type)
+    public function create(Cooperation $cooperation, string $type): View
     {
         $measures = MeasureCategory::all();
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.create', compact('type', 'measures'));
     }
 
-    public function store(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, string $type, MappingService $mappingService)
+    public function store(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, string $type, MappingService $mappingService): RedirectResponse
     {
         $measureData = $request->validated()['cooperation_measure_applications'];
         $measureCategory = $measureData['measure_category'] ?? null;
@@ -57,7 +59,7 @@ class CooperationMeasureApplicationController extends Controller
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.store.success'));
     }
 
-    public function edit(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication, MappingService $mappingService)
+    public function edit(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication, MappingService $mappingService): View
     {
         $type = $cooperationMeasureApplication->getType();
         $measures = MeasureCategory::all();
@@ -66,12 +68,12 @@ class CooperationMeasureApplicationController extends Controller
             ->resolveMapping()
             ->first();
         if ($mapping instanceof Mapping) {
-            $currentMeasure = optional($mapping->mappable)->id;
+            $currentMeasure = $mapping->mappable?->id;
         }
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', compact('cooperationMeasureApplication', 'type', 'measures', 'currentMeasure'));
     }
 
-    public function update(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication, MappingService $mappingService)
+    public function update(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication, MappingService $mappingService): RedirectResponse
     {
         $measureData = $request->validated()['cooperation_measure_applications'];
         $measureCategory = $measureData['measure_category'] ?? null;
@@ -95,7 +97,7 @@ class CooperationMeasureApplicationController extends Controller
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.update.success'));
     }
 
-    public function destroy(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
+    public function destroy(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication): RedirectResponse
     {
         $this->authorize('delete', $cooperationMeasureApplication);
 

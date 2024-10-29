@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\HoomdossierSession;
 use App\Traits\Models\HasTranslations;
@@ -21,20 +23,24 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionsAnswer> $questionAnswers
  * @property-read int|null $question_answers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionOption[] $questionOptions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionOption> $questionOptions
  * @property-read int|null $question_options_count
  * @property-read \App\Models\Questionnaire $questionnaire
- * @method static \Database\Factories\QuestionFactory factory(...$parameters)
+ * @property-read mixed $translations
+ * @method static \Database\Factories\QuestionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Question newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
- * @method static \Illuminate\Database\Query\Builder|Question onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Question query()
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereQuestionnaireId($value)
@@ -42,8 +48,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereValidation($value)
- * @method static \Illuminate\Database\Query\Builder|Question withTrashed()
- * @method static \Illuminate\Database\Query\Builder|Question withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question withoutTrashed()
  * @mixin \Eloquent
  */
 class Question extends Model
@@ -100,20 +106,16 @@ class Question extends Model
 
     /**
      * Return the options from a questions, a question will have options if its a radio, checkbox or dropdown etc.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function questionOptions()
+    public function questionOptions(): HasMany
     {
         return $this->hasMany(QuestionOption::class);
     }
 
     /**
      * Check if a question has a question option.
-     *
-     * @return bool
      */
-    public function hasQuestionOptions()
+    public function hasQuestionOptions(): bool
     {
         if ($this->questionOptions()->first() instanceof QuestionOption) {
             return true;
@@ -124,10 +126,8 @@ class Question extends Model
 
     /**
      * Return all the answers for a question.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function questionAnswers()
+    public function questionAnswers(): HasMany
     {
         // If you're wondering why this is resulting in specific answers, or maybe you want a specific answer, but
         // you're getting a ton of answers, check view composers to see if these might be set to only be for
@@ -166,10 +166,8 @@ class Question extends Model
 
     /**
      * Get the questionnaire from a question.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function questionnaire()
+    public function questionnaire(): BelongsTo
     {
         return $this->belongsTo(Questionnaire::class);
     }

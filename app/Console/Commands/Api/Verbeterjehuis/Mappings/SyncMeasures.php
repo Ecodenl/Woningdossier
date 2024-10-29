@@ -38,10 +38,8 @@ class SyncMeasures extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle(MappingService $mappingService)
+    public function handle(MappingService $mappingService): int
     {
         // Only energy saving measure applications. The maintenace ones don't have subsidy.
         $map = [

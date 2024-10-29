@@ -21,11 +21,6 @@ class HighEfficiencyBoilerCalculator
     use FluentCaller,
         HasDynamicAnswers;
 
-    /**
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \Illuminate\Support\Collection|null  $answers
-     */
     public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         $this->building = $building;
@@ -72,9 +67,6 @@ class HighEfficiencyBoilerCalculator
         return $result;
     }
 
-    /**
-     * @return array
-     */
     public function calculateGasUsage(): array
     {
         $result = [
@@ -129,7 +121,6 @@ class HighEfficiencyBoilerCalculator
     }
 
     /**
-     * @param \App\Models\MeasureApplication $measureApplication
      * @param $last
      *
      * @return float|int|string

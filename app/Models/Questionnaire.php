@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasCooperationTrait;
 use App\Traits\Models\HasTranslations;
@@ -14,22 +15,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property array $name
- * @property int|null $step_id
  * @property int $cooperation_id
- * @property int $order
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cooperation $cooperation
- * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionnaireStep[] $questionnaireSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionnaireStep> $questionnaireSteps
  * @property-read int|null $questionnaire_steps_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Question> $questions
  * @property-read int|null $questions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Step> $steps
  * @property-read int|null $steps_count
+ * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire active()
- * @method static \Database\Factories\QuestionnaireFactory factory(...$parameters)
+ * @method static \Database\Factories\QuestionnaireFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forAllCooperations()
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forMyCooperation($cooperationId)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire newModelQuery()
@@ -39,9 +38,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereStepId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereUpdatedAt($value)
  * @mixin \Eloquent
  */
@@ -65,8 +66,6 @@ class Questionnaire extends Model
 
     /**
      * Return the step that belongs to this questionnaire.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function steps(): BelongsToMany
     {
@@ -82,10 +81,8 @@ class Questionnaire extends Model
 
     /**
      * Return the cooperation that belongs to this questionnaire.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function cooperation()
+    public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class);
     }
@@ -105,10 +102,8 @@ class Questionnaire extends Model
 
     /**
      * Return all the questions from the questionnaire.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function questions()
+    public function questions(): HasMany
     {
         return $this->hasMany(Question::class);
     }

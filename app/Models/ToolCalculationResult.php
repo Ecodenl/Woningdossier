@@ -19,11 +19,11 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property string|null $unit_of_measure
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubSteppable[] $subSteppables
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
+ * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult query()
@@ -31,6 +31,10 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereDataType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereHelpText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereShort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereUnitOfMeasure($value)

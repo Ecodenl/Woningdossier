@@ -98,8 +98,6 @@ class WallInsulationHelper extends ToolHelper
 
     /**
      * Save the advices for the wall insulation page.
-     *
-     * @return \App\Helpers\Cooperation\Tool\ToolHelper
      */
     public function createAdvices(): ToolHelper
     {

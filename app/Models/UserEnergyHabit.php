@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -32,7 +33,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string|null $end_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
  * @property-read \App\Models\BuildingHeating|null $heatingFirstFloor
@@ -96,34 +97,23 @@ class UserEnergyHabit extends Model implements Auditable
 
     /**
      * Get the user that belongsTo this habit.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function heatingFirstFloor()
+    public function heatingFirstFloor(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'heating_first_floor');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function heatingSecondFloor()
+    public function heatingSecondFloor(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'heating_second_floor');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function comfortLevelTapWater()
+    public function comfortLevelTapWater(): BelongsTo
     {
         return $this->belongsTo(ComfortLevelTapWater::class, 'water_comfort_id');
     }

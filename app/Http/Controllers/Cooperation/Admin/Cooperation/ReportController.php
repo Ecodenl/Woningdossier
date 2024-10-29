@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
@@ -12,7 +13,7 @@ class ReportController extends Controller
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {

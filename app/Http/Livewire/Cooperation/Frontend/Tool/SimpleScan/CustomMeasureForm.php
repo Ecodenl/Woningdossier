@@ -264,7 +264,7 @@ abstract class CustomMeasureForm extends Component
                 ->resolveMapping()
                 ->first();
             if ($mapping instanceof Mapping) {
-                $this->customMeasureApplicationsFormData[$index]['measure_category'] = optional($mapping->mappable)->id;
+                $this->customMeasureApplicationsFormData[$index]['measure_category'] = $mapping->mappable?->id;
             }
         }
 

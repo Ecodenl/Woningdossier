@@ -78,9 +78,9 @@
                     {{-- for residents only show 'Start' and 'Basisadvies' --}}
                     @if(Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole('resident'))
                         @if (! Hoomdossier::user()->isFillingToolForOtherBuilding())
-                        <li>
-                            <a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a>
-                        </li>
+                            <li>
+                                <a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a>
+                            </li>
                         @endif
                         <li>
                             <a href="{{route('cooperation.frontend.tool.expert-scan.index', ['step' => 'ventilation'])}}">
@@ -89,15 +89,14 @@
                         </li>
                     @endif
 
-                    @if (Auth::check() && ! \Hoomdossier::user()->isFillingToolForOtherBuilding())
+                    @can('viewAny', \App\Models\PrivateMessage::class)
+                        @php
+                            $messageUrl = route('cooperation.my-account.messages.edit');
 
-                        <?php
-                            $messageUrl = route('cooperation.my-account.messages.index');
-
-                            if(Auth::check() && Hoomdossier::user()->can('access-admin') && Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin'])) {
+                            if (Hoomdossier::user()->can('access-admin') && Hoomdossier::user()->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COACH, RoleHelper::ROLE_COOPERATION_ADMIN])) {
                                 $messageUrl = route('cooperation.admin.messages.index');
                             }
-                        ?>
+                        @endphp
                         <li>
                             @include('cooperation.layouts.message-badge', compact('messageUrl'))
                         </li>
@@ -130,7 +129,7 @@
                                     </li>
                                 </ul>
                             </li>
-                    @endif
+                    @endcan
                 @endguest
             </ul>
         </div>

@@ -6,14 +6,12 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class ConvertUserIdToLoggableOnLogsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (Schema::hasColumn('logs', 'user_id')) {
             $tableHasForeign = false;
@@ -47,10 +45,8 @@ class ConvertUserIdToLoggableOnLogsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (! Schema::hasColumn('logs', 'user_id')) {
             Schema::table('logs', function (Blueprint $table) {
@@ -65,4 +61,4 @@ class ConvertUserIdToLoggableOnLogsTable extends Migration
             });
         }
     }
-}
+};

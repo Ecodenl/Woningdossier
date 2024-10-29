@@ -32,7 +32,7 @@
                         @endforeach
                         @forelse($steps as $step)
                             <tr>
-                                <td>{{optional($step->parentStep)->name.'/'. $step->name}}</td>
+                                <td>{{$step->parentStep?->name.'/'. $step->name}}</td>
                                 <td>
                                     <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.translations.edit', ['group' => $step->short])}}">
                                         @lang('woningdossier.cooperation.admin.super-admin.translations.index.table.see')

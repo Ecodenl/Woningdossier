@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -28,12 +29,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingTypeElementMaxSaving extends Model
 {
-    public function buildingType()
+    public function buildingType(): BelongsTo
     {
         return $this->belongsTo(BuildingType::class);
     }
 
-    public function element()
+    public function element(): BelongsTo
     {
         return $this->belongsTo(Element::class);
     }

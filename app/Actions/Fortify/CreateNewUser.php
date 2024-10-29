@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\Models\User;
 use App\Helpers\RoleHelper;
 use App\Http\Requests\AddressFormRequest;
 use App\Models\Account;
@@ -27,11 +28,8 @@ class CreateNewUser implements CreatesNewUsers
 
     /**
      * Validate and create a newly registered user.
-     *
-     * @param  array  $input
-     * @return \App\Models\User
      */
-    public function create(array $input)
+    public function create(array $input): User
     {
         $this->request ??= request();
         $this->input = $input;

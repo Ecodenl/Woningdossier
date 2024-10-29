@@ -9,7 +9,7 @@ use App\Services\Models\CooperationPresetService;
 
 class CooperationObserver
 {
-    public function created(Cooperation $cooperation)
+    public function created(Cooperation $cooperation): void
     {
         // Give the cooperation the default quick-scan upon register.
         CooperationScanService::init($cooperation)->syncScan('quick-scan');

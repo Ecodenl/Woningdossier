@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Services\BuildingCoachStatusService;
@@ -23,7 +25,7 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building|null $building
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PrivateMessageView> $privateMessageViews
  * @property-read int|null $private_message_views_count
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage conversation($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage forMyCooperation()
@@ -61,17 +63,15 @@ class PrivateMessage extends Model
         'is_public'    => 'boolean',
     ];
 
-    public function scopeForMyCooperation($query)
+    public function scopeForMyCooperation(Builder $query): Builder
     {
         return $query->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
     /**
      * Determine if a private message is public.
-     *
-     * @return bool
      */
-    public static function isPublic(PrivateMessage $privateMessage)
+    public static function isPublic(PrivateMessage $privateMessage): bool
     {
         if ($privateMessage->is_public) {
             return true;
@@ -82,74 +82,53 @@ class PrivateMessage extends Model
 
     /**
      * Determine if a private message is private.
-     *
-     * @return bool
      */
-    public static function isPrivate(PrivateMessage $privateMessage)
+    public static function isPrivate(PrivateMessage $privateMessage): bool
     {
         return ! self::isPublic($privateMessage);
     }
 
     /**
      * Scope a query to return the messages that are sent to a user / coach.
-     *
-     * @return PrivateMessage
      */
-    public function scopeMyPrivateMessages($query)
+    public function scopeMyPrivateMessages(Builder $query): Builder
     {
         return $query->where('to_user_id', Hoomdossier::user()->id);
     }
 
     /**
      * Scope a query to return the conversation ordered on created_at.
-     *
-     * @return $this
      */
-    public static function scopeConversation($query, $buildingId)
+    public function scopeConversation(Builder $query, int $buildingId): Builder
     {
         return $query->where('building_id', $buildingId)->orderBy('created_at');
     }
 
     /**
      * Scope the public messages.
-     *
-     * @param $query
-     *
-     * @return mixed
      */
-    public function scopePublic($query)
+    public function scopePublic(Builder $query): Builder
     {
         return $query->where('is_public', true);
     }
 
     /**
      * Scope the private messages.
-     *
-     * @param $query
-     *
-     * @return mixed
      */
-    public function scopePrivate($query)
+    public function scopePrivate(Builder $query): Builder
     {
         return $query->where('is_public', false);
     }
 
-    /**
-     * Return the full name, just a wrap.
-     *
-     * @return mixed
-     */
-    public function getSender()
+    public function getSender(): string
     {
         return $this->from_user;
     }
 
     /**
      * Returns the receiving cooperation of this private message.
-     *
-     * @return Cooperation|null
      */
-    public function getReceivingCooperation()
+    public function getReceivingCooperation(): ?Cooperation
     {
         $receivingCooperationId = $this->to_cooperation_id;
         if (empty($receivingCooperationId)) {
@@ -161,10 +140,8 @@ class PrivateMessage extends Model
 
     /**
      * Returns the receiving cooperation of this private message.
-     *
-     * @return Cooperation|null
      */
-    public function getSendingCooperation()
+    public function getSendingCooperation(): ?Cooperation
     {
         $sendingCooperationId = $this->from_cooperation_id;
         if (empty($sendingCooperationId)) {
@@ -175,13 +152,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Get all the "group members"
-     * returns a collection of all the participants for a chat from a building.
-     *
-     * @param      $buildingId
-     * @param bool $publicConversation
+     * Get all the "group members".
+     * Returns a collection of all the participants for a chat from a building.
      */
-    public static function getGroupParticipants($buildingId, $publicConversation = true): Collection
+    public static function getGroupParticipants(?int $buildingId, bool $publicConversation = true): Collection
     {
         // create a collection of group members
         $groupMembers = collect();
@@ -190,7 +164,7 @@ class PrivateMessage extends Model
 
         if ($building instanceof Building) {
             // get the coaches with access to the building
-            $coachesWithAccess = BuildingCoachStatusService::getConnectedCoachesByBuildingId($buildingId);
+            $coachesWithAccess = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building, true);
 
             // if its a public conversation we push the building owner in it
             if ($publicConversation) {
@@ -202,7 +176,7 @@ class PrivateMessage extends Model
 
             // put the coaches with access to the groupmembers
             foreach ($coachesWithAccess as $coachWithAccess) {
-                $groupMembers->push(User::find($coachWithAccess->coach_id));
+                $groupMembers->push($coachWithAccess->coach);
             }
         }
 
@@ -241,10 +215,8 @@ class PrivateMessage extends Model
 
     /**
      * Get the building from a message.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }

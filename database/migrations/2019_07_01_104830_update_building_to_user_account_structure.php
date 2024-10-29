@@ -2,14 +2,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateBuildingToUserAccountStructure extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // get active buildings
         $buildings = DB::table('buildings')
@@ -377,17 +375,12 @@ class UpdateBuildingToUserAccountStructure extends Migration
 
     /**
      * Creates separate copies a table row for all buildings.
-     *
-     * @param string $table
-     * @param int    $fromBuildingId
-     * @param int    $toBuildingId
-     * @param string $buildingColumn
      */
     protected function copyTableDataForSiblings(
-        $table,
-        $fromBuildingId,
-        $toBuildingId,
-        $buildingColumn = 'building_id'
+        string $table,
+        int $fromBuildingId,
+        int $toBuildingId,
+        string $buildingColumn = 'building_id'
     ) {
         $fromBuildingId = (int) $fromBuildingId;
         $toBuildingId = (int) $toBuildingId;
@@ -409,10 +402,8 @@ class UpdateBuildingToUserAccountStructure extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

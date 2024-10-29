@@ -4,8 +4,9 @@ namespace App\Rules;
 
 use App\Models\User;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class isUserMemberOfCooperation implements Rule
+class isUserMemberOfCooperation implements ValidationRule
 {
     /**
      * Create a new rule instance.
@@ -20,12 +21,9 @@ class isUserMemberOfCooperation implements Rule
      * Determine if the validation rule passes.
      * Passes if the given user id has a relation with the current cooperation.
      *
-     * @param string $attribute
      * @param mixed  $value
-     *
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         $currentCooperation = \App\Helpers\Hoomdossier::user()->cooperations()->find(session('cooperation'));
 
@@ -38,11 +36,16 @@ class isUserMemberOfCooperation implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
-    public function message()
+    public function message(): string
     {
         return __('validation.custom.is-user-member-of-cooperation');
+    }
+
+    public function validate(string $attribute, mixed $value, \Closure $fail): void
+    {
+        if (! $this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 }

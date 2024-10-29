@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -17,7 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read LanguageLine|null $helpText
- * @property-read \Illuminate\Database\Eloquent\Collection|LanguageLine[] $subQuestions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, LanguageLine> $subQuestions
  * @property-read int|null $sub_questions_count
  * @method static Builder|LanguageLine forGroup($group)
  * @method static Builder|LanguageLine mainQuestions()
@@ -98,15 +100,13 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
 
     /**
      * Get the sub questions.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function subQuestions()
+    public function subQuestions(): HasMany
     {
         return $this->hasMany(self::class, 'main_language_line_id', 'id');
     }
 
-    public function helpText()
+    public function helpText(): HasOne
     {
         return $this->hasOne(self::class, 'id', 'help_language_line_id');
     }

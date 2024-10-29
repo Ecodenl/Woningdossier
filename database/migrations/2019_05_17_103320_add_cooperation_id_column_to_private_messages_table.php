@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCooperationIdColumnToPrivateMessagesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('private_messages', function (Blueprint $table) {
             $table->unsignedInteger('cooperation_id')->nullable()->default(null)->after('building_id');
@@ -21,14 +19,12 @@ class AddCooperationIdColumnToPrivateMessagesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('private_messages', function (Blueprint $table) {
             $table->dropForeign(['cooperation_id']);
             $table->dropColumn('cooperation_id');
         });
     }
-}
+};

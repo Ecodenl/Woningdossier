@@ -15,7 +15,6 @@ trait RetrievesAnswers
     /**
      * Get the answer from the given building (if allowed).
      *
-     * @param string $toolQuestionShort
      * @param bool $withEvaluation Because sometimes, but ONLY sometimes we don't want validation
      *
      * @return array|mixed
@@ -37,12 +36,6 @@ trait RetrievesAnswers
         ) : null;
     }
 
-    /**
-     * @param array $toolQuestionShorts
-     * @param bool $withEvaluation
-     *
-     * @return array
-     */
     protected function getManyAnswers(array $toolQuestionShorts, bool $withEvaluation = true): array
     {
         $toolQuestions = ToolQuestion::findByShorts($toolQuestionShorts);

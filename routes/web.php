@@ -33,7 +33,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
         }
 
-        Route::group([], base_path('routes/auth.php'));
+Route::group([], base_path('routes/auth.php'));
 
         Route::view('styleguide', 'cooperation.frontend.styleguide');
         Route::view('input-guide', 'cooperation.frontend.input-guide');
@@ -58,7 +58,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
         Route::resource('disclaimer', Cooperation\DisclaimController::class)->only('index');
 
         // group can be accessed by everyone that's authorized and has a role in its session
-        Route::middleware('auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified')->group(function () {
+        Route::middleware(['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified'])->group(function () {
             Route::get('messages/count', [Cooperation\MessagesController::class, 'getTotalUnreadMessageCount'])->name('message.get-total-unread-message-count');
 
             if (in_array(app()->environment(), ['local', 'accept'])) {
@@ -224,7 +224,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 // Wall Insulation
-                Route::group(['prefix' => 'verwarming', 'as' => 'heating.'], function () {
+                Route::prefix('verwarming')->name('heating.')->group(function () {
                     Route::resource('', Cooperation\Tool\WallInsulationController::class)->only('index', 'store');
                     Route::post('calculate', [Cooperation\Tool\WallInsulationController::class, 'calculate'])->name('calculate');
                 });

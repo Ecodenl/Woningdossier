@@ -23,9 +23,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array|null $conditions
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read array $translations
  * @property-read \App\Models\ToolQuestion $toolQuestion
- * @method static \Database\Factories\ToolQuestionCustomValueFactory factory(...$parameters)
+ * @property-read mixed $translations
+ * @method static \Database\Factories\ToolQuestionCustomValueFactory factory($count = null, $state = [])
  * @method static Builder|ToolQuestionCustomValue newModelQuery()
  * @method static Builder|ToolQuestionCustomValue newQuery()
  * @method static Builder|ToolQuestionCustomValue ordered(string $direction = 'asc')
@@ -35,6 +35,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder|ToolQuestionCustomValue whereCreatedAt($value)
  * @method static Builder|ToolQuestionCustomValue whereExtra($value)
  * @method static Builder|ToolQuestionCustomValue whereId($value)
+ * @method static Builder|ToolQuestionCustomValue whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder|ToolQuestionCustomValue whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder|ToolQuestionCustomValue whereLocale(string $column, string $locale)
+ * @method static Builder|ToolQuestionCustomValue whereLocales(string $column, array $locales)
  * @method static Builder|ToolQuestionCustomValue whereName($value)
  * @method static Builder|ToolQuestionCustomValue whereOrder($value)
  * @method static Builder|ToolQuestionCustomValue whereShort($value)

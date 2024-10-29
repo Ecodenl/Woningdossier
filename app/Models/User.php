@@ -2,6 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Deprecation\DeprecationLogger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\HoomdossierSession;
 use App\Traits\HasCooperationTrait;
@@ -31,50 +36,49 @@ use Spatie\Permission\Traits\HasRoles;
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $refreshing_regulations
  * @property-read \App\Models\Account|null $account
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $actionPlanAdvices
  * @property-read int|null $action_plan_advices_count
  * @property-read \App\Models\Building|null $building
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingNotes> $buildingNotes
  * @property-read int|null $building_notes_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingPermission> $buildingPermissions
  * @property-read int|null $building_permissions_count
- * @property-read \Plank\Mediable\MediableCollection|\App\Models\Building[] $buildings
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Building> $buildings
  * @property-read int|null $buildings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $completedQuestionnaires
  * @property-read int|null $completed_questionnaires_count
  * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read \Plank\Mediable\MediableCollection|\App\Models\Cooperation[] $cooperations
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Cooperation> $cooperations
  * @property-read int|null $cooperations_count
  * @property-read \App\Models\UserEnergyHabit|null $energyHabit
  * @property-read mixed $email
  * @property-read mixed $is_admin
  * @property-read mixed $old_email_token
  * @property-read mixed $oldemail
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Interest> $interests
  * @property-read int|null $interests_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Log> $logs
  * @property-read int|null $logs_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserMotivation> $motivations
  * @property-read int|null $motivations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NotificationSetting[] $notificationSettings
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationSetting> $notificationSettings
  * @property-read int|null $notification_settings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Role> $roles
  * @property-read int|null $roles_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdviceComments> $userActionPlanAdviceComments
  * @property-read int|null $user_action_plan_advice_comments_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserCost[] $userCosts
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserCost> $userCosts
  * @property-read int|null $user_costs_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserInterest> $userInterests
  * @property-read int|null $user_interests_count
  * @method static Builder|User byContact($contact)
  * @method static Builder|User econobisContacts()
- * @method static \Database\Factories\UserFactory factory(...$parameters)
+ * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static Builder|User forAllCooperations()
  * @method static Builder|User forMyCooperation($cooperationId)
  * @method static Builder|User newModelQuery()
@@ -92,7 +96,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder|User whereLastName($value)
  * @method static Builder|User whereLastVisitedUrl($value)
  * @method static Builder|User wherePhoneNumber($value)
- * @method static Builder|User whereRefreshingRegulations($value)
  * @method static Builder|User whereRegulationsRefreshedAt($value)
  * @method static Builder|User whereToolLastChangedAt($value)
  * @method static Builder|User whereUpdatedAt($value)
@@ -155,10 +158,6 @@ class User extends Model implements AuthorizableContract
             ->withPivot(['is_considering', 'input_source_id']);
     }
 
-    /**
-     * @param Model $related
-     * @return MorphToMany
-     */
     public function considerablesForModel(Model $related): MorphToMany
     {
         return $this->considerables($related->getMorphClass())->wherePivot('considerable_id', $related->id);
@@ -186,10 +185,8 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Return the intermediary table of the interests.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userInterests()
+    public function userInterests(): HasMany
     {
         return $this->hasMany(UserInterest::class);
     }
@@ -199,10 +196,8 @@ class User extends Model implements AuthorizableContract
      *
      * @param $interestedInType
      * @param $interestedInId
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userInterestsForSpecificType($interestedInType, $interestedInId, InputSource $inputSource = null)
+    public function userInterestsForSpecificType($interestedInType, $interestedInId, InputSource $inputSource = null): HasMany
     {
         if ($inputSource instanceof InputSource) {
             return $this->userInterests()
@@ -219,10 +214,8 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Return all the interest levels of a user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function interests()
+    public function interests(): HasManyThrough
     {
         return $this->hasManyThrough(Interest::class, UserInterest::class, 'user_id', 'id', 'id', 'interest_id');
     }
@@ -252,11 +245,10 @@ class User extends Model implements AuthorizableContract
     /**
      * Quick short hand helper for user to account data migration.
      *
-     * @param string $property
      *
      * @return mixed|null
      */
-    public function getAccountProperty($property)
+    public function getAccountProperty(string $property)
     {
         \Log::debug('Account property ' . $property . ' is accessed via User!');
         if ($this->account instanceof Account) {
@@ -267,22 +259,27 @@ class User extends Model implements AuthorizableContract
     }
 
     // ------ End User -> Account table / model migration stuff -------
-    public function buildings()
+    public function buildings(): HasMany
     {
+        // TODO: No user has more than one building.
+        DeprecationLogger::log(__METHOD__ . ' really shouldn\'t be used anymore...');
         return $this->hasMany(Building::class);
     }
 
-    public function building()
+    public function building(): HasOne
     {
         return $this->hasOne(Building::class);
     }
 
+    public function buildingCoachStatuses(): HasMany
+    {
+        return $this->hasMany(BuildingCoachStatus::class, 'coach_id');
+    }
+
     /**
      * Return the notification settings from a user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function notificationSettings()
+    public function notificationSettings(): HasMany
     {
         return $this->hasMany(NotificationSetting::class);
     }
@@ -291,10 +288,8 @@ class User extends Model implements AuthorizableContract
      * Determine if a user retrieves a notification.
      *
      * @param $notificationTypeShort
-     *
-     * @return bool
      */
-    public function retrievesNotifications($notificationTypeShort)
+    public function retrievesNotifications($notificationTypeShort): bool
     {
         $notificationType = NotificationType::where('short', $notificationTypeShort)->first();
         $notInterestedInterval = NotificationInterval::where('short', 'no-interest')->first();
@@ -309,15 +304,13 @@ class User extends Model implements AuthorizableContract
         return $doesUserRetrievesNotifications;
     }
 
-    public function energyHabit()
+    public function energyHabit(): HasOne
     {
         return $this->hasOne(UserEnergyHabit::class);
     }
 
     /**
      * Return all the building notes a user has created.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function buildingNotes(): HasMany
     {
@@ -331,9 +324,8 @@ class User extends Model implements AuthorizableContract
 
     /**
      * @deprecated use userActionPlanAdvices
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function actionPlanAdvices()
+    public function actionPlanAdvices(): HasMany
     {
         return $this->hasMany(UserActionPlanAdvice::class);
     }
@@ -356,7 +348,7 @@ class User extends Model implements AuthorizableContract
     /**
      * The cooperations the user is associated with.
      */
-    public function cooperations()
+    public function cooperations(): BelongsToMany
     {
         return $this->belongsToMany(Cooperation::class, 'cooperation_user');
     }
@@ -364,7 +356,7 @@ class User extends Model implements AuthorizableContract
     /**
      * The cooperations the user is associated with.
      */
-    public function cooperation()
+    public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class, 'cooperation_id', 'id');
     }
@@ -377,9 +369,9 @@ class User extends Model implements AuthorizableContract
         return "{$this->first_name} {$this->last_name}";
     }
 
-    public function buildingPermissions()
+    public function buildingPermissions(): HasMany
     {
-        return $this->hasMany(\App\Models\BuildingPermission::class);
+        return $this->hasMany(BuildingPermission::class);
     }
 
     public function isBuildingOwner(Building $building)
@@ -514,10 +506,8 @@ class User extends Model implements AuthorizableContract
      * Retrieve the completed questionnaires from the user.
      *
      * @param InputSource $inputSource
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function completedQuestionnaires()
+    public function completedQuestionnaires(): BelongsToMany
     {
         return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires')
             ->using(CompletedQuestionnaire::class);
@@ -525,10 +515,8 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Check whether a user completed a questionnaire.
-     *
-     * @return bool
      */
-    public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null)
+    public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null): bool
     {
         $query = $this->completedQuestionnaires()
             ->where('questionnaire_id', $questionnaire->id);
@@ -542,30 +530,24 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Return the user its account information.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function account()
+    public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
     }
 
     /**
      * Get the user its bcrypted password from the accounts table.
-     *
-     * @return string
      */
-    public function getAuthPassword()
+    public function getAuthPassword(): string
     {
         return $this->account->password;
     }
 
     /**
      * Get the user its email from the accounts table.
-     *
-     * @return string
      */
-    public function getEmailForPasswordReset()
+    public function getEmailForPasswordReset(): string
     {
         return $this->account->email;
     }

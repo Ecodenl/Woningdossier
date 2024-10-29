@@ -8,13 +8,11 @@ class InterestFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'name' => json_encode(['nl' => $this->faker->word]),
+            'name' => json_encode(['nl' => $this->faker->word()]),
             'calculate_value' => $this->faker->randomFloat(2, 0, 100),
             'order' => $this->faker->randomNumber(2),
         ];

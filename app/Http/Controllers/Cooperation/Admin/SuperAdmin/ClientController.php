@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\ClientFormRequest;
 use App\Models\Client;
@@ -13,10 +15,8 @@ class ClientController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $clients = Client::all();
 
@@ -25,10 +25,8 @@ class ClientController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         return view('cooperation.admin.super-admin.clients.create');
     }
@@ -36,10 +34,9 @@ class ClientController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(int $id)
     {
         //
     }
@@ -48,9 +45,8 @@ class ClientController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function edit(Cooperation $cooperation, Client $client)
+    public function edit(Cooperation $cooperation, Client $client): View
     {
         return view('cooperation.admin.super-admin.clients.edit', compact('client'));
     }
@@ -58,11 +54,9 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function update(ClientFormRequest $request, Cooperation $cooperation, Client $client)
+    public function update(ClientFormRequest $request, Cooperation $cooperation, Client $client): RedirectResponse
     {
         $name = $request->input('clients.name');
         $short = Str::slug($name);
@@ -77,11 +71,9 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function store(ClientFormRequest $request)
+    public function store(ClientFormRequest $request): RedirectResponse
     {
         $name = $request->input('clients.name');
         $short = Str::slug($name);
@@ -95,10 +87,9 @@ class ClientController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
         //
     }

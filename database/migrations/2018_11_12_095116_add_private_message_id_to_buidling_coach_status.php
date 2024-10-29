@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPrivateMessageIdToBuidlingCoachStatus extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasColumn('building_coach_statuses', 'private_message_id')) {
             Schema::table('building_coach_statuses',
@@ -24,11 +22,9 @@ class AddPrivateMessageIdToBuidlingCoachStatus extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // We don't know for sure if the migration has run, so don't do anything.
     }
-}
+};

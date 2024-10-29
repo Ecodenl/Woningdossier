@@ -9,15 +9,13 @@ class AccountFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         static $password;
 
         return [
-            'email' => $this->faker->email,
+            'email' => $this->faker->email(),
             'password' => $password ?: Hash::make('secret'),
             'email_verified_at' => now(),
             'active' => true,

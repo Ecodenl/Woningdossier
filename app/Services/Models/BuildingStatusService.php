@@ -29,10 +29,8 @@ class BuildingStatusService
      * convenient way of setting a status on a building.
      *
      * @param  string|Status  $status
-     *
-     * @return void
      */
-    public function setStatus($status)
+    public function setStatus($status): void
     {
         $statusModel = $this->resolveStatusModel($status);
 

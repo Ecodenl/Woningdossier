@@ -13,10 +13,8 @@ class AvailableScope implements Scope
      * Apply the scope to a given Eloquent query builder.
      *
      * Global scope so it will only show file's that are available
-     *
-     * @return void
      */
-    public function apply(Builder $builder, Model $model)
+    public function apply(Builder $builder, Model $model): void
     {
         $builder->where('available_until', '>=', Carbon::now()->format('Y-m-d H:i:s'));
     }

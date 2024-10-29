@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
+return new class extends Migration
 {
     use \App\Traits\DebugableMigrationTrait;
 
@@ -10,10 +10,8 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
      * Run the migrations.
      *
      * Migration to migrate the interested_in_type to model names and the interested_in_ids to the matching step ids
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $userInterests = DB::table('user_interests')->get();
 
@@ -77,10 +75,8 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

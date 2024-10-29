@@ -4,17 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveOldCommentsFromVariousTables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * Since we added a new step_comments table and migrated to comments to that table
      * we can now safely remove the comments from the old columns
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $tablesThatHaveComments = [
             'user_energy_habits' => 'living_situation_extra',
@@ -50,10 +48,8 @@ class RemoveOldCommentsFromVariousTables extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

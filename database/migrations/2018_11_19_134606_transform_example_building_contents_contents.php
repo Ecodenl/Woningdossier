@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Arr;
 
-class TransformExampleBuildingContentsContents extends Migration
+return new class extends Migration
 {
     /**
      * Transform the example buildings content where needed.
@@ -11,10 +11,8 @@ class TransformExampleBuildingContentsContents extends Migration
 
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $exampleBuildingContents = \App\Models\ExampleBuildingContent::all();
 
@@ -128,10 +126,8 @@ class TransformExampleBuildingContentsContents extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         /*
         $exampleBuildingContents = \App\Models\ExampleBuildingContent::all();
@@ -167,4 +163,4 @@ class TransformExampleBuildingContentsContents extends Migration
         }
         */
     }
-}
+};

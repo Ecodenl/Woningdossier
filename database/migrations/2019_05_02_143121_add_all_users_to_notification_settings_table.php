@@ -2,14 +2,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class AddAllUsersToNotificationSettingsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $notificationTypes = DB::table('notification_types')->get();
         $users = DB::table('users')->get();
@@ -29,10 +27,8 @@ class AddAllUsersToNotificationSettingsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

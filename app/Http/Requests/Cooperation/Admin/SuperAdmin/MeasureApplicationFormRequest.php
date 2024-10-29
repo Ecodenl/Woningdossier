@@ -14,10 +14,8 @@ class MeasureApplicationFormRequest extends FormRequest
 
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin');
     }
@@ -29,10 +27,8 @@ class MeasureApplicationFormRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $evaluateGt = ! is_null($this->input('measure_applications.cost_range.from'));
 

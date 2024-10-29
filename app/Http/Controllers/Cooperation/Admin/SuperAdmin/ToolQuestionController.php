@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\ToolQuestionFormRequest;
 use App\Models\Cooperation;
@@ -13,7 +15,7 @@ class ToolQuestionController extends Controller
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(): View
     {
         $toolQuestions = ToolQuestion::all();
 
@@ -21,24 +23,15 @@ class ToolQuestionController extends Controller
     }
 
     /**
-     * @param \App\Models\Cooperation $cooperation
-     * @param \App\Models\ToolQuestion $toolQuestion
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function edit(Cooperation $cooperation, ToolQuestion $toolQuestion)
+    public function edit(Cooperation $cooperation, ToolQuestion $toolQuestion): View
     {
         return view('cooperation.admin.super-admin.tool-questions.edit', compact('toolQuestion'));
     }
 
-    /**
-     * @param \App\Http\Requests\Cooperation\Admin\SuperAdmin\ToolQuestionFormRequest $request
-     * @param \App\Models\Cooperation $cooperation
-     * @param \App\Models\ToolQuestion $toolQuestion
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update(ToolQuestionFormRequest $request, Cooperation $cooperation, ToolQuestion $toolQuestion)
+    public function update(ToolQuestionFormRequest $request, Cooperation $cooperation, ToolQuestion $toolQuestion): RedirectResponse
     {
         $toolQuestion->update($request->validated()['tool_questions']);
 

@@ -7,7 +7,7 @@
                 'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city,
-                'municipality' => optional($building->municipality)->name ?? __('cooperation/admin/buildings.show.unknown-municipality'),
+                'municipality' => $building->municipality?->name ?? __('cooperation/admin/buildings.show.unknown-municipality'),
                 'email' => $user->account->email,
                 'phone-number' => $user->phone_number,
             ])
@@ -131,8 +131,8 @@
                         <label for="building-coach-status">@lang('cooperation/admin/buildings.show.status.label')</label>
                         <select autocomplete="off" class="form-control" name="building[building_statuses][id]" id="building-status">
                             @foreach($statuses as $status)
-                                <option {{optional($mostRecentStatus)->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
-                                    @if(optional($mostRecentStatus)->status_id == $status->id)
+                                <option {{$mostRecentStatus?->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
+                                    @if($mostRecentStatus?->status_id == $status->id)
                                         @lang('cooperation/admin/buildings.show.status.current')
                                     @endif
                                     {{$status->name}}
@@ -168,7 +168,6 @@
                             <label for="associated-coaches">@lang('cooperation/admin/buildings.show.associated-coach.label')</label>
                             <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
                                 @foreach($coaches as $coach)
-                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof \stdClass ?>
                                     <option
                                             @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
                                                 selected="selected"

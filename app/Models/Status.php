@@ -16,13 +16,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read array $translations
+ * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder|Status newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Status newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Status ordered(string $direction = 'asc')
  * @method static \Illuminate\Database\Eloquent\Builder|Status query()
  * @method static \Illuminate\Database\Eloquent\Builder|Status whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Status whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Status whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Status whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|Status whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|Status whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|Status whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Status whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Status whereShort($value)

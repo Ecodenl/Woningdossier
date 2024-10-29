@@ -10,10 +10,8 @@ class ConditionEvaluatorTest extends TestCase
 {
     /**
      * A basic unit test example.
-     *
-     * @return void
      */
-    public function test_simple_collection_evaluation()
+    public function test_simple_collection_evaluation(): void
     {
         $answers   = $this->getTestCollection();
         $evaluator = ConditionEvaluator::init();
@@ -66,7 +64,7 @@ class ConditionEvaluatorTest extends TestCase
         $this->assertFalse($evaluated);
     }
 
-    public function test_complexer_collection_evaluation()
+    public function test_complexer_collection_evaluation(): void
     {
         $answers = [
             [

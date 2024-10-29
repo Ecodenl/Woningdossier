@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Gate;
+use App\Policies\UserPolicy;
+use App\Policies\RolePolicy;
+use App\Policies\BuildingPolicy;
 use App\Models\PersonalAccessToken;
 use App\Rules\MaxFilenameLength;
 use Carbon\Carbon;
@@ -18,6 +22,15 @@ use Spatie\Translatable\Facades\Translatable;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * The path to your application's "home" route.
+     *
+     * Typically, users are redirected here after authentication.
+     *
+     * @var string
+     */
+    public const HOME = '/home';
+
     /**
      * Bootstrap any application services.
      */
@@ -75,6 +88,8 @@ class AppServiceProvider extends ServiceProvider
          * @see  https://spatie.be/docs/laravel-translatable/v6/basic-usage/handling-missing-translations
          */
         Translatable::fallback(App::getFallbackLocale());
+
+        $this->bootAuth();
     }
 
     /**
@@ -92,5 +107,26 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('local')) {
             //$this->app->register(IdeHelperServiceProvider::class);
         }
+    }
+
+    public function bootAuth(): void
+    {
+        Gate::guessPolicyNamesUsing(function ($modelClass) {
+            return 'App\\Policies\\'.class_basename($modelClass).'Policy';
+        });
+
+        Gate::define('talk-to-resident', BuildingPolicy::class.'@talkToResident');
+        Gate::define('access-building', BuildingPolicy::class.'@accessBuilding');
+        Gate::define('set-appointment', BuildingPolicy::class.'@setAppointment');
+        Gate::define('set-status', BuildingPolicy::class.'@setStatus');
+
+        Gate::define('delete-own-account', UserPolicy::class.'@deleteOwnAccount');
+        Gate::define('assign-role', UserPolicy::class.'@assignRole');
+        Gate::define('access-admin', UserPolicy::class.'@accessAdmin');
+        Gate::define('delete-user', UserPolicy::class.'@deleteUser');
+        Gate::define('remove-participant-from-chat', UserPolicy::class.'@removeParticipantFromChat');
+
+        Gate::define('send-user-information-to-econobis', [UserPolicy::class, 'sendUserInformationToEconobis']);
+        Gate::define('editAny', [RolePolicy::class, 'editAny']);
     }
 }

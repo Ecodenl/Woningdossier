@@ -70,6 +70,7 @@ class BuildingService extends Model implements Auditable
 
     public function serviceType(): BelongsTo
     {
+        // TODO: Broken
         return $this->belongsTo(ServiceType::class);
     }
 

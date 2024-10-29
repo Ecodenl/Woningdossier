@@ -52,6 +52,7 @@ class ServiceType extends Model
 
     public function buildingServices(): HasMany
     {
+        // TODO: Broken
         return $this->hasMany(BuildingService::class);
     }
 }

@@ -17,7 +17,7 @@
             </div>
             <div class="w-full flex flex-wrap mb-5">
                 {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", [
-                    'link' => route('cooperation.conversation-requests.index', ['cooperation' => $cooperation, 'requestType' => \App\Services\PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION])
+                    'link' => route('cooperation.my-account.messages.edit', ['cooperation' => $cooperation])
                 ]) !!}
             </div>
 

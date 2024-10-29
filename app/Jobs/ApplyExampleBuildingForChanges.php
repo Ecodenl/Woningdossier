@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\ExampleBuildingHelper;
+use App\Helpers\Models\BuildingFeatureHelper;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingType;
@@ -155,6 +156,7 @@ class ApplyExampleBuildingForChanges
 
     private function retriggerExampleBuildingApplication(ExampleBuilding $exampleBuilding)
     {
+        // TODO: This is currently always the same as $this->buildingFeature (but perhaps not refreshed yet?)
         $buildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
         if ($buildingFeature->example_building_id !== $exampleBuilding->id) {
             $buildingFeatureToUpdate = $this->building->buildingFeatures()->forInputSource($this->applyForInputSource)->first();
@@ -167,11 +169,11 @@ class ApplyExampleBuildingForChanges
         // more of a fallback
         $buildYear = $buildingFeature->build_year;
 
-        // so this could happen on old legacy accounts where there is no build year available on the master or current input source
-        // that case we will try to pull a build year from any other input source as this is more credible than guessing anything.
+        // So this could happen on old legacy accounts where there is no build year available on the master or current input source.
+        // In that case we will try to pull a build year from any other input source as this is more credible than guessing anything.
         if (is_null($buildYear)) {
             $buildYear = $this->building->buildingFeatures()->allInputSources()->whereNotNull('build_year')->pluck('build_year')->first();
-            // it can still be empty, if so we will just set the current year as we have nothing to rely on.
+            // It can still be empty and if so we will just set the current year as we have nothing to rely on.
             if (is_null($buildYear)) {
                 $buildYear = date('Y');
             }
@@ -204,6 +206,17 @@ class ApplyExampleBuildingForChanges
                 $this->building,
                 $this->applyForInputSource
             );
+
+            // After applying the example building, the master will be updated, and you guessed it, potentially select
+            // 2 secondary roof types. We only want to select one, like what would happen if we manually changed
+            // the primary roof type (in the simple scan) again. Otherwise the calculations aren't accurate.
+            // While technically the primary roof type question comes later, it could be that the user
+            // selects the same roof type, and so it's not dirty and therefore the logic isn't applied.
+            // We fetch the feature fresh from the DB because the old one might have been removed during the apply.
+            $buildingFeatureToUpdate = $this->building->buildingFeatures()->forInputSource($this->applyForInputSource)->first();
+            if ($buildingFeatureToUpdate instanceof BuildingFeature) {
+                BuildingFeatureHelper::performSecondaryRoofTypeLogic($buildingFeatureToUpdate);
+            }
         }
 
         // Manually trigger. We want to trigger the example building sourced later, as otherwise the "last changed

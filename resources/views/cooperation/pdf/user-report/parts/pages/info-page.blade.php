@@ -1,7 +1,7 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'info-page'])
     <div class="group">
         <h2>
-            @lang('pdf/user-report.pages.info-page.subsidy.title')
+            {{ strip_tags(__('pdf/user-report.pages.info-page.subsidy.title')) }}
         </h2>
         @if(empty($subsidyRegulations))
             <p>

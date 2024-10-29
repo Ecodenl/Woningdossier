@@ -1,9 +1,9 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'small-measures'])
     <h2>
-        @lang('pdf/user-report.pages.small-measures.title')
+        {{ strip_tags(__('pdf/user-report.pages.small-measures.title')) }}
     </h2>
     <p>
-        @lang('pdf/user-report.pages.small-measures.text')
+        {{ strip_tags(__('pdf/user-report.pages.small-measures.text')) }}
     </p>
 
     <div class="group">
@@ -26,7 +26,7 @@
                 <div class="row py-3">
                     <div class="col-3">
                         <h4>
-                            @lang('pdf/user-report.pages.action-plan.advices.cost-indication')
+                            {!! strip_tags(__('pdf/user-report.pages.action-plan.advices.cost-indication')) !!}
                         </h4>
                     </div>
                     <div class="col-3">
@@ -36,7 +36,7 @@
                     </div>
                     <div class="col-3">
                         <h4>
-                            @lang('pdf/user-report.pages.action-plan.advices.savings')
+                            {!! strip_tags(__('pdf/user-report.pages.action-plan.advices.savings')) !!}
                         </h4>
                     </div>
                     <div class="col-3">

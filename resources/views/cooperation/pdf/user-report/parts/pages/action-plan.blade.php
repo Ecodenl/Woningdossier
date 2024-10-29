@@ -1,21 +1,21 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'action-plan'])
     <h1 class="mb-2">
-        @lang('pdf/user-report.pages.action-plan.title')
+        {{ strip_tags(__('pdf/user-report.pages.action-plan.title')) }}
     </h1>
     <p>
-        @lang('pdf/user-report.pages.action-plan.text')
+        {{ strip_tags(__('pdf/user-report.pages.action-plan.text')) }}
     </p>
 
     <div class="group">
         @php $stepShort = $scanShort === \App\Models\Scan::LITE ? 'usage-lite-scan' : 'usage-quick-scan'; @endphp
         <h3>
-            @lang('pdf/user-report.pages.action-plan.usage.current')
+            {{ strip_tags(__('pdf/user-report.pages.action-plan.usage.current')) }}
         </h3>
 
         <div class="row">
             <div class="col-2">
                 <p>
-                    {{ Str::ucfirst(__('general.unit.gas.title')) }}
+                    {{ Str::ucfirst(strip_tags(__('general.unit.gas.title'))) }}
                 </p>
             </div>
             <div class="col-9">
@@ -27,7 +27,7 @@
         <div class="row">
             <div class="col-2">
                 <p>
-                    {{ Str::ucfirst(__('general.unit.electric.title')) }}
+                    {{ Str::ucfirst(strip_tags(__('general.unit.electric.title'))) }}
                 </p>
             </div>
             <div class="col-10">
@@ -40,13 +40,13 @@
 
     <div class="group">
         <h3>
-            @lang('pdf/user-report.pages.action-plan.usage.kengetallen')
+            {{ strip_tags(__('pdf/user-report.pages.action-plan.usage.kengetallen')) }}
         </h3>
 
         <div class="row">
             <div class="col-2">
                 <p>
-                    {{ Str::ucfirst(__('general.unit.gas.title')) }}
+                    {{ Str::ucfirst(strip_tags(__('general.unit.gas.title'))) }}
                 </p>
             </div>
             <div class="col-10">
@@ -58,7 +58,7 @@
         <div class="row">
             <div class="col-2">
                 <p>
-                    {{ Str::ucfirst(__('general.unit.electric.title')) }}
+                    {{ Str::ucfirst(strip_tags(__('general.unit.electric.title'))) }}
                 </p>
             </div>
             <div class="col-10">
@@ -74,24 +74,24 @@
             @php $showDetails = $category !== \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE; @endphp
             <div class="group">
                 <h3>
-                    @lang("pdf/user-report.pages.action-plan.categories.{$category}")
+                    {{ strip_tags(__("pdf/user-report.pages.action-plan.categories.{$category}")) }}
                 </h3>
 
                 @if($showDetails)
                     <div class="row">
                         <div class="col-6">
                             <h4>
-                                @lang('pdf/user-report.pages.action-plan.advices.measure')
+                                {{ strip_tags(__('pdf/user-report.pages.action-plan.advices.measure')) }}
                             </h4>
                         </div>
                         <div class="col-3 text-center">
                             <h4>
-                                @lang('pdf/user-report.pages.action-plan.advices.cost-indication')
+                                {!! strip_tags(__('pdf/user-report.pages.action-plan.advices.cost-indication')) !!}
                             </h4>
                         </div>
                         <div class="col-3 text-center">
                             <h4>
-                                @lang('pdf/user-report.pages.action-plan.advices.savings')
+                                {!! strip_tags(__('pdf/user-report.pages.action-plan.advices.savings')) !!}
                             </h4>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                     <div class="group">
                         <div class="row">
                             <p>
-                                @lang('pdf/user-report.alerts.text')
+                                {{ strip_tags(__('pdf/user-report.alerts.text')) }}
                             </p>
                         </div>
                     </div>
@@ -136,7 +136,7 @@
     @if($adviceComments->isNotEmpty())
         <div class="group">
             <h4>
-                @lang('pdf/user-report.pages.action-plan.comment')
+                {{ strip_tags(__('pdf/user-report.pages.action-plan.comment')) }}
             </h4>
             @foreach($adviceComments as $comment)
                 <div class="py-2">

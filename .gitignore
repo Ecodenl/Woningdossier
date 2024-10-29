@@ -11,7 +11,6 @@ npm-debug.log
 yarn-error.log
 .env
 .env.testing
-phpunit.xml
 
 # JS Output
 app.js.LICENSE.txt
@@ -54,4 +53,5 @@ _ide_helper.php
 .php_cs.cache
 /storage/app/exports/
 /.phpunit.cache
+.phpunit.result.cache
 /mysql

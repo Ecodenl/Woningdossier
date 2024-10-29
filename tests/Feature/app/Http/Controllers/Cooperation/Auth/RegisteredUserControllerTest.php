@@ -19,7 +19,7 @@ use OwenIt\Auditing\Drivers\Database;
 use Tests\MocksLvbag;
 use Tests\TestCase;
 
-class RegisteredUserControllerTest extends TestCase
+final class RegisteredUserControllerTest extends TestCase
 {
     use WithFaker,
         RefreshDatabase,
@@ -34,7 +34,7 @@ class RegisteredUserControllerTest extends TestCase
         parent::setUp();
 
         $this->formData = [
-            "email" => $this->faker->email,
+            "email" => $this->faker->email(),
             "first_name" => "Demo",
             "last_name" => "Example",
             'address' => [
@@ -51,7 +51,7 @@ class RegisteredUserControllerTest extends TestCase
         $this->mockLvbagClientAdresUitgebreid($this->formData['address'])->createLvbagMock();
     }
 
-    public function test_valid_data_registers_new_account()
+    public function test_valid_data_registers_new_account(): void
     {
         /** @var Cooperation $cooperation */
         $cooperation = Cooperation::factory()->create();

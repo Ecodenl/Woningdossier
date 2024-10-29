@@ -75,8 +75,6 @@ class ToolQuestionValuable extends Model
 
     /**
      * Method retrieves the morphed models.
-     *
-     * @return MorphTo
      */
     public function toolQuestionValuables(): MorphTo
     {

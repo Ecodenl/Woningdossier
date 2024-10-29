@@ -2,14 +2,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class CopyUserDataToAccountsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $users = DB::table('users')->get();
 
@@ -34,10 +32,8 @@ class CopyUserDataToAccountsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         $accounts = DB::table('accounts')->get();
 
@@ -53,4 +49,4 @@ class CopyUserDataToAccountsTable extends Migration
             ]);
         }
     }
-}
+};

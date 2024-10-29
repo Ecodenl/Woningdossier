@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string|null $comment
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\InputSource $inputSource
  * @property-read \App\Models\Step $step
@@ -53,10 +54,8 @@ class StepComment extends Model implements Auditable
 
     /**
      * Return the step of a comment.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function step()
+    public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
     }

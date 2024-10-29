@@ -33,18 +33,18 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $forSpecificInputSource
- * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubSteppable[] $subSteppables
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionAnswer[] $toolQuestionAnswers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestionAnswer> $toolQuestionAnswers
  * @property-read int|null $tool_question_answers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionCustomValue[] $toolQuestionCustomValues
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestionCustomValue> $toolQuestionCustomValues
  * @property-read int|null $tool_question_custom_values_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionValuable[] $toolQuestionValuables
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestionValuable> $toolQuestionValuables
  * @property-read int|null $tool_question_valuables_count
- * @method static \Database\Factories\ToolQuestionFactory factory(...$parameters)
+ * @property-read mixed $translations
+ * @method static \Database\Factories\ToolQuestionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion findByShortsOrdered($shorts)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newQuery()
@@ -55,6 +55,10 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereForSpecificInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereHelpText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereOptions($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion wherePlaceholder($value)
@@ -108,8 +112,6 @@ class ToolQuestion extends Model
 
     /**
      * Method to return the question values  (morphed models / the options for the question)
-     *
-     * @return mixed
      */
     public function getQuestionValues(): Collection
     {
@@ -188,8 +190,6 @@ class ToolQuestion extends Model
 
     /**
      * Method to return the intermediary morph table
-     *
-     * @return HasMany
      */
     public function toolQuestionValuables(): HasMany
     {

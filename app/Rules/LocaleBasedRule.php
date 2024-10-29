@@ -16,7 +16,7 @@ class LocaleBasedRule
      *
      * @param string $countryIso3166alpha2 Basically a locale
      */
-    public function __construct($countryIso3166alpha2 = null)
+    public function __construct(string $countryIso3166alpha2 = null)
     {
         if (is_null($countryIso3166alpha2)) {
             $countryIso3166alpha2 = app()->getLocale();

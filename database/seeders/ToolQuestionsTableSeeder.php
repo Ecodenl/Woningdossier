@@ -27,10 +27,8 @@ class ToolQuestionsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         // First, we need to fetch all relevant models for the tool questions
 

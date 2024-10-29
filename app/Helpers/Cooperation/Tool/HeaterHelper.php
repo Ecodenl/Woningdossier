@@ -81,11 +81,11 @@ class HeaterHelper extends ToolHelper
                 $currentWater = $this->getAnswer('water-comfort');
                 $comfort = ComfortLevelTapWater::find($currentWater);
                 $newComfortEqual = ToolQuestion::findByShort('new-water-comfort')->toolQuestionCustomValues()
-                    ->where('extra->calculate_value', optional($comfort)->calculate_value)
+                    ->where('extra->calculate_value', $comfort?->calculate_value)
                     ->first();
 
                 $results = Heater::calculate($this->building, $this->inputSource,
-                    collect(['new-water-comfort' => optional($newComfortEqual)->short]));
+                    collect(['new-water-comfort' => $newComfortEqual?->short]));
             }
 
             if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {

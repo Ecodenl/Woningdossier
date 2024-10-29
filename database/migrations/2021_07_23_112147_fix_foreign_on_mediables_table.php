@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class FixForeignOnMediablesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // Needed to fix media_id foreign on mediables table; we do this because the vendor file uses `cascadeOnDelete()`,
         // which doesn't actually work and causes foreign key exceptions when deleting media
@@ -31,11 +29,9 @@ class FixForeignOnMediablesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // No need to reverse
     }
-}
+};

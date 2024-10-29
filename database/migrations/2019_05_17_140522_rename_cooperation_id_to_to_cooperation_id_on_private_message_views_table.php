@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RenameCooperationIdToToCooperationIdOnPrivateMessageViewsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('private_message_views', function (Blueprint $table) {
             $table->dropForeign(['cooperation_id']);
@@ -22,10 +20,8 @@ class RenameCooperationIdToToCooperationIdOnPrivateMessageViewsTable extends Mig
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('private_message_views', function (Blueprint $table) {
             $table->dropForeign(['to_cooperation_id']);
@@ -33,4 +29,4 @@ class RenameCooperationIdToToCooperationIdOnPrivateMessageViewsTable extends Mig
             $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
         });
     }
-}
+};

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingPermission;
@@ -31,18 +32,16 @@ class BuildingPolicy
             return false;
         }
 
-        return $user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']);
+        return $user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_COORDINATOR]);
     }
 
     /**
      * Determine if a user is allowed to see a building overview.
-     *
-     * @return bool
      */
-    public function show(Account $account, Building $building)
+    public function show(Account $account, Building $building): bool
     {
         $user = $account->user();
-        if ($user->hasRoleAndIsCurrentRole('coach')) {
+        if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COACH)) {
             // get the buildings the user is connected to.
             $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user);
 
@@ -51,20 +50,18 @@ class BuildingPolicy
         }
 
         // they can always view a building.
-        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+        return $user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_COORDINATOR]);
     }
 
     /**
      * Determine if its possible / authorized to talk to a resident.
      *
      * Its possible when there is 1 public message from the resident itself.
-     *
-     * @return bool
      */
-    public function talkToResident(Account $account, Building $building)
+    public function talkToResident(Account $account, Building $building): bool
     {
         $user = $account->user();
-        if ($user->hasRoleAndIsCurrentRole('coach')) {
+        if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COACH)) {
             // get the buildings the user is connected to.
             $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user);
 
@@ -72,7 +69,7 @@ class BuildingPolicy
             return $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
         }
 
-        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
+        return $user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_COORDINATOR]) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
     }
 
     /**
@@ -89,7 +86,7 @@ class BuildingPolicy
             return false;
         }
 
-        if ($user->hasRoleAndIsCurrentRole('coach')) {
+        if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COACH)) {
             // check if the coach has building permission
             $coachHasBuildingPermission = Building::withTrashed()
                     ->find($building->id)
@@ -100,7 +97,7 @@ class BuildingPolicy
         }
 
         // they can always access a building (if the user / resident gave access)
-        return $building->user->allowedAccess() && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+        return $building->user->allowedAccess() && $user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_COORDINATOR]);
     }
 
     /**

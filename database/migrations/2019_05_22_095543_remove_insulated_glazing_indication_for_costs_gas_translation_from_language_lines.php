@@ -2,14 +2,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class RemoveInsulatedGlazingIndicationForCostsGasTranslationFromLanguageLines extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $help = DB::table('language_lines')
                   ->where('group', 'insulated-glazing')
@@ -34,10 +32,8 @@ class RemoveInsulatedGlazingIndicationForCostsGasTranslationFromLanguageLines ex
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         $step = DB::table('steps')->where('slug', 'insulated-glazing')->first();
         if ($step instanceof \stdClass) {
@@ -62,4 +58,4 @@ class RemoveInsulatedGlazingIndicationForCostsGasTranslationFromLanguageLines ex
               ]);
         }
     }
-}
+};

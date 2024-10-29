@@ -2,13 +2,14 @@
 
 namespace Tests\Unit\app\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Services\BuildingDataCopyService;
 use Tests\CreatesApplication;
 use Tests\TestCase;
 
-class BuildingDataCopyServiceTest extends TestCase
+final class BuildingDataCopyServiceTest extends TestCase
 {
     use CreatesApplication;
 
@@ -18,7 +19,7 @@ class BuildingDataCopyServiceTest extends TestCase
     }
 
 
-    public function makeTargetsValuesProvider()
+    public static function makeTargetsValuesProvider(): array
     {
         return [
             [
@@ -126,10 +127,8 @@ class BuildingDataCopyServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider makeTargetsValuesProvider
-     */
-    public function testMakeTargetValues($sourceValue, $targetValues, $whereColumn, $additionalWhereColumn, $expected)
+    #[DataProvider('makeTargetsValuesProvider')]
+    public function testMakeTargetValues($sourceValue, $targetValues, $whereColumn, $additionalWhereColumn, $expected): void
     {
         $possibleTargetValues = BuildingDataCopyService::getPossibleTargetValues(
             $sourceValue,

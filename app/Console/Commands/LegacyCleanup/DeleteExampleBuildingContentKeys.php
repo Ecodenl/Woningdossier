@@ -34,10 +34,8 @@ class DeleteExampleBuildingContentKeys extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
 
         $keysToRemove = [

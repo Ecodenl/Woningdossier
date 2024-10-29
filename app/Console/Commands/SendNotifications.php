@@ -40,10 +40,8 @@ class SendNotifications extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         // get the current notification type
         $notificationType = NotificationType::where('short',
@@ -135,10 +133,8 @@ class SendNotifications extends Command
      *
      * On local / test environments the diff for one day is set to one hour
      * (Hoom logic)
-     *
-     * @return bool
      */
-    protected function almostMoreThanOneDayAgo(\DateInterval $diff)
+    protected function almostMoreThanOneDayAgo(\DateInterval $diff): bool
     {
         if (! \App::environment('production')) {
             return $diff->h >= 1 || $diff->days >= 1;
@@ -156,10 +152,8 @@ class SendNotifications extends Command
      *
      * On local / test environments the diff for one week is set to 4 hours
      * (Hoom logic)
-     *
-     * @return bool
      */
-    protected function almostMoreThanOneWeekAgo(\DateInterval $diff)
+    protected function almostMoreThanOneWeekAgo(\DateInterval $diff): bool
     {
         if (! \App::environment('production')) {
             return $diff->h >= 4 || $diff->days >= 1;

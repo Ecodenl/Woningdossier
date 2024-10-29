@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBuildingFormRequest;
 use App\Models\Account;
@@ -19,7 +21,7 @@ class CreateBuildingController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(): View
     {
         return view('cooperation.create-building.index');
     }
@@ -29,7 +31,7 @@ class CreateBuildingController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(CreateBuildingFormRequest $request, Cooperation $cooperation, BagService $bagService)
+    public function store(CreateBuildingFormRequest $request, Cooperation $cooperation, BagService $bagService): RedirectResponse
     {
         $email = $request->get('email');
 

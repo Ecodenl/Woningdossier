@@ -53,10 +53,8 @@ class PdfReport extends NonHandleableJobAfterReset
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle(KengetallenService $kengetallenService)
+    public function handle(KengetallenService $kengetallenService): void
     {
         if (App::runningInConsole()) {
             Log::debug(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
@@ -250,7 +248,7 @@ class PdfReport extends NonHandleableJobAfterReset
             ->where('comment', '!=', '')
             ->get();
 
-        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building);
         $connectedCoachNames = User::whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
             ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
             ->pluck('full_name')

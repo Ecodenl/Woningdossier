@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Sentry\Laravel\Integration;
 use Throwable;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -18,14 +19,6 @@ use Spatie\Permission\Exceptions\UnauthorizedException as SpatieUnauthorizedExce
 
 class Handler extends ExceptionHandler
 {
-    /**
-     * A list of the exception types that are not reported.
-     *
-     * @var array
-     */
-    protected $dontReport = [
-    ];
-
     /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
@@ -66,12 +59,10 @@ class Handler extends ExceptionHandler
     }
 
 
-    public function register()
+    public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            if (app()->bound('sentry') && $this->shouldReport($e)) {
-                app('sentry')->captureException($e);
-            }
+            Integration::captureUnhandledException($e);
         });
     }
 
@@ -128,10 +119,10 @@ class Handler extends ExceptionHandler
 
                 if ($redirect instanceof CooperationRedirect) {
                     Log::debug("Redirect to " . str_ireplace(
-                            $cooperation,
-                            $redirect->cooperation->slug,
-                            $request->url()
-                        ));
+                        $cooperation,
+                        $redirect->cooperation->slug,
+                        $request->url()
+                    ));
                     return redirect(
                         str_ireplace(
                             $cooperation,

@@ -14,7 +14,7 @@ class HoomdossierSession extends Session
     /**
      * Set all the required values.
      */
-    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role)
+    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role): void
     {
         self::setBuilding($building);
         self::setInputSource($inputSource);
@@ -60,7 +60,7 @@ class HoomdossierSession extends Session
      *
      * @return int|Cooperation|null
      */
-    public static function getCooperation($object = false)
+    public static function getCooperation(bool $object = false): int|Cooperation|null
     {
         $cooperation = self::get('cooperation');
 
@@ -202,7 +202,7 @@ class HoomdossierSession extends Session
      *
      * @return int|Role|null
      */
-    public static function getRole($object = false)
+    public static function getRole(bool $object = false)
     {
         $id = self::getHoomdossierSession('role_id');
         if (! $object) {
@@ -228,6 +228,17 @@ class HoomdossierSession extends Session
         return '';
     }
 
+    public static function currentRoleIs($role): bool
+    {
+        if (! (\App\Helpers\Cache\Role::findByName($role) instanceof Role)) {
+            return false;
+        }
+
+        $currentRole = self::currentRole('name');
+
+        return $currentRole == $role;
+    }
+
     /**
      * Get the input source id.
      *
@@ -235,7 +246,7 @@ class HoomdossierSession extends Session
      *
      * @return int|InputSource|null
      */
-    public static function getInputSource($object = false)
+    public static function getInputSource(bool $object = false): int|InputSource|null
     {
         $id = self::getHoomdossierSession('input_source_id');
         if (! $object) {
@@ -263,16 +274,12 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Get the building id.
-     *
-     * @param bool $object Set to true if you want to get an object back
-     *
-     * @return int|Building|null
+     * Get the current building ID (or building model if hydrated).
      */
-    public static function getBuilding($object = false)
+    public static function getBuilding(bool $hydrate = false): null|int|Building
     {
         $building = self::getHoomdossierSession('building_id');
-        if ($object) {
+        if ($hydrate) {
             $building = \App\Helpers\Cache\Building::find($building);
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -21,7 +22,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $angle
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\Building $building
  * @property-read \App\Models\InputSource|null $inputSource
@@ -64,22 +65,15 @@ class BuildingPvPanel extends Model implements Auditable
         'comment',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
     /**
      * Make sure that null is casted to the integer 0.
-     *
-     * @param string $value
-     *
-     * @return void
      */
-    public function setNumberAttribute($value)
+    public function setNumberAttribute(string $value): void
     {
         if (is_null($value)) {
             $value = 0;
@@ -88,10 +82,7 @@ class BuildingPvPanel extends Model implements Auditable
         $this->attributes['number'] = $value;
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function orientation()
+    public function orientation(): BelongsTo
     {
         return $this->belongsTo(PvPanelOrientation::class, 'pv_panel_orientation_id', 'id');
     }

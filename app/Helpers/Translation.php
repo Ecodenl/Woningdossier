@@ -30,10 +30,8 @@ class Translation
 
     /**
      * Returns whether or not there is a (non-empty) translation.
-     *
-     * @return bool
      */
-    public static function hasTranslation(string $translationString, array $replaceArray = [])
+    public static function hasTranslation(string $translationString, array $replaceArray = []): bool
     {
         return $translationString !== static::translate($translationString, $replaceArray);
     }

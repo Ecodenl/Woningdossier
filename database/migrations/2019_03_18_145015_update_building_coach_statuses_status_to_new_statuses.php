@@ -2,14 +2,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // the old statuses
         $statusActive = 'active';
@@ -59,10 +57,8 @@ class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
      * But, the pending can be changed back to the active
      * the in_progress will be changed to appointment
      * and executed will be changed to done
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // the old statuses
         $statusDone = 'done';
@@ -78,4 +74,4 @@ class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
 
         DB::table('building_coach_statuses')->where('status', 'in_progress')->delete();
     }
-}
+};

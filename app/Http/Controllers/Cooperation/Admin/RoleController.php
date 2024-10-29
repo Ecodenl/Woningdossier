@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
@@ -14,7 +15,7 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    public function assignRole(Cooperation $cooperation, Request $request)
+    public function assignRole(Cooperation $cooperation, Request $request): RedirectResponse
     {
         // the user id to assign the role to
         $userId = $request->get('user_id');
@@ -38,7 +39,7 @@ class RoleController extends Controller
         return redirect()->back();
     }
 
-    public function removeRole(Cooperation $cooperation, Request $request)
+    public function removeRole(Cooperation $cooperation, Request $request): RedirectResponse
     {
         $currentUser = Hoomdossier::user();
         // the user id to assign the role to

@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddDefaultToVariousCommmentColumns extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $tables = [
             'building_pv_panels',
@@ -27,10 +25,8 @@ class AddDefaultToVariousCommmentColumns extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         $tables = [
             'building_pv_panels',
@@ -43,4 +39,4 @@ class AddDefaultToVariousCommmentColumns extends Migration
             });
         }
     }
-}
+};

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\Questionnaire;
@@ -10,7 +11,7 @@ use App\Services\QuestionnaireService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class QuestionnaireServiceTest extends TestCase
+final class QuestionnaireServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -19,7 +20,7 @@ class QuestionnaireServiceTest extends TestCase
         parent::setUp();
     }
 
-    public static function hasQuestionOptionsProvider()
+    public static function hasQuestionOptionsProvider(): array
     {
         return [
             ['select', true],
@@ -31,15 +32,13 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider hasQuestionOptionsProvider
-     */
-    public function testHasQuestionOptions($input, $expected)
+    #[DataProvider('hasQuestionOptionsProvider')]
+    public function testHasQuestionOptions($input, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::hasQuestionOptions($input));
     }
 
-    public function createQuestionProvider()
+    public static function createQuestionProvider(): array
     {
         return [
             [[
@@ -51,10 +50,8 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider createQuestionProvider
-     */
-    public function testCreateQuestion($questionData)
+    #[DataProvider('createQuestionProvider')]
+    public function testCreateQuestion($questionData): void
     {
         // first we need to create a questionnaire with a question
         $questionnaire = Questionnaire::factory()->create();
@@ -66,7 +63,7 @@ class QuestionnaireServiceTest extends TestCase
         ]);
     }
 
-    public function testCopyQuestionnaireToCooperation()
+    public function testCopyQuestionnaireToCooperation(): void
     {
         // first we need to create a questionnaire with a question
         $questionnaire = Questionnaire::factory()->create();
@@ -98,7 +95,7 @@ class QuestionnaireServiceTest extends TestCase
         ]);
     }
 
-    public function isEmptyTranslationProvider()
+    public static function isEmptyTranslationProvider(): array
     {
         return [
             [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], false],
@@ -110,15 +107,13 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isEmptyTranslationProvider
-     */
-    public function testIsEmptyTranslation($translations, $expected)
+    #[DataProvider('isEmptyTranslationProvider')]
+    public function testIsEmptyTranslation($translations, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
     }
 
-    public function isNotEmptyTranslationProvider()
+    public static function isNotEmptyTranslationProvider(): array
     {
         return [
             [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], true],
@@ -130,10 +125,8 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isNotEmptyTranslationProvider
-     */
-    public function testisNotEmptyTranslation($translations, $expected)
+    #[DataProvider('isNotEmptyTranslationProvider')]
+    public function testisNotEmptyTranslation($translations, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::isNotEmptyTranslation($translations));
     }

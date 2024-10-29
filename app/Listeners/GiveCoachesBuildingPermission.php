@@ -15,12 +15,8 @@ class GiveCoachesBuildingPermission
 {
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         $user = $event->user;
         $building = $event->building;
@@ -34,13 +30,13 @@ class GiveCoachesBuildingPermission
         // and we need to check if there were "connected" coaches, if so we have to give them building permissions
         if (PrivateMessage::public()->conversation($building->id)->exists()) {
             // get all the coaches that are currently connected to the building
-            $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+            $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building, true);
 
             // we give the coaches that have "permission" to talk to a resident the permissions to access the building from the resident.
             foreach ($coachesWithAccessToResidentBuildingStatuses as $coachWithAccessToResidentBuildingStatus) {
                 BuildingPermissionService::givePermission(
-                    User::find($coachWithAccessToResidentBuildingStatus->coach_id),
-                    Building::find($coachWithAccessToResidentBuildingStatus->building_id)
+                    $coachWithAccessToResidentBuildingStatus->coach,
+                    $building
                 );
             }
         } else {

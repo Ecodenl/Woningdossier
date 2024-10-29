@@ -225,10 +225,9 @@ class ToolQuestionService
      *
      * @param $givenAnswer
      *
-     * @return void
      * @throws \Exception
      */
-    private function checkConditionalAnswers($givenAnswer)
+    private function checkConditionalAnswers($givenAnswer): void
     {
         // TODO: See how to handle JSON answers in case it ever becomes a conditional (comes back as literal JSON)
         // We build the answers ourselves to make a few less queries

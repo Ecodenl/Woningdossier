@@ -2,14 +2,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class AddSubStepsToStepsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $generalData = DB::table('steps')->where('short', 'general-data')->first();
 
@@ -78,10 +76,8 @@ class AddSubStepsToStepsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

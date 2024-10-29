@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\MediaHelper;
 use App\Helpers\Models\CooperationSettingHelper;
 use App\Http\Controllers\Controller;
@@ -17,7 +19,7 @@ use App\Models\Media;
 
 class ScanController extends Controller
 {
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         $scans = Scan::all();
         $currentScan = CooperationScanService::init($cooperation)->getCurrentType();
@@ -26,7 +28,7 @@ class ScanController extends Controller
         return view('cooperation.admin.cooperation.cooperation-admin.scans.index', compact('scans', 'mapping', 'currentScan'));
     }
 
-    public function store(ScansFormRequest $request, Cooperation $cooperation)
+    public function store(ScansFormRequest $request, Cooperation $cooperation): RedirectResponse
     {
         CooperationScanService::init($cooperation)->syncScan($request->input('scans.type'));
 

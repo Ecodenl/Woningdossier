@@ -59,11 +59,6 @@ class DumpService
         $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
     }
 
-    /**
-     * @param  User  $user
-     *
-     * @return $this
-     */
     public function user(User $user): self
     {
         $this->user = $user;
@@ -71,11 +66,6 @@ class DumpService
         return $this;
     }
 
-    /**
-     * @param  InputSource  $inputSource
-     *
-     * @return $this
-     */
     public function inputSource(InputSource $inputSource): self
     {
         $this->inputSource = $inputSource;
@@ -84,10 +74,6 @@ class DumpService
 
     /**
      * Anonymize the dump.
-     *
-     * @param  bool  $anonymize
-     *
-     * @return $this
      */
     public function anonymize(bool $anonymize = true): self
     {
@@ -97,8 +83,6 @@ class DumpService
 
     /**
      * Set dump mode, which impacts how the dump is formed.
-     *
-     * @return $this
      */
     public function setMode(string $mode): self
     {
@@ -108,10 +92,6 @@ class DumpService
 
     /**
      * Set a header structure to re-use.
-     *
-     * @param  array  $headerStructure
-     *
-     * @return $this
      */
     public function setHeaderStructure(array $headerStructure): self
     {
@@ -121,8 +101,6 @@ class DumpService
 
     /**
      * Create the header structure.
-     *
-     * @return $this
      */
     public function createHeaderStructure(string $short): self
     {
@@ -181,8 +159,6 @@ class DumpService
      *
      * @param bool $withConditionalLogic If we should follow conditional logic. Answers won't be shown if conditions
      *     don't match
-     *
-     * @return array
      */
     public function generateDump(bool $withConditionalLogic = true): array
     {
@@ -190,7 +166,7 @@ class DumpService
         $building = $this->building;
         $inputSource = $this->inputSource;
 
-        $createdAt = optional($user->created_at)->format('Y-m-d');
+        $createdAt = $user->created_at?->format('Y-m-d');
         $updatedAt = $this->user->userActionPlanAdvices()
             ->forInputSource($inputSource)
             ->orderByDesc('updated_at')
@@ -216,11 +192,10 @@ class DumpService
         } else {
             $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
             $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
-            $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
-                ->map(function ($user) {
-                    return $user->getFullName();
-                })->implode(', ');
-
+            $connectedCoachNames = User::whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
+                ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
+                ->pluck('full_name')
+                ->implode(', ');
 
             $firstName = $user->first_name;
             $lastName = $user->last_name;
@@ -231,7 +206,7 @@ class DumpService
             $number = $building->number;
             $extension = $building->extension ?? '';
 
-            $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
+            $appointmentDate = $mostRecentStatus->appointment_date?->format('Y-m-d');
 
             $data = [
                 $createdAt, $updatedAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
@@ -421,12 +396,7 @@ class DumpService
     /**
      * Format the output of the given column and value.
      *
-     * @param string $column
      * @param mixed $value
-     * @param int $decimals
-     * @param bool $shouldRound
-     *
-     * @return string
      */
     protected function formatOutput(string $column, $value, int $decimals = 0, bool $shouldRound = false): string
     {

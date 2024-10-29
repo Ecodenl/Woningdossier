@@ -38,8 +38,6 @@ class BuildingService
      * convenient way of setting a appointment date on a building.
      *
      * @param  string
-     *
-     * @return void
      */
     public function setAppointmentDate($appointmentDate): void
     {
@@ -55,8 +53,6 @@ class BuildingService
 
     /**
      * This method will set the BuildingDefined kengetallen to the "default" (RvoDefined) kengetallen
-     *
-     * @return void
      */
     public function setBuildingDefinedKengetallen(): void
     {
@@ -95,10 +91,6 @@ class BuildingService
      * Get the answer for a set of questions including the input source that made that answer.
      * The example building will be prioritized if available.
      * Note that this method does not perform evaluation!
-     *
-     * @param  \Illuminate\Support\Collection  $toolQuestions
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getSourcedAnswers(Collection $toolQuestions): Collection
     {

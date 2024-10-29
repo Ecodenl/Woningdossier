@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
@@ -10,14 +11,14 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $roles = Role::whereIn('name', ['coach', 'cooperation-admin', 'coordinator'])->get();
 
         return view('cooperation.admin.super-admin.users.index', compact('roles'));
     }
 
-    public function filter(Request $request, User $user)
+    public function filter(Request $request, User $user): View
     {
         $roles = Role::whereIn('name', ['coach', 'cooperation-admin', 'coordinator'])->get();
 
@@ -66,7 +67,7 @@ class UserController extends Controller
         return view('cooperation.admin.super-admin.users.show', compact('users', 'userData', 'buildingData', 'accountData', 'roles'));
     }
 
-    public function show()
+    public function show(): View
     {
         return view('cooperation.admin.super-admin.users.show');
     }

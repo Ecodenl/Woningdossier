@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -11,9 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingService> $buildingServices
  * @property-read int|null $building_services_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ApplianceProperty[] $properties
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ApplianceProperty> $properties
  * @property-read int|null $properties_count
  * @method static \Illuminate\Database\Eloquent\Builder|Appliance newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Appliance newQuery()
@@ -26,12 +28,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Appliance extends Model
 {
-    public function buildingServices()
+    public function buildingServices(): BelongsToMany
     {
         return $this->belongsToMany(BuildingService::class);
     }
 
-    public function properties()
+    public function properties(): HasMany
     {
         return $this->hasMany(ApplianceProperty::class);
     }

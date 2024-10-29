@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveForUserIdColumnFromLogsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (Schema::hasColumn('logs', 'for_user_id')) {
             Schema::table('logs', function (Blueprint $table) {
@@ -23,10 +21,8 @@ class RemoveForUserIdColumnFromLogsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (! Schema::hasColumn('logs', 'for_user_id')) {
             Schema::table('logs', function (Blueprint $table) {
@@ -35,4 +31,4 @@ class RemoveForUserIdColumnFromLogsTable extends Migration
             });
         }
     }
-}
+};

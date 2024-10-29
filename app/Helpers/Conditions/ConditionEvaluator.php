@@ -23,22 +23,12 @@ class ConditionEvaluator
     public ?Collection $answers = null;
     protected array $customResults = [];
 
-    /**
-     * @param  Building  $building
-     *
-     * @return $this
-     */
     public function building(Building $building): self
     {
         $this->building = $building;
         return $this;
     }
 
-    /**
-     * @param  InputSource  $inputSource
-     *
-     * @return $this
-     */
     public function inputSource(InputSource $inputSource): self
     {
         $this->inputSource = $inputSource;

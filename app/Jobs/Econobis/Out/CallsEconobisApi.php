@@ -99,7 +99,7 @@ trait CallsEconobisApi
                 $cooperationId = 'No building for building ID ' . $buildingId . ' so no cooperation either';
             }
             else {
-                $cooperationId = optional(optional(optional($this->building)->user)->cooperation)->id ?? 'No cooperation ID';
+                $cooperationId = $this->building?->user?->cooperation?->id ?? 'No cooperation ID';
             }
             DiscordNotifier::init()->notify(get_class($exception)." Failed to send [{$environment}] '{$class}' building_id: {$buildingId} cooperation_id: {$cooperationId}");
         }

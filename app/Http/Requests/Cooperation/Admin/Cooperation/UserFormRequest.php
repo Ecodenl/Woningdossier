@@ -14,10 +14,8 @@ class UserFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // Logic is in middleware on the routes
         return Auth::check();
@@ -25,10 +23,8 @@ class UserFormRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $cooperationToCheckFor = $this->route('cooperationToManage') instanceof Cooperation
             ? $this->route('cooperationToManage') : $this->route('cooperation');

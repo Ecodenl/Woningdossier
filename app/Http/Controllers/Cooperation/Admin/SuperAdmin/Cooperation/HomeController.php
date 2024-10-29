@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 
 class HomeController extends Controller
 {
-    public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage)
+    public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage): View
     {
         $breadcrumbs = [
             [

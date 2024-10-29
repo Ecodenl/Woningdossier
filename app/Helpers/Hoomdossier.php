@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Account;
+use App\Models\Client;
 use App\Models\InputSource;
 use App\Models\User;
 use App\Scopes\GetValueScope;
@@ -15,77 +16,16 @@ class Hoomdossier
     /** @var int the length the password should be */
     const PASSWORD_LENGTH = 8;
 
-    /**
-     * Check if a column contains a needle, wrapper for stristr.
-     *
-     * @return bool
-     */
-    public static function columnContains(string $column, string $needle)
-    {
-        // TODO: Refactor references to Str::contains
-        return false !== stristr($column, $needle);
-    }
-
     public static function hasEnabledEconobisCalls(): bool
     {
         return config('hoomdossier.services.econobis.enabled', false);
     }
 
     /**
-     * Method to return a unit for a given column.
-     *
-     * @param $column
-     *
-     * @return mixed|string
-     */
-    public static function getUnitForColumn($column)
-    {
-        $unitsForCalculations = [
-            'savings_gas' => 'm3',
-            'savings_co2' => 'kg',
-            'savings_money' => '€',
-            'cost_indication' => '€',
-            'costs' => '€',
-            'm2' => 'm2',
-            'yield_electricity' => 'kWh',
-            'raise_own_consumption' => '%',
-            'interest_comparable' => '%',
-            'percentage_consumption' => '%',
-        ];
-
-        if (static::columnContains($column, 'surface') || static::columnContains($column, 'm2')) {
-            $unit = 'm2';
-        }
-
-        if (static::columnContains($column, 'amount_electricity')) {
-            $unit = 'kWh';
-        }
-
-        if (static::columnContains($column, 'amount_gas')) {
-            $unit = 'm3';
-        }
-
-        if (static::columnContains($column, 'peak_power')) {
-            $unit = 'Wp';
-        }
-
-        if (static::columnContains($column, 'angle')) {
-            $unit = '°';
-        }
-
-        return $unit ?? $unitsForCalculations[$column] ?? '';
-    }
-
-    /**
-     * @param  string  $column
-     * @param  null  $default
-     *
-     * @return mixed|null
      * @deprecated
      * Return the most credible value from a given collection.
-     *
      */
-    public static function getMostCredibleValueFromCollection(Collection $results, $column, $default = null)
+    public static function getMostCredibleValueFromCollection(Collection $results, string $column)
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
@@ -107,33 +47,20 @@ class Hoomdossier
 
     /**
      * Will return the most credible value from a given relationship.
-     *
-     * @param  null  $column
-     * @param  null  $default
-     * @param  null  $onlyReturnForInputSource
-     *
-     * @return \Illuminate\Database\Eloquent\Collection|mixed|null
      */
-    public static function getMostCredibleValue(
-        Relation $relation,
-        $column = null,
-        $default = null,
-        $onlyReturnForInputSource = null
-    ) {
-
+    public static function getMostCredibleValue(Relation $relation, string $column): mixed
+    {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $found = $relation->allInputSources()->where('input_source_id', $masterInputSource->id)->get();
 
-        return self::getMostCredibleValueFromCollection($found, $column, $default);
+        return self::getMostCredibleValueFromCollection($found, $column);
     }
 
     /**
-     * Return the most credible input source for a relationship.
-     *
-     * @return int|mixed|null
+     * Return the most credible input source (short) for a relationship.
      */
-    public static function getMostCredibleInputSource(Relation $relation)
+    public static function getMostCredibleInputSource(Relation $relation): ?string
     {
         $found = $relation
             ->withoutGlobalScope(GetValueScope::class)
@@ -162,8 +89,6 @@ class Hoomdossier
 
     /**
      * Returns the current user.
-     *
-     * @return \App\Models\User|null
      */
     public static function user(): ?User
     {
@@ -172,12 +97,9 @@ class Hoomdossier
 
     /**
      * Returns the current account.
-     *
-     * @return \App\Models\Account|null
      */
-    public static function account()
+    public static function account(): null|Account|Client
     {
-        // Note: This could also be a App\Models\Client
         return Auth::user();
     }
 }

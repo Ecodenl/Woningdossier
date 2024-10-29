@@ -2,14 +2,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class DeleteDemandDrivenServiceValueFromServiceValuesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $ventilationServiceValue = DB::table('services')
             ->where('short', 'house-ventilation')->first();
@@ -24,10 +22,8 @@ class DeleteDemandDrivenServiceValueFromServiceValuesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

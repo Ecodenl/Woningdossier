@@ -42,7 +42,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $monument
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\BuildingCategory|null $buildingCategory
@@ -56,7 +56,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\RoofType|null $roofType
  * @property-read \App\Models\FacadeSurface|null $wallJoints
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature allInputSources()
- * @method static \Database\Factories\BuildingFeatureFactory factory(...$parameters)
+ * @method static \Database\Factories\BuildingFeatureFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forMe(?\App\Models\User $user = null)

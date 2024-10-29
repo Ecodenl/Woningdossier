@@ -52,8 +52,6 @@ class BagService
      *
      * @param $postalCode
      * @param $number
-     * @param  null|string  $houseNumberExtension
-     * @return array
      */
     public function addressExpanded($postalCode, $number, ?string $houseNumberExtension = ""): AddressExpanded
     {

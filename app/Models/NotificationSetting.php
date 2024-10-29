@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -44,20 +45,16 @@ class NotificationSetting extends Model
 
     /**
      * Get the interval of the notification.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function interval()
+    public function interval(): BelongsTo
     {
         return $this->belongsTo(NotificationInterval::class);
     }
 
     /**
      * Get the type of notification.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function type()
+    public function type(): BelongsTo
     {
         return $this->belongsTo(NotificationType::class);
     }

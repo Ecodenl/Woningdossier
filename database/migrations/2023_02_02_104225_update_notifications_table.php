@@ -5,14 +5,12 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-class UpdateNotificationsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasColumn('notifications', 'uuid')) {
             DB::table('notifications')->truncate();
@@ -26,10 +24,8 @@ class UpdateNotificationsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // A rollback won't bring back the data
         if (Schema::hasColumn('notifications', 'uuid')) {
@@ -41,4 +37,4 @@ class UpdateNotificationsTable extends Migration
             });
         };
     }
-}
+};

@@ -41,10 +41,8 @@ class RefreshRegulationsForUserActionPlanAdvice extends NonHandleableJobAfterRes
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         try {
             UserActionPlanAdviceService::init()

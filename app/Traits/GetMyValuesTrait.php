@@ -67,10 +67,6 @@ trait GetMyValuesTrait
      * Returns if this model has a particular attribute.
      * This should be done on the database table as this is also used during
      * creation in which attributes may not be set.
-     *
-     * @param  string  $attribute
-     *
-     * @return bool
      */
     public function hasAttribute(string $attribute): bool
     {
@@ -252,23 +248,19 @@ trait GetMyValuesTrait
 
     /**
      * Get the input source.
-     *
-     * @return BelongsTo
      */
-    public function inputSource()
+    public function inputSource(): BelongsTo
     {
         return $this->belongsTo(InputSource::class);
     }
 
     /**
      * Scope a query for a specific input source id.
-     *
-     * @return Builder
      */
     public function scopeForInputSource(
         Builder $query,
         InputSource $inputSource
-    )
+    ): Builder
     {
         return $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id',
             $inputSource->id);
@@ -373,7 +365,7 @@ trait GetMyValuesTrait
      *
      * @return string name
      */
-    public function getInputSourceName()
+    public function getInputSourceName(): string
     {
         return $this->inputSource->name;
     }

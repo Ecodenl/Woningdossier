@@ -47,7 +47,7 @@
             @yield('header')
         @endif
         @php
-            $background = optional(optional($cooperation)->firstMedia(MediaHelper::BACKGROUND))->getUrl() ?: asset('images/background.jpg');
+            $background = optional($cooperation?->firstMedia(MediaHelper::BACKGROUND))->getUrl() ?: asset('images/background.jpg');
         @endphp
         <main class="bg-cover bg-center bg-no-repeat bg-white"
               style="@yield('main_style', 'background-image: url(\''. $background .'\');')">

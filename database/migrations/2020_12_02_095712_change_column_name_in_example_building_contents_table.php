@@ -2,14 +2,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class ChangeColumnNameInExampleBuildingContentsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // previous the insulated_glazing_id was used in the example building content
         // however, this did not match the column name in the table
@@ -52,10 +50,8 @@ class ChangeColumnNameInExampleBuildingContentsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

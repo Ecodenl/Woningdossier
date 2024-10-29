@@ -36,10 +36,8 @@ class MergeUsers extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $userId1 = (int) $this->argument('userId1');
         $userId2 = (int) $this->argument('userId2');

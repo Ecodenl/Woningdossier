@@ -2,14 +2,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class ChangeMyPlanInterestedTitleTranslation extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $interestTranslationQuery = DB::table('language_lines')->where('group', 'my-plan')->where('key',
             'columns.interest.title');
@@ -20,10 +18,8 @@ class ChangeMyPlanInterestedTitleTranslation extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         $interestTranslationQuery = DB::table('language_lines')->where('group', 'my-plan')->where('key',
             'columns.interest.title');
@@ -31,4 +27,4 @@ class ChangeMyPlanInterestedTitleTranslation extends Migration
             $interestTranslationQuery->update(['text' => json_encode(['nl' => 'Interesse'])]);
         }
     }
-}
+};

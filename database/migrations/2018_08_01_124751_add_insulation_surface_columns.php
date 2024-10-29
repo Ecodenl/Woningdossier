@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddInsulationSurfaceColumns extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('building_features', function (Blueprint $table) {
             // add insulation_wall_surface to the building feature table
@@ -33,10 +31,8 @@ class AddInsulationSurfaceColumns extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('building_features', function (Blueprint $table) {
             $table->dropColumn('insulation_wall_surface');
@@ -51,4 +47,4 @@ class AddInsulationSurfaceColumns extends Migration
             $table->dropColumn('insulation_roof_surface');
         });
     }
-}
+};

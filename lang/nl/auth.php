@@ -14,6 +14,7 @@ return [
 
     'session-invalid' => 'Uw sessie is verlopen, log opnieuw in.',
     'failed' => 'Uw gebruikersnaam of wachtwoord is onjuist.',
+    'password' => 'Het opgegeven wachtwoord is onjuist.',
     'cooperation' => 'U bent geen lid van deze coöperatie.',
     'throttle' => 'Te veel login pogingen. U kunt het opniew proberen over :seconds seconde(n).',
     'inactive' => 'U kunt nog niet inloggen omdat uw account nog niet is bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail. <a href=":resend-link">Niet ontvangen?</a>',

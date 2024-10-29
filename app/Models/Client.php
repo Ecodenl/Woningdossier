@@ -17,11 +17,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Log> $logs
  * @property-read int|null $logs_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PersonalAccessToken[] $tokens
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
- * @method static \Database\Factories\ClientFactory factory(...$parameters)
+ * @method static \Database\Factories\ClientFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Client newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Client newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Client query()

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -28,7 +29,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\BuildingHeating|null $heating
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\ElementValue|null $insulation
- * @property-read \App\Models\MeasureApplication $measureApplication
+ * @property-read \App\Models\MeasureApplication|null $measureApplication
  * @property-read \App\Models\RoofType $roofType
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forBuilding($building)
@@ -78,52 +79,37 @@ class BuildingRoofType extends Model
         'roof_type_id',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function roofType()
+    public function roofType(): BelongsTo
     {
         return $this->belongsTo(RoofType::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function elementValue()
+    public function elementValue(): BelongsTo
     {
         return $this->belongsTo(ElementValue::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function insulation()
+    public function insulation(): BelongsTo
     {
         return $this->elementValue();
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function heating()
+    public function heating(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'building_heating_id');
     }
 
-    public function buildingHeating()
+    public function buildingHeating(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class);
     }
 
-    public function measureApplication()
+    public function measureApplication(): BelongsTo
     {
         \Log::critical(__METHOD__.': Dit werkt niet!!');
 

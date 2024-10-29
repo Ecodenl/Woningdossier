@@ -17,11 +17,6 @@ class QuestionnaireController extends Controller
 {
     /**
      * Save or update the user his answers for the custom questionnaire.
-     *
-     * @param \App\Models\Cooperation $cooperation
-     * @param \App\Http\Requests\Cooperation\Tool\QuestionnaireRequest $request
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Cooperation $cooperation, QuestionnaireRequest $request): RedirectResponse
     {

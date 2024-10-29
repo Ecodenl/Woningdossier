@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
@@ -41,7 +42,7 @@ class ExampleBuildingContent extends Model
         'content' => 'array',
     ];
 
-    public function exampleBuilding()
+    public function exampleBuilding(): BelongsTo
     {
         return $this->belongsTo(ExampleBuilding::class);
     }

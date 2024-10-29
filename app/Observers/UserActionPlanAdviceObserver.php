@@ -83,7 +83,7 @@ class UserActionPlanAdviceObserver
         }
     }
 
-    public function created(UserActionPlanAdvice $userActionPlanAdvice)
+    public function created(UserActionPlanAdvice $userActionPlanAdvice): void
     {
         // Triggered from frontend (Woonplan or step), you need it directly. There is no choice to queue it here.
         // Or its triggered from a recalculation, which means the code is already running on a queue.

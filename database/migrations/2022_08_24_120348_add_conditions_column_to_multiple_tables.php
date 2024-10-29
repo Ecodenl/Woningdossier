@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddConditionsColumnToMultipleTables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasColumn('tool_question_valuables', 'conditions')) {
             Schema::table('tool_question_valuables', function (Blueprint $table) {
@@ -28,10 +26,8 @@ class AddConditionsColumnToMultipleTables extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (Schema::hasColumn('tool_question_valuables', 'conditions')) {
             Schema::table('tool_question_valuables', function (Blueprint $table) {
@@ -45,4 +41,4 @@ class AddConditionsColumnToMultipleTables extends Migration
             });
         }
     }
-}
+};

@@ -3,11 +3,12 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class UniqueSlug extends LocaleBasedRule implements Rule
+class UniqueSlug extends LocaleBasedRule implements ValidationRule
 {
     public string $class;
     public string $column;
@@ -25,12 +26,9 @@ class UniqueSlug extends LocaleBasedRule implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
      * @param mixed  $value
-     *
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         $instance = new $this->class;
 
@@ -54,11 +52,16 @@ class UniqueSlug extends LocaleBasedRule implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
-    public function message()
+    public function message(): string
     {
         return __('validation.unique');
+    }
+
+    public function validate(string $attribute, mixed $value, \Closure $fail): void
+    {
+        if (! $this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 }

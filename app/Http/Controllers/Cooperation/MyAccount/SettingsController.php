@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use Illuminate\Http\RedirectResponse;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -21,10 +22,8 @@ class SettingsController extends Controller
 {
     /**
      * Update the account.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(MyAccountSettingsFormRequest $request)
+    public function update(MyAccountSettingsFormRequest $request): RedirectResponse
     {
         $user = Hoomdossier::user();
         $building = HoomdossierSession::getBuilding(true);
@@ -50,10 +49,8 @@ class SettingsController extends Controller
 
     /**
      * Reset the user his plan / file / dossier.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function resetFile(Request $request, DossierSettingsService $dossierSettingsService)
+    public function resetFile(Request $request, DossierSettingsService $dossierSettingsService): RedirectResponse
     {
         $user = Hoomdossier::user();
 
@@ -79,7 +76,7 @@ class SettingsController extends Controller
     }
 
     // Delete account
-    public function destroy()
+    public function destroy(): RedirectResponse
     {
         $user = Hoomdossier::user();
         $accountId = $user->account_id;

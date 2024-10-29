@@ -40,10 +40,8 @@ class ScanStatus extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle(EconobisService $econobisService, EconobisApi $econobis)
+    public function handle(EconobisService $econobisService, EconobisApi $econobis): int
     {
         $building = Building::findOrFail($this->argument('building'));
 

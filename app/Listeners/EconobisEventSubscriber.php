@@ -30,7 +30,7 @@ class EconobisEventSubscriber
     {
         Log::debug(__METHOD__);
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
-        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->building->id)->isNotEmpty();
+        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->building)->isNotEmpty();
         if ($canSendUserInformationToEconobis && $userHasConnectedCoaches) {
             Log::debug(__METHOD__ . ' - dispatching SendAppointmentDateToEconobis');
             SendAppointmentDateToEconobis::dispatch($event->building);
@@ -40,7 +40,7 @@ class EconobisEventSubscriber
     public function sendBuildingStatusToEconobis(BuildingStatusUpdated $event)
     {
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
-        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->building->id)->isNotEmpty();
+        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->building)->isNotEmpty();
         if ($canSendUserInformationToEconobis && $userHasConnectedCoaches) {
             SendBuildingStatusToEconobis::dispatch($event->building);
         }

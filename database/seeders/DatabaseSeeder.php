@@ -8,20 +8,14 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         //TODO: Convert "PluralModelNameTableSeeder" into "SingularModelNameSeeder"
         // as per L7 convention: UsersTableSeeder to > UserSeeder
 
-        ////        $this->call(MovingPartsOfWindowAndDoorIsolatedsTableSeeder::class);
-        ////        $this->call(WoodElementsTableSeeder::class);
-        ////        $this->call(HouseFramesTableSeeder::class);
 //        $this->call(BuildingCurrentHeatingsTableSeeder::class);
 //        $this->call(HeatSourcesTableSeeder::class);
-//        $this->call(BuildingServiceTypeTableSeeder::class);
         $this->call(InputSourcesTableSeeder::class);
         $this->call(RoleTableSeeder::class);
         $this->call(BuildingCategoriesTableSeeder::class);
@@ -40,7 +34,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BuildingsTableSeeder::class);
         $this->call(ScansTableSeeder::class);
         $this->call(StepsTableSeeder::class);
-        $this->call(MeasuresTableSeeder::class);
         $this->call(ExampleBuildingsTableSeeder::class);
         $this->call(InterestsTableSeeder::class);
         $this->call(InsulatingGlazingsTableSeeder::class);

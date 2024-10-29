@@ -37,10 +37,8 @@ class MonitorQueue extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         // Log queue size for each available queue.
         foreach (Queue::getQueueNames() as $queueName) {

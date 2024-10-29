@@ -104,7 +104,7 @@
 
             <livewire:cooperation.frontend.layouts.parts.alerts :building="$building"
                                                                 :inputSource="$masterInputSource"/>
-            @if(! Hoomdossier::user()->isFillingToolForOtherBuilding())
+            @can('viewAny', \App\Models\PrivateMessage::class)
                 <livewire:cooperation.frontend.layouts.parts.messages/>
             @endif
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\Http\RedirectResponse;
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\StepHelper;
 use App\Helpers\Hoomdossier;
@@ -34,13 +35,10 @@ class ToolController extends Controller
     /**
      * Instead of doing the same thing in all expert controllers, localize the logic to here.
      *
-     * @param  \App\Models\Step  $step
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function completeStore(Step $step, Building $building, InputSource $inputSource)
+    public function completeStore(Step $step, Building $building, InputSource $inputSource): RedirectResponse
     {
         $subStep = $step->subSteps()->first();
 

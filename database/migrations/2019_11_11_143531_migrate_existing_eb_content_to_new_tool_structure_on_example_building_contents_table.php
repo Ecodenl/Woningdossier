@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable extends Migration
+return new class extends Migration
 {
     use \App\Traits\DebugableMigrationTrait;
 
@@ -16,10 +16,8 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
      * renaming hr-boiler.service.boilerid.extra.year to hr-boiler.service.boilerid.extra.date
      *
      * elements and services
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $exampleBuildingContents = \DB::table('example_building_contents')->get();
 
@@ -111,10 +109,8 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

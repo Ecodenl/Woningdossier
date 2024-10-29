@@ -4,14 +4,12 @@ use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Collection;
 
-class AddCooperationIdsToCooperationIdColumnOnModelHasRolesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $users = DB::table('users')->get();
 
@@ -45,11 +43,9 @@ class AddCooperationIdsToCooperationIdColumnOnModelHasRolesTable extends Migrati
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         DB::table('model_has_roles')->update(['cooperation_id' => null]);
     }
-}
+};

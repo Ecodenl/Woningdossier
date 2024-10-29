@@ -442,10 +442,8 @@ class Form extends CustomMeasureForm
      * Reload the data of an advice.
      *
      * @param $advice
-     *
-     * @return void
      */
-    public function reload($advice)
+    public function reload($advice): void
     {
         if (! $advice instanceof UserActionPlanAdvice) {
             $advice = UserActionPlanAdvice::allInputSources()->withInvisible()->find($advice);

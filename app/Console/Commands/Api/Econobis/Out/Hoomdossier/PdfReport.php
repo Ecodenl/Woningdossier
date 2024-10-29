@@ -42,10 +42,8 @@ class PdfReport extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $interval = $this->option('interval');
         $interval = is_numeric($interval) ? (int)$interval : null;

@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DropColumnRequestTypeOnPrivateMessagesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('private_messages', function (Blueprint $table) {
             $table->dropColumn('request_type');
@@ -20,13 +18,11 @@ class DropColumnRequestTypeOnPrivateMessagesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('private_messages', function (Blueprint $table) {
             $table->string('request_type')->after('from_user')->nullable();
         });
     }
-}
+};

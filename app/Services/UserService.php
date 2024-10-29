@@ -193,10 +193,8 @@ class UserService
 
     /**
      * Method to register a user.
-     *
-     * @return User
      */
-    public static function register(Cooperation $cooperation, array $roles, array $registerData)
+    public static function register(Cooperation $cooperation, array $roles, array $registerData): User
     {
         $email = $registerData['email'];
         // try to obtain the existing account
@@ -230,6 +228,7 @@ class UserService
         Log::debug('account id for registration: '.$account->id);
 
         // Create the user for an account
+        /** @var User $user */
         $user = User::create(
             [
                 'extra' => $data['extra'] ?? null,
@@ -249,6 +248,18 @@ class UserService
 
         // We need an input source. From the API, roles are passed as string. From the other sources as ID. We just
         // fetch them all and grab the first one.
+        /**
+         * @TODO Check $roles:
+         * Due to improved ULID/UUID/GUID support, package methods that accept a Permission or Role ID
+         * must receive the ID as an integer. If a numeric string is passed, the functions will attempt
+         * to look up the role/permission as a string. This may lead to errors such as:
+         *
+         * "There is no permission named '123' for guard 'web'."
+         *
+         * This happens because '123' is treated as a string, not an integer.<br>
+         *
+         * @see https://spatie.be/docs/laravel-permission/v6/upgrading
+         */
         $rolesWithSources = Role::has('inputSource')->with('inputSource')->where(
             fn (Builder $q) => $q->whereIn('id', $roles)->orWhereIn('name', $roles)
         )->get();
@@ -282,11 +293,10 @@ class UserService
     /**
      * Method to delete a user and its user info.
      *
-     * @param  bool  $shouldForceDeleteBuilding
      *
      * @throws \Exception
      */
-    public static function deleteUser(User $user, $shouldForceDeleteBuilding = false)
+    public static function deleteUser(User $user, bool $shouldForceDeleteBuilding = false)
     {
         $accountId = $user->account_id;
         $building = $user->building;
@@ -344,11 +354,9 @@ class UserService
      * input sources will be combined. If not possible, the data of $user1 will be
      * leading and the data of user2 will be deleted.
      *
-     * @return User
      * @throws \Exception
-     *
      */
-    public static function merge(User $user1, User $user2)
+    public static function merge(User $user1, User $user2): User
     {
         // The simple cases: where we can just update the user_id or coach_id
         $tables = [

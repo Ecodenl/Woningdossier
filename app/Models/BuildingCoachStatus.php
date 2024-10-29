@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -43,48 +44,26 @@ class BuildingCoachStatus extends Model
 
     /**
      * Get the building from the status.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
     /**
+     * @deprecated use coach()!
      * Get the user / coach from the status this does NOT return the owner from the building.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'coach_id', 'id');
     }
 
     /**
      * Get the coach from the status.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function coach()
+    public function coach(): BelongsTo
     {
         return $this->belongsTo(User::class, 'coach_id', 'id');
-    }
-
-    /**
-     * Get the current status for a given building id, can return the translation or the status key
-     * will return the translation by default.
-     */
-    public static function getCurrentStatusForBuildingId(int $buildingId, bool $returnTranslation = true): string
-    {
-        \Illuminate\Support\Facades\Log::debug(__METHOD__.' is still being used, remove it as soon as possible.');
-        // get the building, even if its deleted.
-        $building = Building::withTrashed()->find($buildingId);
-
-        if ($building instanceof Building) {
-            return $building->getMostRecentBuildingStatus()->status->name;
-        }
-
-        return '';
     }
 }

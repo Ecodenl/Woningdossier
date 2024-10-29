@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
@@ -17,12 +19,8 @@ class SentryContext
 {
     /**
      * Handle an incoming request.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         // If logged in and sentry is found, add extra contextual information
         // which helps debugging exceptions
@@ -62,24 +60,20 @@ class SentryContext
                     'is_comparing'              => HoomdossierSession::isUserComparingInputSources(
                     ) ? 'yes' : 'no',
                     'input_source'              => $inputSource->short,
-                    'operating_on_own_building' => optional(
-                                                       $building
-                                                   )->user_id == ($user->id ?? 0) ? 'yes' : 'no',
+                    'operating_on_own_building' => $building?->user_id == ($user->id ?? 0) ? 'yes' : 'no',
                     'operating_as'              => $inputSourceValue->short,
                     'all_session_data'          => HoomdossierSession::all(),
                 ];
 
                 $tags = [
-                    'building:id'    => optional($building)->id,
-                    'building:owner' => optional($building)->user_id,
+                    'building:id'    => $building?->id,
+                    'building:owner' => $building?->user_id,
                 ];
 
 
-                if ( ! optional($building)->user instanceof User) {
+                if ( ! $building?->user instanceof User) {
                     Log::error(
-                        "SentryContext : building -> user is no instance of App\Models\User !! a: ".$account->id.', u: '.$user->id.', b: '.optional(
-                            $building
-                        )->id
+                        "SentryContext : building -> user is no instance of App\Models\User !! a: ".$account->id.', u: '.$user->id.', b: '.$building?->id
                     );
                 }
 

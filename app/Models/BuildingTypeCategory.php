@@ -13,12 +13,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property array $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read array $translations
+ * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory query()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory whereShort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeCategory whereUpdatedAt($value)

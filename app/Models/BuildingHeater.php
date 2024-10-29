@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\PvPanelOrientation|null $orientation
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater allInputSources()
- * @method static \Database\Factories\BuildingHeaterFactory factory(...$parameters)
+ * @method static \Database\Factories\BuildingHeaterFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forMe(?\App\Models\User $user = null)
@@ -52,12 +53,12 @@ class BuildingHeater extends Model
         'building_id', 'input_source_id', 'pv_panel_orientation_id', 'angle',
     ];
 
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
-    public function orientation()
+    public function orientation(): BelongsTo
     {
         return $this->belongsTo(PvPanelOrientation::class, 'pv_panel_orientation_id', 'id');
     }

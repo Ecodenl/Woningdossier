@@ -35,10 +35,8 @@ class ExportToolQuestionTranslations extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle(Excel $excel)
+    public function handle(Excel $excel): int
     {
         $excel->store(new ToolQuestionsExport, 'tool-questions.csv', 'local', Excel::CSV);
 

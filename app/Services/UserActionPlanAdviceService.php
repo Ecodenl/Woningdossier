@@ -134,12 +134,6 @@ class UserActionPlanAdviceService
 
     /**
      * Method to delete the user action plan advices for a given user, input source and step.
-     *
-     * @param \App\Models\User $user
-     * @param \App\Models\InputSource $inputSource
-     * @param \App\Models\Step $step
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function clearForStep(User $user, InputSource $inputSource, Step $step): Collection
     {
@@ -222,12 +216,8 @@ class UserActionPlanAdviceService
 
     /**
      * Get the action plan categorized under measure type.
-     *
-     * @param bool $withAdvices
-     *
-     * @return array
      */
-    public static function getCategorizedActionPlan(User $user, InputSource $inputSource, $withAdvices = true)
+    public static function getCategorizedActionPlan(User $user, InputSource $inputSource, bool $withAdvices = true): array
     {
         $result = [];
 
@@ -273,10 +263,6 @@ class UserActionPlanAdviceService
 
     /**
      * Set properties from old advices on another advice
-     *
-     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
-     * @param \App\Models\MeasureApplication $measureApplication
-     * @param \Illuminate\Database\Eloquent\Collection $oldAdvices
      */
     public static function checkOldAdvices(
         UserActionPlanAdvice $userActionPlanAdvice,
@@ -301,8 +287,6 @@ class UserActionPlanAdviceService
 
     /**
      * Set the visibility of a user action plan advice
-     *
-     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
      */
     public static function setAdviceVisibility(UserActionPlanAdvice $userActionPlanAdvice)
     {
@@ -376,8 +360,6 @@ class UserActionPlanAdviceService
 
     /**
      * Set the category of a user action plan advice
-     *
-     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
      */
     public static function setAdviceCategory(UserActionPlanAdvice $userActionPlanAdvice)
     {
@@ -486,7 +468,7 @@ class UserActionPlanAdviceService
                             ->where('roof_type_id', $roofType->id)
                             ->first();
 
-                        $elementValueId = optional($buildingRoofType)->element_value_id;
+                        $elementValueId = $buildingRoofType?->element_value_id;
                     } else {
                         // Still a quick-scan newbie, we check the tool question
                         $relevantQuestion = ToolQuestion::findByShort('current-roof-insulation');

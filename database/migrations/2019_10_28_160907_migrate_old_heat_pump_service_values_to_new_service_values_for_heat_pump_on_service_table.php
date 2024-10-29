@@ -2,14 +2,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // get the new heat pump service values
         $heatPumpServiceValues = \DB::table('services')
@@ -97,10 +95,8 @@ class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

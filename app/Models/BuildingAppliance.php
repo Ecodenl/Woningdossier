@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -41,12 +42,12 @@ class BuildingAppliance extends Model
     use GetValueTrait;
     use GetMyValuesTrait;
 
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
-    public function appliance()
+    public function appliance(): BelongsTo
     {
         return $this->belongsTo(Appliance::class);
     }

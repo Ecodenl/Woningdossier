@@ -24,12 +24,8 @@ class PrivateMessageReceiverListener
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         $authenticatedUser = $event->authenticatable;
         $isClient = $authenticatedUser instanceof Client;
@@ -41,10 +37,10 @@ class PrivateMessageReceiverListener
 
         $groupParticipants = PrivateMessage::getGroupParticipants($event->privateMessage->building_id);
 
-        $buildingFromOwner = Building::find($event->privateMessage->building_id);
+        $buildingFromOwner = $event->privateMessage->building;
         $privateMessage = $event->privateMessage;
 
-        $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->privateMessage->building_id);
+        $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($buildingFromOwner);
 
         // now we create for every group participant a privatemessageview
         foreach ($groupParticipants as $groupParticipant) {

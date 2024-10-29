@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Request;
  * @property-read string $basename
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read Media|null $originalMedia
- * @property-read \Illuminate\Database\Eloquent\Collection|Media[] $variants
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Media> $variants
  * @property-read int|null $variants_count
  * @method static Builder|Media forPathOnDisk(string $disk, string $path)
  * @method static Builder|Media inDirectory(string $disk, string $directory, bool $recursive = false)

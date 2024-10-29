@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Hash;
 use Tests\MocksLvbag;
 use Tests\TestCase;
 
-class ToolControllerTest extends TestCase
+final class ToolControllerTest extends TestCase
 {
     use WithFaker,
         MocksLvbag,

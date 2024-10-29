@@ -16,7 +16,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
-class DossierSettingsServiceTest extends TestCase
+final class DossierSettingsServiceTest extends TestCase
 {
     use RefreshDatabase;
 

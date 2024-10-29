@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use Tests\TestCase;
 
-class TemperatureTest extends TestCase
+final class TemperatureTest extends TestCase
 {
     public static function dataProvider(): array
     {

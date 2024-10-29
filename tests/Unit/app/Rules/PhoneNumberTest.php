@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Rules\PhoneNumber;
 use Tests\TestCase;
 
-class PhoneNumberTest extends TestCase
+final class PhoneNumberTest extends TestCase
 {
     public static function phoneNumberProvider(): array
     {

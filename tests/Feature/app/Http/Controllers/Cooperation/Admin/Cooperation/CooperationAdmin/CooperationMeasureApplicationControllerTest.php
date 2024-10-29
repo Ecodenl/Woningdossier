@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class CooperationMeasureApplicationControllerTest extends TestCase
+final class CooperationMeasureApplicationControllerTest extends TestCase
 {
     use WithFaker,
         RefreshDatabase;

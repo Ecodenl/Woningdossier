@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Rules\HouseNumber;
 use Tests\TestCase;
 
-class HouseNumberTest extends TestCase
+final class HouseNumberTest extends TestCase
 {
     public static function houseNumberProvider(): array
     {

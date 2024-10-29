@@ -23,7 +23,7 @@ use Tests\TestCase;
 use Illuminate\Support\Facades\Event;
 use Mockery;
 
-class BuildingAddressServiceTest extends TestCase
+final class BuildingAddressServiceTest extends TestCase
 {
     use WithFaker,
         MocksLvbag,

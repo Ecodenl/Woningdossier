@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\DataTypes\Caster;
 use Tests\TestCase;
 
-class CasterTest extends TestCase
+final class CasterTest extends TestCase
 {
     public static function getCastProvider(): array
     {

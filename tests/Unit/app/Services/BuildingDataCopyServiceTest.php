@@ -9,7 +9,7 @@ use App\Services\BuildingDataCopyService;
 use Tests\CreatesApplication;
 use Tests\TestCase;
 
-class BuildingDataCopyServiceTest extends TestCase
+final class BuildingDataCopyServiceTest extends TestCase
 {
     use CreatesApplication;
 

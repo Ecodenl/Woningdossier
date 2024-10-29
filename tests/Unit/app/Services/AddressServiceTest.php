@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Services\AddressService;
 use Tests\TestCase;
 
-class AddressServiceTest extends TestCase
+final class AddressServiceTest extends TestCase
 {
     public static function normalizeZipcodeProvider(): array
     {

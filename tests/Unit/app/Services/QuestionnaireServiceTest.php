@@ -11,7 +11,7 @@ use App\Services\QuestionnaireService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class QuestionnaireServiceTest extends TestCase
+final class QuestionnaireServiceTest extends TestCase
 {
     use RefreshDatabase;
 

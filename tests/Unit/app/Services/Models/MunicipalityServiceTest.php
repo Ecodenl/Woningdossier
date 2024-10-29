@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class MunicipalityServiceTest extends TestCase
+final class MunicipalityServiceTest extends TestCase
 {
     use RefreshDatabase;
 

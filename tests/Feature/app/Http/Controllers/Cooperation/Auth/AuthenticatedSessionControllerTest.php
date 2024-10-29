@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use Tests\MocksLvbag;
 use Tests\TestCase;
 
-class AuthenticatedSessionControllerTest extends TestCase
+final class AuthenticatedSessionControllerTest extends TestCase
 {
     use WithFaker,
         MocksLvbag,

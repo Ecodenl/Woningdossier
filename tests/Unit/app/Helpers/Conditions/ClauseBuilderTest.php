@@ -5,7 +5,7 @@ namespace Tests\Unit\app\Helpers\Conditions;
 use App\Helpers\Conditions\ClauseBuilder;
 use PHPUnit\Framework\TestCase;
 
-class ClauseBuilderTest extends TestCase
+final class ClauseBuilderTest extends TestCase
 {
 
     public function testFromArrayInitResultsInSameStructure(): void

@@ -11,7 +11,7 @@ use App\Services\BuildingCoachStatusService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class BuildingCoachStatusServiceTest extends TestCase
+final class BuildingCoachStatusServiceTest extends TestCase
 {
     use RefreshDatabase;
 

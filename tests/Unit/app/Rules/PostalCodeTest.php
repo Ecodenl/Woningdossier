@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Rules\PostalCode;
 use Tests\TestCase;
 
-class PostalCodeTest extends TestCase
+final class PostalCodeTest extends TestCase
 {
     public static function postalCodeProvider(): array
     {

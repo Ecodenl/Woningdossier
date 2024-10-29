@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\Calculation\BankInterestCalculator;
 use Tests\TestCase;
 
-class BankInterestCalculatorTest extends TestCase
+final class BankInterestCalculatorTest extends TestCase
 {
     public static function dataProvider(): array
     {

@@ -6,7 +6,7 @@ use App\Helpers\Conditions\Clause;
 use App\Helpers\Conditions\ConditionEvaluator;
 use PHPUnit\Framework\TestCase;
 
-class ConditionEvaluatorTest extends TestCase
+final class ConditionEvaluatorTest extends TestCase
 {
     /**
      * A basic unit test example.

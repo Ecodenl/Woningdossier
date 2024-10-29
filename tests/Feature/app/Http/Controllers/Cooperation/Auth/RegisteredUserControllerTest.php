@@ -19,7 +19,7 @@ use OwenIt\Auditing\Drivers\Database;
 use Tests\MocksLvbag;
 use Tests\TestCase;
 
-class RegisteredUserControllerTest extends TestCase
+final class RegisteredUserControllerTest extends TestCase
 {
     use WithFaker,
         RefreshDatabase,

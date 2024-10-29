@@ -15,7 +15,7 @@ use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 
-class BuildingCoachStatusControllerTest extends TestCase
+final class BuildingCoachStatusControllerTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
     // TODO: Update after subsidy merge

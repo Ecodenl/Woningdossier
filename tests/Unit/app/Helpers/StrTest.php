@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\Str;
 use Tests\TestCase;
 
-class StrTest extends TestCase
+final class StrTest extends TestCase
 {
     public static function isConsideredEmptyAnswerProvider(): array
     {

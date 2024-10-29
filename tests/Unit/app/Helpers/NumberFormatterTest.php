@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\NumberFormatter;
 use Tests\TestCase;
 
-class NumberFormatterTest extends TestCase
+final class NumberFormatterTest extends TestCase
 {
     public static function formatterProvider(): array
     {

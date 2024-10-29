@@ -19,7 +19,7 @@ use Laravel\Sanctum\Sanctum;
 use Tests\MocksLvbag;
 use Tests\TestCase;
 
-class RegisterControllerTest extends TestCase
+final class RegisterControllerTest extends TestCase
 {
     use WithFaker,
         RefreshDatabase,

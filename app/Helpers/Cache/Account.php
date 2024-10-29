@@ -3,24 +3,25 @@
 namespace App\Helpers\Cache;
 
 use Illuminate\Support\Facades\Cache;
+use App\Models\Account as AccountModel;
 
 class Account extends BaseCache
 {
     const CACHE_KEY_FIND = 'Account_find_%s';
     const CACHE_KEY_USER = 'Account_user_%s';
 
-    public static function find(int $id): ?\App\Models\Account
+    public static function find(int $id): ?AccountModel
     {
         return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),
             config('hoomdossier.cache.times.default'),
             function () use ($id) {
-                return \App\Models\Account::find($id);
+                return AccountModel::find($id);
             }
         );
     }
 
-    public static function user(\App\Models\Account $account)
+    public static function user(AccountModel $account)
     {
         return Cache::remember(
             self::getCooperationCacheKey(static::CACHE_KEY_USER, $account->id),

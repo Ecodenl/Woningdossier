@@ -11,9 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('building_paintwork_statuses', function (Blueprint $table) {
-            $table->integer('wood_rot_status_id')->nullable()->unsigned()->change();
-        });
+        Schema::rename('password_resets', 'password_reset_tokens');
     }
 
     /**
@@ -21,6 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // We don't want to revert this
+        Schema::rename('password_reset_tokens', 'password_resets');
     }
 };

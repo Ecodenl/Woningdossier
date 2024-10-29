@@ -29,10 +29,8 @@ class BuildingFormRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return array_merge([
             'accounts.email' => ['required', 'email', Rule::unique('accounts', 'email')->ignore($this->account)],

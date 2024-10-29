@@ -23,12 +23,8 @@ class FillingToolForUserListener
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         // The building the user wants to fill.
         $building = $event->building;

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $term_years
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read array $translations
+ * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface query()
@@ -24,6 +24,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface whereExecutionTermName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FacadeSurface whereTermYears($value)

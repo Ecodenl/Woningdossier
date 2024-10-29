@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 use App\Calculations\Ventilation;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Cooperation\Tool\VentilationHelper;
@@ -26,7 +28,7 @@ class VentilationController extends ToolController
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(LegacyService $legacyService)
+    public function index(LegacyService $legacyService): View
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
@@ -113,7 +115,7 @@ class VentilationController extends ToolController
         return $this->completeStore($this->step, $building, $inputSource);
     }
 
-    public function calculate(Request $request)
+    public function calculate(Request $request): JsonResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;

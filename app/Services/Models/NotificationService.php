@@ -69,10 +69,8 @@ class NotificationService
 
     /**
      * Deactivate the notification.
-     *
-     * @return void
      */
-    public function deactivate()
+    public function deactivate(): void
     {
         $this->getNotification()?->delete();
     }

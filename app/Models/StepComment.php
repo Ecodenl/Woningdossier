@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -53,10 +54,8 @@ class StepComment extends Model implements Auditable
 
     /**
      * Return the step of a comment.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function step()
+    public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
     }

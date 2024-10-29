@@ -8,10 +8,8 @@ use Laravel\Fortify\Fortify;
 return new class extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasColumn('accounts', 'two_factor_secret')) {
             Schema::table('accounts', function (Blueprint $table) {
@@ -33,10 +31,8 @@ return new class extends Migration {
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (Schema::hasColumn('accounts', 'two_factor_secret')) {
             Schema::table('accounts', function (Blueprint $table) {

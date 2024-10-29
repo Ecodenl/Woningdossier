@@ -4,6 +4,7 @@ namespace App\Helpers\Cache;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Scan as ScanModel;
 
 class Scan extends BaseCache
 {
@@ -18,7 +19,7 @@ class Scan extends BaseCache
             config('hoomdossier.cache.times.default'),
             function () {
                 if (Schema::hasTable('scans')) {
-                    return \App\Models\Scan::pluck('short')->toArray();
+                    return ScanModel::pluck('short')->toArray();
                 }
                 return [];
             }
@@ -32,7 +33,7 @@ class Scan extends BaseCache
             config('hoomdossier.cache.times.default'),
             function () {
                 if (Schema::hasTable('scans')) {
-                    return \App\Models\Scan::simple()->pluck('short')->toArray();
+                    return ScanModel::simple()->pluck('short')->toArray();
                 }
                 return [];
             }
@@ -46,7 +47,7 @@ class Scan extends BaseCache
             config('hoomdossier.cache.times.default'),
             function () {
                 if (Schema::hasTable('scans')) {
-                    return \App\Models\Scan::expert()->pluck('short')->toArray();
+                    return ScanModel::expert()->pluck('short')->toArray();
                 }
                 return [];
             }

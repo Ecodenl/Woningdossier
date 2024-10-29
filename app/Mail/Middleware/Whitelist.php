@@ -21,11 +21,8 @@ class Whitelist
 {
     /**
      * @param \Illuminate\Mail\SendQueuedMailable|? $mail
-     * @param \Closure $next
-     *
-     * @return void
      */
-    public function handle($mail, Closure $next)
+    public function handle($mail, Closure $next): void
     {
         /** @var \Illuminate\Mail\Mailable $mailable */
         $mailable = $mail->mailable;

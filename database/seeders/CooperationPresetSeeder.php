@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class CooperationPresetSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $presets = [
             [

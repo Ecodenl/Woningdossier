@@ -3,12 +3,14 @@
 namespace App\Resolvers\Audit;
 
 
-class IpAddressResolver implements \OwenIt\Auditing\Contracts\IpAddressResolver
+use OwenIt\Auditing\Contracts\Auditable;
+
+class IpAddressResolver implements \OwenIt\Auditing\Contracts\Resolver
 {
     /**
      * {@inheritdoc}
      */
-    public static function resolve(): string
+    public static function resolve(Auditable $auditable): string
     {
         return "";
     }

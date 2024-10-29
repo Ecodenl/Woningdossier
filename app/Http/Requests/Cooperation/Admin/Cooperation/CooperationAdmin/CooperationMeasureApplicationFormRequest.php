@@ -16,10 +16,8 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
 
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole('cooperation-admin');
     }
@@ -34,10 +32,8 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $evaluateGt = ! is_null($this->input('cooperation_measure_applications.costs.from'));
 

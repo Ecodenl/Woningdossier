@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use Closure;
@@ -11,10 +12,8 @@ class RestoreBuildingSessionIfFillingForOtherBuilding
 {
     /**
      * Handle an incoming request.
-     *
-     * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         // check if the user is filling a other building, and if so reset the building session id to its original user his building id.
         $user = Hoomdossier::user();

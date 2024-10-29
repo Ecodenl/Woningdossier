@@ -33,10 +33,8 @@ class LanguageLineToQuestionStructure extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         // temporary command to convert normal translations to question like structure
         // this will be removed in the near future as refactor is needed

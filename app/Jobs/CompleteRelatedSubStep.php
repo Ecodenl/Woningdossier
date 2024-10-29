@@ -33,10 +33,8 @@ class CompleteRelatedSubStep extends NonHandleableJobAfterReset
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $subStep = $this->subStep;
         $building = $this->building;

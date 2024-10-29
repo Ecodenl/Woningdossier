@@ -34,10 +34,8 @@ class DeleteUser extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         // Note: the range cannot contain spaces like "1 - 2" as this would
         // result in an error on the command: it would see multiple arguments.

@@ -2,18 +2,15 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Http\Request;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware
 {
     /**
      * Get the path the user should be redirected to when they are not authenticated.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return string
      */
-    protected function redirectTo($request)
+    protected function redirectTo(Request $request): string
     {
         // Apparently the route binding has not happened yet, so we manually set it to the route.
         $params = ['cooperation' => $request->route('cooperation')];

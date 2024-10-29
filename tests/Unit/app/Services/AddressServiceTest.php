@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class AddressServiceTest extends TestCase
 {
-    public function normalizeZipcodeProvider()
+    public function normalizeZipcodeProvider(): array
     {
         return [
             ['1000AA', false, '1000AA'],
@@ -44,7 +44,7 @@ class AddressServiceTest extends TestCase
     /**
      * @dataProvider normalizeZipcodeProvider
      */
-    public function test_normalize_zipcode($zipcode, $withSpace, $expected)
+    public function test_normalize_zipcode($zipcode, $withSpace, $expected): void
     {
         $normalized = (new AddressService())->normalizeZipcode($zipcode, $withSpace);
         $this->assertEquals($expected, $normalized);

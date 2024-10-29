@@ -10,6 +10,7 @@ use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,11 +27,11 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $input_source_id
  * @property string $user_action_plan_advisable_type
  * @property int $user_action_plan_advisable_id
- * @property int $order
  * @property string|null $category
  * @property bool $visible
  * @property bool $subsidy_available
  * @property bool $loan_available
+ * @property int $order
  * @property array|null $costs
  * @property string|null $savings_gas
  * @property string|null $savings_electricity
@@ -86,6 +87,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder|UserActionPlanAdvice withInvisible()
  * @mixin \Eloquent
  */
+#[ScopedBy(VisibleScope::class)]
 class UserActionPlanAdvice extends Model implements Auditable
 {
     use HasFactory,
@@ -133,14 +135,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         'subsidy_available',
     ];
 
-    public static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new VisibleScope());
-    }
-
-    # Scopes
+    // Scopes
     public function scopeGetCategorized(Builder $query): Collection
     {
         $categories = array_values(UserActionPlanAdviceService::getCategories());
@@ -152,14 +147,8 @@ class UserActionPlanAdvice extends Model implements Auditable
 
     /**
      * Method to scope the advices without its deleted cooperation measure applications and for given type.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $type
-     * @param  \App\Models\InputSource  $inputSource
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeCooperationMeasureForType(Builder $query, string $type, InputSource $inputSource)
+    public function scopeCooperationMeasureForType(Builder $query, string $type, InputSource $inputSource): Builder
     {
         $isExtensive = $type === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
 
@@ -190,9 +179,6 @@ class UserActionPlanAdvice extends Model implements Auditable
 
     /**
      * Method to only scope the invisible rows
-     *
-     * @param  Builder  $query
-     * @return mixed
      */
     public function scopeInvisible(Builder $query): Builder
     {
@@ -201,12 +187,8 @@ class UserActionPlanAdvice extends Model implements Auditable
 
     /**
      * Scope a query to only include results for the particular step.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForStep($query, Step $step)
+    public function scopeForStep(Builder $query, Step $step): Builder
     {
         return $query->where('step_id', $step->id);
     }
@@ -216,7 +198,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         return $query->where('category', $category);
     }
 
-    # Relations
+    // Relations
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -230,52 +212,5 @@ class UserActionPlanAdvice extends Model implements Auditable
     public function userActionPlanAdvisable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    # Unsorted
-
-    /**
-     * Check if the costs are a valid range.
-     *
-     * @return bool
-     */
-    public function costIsRange(): bool
-    {
-        $costs = $this->costs;
-        return isset($costs['from']) && is_numeric($costs['from']) && isset($costs['to']) && is_numeric($costs['to']);
-    }
-
-    /**
-     * Get average of the from and to values of the costs.
-     *
-     * @return int
-     */
-    public function getCostAverage(): int
-    {
-        $costs = $this->costs;
-
-        return (($costs['from'] ?? 0) + ($costs['to'] ?? 0)) / 2;
-    }
-
-    /**
-     * Get the most logical cost value (if not range) and format it accordingly.
-     *
-     * @param  bool  $range
-     * @param  bool  $prefixUnit
-     *
-     * @return string|void
-     */
-    public function getCost(bool $range = false, bool $prefixUnit = false)
-    {
-        $unit = Hoomdossier::getUnitForColumn('costs');
-        $prefix = $prefixUnit ? "{$unit} " : '';
-
-        // Get the default formatting for the
-        $costs = $this->costs;
-        if ($range) {
-            NumberFormatter::range($costs['from'] ?? 0, $costs['to'] ?? 0, 0, ' - ', $prefix);
-        } else {
-            return $prefix.NumberFormatter::format(max($costs['from'] ?? 0, $costs['to'] ?? 0), 0, true);
-        }
     }
 }

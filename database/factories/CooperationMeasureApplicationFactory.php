@@ -9,10 +9,8 @@ class CooperationMeasureApplicationFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => ['nl' => $this->faker->randomElement(['Vloertje', 'Bakstel', 'Nieuwe lampen', 'Keuken', 'Badkamer'])],

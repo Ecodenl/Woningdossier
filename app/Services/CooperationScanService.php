@@ -19,8 +19,6 @@ class CooperationScanService
 
     /**
      * A mapping from user translation to our scans.
-     *
-     * @return array
      */
     public static function translationMap(): array
     {

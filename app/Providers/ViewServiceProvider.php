@@ -18,10 +18,8 @@ class ViewServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->singleton(ToolComposer::class);
         $this->app->singleton(CooperationComposer::class);
@@ -29,10 +27,8 @@ class ViewServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         View::creator('cooperation.tool.*', ToolComposer::class);
         View::creator('cooperation.frontend.tool.expert-scan.index', ToolComposer::class);

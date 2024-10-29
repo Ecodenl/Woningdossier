@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Frontend\Tool\SimpleScan;
 
+use Illuminate\View\View;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyRegulationHelper;
 use App\Http\Controllers\Controller;
@@ -13,7 +14,7 @@ use App\Services\Models\NotificationService;
 
 class MyRegulationsController extends Controller
 {
-    public function index(Cooperation $cooperation, Scan $scan)
+    public function index(Cooperation $cooperation, Scan $scan): View
     {
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);

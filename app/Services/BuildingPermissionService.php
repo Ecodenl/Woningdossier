@@ -20,10 +20,8 @@ class BuildingPermissionService
 
     /**
      * Give a user permission to a building.
-     *
-     * @return bool
      */
-    public static function givePermission(User $user, Building $building)
+    public static function givePermission(User $user, Building $building): bool
     {
         BuildingPermission::create([
             'user_id' => $user->id, 'building_id' => $building->id,

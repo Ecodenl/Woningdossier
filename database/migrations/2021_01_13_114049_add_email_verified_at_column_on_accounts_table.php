@@ -10,10 +10,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('accounts', function (Blueprint $table) {
             $table->timestamp('email_verified_at')->nullable()->after('confirm_token');
@@ -25,10 +23,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('accounts', function (Blueprint $table) {
             $table->dropColumn('email_verified_at');

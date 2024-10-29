@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -33,7 +34,7 @@ class BuildingNotes extends Model
         'note',
     ];
 
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class, 'building_id', 'id');
     }

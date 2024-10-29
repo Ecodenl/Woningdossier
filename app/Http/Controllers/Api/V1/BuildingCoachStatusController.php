@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Illuminate\Http\Response;
 use App\Events\ParticipantAddedEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Cooperation\BuildingCoachStatusFormRequest;
@@ -43,7 +44,7 @@ class BuildingCoachStatusController extends Controller
      *      ),
      * )
      */
-    public function buildingCoachStatus(BuildingCoachStatusFormRequest $request, Cooperation $cooperation)
+    public function buildingCoachStatus(BuildingCoachStatusFormRequest $request, Cooperation $cooperation): Response
     {
         $contactIds = $request->validated()['building_coach_statuses'];
 

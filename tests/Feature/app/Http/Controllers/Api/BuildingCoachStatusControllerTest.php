@@ -43,7 +43,7 @@ class BuildingCoachStatusControllerTest extends TestCase
         $this->cooperation = Cooperation::factory()->create();
     }
 
-    public function test_validation()
+    public function test_validation(): void
     {
         $cooperation = $this->cooperation;
 
@@ -117,7 +117,7 @@ class BuildingCoachStatusControllerTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_building_coach_status_gets_created()
+    public function test_building_coach_status_gets_created(): void
     {
         $cooperation = $this->cooperation;
         // Just for this test

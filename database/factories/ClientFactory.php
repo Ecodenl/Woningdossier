@@ -9,10 +9,8 @@ class ClientFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $name = $this->faker->randomElement([
             'groenezang',

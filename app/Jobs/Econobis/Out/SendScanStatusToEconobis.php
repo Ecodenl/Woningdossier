@@ -32,10 +32,8 @@ class SendScanStatusToEconobis implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle(EconobisService $econobisService, EconobisApi $econobis)
+    public function handle(EconobisService $econobisService, EconobisApi $econobis): void
     {
         $this->wrapCall(function () use ($econobis, $econobisService) {
             $econobis

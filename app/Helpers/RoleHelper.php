@@ -30,7 +30,7 @@ class RoleHelper
      *
      * @return string The target url
      */
-    public static function getUrlByRoleName(string $roleName, $checkUser = true)
+    public static function getUrlByRoleName(string $roleName, bool $checkUser = true): string
     {
         $redirectMap = [
             'cooperation-admin' => 'cooperation.admin.cooperation.cooperation-admin.index',
@@ -65,10 +65,8 @@ class RoleHelper
      * Get the right route / url by a role.
      *
      * @param bool Whether or not to check the user's role against the role name. Defaults to true.
-     *
-     * @return string
      */
-    public static function getUrlByRole(Role $role, $checkUser = true)
+    public static function getUrlByRole(Role $role, $checkUser = true): string
     {
         return self::getUrlByRoleName($role->name, $checkUser);
     }

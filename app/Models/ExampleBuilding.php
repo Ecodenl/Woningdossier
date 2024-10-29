@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\HoomdossierSession;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -22,21 +25,25 @@ use Illuminate\Support\Collection;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExampleBuildingContent> $contents
  * @property-read int|null $contents_count
  * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read array $translations
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding forAnyOrMyCooperation()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding forMyCooperation()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding generic()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding query()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereBuildingTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereIsDefault($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereUpdatedAt($value)
+ * @property-read mixed $translations
+ * @method static Builder|ExampleBuilding forAnyOrMyCooperation()
+ * @method static Builder|ExampleBuilding forMyCooperation()
+ * @method static Builder|ExampleBuilding generic()
+ * @method static Builder|ExampleBuilding newModelQuery()
+ * @method static Builder|ExampleBuilding newQuery()
+ * @method static Builder|ExampleBuilding query()
+ * @method static Builder|ExampleBuilding whereBuildingTypeId($value)
+ * @method static Builder|ExampleBuilding whereCooperationId($value)
+ * @method static Builder|ExampleBuilding whereCreatedAt($value)
+ * @method static Builder|ExampleBuilding whereId($value)
+ * @method static Builder|ExampleBuilding whereIsDefault($value)
+ * @method static Builder|ExampleBuilding whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder|ExampleBuilding whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder|ExampleBuilding whereLocale(string $column, string $locale)
+ * @method static Builder|ExampleBuilding whereLocales(string $column, array $locales)
+ * @method static Builder|ExampleBuilding whereName($value)
+ * @method static Builder|ExampleBuilding whereOrder($value)
+ * @method static Builder|ExampleBuilding whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ExampleBuilding extends Model
@@ -62,10 +69,8 @@ class ExampleBuilding extends Model
 
     /**
      * The "booting" method of the model.
-     *
-     * @return void
      */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -77,30 +82,25 @@ class ExampleBuilding extends Model
         });
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function contents()
+    public function contents(): HasMany
     {
         return $this->hasMany(ExampleBuildingContent::class);
     }
 
-    public function buildingType()
+    public function buildingType(): BelongsTo
     {
         return $this->belongsTo(BuildingType::class);
     }
 
-    public function cooperation()
+    public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class);
     }
 
     /**
      * @param $year
-     *
-     * @return ExampleBuildingContent|null
      */
-    public function getContentForYear($year)
+    public function getContentForYear($year): ?ExampleBuildingContent
     {
         $content = $this->contents()
                     ->where('build_year', '<=', $year)
@@ -134,12 +134,8 @@ class ExampleBuilding extends Model
 
     /**
      * Scope a query to only include buildings for my cooperation.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForMyCooperation($query)
+    public function scopeForMyCooperation(Builder $query): Builder
     {
         $cooperationId = ! empty(HoomdossierSession::getCooperation()) ? HoomdossierSession::getCooperation() : 0;
 
@@ -148,12 +144,8 @@ class ExampleBuilding extends Model
 
     /**
      * Scope a query to only include buildings for my cooperation.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForAnyOrMyCooperation($query)
+    public function scopeForAnyOrMyCooperation(Builder $query): Builder
     {
         $cooperationId = \Session::get('cooperation', 0);
 
@@ -162,12 +154,8 @@ class ExampleBuilding extends Model
 
     /**
      * Scope on only generic example buildings.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeGeneric($query)
+    public function scopeGeneric(Builder $query): Builder
     {
         return $query->whereNull('cooperation_id');
     }

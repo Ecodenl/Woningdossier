@@ -39,28 +39,22 @@ class FileStoragePolicy
 
     /**
      * Determine whether the user can view the fileStorage.
-     *
-     * @return mixed
      */
-    public function view(Account $account, FileStorage $fileStorage)
+    public function view(Account $account, FileStorage $fileStorage): bool
     {
     }
 
     /**
      * Determine whether the user can create fileStorages.
-     *
-     * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
     }
 
     /**
      * Determine whether the user can store a file.
-     *
-     * @return bool
      */
-    public function store(Account $account, FileStorage $fileStorage, FileType $fileType)
+    public function store(Account $account, FileStorage $fileStorage, FileType $fileType): bool
     {
         $user = $account->user();
         switch ($fileType->short) {
@@ -84,19 +78,15 @@ class FileStoragePolicy
 
     /**
      * Determine whether the user can update the fileStorage.
-     *
-     * @return mixed
      */
-    public function update(Account $account, FileStorage $fileStorage)
+    public function update(Account $account, FileStorage $fileStorage): bool
     {
     }
 
     /**
      * Determine whether the user can delete the fileStorage.
-     *
-     * @return mixed
      */
-    public function delete(Account $account, FileStorage $fileStorage)
+    public function delete(Account $account, FileStorage $fileStorage): bool
     {
     }
 }

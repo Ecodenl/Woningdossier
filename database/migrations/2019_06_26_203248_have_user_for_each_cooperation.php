@@ -8,10 +8,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasColumn('users', 'cooperation_id')) {
             Schema::table('users', function (Blueprint $table) {
@@ -131,12 +129,8 @@ return new class extends Migration
 
     /**
      * Creates separate copies a table row for all users of an account.
-     *
-     * @param string $table
-     * @param string $userColumn
-     * @param string $tablePrimaryKey
      */
-    protected function copyTableDataForSiblings($table, $userColumn = 'user_id', $tablePrimaryKey = 'id')
+    protected function copyTableDataForSiblings(string $table, string $userColumn = 'user_id', string $tablePrimaryKey = 'id')
     {
         $rows = DB::table($table)->get();
         /** @var stdClass $row */
@@ -167,10 +161,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // put building_user_usages back
         if (! Schema::hasTable('building_user_usages')) {

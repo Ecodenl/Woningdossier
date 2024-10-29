@@ -41,10 +41,8 @@ class DeleteLanguageLines extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         //$degenMode = false;
         //if ($this->confirm("Do you want to remove all translations without confirmation each translation ?")) {

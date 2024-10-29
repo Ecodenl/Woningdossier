@@ -105,14 +105,12 @@ class CsvService
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
                 $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
 
-                $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
-                $connectedCoachNames = [];
-                // get the names from the coaches and add them to a array
-                foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
-                    array_push($connectedCoachNames, User::forMyCooperation($cooperation->id)->find($coachId)->getFullName());
-                }
-                // implode it.
-                $connectedCoachNames = implode(', ', $connectedCoachNames);
+                $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building);
+                $connectedCoachNames = User::forMyCooperation($cooperation->id)
+                    ->whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
+                    ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
+                    ->pluck('full_name')
+                    ->implode(', ');
 
                 $firstName = $user->first_name;
                 $lastName = $user->last_name;
@@ -238,14 +236,11 @@ class CsvService
     /**
      * Format the output of the given column and value.
      *
-     * @param string $column
      * @param mixed $value
-     * @param int $decimals
-     * @param bool $shouldRound
      *
      * @return float|int|string
      */
-    protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false)
+    protected static function formatOutput(string $column, $value, int $decimals = 0, bool $shouldRound = false)
     {
         if (in_array($column, ['percentage_consumption']) ||
             false !== stristr($column, 'savings_') ||
@@ -271,13 +266,8 @@ class CsvService
 
     /**
      * Returns whether or not two (optional!) columns contain a year or not.
-     *
-     * @param string $column
-     * @param string $extraValue
-     *
-     * @return bool
      */
-    protected static function isYear($column, $extraValue = '')
+    protected static function isYear(string $column, string $extraValue = ''): bool
     {
         if (!is_null($column)) {
             if (false !== stristr($column, 'year')) {

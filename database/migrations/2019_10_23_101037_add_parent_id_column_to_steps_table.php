@@ -8,10 +8,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('steps', function (Blueprint $table) {
             $table->unsignedInteger('parent_id')->nullable()->default(null)->after('id');
@@ -21,10 +19,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('steps', function (Blueprint $table) {
             $table->dropForeign(['parent_id']);

@@ -20,13 +20,10 @@ class RevokeBuildingPermissionForCoaches
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
+        /** @var Building $building */
         $building = $event->building;
 
         $building->user->update([
@@ -34,14 +31,14 @@ class RevokeBuildingPermissionForCoaches
         ]);
 
         // get all the connected coaches to the building
-        $connectedCoachesToBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+        $connectedCoachesToBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building, true);
 
         // and revoke them the access to the building
         foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
-            BuildingCoachStatusService::revokeAccess(User::find($connectedCoachToBuilding->coach_id), Building::find($connectedCoachToBuilding->building_id));
+            BuildingCoachStatusService::revokeAccess($connectedCoachToBuilding->coach, $building);
         }
 
-        // delete all the building permissions for this building
-        BuildingPermission::where('building_id', $building->id)->delete();
+        // Delete all the building permissions for this building
+        $building->buildingPermissions()->delete();
     }
 }

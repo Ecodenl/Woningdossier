@@ -13,10 +13,8 @@ return new class extends Migration
 
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('user_interests', function (Blueprint $table) {
             $table->string('interested_in_type')->change();
@@ -25,10 +23,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
 };

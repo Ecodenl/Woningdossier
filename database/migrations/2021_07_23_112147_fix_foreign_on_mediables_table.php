@@ -8,10 +8,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // Needed to fix media_id foreign on mediables table; we do this because the vendor file uses `cascadeOnDelete()`,
         // which doesn't actually work and causes foreign key exceptions when deleting media
@@ -31,10 +29,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // No need to reverse
     }

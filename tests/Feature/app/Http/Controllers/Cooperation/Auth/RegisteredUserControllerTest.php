@@ -51,7 +51,7 @@ class RegisteredUserControllerTest extends TestCase
         $this->mockLvbagClientAdresUitgebreid($this->formData['address'])->createLvbagMock();
     }
 
-    public function test_valid_data_registers_new_account()
+    public function test_valid_data_registers_new_account(): void
     {
         /** @var Cooperation $cooperation */
         $cooperation = Cooperation::factory()->create();

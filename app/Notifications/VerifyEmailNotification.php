@@ -33,7 +33,7 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      *
      * @return array|string
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['mail'];
     }
@@ -42,10 +42,8 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      * Get the verification URL for the given notifiable.
      *
      * @param mixed $notifiable
-     *
-     * @return string
      */
-    protected function verificationUrl($notifiable)
+    protected function verificationUrl($notifiable): string
     {
         return URL::temporarySignedRoute(
             'cooperation.auth.verification.verify',
@@ -62,10 +60,8 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      * Build the mail representation of the notification.
      *
      * @param $notifiable
-     *
-     * @return RequestAccountConfirmationEmail
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): RequestAccountConfirmationEmail
     {
         $verifyUrl = $this->verificationUrl($notifiable);
         return new RequestAccountConfirmationEmail($this->user, $verifyUrl);

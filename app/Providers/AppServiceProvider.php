@@ -9,19 +9,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\Sanctum;
+use Spatie\Translatable\Facades\Translatable;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         // After L7 it is no longer in the docs, albeit still present
         // https://laravel.com/docs/7.x/validation#using-extensions
@@ -71,14 +71,16 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrapThree();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+        /**
+         * @see  https://spatie.be/docs/laravel-translatable/v6/basic-usage/handling-missing-translations
+         */
+        Translatable::fallback(App::getFallbackLocale());
     }
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         Schema::defaultStringLength(191);
 

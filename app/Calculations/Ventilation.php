@@ -23,14 +23,13 @@ class Ventilation
     /**
      * Calculate the wall insulation costs and savings etc.
      *
-     * @param  UserEnergyHabit|null  $energyHabit
      *
      * @return array;
      */
     public static function calculate(
         Building $building,
         InputSource $inputSource,
-        $energyHabit,
+        ?UserEnergyHabit $energyHabit,
         array $calculateData
     ): array {
         $step = Step::findByShort('ventilation');

@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
 use App\Models\Cooperation;
@@ -32,10 +33,8 @@ class SuccessFullLoginListener
      * Handle the event.
      *
      * @param $event
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function handle($event)
+    public function handle($event): ?RedirectResponse
     {
         /** @var Account $account */
         $account = $event->user;
@@ -72,8 +71,9 @@ class SuccessFullLoginListener
                     ->notify('No cooperation during invalid login? Cooperation: ' . $label);
             }
 
-            header('Location: ' . $route);
-            exit;
+
+            return redirect()->to($route);
+            // header('Location: ' . $route);
         }
 
         // cooperation is set, so we can safely retrieve the user from the account.
@@ -110,14 +110,13 @@ class SuccessFullLoginListener
         ]);
 
         $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
+        return null;
     }
 
     /**
      * Method to ensure the cooperation is set in the session.
-     *
-     * @return void
      */
-    private function ensureCooperationIsSet()
+    private function ensureCooperationIsSet(): void
     {
         /** @var Cooperation|string $cooperation */
         $cooperation = request()->route('cooperation');

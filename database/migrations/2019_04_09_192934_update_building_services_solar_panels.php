@@ -6,10 +6,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $service = DB::table('services')->where('short', '=', 'total-sun-panels')->first();
         if ($service instanceof \stdClass) {
@@ -34,10 +32,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // Not needed
     }

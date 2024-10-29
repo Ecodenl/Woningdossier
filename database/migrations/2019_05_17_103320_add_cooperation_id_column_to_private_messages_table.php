@@ -8,10 +8,8 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('private_messages', function (Blueprint $table) {
             $table->unsignedInteger('cooperation_id')->nullable()->default(null)->after('building_id');
@@ -21,10 +19,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('private_messages', function (Blueprint $table) {
             $table->dropForeign(['cooperation_id']);

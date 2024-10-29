@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -57,10 +58,7 @@ class BuildingVentilation extends Model
         'building_id', 'input_source_id', 'how', 'living_situation', 'usage',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }

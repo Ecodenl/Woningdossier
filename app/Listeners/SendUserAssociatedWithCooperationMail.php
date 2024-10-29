@@ -13,12 +13,8 @@ class SendUserAssociatedWithCooperationMail implements ShouldQueue
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle(UserAssociatedWithOtherCooperation $event)
+    public function handle(UserAssociatedWithOtherCooperation $event): void
     {
         \Mail::to($event->user->account->email)->send(
             new UserAssociatedWithCooperation($event->cooperation, $event->user)

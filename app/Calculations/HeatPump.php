@@ -46,11 +46,6 @@ class HeatPump extends Calculator
 
     private KengetallenService $kengetallenService;
 
-    /**
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \Illuminate\Support\Collection|null  $answers
-     */
     public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         parent::__construct($building, $inputSource, $answers);
@@ -382,11 +377,8 @@ class HeatPump extends Calculator
      * math.
      *
      * @param $number
-     * @param  int  $decimals
-     *
-     * @return string
      */
-    private function format($number, int $decimals = 2)
+    private function format($number, int $decimals = 2): string
     {
         return number_format($number, $decimals, '.', '');
     }

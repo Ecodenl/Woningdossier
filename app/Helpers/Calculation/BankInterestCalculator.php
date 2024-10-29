@@ -39,14 +39,8 @@ class BankInterestCalculator
     /**
      * PHP implementation of Excel's TW function.
      * http://www.kb-financieel.nl/vijf-basisfuncties-bet-hw-nper-rente-tw.14645.lynkx.
-     *
-     * @param float $amountPerTerm
-     * @param int   $interest
-     * @param int   $period
-     *
-     * @return int
      */
-    public static function tw($amountPerTerm, $interest = self::BANK_INTEREST_PER_YEAR, $period = self::INTEREST_PERIOD)
+    public static function tw(float $amountPerTerm, int $interest = self::BANK_INTEREST_PER_YEAR, int $period = self::INTEREST_PERIOD): int
     {
         $amount = $amountPerTerm;
         for ($year = 1; $year < $period; ++$year) {

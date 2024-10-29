@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class HouseNumberExtensionTest extends TestCase
 {
-    public static function houseNumberExtensionProvider()
+    public static function houseNumberExtensionProvider(): array
     {
         return [
             // Passes
@@ -44,7 +44,7 @@ class HouseNumberExtensionTest extends TestCase
     /**
      * @dataProvider houseNumberExtensionProvider
      */
-    public function testPasses($country, $houseNumberExtension, $shouldPass)
+    public function testPasses($country, $houseNumberExtension, $shouldPass): void
     {
         $houseNumberExtensionRule = new HouseNumberExtension($country);
         $this->assertEquals($shouldPass, $houseNumberExtensionRule->passes('house_number_extension', $houseNumberExtension));

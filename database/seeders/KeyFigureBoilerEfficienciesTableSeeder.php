@@ -9,10 +9,8 @@ class KeyFigureBoilerEfficienciesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $service = DB::table('services')->where('short', 'boiler')->first();
 

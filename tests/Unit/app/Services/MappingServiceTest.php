@@ -24,7 +24,7 @@ class MappingServiceTest extends TestCase
     public $seed = false;
     public $seeder = DatabaseSeeder::class;
 
-    public function test_sync_maps_correct_from_value_to_targetless()
+    public function test_sync_maps_correct_from_value_to_targetless(): void
     {
         MappingService::init()
             ->from("Hellevoetsluis")
@@ -36,7 +36,7 @@ class MappingServiceTest extends TestCase
         ]);
     }
 
-    public function test_sync_maps_correct_from_value_to_morph()
+    public function test_sync_maps_correct_from_value_to_morph(): void
     {
         $target1 = Municipality::factory()->create();
 
@@ -53,7 +53,7 @@ class MappingServiceTest extends TestCase
         ]);
     }
 
-    public function test_sync_maps_correct_from_morph_to_target_data()
+    public function test_sync_maps_correct_from_morph_to_target_data(): void
     {
         $from = CustomMeasureApplication::factory()->create([
             'building_id' => Building::factory()->create(),
@@ -74,7 +74,7 @@ class MappingServiceTest extends TestCase
         ]);
     }
 
-    public function test_resolve_target_returns_target_morph()
+    public function test_resolve_target_returns_target_morph(): void
     {
         $target = Municipality::factory()->create();
         Mapping::factory()->create([
@@ -91,7 +91,7 @@ class MappingServiceTest extends TestCase
         $this->assertEquals($target->attributesToArray(), $resolvedTarget->attributesToArray());
     }
 
-    public function test_resolve_target_returns_target_model()
+    public function test_resolve_target_returns_target_model(): void
     {
         $from = Municipality::factory()->create();
         $target = Municipality::factory()->create();
@@ -112,7 +112,7 @@ class MappingServiceTest extends TestCase
         $this->assertInstanceOf(Municipality::class, $resolvedTarget);
     }
 
-    public function test_resolve_target_returns_target_data()
+    public function test_resolve_target_returns_target_data(): void
     {
         $from = Municipality::factory()->create();
         $target = ["Label" => "Muur", "Value" => "2933", "Highlight" => false];
@@ -130,7 +130,7 @@ class MappingServiceTest extends TestCase
         $this->assertEquals($target, $resolvedTarget);
     }
 
-    public function test_resolve_target_returns_nothing_when_from_is_empty()
+    public function test_resolve_target_returns_nothing_when_from_is_empty(): void
     {
         // DB seeding also seeds mappings. We clear them since we're asserting a count.
         DB::table('mappings')->delete();
@@ -158,10 +158,8 @@ class MappingServiceTest extends TestCase
     /**
      * This test checks that the correct mapping rows are returned based on the given type, whether that would be
      * in combination with or without a from or target.
-     *
-     * @return void
      */
-    public function test_using_type_with_or_without_from_or_target_resolves_the_correct_related_mappings()
+    public function test_using_type_with_or_without_from_or_target_resolves_the_correct_related_mappings(): void
     {
         // DB seeding also seeds mappings. We clear them since we're asserting a count.
         DB::table('mappings')->delete();

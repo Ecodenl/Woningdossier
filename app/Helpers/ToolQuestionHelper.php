@@ -229,11 +229,6 @@ class ToolQuestionHelper
 
     /**
      * Simple method to resolve the save in to something we can use.
-     *
-     * @param string $saveIn
-     * @param Building $building
-     *
-     * @return array
      */
     public static function resolveSaveIn(string $saveIn, Building $building): array
     {
@@ -274,10 +269,6 @@ class ToolQuestionHelper
     /**
      * Get a human readable answer.
      *
-     * @param \App\Models\Building $building
-     * @param \App\Models\InputSource $inputSource
-     * @param \App\Models\ToolQuestion $toolQuestion
-     * @param bool $withIcons
      * @param null $answer
      *
      * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Translation\Translator|int|mixed|string|string[]|null
@@ -349,12 +340,6 @@ class ToolQuestionHelper
 
     /**
      * Handle potential replaceables in a tool question name.
-     *
-     * @param \App\Models\Building $building
-     * @param \App\Models\InputSource $inputSource
-     * @param \App\Models\ToolQuestion $toolQuestion
-     *
-     * @return \App\Models\ToolQuestion
      */
     public static function handleToolQuestionReplaceables(Building $building, InputSource $inputSource, ToolQuestion $toolQuestion): ToolQuestion
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Messages;
 
+use Illuminate\Http\RedirectResponse;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Helpers\Hoomdossier;
@@ -24,10 +25,8 @@ class ParticipantController extends Controller
 {
     /**
      * Remove a participant from a group chat and revoke his building access permissions.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function revokeAccess(Cooperation $cooperation, Request $request)
+    public function revokeAccess(Cooperation $cooperation, Request $request): RedirectResponse
     {
         // get the group participant user id (which is only a coach, but still)
         $groupParticipantUserId = $request->get('user_id');
@@ -52,10 +51,8 @@ class ParticipantController extends Controller
 
     /**
      * Add a user / participant to a group chat and give him building access permission.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function addWithBuildingAccess(Cooperation $cooperation, Request $request)
+    public function addWithBuildingAccess(Cooperation $cooperation, Request $request): RedirectResponse
     {
         $userId = $request->get('user_id', '');
         $buildingId = $request->get('building_id', '');

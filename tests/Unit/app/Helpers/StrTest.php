@@ -187,7 +187,7 @@ class StrTest extends TestCase
         $this->assertEquals($expected, Str::htmlArrToDot($value));
     }
 
-    public function dotToHtmlProvider(): array
+    public static function dotToHtmlProvider(): array
     {
         return [
             ['', false, ''],

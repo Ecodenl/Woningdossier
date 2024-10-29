@@ -38,7 +38,7 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertEquals($expected, QuestionnaireService::hasQuestionOptions($input));
     }
 
-    public function createQuestionProvider(): array
+    public static function createQuestionProvider(): array
     {
         return [
             [[
@@ -95,7 +95,7 @@ class QuestionnaireServiceTest extends TestCase
         ]);
     }
 
-    public function isEmptyTranslationProvider(): array
+    public static function isEmptyTranslationProvider(): array
     {
         return [
             [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], false],
@@ -113,7 +113,7 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
     }
 
-    public function isNotEmptyTranslationProvider(): array
+    public static function isNotEmptyTranslationProvider(): array
     {
         return [
             [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], true],

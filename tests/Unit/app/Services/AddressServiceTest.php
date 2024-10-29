@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class AddressServiceTest extends TestCase
 {
-    public function normalizeZipcodeProvider(): array
+    public static function normalizeZipcodeProvider(): array
     {
         return [
             ['1000AA', false, '1000AA'],

@@ -125,12 +125,15 @@ class User extends Model implements AuthorizableContract
         'last_visited_url',
     ];
 
-    protected $casts = [
-        'allow_access' => 'boolean',
-        'extra' => 'array',
-        'tool_last_changed_at' => 'datetime:Y-m-d H:i:s',
-        'regulations_refreshed_at' => 'datetime:Y-m-d H:i:s',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'allow_access' => 'boolean',
+            'extra' => 'array',
+            'tool_last_changed_at' => 'datetime:Y-m-d H:i:s',
+            'regulations_refreshed_at' => 'datetime:Y-m-d H:i:s',
+        ];
+    }
 
     // We can't eager load roles by default because if the admin changes them, they don't refresh
     //protected $with = [

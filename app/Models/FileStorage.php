@@ -73,14 +73,17 @@ class FileStorage extends Model
     ];
 
     /**
-     * Attributes that should be casted to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'is_being_processed' => 'bool',
-        'available_until' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_being_processed' => 'bool',
+            'available_until' => 'datetime',
+        ];
+    }
 
     /**
      * Query to scope the expired files.

@@ -34,14 +34,18 @@ class NotificationSetting extends Model
     protected $fillable = [
         'user_id', 'type_id', 'interval_id', 'last_notified_at',
     ];
+
     /**
-     * Attributes that should be casted.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'last_notified_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'last_notified_at' => 'datetime',
+        ];
+    }
 
     /**
      * Get the interval of the notification.

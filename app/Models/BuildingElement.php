@@ -55,16 +55,19 @@ class BuildingElement extends Model implements Auditable
         GetMyValuesTrait,
         \App\Traits\Models\Auditable;
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'extra' => 'array',
-    ];
-
     protected $fillable = ['building_id', 'input_source_id', 'element_id', 'element_value_id', 'extra'];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'extra' => 'array',
+        ];
+    }
 
     public function building(): BelongsTo
     {

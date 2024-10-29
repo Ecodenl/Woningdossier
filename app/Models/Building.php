@@ -134,10 +134,6 @@ class Building extends Model
         'is_active',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
-
     // Static methods
     public static function boot()
     {
@@ -148,6 +144,13 @@ class Building extends Model
             // TODO: This doesn't delete the files
             $building->media()->delete();
         });
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
     }
 
     // Model methods

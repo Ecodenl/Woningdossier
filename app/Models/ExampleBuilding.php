@@ -54,15 +54,6 @@ class ExampleBuilding extends Model
         'name',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'is_default' => 'boolean',
-    ];
-
     public $fillable = [
         'name', 'building_type_id', 'cooperation_id', 'order', 'is_default',
     ];
@@ -80,6 +71,18 @@ class ExampleBuilding extends Model
             $model->contents()->delete();
             \Log::debug('Deleting done..');
         });
+    }
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'is_default' => 'boolean',
+        ];
     }
 
     public function contents(): HasMany

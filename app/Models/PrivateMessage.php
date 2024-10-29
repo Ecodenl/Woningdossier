@@ -55,13 +55,16 @@ class PrivateMessage extends Model
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'is_public'    => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_public'    => 'boolean',
+        ];
+    }
 
     public function scopeForMyCooperation(Builder $query): Builder
     {

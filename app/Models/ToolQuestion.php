@@ -97,12 +97,15 @@ class ToolQuestion extends Model
         'resident'
     ];
 
-    protected $casts = [
-        'options' => 'array',
-        'validation' => 'array',
-        'coach' => 'boolean',
-        'resident' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'options' => 'array',
+            'validation' => 'array',
+            'coach' => 'boolean',
+            'resident' => 'boolean',
+        ];
+    }
 
     # Model methods
     public function hasOptions(): bool

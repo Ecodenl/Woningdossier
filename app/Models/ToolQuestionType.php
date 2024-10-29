@@ -42,7 +42,10 @@ class ToolQuestionType extends Model
         'short'
     ];
 
-    protected $casts = [
-        'name' => 'array'
-    ];
+    protected function casts(): array
+    {
+        return [
+            'name' => 'array'
+        ];
+    }
 }

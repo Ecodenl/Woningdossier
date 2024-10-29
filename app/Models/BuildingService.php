@@ -52,16 +52,19 @@ class BuildingService extends Model implements Auditable
         GetMyValuesTrait,
         \App\Traits\Models\Auditable;
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'extra' => 'array',
-    ];
-
     protected $fillable = ['service_value_id', 'input_source_id', 'extra', 'building_id', 'service_id'];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'extra' => 'array',
+        ];
+    }
 
     public function building(): BelongsTo
     {

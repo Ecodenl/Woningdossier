@@ -68,9 +68,12 @@ class CustomMeasureApplication extends Model
         'building_id', 'input_source_id', 'name', 'hash', 'info',
     ];
 
-    protected $casts = [
-        'extra' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'extra' => 'array',
+        ];
+    }
 
     public function userActionPlanAdvices(): MorphMany
     {

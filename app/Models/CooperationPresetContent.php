@@ -30,9 +30,12 @@ class CooperationPresetContent extends Model
         'cooperation_preset_id', 'content',
     ];
 
-    protected $casts = [
-        'content' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'content' => 'array',
+        ];
+    }
 
     public function cooperationPreset(): BelongsTo
     {

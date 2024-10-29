@@ -47,9 +47,12 @@ class SubSteppable extends MorphPivot
 
     protected $table = 'sub_steppables';
 
-    protected $casts = [
-        'conditions' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'conditions' => 'array',
+        ];
+    }
 
     # Model methods
     public function isToolQuestion(): bool

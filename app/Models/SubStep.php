@@ -74,9 +74,12 @@ class SubStep extends Model
         'slug',
     ];
 
-    protected $casts = [
-        'conditions' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'conditions' => 'array',
+        ];
+    }
 
     public function getRouteKeyName()
     {

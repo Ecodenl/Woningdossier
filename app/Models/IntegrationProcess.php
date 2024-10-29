@@ -38,7 +38,11 @@ class IntegrationProcess extends Model
         'process',
         'synced_at',
     ];
-    public $casts = [
-        'synced_at' => 'datetime:Y-m-d H:i:s'
-    ];
+
+    protected function casts(): array
+    {
+        return [
+            'synced_at' => 'datetime:Y-m-d H:i:s'
+        ];
+    }
 }

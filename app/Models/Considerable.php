@@ -49,7 +49,10 @@ class Considerable extends Model
         'is_considering',
     ];
 
-    protected $casts = [
-        'is_considering' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_considering' => 'boolean',
+        ];
+    }
 }

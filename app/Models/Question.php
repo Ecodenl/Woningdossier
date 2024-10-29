@@ -67,10 +67,13 @@ class Question extends Model
         'name', 'type', 'order', 'required', 'questionnaire_id', 'validation',
     ];
 
-    protected $casts = [
-        'required' => 'bool',
-        'validation' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'required' => 'bool',
+            'validation' => 'array',
+        ];
+    }
 
     /**
      * Check if a question is required.

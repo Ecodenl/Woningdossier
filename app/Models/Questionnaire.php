@@ -64,9 +64,12 @@ class Questionnaire extends Model
         'name', 'step_id', 'cooperation_id', 'is_active', 'order',
     ];
 
-    protected $casts = [
-        'is_active' => 'bool',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'bool',
+        ];
+    }
 
     /**
      * Return the step that belongs to this questionnaire.

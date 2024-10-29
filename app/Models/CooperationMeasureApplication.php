@@ -72,12 +72,15 @@ class CooperationMeasureApplication extends Model
         'name', 'info', 'costs', 'savings_money', 'extra', 'cooperation_id', 'is_extensive_measure', 'is_deletable',
     ];
 
-    protected $casts = [
-        'costs' => 'array',
-        'extra' => 'array',
-        'is_extensive_measure' => 'boolean',
-        'is_deletable' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'costs' => 'array',
+            'extra' => 'array',
+            'is_extensive_measure' => 'boolean',
+            'is_deletable' => 'boolean',
+        ];
+    }
 
     # Model Methods
     public function getType(): string

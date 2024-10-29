@@ -47,9 +47,12 @@ class PrivateMessageView extends Model
         'input_source_id', 'private_message_id', 'user_id', 'to_cooperation_id', 'read_at',
     ];
 
-    protected $casts = [
-        'read_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'read_at' => 'datetime',
+        ];
+    }
 
     /**
      * Get the total unread messages for a user within its given cooperation and after a specific date.

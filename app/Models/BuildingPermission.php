@@ -31,13 +31,16 @@ class BuildingPermission extends Model
     protected $fillable = ['user_id', 'building_id'];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'permissions' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'permissions' => 'array',
+        ];
+    }
 
     /**
      * Return the building from the permission.

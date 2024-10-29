@@ -59,9 +59,12 @@ class Mapping extends Model
         'target_data'
     ];
 
-    protected $casts = [
-        'target_data' => 'array'
-    ];
+    protected function casts(): array
+    {
+        return [
+            'target_data' => 'array'
+        ];
+    }
 
     # Scopes
     public function scopeForType(Builder $query, string $type): Builder

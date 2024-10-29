@@ -117,23 +117,26 @@ class UserActionPlanAdvice extends Model implements Auditable
         'subsidy_available'
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'planned' => 'boolean',
-        'visible' => 'boolean',
-        'subsidy_available' => 'boolean',
-        'loan_available' => 'boolean',
-        'costs' => 'array',
-    ];
-
     protected array $ignoreAttributes = [
         'loan_available',
         'subsidy_available',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'planned' => 'boolean',
+            'visible' => 'boolean',
+            'subsidy_available' => 'boolean',
+            'loan_available' => 'boolean',
+            'costs' => 'array',
+        ];
+    }
 
     // Scopes
     public function scopeGetCategorized(Builder $query): Collection

@@ -48,15 +48,18 @@ class BuildingVentilation extends Model
     use GetMyValuesTrait;
     use GetValueTrait;
 
-    protected $casts = [
-        'how'              => 'array',
-        'living_situation' => 'array',
-        'usage'            => 'array',
-    ];
-
     protected $fillable = [
         'building_id', 'input_source_id', 'how', 'living_situation', 'usage',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'how'              => 'array',
+            'living_situation' => 'array',
+            'usage'            => 'array',
+        ];
+    }
 
     public function building(): BelongsTo
     {

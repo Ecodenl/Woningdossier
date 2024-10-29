@@ -50,11 +50,14 @@ class ToolQuestionValuable extends Model
         'extra',
     ];
 
-    protected $casts = [
-        'show' => 'boolean',
-        'extra' => 'array',
-        'conditions' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'show' => 'boolean',
+            'extra' => 'array',
+            'conditions' => 'array',
+        ];
+    }
 
     # Scopes
     public function scopeVisible(Builder $query): Builder

@@ -88,15 +88,18 @@ class MeasureApplication extends Model
         'measure_name', 'measure_info', 'configurations', 'cost_range', 'savings_money',
     ];
 
-    protected $casts = [
-        'cost_range' => 'array',
-        'has_calculations' => 'boolean',
-        'configurations' => 'array',
-    ];
-
     protected $appends = [
         'name',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'cost_range' => 'array',
+            'has_calculations' => 'boolean',
+            'configurations' => 'array',
+        ];
+    }
 
    # Model methods
     /**

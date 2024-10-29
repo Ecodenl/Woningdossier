@@ -54,15 +54,6 @@ class BuildingInsulatedGlazing extends Model
     use GetValueTrait;
     use GetMyValuesTrait;
     
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'extra' => 'array',
-    ];
-
     protected $fillable = [
         'building_id',
         'input_source_id',
@@ -77,6 +68,18 @@ class BuildingInsulatedGlazing extends Model
     protected $crucialRelations = [
         'measure_application_id',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'extra' => 'array',
+        ];
+    }
 
     public function measureApplication(): BelongsTo
     {

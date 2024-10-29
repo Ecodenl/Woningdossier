@@ -60,15 +60,6 @@ class BuildingRoofType extends Model
     use GetMyValuesTrait;
     
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'extra' => 'array',
-    ];
-
     protected $fillable = [
         'building_id', 'roof_type_id', 'input_source_id', 'element_value_id',
         'roof_surface', 'insulation_roof_surface', 'zinc_surface',
@@ -78,6 +69,18 @@ class BuildingRoofType extends Model
     protected $crucialRelations = [
         'roof_type_id',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'extra' => 'array',
+        ];
+    }
 
     public function building(): BelongsTo
     {

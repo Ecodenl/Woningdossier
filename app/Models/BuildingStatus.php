@@ -33,13 +33,16 @@ class BuildingStatus extends Model
         'status_id', 'building_id', 'appointment_date',
     ];
 
-    protected $casts = [
-        'appointment_date' => 'datetime',
-    ];
-
     protected $with = [
         'status',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'appointment_date' => 'datetime',
+        ];
+    }
 
     public function scopeMostRecent($query)
     {

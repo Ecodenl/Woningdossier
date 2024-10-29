@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\Questionnaire;
@@ -31,9 +32,7 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider hasQuestionOptionsProvider
-     */
+    #[DataProvider('hasQuestionOptionsProvider')]
     public function testHasQuestionOptions($input, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::hasQuestionOptions($input));
@@ -51,9 +50,7 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider createQuestionProvider
-     */
+    #[DataProvider('createQuestionProvider')]
     public function testCreateQuestion($questionData): void
     {
         // first we need to create a questionnaire with a question
@@ -110,9 +107,7 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isEmptyTranslationProvider
-     */
+    #[DataProvider('isEmptyTranslationProvider')]
     public function testIsEmptyTranslation($translations, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
@@ -130,9 +125,7 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isNotEmptyTranslationProvider
-     */
+    #[DataProvider('isNotEmptyTranslationProvider')]
     public function testisNotEmptyTranslation($translations, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::isNotEmptyTranslation($translations));

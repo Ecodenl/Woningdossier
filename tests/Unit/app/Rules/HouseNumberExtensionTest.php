@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Rules;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Rules\HouseNumberExtension;
 use Tests\TestCase;
 
@@ -41,9 +42,7 @@ class HouseNumberExtensionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider houseNumberExtensionProvider
-     */
+    #[DataProvider('houseNumberExtensionProvider')]
     public function testPasses($country, $houseNumberExtension, $shouldPass): void
     {
         $houseNumberExtensionRule = new HouseNumberExtension($country);

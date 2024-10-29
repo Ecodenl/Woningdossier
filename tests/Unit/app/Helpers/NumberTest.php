@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Helpers;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\Number;
 use Tests\TestCase;
 
@@ -26,9 +27,7 @@ class NumberTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isNegativeProvider
-     */
+    #[DataProvider('isNegativeProvider')]
     public function testIsNegative($number, $expected): void
     {
         $this->assertEquals($expected, Number::isNegative($number));

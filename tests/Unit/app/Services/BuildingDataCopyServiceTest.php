@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Services\BuildingDataCopyService;
@@ -126,9 +127,7 @@ class BuildingDataCopyServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider makeTargetsValuesProvider
-     */
+    #[DataProvider('makeTargetsValuesProvider')]
     public function testMakeTargetValues($sourceValue, $targetValues, $whereColumn, $additionalWhereColumn, $expected): void
     {
         $possibleTargetValues = BuildingDataCopyService::getPossibleTargetValues(

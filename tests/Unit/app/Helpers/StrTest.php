@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Helpers;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\Str;
 use Tests\TestCase;
 
@@ -24,9 +25,7 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isConsideredEmptyAnswerProvider
-     */
+    #[DataProvider('isConsideredEmptyAnswerProvider')]
     public function testIsConsideredEmptyAnswer($values, $expected): void
     {
         $this->assertEquals($expected, Str::isConsideredEmptyAnswer($values));
@@ -43,9 +42,7 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider lcfirstProvider
-     */
+    #[DataProvider('lcfirstProvider')]
     public function testLcfirst($value, $expected): void
     {
         $this->assertEquals($expected, Str::lcfirst($value));
@@ -67,9 +64,7 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isValidJsonProvider
-     */
+    #[DataProvider('isValidJsonProvider')]
     public function testIsValidJson($value, $arrayOnly, $expected): void
     {
         $this->assertEquals($expected, Str::isValidJson($value, $arrayOnly));
@@ -101,9 +96,7 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider arrContainsProvider
-     */
+    #[DataProvider('arrContainsProvider')]
     public function testArrContains($array, $needle, $ignoreCase, $expected): void
     {
         $this->assertEquals($expected, Str::arrContains($array, $needle, $ignoreCase));
@@ -135,9 +128,7 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider arrStartsWithProvider
-     */
+    #[DataProvider('arrStartsWithProvider')]
     public function test_arr_starts_with($array, $needle, $ignoreCase, $expected): void
     {
         $this->assertEquals($expected, Str::arrStartsWith($array, $needle, $ignoreCase));
@@ -174,9 +165,7 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider arrKeyStartsWithProvider
-     */
+    #[DataProvider('arrKeyStartsWithProvider')]
     public function test_arr_key_starts_with($array, $needle, $ignoreCase, $expected): void
     {
         $this->assertEquals($expected, Str::arrKeyStartsWith($array, $needle, $ignoreCase));
@@ -192,9 +181,7 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider htmlArrToDotProvider
-     */
+    #[DataProvider('htmlArrToDotProvider')]
     public function testHtmlArrToDot($value, $expected): void
     {
         $this->assertEquals($expected, Str::htmlArrToDot($value));
@@ -218,9 +205,7 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dotToHtmlProvider
-     */
+    #[DataProvider('dotToHtmlProvider')]
     public function test_dot_to_html($dottedName, $asArray, $expected): void
     {
         $this->assertEquals($expected, Str::dotToHtml($dottedName, $asArray));
@@ -236,9 +221,7 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider hasReplaceablesProvider
-     */
+    #[DataProvider('hasReplaceablesProvider')]
     public function testHasReplaceables($string, $expected): void
     {
         $this->assertEquals($expected, Str::hasReplaceables($string));

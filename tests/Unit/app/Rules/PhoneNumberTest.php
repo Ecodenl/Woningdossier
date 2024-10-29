@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Rules;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Rules\PhoneNumber;
 use Tests\TestCase;
 
@@ -28,9 +29,7 @@ class PhoneNumberTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider phoneNumberProvider
-     */
+    #[DataProvider('phoneNumberProvider')]
     public function testPasses($country, $phoneNumber, $shouldPass): void
     {
         $phoneNumberRule = new PhoneNumber($country);

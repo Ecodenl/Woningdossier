@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Helpers\DataTypes;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\DataTypes\Caster;
 use Tests\TestCase;
 
@@ -104,9 +105,7 @@ class CasterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getCastProvider
-     */
+    #[DataProvider('getCastProvider')]
     public function test_get_cast(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
@@ -155,9 +154,7 @@ class CasterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider reverseFormattedProvider
-     */
+    #[DataProvider('reverseFormattedProvider')]
     public function test_reverse_formatted(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
@@ -210,9 +207,7 @@ class CasterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getFormatForUserProvider
-     */
+    #[DataProvider('getFormatForUserProvider')]
     public function test_get_format_for_user(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);

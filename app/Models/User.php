@@ -36,10 +36,13 @@ use Spatie\Permission\Traits\HasRoles;
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $refreshing_regulations
  * @property-read \App\Models\Account|null $account
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $actionPlanAdvices
  * @property-read int|null $action_plan_advices_count
  * @property-read \App\Models\Building|null $building
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingCoachStatus> $buildingCoachStatuses
+ * @property-read int|null $building_coach_statuses_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingNotes> $buildingNotes
  * @property-read int|null $building_notes_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingPermission> $buildingPermissions
@@ -96,6 +99,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder|User whereLastName($value)
  * @method static Builder|User whereLastVisitedUrl($value)
  * @method static Builder|User wherePhoneNumber($value)
+ * @method static Builder|User whereRefreshingRegulations($value)
  * @method static Builder|User whereRegulationsRefreshedAt($value)
  * @method static Builder|User whereToolLastChangedAt($value)
  * @method static Builder|User whereUpdatedAt($value)

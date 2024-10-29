@@ -10,30 +10,6 @@ return [
 
     'domain' => env('APP_DOMAIN', 'hoomdossier.nl'),
 
-    'providers' => ServiceProvider::defaultProviders()->merge([
-//        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
-        App\Providers\PasswordResetServiceProvider::class,
-
-        /*
-         * Package Service Providers...
-         */
-        App\Providers\FortifyServiceProvider::class,
-
-        /*
-         * Application Service Providers...
-         */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
-
-        App\Providers\ExternalServiceProvider::class,
-        App\Providers\EconobisServiceProvider::class,
-        App\Providers\WoningdossierServiceProvider::class,
-        App\Providers\MacroServiceProvider::class,
-        App\Providers\ViewServiceProvider::class,
-    ])->toArray(),
 
     'aliases' => Facade::defaultAliases()->merge([
         'Redis' => Illuminate\Support\Facades\Redis::class,

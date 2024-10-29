@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\app\Helpers\DataTypes;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\DataTypes\Caster;
 use Tests\TestCase;
 
-class CasterTest extends TestCase
+final class CasterTest extends TestCase
 {
-    public function getCastProvider(): array
+    public static function getCastProvider(): array
     {
         return [
             [Caster::STRING, 10, false, '10'],
@@ -104,9 +105,7 @@ class CasterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getCastProvider
-     */
+    #[DataProvider('getCastProvider')]
     public function test_get_cast(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
@@ -117,7 +116,7 @@ class CasterTest extends TestCase
         $this->assertEquals($expected, $caster->getCast());
     }
 
-    public function reverseFormattedProvider(): array
+    public static function reverseFormattedProvider(): array
     {
         // Provider note: The code only reverse formats ints and floats, as they are the only  user input that require
         // formatting. Therefore, this test is limited to these 2 only (in detail).
@@ -155,9 +154,7 @@ class CasterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider reverseFormattedProvider
-     */
+    #[DataProvider('reverseFormattedProvider')]
     public function test_reverse_formatted(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
@@ -168,7 +165,7 @@ class CasterTest extends TestCase
         $this->assertEquals($expected, $caster->reverseFormatted());
     }
 
-    public function getFormatForUserProvider(): array
+    public static function getFormatForUserProvider(): array
     {
         // Provider note: The code only formats ints (and bucketed ints) and floats, as they are the only that
         // (currently) require formatting. The other values apply a `getCast()`. See other tests on those results.
@@ -210,9 +207,7 @@ class CasterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getFormatForUserProvider
-     */
+    #[DataProvider('getFormatForUserProvider')]
     public function test_get_format_for_user(string $dataType, $value, bool $force, $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);

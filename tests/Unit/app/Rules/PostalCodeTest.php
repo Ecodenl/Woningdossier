@@ -2,10 +2,11 @@
 
 namespace Tests\Unit\app\Rules;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Rules\PostalCode;
 use Tests\TestCase;
 
-class PostalCodeTest extends TestCase
+final class PostalCodeTest extends TestCase
 {
     public static function postalCodeProvider(): array
     {
@@ -19,9 +20,7 @@ class PostalCodeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider postalCodeProvider
-     */
+    #[DataProvider('postalCodeProvider')]
     public function testPasses($country, $postalCode, $shouldPass): void
     {
         $postalCodeRule = new PostalCode($country);

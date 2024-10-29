@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\app\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Services\AddressService;
 use Tests\TestCase;
 
-class AddressServiceTest extends TestCase
+final class AddressServiceTest extends TestCase
 {
-    public function normalizeZipcodeProvider(): array
+    public static function normalizeZipcodeProvider(): array
     {
         return [
             ['1000AA', false, '1000AA'],
@@ -41,9 +42,7 @@ class AddressServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider normalizeZipcodeProvider
-     */
+    #[DataProvider('normalizeZipcodeProvider')]
     public function test_normalize_zipcode($zipcode, $withSpace, $expected): void
     {
         $normalized = (new AddressService())->normalizeZipcode($zipcode, $withSpace);

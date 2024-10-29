@@ -2,10 +2,11 @@
 
 namespace Tests\Unit\app\Helpers\Calculation;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\Calculation\BankInterestCalculator;
 use Tests\TestCase;
 
-class BankInterestCalculatorTest extends TestCase
+final class BankInterestCalculatorTest extends TestCase
 {
     public static function dataProvider(): array
     {
@@ -25,9 +26,7 @@ class BankInterestCalculatorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testTw($expected, $amount, $interest, $period): void
     {
         $this->assertEquals($expected, BankInterestCalculator::tw($amount, $interest, $period));

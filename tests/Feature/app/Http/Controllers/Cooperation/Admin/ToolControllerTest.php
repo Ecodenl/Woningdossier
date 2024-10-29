@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\app\Http\Controllers\Cooperation\Admin;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Events\FillingToolForUserEvent;
 use App\Events\ObservingToolForUserEvent;
 use App\Helpers\HoomdossierSession;
@@ -29,7 +30,7 @@ use Illuminate\Support\Facades\Hash;
 use Tests\MocksLvbag;
 use Tests\TestCase;
 
-class ToolControllerTest extends TestCase
+final class ToolControllerTest extends TestCase
 {
     use WithFaker,
         MocksLvbag,
@@ -40,7 +41,7 @@ class ToolControllerTest extends TestCase
 
     protected $followRedirects = true;
 
-    public function routeProvider(): array
+    public static function routeProvider(): array
     {
         return [
             ['cooperation.admin.tool.fill-for-user'],
@@ -48,7 +49,7 @@ class ToolControllerTest extends TestCase
         ];
     }
 
-    public function routeEventProvider(): array
+    public static function routeEventProvider(): array
     {
         return [
             ['cooperation.admin.tool.fill-for-user', FillingToolForUserEvent::class],
@@ -56,9 +57,7 @@ class ToolControllerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider routeProvider 
-     */
+    #[DataProvider('routeProvider')]
     public function test_accessing_tool_controller_fails_if_no_access(string $routeName): void
     {
         [$resident, $coach] = $this->getFakeUsers();
@@ -73,9 +72,7 @@ class ToolControllerTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /**
-     * @dataProvider routeEventProvider
-     */
+    #[DataProvider('routeEventProvider')]
     public function test_accessing_tool_controler_dispatches_event(string $routeName, string $event): void
     {
         Event::fake($event);
@@ -96,9 +93,7 @@ class ToolControllerTest extends TestCase
         Event::assertDispatched($event);
     }
 
-    /**
-     * @dataProvider routeProvider
-     */
+    #[DataProvider('routeProvider')]
     public function test_accessing_tool_controller_attempts_to_attach_municipality(string $routeName): void
     {
         Bus::fake(CheckBuildingAddress::class);
@@ -119,9 +114,7 @@ class ToolControllerTest extends TestCase
         Bus::assertDispatched(CheckBuildingAddress::class);
     }
 
-    /**
-     * @dataProvider routeProvider
-     */
+    #[DataProvider('routeProvider')]
     public function test_municipality_attaches_and_regulations_refresh_when_accessing_tool_controller(string $routeName): void
     {
         $fallbackData = [
@@ -167,9 +160,7 @@ class ToolControllerTest extends TestCase
         Bus::assertDispatched(RefreshRegulationsForBuildingUser::class);
     }
 
-    /**
-     * @dataProvider routeProvider
-     */
+    #[DataProvider('routeProvider')]
     public function test_regulations_do_not_refresh_when_accessing_tool_controller_if_no_municipality_attached(string $routeName): void
     {
         Bus::fake([RefreshRegulationsForBuildingUser::class]);
@@ -189,9 +180,7 @@ class ToolControllerTest extends TestCase
         Bus::assertNotDispatched(RefreshRegulationsForBuildingUser::class);
     }
 
-    /**
-     * @dataProvider routeProvider
-     */
+    #[DataProvider('routeProvider')]
     public function test_regulations_only_refresh_when_accessing_tool_controller_if_municipality_attached(string $routeName): void
     {
         Bus::fake([RefreshRegulationsForBuildingUser::class]);

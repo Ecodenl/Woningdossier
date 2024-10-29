@@ -2,10 +2,11 @@
 
 namespace Tests\Unit\app\Helpers;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\RawCalculator;
 use Tests\TestCase;
 
-class CalculatorTest extends TestCase
+final class CalculatorTest extends TestCase
 {
     public static function indexCostsProvider(): array
     {
@@ -19,9 +20,7 @@ class CalculatorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider indexCostsProvider
-     */
+    #[DataProvider('indexCostsProvider')]
     public function testReindexCosts($costs, $from, $to, $expected, $percentage): void
     {
         $this->markTestSkipped('must be revisited.');

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\Questionnaire;
@@ -10,7 +11,7 @@ use App\Services\QuestionnaireService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class QuestionnaireServiceTest extends TestCase
+final class QuestionnaireServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -31,15 +32,13 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider hasQuestionOptionsProvider
-     */
+    #[DataProvider('hasQuestionOptionsProvider')]
     public function testHasQuestionOptions($input, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::hasQuestionOptions($input));
     }
 
-    public function createQuestionProvider(): array
+    public static function createQuestionProvider(): array
     {
         return [
             [[
@@ -51,9 +50,7 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider createQuestionProvider
-     */
+    #[DataProvider('createQuestionProvider')]
     public function testCreateQuestion($questionData): void
     {
         // first we need to create a questionnaire with a question
@@ -98,7 +95,7 @@ class QuestionnaireServiceTest extends TestCase
         ]);
     }
 
-    public function isEmptyTranslationProvider(): array
+    public static function isEmptyTranslationProvider(): array
     {
         return [
             [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], false],
@@ -110,15 +107,13 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isEmptyTranslationProvider
-     */
+    #[DataProvider('isEmptyTranslationProvider')]
     public function testIsEmptyTranslation($translations, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
     }
 
-    public function isNotEmptyTranslationProvider(): array
+    public static function isNotEmptyTranslationProvider(): array
     {
         return [
             [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], true],
@@ -130,9 +125,7 @@ class QuestionnaireServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isNotEmptyTranslationProvider
-     */
+    #[DataProvider('isNotEmptyTranslationProvider')]
     public function testisNotEmptyTranslation($translations, $expected): void
     {
         $this->assertEquals($expected, QuestionnaireService::isNotEmptyTranslation($translations));

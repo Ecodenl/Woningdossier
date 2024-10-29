@@ -20,7 +20,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class CompleteRelatedSubStepTest extends TestCase
+final class CompleteRelatedSubStepTest extends TestCase
 {
     use RefreshDatabase;
 

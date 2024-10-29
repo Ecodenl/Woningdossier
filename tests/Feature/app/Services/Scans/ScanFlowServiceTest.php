@@ -23,7 +23,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class ScanFlowServiceTest extends TestCase
+final class ScanFlowServiceTest extends TestCase
 {
     use RefreshDatabase;
 

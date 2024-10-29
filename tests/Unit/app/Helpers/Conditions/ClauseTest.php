@@ -6,7 +6,7 @@ use App\Helpers\Conditions\Clause;
 use Illuminate\Support\Arr;
 use PHPUnit\Framework\TestCase;
 
-class ClauseTest extends TestCase
+final class ClauseTest extends TestCase
 {
 
     /**

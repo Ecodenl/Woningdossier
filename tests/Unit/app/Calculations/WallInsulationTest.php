@@ -6,7 +6,7 @@ use App\Calculations\WallInsulation;
 use Tests\TestCase;
 use Tests\Unit\data\ExcelExample;
 
-class WallInsulationTest extends TestCase
+final class WallInsulationTest extends TestCase
 {
     protected function setUp(): void
     {

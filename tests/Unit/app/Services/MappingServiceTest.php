@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class MappingServiceTest extends TestCase
+final class MappingServiceTest extends TestCase
 {
     use RefreshDatabase;
 

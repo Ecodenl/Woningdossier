@@ -2,10 +2,11 @@
 
 namespace Tests\Unit\app\Helpers;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\Arr;
 use Tests\TestCase;
 
-class ArrTest extends TestCase
+final class ArrTest extends TestCase
 {
     public static function isWholeArrayEmptyProvider(): array
     {
@@ -68,9 +69,7 @@ class ArrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isWholeArrayEmptyProvider
-     */
+    #[DataProvider('isWholeArrayEmptyProvider')]
     public function testIsWholeArrayEmpty($input, $expected): void
     {
         $this->assertEquals($expected, Arr::isWholeArrayEmpty($input));

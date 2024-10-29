@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Artisan;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
-class BagServiceTest extends TestCase
+final class BagServiceTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 

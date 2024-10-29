@@ -11,7 +11,7 @@ use Database\Seeders\InputSourcesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class NotificationServiceTest extends TestCase
+final class NotificationServiceTest extends TestCase
 {
     use RefreshDatabase;
 

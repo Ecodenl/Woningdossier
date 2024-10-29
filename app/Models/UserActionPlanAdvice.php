@@ -10,6 +10,7 @@ use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -86,6 +87,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder|UserActionPlanAdvice withInvisible()
  * @mixin \Eloquent
  */
+#[ScopedBy(VisibleScope::class)]
 class UserActionPlanAdvice extends Model implements Auditable
 {
     use HasFactory,
@@ -133,14 +135,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         'subsidy_available',
     ];
 
-    public static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new VisibleScope());
-    }
-
-    # Scopes
+    // Scopes
     public function scopeGetCategorized(Builder $query): Collection
     {
         $categories = array_values(UserActionPlanAdviceService::getCategories());
@@ -203,7 +198,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         return $query->where('category', $category);
     }
 
-    # Relations
+    // Relations
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -217,46 +212,5 @@ class UserActionPlanAdvice extends Model implements Auditable
     public function userActionPlanAdvisable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    # Unsorted
-
-    /**
-     * Check if the costs are a valid range.
-     */
-    public function costIsRange(): bool
-    {
-        $costs = $this->costs;
-        return isset($costs['from']) && is_numeric($costs['from']) && isset($costs['to']) && is_numeric($costs['to']);
-    }
-
-    /**
-     * Get average of the from and to values of the costs.
-     */
-    public function getCostAverage(): int
-    {
-        $costs = $this->costs;
-
-        return (($costs['from'] ?? 0) + ($costs['to'] ?? 0)) / 2;
-    }
-
-    /**
-     * Get the most logical cost value (if not range) and format it accordingly.
-     *
-     *
-     * @return string|void
-     */
-    public function getCost(bool $range = false, bool $prefixUnit = false)
-    {
-        $unit = Hoomdossier::getUnitForColumn('costs');
-        $prefix = $prefixUnit ? "{$unit} " : '';
-
-        // Get the default formatting for the
-        $costs = $this->costs;
-        if ($range) {
-            NumberFormatter::range($costs['from'] ?? 0, $costs['to'] ?? 0, 0, ' - ', $prefix);
-        } else {
-            return $prefix.NumberFormatter::format(max($costs['from'] ?? 0, $costs['to'] ?? 0), 0, true);
-        }
     }
 }

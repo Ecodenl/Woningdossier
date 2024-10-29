@@ -23,7 +23,7 @@ class PreventRequestsDuringMaintenance extends Middleware
     /**
      * Handle an incoming request. Remove the full handle method after go-live.
      */
-    public function handle($request, Closure $next): Response
+    public function handle(Request $request, Closure $next): Response
     {
         // If we're not in maintenance mode, there's no point in trying to find a cooperation
         if ($this->app->isDownForMaintenance()) {

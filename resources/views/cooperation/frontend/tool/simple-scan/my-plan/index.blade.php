@@ -9,16 +9,21 @@
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
     @else
         <div class="w-full">
-            @php $langShort = $building->hasAnsweredExpertQuestion() ? 'expert' : 'quick-scan'; @endphp
+            @php
+                $langShort = $building->hasAnsweredExpertQuestion() ? 'expert' : 'quick-scan';
+                $link = route('cooperation.my-account.messages.edit', compact('cooperation'));
+
+                if (Hoomdossier::user()->can('access-admin') && Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin'])) {
+                    $link = route('cooperation.admin.messages.index', compact('cooperation'));
+                }
+            @endphp
             <div class="w-full flex flex-wrap justify-between mb-5">
                 <h4 class="heading-4">
                     {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}
                 </h4>
             </div>
             <div class="w-full flex flex-wrap mb-5">
-                {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", [
-                    'link' => route('cooperation.my-account.messages.edit', ['cooperation' => $cooperation])
-                ]) !!}
+                {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", compact('link')) !!}
             </div>
 
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.form :scan="$scan" :building="$building"/>

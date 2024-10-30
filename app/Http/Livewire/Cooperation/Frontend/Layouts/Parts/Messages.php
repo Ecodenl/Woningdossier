@@ -14,7 +14,7 @@ class Messages extends Component
 
     public function mount()
     {
-        $this->messageUrl = route('cooperation.my-account.messages.index');
+        $this->messageUrl = route('cooperation.my-account.messages.edit');
 
         if (Hoomdossier::user()->can('access-admin') && Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin'])) {
             $this->messageUrl = route('cooperation.admin.messages.index');

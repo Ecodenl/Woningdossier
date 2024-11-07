@@ -10,6 +10,7 @@ use App\Helpers\Sanitizers\HtmlSanitizer;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Models\CompletedStep;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
@@ -191,6 +192,10 @@ class ToolQuestionService
                 $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
                 // apply the example building for the given changes.
                 // we give him the old building features, otherwise we cant verify the changes
+                if (!$oldBuildingFeature instanceof BuildingFeature) {
+                    // Just empty object
+                    $oldBuildingFeature = new BuildingFeature();
+                }
                 ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
             }
         }

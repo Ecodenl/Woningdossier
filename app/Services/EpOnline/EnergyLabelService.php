@@ -102,7 +102,7 @@ class EnergyLabelService
             ->forBuilding($this->building)
             ->first();
 
-        if (empty($masterFeature->energy_label_id)) {
+        if ($masterFeature instanceof BuildingFeature && empty($masterFeature->energy_label_id)) {
             $masterFeature->update(['energy_label_id' => $hydratedLabel->id]);
         }
     }

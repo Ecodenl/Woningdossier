@@ -146,7 +146,7 @@ class EnergyLabelService
                 if ($exception instanceof ClientException) {
                     // If no key given, 401 is thrown. If address isn't found, 404 is thrown.
                     if ($exception->getResponse()->getStatusCode() == 400) {
-                        Log::error('Bad request', json_decode($exception->getResponse()->getBody()->getContents()));
+                        Log::error('Bad request', json_decode($exception->getResponse()->getBody()->getContents(), true));
                     }
                     $throw = !in_array($exception->getCode(), [400, 401, 404]);
                 }

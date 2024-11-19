@@ -104,8 +104,8 @@ class InsulatedGlazingHelper extends ToolHelper
 
         $step = Step::findByShort('insulated-glazing');
 
-        $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
-        $results = InsulatedGlazing::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
+        $energyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
+        $results = InsulatedGlazing::calculate($this->building, $this->masterInputSource, $energyHabit, $this->getValues());
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 

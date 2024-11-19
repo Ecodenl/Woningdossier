@@ -46,7 +46,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
         $userEnergyHabit = $this
             ->user
             ->energyHabit()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->first();
 
         $buildingBoilerService = $this
@@ -71,7 +71,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
                     ),
                 ],
             ],
-            //'has_completed_expert' => ConditionService::init()->building($this->building)->inputSource($this->inputSource)->hasCompletedSteps(['heating']),
+            //'has_completed_expert' => ConditionService::init()->building($this->building)->inputSource($this->masterInputSource)->hasCompletedSteps(['heating']),
             'building_services' => $buildingBoilerArray,
             'user_energy_habits' => [
                 'amount_gas' => $userEnergyHabit->amount_gas ?? null,
@@ -87,7 +87,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
     {
         $updatedMeasureIds = $this->getValues('updated_measure_ids');
 
-        $results = HighEfficiencyBoiler::calculate($this->building, $this->inputSource);
+        $results = HighEfficiencyBoiler::calculate($this->building, $this->masterInputSource);
 
         $step = Step::findByShort('high-efficiency-boiler');
 

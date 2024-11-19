@@ -10,7 +10,7 @@
     "license": "OSL-3.0",
     "type": "project",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-json": "*",
         "carlos-meneses/laravel-mpdf": "^2.1",
         "darkaonline/l5-swagger": "^8.0",

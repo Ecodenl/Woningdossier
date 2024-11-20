@@ -26,22 +26,22 @@ use Illuminate\Support\Facades\App;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
  * @property-read mixed $translations
- * @method static Builder|Scan bySlug(string $slug, string $locale = 'nl')
- * @method static Builder|Scan expert()
- * @method static Builder|Scan newModelQuery()
- * @method static Builder|Scan newQuery()
- * @method static Builder|Scan query()
- * @method static Builder|Scan simple()
- * @method static Builder|Scan whereCreatedAt($value)
- * @method static Builder|Scan whereId($value)
- * @method static Builder|Scan whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static Builder|Scan whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static Builder|Scan whereLocale(string $column, string $locale)
- * @method static Builder|Scan whereLocales(string $column, array $locales)
- * @method static Builder|Scan whereName($value)
- * @method static Builder|Scan whereShort($value)
- * @method static Builder|Scan whereSlug($value)
- * @method static Builder|Scan whereUpdatedAt($value)
+ * @method static Builder<static>|Scan bySlug(string $slug, string $locale = 'nl')
+ * @method static Builder<static>|Scan expert()
+ * @method static Builder<static>|Scan newModelQuery()
+ * @method static Builder<static>|Scan newQuery()
+ * @method static Builder<static>|Scan query()
+ * @method static Builder<static>|Scan simple()
+ * @method static Builder<static>|Scan whereCreatedAt($value)
+ * @method static Builder<static>|Scan whereId($value)
+ * @method static Builder<static>|Scan whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|Scan whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|Scan whereLocale(string $column, string $locale)
+ * @method static Builder<static>|Scan whereLocales(string $column, array $locales)
+ * @method static Builder<static>|Scan whereName($value)
+ * @method static Builder<static>|Scan whereShort($value)
+ * @method static Builder<static>|Scan whereSlug($value)
+ * @method static Builder<static>|Scan whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Scan extends Model

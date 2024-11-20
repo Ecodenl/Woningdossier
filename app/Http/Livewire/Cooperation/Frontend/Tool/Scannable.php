@@ -27,7 +27,7 @@ abstract class Scannable extends Component
     public Cooperation $cooperation;
 
     public array $rules = [];
-    public array $attributes = [];
+    public array $attributeTranslations = [];
 
     public array $originalAnswers = [];
     public array $filledInAnswers = [];
@@ -198,7 +198,7 @@ abstract class Scannable extends Component
                 ]
             ], [
                 "filledInAnswers.{$toolQuestionShort}" => $this->rules["filledInAnswers.{$toolQuestionShort}"],
-            ], [], $this->attributes);
+            ], [], $this->attributeTranslations);
 
             // Translate values also
             $defaultValues = __('validation.values.defaults');
@@ -291,7 +291,7 @@ abstract class Scannable extends Component
                     $filledInAnswerOptions = json_decode($answerForInputSource, true);
                     foreach ($toolQuestion->options as $option) {
                         $this->filledInAnswers[$toolQuestion->short][$option['short']] = $filledInAnswerOptions[$option['short']] ?? $option['value'] ?? 0;
-                        $this->attributes["filledInAnswers.{$toolQuestion->short}.{$option['short']}"] = $option['name'];
+                        $this->attributeTranslations["filledInAnswers.{$toolQuestion->short}.{$option['short']}"] = $option['name'];
                     }
                     break;
                 case Caster::ARRAY:
@@ -301,8 +301,8 @@ abstract class Scannable extends Component
                     foreach ($answerForInputSource as $answer) {
                         $this->filledInAnswers[$toolQuestion->short][] = $answer;
                     }
-                    $this->attributes["filledInAnswers.{$toolQuestion->short}"] = $toolQuestion->name;
-                    $this->attributes["filledInAnswers.{$toolQuestion->short}.*"] = $toolQuestion->name;
+                    $this->attributeTranslations["filledInAnswers.{$toolQuestion->short}"] = $toolQuestion->name;
+                    $this->attributeTranslations["filledInAnswers.{$toolQuestion->short}.*"] = $toolQuestion->name;
                     break;
                 default:
                     $answerForInputSource = $answerForInputSource ?? $toolQuestion->options['value'] ?? null;
@@ -315,7 +315,7 @@ abstract class Scannable extends Component
                             ->getFormatForUser();
                     }
                     $this->filledInAnswers[$toolQuestion->short] = $answerForInputSource;
-                    $this->attributes["filledInAnswers.{$toolQuestion->short}"] = $toolQuestion->name;
+                    $this->attributeTranslations["filledInAnswers.{$toolQuestion->short}"] = $toolQuestion->name;
                     break;
             }
         }

@@ -11,13 +11,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|Attribute newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Attribute newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Attribute query()
- * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Attribute newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Attribute newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Attribute query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Attribute whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Attribute whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Attribute whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Attribute whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Attribute extends Model

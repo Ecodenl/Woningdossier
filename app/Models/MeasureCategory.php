@@ -18,18 +18,18 @@ use Illuminate\Support\Str;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $translations
  * @method static \Database\Factories\MeasureCategoryFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory query()
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class MeasureCategory extends Model

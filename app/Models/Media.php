@@ -23,34 +23,35 @@ use Illuminate\Support\Facades\Request;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string $basename
+ * @property-read string $url
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read Media|null $originalMedia
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Media> $variants
  * @property-read int|null $variants_count
- * @method static Builder|Media forPathOnDisk(string $disk, string $path)
- * @method static Builder|Media inDirectory(string $disk, string $directory, bool $recursive = false)
- * @method static Builder|Media inOrUnderDirectory(string $disk, string $directory)
- * @method static \Illuminate\Database\Eloquent\Builder|Media newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Media newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Media query()
- * @method static Builder|Media unordered()
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereAggregateType($value)
- * @method static Builder|Media whereBasename(string $basename)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereCustomProperties($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereDirectory($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereDisk($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereExtension($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereFilename($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereInputSourceId($value)
- * @method static Builder|Media whereIsOriginal()
- * @method static Builder|Media whereIsVariant(?string $variant_name = null)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereMimeType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereOriginalMediaId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereSize($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereVariantName($value)
+ * @method static Builder<static>|Media forPathOnDisk(string $disk, string $path)
+ * @method static Builder<static>|Media inDirectory(string $disk, string $directory, bool $recursive = false)
+ * @method static Builder<static>|Media inOrUnderDirectory(string $disk, string $directory)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media query()
+ * @method static Builder<static>|Media unordered()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereAggregateType($value)
+ * @method static Builder<static>|Media whereBasename(string $basename)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereCustomProperties($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereDirectory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereDisk($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereExtension($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereFilename($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereInputSourceId($value)
+ * @method static Builder<static>|Media whereIsOriginal()
+ * @method static Builder<static>|Media whereIsVariant(?string $variant_name = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereMimeType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereOriginalMediaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereVariantName($value)
  * @mixin \Eloquent
  */
 class Media extends \Plank\Mediable\Media

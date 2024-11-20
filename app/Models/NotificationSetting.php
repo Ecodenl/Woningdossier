@@ -17,16 +17,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\NotificationInterval $interval
  * @property-read \App\Models\NotificationType $type
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting query()
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting whereIntervalId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting whereLastNotifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting whereTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting whereIntervalId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting whereLastNotifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting whereTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting whereUserId($value)
  * @mixin \Eloquent
  */
 class NotificationSetting extends Model

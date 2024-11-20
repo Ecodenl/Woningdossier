@@ -28,7 +28,7 @@ class CurrentRoleMiddleware
             Auth::logout();
             session()->invalidate();
 
-            return abort(401);
+            abort(401);
         }
 
         $authorizedRole = Role::findById(HoomdossierSession::getRole());

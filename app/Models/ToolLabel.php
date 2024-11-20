@@ -18,21 +18,22 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
+ * @property-read \App\Models\SubSteppable|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
  * @property-read mixed $translations
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel query()
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolLabel whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ToolLabel extends Model

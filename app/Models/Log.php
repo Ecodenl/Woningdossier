@@ -17,18 +17,18 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building|null $building
- * @property-read Model|\Eloquent $loggable
- * @method static \Illuminate\Database\Eloquent\Builder|Log forBuildingId($buildingId)
- * @method static \Illuminate\Database\Eloquent\Builder|Log newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Log newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Log query()
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereLoggableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereLoggableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereMessage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereUpdatedAt($value)
+ * @property-read Model|\Eloquent|null $loggable
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log forBuildingId($buildingId)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log whereLoggableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log whereLoggableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log whereMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Log extends Model

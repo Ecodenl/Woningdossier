@@ -14,14 +14,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\CooperationPreset $cooperationPreset
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent query()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent whereContent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent whereCooperationPresetId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent whereCooperationPresetId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CooperationPresetContent extends Model

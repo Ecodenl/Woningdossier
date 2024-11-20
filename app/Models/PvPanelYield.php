@@ -15,15 +15,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\PvPanelOrientation|null $orientation
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield query()
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield whereAngle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield wherePvPanelOrientationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield whereYield($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield whereAngle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield wherePvPanelOrientationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield whereYield($value)
  * @mixin \Eloquent
  */
 class PvPanelYield extends Model

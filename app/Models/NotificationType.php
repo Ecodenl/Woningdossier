@@ -14,18 +14,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $translations
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType query()
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationType whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationType whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class NotificationType extends Model

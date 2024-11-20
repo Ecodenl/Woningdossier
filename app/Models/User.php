@@ -36,7 +36,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $refreshing_regulations
  * @property-read \App\Models\Account|null $account
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $actionPlanAdvices
  * @property-read int|null $action_plan_advices_count
@@ -49,6 +48,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $building_permissions_count
  * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Building> $buildings
  * @property-read int|null $buildings_count
+ * @property-read \App\Models\CompletedQuestionnaire|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $completedQuestionnaires
  * @property-read int|null $completed_questionnaires_count
  * @property-read \App\Models\Cooperation|null $cooperation
@@ -79,30 +79,31 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $user_costs_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserInterest> $userInterests
  * @property-read int|null $user_interests_count
- * @method static Builder|User byContact($contact)
- * @method static Builder|User econobisContacts()
+ * @method static Builder<static>|User byContact($contact)
+ * @method static Builder<static>|User econobisContacts()
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
- * @method static Builder|User forAllCooperations()
- * @method static Builder|User forMyCooperation($cooperationId)
- * @method static Builder|User newModelQuery()
- * @method static Builder|User newQuery()
- * @method static Builder|User permission($permissions)
- * @method static Builder|User query()
- * @method static Builder|User role($roles, $guard = null)
- * @method static Builder|User whereAccountId($value)
- * @method static Builder|User whereAllowAccess($value)
- * @method static Builder|User whereCooperationId($value)
- * @method static Builder|User whereCreatedAt($value)
- * @method static Builder|User whereExtra($value)
- * @method static Builder|User whereFirstName($value)
- * @method static Builder|User whereId($value)
- * @method static Builder|User whereLastName($value)
- * @method static Builder|User whereLastVisitedUrl($value)
- * @method static Builder|User wherePhoneNumber($value)
- * @method static Builder|User whereRefreshingRegulations($value)
- * @method static Builder|User whereRegulationsRefreshedAt($value)
- * @method static Builder|User whereToolLastChangedAt($value)
- * @method static Builder|User whereUpdatedAt($value)
+ * @method static Builder<static>|User forAllCooperations()
+ * @method static Builder<static>|User forMyCooperation($cooperationId)
+ * @method static Builder<static>|User newModelQuery()
+ * @method static Builder<static>|User newQuery()
+ * @method static Builder<static>|User permission($permissions, $without = false)
+ * @method static Builder<static>|User query()
+ * @method static Builder<static>|User role($roles, $guard = null, $without = false)
+ * @method static Builder<static>|User whereAccountId($value)
+ * @method static Builder<static>|User whereAllowAccess($value)
+ * @method static Builder<static>|User whereCooperationId($value)
+ * @method static Builder<static>|User whereCreatedAt($value)
+ * @method static Builder<static>|User whereExtra($value)
+ * @method static Builder<static>|User whereFirstName($value)
+ * @method static Builder<static>|User whereId($value)
+ * @method static Builder<static>|User whereLastName($value)
+ * @method static Builder<static>|User whereLastVisitedUrl($value)
+ * @method static Builder<static>|User wherePhoneNumber($value)
+ * @method static Builder<static>|User whereRegulationsRefreshedAt($value)
+ * @method static Builder<static>|User whereToolLastChangedAt($value)
+ * @method static Builder<static>|User whereUpdatedAt($value)
+ * @method static Builder<static>|User withoutPermission($permissions)
+ * @method static Builder<static>|User withoutRole($roles, $guard = null)
  * @mixin \Eloquent
  */
 class User extends Model implements AuthorizableContract

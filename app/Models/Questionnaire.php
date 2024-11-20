@@ -15,9 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property array $name
- * @property int|null $step_id
  * @property int $cooperation_id
- * @property int $order
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -26,28 +24,27 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $questionnaire_steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Question> $questions
  * @property-read int|null $questions_count
+ * @property-read \App\Models\QuestionnaireStep|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Step> $steps
  * @property-read int|null $steps_count
  * @property-read mixed $translations
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire active()
  * @method static \Database\Factories\QuestionnaireFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forAllCooperations()
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forMyCooperation($cooperationId)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire query()
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereIsActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereStepId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire forAllCooperations()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire forMyCooperation($cooperationId)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Questionnaire extends Model

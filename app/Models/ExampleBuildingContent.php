@@ -16,15 +16,15 @@ use Illuminate\Support\Arr;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ExampleBuilding $exampleBuilding
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuildingContent newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuildingContent newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuildingContent query()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuildingContent whereBuildYear($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuildingContent whereContent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuildingContent whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuildingContent whereExampleBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuildingContent whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuildingContent whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent whereBuildYear($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent whereExampleBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ExampleBuildingContent extends Model

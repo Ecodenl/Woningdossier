@@ -113,7 +113,7 @@ class Form extends Scannable
         if (! empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
-            ], $this->rules, [], $this->attributes);
+            ], $this->rules, [], $this->attributeTranslations);
 
             // Translate values also (otherwise we get weird translations for e.g. a required_if)
             $defaultValues = __('validation.values.defaults');

@@ -16,14 +16,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Building $building
  * @property-read \App\Models\BuildingCoachStatus $buildingCoachStatus
  * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingPermission newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingPermission newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingPermission query()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingPermission whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingPermission whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingPermission whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingPermission whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingPermission whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingPermission newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingPermission newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingPermission query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingPermission whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingPermission whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingPermission whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingPermission whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingPermission whereUserId($value)
  * @mixin \Eloquent
  */
 class BuildingPermission extends Model

@@ -30,7 +30,7 @@ abstract class CustomMeasureForm extends Component
     public InputSource $masterInputSource;
     public InputSource $currentInputSource;
 
-    public array $attributes;
+    public array $attributeTranslations;
 
     protected function rules(): array
     {
@@ -55,7 +55,7 @@ abstract class CustomMeasureForm extends Component
         // Do it like this because otherwise the translation doesn't work
         $globalAttributeTranslations = __('validation.attributes');
 
-        $this->attributes = [
+        $this->attributeTranslations = [
             'customMeasureApplicationsFormData.*.name' => $globalAttributeTranslations['custom_measure_application.name'],
             'customMeasureApplicationsFormData.*.info' => $globalAttributeTranslations['custom_measure_application.info'],
             'customMeasureApplicationsFormData.*.measure_category' => $globalAttributeTranslations['custom_measure_application.measure_category'],
@@ -88,7 +88,7 @@ abstract class CustomMeasureForm extends Component
                 $customRules[$key] = $rule;
             }
             $customAttributes = [];
-            foreach ($this->attributes as $key => $translation) {
+            foreach ($this->attributeTranslations as $key => $translation) {
                 $key = str_replace('*', $index, $key);
 
                 $customAttributes[$key] = $translation;

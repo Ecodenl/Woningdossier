@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\DB;
  * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $questionnaires
  * @property-read int|null $questionnaires_count
+ * @property-read \App\Models\CooperationScan|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Scan> $scans
  * @property-read int|null $scans_count
  * @property-read \App\Models\CooperationStyle|null $style
@@ -45,24 +46,24 @@ use Illuminate\Support\Facades\DB;
  * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
  * @method static \Database\Factories\CooperationFactory factory($count = null, $state = [])
  * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation query()
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereCooperationEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereEconobisApiKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereEconobisWildcard($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereHasMedia($tags = [], bool $matchAll = false)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereHasMediaMatchAll(array $tags)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereWebsiteUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaAndVariants($tags = [], bool $matchAll = false)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaAndVariantsMatchAll($tags = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaMatchAll(bool $tags = [], bool $withVariants = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereCooperationEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereEconobisApiKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereEconobisWildcard($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereHasMedia($tags = [], bool $matchAll = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereHasMediaMatchAll($tags)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereWebsiteUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaAndVariants($tags = [], bool $matchAll = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaAndVariantsMatchAll($tags = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @mixin \Eloquent
  */
 class Cooperation extends Model

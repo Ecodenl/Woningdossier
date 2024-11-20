@@ -100,13 +100,6 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         Carbon::setLocale(config('app.locale'));
-
-        if ($this->app->environment('local', 'testing')) {
-            //$this->app->register(DuskServiceProvider::class);
-        }
-        if ($this->app->environment('local')) {
-            //$this->app->register(IdeHelperServiceProvider::class);
-        }
     }
 
     public function bootAuth(): void

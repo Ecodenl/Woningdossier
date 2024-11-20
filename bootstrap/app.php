@@ -1,9 +1,20 @@
 <?php
 
+use App\Exceptions\RoleInSessionHasNoAssociationWithUser;
+use App\Helpers\Hoomdossier;
+use App\Helpers\RoleHelper;
+use App\Models\Cooperation;
+use App\Models\CooperationRedirect;
+use App\Models\Role;
 use App\Providers\AppServiceProvider;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Log;
+use Sentry\Laravel\Integration;
+use Illuminate\Http\Request;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders()
@@ -15,7 +26,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->redirectGuestsTo(fn () => route('cooperation.auth.login',$params));
+        $middleware->redirectGuestsTo(function (Request $request) {
+            $params = ['cooperation' => $request->route('cooperation')];
+
+            if ($request->route()?->getName() === 'cooperation.auth.verification.verify') {
+                // So a user is trying to verify his account but isn't logged in. We will pass the account ID onward
+                // so the form can autofill the email for this user.
+                $params['id'] = $request->route('id');
+
+                // We will warn them requiring to log in first.
+                session()->flash('status', __('cooperation/auth/verify.require-auth'));
+            }
+
+            route('cooperation.auth.login', $params);
+        });
         $middleware->redirectUsersTo(AppServiceProvider::HOME);
 
         $middleware->validateCsrfTokens(except: [
@@ -59,12 +83,82 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->priority([
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\Authenticate::class,
             \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Illuminate\Auth\Middleware\Authorize::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        Integration::handles($exceptions);
+
+        $exceptions->render(function (RoleInSessionHasNoAssociationWithUser $e, Request $request) {
+            // try to obtain a role from the user.
+            $role = Hoomdossier::user()->roles()->first();
+
+            $role instanceof Role
+                ? HoomdossierSession::setRole($role)
+                : Hoomdossier::user()->logout();
+
+            return redirect()->route('cooperation.home');
+        });
+
+        $exceptions->render(function (UnauthorizedException $e, Request $request) {
+            if (HoomdossierSession::hasRole()) {
+                // the role the user currently has in his session
+                $authorizedRole = HoomdossierSession::getRole(true);
+
+                return redirect(
+                    url(RoleHelper::getUrlByRoleName($authorizedRole->name))
+                )->with('warning', __('default.messages.exceptions.no-right-roles'));
+            }
+
+            return redirect()->route('cooperation.home');
+        });
+
+        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
+            $cooperation = $request->route('cooperation');
+
+            if (! empty($cooperation)) {
+                Log::debug("cooperation is not empty ( = '{$cooperation}')");
+                $redirect = CooperationRedirect::from($cooperation)->first();
+
+                if ($redirect instanceof CooperationRedirect) {
+                    Log::debug("Redirect to " . str_ireplace(
+                            $cooperation,
+                            $redirect->cooperation->slug,
+                            $request->url()
+                        ));
+                    return redirect(
+                        str_ireplace(
+                            $cooperation,
+                            $redirect->cooperation->slug,
+                            $request->url()
+                        )
+                    );
+                }
+            }
+
+            // Fall back to normal exception rendering
+        });
+
+        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Unauthenticated.'], 401);
+            }
+
+            // get them directly from the session itself
+            // the HoomdossierSession can only be used on authenticated parts.
+            $cooperationId = session()->get('cooperation', null);
+
+            if (is_null($cooperationId)) {
+                return redirect()->route('index');
+            }
+
+            $cooperation = Cooperation::find($cooperationId);
+            if (! $cooperation instanceof Cooperation) {
+                return redirect()->route('index');
+            }
+
+            return redirect()->guest($e->redirectTo($request) ?? route('cooperation.auth.login', compact('cooperation')));
+        });
     })->create();

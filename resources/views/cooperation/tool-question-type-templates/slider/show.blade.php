@@ -11,7 +11,7 @@
 
     $livewireModel = "filledInAnswers.{$toolQuestion->short}";
 @endphp
-<div class="flex flex-wrap items-center w-full mt-12 slider-wrapper" x-data="slider(@entangle($livewireModel))" wire:ignore>
+<div class="flex flex-wrap items-center w-full mt-12 slider-wrapper" x-data="slider(@entangle($livewireModel).live)" wire:ignore>
     <p class="w-1/12 flex justify-end pr-5">{{$min}}{!! $unit !!}</p>
     <div class="w-10/12 relative flex justify-center items-center">
         <input type="range" min="{{$min}}" max="{{$max}}" step="{{$step}}" class="slider" autocomplete="off"

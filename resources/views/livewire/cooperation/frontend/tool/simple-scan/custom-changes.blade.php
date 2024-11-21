@@ -5,7 +5,7 @@
     @foreach($cooperationMeasureApplicationsFormData as $index => $customMeasureApplicationFormData)
         <div class="checkbox-wrapper media-wrapper">
             <input type="checkbox" id="cooperation-measure-{{$index}}" value="{{ $index }}"
-                   wire:model="selectedCooperationMeasureApplications"
+                   wire:model.live="selectedCooperationMeasureApplications"
                    @if($disabled) disabled="disabled" @endif
             >
             <label for="cooperation-measure-{{$index}}">
@@ -25,7 +25,7 @@
                      x-data="modal()">
                     @if(! $loop->last)
                         <input type="checkbox" id="custom-measure-{{$index}}" value="{{ $index }}"
-                               wire:model="selectedCustomMeasureApplications"
+                               wire:model.live="selectedCustomMeasureApplications"
                                @if($disabled) disabled @endif>
 
                     @endif

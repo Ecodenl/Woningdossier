@@ -14,7 +14,7 @@
         <div class="radio-wrapper media-wrapper">
             <input type="radio"
                    id="{{$uuid}}"
-                   wire:model="filledInAnswers.{{$toolQuestion['short']}}"
+                   wire:model.live="filledInAnswers.{{$toolQuestion['short']}}"
                    value="{{$toolQuestionValue['value']}}"
                    @if($disabled) disabled="disabled" @endif
 

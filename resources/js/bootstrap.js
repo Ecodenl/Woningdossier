@@ -234,7 +234,7 @@ window.performRequest = function (options = {}) {
  * Set up Alpine JS with extra data functions that can be used throughout
  * the whole application.
  */
-import Alpine from 'alpinejs';
+import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
 import AlpineSelect from './alpine-scripts/alpine-select.js';
 import SourceSelect from './alpine-scripts/source-select.js';
 import Modal from './alpine-scripts/modal.js';
@@ -260,6 +260,7 @@ Alpine.data('tabs', Tabs);
 Alpine.data('adaptiveInputs', AdaptiveInputs);
 
 window.Alpine = Alpine;
+window.Livewire = Livewire;
 
 // Define AlpineJS Magic methods (below example defines "$nuke", e.g. x-on:click="$nuke")
 
@@ -270,7 +271,7 @@ window.Alpine = Alpine;
 //     document.body.style.width = '100vw';
 // });
 
-Alpine.start();
+Livewire.start();
 
 /**
  * Set up mobile-drag-drop to allow touch events on native HTML 5 desktop drag events.

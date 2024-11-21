@@ -4,7 +4,7 @@
             'input_name' => "exampleBuildingValues.name.{$locale}"
         ])
             <label for="name-{{ $locale }}">{{ $locale }}:</label>
-            <input id="name-{{ $locale }}" class="form-control" wire:model="exampleBuildingValues.name.{{$locale}}">
+            <input id="name-{{ $locale }}" class="form-control" wire:model.live="exampleBuildingValues.name.{{$locale}}">
         @endcomponent
     @endforeach
 
@@ -19,7 +19,7 @@
                 Huidig: {{$exampleBuilding->buildingType->name}}
             @endif
         </label>
-        <select id="building_type_id" wire:model="exampleBuildingValues.building_type_id" class="form-control">
+        <select id="building_type_id" wire:model.live="exampleBuildingValues.building_type_id" class="form-control">
             <option value="">-</option>
             @if($exampleBuilding instanceof \App\Models\ExampleBuilding && $exampleBuilding->isGeneric())
                 @foreach($genericBuildingTypes as $buildingType)
@@ -44,7 +44,7 @@
             'input_name' => 'exampleBuildingValues.cooperation_id'
         ])
             <label for="cooperation">@lang('cooperation/admin/example-buildings.components.cooperation')</label>
-            <select id="cooperation" wire:model="exampleBuildingValues.cooperation_id" class="form-control">
+            <select id="cooperation" wire:model.live="exampleBuildingValues.cooperation_id" class="form-control">
                 @if($isSuperAdmin)
                     <option value="" selected="selected">-</option>
                 @endif
@@ -61,14 +61,14 @@
         'input_name' => 'exampleBuildingValues.order'
     ])
         <label for="order">@lang('cooperation/admin/example-buildings.components.order')</label>
-        <input type="number" id="order" class="form-control" min="0" wire:model="exampleBuildingValues.order">
+        <input type="number" id="order" class="form-control" min="0" wire:model.live="exampleBuildingValues.order">
     @endcomponent
 
     @component('layouts.parts.components.form-group', [
         'input_name' => 'exampleBuildingValues.is_default'
     ])
         <label for="is_default">@lang('cooperation/admin/example-buildings.components.is-default.label')</label>
-        <select wire:model="exampleBuildingValues.is_default" class="form-control">
+        <select wire:model.live="exampleBuildingValues.is_default" class="form-control">
             @foreach(__('cooperation/admin/example-buildings.components.is-default.options') as $val => $string)
                 <option value="{{ $val }}">{{ $string }}</option>
             @endforeach

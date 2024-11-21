@@ -19,7 +19,7 @@
 {{--            'label' => $label,--}}
 {{--        ])--}}
 
-        <div x-data="ratingSlider(@entangle($livewireModel), '{{$activeClass ?? 'bg-green'}}', '{{$disabled}}')"
+        <div x-data="ratingSlider(@entangle($livewireModel).live, '{{$activeClass ?? 'bg-green'}}', '{{$disabled}}')"
              x-ref="rating-slider-wrapper" class="rating-slider-wrapper w-inherit @error($livewireModel) form-error @enderror">
             <input type="hidden" x-bind="input" data-short="{{ $option['short'] }}">
             <div class="flex justify-between mb-3">

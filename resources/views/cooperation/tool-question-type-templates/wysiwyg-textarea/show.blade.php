@@ -1,7 +1,7 @@
 @component('cooperation.frontend.layouts.components.wysiwyg', [
     'disabled' => $disabled ?? false,
 ])
-    <textarea wire:model.lazy.defer="filledInAnswers.{{$toolQuestion['short']}}" id="{{$toolQuestion->short}}"
+    <textarea wire:model.blur.defer="filledInAnswers.{{$toolQuestion['short']}}" id="{{$toolQuestion->short}}"
               class="form-input" placeholder="{{$toolQuestion->placeholder}}"
               @if(($disabled ?? false))
                   disabled

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Plank\Mediable\MediableInterface;
 
 /**
  * App\Models\Cooperation
@@ -66,9 +67,10 @@ use Illuminate\Support\Facades\DB;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @mixin \Eloquent
  */
-class Cooperation extends Model
+class Cooperation extends Model implements MediableInterface
 {
-    use HasFactory, HasMedia;
+    use HasFactory,
+        HasMedia;
 
     protected $fillable = [
         'name', 'slug', 'cooperation_email', 'website_url', 'econobis_wildcard', 'econobis_api_key',

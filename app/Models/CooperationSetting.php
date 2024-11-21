@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Contracts\Auditable;
-use Plank\Mediable\Mediable;
+use Plank\Mediable\MediableInterface;
 
 /**
  * App\Models\CooperationSetting
@@ -42,9 +43,9 @@ use Plank\Mediable\Mediable;
  * @method static Builder<static>|CooperationSetting withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @mixin \Eloquent
  */
-class CooperationSetting extends Model implements Auditable
+class CooperationSetting extends Model implements Auditable, MediableInterface
 {
-    use Mediable,
+    use HasMedia,
         \App\Traits\Models\Auditable;
 
     public $fillable = [

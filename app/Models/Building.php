@@ -22,6 +22,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use OwenIt\Auditing\Models\Audit;
+use Plank\Mediable\MediableInterface;
 
 /**
  * App\Models\Building
@@ -116,7 +117,7 @@ use OwenIt\Auditing\Models\Audit;
  * @method static Builder<static>|Building withoutTrashed()
  * @mixin \Eloquent
  */
-class Building extends Model
+class Building extends Model implements MediableInterface
 {
     use HasFactory,
         SoftDeletes,

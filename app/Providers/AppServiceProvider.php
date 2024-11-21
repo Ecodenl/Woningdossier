@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Cooperation;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Policies\UserPolicy;
 use App\Policies\RolePolicy;
@@ -9,11 +12,11 @@ use App\Policies\BuildingPolicy;
 use App\Models\PersonalAccessToken;
 use App\Rules\MaxFilenameLength;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
@@ -36,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // ----- Validator ----- //
         // After L7 it is no longer in the docs, albeit still present
         // https://laravel.com/docs/7.x/validation#using-extensions
 
@@ -66,20 +70,24 @@ class AppServiceProvider extends ServiceProvider
             return (new MaxFilenameLength(...$parameters))->message();
         });
 
-        Builder::macro('whereLike', function (string $attribute, string $searchTerm) {
-            return $this->where($attribute, 'LIKE', "%{$searchTerm}%");
+        // ----- Routing ----- //
+        Route::model('cooperation', Cooperation::class);
+
+        Route::bind('cooperation', function (string $value, \Illuminate\Routing\Route $route) {
+            // Let's use a magic method instead of using either $this or $route because Laravel is such a great
+            // framework these days that just giving access to data already present is just too much to handle.
+            // #FacadesAreASignOfGoodCode #WhatColorIsYourLamborghini
+            if (request()->hasHeader('X-Cooperation-Slug')) {
+                return Cooperation::whereSlug(request()->header('X-Cooperation-Slug'))->firstOrFail();
+            }
+
+            return Cooperation::whereSlug($value)->firstOrFail();
         });
 
-        Collection::macro('addArrayOfWheres', function ($array, $method, $boolean) {
-            $this->whereNested(function ($query) use ($array, $method, $boolean) {
-                foreach ($array as $key => $value) {
-                    if (is_numeric($key) && is_array($value)) {
-                        $query->{$method}(...array_values($value));
-                    } else {
-                        $query->$method($key, '=', $value, $boolean);
-                    }
-                }
-            }, $boolean);
+        // ----- Rate limiting ----- //
+        // Because L11 doesn't define this for you by default :)
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
         Paginator::useBootstrapThree();

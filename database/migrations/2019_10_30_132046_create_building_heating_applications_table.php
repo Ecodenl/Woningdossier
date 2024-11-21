@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::table('buildings', function (Blueprint $table) {
+        Schema::table('building_features', function (Blueprint $table) {
             $table->foreign('building_heating_application_id')->references('id')->on('building_heating_applications')->onDelete('cascade');
         });
     }
@@ -30,7 +30,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('buildings', function (Blueprint $table) {
+        Schema::table('building_features', function (Blueprint $table) {
             $table->dropForeign(['building_heating_application_id']);
         });
         Schema::dropIfExists('building_heating_applications');

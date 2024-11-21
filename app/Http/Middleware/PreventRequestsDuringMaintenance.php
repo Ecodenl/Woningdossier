@@ -2,8 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Http\Request;
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as Middleware;
@@ -13,19 +11,16 @@ use Closure;
 class PreventRequestsDuringMaintenance extends Middleware
 {
     /**
-     * The URIs that should be reachable while maintenance mode is enabled.
+     * Handle an incoming request.
      *
-     * @var array
-     */
-    protected $except = [
-    ];
-
-    /**
-     * Handle an incoming request. Remove the full handle method after go-live.
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
      *
-     * @param Request $request
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws \ErrorException
      */
-    public function handle($request, Closure $next): Response
+    public function handle($request, Closure $next)
     {
         // If we're not in maintenance mode, there's no point in trying to find a cooperation
         if ($this->app->isDownForMaintenance()) {

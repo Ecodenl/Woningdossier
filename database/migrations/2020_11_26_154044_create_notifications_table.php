@@ -21,8 +21,8 @@ return new class extends Migration
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
 
             $table->string('type');
-
             $table->uuid('uuid');
+
             $table->timestamps();
         });
     }

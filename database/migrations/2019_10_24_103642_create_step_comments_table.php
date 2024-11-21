@@ -20,6 +20,8 @@ return new class extends Migration
             $table->unsignedInteger('input_source_id');
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete(null);
 
+            $table->string('short')->nullable();
+
             $table->unsignedInteger('step_id');
             $table->foreign('step_id')->references('id')->on('steps')->onDelete(null);
 

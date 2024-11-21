@@ -21,6 +21,10 @@ return new class extends Migration
             $table->longText('econobis_api_key')->nullable();
             $table->timestamps();
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
+        });
     }
 
     /**
@@ -28,6 +32,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['cooperation_id']);
+        });
         Schema::dropIfExists('cooperations');
     }
 };

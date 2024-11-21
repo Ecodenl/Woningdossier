@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedInteger('status_id');
             $table->foreign('status_id')->references('id')->on('statuses')->onDelete('cascade');
 
-            $table->dateTime('appointment_date')->nullable()->default(null);
+            $table->dateTime('appointment_date')->nullable();
 
             $table->timestamps();
         });

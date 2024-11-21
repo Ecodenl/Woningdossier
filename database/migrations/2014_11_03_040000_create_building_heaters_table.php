@@ -17,6 +17,9 @@ return new class extends Migration
             $table->integer('building_id')->unsigned();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
 
+            $table->integer('input_source_id')->unsigned()->nullable()->default(1);
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
+
             $table->integer('pv_panel_orientation_id')->unsigned()->nullable();
             $table->foreign('pv_panel_orientation_id')->references('id')->on('pv_panel_orientations')->onDelete('set null');
 

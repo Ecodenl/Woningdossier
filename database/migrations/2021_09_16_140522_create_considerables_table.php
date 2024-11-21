@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('considerables', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->unsignedInteger('user_id')->nullable()->default(null);
+            $table->unsignedInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
 

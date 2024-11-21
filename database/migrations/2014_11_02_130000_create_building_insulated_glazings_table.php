@@ -17,6 +17,9 @@ return new class extends Migration
             $table->integer('building_id')->unsigned();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
 
+            $table->integer('input_source_id')->unsigned()->nullable()->default(1);
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
+
             $table->integer('measure_application_id')->unsigned();
             $table->foreign('measure_application_id')->references('id')->on('measure_applications')->onDelete('restrict');
 
@@ -26,9 +29,9 @@ return new class extends Migration
             $table->integer('building_heating_id')->unsigned()->nullable();
             $table->foreign('building_heating_id')->references('id')->on('building_heatings')->onDelete('restrict');
 
-            $table->integer('m2')->unsigned()->nullable()->default(null);
-            $table->integer('windows')->unsigned()->nullable()->default(null);
-            $table->string('extra')->nullable()->default(null);
+            $table->decimal('m2')->unsigned()->nullable();
+            $table->integer('windows')->unsigned()->nullable();
+            $table->text('extra')->nullable();
 
             $table->timestamps();
         });

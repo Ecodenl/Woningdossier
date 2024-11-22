@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a1738a0557d48f36eebba4c6184d23eb",
+    "content-hash": "5202d46e3ab3586e411b9774f07b553d",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -12234,16 +12234,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "6.8.5",
+            "version": "7.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "2819a5e54764de177980ddc4180d9765b737f7f5"
+                "reference": "3ba28fd6a4037849dbdaf7f6341493b23db9e13c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/2819a5e54764de177980ddc4180d9765b737f7f5",
-                "reference": "2819a5e54764de177980ddc4180d9765b737f7f5",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/3ba28fd6a4037849dbdaf7f6341493b23db9e13c",
+                "reference": "3ba28fd6a4037849dbdaf7f6341493b23db9e13c",
                 "shasum": ""
             },
             "type": "component",
@@ -12268,7 +12268,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT-only"
+                "GPL-2.0-or-later"
             ],
             "description": "Web based JavaScript HTML WYSIWYG editor control.",
             "homepage": "https://www.tiny.cloud/",
@@ -12287,9 +12287,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/6.8.5"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/7.5.1"
             },
-            "time": "2024-10-10T06:06:02+00:00"
+            "time": "2024-11-13T03:16:27+00:00"
         }
     ],
     "aliases": [],

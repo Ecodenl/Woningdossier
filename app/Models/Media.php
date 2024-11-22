@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Request;
  * @property array|null $custom_properties
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $alt
  * @property-read string $basename
  * @property-read string $url
  * @property-read \App\Models\InputSource|null $inputSource
@@ -36,6 +37,7 @@ use Illuminate\Support\Facades\Request;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Media query()
  * @method static Builder<static>|Media unordered()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereAggregateType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereAlt($value)
  * @method static Builder<static>|Media whereBasename(string $basename)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Media whereCustomProperties($value)

@@ -39,13 +39,13 @@
         "barryvdh/laravel-debugbar": "^3.10",
         "barryvdh/laravel-ide-helper": "^3.0",
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^2.8",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",
-        "larastan/larastan": "^2.8",
         "phpunit/phpunit": "^11.0.1",
         "squizlabs/php_codesniffer": "*",
-        "tinymce/tinymce": "^6.7"
+        "tinymce/tinymce": "^7.5"
     },
     "autoload": {
         "files": [

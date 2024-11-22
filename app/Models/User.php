@@ -36,6 +36,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $refreshing_regulations
  * @property-read \App\Models\Account|null $account
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $actionPlanAdvices
  * @property-read int|null $action_plan_advices_count
@@ -99,6 +100,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder<static>|User whereLastName($value)
  * @method static Builder<static>|User whereLastVisitedUrl($value)
  * @method static Builder<static>|User wherePhoneNumber($value)
+ * @method static Builder<static>|User whereRefreshingRegulations($value)
  * @method static Builder<static>|User whereRegulationsRefreshedAt($value)
  * @method static Builder<static>|User whereToolLastChangedAt($value)
  * @method static Builder<static>|User whereUpdatedAt($value)

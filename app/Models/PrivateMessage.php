@@ -158,29 +158,20 @@ class PrivateMessage extends Model
      * Get all the "group members".
      * Returns a collection of all the participants for a chat from a building.
      */
-    public static function getGroupParticipants(?int $buildingId, bool $publicConversation = true): Collection
+    public static function getGroupParticipants(?Building $building = null, bool $publicConversation = true): Collection
     {
-        // create a collection of group members
-        $groupMembers = collect();
+        // Check if building exists. We do this so we can pass nullable buildings for ease of use.
+        if (! $building instanceof Building || ! $building->exists) {
+            return collect();
+        }
 
-        $building = Building::find($buildingId);
+        // All coaches with access to this building are considered a participant
+        $groupMembers = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building, true);
 
-        if ($building instanceof Building) {
-            // get the coaches with access to the building
-            $coachesWithAccess = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building, true);
-
-            // if its a public conversation we push the building owner in it
-            if ($publicConversation) {
-                // get the owner of the building,
-                if ($building->user instanceof User) {
-                    $groupMembers->push($building->user);
-                }
-            }
-
-            // put the coaches with access to the groupmembers
-            foreach ($coachesWithAccess as $coachWithAccess) {
-                $groupMembers->push($coachWithAccess->coach);
-            }
+        // TODO: Bool is always true at this point, deprecate parameter?
+        // If it's a public conversation we push the building owner in it
+        if ($publicConversation && $building->user instanceof User) {
+            $groupMembers->prepend($building->user);
         }
 
         return $groupMembers;

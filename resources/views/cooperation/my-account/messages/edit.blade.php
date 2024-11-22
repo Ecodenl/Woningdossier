@@ -3,7 +3,7 @@
 @section('content')
     <div class="flex flex-row flex-wrap w-full border border-solid border-blue-500 border-opacity-50 rounded-lg">
         <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 rounded-lg py-2 border-b border-solid border-blue-500 border-opacity-50">
-            @include('cooperation.messages.parts.group-participants', ['groupParticipants' => $groupParticipants, 'buildingId' => $buildingId])
+            @include('cooperation.messages.parts.group-participants', ['groupParticipants' => $groupParticipants, 'buildingId' => $building->id])
         </div>
         <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-2 panel-chat-body" id="chat">
             @component('cooperation.messages.parts.messages', ['tailwind' => true])
@@ -15,7 +15,7 @@
         <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-2 rounded-b-lg border-t border-solid border-blue-500 border-opacity-50">
             @component('cooperation.messages.parts.input', [
                 'privateMessages' => $privateMessages,
-                'buildingId' => \App\Helpers\HoomdossierSession::getBuilding(),
+                'building' => $building,
                 'url' => route('cooperation.my-account.messages.store'),
                 'tailwind' => true,
              ])

@@ -1,9 +1,11 @@
 {{--
-    We pass a building id which may be a id that is softdeleted, so now we query and check if its deleted
-    if itsnt then we show the form, else we dont. no need for extra convo
+    We pass a building which may be softdeleted, so now we check if its deleted
+    if it isn't then we show the form, else we don't. no need for extra convo
 --}}
 
-@if(\App\Models\Building::find($buildingId) instanceof \App\Models\Building)
+@if($building instanceof \App\Models\Building && ! $building->trashed())
+    @php $buildingId = $building->id; @endphp
+
     {{-- Legacy support --}}
     @if(($tailwind ?? false))
         <form action="{{ $url }}" method="post" class="w-full" style="margin-bottom: unset;">

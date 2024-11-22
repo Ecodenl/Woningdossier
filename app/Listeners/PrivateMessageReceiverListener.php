@@ -35,10 +35,9 @@ class PrivateMessageReceiverListener
             $user = $authenticatedUser->users()->where('cooperation_id', $event->cooperation->id)->first();
         }
 
-        $groupParticipants = PrivateMessage::getGroupParticipants($event->privateMessage->building_id);
-
         $buildingFromOwner = $event->privateMessage->building;
         $privateMessage = $event->privateMessage;
+        $groupParticipants = PrivateMessage::getGroupParticipants($buildingFromOwner);
 
         $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($buildingFromOwner);
 

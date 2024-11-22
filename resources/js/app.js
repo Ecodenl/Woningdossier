@@ -2,7 +2,7 @@
  * First we will load all of this project's JavaScript.
  */
 
-require('./bootstrap');
+import './bootstrap';
 
 $.ajaxSetup({
     headers: {

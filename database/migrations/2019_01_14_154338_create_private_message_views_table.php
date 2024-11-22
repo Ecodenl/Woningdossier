@@ -23,8 +23,8 @@ return new class extends Migration
             $table->unsignedInteger('input_source_id')->nullable();
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete(null);
 
-            $table->integer('cooperation_id')->unsigned()->nullable();
-            $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
+            $table->integer('to_cooperation_id')->unsigned()->nullable();
+            $table->foreign('to_cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
 
             $table->dateTime('read_at')->nullable();
 

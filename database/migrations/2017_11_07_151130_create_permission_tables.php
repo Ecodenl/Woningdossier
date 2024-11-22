@@ -48,7 +48,7 @@ return new class extends Migration
             $table->string('name');       // For MyISAM use string('name', 225); // (or 166 for InnoDB with Redundant/Compact row format)
             $table->string('human_readable_name')->default('');
             $table->string('guard_name'); // For MyISAM use string('guard_name', 25);
-            $table->unsignedInteger('input_source_id')->nullable()->default(1);
+            $table->unsignedInteger('input_source_id')->nullable();
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('set null');
             $table->timestamps();
             if ($teams || config('permission.testing')) {

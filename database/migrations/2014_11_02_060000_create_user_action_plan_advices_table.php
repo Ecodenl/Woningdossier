@@ -25,9 +25,9 @@ return new class extends Migration
             $table->index('user_action_plan_advisable_id', 'user_action_plan_advisable_id_index');
             $table->index('user_action_plan_advisable_type', 'user_action_plan_advisable_type_index');
 
+            $table->string('category')->nullable();
             $table->integer('order')->default(0);
 
-            $table->string('category')->nullable();
             $table->boolean('visible')->default(false);
 
             $table->boolean('subsidy_available')->default(0);

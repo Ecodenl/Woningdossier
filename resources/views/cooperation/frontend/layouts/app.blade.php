@@ -14,7 +14,7 @@
         <title>@yield('page_title', config('app.name', 'Laravel'))</title>
 
         <!-- Styles -->
-        <link rel="stylesheet" href="{{ mix('css/frontend/app.css') }}">
+        @vite('resources/css/frontend/app.css')
 
         @livewireStyles
         <style>
@@ -58,9 +58,9 @@
 
         @livewireScriptConfig
         {{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
-        <script src="{{ mix('js/app.js') }}"></script>
+        @vite('resources/js/app.js')
         <script src="{{asset('js/tinymce/tinymce.min.js')}}"></script>
-        <script src="{{ mix('js/hoomdossier.js') }}"></script>
+        @vite('resources/js/hoomdossier.js')
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {

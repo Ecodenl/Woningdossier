@@ -259,9 +259,6 @@ Alpine.data('dropdown', Dropdown);
 Alpine.data('tabs', Tabs);
 Alpine.data('adaptiveInputs', AdaptiveInputs);
 
-window.Alpine = Alpine;
-window.Livewire = Livewire;
-
 // Define AlpineJS Magic methods (below example defines "$nuke", e.g. x-on:click="$nuke")
 
 // Alpine.magic('nuke', () => {

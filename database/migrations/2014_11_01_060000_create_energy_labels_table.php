@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('country_code', 2);
             $table->integer('calculate_value')->nullable();
+            $table->integer('order');
             $table->timestamps();
         });
     }

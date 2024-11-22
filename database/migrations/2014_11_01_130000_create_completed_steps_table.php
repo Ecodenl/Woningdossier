@@ -11,20 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if ( ! Schema::hasTable('completed_steps')) {
-            Schema::create('completed_steps', function (Blueprint $table) {
-                $table->increments('id');
-                $table->unsignedInteger('input_source_id')->nullable()->default(null);
-                $table->foreign('input_source_id')->references('id')->on('input_sources')->nullOnDelete();
+        Schema::create('completed_steps', function (Blueprint $table) {
+            $table->increments('id');
 
-                $table->integer('building_id')->unsigned();
-                $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
+            $table->unsignedInteger('input_source_id')->nullable();
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->nullOnDelete();
 
-                $table->integer('step_id')->unsigned();
-                $table->foreign('step_id')->references('id')->on('steps')->onDelete('restrict');
-                $table->timestamps();
-            });
-        }
+            $table->integer('building_id')->unsigned();
+            $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
+
+            $table->integer('step_id')->unsigned();
+            $table->foreign('step_id')->references('id')->on('steps')->onDelete('restrict');
+
+            $table->timestamps();
+        });
     }
 
     /**

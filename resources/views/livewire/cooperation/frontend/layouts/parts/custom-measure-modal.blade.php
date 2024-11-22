@@ -10,7 +10,7 @@
            'withInputSource' => false,
         ])
             <input class="form-input"
-                   wire:model="customMeasureApplicationsFormData.{{$index}}.name"
+                   wire:model.live="customMeasureApplicationsFormData.{{$index}}.name"
                    id="custom-measure-application-{{$index}}-name"
                    placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')"
                    @if($disabled) disabled @endif
@@ -29,7 +29,7 @@
            'withInputSource' => false,
         ])
             <textarea class="form-input"
-                      wire:model="customMeasureApplicationsFormData.{{$index}}.info"
+                      wire:model.live="customMeasureApplicationsFormData.{{$index}}.info"
                       id="custom-measure-application-{{$index}}-info"
                       placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
                       @if($disabled) disabled @endif
@@ -49,7 +49,7 @@
         ])
             @component('cooperation.frontend.layouts.components.alpine-select')
                 <select class="form-input hidden"
-                        wire:model="customMeasureApplicationsFormData.{{$index}}.measure_category"
+                        wire:model.live="customMeasureApplicationsFormData.{{$index}}.measure_category"
                         id="custom-measure-application-{{$index}}-measure-category"
                         @if($disabled) disabled @endif
                 >
@@ -79,7 +79,7 @@
             <div class="checkbox-wrapper @if(! $customMeasureApplicationsFormData[$index]['hide_costs']) mb-0 @endif">
                 <input type="checkbox" id="custom-measure-application-{{$index}}-hide-costs"
                        @if($disabled) disabled @endif
-                       wire:model="customMeasureApplicationsFormData.{{$index}}.hide_costs">
+                       wire:model.live="customMeasureApplicationsFormData.{{$index}}.hide_costs">
                 <label for="custom-measure-application-{{$index}}-hide-costs">
                     <span class="checkmark"></span>
                     <span>@lang('cooperation/frontend/shared.modals.add-measure.hide-costs')</span>
@@ -93,7 +93,7 @@
            'withInputSource' => false,
         ])
             <input class="form-input"
-                   wire:model="customMeasureApplicationsFormData.{{$index}}.costs.from"
+                   wire:model.live="customMeasureApplicationsFormData.{{$index}}.costs.from"
                    @if($disabled) disabled @endif
                    id="custom-measure-application-{{$index}}-costs-from" placeholder="@lang('default.from')">
         @endcomponent
@@ -104,7 +104,7 @@
             'withInputSource' => false,
         ])
             <input class="form-input"
-                   wire:model="customMeasureApplicationsFormData.{{$index}}.costs.to"
+                   wire:model.live="customMeasureApplicationsFormData.{{$index}}.costs.to"
                    @if($disabled) disabled @endif
                    id="custom-measure-application-{{$index}}-costs-to" placeholder="@lang('default.to')">
         @endcomponent
@@ -121,7 +121,7 @@
             'withInputSource' => false,
         ])
             <input class="form-input"
-                   wire:model="customMeasureApplicationsFormData.{{$index}}.savings_money"
+                   wire:model.live="customMeasureApplicationsFormData.{{$index}}.savings_money"
                    id="custom-measure-application-{{$index}}-savings-money"
                    @if($disabled) disabled @endif
                    placeholder="@lang('cooperation/frontend/shared.modals.add-measure.savings-money')">

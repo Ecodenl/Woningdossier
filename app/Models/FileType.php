@@ -23,21 +23,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FileStorage> $files
  * @property-read int|null $files_count
  * @property-read mixed $translations
- * @method static \Illuminate\Database\Eloquent\Builder|FileType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|FileType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|FileType query()
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereContentType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereDuration($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereFileTypeCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FileType whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereContentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereDuration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereFileTypeCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class FileType extends Model

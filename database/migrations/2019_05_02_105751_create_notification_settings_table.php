@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('interval_id')->unsigned();
             $table->foreign('interval_id')->references('id')->on('notification_intervals')->onDelete('cascade');
 
-            $table->dateTime('last_notified_at')->nullable()->default(null);
+            $table->dateTime('last_notified_at')->nullable();
 
             $table->timestamps();
         });

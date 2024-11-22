@@ -14,7 +14,7 @@
 
     $default ??= 0;
 @endphp
-<div x-data="ratingSlider(@if($livewire) @entangle($inputName) @else {{$default}} @endif, '{{$activeClass ?? 'bg-green'}}', {{$disabled}})"
+<div x-data="ratingSlider(@if($livewire) @entangle($inputName).live @else {{$default}} @endif, '{{$activeClass ?? 'bg-green'}}', {{$disabled}})"
      x-ref="rating-slider-wrapper" class="rating-slider-wrapper w-inherit @error($inputName) form-error @enderror">
     <input type="hidden" x-bind="input" name="{{$htmlName}}">
     <div class="flex justify-between mb-3">

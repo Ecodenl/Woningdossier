@@ -11,6 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // TODO: This should be default in the lang files so it can be imported with the command
+
         $languageLinesData = [
             'solar-panels' => [
                 'indication-for-costs.performance.ideal' => ['nl' => 'Ideaal'],

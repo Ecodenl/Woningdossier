@@ -15,16 +15,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Status $status
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus mostRecent()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus query()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus whereAppointmentDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus whereStatusId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus mostRecent()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus whereAppointmentDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus whereStatusId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class BuildingStatus extends Model
@@ -33,13 +33,16 @@ class BuildingStatus extends Model
         'status_id', 'building_id', 'appointment_date',
     ];
 
-    protected $casts = [
-        'appointment_date' => 'datetime',
-    ];
-
     protected $with = [
         'status',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'appointment_date' => 'datetime',
+        ];
+    }
 
     public function scopeMostRecent($query)
     {

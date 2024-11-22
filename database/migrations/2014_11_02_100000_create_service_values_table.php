@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('service_values', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('service_id')->unsigned()->nullable()->default(null);
+            $table->integer('service_id')->unsigned()->nullable();
             $table->foreign('service_id')->references('id')->on('services')->onDelete('restrict');
 
             $table->json('value');

@@ -9,7 +9,7 @@
 
     <div class="form-group {{ $errors->has('contents.new.build_year') ? ' has-error' : '' }}">
         <label for="build_year">@lang('cooperation/admin/example-buildings.form.build-year')</label>
-        <input id="build_year" type="number" min="0" wire:model="contents.new.build_year" class="form-control"/>
+        <input id="build_year" type="number" min="0" wire:model.live="contents.new.build_year" class="form-control"/>
         @if($errors->has('contents.new.build_year'))
             <span class="help-block">
                 <strong>{{ $errors->first('contents.new.build_year') }}</strong>
@@ -84,7 +84,7 @@
                                                         ->answers(collect($contents[$buildYear]))
                                                         ->getQuestionValues();
                                                 @endphp
-                                                <select class="form-control" wire:model="{{$inputName}}"
+                                                <select class="form-control" wire:model.live="{{$inputName}}"
                                                         @if($multiple) multiple="multiple" @endif >
                                                     <option value="null">-</option>
                                                     @foreach($questionValues as $toolQuestionValue)
@@ -94,7 +94,7 @@
                                                     @endforeach
                                                 </select>
                                             @else
-                                                <input type="text" class="form-control" wire:model.lazy="{{$inputName}}">
+                                                <input type="text" class="form-control" wire:model.blur="{{$inputName}}">
                                             @endif
 
                                             @if(isset($rowData['unit']))

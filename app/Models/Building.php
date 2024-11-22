@@ -22,6 +22,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use OwenIt\Auditing\Models\Audit;
+use Plank\Mediable\MediableInterface;
 
 /**
  * App\Models\Building
@@ -85,38 +86,38 @@ use OwenIt\Auditing\Models\Audit;
  * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
  * @method static \Database\Factories\BuildingFactory factory($count = null, $state = [])
  * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
- * @method static Builder|Building newModelQuery()
- * @method static Builder|Building newQuery()
- * @method static Builder|Building onlyTrashed()
- * @method static Builder|Building query()
- * @method static Builder|Building whereBagAddressid($value)
- * @method static Builder|Building whereBagWoonplaatsId($value)
- * @method static Builder|Building whereCity($value)
- * @method static Builder|Building whereCountryCode($value)
- * @method static Builder|Building whereCreatedAt($value)
- * @method static Builder|Building whereDeletedAt($value)
- * @method static Builder|Building whereExtension($value)
- * @method static Builder|Building whereHasMedia($tags = [], bool $matchAll = false)
- * @method static Builder|Building whereHasMediaMatchAll(array $tags)
- * @method static Builder|Building whereId($value)
- * @method static Builder|Building whereMunicipalityId($value)
- * @method static Builder|Building whereNumber($value)
- * @method static Builder|Building whereOwner($value)
- * @method static Builder|Building wherePostalCode($value)
- * @method static Builder|Building wherePrimary($value)
- * @method static Builder|Building whereStreet($value)
- * @method static Builder|Building whereUpdatedAt($value)
- * @method static Builder|Building whereUserId($value)
- * @method static Builder|Building withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
- * @method static Builder|Building withMediaAndVariants($tags = [], bool $matchAll = false)
- * @method static Builder|Building withMediaAndVariantsMatchAll($tags = [])
- * @method static Builder|Building withMediaMatchAll(bool $tags = [], bool $withVariants = false)
- * @method static Builder|Building withRecentBuildingStatusInformation()
- * @method static Builder|Building withTrashed()
- * @method static Builder|Building withoutTrashed()
+ * @method static Builder<static>|Building newModelQuery()
+ * @method static Builder<static>|Building newQuery()
+ * @method static Builder<static>|Building onlyTrashed()
+ * @method static Builder<static>|Building query()
+ * @method static Builder<static>|Building whereBagAddressid($value)
+ * @method static Builder<static>|Building whereBagWoonplaatsId($value)
+ * @method static Builder<static>|Building whereCity($value)
+ * @method static Builder<static>|Building whereCountryCode($value)
+ * @method static Builder<static>|Building whereCreatedAt($value)
+ * @method static Builder<static>|Building whereDeletedAt($value)
+ * @method static Builder<static>|Building whereExtension($value)
+ * @method static Builder<static>|Building whereHasMedia($tags = [], bool $matchAll = false)
+ * @method static Builder<static>|Building whereHasMediaMatchAll($tags)
+ * @method static Builder<static>|Building whereId($value)
+ * @method static Builder<static>|Building whereMunicipalityId($value)
+ * @method static Builder<static>|Building whereNumber($value)
+ * @method static Builder<static>|Building whereOwner($value)
+ * @method static Builder<static>|Building wherePostalCode($value)
+ * @method static Builder<static>|Building wherePrimary($value)
+ * @method static Builder<static>|Building whereStreet($value)
+ * @method static Builder<static>|Building whereUpdatedAt($value)
+ * @method static Builder<static>|Building whereUserId($value)
+ * @method static Builder<static>|Building withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
+ * @method static Builder<static>|Building withMediaAndVariants($tags = [], bool $matchAll = false)
+ * @method static Builder<static>|Building withMediaAndVariantsMatchAll($tags = [])
+ * @method static Builder<static>|Building withMediaMatchAll(bool $tags = [], bool $withVariants = false)
+ * @method static Builder<static>|Building withRecentBuildingStatusInformation()
+ * @method static Builder<static>|Building withTrashed()
+ * @method static Builder<static>|Building withoutTrashed()
  * @mixin \Eloquent
  */
-class Building extends Model
+class Building extends Model implements MediableInterface
 {
     use HasFactory,
         SoftDeletes,
@@ -134,10 +135,6 @@ class Building extends Model
         'is_active',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
-
     // Static methods
     public static function boot()
     {
@@ -148,6 +145,13 @@ class Building extends Model
             // TODO: This doesn't delete the files
             $building->media()->delete();
         });
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
     }
 
     // Model methods

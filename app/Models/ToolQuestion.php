@@ -35,6 +35,7 @@ use Illuminate\Support\Collection;
  * @property-read \App\Models\InputSource|null $forSpecificInputSource
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
+ * @property-read \App\Models\SubSteppable|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestionAnswer> $toolQuestionAnswers
@@ -45,29 +46,29 @@ use Illuminate\Support\Collection;
  * @property-read int|null $tool_question_valuables_count
  * @property-read mixed $translations
  * @method static \Database\Factories\ToolQuestionFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion findByShortsOrdered($shorts)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion query()
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCoach($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereDataType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereForSpecificInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereHelpText($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereOptions($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion wherePlaceholder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereResident($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereSaveIn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereUnitOfMeasure($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereValidation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion findByShortsOrdered($shorts)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereCoach($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereDataType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereForSpecificInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereHelpText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereOptions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion wherePlaceholder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereResident($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereSaveIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereUnitOfMeasure($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion whereValidation($value)
  * @mixin \Eloquent
  */
 class ToolQuestion extends Model
@@ -97,12 +98,15 @@ class ToolQuestion extends Model
         'resident'
     ];
 
-    protected $casts = [
-        'options' => 'array',
-        'validation' => 'array',
-        'coach' => 'boolean',
-        'resident' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'options' => 'array',
+            'validation' => 'array',
+            'coach' => 'boolean',
+            'resident' => 'boolean',
+        ];
+    }
 
     # Model methods
     public function hasOptions(): bool

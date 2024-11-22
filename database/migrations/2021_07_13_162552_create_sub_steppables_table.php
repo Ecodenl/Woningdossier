@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if ( ! Schema::hasTable('sub_steppables')) {
+        if (! Schema::hasTable('sub_steppables')) {
             Schema::create('sub_steppables', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->integer('order');
@@ -26,8 +26,8 @@ return new class extends Migration
                 $table->unsignedBigInteger('tool_question_type_id')->nullable();
                 $table->foreign('tool_question_type_id')->references('id')->on('tool_question_types')->onDelete('cascade');
 
-                $table->json('conditions')->nullable()->default(null);
-                $table->string('size')->nullable()->default(null);
+                $table->json('conditions')->nullable();
+                $table->string('size')->nullable();
 
                 $table->timestamps();
             });

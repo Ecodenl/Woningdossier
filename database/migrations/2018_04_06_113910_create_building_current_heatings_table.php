@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('building_current_heatings', function (Blueprint $table) {
             $table->increments('id');
-            $table->json('name');
+            $table->string('name');
             $table->integer('calculate_value');
             $table->timestamps();
         });

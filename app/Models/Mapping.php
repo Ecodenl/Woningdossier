@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  *
  * @property int $id
  * @property string|null $type
- * @property mixed|null $conditions
+ * @property string|null $conditions
  * @property string|null $from_model_type
  * @property int|null $from_model_id
  * @property string|null $from_value
@@ -22,25 +22,25 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property array|null $target_data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read Model|\Eloquent $mappable
- * @property-read Model|\Eloquent $resolvable
+ * @property-read Model|\Eloquent|null $mappable
+ * @property-read Model|\Eloquent|null $resolvable
  * @method static \Database\Factories\MappingFactory factory($count = null, $state = [])
- * @method static Builder|Mapping forType(string $type)
- * @method static Builder|Mapping newModelQuery()
- * @method static Builder|Mapping newQuery()
- * @method static Builder|Mapping query()
- * @method static Builder|Mapping whereConditions($value)
- * @method static Builder|Mapping whereCreatedAt($value)
- * @method static Builder|Mapping whereFromModelId($value)
- * @method static Builder|Mapping whereFromModelType($value)
- * @method static Builder|Mapping whereFromValue($value)
- * @method static Builder|Mapping whereId($value)
- * @method static Builder|Mapping whereTargetData($value)
- * @method static Builder|Mapping whereTargetModelId($value)
- * @method static Builder|Mapping whereTargetModelType($value)
- * @method static Builder|Mapping whereTargetValue($value)
- * @method static Builder|Mapping whereType($value)
- * @method static Builder|Mapping whereUpdatedAt($value)
+ * @method static Builder<static>|Mapping forType(string $type)
+ * @method static Builder<static>|Mapping newModelQuery()
+ * @method static Builder<static>|Mapping newQuery()
+ * @method static Builder<static>|Mapping query()
+ * @method static Builder<static>|Mapping whereConditions($value)
+ * @method static Builder<static>|Mapping whereCreatedAt($value)
+ * @method static Builder<static>|Mapping whereFromModelId($value)
+ * @method static Builder<static>|Mapping whereFromModelType($value)
+ * @method static Builder<static>|Mapping whereFromValue($value)
+ * @method static Builder<static>|Mapping whereId($value)
+ * @method static Builder<static>|Mapping whereTargetData($value)
+ * @method static Builder<static>|Mapping whereTargetModelId($value)
+ * @method static Builder<static>|Mapping whereTargetModelType($value)
+ * @method static Builder<static>|Mapping whereTargetValue($value)
+ * @method static Builder<static>|Mapping whereType($value)
+ * @method static Builder<static>|Mapping whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Mapping extends Model
@@ -59,9 +59,12 @@ class Mapping extends Model
         'target_data'
     ];
 
-    protected $casts = [
-        'target_data' => 'array'
-    ];
+    protected function casts(): array
+    {
+        return [
+            'target_data' => 'array'
+        ];
+    }
 
     # Scopes
     public function scopeForType(Builder $query, string $type): Builder

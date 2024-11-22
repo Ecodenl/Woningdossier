@@ -6,7 +6,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
 use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\QuickScanHelper;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\SubStep;

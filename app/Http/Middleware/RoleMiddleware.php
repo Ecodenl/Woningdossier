@@ -2,10 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Http\Request;
+use App\Helpers\Hoomdossier;
 use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Exceptions\UnauthorizedException;
+use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
@@ -14,7 +16,7 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, $role): Response
     {
-        if (\Auth::guest()) {
+        if (Auth::guest()) {
             throw UnauthorizedException::notLoggedIn();
         }
 
@@ -22,7 +24,7 @@ class RoleMiddleware
             ? $role
             : explode('|', $role);
 
-        if (! \App\Helpers\Hoomdossier::user()->hasAnyRole($roles)) {
+        if (! Hoomdossier::user()->hasAnyRole($roles)) {
             throw UnauthorizedException::forRoles($roles);
         }
 

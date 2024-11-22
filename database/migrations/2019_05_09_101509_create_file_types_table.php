@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('short');
             $table->string('content_type');
 
-            $table->dateTime('duration')->nullable()->default(null);
+            $table->dateTime('duration')->nullable();
             $table->timestamps();
         });
     }

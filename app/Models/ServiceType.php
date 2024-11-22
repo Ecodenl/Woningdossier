@@ -21,18 +21,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $elements_count
  * @property-read mixed $translations
  * @method static \Database\Factories\ServiceTypeFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType query()
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereIso($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType whereIso($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ServiceType extends Model

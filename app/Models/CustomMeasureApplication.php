@@ -27,28 +27,28 @@ use Spatie\Translatable\HasTranslations;
  * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
- * @method static Builder|CustomMeasureApplication allInputSources()
+ * @method static Builder<static>|CustomMeasureApplication allInputSources()
  * @method static \Database\Factories\CustomMeasureApplicationFactory factory($count = null, $state = [])
- * @method static Builder|CustomMeasureApplication forBuilding($building)
- * @method static Builder|CustomMeasureApplication forInputSource(\App\Models\InputSource $inputSource)
- * @method static Builder|CustomMeasureApplication forMe(?\App\Models\User $user = null)
- * @method static Builder|CustomMeasureApplication forUser($user)
- * @method static Builder|CustomMeasureApplication newModelQuery()
- * @method static Builder|CustomMeasureApplication newQuery()
- * @method static Builder|CustomMeasureApplication query()
- * @method static Builder|CustomMeasureApplication residentInput()
- * @method static Builder|CustomMeasureApplication whereBuildingId($value)
- * @method static Builder|CustomMeasureApplication whereCreatedAt($value)
- * @method static Builder|CustomMeasureApplication whereHash($value)
- * @method static Builder|CustomMeasureApplication whereId($value)
- * @method static Builder|CustomMeasureApplication whereInfo($value)
- * @method static Builder|CustomMeasureApplication whereInputSourceId($value)
- * @method static Builder|CustomMeasureApplication whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static Builder|CustomMeasureApplication whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static Builder|CustomMeasureApplication whereLocale(string $column, string $locale)
- * @method static Builder|CustomMeasureApplication whereLocales(string $column, array $locales)
- * @method static Builder|CustomMeasureApplication whereName($value)
- * @method static Builder|CustomMeasureApplication whereUpdatedAt($value)
+ * @method static Builder<static>|CustomMeasureApplication forBuilding(\App\Models\Building|int $building)
+ * @method static Builder<static>|CustomMeasureApplication forInputSource(\App\Models\InputSource $inputSource)
+ * @method static Builder<static>|CustomMeasureApplication forMe(?\App\Models\User $user = null)
+ * @method static Builder<static>|CustomMeasureApplication forUser(\App\Models\User|int $user)
+ * @method static Builder<static>|CustomMeasureApplication newModelQuery()
+ * @method static Builder<static>|CustomMeasureApplication newQuery()
+ * @method static Builder<static>|CustomMeasureApplication query()
+ * @method static Builder<static>|CustomMeasureApplication residentInput()
+ * @method static Builder<static>|CustomMeasureApplication whereBuildingId($value)
+ * @method static Builder<static>|CustomMeasureApplication whereCreatedAt($value)
+ * @method static Builder<static>|CustomMeasureApplication whereHash($value)
+ * @method static Builder<static>|CustomMeasureApplication whereId($value)
+ * @method static Builder<static>|CustomMeasureApplication whereInfo($value)
+ * @method static Builder<static>|CustomMeasureApplication whereInputSourceId($value)
+ * @method static Builder<static>|CustomMeasureApplication whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|CustomMeasureApplication whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|CustomMeasureApplication whereLocale(string $column, string $locale)
+ * @method static Builder<static>|CustomMeasureApplication whereLocales(string $column, array $locales)
+ * @method static Builder<static>|CustomMeasureApplication whereName($value)
+ * @method static Builder<static>|CustomMeasureApplication whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CustomMeasureApplication extends Model
@@ -68,9 +68,12 @@ class CustomMeasureApplication extends Model
         'building_id', 'input_source_id', 'name', 'hash', 'info',
     ];
 
-    protected $casts = [
-        'extra' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'extra' => 'array',
+        ];
+    }
 
     public function userActionPlanAdvices(): MorphMany
     {

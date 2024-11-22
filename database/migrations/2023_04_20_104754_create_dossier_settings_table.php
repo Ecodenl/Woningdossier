@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('dossier_settings', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedInteger('input_source_id')->nullable()->default(null);
+            $table->unsignedInteger('input_source_id')->nullable();
             $table->foreign('input_source_id')->references('id')->on('input_sources')->nullOnDelete();
 
             $table->unsignedInteger('building_id')->unsigned();
@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->string('type');
 
-            $table->timestamp('done_at')->nullable()->default(null);
+            $table->timestamp('done_at')->nullable();
 
             $table->timestamps();
         });

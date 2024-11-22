@@ -16,15 +16,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\BuildingType $buildingType
  * @property-read \App\Models\Element $element
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving query()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving whereBuildingTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving whereElementId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving whereMaxSaving($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingTypeElementMaxSaving newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingTypeElementMaxSaving newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingTypeElementMaxSaving query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingTypeElementMaxSaving whereBuildingTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingTypeElementMaxSaving whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingTypeElementMaxSaving whereElementId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingTypeElementMaxSaving whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingTypeElementMaxSaving whereMaxSaving($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingTypeElementMaxSaving whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class BuildingTypeElementMaxSaving extends Model

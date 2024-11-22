@@ -16,15 +16,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Motivation $motivation
  * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation query()
- * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereMotivationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserMotivation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserMotivation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserMotivation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserMotivation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserMotivation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserMotivation whereMotivationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserMotivation whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserMotivation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserMotivation whereUserId($value)
  * @mixin \Eloquent
  */
 class UserMotivation extends Model

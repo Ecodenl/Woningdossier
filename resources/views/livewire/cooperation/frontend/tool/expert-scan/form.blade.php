@@ -52,7 +52,7 @@
 
             let hasWireModel = false;
             for (const attr of target.attributes) {
-                if (attr.name.startsWith('wire:model')) {
+                if (attr.name.startsWith('wire:model.live')) {
                     // Ensure we don't trigger updates if it's deferred to maintain defer logic.
                     if (! attr.name.includes('defer')) {
                         hasWireModel = true;
@@ -63,7 +63,7 @@
 
             if (hasWireModel) {
                 triggerCustomEvent(window, 'input-updated');
-                livewire.emit('inputUpdated');
+                Livewire.dispatch('inputUpdated');
             }
         });
 

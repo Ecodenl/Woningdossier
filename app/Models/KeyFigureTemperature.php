@@ -18,16 +18,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\BuildingHeating $buildingHeating
  * @property-read \App\Models\InsulatingGlazing|null $insulatingGlazing
  * @property-read \App\Models\MeasureApplication $measureApplication
- * @method static \Illuminate\Database\Eloquent\Builder|KeyFigureTemperature newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|KeyFigureTemperature newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|KeyFigureTemperature query()
- * @method static \Illuminate\Database\Eloquent\Builder|KeyFigureTemperature whereBuildingHeatingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|KeyFigureTemperature whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|KeyFigureTemperature whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|KeyFigureTemperature whereInsulatingGlazingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|KeyFigureTemperature whereKeyFigure($value)
- * @method static \Illuminate\Database\Eloquent\Builder|KeyFigureTemperature whereMeasureApplicationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|KeyFigureTemperature whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KeyFigureTemperature newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KeyFigureTemperature newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KeyFigureTemperature query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KeyFigureTemperature whereBuildingHeatingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KeyFigureTemperature whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KeyFigureTemperature whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KeyFigureTemperature whereInsulatingGlazingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KeyFigureTemperature whereKeyFigure($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KeyFigureTemperature whereMeasureApplicationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KeyFigureTemperature whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class KeyFigureTemperature extends Model

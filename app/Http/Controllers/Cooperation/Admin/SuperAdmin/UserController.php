@@ -32,11 +32,11 @@ class UserController extends Controller
             ->withWhereHas('building');
 
         if (! is_null($userData['first_name'])) {
-            $user->whereLike('first_name', $userData['first_name']);
+            $user->where('first_name', 'LIKE', "%{$userData['first_name']}%");
         }
 
         if (! is_null($userData['last_name'])) {
-            $user->whereLike('last_name', $userData['last_name']);
+            $user->where('last_name', 'LIKE', "%{$userData['last_name']}%");
         }
 
         if (! is_null($accountData['email'])) {
@@ -47,14 +47,14 @@ class UserController extends Controller
 
         if (! is_null($buildingData['city'])) {
             $user->whereHas('building', function ($query) use ($buildingData) {
-                $query->whereLike('city', $buildingData['city']);
+                $query->where('city', 'LIKE', "%{$buildingData['city']}%");
             });
         }
 
-        // wherelike since the postal code can be typed like: 1234xc 1234XC 1234 xc 1234 XC
+        // where like since the postal code can be typed like: 1234xc 1234XC 1234 xc 1234 XC
         if (! is_null($buildingData['postal_code'])) {
             $user->whereHas('building', function ($query) use ($buildingData) {
-                $query->whereLike('postal_code', $buildingData['postal_code']);
+                $query->where('postal_code', 'LIKE', "%{$buildingData['postal_code']}%");
             });
         }
 

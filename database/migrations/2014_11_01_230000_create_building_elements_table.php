@@ -12,10 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('building_elements', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
 
-            $table->integer('building_id')->unsigned()->nullable()->default(null);
+            $table->integer('building_id')->unsigned()->nullable();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
+
+            $table->integer('input_source_id')->unsigned()->nullable()->default(1);
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
 
             $table->integer('element_id')->unsigned();
             $table->foreign('element_id')->references('id')->on('elements')->onDelete('restrict');

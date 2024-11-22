@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('element_id')->unsigned();
             $table->foreign('element_id')->references('id')->on('elements')->onDelete('restrict');
             $table->json('value');
-            $table->float('calculate_value')->nullable();
+            $table->double('calculate_value')->nullable();
             $table->integer('order');
             $table->json('configurations')->nullable();
             $table->timestamps();

@@ -9,7 +9,7 @@
 @component('cooperation.frontend.layouts.components.alpine-select')
     <select multiple id="{{$toolQuestion->short}}" class="form-input hidden" data-livewire-id="{{$this->id}}"
             x-on:component-ready.window="if ($event.detail.id == $el.getAttribute('data-livewire-id')) { constructSelect(); }"
-            wire:model="filledInAnswers.{{$toolQuestion->short}}"
+            wire:model.live="filledInAnswers.{{$toolQuestion->short}}"
             @if(($disabled ?? false))
                 disabled
             @else

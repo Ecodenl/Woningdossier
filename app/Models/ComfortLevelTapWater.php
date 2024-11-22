@@ -15,19 +15,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $translations
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater query()
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater whereCalculateValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortLevelTapWater whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater whereCalculateValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortLevelTapWater whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ComfortLevelTapWater extends Model

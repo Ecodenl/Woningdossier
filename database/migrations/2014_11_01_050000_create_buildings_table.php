@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('buildings', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('user_id')->unsigned();
+            $table->unsignedInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
-            $table->unsignedBigInteger('municipality_id')->nullable()->default(null);
+            $table->unsignedBigInteger('municipality_id')->nullable();
             $table->foreign('municipality_id')->references('id')->on('municipalities')->nullOnDelete();
 
             $table->string('street')->default('');
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->boolean('primary')->default(false);
 
             $table->string('bag_addressid')->default('');
-            $table->string('bag_woonplaats_id')->nullable()->default(null);
+            $table->string('bag_woonplaats_id')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

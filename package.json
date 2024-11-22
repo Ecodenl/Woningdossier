@@ -23,7 +23,6 @@
         "tailwindcss": "^2.2.19"
     },
     "dependencies": {
-        "alpinejs": "^3.10.3",
         "mobile-drag-drop": "^3.0.0-rc.0"
     }
 }

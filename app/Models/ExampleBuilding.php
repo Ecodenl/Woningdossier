@@ -26,24 +26,24 @@ use Illuminate\Support\Collection;
  * @property-read int|null $contents_count
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read mixed $translations
- * @method static Builder|ExampleBuilding forAnyOrMyCooperation()
- * @method static Builder|ExampleBuilding forMyCooperation()
- * @method static Builder|ExampleBuilding generic()
- * @method static Builder|ExampleBuilding newModelQuery()
- * @method static Builder|ExampleBuilding newQuery()
- * @method static Builder|ExampleBuilding query()
- * @method static Builder|ExampleBuilding whereBuildingTypeId($value)
- * @method static Builder|ExampleBuilding whereCooperationId($value)
- * @method static Builder|ExampleBuilding whereCreatedAt($value)
- * @method static Builder|ExampleBuilding whereId($value)
- * @method static Builder|ExampleBuilding whereIsDefault($value)
- * @method static Builder|ExampleBuilding whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static Builder|ExampleBuilding whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static Builder|ExampleBuilding whereLocale(string $column, string $locale)
- * @method static Builder|ExampleBuilding whereLocales(string $column, array $locales)
- * @method static Builder|ExampleBuilding whereName($value)
- * @method static Builder|ExampleBuilding whereOrder($value)
- * @method static Builder|ExampleBuilding whereUpdatedAt($value)
+ * @method static Builder<static>|ExampleBuilding forAnyOrMyCooperation()
+ * @method static Builder<static>|ExampleBuilding forMyCooperation()
+ * @method static Builder<static>|ExampleBuilding generic()
+ * @method static Builder<static>|ExampleBuilding newModelQuery()
+ * @method static Builder<static>|ExampleBuilding newQuery()
+ * @method static Builder<static>|ExampleBuilding query()
+ * @method static Builder<static>|ExampleBuilding whereBuildingTypeId($value)
+ * @method static Builder<static>|ExampleBuilding whereCooperationId($value)
+ * @method static Builder<static>|ExampleBuilding whereCreatedAt($value)
+ * @method static Builder<static>|ExampleBuilding whereId($value)
+ * @method static Builder<static>|ExampleBuilding whereIsDefault($value)
+ * @method static Builder<static>|ExampleBuilding whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|ExampleBuilding whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|ExampleBuilding whereLocale(string $column, string $locale)
+ * @method static Builder<static>|ExampleBuilding whereLocales(string $column, array $locales)
+ * @method static Builder<static>|ExampleBuilding whereName($value)
+ * @method static Builder<static>|ExampleBuilding whereOrder($value)
+ * @method static Builder<static>|ExampleBuilding whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ExampleBuilding extends Model
@@ -52,15 +52,6 @@ class ExampleBuilding extends Model
 
     protected $translatable = [
         'name',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'is_default' => 'boolean',
     ];
 
     public $fillable = [
@@ -80,6 +71,18 @@ class ExampleBuilding extends Model
             $model->contents()->delete();
             \Log::debug('Deleting done..');
         });
+    }
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'is_default' => 'boolean',
+        ];
     }
 
     public function contents(): HasMany

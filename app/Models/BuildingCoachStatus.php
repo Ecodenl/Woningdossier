@@ -17,15 +17,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\User|null $coach
  * @property-read \App\Models\User|null $user
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus query()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereCoachId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingCoachStatus newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingCoachStatus newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingCoachStatus query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingCoachStatus whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingCoachStatus whereCoachId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingCoachStatus whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingCoachStatus whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingCoachStatus whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingCoachStatus whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class BuildingCoachStatus extends Model

@@ -4,7 +4,7 @@
         'disabled' => $disabled ?? false,
         'withScript' => false,
     ])
-        <textarea wire:model.lazy.defer="filledInAnswers.{{$toolQuestion->short}}"
+        <textarea wire:model.blur.defer="filledInAnswers.{{$toolQuestion->short}}"
                   id="clickable-{{$toolQuestion->short}}" wire:ignore
                   class="form-input"
                   placeholder="{{$toolQuestion->placeholder}}"
@@ -17,7 +17,7 @@
             'disabled' => $disabled ?? false,
             'withScript' => false,
         ])
-            <textarea wire:model.lazy.defer="filledInAnswers.{{$toolQuestion->short}}"
+            <textarea wire:model.blur.defer="filledInAnswers.{{$toolQuestion->short}}"
                   id="{{$toolQuestion->short}}"
                   class="form-input w-full"
                   placeholder="{{$toolQuestion->placeholder}}"

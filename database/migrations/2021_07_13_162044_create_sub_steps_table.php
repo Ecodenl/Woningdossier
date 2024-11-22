@@ -16,11 +16,11 @@ return new class extends Migration
             $table->json('name');
             $table->json('slug');
             $table->integer('order');
-            $table->json('conditions')->nullable()->default(null);
+            $table->json('conditions')->nullable();
             $table->unsignedInteger('step_id');
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('cascade');
 
-            $table->unsignedBigInteger('sub_step_template_id');
+            $table->unsignedBigInteger('sub_step_template_id')->nullable();
             $table->foreign('sub_step_template_id')->references('id')->on('sub_step_templates')->onDelete('cascade');
 
             $table->timestamps();

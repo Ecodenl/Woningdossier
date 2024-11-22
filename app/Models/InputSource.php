@@ -16,15 +16,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Database\Factories\InputSourceFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|InputSource newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|InputSource newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|InputSource query()
- * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InputSource newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InputSource newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InputSource query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InputSource whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InputSource whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InputSource whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InputSource whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InputSource whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InputSource whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class InputSource extends Model

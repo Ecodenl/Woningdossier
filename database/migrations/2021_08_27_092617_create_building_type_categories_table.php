@@ -17,6 +17,14 @@ return new class extends Migration
             $table->json('name');
             $table->timestamps();
         });
+
+        Schema::table('building_types', function (Blueprint $table) {
+            $table->foreign('building_type_category_id')->references('id')->on('building_type_categories')->onDelete('cascade');
+        });
+
+        Schema::table('building_features', function (Blueprint $table) {
+            $table->foreign('building_type_category_id')->references('id')->on('building_type_categories')->onDelete('restrict');
+        });
     }
 
     /**
@@ -24,6 +32,12 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('building_types', function (Blueprint $table) {
+            $table->dropForeign(['building_type_category_id']);
+        });
+        Schema::table('building_features', function (Blueprint $table) {
+            $table->dropForeign(['building_type_category_id']);
+        });
         Schema::dropIfExists('building_type_categories');
     }
 };

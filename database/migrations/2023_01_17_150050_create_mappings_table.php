@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('mappings', function (Blueprint $table) {
             $table->id();
-            $table->string('type')->nullable()->default(null);
-            $table->json('conditions')->nullable()->default(null);
+            $table->string('type')->nullable();
+            $table->json('conditions')->nullable();
 
             $table->nullableMorphs('from_model');
-            $table->string('from_value')->nullable()->default(null);
+            $table->string('from_value')->nullable();
 
             $table->nullableMorphs('target_model');
-            $table->string('target_value')->nullable()->default(null);
-            $table->json('target_data')->nullable()->default(null);
+            $table->string('target_value')->nullable();
+            $table->json('target_data')->nullable();
 
             $table->timestamps();
         });

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->boolean('show');
             $table->integer('order');
             $table->json('extra')->nullable();
-            $table->json('conditions')->nullable()->default(null);
+            $table->json('conditions')->nullable();
 
             $table->timestamps();
         });

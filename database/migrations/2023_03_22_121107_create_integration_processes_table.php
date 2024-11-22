@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedInteger('building_id');
             $table->foreign('building_id')->references('id')->on('buildings')->cascadeOnDelete();
             $table->string('process');
-            $table->dateTime('synced_at')->nullable()->default(null);
+            $table->dateTime('synced_at')->nullable();
             $table->timestamps();
         });
     }

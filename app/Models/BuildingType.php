@@ -20,19 +20,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read int|null $building_features_count
  * @property-read \App\Models\BuildingTypeCategory|null $buildingTypeCategory
  * @property-read mixed $translations
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType query()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereBuildingTypeCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereCalculateValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereBuildingTypeCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereCalculateValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class BuildingType extends Model

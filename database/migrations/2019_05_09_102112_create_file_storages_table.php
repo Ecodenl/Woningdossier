@@ -15,7 +15,7 @@ return new class extends Migration
 
             $table->increments('id');
 
-            $table->unsignedInteger('cooperation_id')->nullable()->default(null);
+            $table->unsignedInteger('cooperation_id')->nullable();
             $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
 
             $table->unsignedInteger('building_id')->nullable();
@@ -32,7 +32,7 @@ return new class extends Migration
             
             $table->string('filename');
 
-            $table->dateTime('available_until')->nullable()->default(null);
+            $table->dateTime('available_until')->nullable();
 
             $table->boolean('is_being_processed')->default('1');
             

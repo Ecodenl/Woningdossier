@@ -20,21 +20,21 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Appliance|null $appliance
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\InputSource|null $inputSource
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance forBuilding($building)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance forMe(?\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance forUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance query()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance whereApplianceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance forBuilding(\App\Models\Building|int $building)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance forUser(\App\Models\User|int $user)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance whereApplianceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingAppliance whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class BuildingAppliance extends Model

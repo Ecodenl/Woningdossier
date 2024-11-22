@@ -14,18 +14,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $translations
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType query()
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AssessmentType whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AssessmentType whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class AssessmentType extends Model

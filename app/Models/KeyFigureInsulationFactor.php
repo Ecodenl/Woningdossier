@@ -14,16 +14,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $energy_consumption_per_m2
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static Builder|KeyFigureInsulationFactor forInsulationFactor($factor)
- * @method static Builder|KeyFigureInsulationFactor newModelQuery()
- * @method static Builder|KeyFigureInsulationFactor newQuery()
- * @method static Builder|KeyFigureInsulationFactor query()
- * @method static Builder|KeyFigureInsulationFactor whereCreatedAt($value)
- * @method static Builder|KeyFigureInsulationFactor whereEnergyConsumptionPerM2($value)
- * @method static Builder|KeyFigureInsulationFactor whereId($value)
- * @method static Builder|KeyFigureInsulationFactor whereInsulationFactor($value)
- * @method static Builder|KeyFigureInsulationFactor whereInsulationGrade($value)
- * @method static Builder|KeyFigureInsulationFactor whereUpdatedAt($value)
+ * @method static Builder<static>|KeyFigureInsulationFactor forInsulationFactor($factor)
+ * @method static Builder<static>|KeyFigureInsulationFactor newModelQuery()
+ * @method static Builder<static>|KeyFigureInsulationFactor newQuery()
+ * @method static Builder<static>|KeyFigureInsulationFactor query()
+ * @method static Builder<static>|KeyFigureInsulationFactor whereCreatedAt($value)
+ * @method static Builder<static>|KeyFigureInsulationFactor whereEnergyConsumptionPerM2($value)
+ * @method static Builder<static>|KeyFigureInsulationFactor whereId($value)
+ * @method static Builder<static>|KeyFigureInsulationFactor whereInsulationFactor($value)
+ * @method static Builder<static>|KeyFigureInsulationFactor whereInsulationGrade($value)
+ * @method static Builder<static>|KeyFigureInsulationFactor whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class KeyFigureInsulationFactor extends Model

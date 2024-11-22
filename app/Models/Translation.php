@@ -13,15 +13,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $translation
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|Translation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Translation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Translation query()
- * @method static \Illuminate\Database\Eloquent\Builder|Translation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Translation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Translation whereKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Translation whereLanguage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Translation whereTranslation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Translation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Translation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Translation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Translation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Translation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Translation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Translation whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Translation whereLanguage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Translation whereTranslation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Translation whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Translation extends Model

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreign('tool_question_id')->references('id')->on('tool_questions')->onDelete('cascade');
 
 
-            $table->unsignedBigInteger('tool_question_custom_value_id')->nullable()->default(null);
+            $table->unsignedBigInteger('tool_question_custom_value_id')->nullable();
             $table->foreign('tool_question_custom_value_id')->references('id')->on('tool_question_custom_values')->onDelete('cascade');
 
             $table->text('answer');

@@ -17,6 +17,9 @@ return new class extends Migration
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
+            $table->integer('input_source_id')->unsigned()->nullable()->default(1);
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('set null');
+
             $table->integer('resident_count')->nullable();
             $table->decimal('thermostat_high')->nullable();
             $table->decimal('thermostat_low')->nullable();
@@ -31,8 +34,8 @@ return new class extends Migration
             $table->bigInteger('amount_electricity')->nullable();
             $table->bigInteger('amount_gas')->nullable();
             $table->bigInteger('amount_water')->nullable();
-            $table->longText('living_situation_extra')->nullable();
-            $table->longText('motivation_extra')->nullable();
+            $table->smallInteger('renovation_plans')->nullable();
+            $table->longText('building_complaints')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();

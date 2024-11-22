@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->nullableMorphs('loggable');
 
-            $table->integer('building_id')->nullable()->default(null)->unsigned();
+            $table->integer('building_id')->nullable()->unsigned();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('set null');
 
             $table->string('message');

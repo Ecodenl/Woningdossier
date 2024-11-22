@@ -17,6 +17,11 @@ return new class extends Migration
             $table->integer('building_id')->unsigned();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
 
+            $table->integer('input_source_id')->unsigned()->nullable()->default(1);
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
+
+            $table->integer('total_installed_power')->nullable();
+
             $table->integer('peak_power')->unsigned()->nullable();
             $table->integer('number')->default(0);
 

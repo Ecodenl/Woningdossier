@@ -21,20 +21,20 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read LanguageLine|null $helpText
  * @property-read \Illuminate\Database\Eloquent\Collection<int, LanguageLine> $subQuestions
  * @property-read int|null $sub_questions_count
- * @method static Builder|LanguageLine forGroup($group)
- * @method static Builder|LanguageLine mainQuestions()
- * @method static Builder|LanguageLine newModelQuery()
- * @method static Builder|LanguageLine newQuery()
- * @method static Builder|LanguageLine query()
- * @method static Builder|LanguageLine whereCreatedAt($value)
- * @method static Builder|LanguageLine whereGroup($value)
- * @method static Builder|LanguageLine whereHelpLanguageLineId($value)
- * @method static Builder|LanguageLine whereId($value)
- * @method static Builder|LanguageLine whereKey($value)
- * @method static Builder|LanguageLine whereMainLanguageLineId($value)
- * @method static Builder|LanguageLine whereStepId($value)
- * @method static Builder|LanguageLine whereText($value)
- * @method static Builder|LanguageLine whereUpdatedAt($value)
+ * @method static Builder<static>|LanguageLine forGroup($group)
+ * @method static Builder<static>|LanguageLine mainQuestions()
+ * @method static Builder<static>|LanguageLine newModelQuery()
+ * @method static Builder<static>|LanguageLine newQuery()
+ * @method static Builder<static>|LanguageLine query()
+ * @method static Builder<static>|LanguageLine whereCreatedAt($value)
+ * @method static Builder<static>|LanguageLine whereGroup($value)
+ * @method static Builder<static>|LanguageLine whereHelpLanguageLineId($value)
+ * @method static Builder<static>|LanguageLine whereId($value)
+ * @method static Builder<static>|LanguageLine whereKey($value)
+ * @method static Builder<static>|LanguageLine whereMainLanguageLineId($value)
+ * @method static Builder<static>|LanguageLine whereStepId($value)
+ * @method static Builder<static>|LanguageLine whereText($value)
+ * @method static Builder<static>|LanguageLine whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class LanguageLine extends \Spatie\TranslationLoader\LanguageLine

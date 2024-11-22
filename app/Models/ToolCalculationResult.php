@@ -21,24 +21,25 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
+ * @property-read \App\Models\SubSteppable|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
  * @property-read mixed $translations
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult query()
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereDataType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereHelpText($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereUnitOfMeasure($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereDataType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereHelpText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereUnitOfMeasure($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolCalculationResult whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ToolCalculationResult extends Model

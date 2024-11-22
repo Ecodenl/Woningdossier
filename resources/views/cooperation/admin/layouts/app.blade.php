@@ -83,7 +83,7 @@
 
         </div>
 
-        @livewireScripts
+        @livewireScriptConfig
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"></script>
         <!-- moment.js -->

@@ -17,13 +17,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $building_services_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ApplianceProperty> $properties
  * @property-read int|null $properties_count
- * @method static \Illuminate\Database\Eloquent\Builder|Appliance newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Appliance newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Appliance query()
- * @method static \Illuminate\Database\Eloquent\Builder|Appliance whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Appliance whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Appliance whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Appliance whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Appliance newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Appliance newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Appliance query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Appliance whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Appliance whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Appliance whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Appliance whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Appliance extends Model

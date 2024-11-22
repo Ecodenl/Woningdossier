@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('space_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->json('name');
             $table->string('type');
+            $table->json('name');
             $table->timestamps();
         });
     }

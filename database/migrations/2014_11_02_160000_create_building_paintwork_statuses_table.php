@@ -17,7 +17,10 @@ return new class extends Migration
             $table->integer('building_id')->unsigned();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
 
-            $table->integer('last_painted_year')->unsigned();
+            $table->integer('input_source_id')->unsigned()->nullable()->default(1);
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
+
+            $table->unsignedInteger('last_painted_year')->nullable();
 
             $table->integer('paintwork_status_id')->unsigned()->nullable();
             $table->foreign('paintwork_status_id')->references('id')->on('paintwork_statuses')->onDelete('restrict');

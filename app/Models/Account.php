@@ -34,23 +34,23 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
  * @method static \Database\Factories\AccountFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Account newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Account newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Account query()
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereIsAdmin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereOldEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereOldEmailToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereTwoFactorConfirmedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereTwoFactorRecoveryCodes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereTwoFactorSecret($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereIsAdmin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereOldEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereOldEmailToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereTwoFactorConfirmedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereTwoFactorRecoveryCodes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereTwoFactorSecret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Account extends Authenticatable implements MustVerifyEmail
@@ -70,14 +70,17 @@ class Account extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'is_admin' => 'boolean',
-        'email_verified_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_admin' => 'boolean',
+            'email_verified_at' => 'datetime',
+        ];
+    }
 
     /**
      * Send the password reset notification.

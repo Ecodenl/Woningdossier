@@ -43,32 +43,32 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
- * @method static Builder|MeasureApplication measureType(string $measureType)
- * @method static Builder|MeasureApplication newModelQuery()
- * @method static Builder|MeasureApplication newQuery()
- * @method static Builder|MeasureApplication query()
- * @method static Builder|MeasureApplication whereApplication($value)
- * @method static Builder|MeasureApplication whereConfigurations($value)
- * @method static Builder|MeasureApplication whereCostRange($value)
- * @method static Builder|MeasureApplication whereCostUnit($value)
- * @method static Builder|MeasureApplication whereCosts($value)
- * @method static Builder|MeasureApplication whereCreatedAt($value)
- * @method static Builder|MeasureApplication whereHasCalculations($value)
- * @method static Builder|MeasureApplication whereId($value)
- * @method static Builder|MeasureApplication whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static Builder|MeasureApplication whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static Builder|MeasureApplication whereLocale(string $column, string $locale)
- * @method static Builder|MeasureApplication whereLocales(string $column, array $locales)
- * @method static Builder|MeasureApplication whereMaintenanceInterval($value)
- * @method static Builder|MeasureApplication whereMaintenanceUnit($value)
- * @method static Builder|MeasureApplication whereMeasureInfo($value)
- * @method static Builder|MeasureApplication whereMeasureName($value)
- * @method static Builder|MeasureApplication whereMeasureType($value)
- * @method static Builder|MeasureApplication whereMinimalCosts($value)
- * @method static Builder|MeasureApplication whereSavingsMoney($value)
- * @method static Builder|MeasureApplication whereShort($value)
- * @method static Builder|MeasureApplication whereStepId($value)
- * @method static Builder|MeasureApplication whereUpdatedAt($value)
+ * @method static Builder<static>|MeasureApplication measureType(string $measureType)
+ * @method static Builder<static>|MeasureApplication newModelQuery()
+ * @method static Builder<static>|MeasureApplication newQuery()
+ * @method static Builder<static>|MeasureApplication query()
+ * @method static Builder<static>|MeasureApplication whereApplication($value)
+ * @method static Builder<static>|MeasureApplication whereConfigurations($value)
+ * @method static Builder<static>|MeasureApplication whereCostRange($value)
+ * @method static Builder<static>|MeasureApplication whereCostUnit($value)
+ * @method static Builder<static>|MeasureApplication whereCosts($value)
+ * @method static Builder<static>|MeasureApplication whereCreatedAt($value)
+ * @method static Builder<static>|MeasureApplication whereHasCalculations($value)
+ * @method static Builder<static>|MeasureApplication whereId($value)
+ * @method static Builder<static>|MeasureApplication whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|MeasureApplication whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|MeasureApplication whereLocale(string $column, string $locale)
+ * @method static Builder<static>|MeasureApplication whereLocales(string $column, array $locales)
+ * @method static Builder<static>|MeasureApplication whereMaintenanceInterval($value)
+ * @method static Builder<static>|MeasureApplication whereMaintenanceUnit($value)
+ * @method static Builder<static>|MeasureApplication whereMeasureInfo($value)
+ * @method static Builder<static>|MeasureApplication whereMeasureName($value)
+ * @method static Builder<static>|MeasureApplication whereMeasureType($value)
+ * @method static Builder<static>|MeasureApplication whereMinimalCosts($value)
+ * @method static Builder<static>|MeasureApplication whereSavingsMoney($value)
+ * @method static Builder<static>|MeasureApplication whereShort($value)
+ * @method static Builder<static>|MeasureApplication whereStepId($value)
+ * @method static Builder<static>|MeasureApplication whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class MeasureApplication extends Model
@@ -88,15 +88,18 @@ class MeasureApplication extends Model
         'measure_name', 'measure_info', 'configurations', 'cost_range', 'savings_money',
     ];
 
-    protected $casts = [
-        'cost_range' => 'array',
-        'has_calculations' => 'boolean',
-        'configurations' => 'array',
-    ];
-
     protected $appends = [
         'name',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'cost_range' => 'array',
+            'has_calculations' => 'boolean',
+            'configurations' => 'array',
+        ];
+    }
 
    # Model methods
     /**

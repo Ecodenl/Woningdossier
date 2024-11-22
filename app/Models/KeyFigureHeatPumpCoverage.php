@@ -14,18 +14,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $percentage
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static Builder|KeyFigureHeatPumpCoverage forBetaFactor($betafactor)
- * @method static Builder|KeyFigureHeatPumpCoverage forHeatingTemperature(\App\Models\ToolQuestionCustomValue $heatingTemperature)
- * @method static Builder|KeyFigureHeatPumpCoverage forToolQuestionCustomValue(\App\Models\ToolQuestionCustomValue $toolQuestionCustomValue)
- * @method static Builder|KeyFigureHeatPumpCoverage newModelQuery()
- * @method static Builder|KeyFigureHeatPumpCoverage newQuery()
- * @method static Builder|KeyFigureHeatPumpCoverage query()
- * @method static Builder|KeyFigureHeatPumpCoverage whereBetafactor($value)
- * @method static Builder|KeyFigureHeatPumpCoverage whereCreatedAt($value)
- * @method static Builder|KeyFigureHeatPumpCoverage whereId($value)
- * @method static Builder|KeyFigureHeatPumpCoverage wherePercentage($value)
- * @method static Builder|KeyFigureHeatPumpCoverage whereToolQuestionCustomValueId($value)
- * @method static Builder|KeyFigureHeatPumpCoverage whereUpdatedAt($value)
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage forBetaFactor($betafactor)
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage forHeatingTemperature(\App\Models\ToolQuestionCustomValue $heatingTemperature)
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage forToolQuestionCustomValue(\App\Models\ToolQuestionCustomValue $toolQuestionCustomValue)
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage newModelQuery()
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage newQuery()
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage query()
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage whereBetafactor($value)
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage whereCreatedAt($value)
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage whereId($value)
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage wherePercentage($value)
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage whereToolQuestionCustomValueId($value)
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class KeyFigureHeatPumpCoverage extends Model

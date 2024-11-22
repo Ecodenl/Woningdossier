@@ -18,6 +18,10 @@ return new class extends Migration
             $table->string('short');
             $table->timestamps();
         });
+
+        Schema::table('steps', function (Blueprint $table) {
+            $table->foreign('scan_id')->references('id')->on('scans');
+        });
     }
 
     /**
@@ -25,6 +29,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('steps', function (Blueprint $table) {
+            $table->dropForeign(['scan_id']);
+        });
         Schema::dropIfExists('scans');
     }
 };

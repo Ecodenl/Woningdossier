@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('building_heatings', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->json('name');
             $table->integer('degree')->nullable();
             $table->integer('calculate_value')->nullable();
             $table->boolean('is_default')->default(false);

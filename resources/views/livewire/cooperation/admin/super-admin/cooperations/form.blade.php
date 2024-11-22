@@ -3,11 +3,11 @@
     This will happen, but the user wont see it. The focus blocks it from being overwritten
     Thats when the x-model with entangle comes into play, its dirty and it works.
 --}}
-<div x-data="{ slugged: @entangle('cooperationToEditFormData.slug').defer }">
+<div x-data="{ slugged: @entangle('cooperationToEditFormData.slug') }">
 
     <div class="form-group {{ $errors->has('cooperationToEditFormData.name') ? ' has-error' : '' }}">
         <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.name')</label>
-        <input x-on:blur="$wire.slugify()" wire:model.lazy="cooperationToEditFormData.name"  required type="text" class="form-control" name="name"
+        <input x-on:blur="$wire.slugify()" wire:model.blur="cooperationToEditFormData.name"  required type="text" class="form-control" name="name"
                placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.name')">
 
         @if ($errors->has('cooperationToEditFormData.name'))
@@ -19,7 +19,7 @@
 
     <div class="form-group {{ $errors->has('cooperationToEditFormData.slug') ? ' has-error' : '' }}">
         <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.slug')</label>
-        <input x-model="slugged" wire:model.lazy="cooperationToEditFormData.slug"  required type="text" class="form-control"
+        <input x-model="slugged" wire:model.blur="cooperationToEditFormData.slug"  required type="text" class="form-control"
                placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.slug')">
 
         @if ($errors->has('cooperationToEditFormData.slug'))
@@ -31,7 +31,7 @@
 
     <div class="form-group {{ $errors->has('cooperationToEditFormData.cooperation_email') ? ' has-error' : '' }}">
         <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.cooperation_email')</label>
-        <input wire:model="cooperationToEditFormData.cooperation_email"  type="text" class="form-control"
+        <input wire:model.live="cooperationToEditFormData.cooperation_email"  type="text" class="form-control"
                placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.cooperation_email')">
 
         @if ($errors->has('cooperationToEditFormData.cooperation_email'))
@@ -43,7 +43,7 @@
 
     <div class="form-group {{ $errors->has('cooperationToEditFormData.website_url') ? ' has-error' : '' }}">
         <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.website_url')</label>
-        <input wire:model="cooperationToEditFormData.website_url"  type="text" class="form-control" name="website_url"
+        <input wire:model.live="cooperationToEditFormData.website_url"  type="text" class="form-control" name="website_url"
                placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.website_url')">
 
         @if ($errors->has('cooperationToEditFormData.website_url'))
@@ -59,7 +59,7 @@
         <label for="econobis-wildcard" class="control-label">
             @lang('cooperation/admin/super-admin/cooperations.form.econobis-wildcard.label')
         </label>
-        <input wire:model="cooperationToEditFormData.econobis_wildcard" id="econobis-wildcard" type="text" class="form-control"
+        <input wire:model.live="cooperationToEditFormData.econobis_wildcard" id="econobis-wildcard" type="text" class="form-control"
                placeholder="@lang('cooperation/admin/super-admin/cooperations.form.econobis-wildcard.placeholder')">
     @endcomponent
 
@@ -75,7 +75,7 @@
         $placeholder = __('cooperation/admin/super-admin/cooperations.form.econobis-api-key.label-replace');
     }
     @endphp
-        <input @if($clearApiKey) disabled="disabled" @endif wire:model="cooperationToEditFormData.econobis_api_key" id="econobis-api-key" type="text" class="form-control"
+        <input @if($clearApiKey) disabled="disabled" @endif wire:model.live="cooperationToEditFormData.econobis_api_key" id="econobis-api-key" type="text" class="form-control"
                placeholder="{{$placeholder}}">
     @endcomponent
 
@@ -83,7 +83,7 @@
     <div class="form-group">
         <label for="clear-econobis-api-key" class="control-label">
             @lang('cooperation/admin/super-admin/cooperations.form.econobis-api-key.clear')
-            <input id="clear-econobis-api-key" wire:model="clearApiKey" type="checkbox" class="text-danger" autocomplete="off" value="1">
+            <input id="clear-econobis-api-key" wire:model.live="clearApiKey" type="checkbox" class="text-danger" autocomplete="off" value="1">
         </label>
     </div>
     @endif

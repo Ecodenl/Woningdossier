@@ -17,9 +17,8 @@
 @endprepend
 
 @prepend('js')
-
-    <script src="{{ asset('js/datatables.js') }}"></script>
-    <script src="{{asset('js/select2.js')}}"></script>
+    @vite('resources/js/datatables/datatables.js')
+    @vite('resources/js/select2.js')
 
     <script>
         $(document).ready(function () {

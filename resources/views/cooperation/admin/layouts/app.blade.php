@@ -89,9 +89,9 @@
         <!-- datetimepicker -->
         <script src="{{ asset('js/datepicker/datetimepicker.js') }}"></script>
         <!-- datatable -->
-        <script src="{{ asset('js/datatables.js') }}"></script>
+        @vite('resources/js/datatables/datatables.js')
         <!-- select2 -->
-        <script src="{{asset('js/select2.js')}}"></script>
+        @vite('resources/js/select2.js')
         <!-- tinymce -->
 {{--        @vite('resources/js/plugins/tinymce.js') TODO: Replace with tiptap--}}
 

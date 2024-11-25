@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/sass/pdf.scss',
                 'resources/js/app.js',
                 'resources/js/hoomdossier.js',
+                'resources/js/select2.js',
             ],
             refresh: true,
         }),

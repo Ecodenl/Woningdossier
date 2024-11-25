@@ -26,9 +26,7 @@
         @stack('css')
 
         <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.dataTables.min.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/dataTables.bootstrap.min.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.bootstrap.min.css')}}">
+        @vite('resources/sass/admin/datatables/datatables.scss')
 
         @livewireStyles
         <style>
@@ -95,7 +93,7 @@
         <!-- select2 -->
         <script src="{{asset('js/select2.js')}}"></script>
         <!-- tinymce -->
-        <script src="{{asset('js/tinymce/tinymce.min.js')}}"></script>
+{{--        @vite('resources/js/plugins/tinymce.js') TODO: Replace with tiptap--}}
 
         <script src="{{asset('js/hoomdossier.js')}}"></script>
 

@@ -162,10 +162,5 @@
                 return input.prop('type');
             }
         </script>
-        <script src="{{ asset('js/are-you-sure.js') }}"></script>
-
-        <script>
-            $("form.form-horizontal").areYouSure();
-        </script>
     @endpush
 @endif

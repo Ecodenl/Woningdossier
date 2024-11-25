@@ -59,7 +59,7 @@
         @livewireScriptConfig
         {{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
         @vite('resources/js/app.js')
-        <script src="{{asset('js/tinymce/tinymce.min.js')}}"></script>
+{{--        @vite('resources/js/plugins/tinymce.js') TODO: Replace with tiptap--}}
         @vite('resources/js/hoomdossier.js')
 
         <script>

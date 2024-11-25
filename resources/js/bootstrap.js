@@ -237,17 +237,17 @@ window.performRequest = function (options = {}) {
  * the whole application.
  */
 import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
-import AlpineSelect from './alpine-scripts/alpine-select.js';
-import SourceSelect from './alpine-scripts/source-select.js';
+import AlpineSelect from './alpine-scripts/alpineSelect.js';
+import SourceSelect from './alpine-scripts/sourceSelect.js';
 import Modal from './alpine-scripts/modal.js';
-import RatingSlider from './alpine-scripts/rating-slider.js';
+import RatingSlider from './alpine-scripts/ratingSlider.js';
 import Slider from './alpine-scripts/slider.js';
 import Register from './alpine-scripts/register.js';
 import CheckAddress from './alpine-scripts/checkAddress.js';
 import Draggables from './alpine-scripts/draggables.js';
 import Dropdown from './alpine-scripts/dropdown.js';
 import Tabs from './alpine-scripts/tabs.js';
-import AdaptiveInputs from './alpine-scripts/adaptive-input.js';
+import AdaptiveInputs from './alpine-scripts/adaptiveInput.js';
 
 Alpine.data('alpineSelect', AlpineSelect);
 Alpine.data('sourceSelect', SourceSelect);

@@ -33,7 +33,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
         }
 
-Route::group([], base_path('routes/auth.php'));
+        Route::group([], base_path('routes/auth.php'));
 
         Route::view('styleguide', 'cooperation.frontend.styleguide');
         Route::view('input-guide', 'cooperation.frontend.input-guide');

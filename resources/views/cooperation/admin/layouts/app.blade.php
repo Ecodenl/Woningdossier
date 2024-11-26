@@ -15,17 +15,17 @@
         $menu ??= true;
     @endphp
 
-    <div @class([
-            'mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20',
-            'max-w-7xl' => ! $menu,
-            'max-w-5xl' => $menu
-         ])
-    >
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
         @if($menu)
             @include('cooperation.admin.layouts.parts.sidebar-menu')
         @endif
 
-        <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-t-lg tab-content">
+        <div @class([
+                 'border border-solid border-blue-500 border-opacity-50 rounded-lg',
+                 'w-full' => ! $menu,
+                 'w-10/12' => $menu
+             ])
+        >
             <div class="w-full divide-y divide-blue-500 divide-opacity-50">
                 @if(! empty($panelTitle))
                     <div class="p-4 flex justify-between">

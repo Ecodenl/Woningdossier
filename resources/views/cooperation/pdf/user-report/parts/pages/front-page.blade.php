@@ -76,15 +76,14 @@
             </div>
         </div>
         <div class="pull-right">
-{{--            @if($logo instanceof \App\Models\Media)--}}
-{{--                <img class="pull-right" src="{{ pdfAsset($logo->getPath()) }}" alt="{{ $userCooperation->name }}"--}}
-{{--                     style="max-height: 250px;">--}}
-{{--            @else--}}
-{{--                <h3>--}}
-{{--                    {{ $userCooperation->name }}--}}
-{{--                </h3>--}}
-{{--            @endif--}}
-            <img src="https://de-a.hoomdossier.nl/storage/uploads/de-a/Logo-deA.jpg" alt="deA">
+            @if($logo instanceof \App\Models\Media)
+                <img class="pull-right" src="{{ pdfAsset($logo->getPath()) }}" alt="{{ $userCooperation->name }}"
+                     style="max-height: 250px;">
+            @else
+                <h3>
+                    {{ $userCooperation->name }}
+                </h3>
+            @endif
         </div>
     </div>
 

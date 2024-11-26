@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Cooperation;
 
-use App\Helpers\Deprecation;
+use App\Deprecation\DeprecationLogger;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBuildingFormRequest;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
-use App\Models\User;
-use App\Services\AddressService;
 use App\Services\Lvbag\BagService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -24,7 +22,7 @@ class CreateBuildingController extends Controller
      */
     public function index(): View
     {
-        Deprecation::alert(__CLASS__ . ' used!');
+        DeprecationLogger::alert(__CLASS__ . ' used!');
         return view('cooperation.create-building.index');
     }
 
@@ -35,7 +33,7 @@ class CreateBuildingController extends Controller
      */
     public function store(CreateBuildingFormRequest $request, Cooperation $cooperation, BagService $bagService): RedirectResponse
     {
-        Deprecation::alert(__CLASS__ . ' used!');
+        DeprecationLogger::alert(__CLASS__ . ' used!');
         $email = $request->get('email');
 
         $account = Account::where('email', $email)->first();

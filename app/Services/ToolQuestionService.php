@@ -190,13 +190,14 @@ class ToolQuestionService
                 Log::debug($answerData);
 
                 $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
-                // apply the example building for the given changes.
-                // we give him the old building features, otherwise we cant verify the changes
-                if (!$oldBuildingFeature instanceof BuildingFeature) {
-                    // Just empty object
-                    $oldBuildingFeature = new BuildingFeature();
+                // We've had cases where the building feature doesn't exist. It should exist, however.
+                // If it's missing, it should get created when saving answers and thus it should resolve itself.
+                // To ensure we don't do something we can't, we simply won't dispatch.
+                if ($oldBuildingFeature instanceof BuildingFeature) {
+                    // apply the example building for the given changes.
+                    // we give him the old building features, otherwise we cant verify the changes
+                    ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
                 }
-                ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
             }
         }
 

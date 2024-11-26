@@ -11,7 +11,6 @@
                 ? pdfAsset($pdfBackground->getPath())
                 : pdfAsset('images/background.jpg')
             );
-        $backgroundUrl = 'https://de-a.hoomdossier.nl/storage/uploads/de-a/deA-Energiecoach.jpg';
     @endphp
     <div class="w-100">
         <div class="pull-left" style="width: 50%">
@@ -22,7 +21,6 @@
                 // A H1 tag by default has a font size of 26px (per pdf.css).
                 // Max chars before line break: 19;
                 $address = "{$building->street} {$building->number} {$building->extension}";
-                $address = 'Oude DeventerstraatwegOudedeventerstraatweg';
 
                 $postalCity = "{$building->postal_code} {$building->city}";
                 $longestLine = max(strlen($address), strlen($postalCity));

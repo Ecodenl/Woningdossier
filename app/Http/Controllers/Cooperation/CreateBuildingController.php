@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation;
 
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
+use App\Helpers\Deprecation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBuildingFormRequest;
 use App\Models\Account;
@@ -13,16 +12,19 @@ use App\Models\Cooperation;
 use App\Models\User;
 use App\Services\AddressService;
 use App\Services\Lvbag\BagService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class CreateBuildingController extends Controller
 {
     /**
-     * If a user tries to login and we notice there is no building for that user, show him the page where he can create a new building to his account.
+     * If a user tries to login and we notice the re is no building for that user, show him the page where he can create a new building to his account.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(): View
     {
+        Deprecation::alert(__CLASS__ . ' used!');
         return view('cooperation.create-building.index');
     }
 
@@ -33,6 +35,7 @@ class CreateBuildingController extends Controller
      */
     public function store(CreateBuildingFormRequest $request, Cooperation $cooperation, BagService $bagService): RedirectResponse
     {
+        Deprecation::alert(__CLASS__ . ' used!');
         $email = $request->get('email');
 
         $account = Account::where('email', $email)->first();

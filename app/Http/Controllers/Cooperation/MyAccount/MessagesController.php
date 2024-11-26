@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
 use App\Deprecation\DeprecationLogger;
+use App\Helpers\Deprecation;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
@@ -18,6 +19,9 @@ use Illuminate\View\View;
 
 class MessagesController extends Controller
 {
+    /**
+     * @deprecated literally a redirect to edit
+     */
     public function index(Cooperation $cooperation): RedirectResponse
     {
         DeprecationLogger::log(__METHOD__ . ' used!');
@@ -38,6 +42,7 @@ class MessagesController extends Controller
         // currently (as of 30-10-2020), this shouldnt be needed anymore.
         // this is on register a private message will be created.
         if (! $privateMessages->first() instanceof PrivateMessage) {
+            Deprecation::alert("Redirecting conversation request!");
             return redirect()->route('cooperation.conversation-requests.index', ['requestType' => PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION]);
         }
 

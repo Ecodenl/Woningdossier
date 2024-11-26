@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
+use App\Helpers\Deprecation;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
@@ -25,6 +26,7 @@ class ConversationRequestController extends Controller
      */
     public function index(Cooperation $cooperation, $requestType, $measureApplicationShort = null)
     {
+        Deprecation::alert(__CLASS__ . ' used!');
         $scan = $cooperation->scans()->where('scans.short', '!=', Scan::EXPERT)->first();
 
         // if the user is observing, he has nothing to do here.
@@ -52,6 +54,7 @@ class ConversationRequestController extends Controller
      */
     public function store(BuildingStatusService $buildingStatusService, ConversationRequest $request, Cooperation $cooperation)
     {
+        Deprecation::alert(__CLASS__ . ' used!');
         PrivateMessageService::createConversationRequest(HoomdossierSession::getBuilding(true), Hoomdossier::user(), $request);
 
         $buildingStatusService->forBuilding(HoomdossierSession::getBuilding(true))->setStatus('pending');

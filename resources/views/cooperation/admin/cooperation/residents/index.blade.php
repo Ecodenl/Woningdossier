@@ -63,7 +63,7 @@
                                                 @lang('default.verify')
                                             </a>
                                         @else
-                                            {{ is_null($user->account->email_verified_at) ? __('default.no') : $user->account->email_verified_at->format('d-m-Y') }}
+                                            {{ (empty($user->account) || is_null($user->account->email_verified_at)) ? __('default.no') : $user->account->email_verified_at->format('d-m-Y') }}
                                         @endcan
                                     </td>
                                 </tr>

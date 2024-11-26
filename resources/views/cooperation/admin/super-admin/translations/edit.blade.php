@@ -134,7 +134,7 @@
 @endsection
 
 @push('js')
-    <script>
+    <script type="module">
 
         {{--
          https://www.tiny.cloud/docs/configure/content-filtering/#forced_root_block
@@ -191,7 +191,7 @@
             });
         }
 
-        $(document).ready(function () {
+        document.addEventListener('DOMContentLoaded', function () {
             $('#search').on("keyup", function () {
                 var value = removeDiacritics($(this).val()).toLowerCase();
                 $('.question-input').filter(function () {

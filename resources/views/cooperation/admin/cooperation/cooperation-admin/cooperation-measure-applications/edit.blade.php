@@ -160,8 +160,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(() => {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
             $('#measure-category').select2();
 
             var $icon = $('#icon');

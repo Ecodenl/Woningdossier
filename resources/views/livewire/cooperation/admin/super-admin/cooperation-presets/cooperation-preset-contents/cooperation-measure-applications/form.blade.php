@@ -184,8 +184,8 @@
 </div>
 
 @push('js')
-    <script>
-        $(document).ready(() => {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
             var $measureCategory = $('#measure-category');
             $measureCategory.select2();
 

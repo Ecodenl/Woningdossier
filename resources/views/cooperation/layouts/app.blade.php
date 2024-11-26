@@ -41,8 +41,8 @@
         <script src="{{ asset('js/app.js') }}"></script>
         <script src="{{ asset('js/hoomdossier.js') }}"></script>
 
-        <script>
-            $(document).ready(function () {
+        <script type="module">
+            document.addEventListener('DOMContentLoaded', function () {
                 @if(Auth::check())
                 pollForMessageCount();
                 @endif

@@ -160,8 +160,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(() => {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
             var $icon = $('#icon');
             $icon.select2();
 

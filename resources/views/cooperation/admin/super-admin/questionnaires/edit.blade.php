@@ -46,8 +46,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             $('#questionnaires').select2();
             $('#cooperations').select2();
         })

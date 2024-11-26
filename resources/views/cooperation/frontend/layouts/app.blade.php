@@ -24,7 +24,7 @@
         </style>
         @stack('css')
 
-        <script>
+        <script type="module">
             function agentHas(keyword) {
                 return navigator.userAgent.toLowerCase().search(keyword.toLowerCase()) > -1;
             }
@@ -62,7 +62,7 @@
 {{--        @vite('resources/js/plugins/tinymce.js') TODO: Replace with tiptap--}}
         @vite('resources/js/hoomdossier.js')
 
-        <script>
+        <script type="module">
             document.addEventListener('DOMContentLoaded', function () {
                 // Bind simple function to remove errors when clicked
                 let formErrors = document.getElementsByClassName('form-error');

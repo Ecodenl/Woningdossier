@@ -85,8 +85,8 @@
 
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             $('#table').DataTable({
                 responsive: true,
                 order: [[0, "desc"]],

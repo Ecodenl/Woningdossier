@@ -46,7 +46,7 @@
 </div>
 
 @push('js')
-    <script>
+    <script type="module">
         document.addEventListener('change', (event) => {
             let target = event.target;
 

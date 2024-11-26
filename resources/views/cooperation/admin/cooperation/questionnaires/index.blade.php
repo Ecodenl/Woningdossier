@@ -57,24 +57,26 @@
 @push('js')
     <script src="{{asset('js/bootstrap-toggle.min.js')}}"></script>
 
-    <script>
-        $(document).ready(function () {
-            var destroyQuestionnaireRoute = '{{route('cooperation.admin.cooperation.questionnaires.destroy', ['questionnaire' => ':questionnaire-id'])}}';
+    <script type="module">
+        let destroyQuestionnaireRoute = '{{route('cooperation.admin.cooperation.questionnaires.destroy', ['questionnaire' => ':questionnaire-id'])}}';
 
-            $(document).on('click', '.destroy', function (event) {
-                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.questionnaires.destroy.are-you-sure')')) {
-                    $.ajax({
-                        url: destroyQuestionnaireRoute.replace(':questionnaire-id', $(this).data('questionnaire-id')),
-                        method: 'delete',
-                        success: function () {
-                            window.location.reload();
-                        }
-                    });
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+        document.addEventListener('click', function (event) {
+            let target = event.target.closest('.destroy') ?? event.target;
+            if (target.classList.contains('destroy') && confirm('@lang('woningdossier.cooperation.admin.cooperation.questionnaires.destroy.are-you-sure')')) {
+                $.ajax({
+                    url: destroyQuestionnaireRoute.replace(':questionnaire-id', $(this).data('questionnaire-id')),
+                    method: 'delete',
+                    success: function () {
+                        window.location.reload();
+                    }
+                });
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
             var toggleActive = $('.toggle-active');
 
             $(toggleActive).each(function (index, value) {

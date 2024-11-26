@@ -58,8 +58,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             $('#table').dataTable();
 
             $(document).on('click', '.destroy', function (event) {

@@ -146,8 +146,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             let oldSelectedRoles = [];
 
             $(".roles").select2({

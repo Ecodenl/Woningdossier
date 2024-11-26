@@ -52,9 +52,9 @@
 
 
 @push('js')
-    <script>
+    <script type="module">
 
-        $(document).ready(function () {
+        document.addEventListener('DOMContentLoaded', function () {
             $('table').dataTable();
 
             var userId = $('input[name=user\\[id\\]]').val();

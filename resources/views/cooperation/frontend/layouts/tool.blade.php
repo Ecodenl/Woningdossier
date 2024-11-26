@@ -104,7 +104,7 @@
 
 @if(RouteLogic::inExpertTool(Route::currentRouteName()))
     @push('js')
-        <script>
+        <script type="module">
             $('input').keypress(function (event) {
                 // get the current keycode
                 var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -115,7 +115,7 @@
                 }
             });
 
-            $(document).ready(function () {
+            document.addEventListener('DOMContentLoaded', function () {
                 // scroll to top off page for less clunky behaviour
                 window.scrollTo(0, 0);
 

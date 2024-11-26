@@ -11,8 +11,8 @@
 </form>
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             // onload scroll the chat to the bottom
             // same as code beneath but with a "animation"
             // $('#chat').animate({ scrollTop: ($('#chat')[0].scrollHeight)}, 1000);

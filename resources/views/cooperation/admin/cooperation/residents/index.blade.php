@@ -77,8 +77,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             let table = $('table');
             table.DataTable({
                 responsive: true,

@@ -292,9 +292,9 @@
 @endsection
 
 @push('js')
-    <script>
+    <script type="module">
 
-        $(document).ready(function () {
+        document.addEventListener('DOMContentLoaded', function () {
             let data = {};
             $('input:not(.source-select-input), textarea, select:not(.source-select)').change(function () {
                 data[$(this).attr('name')] = $(this).val();

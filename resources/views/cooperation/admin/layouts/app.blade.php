@@ -97,8 +97,8 @@
 
         <script src="{{asset('js/hoomdossier.js')}}"></script>
 
-        <script>
-            $(document).ready(function () {
+        <script type="module">
+            document.addEventListener('DOMContentLoaded', function () {
                 pollForMessageCount();
 
                 // this will prevent another button from being clicked, or prevent double clicks during form submit.

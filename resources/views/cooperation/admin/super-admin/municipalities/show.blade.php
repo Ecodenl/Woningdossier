@@ -105,8 +105,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(() => {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
             $('#bag-municipalities').select2({
                 tags: true,
             });

@@ -89,7 +89,7 @@
 @endsection
 
 @push('js')
-    <script>
+    <script type="module">
         $('table').dataTable({responsive: true});
         $('[data-toggle="tooltip"]').tooltip();
     </script>

@@ -321,8 +321,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             let advices = $(".advices");
 
             advices.on('change', '.considerable', function () {

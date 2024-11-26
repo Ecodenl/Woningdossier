@@ -52,8 +52,8 @@
 
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             $('table').DataTable({
                 order: [[ 0, "desc" ]],
                 columnDefs: [

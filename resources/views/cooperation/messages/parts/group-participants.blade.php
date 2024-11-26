@@ -28,8 +28,8 @@
 </div>
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             $('.group-member > span').click(function () {
                 if ($(this).hasClass('is-removable-user')) {
 

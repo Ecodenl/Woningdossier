@@ -28,7 +28,7 @@
 @endsection
 
 @push('js')
-    <script>
+    <script type="module">
         $('document').ready(function () {
             var chat = $('.panel-chat-body')[0];
             if (typeof chat !== "undefined") {

@@ -60,8 +60,17 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('click', function (event) {
+            let target = event.target.closest('.destroy-example-building') ?? event.target;
+
+            if (! target.classList.contains('destroy-example-building') || ! confirm('@lang('cooperation/admin/example-buildings.destroy.confirm')')) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('#table').DataTable({
                 responsive: true,
@@ -71,13 +80,6 @@
                     {responsivePriority: 2, targets: 1},
                     {responsivePriority: 1, targets: 0}
                 ]
-            });
-
-            $(document).on('click', '.destroy-example-building', function (event) {
-                if (! confirm('@lang('cooperation/admin/example-buildings.destroy.confirm')')) {
-                    event.preventDefault();
-                    return false;
-                }
             });
         });
     </script>

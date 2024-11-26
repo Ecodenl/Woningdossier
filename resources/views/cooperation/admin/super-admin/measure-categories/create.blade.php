@@ -77,8 +77,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             $('#vbjehuis-measure').select2({
                 allowClear: true,
                 placeholder: '@lang('default.form.dropdown.choose')'

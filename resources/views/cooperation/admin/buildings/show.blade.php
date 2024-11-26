@@ -364,11 +364,11 @@
 @endsection
 
 @push('js')
-    <script>
+    <script type="module">
         // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
         let originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}' @else '' @endif;
 
-        $(document).ready(function () {
+        document.addEventListener('DOMContentLoaded', function () {
 
             // get some basic information
             let buildingOwnerId = $('input[name=building\\[id\\]]').val();

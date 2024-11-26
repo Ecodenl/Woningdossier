@@ -106,7 +106,7 @@
     <script src="{{asset('js/bootstrap-toggle.min.js')}}"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
+    <script type="module">
         var formBuildPanel =
             '<div class="form-builder panel panel-default">' +
                 '<div class="panel-heading">' +
@@ -690,7 +690,7 @@
 
 
 
-        $(document).ready(function () {
+        document.addEventListener('DOMContentLoaded', function () {
             var blocks = [];
             var master = $('#sortable');
 

@@ -20,8 +20,8 @@
     @vite('resources/js/datatables/datatables.js')
     @vite('resources/js/select2.js')
 
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
 
             $('.collapse').on('shown.bs.collapse', function(){
                 $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");

@@ -13,8 +13,6 @@ try {
     Object.assign(window, { $: jQuery, jQuery });
 } catch (e) {}
 
-import 'bootstrap-sass';
-
 /**
  * Define functions that will be used throughout the whole application, that
  * are also required by Alpine.

@@ -6,7 +6,6 @@
     },
     "devDependencies": {
         "autoprefixer": "^10.4.16",
-        "bootstrap-sass": "^3.4.3",
         "jquery": "^3.4.1",
         "laravel-vite-plugin": "^0.6.0",
         "lodash": "^4.17.11",

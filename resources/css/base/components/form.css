@@ -146,7 +146,7 @@ input.form-input:read-only:not(.select-wrapper input),
 
 .slider {
     @apply w-full h-1 outline-none appearance-none;
-    --slider-before: theme('colors.green');
+    --slider-before: theme('colors.green.500');
     --slider-after: theme('colors.gray.500');
 }
 

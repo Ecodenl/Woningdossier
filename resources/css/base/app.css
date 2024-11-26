@@ -2,7 +2,7 @@
 @import '../shared/components/tailwind.css';
 
 /* Base CSS */
-@import 'base/normalize.css';
+@import 'utilities/normalize.css';
 @import 'components/typography.css';
 @import 'components/clickables.css';
 @import 'components/form.css';

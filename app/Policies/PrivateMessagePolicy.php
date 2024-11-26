@@ -15,7 +15,7 @@ class PrivateMessagePolicy
 
     public function viewAny(Account $account): bool
     {
-        return ! Hoomdossier::user()->isFillingToolForOtherBuilding();
+        return ! Hoomdossier::user()->isFillingToolForOtherBuilding() && ! Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin','superuser']);
     }
 
     public function update(Account $account, PrivateMessage $message): bool

@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    @vite('resources/css/frontend/app.css')
+    @vite('resources/css/base/app.css')
     <title>Hoomdossier styleguide</title>
 </head>
 <body id="app-body">

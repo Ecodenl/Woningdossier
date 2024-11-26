@@ -1,4 +1,4 @@
-@extends('cooperation.frontend.layouts.app')
+@extends('cooperation.layouts.app')
 
 @section('main')
     <div class="w-full min-h-screen flex justify-center items-center flex-col py-10 md:py-20"

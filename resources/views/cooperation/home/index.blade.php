@@ -1,4 +1,4 @@
-@extends('cooperation.frontend.layouts.app')
+@extends('cooperation.layouts.app')
 
 @section('main')
     <div class="w-screen h-screen flex justify-center items-center flex-col">

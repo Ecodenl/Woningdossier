@@ -1,4 +1,4 @@
-@extends('cooperation.frontend.layouts.app')
+@extends('cooperation.layouts.app')
 
 @section('header')
     <div class="w-full">

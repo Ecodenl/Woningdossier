@@ -1,4 +1,4 @@
-@extends('cooperation.layouts.app')
+@extends('cooperation.layouts.app-old')
 
 @section('page_class', 'page-measures')
 

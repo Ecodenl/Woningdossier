@@ -193,8 +193,8 @@ module.exports = {
             transparent: 'transparent',
             black: '#000000',
             white: '#FFFFFF',
-            'gray': {
-                DEFAULT: '#CDD2D7',
+            gray: {
+                'DEFAULT': '#CDD2D7',
                 '50': '#FFFFFF',
                 '100': '#FFFFFF',
                 '200': '#FFFFFF',
@@ -206,23 +206,27 @@ module.exports = {
                 '800': '#707E8C',
                 '900': '#57626D'
             },
-            green: '#2CA982',
+            green: {
+                'DEFAULT': '#2CA982',
+                '200': '#27ae60',
+                '500': '#2CA982',
+                '700': '#30815f'
+            },
             purple: {
-                DEFAULT: '#622191',
-                100: '#E1DCF2',
+                'DEFAULT': '#622191',
+                '100': '#E1DCF2',
             },
             blue: {
-                900: '#1122C8',
-                800: '#3781F0',
-                DEFAULT: '#414C57',
-                500: '#647585',
-                100: '#F0F1F2'
+                '900': '#1122C8',
+                '800': '#3781F0',
+                'DEFAULT': '#414C57',
+                '500': '#647585',
+                '100': '#F0F1F2'
             },
-
             orange: '#FF7F4A',
             yellow: '#FFBD5A',
             red: {
-                DEFAULT: '#E41440',
+                'DEFAULT': '#E41440',
                 '50': '#fef2f2',
                 '100': '#fee2e2',
                 '200': '#fecaca',
@@ -257,7 +261,7 @@ module.exports = {
         },
     },
     plugins: [
-        plugin(function({ addUtilities, theme, e }) {
+        plugin(function ({ addUtilities, theme, e }) {
             const spacing = theme('spacing', {});
 
             const pads = _.map(spacing,(value, key) => {

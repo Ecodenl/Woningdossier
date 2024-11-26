@@ -42,12 +42,10 @@ class SubStepService
 
     /**
      * Complete a sub step for a building.
-     *
-     * @return void
      */
-    public function complete()
+    public function complete(): CompletedSubStep
     {
-        CompletedSubStep::allInputSources()->firstOrCreate([
+        return CompletedSubStep::allInputSources()->firstOrCreate([
             'sub_step_id' => $this->subStep->id,
             'input_source_id' => $this->inputSource->id,
             'building_id' => $this->building->id,

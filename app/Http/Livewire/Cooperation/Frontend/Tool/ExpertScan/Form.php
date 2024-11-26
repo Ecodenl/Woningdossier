@@ -18,6 +18,7 @@ use App\Models\Cooperation;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
+use App\Services\Models\SubStepService;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
 use Illuminate\Support\Facades\Artisan;
@@ -238,11 +239,11 @@ class Form extends Scannable
             // since we are done saving all the filled in answers, we can safely mark the sub steps as completed
             foreach ($this->subSteps as $subStep) {
                 // Now mark the sub step as complete
-                $completedSubStep = CompletedSubStep::firstOrCreate([
-                    'sub_step_id' => $subStep->id,
-                    'building_id' => $this->building->id,
-                    'input_source_id' => $this->currentInputSource->id
-                ]);
+                $completedSubStep = SubStepService::init()
+                    ->building($this->building)
+                    ->inputSource($this->currentInputSource)
+                    ->subStep($subStep)
+                    ->complete();
 
                 if ($completedSubStep->wasRecentlyCreated) {
                     // No need to check SubSteps that were recently created because they passed conditions

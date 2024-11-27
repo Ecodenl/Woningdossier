@@ -160,6 +160,10 @@
     @apply select-none;
     content: url('/icons/district-heating.svg');
 }
+.icon-document {
+    @apply select-none;
+    content: url('/icons/document.svg');
+}
 .icon-close-circle {
     @apply select-none;
     content: url('/icons/close-circle.svg');
@@ -428,6 +432,10 @@
     @apply select-none;
     content: url('/icons/paint-job.svg');
 }
+.icon-pencil {
+    @apply select-none;
+    content: url('/icons/pencil.svg');
+}
 .icon-persons-five {
     @apply select-none;
     content: url('/icons/persons-five.svg');
@@ -599,10 +607,6 @@
 .icon-tools {
     @apply select-none;
     content: url('/icons/tools.svg');
-}
-.icon-document {
-    @apply select-none;
-    content: url('/icons/document.svg');
 }
 .icon-trash-can {
     @apply select-none;

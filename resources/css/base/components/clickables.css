@@ -65,6 +65,13 @@ a.in-text {
     @apply focus:bg-red focus:bg-opacity-80 focus:text-white focus:shadow-center-red-25;
     @apply active:bg-red active:bg-opacity-100 active:text-white focus:shadow-center-red-50;
 }
+.btn-blue {
+    @apply bg-blue-900 bg-opacity-25 text-blue-900;
+
+    @apply hover:bg-blue-900 hover:bg-opacity-80 hover:text-white hover:shadow-center-blue-25;
+    @apply focus:bg-blue-900 focus:bg-opacity-80 focus:text-white focus:shadow-center-blue-25;
+    @apply active:bg-blue-900 active:bg-opacity-100 active:text-white focus:shadow-center-blue-50;
+}
 .btn-outline-purple {
     @apply border border-solid border-purple border-opacity-25 border bg-white text-purple;
 
@@ -100,6 +107,14 @@ a.in-text {
     @apply focus:border-opacity-75 focus:shadow-center-red-25;
     @apply active:border-opacity-100 focus:shadow-center-red-50;
 }
+.btn-outline-blue {
+    @apply border border-solid border-blue-900 border-opacity-25 border bg-white text-blue-900;
+
+    @apply hover:border-opacity-75 hover:shadow-center-blue-25;
+    @apply focus:border-opacity-75 focus:shadow-center-blue-25;
+    @apply active:border-opacity-100 focus:shadow-center-blue-50;
+}
+
 
 /* Navigation tabs */
 .nav-tabs {

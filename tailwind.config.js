@@ -142,6 +142,20 @@ module.exports = {
                 'center-lg-red-50': '0 25px 15px -10px rgba(227,20,64,0.5)',
                 'center-lg-red-75': '0 25px 15px -10px rgba(227,20,64,0.75)',
                 'center-lg-red': '0 25px 15px -10px rgba(227,20,64,1)',
+
+                // Blue
+                'center-blue-25': '0 15px 15px -10px rgba(17,34,200,0.25)',
+                'center-blue-50': '0 15px 15px -10px rgba(17,34,200,0.5)',
+                'center-blue-75': '0 15px 15px -10px rgba(17,34,200,0.75)',
+                'center-blue': '0 15px 15px -10px rgba(17,34,200,1)',
+                'center-md-blue-25': '0 20px 15px -10px rgba(17,34,200,0.25)',
+                'center-md-blue-50': '0 20px 15px -10px rgba(17,34,200,0.5)',
+                'center-md-blue-75': '0 20px 15px -10px rgba(17,34,200,0.75)',
+                'center-md-blue': '0 20px 15px -10px rgba(17,34,200,1)',
+                'center-lg-blue-25': '0 25px 15px -10px rgba(17,34,200,0.25)',
+                'center-lg-blue-50': '0 25px 15px -10px rgba(17,34,200,0.5)',
+                'center-lg-blue-75': '0 25px 15px -10px rgba(17,34,200,0.75)',
+                'center-lg-blue': '0 25px 15px -10px rgba(17,34,200,1)',
             },
             width: {
                 ...fractionTen,

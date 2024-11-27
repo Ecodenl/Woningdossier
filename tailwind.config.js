@@ -51,21 +51,21 @@ const fractionTwelve = {
 
 module.exports = {
     important: '#app-body',
-    purge: {
-        'content': ['./resources/**/*.blade.php'],
-        safelist: [
-            'col-span-2',
-            'col-span-3',
-            'col-span-6',
-            'w-full',
-            'w-1/2',
-            'static',
-            'text-blue-900',
-            'text-green',
-            'text-orange',
-            'text-red',
-        ],
-    },
+    // purge: {
+    //     'content': ['./resources/**/*.blade.php'],
+    //     safelist: [
+    //         'col-span-2',
+    //         'col-span-3',
+    //         'col-span-6',
+    //         'w-full',
+    //         'w-1/2',
+    //         'static',
+    //         'text-blue-900',
+    //         'text-green',
+    //         'text-orange',
+    //         'text-red',
+    //     ],
+    // },
     darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {

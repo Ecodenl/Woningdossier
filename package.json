@@ -17,6 +17,7 @@
         "vite": "^3.0.2"
     },
     "dependencies": {
+        "datatables.net-dt": "^2.1.8",
         "mobile-drag-drop": "^3.0.0-rc.0"
     }
 }

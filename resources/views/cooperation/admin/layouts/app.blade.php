@@ -1,5 +1,9 @@
 @extends('cooperation.layouts.app')
 
+@section('base_css')
+    @vite('resources/css/admin/app.css')
+@endsection
+
 @section('header')
     <div class="w-full">
         @include('cooperation.admin.layouts.parts.navbar')
@@ -15,7 +19,7 @@
         $menu ??= true;
     @endphp
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
+    <div class="@if(! $menu) max-w-7xl @endif mx-auto sm:px-6 lg:px-8 pt-8 flex flex-wrap justify-between">
         @if($menu)
             @include('cooperation.admin.layouts.parts.sidebar-menu')
         @endif
@@ -23,7 +27,7 @@
         <div @class([
                  'border border-solid border-blue-500 border-opacity-50 rounded-lg',
                  'w-full' => ! $menu,
-                 'w-10/12' => $menu
+                 'w-full xl:w-10/12' => $menu
              ])
         >
             <div class="w-full divide-y divide-blue-500 divide-opacity-50">
@@ -42,3 +46,7 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+    @vite('resources/js/datatables.js')
+@endpush

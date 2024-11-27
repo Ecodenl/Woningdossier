@@ -62,7 +62,7 @@ class Form extends Component
 
     public function mount(ExampleBuilding $exampleBuilding = null)
     {
-        $this->isSuperAdmin = HoomdossierSession::currentRole() === RoleHelper::ROLE_SUPER_ADMIN;
+        $this->isSuperAdmin = HoomdossierSession::getRole(true)?->name === RoleHelper::ROLE_SUPER_ADMIN;
         $this->buildingTypes = BuildingType::all();
 
         if ($this->isSuperAdmin) {

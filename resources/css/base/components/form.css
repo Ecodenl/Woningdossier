@@ -44,8 +44,7 @@
 .form-input,
 .radio-wrapper > label,
 .checkbox-wrapper > label,
-.add-option-wrapper > label,
-.tiny-editor .tox {
+.add-option-wrapper > label {
     @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
 
     @apply hover:border-green hover:border-opacity-100;
@@ -95,34 +94,6 @@ textarea.form-input {
     @apply h-32 py-2 resize-none;
     line-height: 24px;
     min-height: 2.75rem; /* Height of h-11, base height of input */
-}
-
-.tiny-editor .tox.tox-tinymce {
-    @apply cursor-auto mb-4;
-}
-
-.tiny-editor .tox.tox-tinymce .tox-editor-container {
-    @apply w-inherit;
-}
-
-.tiny-editor .tox.tox-tinymce .tox-editor-container .tox-statusbar__branding {
-    @apply hidden;
-}
-
-.tiny-editor .tox.tox-tinymce .tox-editor-container .tox-tbtn {
-    @apply cursor-pointer;
-}
-
-.tiny-editor .tox.tox-tinymce.tox-tinymce--disabled .tox-editor-container .tox-tbtn {
-    @apply cursor-not-allowed;
-}
-
-.tiny-editor .tox.tox-tinymce .tox-editor-container .tox-tbtn svg {
-    @apply fill-current text-blue-500;
-}
-
-.tiny-editor .tox.tox-tinymce.tox-tinymce--disabled .tox-editor-container .tox-tbtn svg {
-    @apply text-opacity-50;
 }
 
 .form-input:disabled,

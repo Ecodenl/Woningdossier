@@ -151,37 +151,7 @@ window.triggerCustomEvent = function (element, eventName, params = {}) {
  * @param options
  */
 window.performRequest = function (options = {}) {
-    if (! options instanceof Object) {
-        options = {};
-    }
-
-    let url = options.url || null;
-
-    if ((window.XMLHttpRequest || window.ActiveXObject) && url instanceof URL) {
-        let request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP");
-        request.onreadystatechange = function () {
-            // Ajax finished and ready
-            if (request.readyState == window.XMLHttpRequest.DONE && options.done) {
-                options.done(request);
-            }
-        };
-
-        request.open('GET', url.toString());
-        request.setRequestHeader('Accept', 'application/json');
-        request.responseType = 'json';
-        request.send();
-    }
-}
-
-/**
- * Simple wrapper for Http requests.
- * Options:
- * - url: URL object, required.
- * - method: HTTP method.
- * - done: Callback when request is done, retrieves request object, optional.
- * @param options
- */
-window.performRequest = function (options = {}) {
+    // TODO: Deprecate to Fetch
     if (! options instanceof Object) {
         options = {};
     }

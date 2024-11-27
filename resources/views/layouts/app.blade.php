@@ -11,7 +11,7 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Styles -->
-        @vite('resources/css/base/app.css')
+        @vite('resources/css/frontend/app.css')
         @stack('css')
     </head>
     <body id="app-body">

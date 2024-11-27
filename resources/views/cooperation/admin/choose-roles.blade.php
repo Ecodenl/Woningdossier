@@ -12,7 +12,7 @@
         @foreach($user->roles as $i => $role)
             <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}"
                class="no-underline hover:shadow-center-green">
-                <div class="rounded-lg border border-blue border-solid flex flex-wrap justify-center items-center p-8">
+                <div class="rounded-lg border border-blue border-solid flex flex-wrap justify-center items-center p-8 text-center">
                     <i class="icon-lg icon-account-circle w-full"></i>
 
                     <h3 class="heading-4 mt-2">

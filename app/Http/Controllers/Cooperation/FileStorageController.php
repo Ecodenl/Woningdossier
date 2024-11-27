@@ -104,7 +104,7 @@ class FileStorageController extends Controller
         $u = [
             'account' => $account->id,
             'id' => $user->id,
-            'role' => HoomdossierSession::currentRole(),
+            'role' => HoomdossierSession::getRole(true)?->name,
             'is_observing' => HoomdossierSession::isUserObserving() ? 'yes' : 'no',
             'is_comparing' => HoomdossierSession::isUserComparingInputSources() ? 'yes' : 'no',
             'input_source' => $inputSource->short,

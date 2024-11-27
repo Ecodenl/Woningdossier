@@ -14,7 +14,15 @@
         <title>@yield('page_title', config('app.name', 'Laravel'))</title>
 
         <!-- Styles -->
-        @vite('resources/css/base/app.css')
+        @yield('base_css')
+
+        {{--
+            Allow overriding the main CSS file; this file originally was the base for the frontend, but
+            has been reused for the admin. Allowing override means we can change the base CSS.
+        --}}
+        @sectionMissing('base_css')
+            @vite('resources/css/frontend/app.css')
+        @endif
 
         @livewireStyles
         <style>
@@ -59,7 +67,7 @@
         @livewireScriptConfig
         {{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
         @vite('resources/js/app.js')
-{{--        @vite('resources/js/plugins/tinymce.js') TODO: Replace with tiptap--}}
+        {{--        @vite('resources/js/plugins/tinymce.js') TODO: Replace with tiptap--}}
         @vite('resources/js/hoomdossier.js')
 
         <script type="module">
@@ -76,8 +84,7 @@
             });
 
             // Handle Polyfill for IOS 10
-            window.addEventListener('touchmove', function () {
-            });
+            window.addEventListener('touchmove', function () {});
 
             window.addEventListener('modal-toggled', function (event) {
                 let scrollable = document.getElementById('app-body');

@@ -1,5 +1,5 @@
 @php
-    $currentRole = HoomdossierSession::currentRole();
+    $currentRole = HoomdossierSession::getRole(true)->name;
     $params = [];
     if(str_contains(Route::currentRouteName(), 'cooperation-to-manage')) {
         $currentRole = 'cooperation-to-manage';
@@ -14,16 +14,3 @@
 ])
     @include("cooperation.admin.layouts.parts.sidebar.{$currentRole}")
 @endcomponent
-
-@switch(\App\Helpers\HoomdossierSession::currentRole())
-
-
-    @case('super-admin')
-        @if(str_contains(Route::currentRouteName(), 'cooperation-to-manage'))
-            @include('cooperation.admin.layouts.parts.sidebar.cooperation-to-manage')
-        @else
-            @include('cooperation.admin.layouts.parts.sidebar.super-admin')
-        @endif
-        @break
-
-@endswitch

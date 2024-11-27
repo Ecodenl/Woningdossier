@@ -16,7 +16,7 @@
 }
 
 .table.fancy-table tbody tr:nth-of-type(even) {
-    @apply bg-gray;
+    @apply bg-gray bg-opacity-50;
 }
 
 .table.fancy-table tbody tr td {
@@ -24,6 +24,9 @@
 }
 
 /* Data tables have more rows with smaller text count. We reduce vertical padding to compact the table */
+.data-table .table.fancy-table thead tr th {
+    @apply py-2;
+}
 .data-table .table.fancy-table tbody tr td {
     @apply py-2;
 }

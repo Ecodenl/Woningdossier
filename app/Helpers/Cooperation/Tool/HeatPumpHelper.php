@@ -49,7 +49,7 @@ class HeatPumpHelper extends ToolHelper
                     ),
                 ],
             ],
-            'has_completed_expert' => ConditionService::init()->building($this->building)->inputSource($this->inputSource)->hasCompletedSteps(['heating']),
+            'has_completed_expert' => ConditionService::init()->building($this->building)->inputSource($this->masterInputSource)->hasCompletedSteps(['heating']),
             'updated_measure_ids' => [],
         ]);
 
@@ -70,7 +70,7 @@ class HeatPumpHelper extends ToolHelper
 
             $evaluator = ConditionEvaluator::init()
                 ->building($this->building)
-                ->inputSource($this->inputSource);
+                ->inputSource($this->masterInputSource);
 
             if ($this->getValues('has_completed_expert')) {
                 // User has finished expert step, so we will use the expert logic
@@ -196,7 +196,7 @@ class HeatPumpHelper extends ToolHelper
             $answers['heat-pump-preferred-power'] = 0;
         }
 
-        $results = HeatPump::calculate($this->building, $this->inputSource, collect($answers));
+        $results = HeatPump::calculate($this->building, $this->masterInputSource, collect($answers));
 
         // We need to check the current type; if the placed date surpasses maintenance time, we will
         // set savings to 0 since the measure will then qualify as a replace of the current type.

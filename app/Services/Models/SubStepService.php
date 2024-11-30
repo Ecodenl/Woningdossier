@@ -42,16 +42,22 @@ class SubStepService
 
     /**
      * Complete a sub step for a building.
-     *
-     * @return void
      */
-    public function complete()
+    public function complete(): CompletedSubStep
     {
-        CompletedSubStep::allInputSources()->firstOrCreate([
+        $completedSubStep = CompletedSubStep::allInputSources()->firstOrCreate([
             'sub_step_id' => $this->subStep->id,
             'input_source_id' => $this->inputSource->id,
             'building_id' => $this->building->id,
         ]);
+
+        // If it wasn't recently created, we want to ensure the master exists, because if it isn't being created
+        // then it won't save to the master either. By hitting a save, it will duplicate to the master.
+        if (! $completedSubStep->wasRecentlyCreated) {
+            $completedSubStep->save();
+        }
+
+        return $completedSubStep;
     }
 
     /**

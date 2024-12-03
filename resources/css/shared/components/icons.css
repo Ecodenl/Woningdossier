@@ -128,6 +128,10 @@
     @apply select-none;
     content: url('/icons/central-heater-electric.svg');
 }
+.icon-calendar {
+    @apply select-none;
+    content: url('/icons/calendar.svg');
+}
 .icon-central-heater-gas {
     @apply select-none;
     content: url('/icons/central-heater-gas.svg');

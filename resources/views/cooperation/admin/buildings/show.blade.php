@@ -110,7 +110,7 @@
             @can('viewAny', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $building])
                 <button role="button" class="btn btn-outline-blue" id="view-files">
                     @lang('cooperation/admin/buildings.show.view-files')
-                    <i class="icon-xs icon-document"></i>
+                    <i class="icon-sm icon-document"></i>
                 </button>
             @endcan
         </div>
@@ -118,38 +118,39 @@
 
     <div class="flex flex-wrap w-full">
         {{-- status and appointment date --}}
-        <div class="w-full md:w-1/2">
-            <div class="form-group">
-                <label for="building-coach-status">@lang('cooperation/admin/buildings.show.status.label')</label>
-                <select autocomplete="off" class="form-control" name="building[building_statuses][id]" id="building-status">
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'class' => 'w-full md:w-1/2',
+            'label' => __('cooperation/admin/buildings.show.status.label'),
+            'id' => 'building-coach-status',
+            'inputName' => "building.building_statuses.id",
+            'withInputSource' => false,
+        ])
+            @component('cooperation.frontend.layouts.components.alpine-select')
+                <select id="building-coach-status" class="form-input hidden" autocomplete="off">
                     @foreach($statuses as $status)
                         <option {{$mostRecentStatus?->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
-                            @if($mostRecentStatus?->status_id == $status->id)
-                                @lang('cooperation/admin/buildings.show.status.current')
-                            @endif
-                            {{$status->name}}
+                            {{ $mostRecentStatus?->status_id == $status->id ? __('cooperation/admin/buildings.show.status.current') . $status->name : $status->name }}
                         </option>
                     @endforeach
                 </select>
-            </div>
-        </div>
-        <div class="w-full md:w-1/2">
-            <div class="form-group">
-                <label for="appointment-date">@lang('cooperation/admin/buildings.show.appointment-date.label')</label>
-                <div class='input-group date' id="appointment-date">
-                    <input autocomplete="off" id="appointment-date" name="building[building_statuses][appointment_date]" type='text' class="form-control"
-                           @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate())
-                               value=" {{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}"
-                           @endif
-                    />
+            @endcomponent
+        @endcomponent
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'class' => 'w-full md:w-1/2',
+            'label' => __('cooperation/admin/buildings.show.appointment-date.label'),
+            'id' => 'appointment-date',
+            'inputName' => "building.building_statuses.appointment_date",
+            'withInputSource' => false,
+        ])
+            <input autocomplete="off" id="appointment-date" name="building[building_statuses][appointment_date]"
+                   type="text" class="form-input with-append"
+                   @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) value=" {{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}" @endif
+            />
 
-
-                    <span class="input-group-addon">
-                       <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
+            <div class="input-group-append cursor-pointer">
+                <i class="icon-md icon-calendar"></i>
             </div>
-        </div>
+        @endcomponent
     </div>
 
     <div class="flex flex-wrap w-full">
@@ -334,24 +335,26 @@
     </div>
 
     @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
-        <div id="files-modal" class="modal fade" role="dialog">
-            <div class="modal-dialog" style="height: 100vh; width: 100vw; margin: 0;">
 
-                <!-- Modal content-->
-                <div class="modal-content" style="height: 100%; width: 100%; overflow: hidden;">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">
-                            @lang('cooperation/admin/buildings.show.view-files')
-                        </h4>
-                    </div>
-                    <div class="modal-body" style="margin: 0; padding: 0; height: 100%;">
-                        <iframe src="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('building', 'scan')) . "?iframe=1" }}"
-                                style="border: none; width: 100%; height: 100%;"></iframe>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+{{--        <div id="files-modal" class="modal fade" role="dialog">--}}
+{{--            <div class="modal-dialog" style="height: 100vh; width: 100vw; margin: 0;">--}}
+
+{{--                <!-- Modal content-->--}}
+{{--                <div class="modal-content" style="height: 100%; width: 100%; overflow: hidden;">--}}
+{{--                    <div class="modal-header">--}}
+{{--                        <button type="button" class="close" data-dismiss="modal">&times;</button>--}}
+{{--                        <h4 class="modal-title">--}}
+{{--                            @lang('cooperation/admin/buildings.show.view-files')--}}
+{{--                        </h4>--}}
+{{--                    </div>--}}
+{{--                    <div class="modal-body" style="margin: 0; padding: 0; height: 100%;">--}}
+{{--                        <iframe src="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('building', 'scan')) . "?iframe=1" }}"--}}
+{{--                                style="border: none; width: 100%; height: 100%;"></iframe>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
     @endcan
 @endsection
 

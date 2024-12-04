@@ -8,7 +8,7 @@
                 @lang('auth.email.form.header')
             </h1>
             @if(session('status'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                @component('cooperation.layouts.components.alert', ['color' => 'green'])
                     {{ session('status') }}
                 @endcomponent
             @endif

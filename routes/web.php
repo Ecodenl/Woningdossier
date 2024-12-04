@@ -318,7 +318,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 Route::middleware('current-role:cooperation-admin|coach|coordinator|super-admin')->group(function () {
                     Route::name('buildings.')->prefix('buildings')->group(function () {
-                        Route::get('show/{buildingId}', [Cooperation\Admin\BuildingController::class, 'show'])->name('show');
+                        Route::get('show/{building}', [Cooperation\Admin\BuildingController::class, 'show'])->name('show');
 
                         Route::middleware('current-role:cooperation-admin|coordinator|super-admin')->group(function () {
                             Route::get('{building}/edit', [Cooperation\Admin\BuildingController::class, 'edit'])->name('edit');

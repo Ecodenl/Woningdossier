@@ -1,9 +1,13 @@
 /* Hyperlink */
 a {
-    @apply text-blue-900 underline font-medium cursor-pointer transition text-sm;
+    @apply text-blue-900 underline font-medium cursor-pointer transition text-sm relative;
 
-    @apply hover:opacity-60;
-    @apply focus:opacity-60;
+    @apply hover:!bg-opacity-60 hover:!text-opacity-60 hover:!border-opacity-60;
+    @apply focus:!bg-opacity-60 focus:!text-opacity-60 focus:!border-opacity-60;
+}
+
+a:hover i, a:focus i {
+    @apply opacity-60;
 }
 
 /* Hyperlink in paragraph */
@@ -133,8 +137,12 @@ a.in-text {
 .clickable {
     @apply cursor-pointer transition;
 
-    @apply hover:opacity-60;
-    @apply focus:opacity-60;
+    @apply hover:!bg-opacity-60 hover:!text-opacity-60 hover:!border-opacity-60;
+    @apply focus:!bg-opacity-60 focus:!text-opacity-60 focus:!border-opacity-60;
+}
+
+.clickable:hover i, .clickable:focus i {
+    @apply opacity-60;
 }
 
 /* Purely to remove opacity when focusing on inputs */

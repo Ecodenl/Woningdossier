@@ -295,7 +295,7 @@
             @if(app()->isLocal())
                 <div class="flex flex-wrap items-center w-full space-x-4 space-y-4 bg-gray bg-opacity-25">
                     @foreach(File::files(public_path('icons')) as $file)
-                        <img class="w-8 h-8 inline-flex" src="/icons/{{ $file->getRelativePathname() }}">
+                        <img class="w-8 h-8 inline-flex" src="/icons/{{ $file->getRelativePathname() }}" title="{{ $file->getFilenameWithoutExtension() }}">
                     @endforeach
                 </div>
             @else

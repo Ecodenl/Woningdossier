@@ -8,12 +8,12 @@
                 @lang('cooperation/auth/verify.heading')
             </h1>
             @if (session('resent'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                @component('cooperation.layouts.components.alert', ['color' => 'green'])
                     @lang('cooperation/auth/verify.resent')
                 @endcomponent
             @endif
             @if(session('status'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                @component('cooperation.layouts.components.alert', ['color' => 'green'])
                     @lang(session('status'))
                 @endcomponent
             @endif

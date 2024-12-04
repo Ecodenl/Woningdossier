@@ -43,7 +43,7 @@
                         </td>
                         <td>{{$user->getFullName()}}</td>
                         <td>
-                            <a class="in-text" href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                            <a class="in-text" href="{{route('cooperation.admin.buildings.show', compact('building'))}}">
                                 {{$building->street}} {{$building->number}} {{$building->extension}}
                             </a>
                         </td>

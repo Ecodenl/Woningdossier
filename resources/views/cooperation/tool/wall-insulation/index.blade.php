@@ -257,7 +257,7 @@
             <div class="hideable w-full">
                 <div id="advice-help">
                     <div class="w-full md:w-2/3 md:ml-2/12">
-                        @component('cooperation.frontend.layouts.parts.alert', [
+                        @component('cooperation.layouts.components.alert', [
                             'color' => 'blue-800', 'dismissible' => false
                         ])
                             <p class="text-blue-800">
@@ -334,7 +334,7 @@
             <div class="hideable w-full">
                 <div class="flex flex-row flex-wrap w-full" id="cavity-wall-alert" style="display: none;">
                     <div class="w-full md:w-2/3 md:ml-2/12">
-                        @component('cooperation.frontend.layouts.parts.alert', [
+                        @component('cooperation.layouts.components.alert', [
                             'color' => 'red', 'dismissible' => false
                         ])
                         <p class="text-red"></p>

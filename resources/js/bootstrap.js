@@ -190,6 +190,7 @@ import Draggables from './alpine-scripts/draggables.js';
 import Dropdown from './alpine-scripts/dropdown.js';
 import Tabs from './alpine-scripts/tabs.js';
 import AdaptiveInputs from './alpine-scripts/adaptiveInput.js';
+import Popover from './alpine-scripts/popover.js';
 
 Alpine.data('alpineSelect', AlpineSelect);
 Alpine.data('sourceSelect', SourceSelect);
@@ -202,6 +203,7 @@ Alpine.data('draggables', Draggables);
 Alpine.data('dropdown', Dropdown);
 Alpine.data('tabs', Tabs);
 Alpine.data('adaptiveInputs', AdaptiveInputs);
+Alpine.data('popover', Popover);
 
 // Define AlpineJS Magic methods (below example defines "$nuke", e.g. x-on:click="$nuke")
 

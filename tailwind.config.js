@@ -51,22 +51,32 @@ const fractionTwelve = {
 
 module.exports = {
     important: '#app-body',
-    // purge: {
-    //     'content': ['./resources/**/*.blade.php'],
-    //     safelist: [
-    //         'col-span-2',
-    //         'col-span-3',
-    //         'col-span-6',
-    //         'w-full',
-    //         'w-1/2',
-    //         'static',
-    //         'text-blue-900',
-    //         'text-green',
-    //         'text-orange',
-    //         'text-red',
-    //     ],
-    // },
-    darkMode: false, // or 'media' or 'class'
+    content: ['./resources/**/*.blade.php'],
+    safelist: [
+        'col-span-2',
+        'col-span-3',
+        'col-span-6',
+        'w-1/2',
+        'w-full',
+        'static',
+        'text-green',
+        'text-orange',
+        'text-red',
+        'text-yellow',
+        'text-blue',
+        'text-blue-800',
+        'text-blue-900',
+        'border-green',
+        'border-red',
+        'border-yellow',
+        'border-blue',
+        'border-blue-800',
+        'bg-green',
+        'bg-red',
+        'bg-yellow',
+        'bg-blue',
+        'bg-blue-800',
+    ],
     theme: {
         extend: {
             // So, box-shadows don't have 'separate' values for e.g. color. We apply a class name based on
@@ -204,6 +214,7 @@ module.exports = {
             }
         },
         colors: {
+            current: 'currentColor',
             transparent: 'transparent',
             black: '#000000',
             white: '#FFFFFF',
@@ -261,17 +272,6 @@ module.exports = {
             'lg': ['32px', '36px'],
             'xl': ['36px', '42px'],
             'xxl': ['48px', '54px'],
-        },
-    },
-    variants: {
-        extend: {
-            backgroundColor: ['active'],
-            backgroundOpacity: ['active'],
-            borderOpacity: ['active'],
-            borderColor: ['active'],
-            textColor: ['active'],
-            boxShadow: ['active'],
-            cursor: ['hover', 'focus'],
         },
     },
     plugins: [

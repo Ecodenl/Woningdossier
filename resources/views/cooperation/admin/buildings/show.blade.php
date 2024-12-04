@@ -116,17 +116,18 @@
         </div>
     </div>
 
-    <div class="flex flex-wrap w-full">
+    <div class="flex flex-wrap w-full sm:pad-x-6">
         {{-- status and appointment date --}}
         @component('cooperation.frontend.layouts.components.form-group', [
-            'class' => 'w-full md:w-1/2',
+            'class' => 'w-full sm:w-1/2',
             'label' => __('cooperation/admin/buildings.show.status.label'),
             'id' => 'building-coach-status',
             'inputName' => "building.building_statuses.id",
             'withInputSource' => false,
         ])
             @component('cooperation.frontend.layouts.components.alpine-select')
-                <select id="building-coach-status" class="form-input hidden" autocomplete="off">
+                <select id="building-coach-status" class="form-input hidden" autocomplete="off"
+                        name="building[building_statuses][id]">
                     @foreach($statuses as $status)
                         <option {{$mostRecentStatus?->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
                             {{ $mostRecentStatus?->status_id == $status->id ? __('cooperation/admin/buildings.show.status.current') . $status->name : $status->name }}
@@ -135,8 +136,9 @@
                 </select>
             @endcomponent
         @endcomponent
+
         @component('cooperation.frontend.layouts.components.form-group', [
-            'class' => 'w-full md:w-1/2',
+            'class' => 'w-full sm:w-1/2',
             'label' => __('cooperation/admin/buildings.show.appointment-date.label'),
             'id' => 'appointment-date',
             'inputName' => "building.building_statuses.appointment_date",
@@ -153,188 +155,212 @@
         @endcomponent
     </div>
 
-    <div class="flex flex-wrap w-full">
+    <div class="flex flex-wrap w-full sm:pad-x-6">
         {{--coaches and role--}}
-        <div class="row">
-            @if($publicMessages->isNotEmpty())
-                <div class="w-full md:w-1/2">
-                    <div class="form-group">
-                        <label for="associated-coaches">@lang('cooperation/admin/buildings.show.associated-coach.label')</label>
-                        <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
-                            @foreach($coaches as $coach)
-                                <option
-                                        @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
-                                            selected="selected"
-                                        @endif
-                                        value="{{$coach->id}}">{{$coach->getFullName()}}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-            @endif
-
-            <div class="w-full md:w-1/2">
-                <div class="form-group">
-                    <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
-
-                    <select @cannot('editAny',$userCurrentRole) disabled="disabled" @endcannot class="form-control" name="user[roles]" id="role-select" multiple="multiple">
-                        @foreach($roles as $role)
-                            @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
-                            <option
-                                    @cannot('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $building->user]))
-                                        locked="locked" disabled="disabled"
-                                    @endcannot
-                                    @if($user->hasRole($role))
-                                        selected="selected"
-                                    @endif value="{{$role->id}}">
-                                {{$role->human_readable_name}}
+        @if($publicMessages->isNotEmpty())
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'class' => 'w-full sm:w-1/2',
+                'label' => __('cooperation/admin/buildings.show.associated-coach.label'),
+                'id' => 'associated-coaches',
+                'inputName' => "user.associated_coaches",
+                'withInputSource' => false,
+            ])
+                @component('cooperation.frontend.layouts.components.alpine-select')
+                    <select multiple id="associated-coaches" class="form-input hidden" name="user[associated_coaches]"
+                            @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif>
+                        @foreach($coaches as $coach)
+                            <option value="{{$coach->id}}"
+                                    @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id)) selected @endif
+                            >
+                                {{$coach->getFullName()}}
                             </option>
-                            @endcan
                         @endforeach
                     </select>
-                </div>
-            </div>
-        </div>
+                @endcomponent
+            @endcomponent
+        @endif
 
-        @can('create', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building, MediaHelper::BUILDING_IMAGE])
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'class' => 'w-full sm:w-1/2',
+            'label' => __('cooperation/admin/buildings.show.role.label'),
+            'id' => 'role-select',
+            'inputName' => "user.roles",
+            'withInputSource' => false,
+        ])
+            @component('cooperation.frontend.layouts.components.alpine-select')
+                <select multiple id="role-select" class="form-input hidden" name="user[roles]"
+                        @cannot('editAny', $userCurrentRole) disabled @endcannot>
+                    @foreach($roles as $role)
+                        @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
+                            <option value="{{$role->id}}"
+                                    @cannot('delete',  [$role, Hoomdossier::user(), HoomdossierSession::getRole(true), $building->user]) disabled @endcannot
+                                    @if($user->hasRole($role)) selected @endif
+                            >
+                                {{$role->human_readable_name}}
+                            </option>
+                        @endcan
+                    @endforeach
+                </select>
+            @endcomponent
+        @endcomponent
+    </div>
+
+    <div class="flex flex-wrap w-full">
+        @can('create', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $building, MediaHelper::BUILDING_IMAGE])
             <livewire:cooperation.admin.buildings.uploader :building="$building" tag="{{ MediaHelper::BUILDING_IMAGE }}">
         @endcan
     </div>
 
-    <ul class="nav nav-tabs">
-
-        <li @if(session('fragment') == 'messages-intern') class="active" @endif>
-            <a data-toggle="tab" href="#messages-intern">
+    <div x-data="tabs()">
+        <nav class="nav-tabs">
+            <a x-bind="tab" data-tab="messages-intern">
                 @lang('cooperation/admin/buildings.show.tabs.messages-intern.title')
             </a>
-        </li>
 
-        @can('talk-to-resident', [$building])
-            <li @if(session('fragment') == 'messages-public' || empty(session('fragment'))) class="active" @endif>
-                <a data-toggle="tab" href="#messages-public">
-                    @if($user->retrievesNotifications(\App\Models\NotificationType::PRIVATE_MESSAGE))
-                        <i class="glyphicon glyphicon-bell" data-placement="top" data-toggle="tooltip" title="@lang('cooperation/admin/buildings.show.tabs.messages-public.user-notification.yes')"></i>
-                    @else
-                        <i class="glyphicon glyphicon-ban-circle" data-placement="top" data-toggle="tooltip" title="@lang('cooperation/admin/buildings.show.tabs.messages-public.user-notification.no')"></i>
-                    @endif
+            @can('talk-to-resident', [$building])
+                <a x-bind="tab" data-tab="messages-public" x-ref="main-tab" class="flex items-center">
+                    @php $retrievesNotifications = $user->retrievesNotifications(\App\Models\NotificationType::PRIVATE_MESSAGE); @endphp
+                    @component('cooperation.layouts.components.popover', [
+                        'position' => 'top',
+                        'trigger' => 'hover',
+                    ])
+                        @if($retrievesNotifications)
+                            <i class="icon-sm icon-check-circle-purple"></i>
+                        @else
+                            <i class="w-3 h-3 icon-error-cross"></i>
+                        @endif
+
+                        @slot('body')
+                            <p>
+                                @lang('cooperation/admin/buildings.show.tabs.messages-public.user-notification.' . ($retrievesNotifications ? 'yes' : 'no'))
+                            </p>
+                        @endslot
+                    @endcomponent
+
                     @lang('cooperation/admin/buildings.show.tabs.messages-public.title')
                 </a>
-            </li>
-        @endcan
-        <li @if(session('fragment') == 'comments-on-building') class="active" @endif>
-            <a data-toggle="tab" href="#comments-on-building">
+            @endcan
+
+            <a x-bind="tab" data-tab="building-notes">
                 @lang('cooperation/admin/buildings.show.tabs.comments-on-building.title')
             </a>
-        </li>
-        @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-            <li>
+
+            @if(Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                 <a data-toggle="tab" id="trigger-fill-in-history-tab" href="#fill-in-history">
                     @lang('cooperation/admin/buildings.show.tabs.fill-in-history.title')
                 </a>
-            </li>
-        @endif
-        <li>
-            <a data-toggle="tab" href="#2fa">
+            @endif
+
+            <a x-bind="tab" data-tab="2fa">
                 @lang('cooperation/admin/buildings.show.tabs.2fa.title')
             </a>
-        </li>
-    </ul>
+        </nav>
 
-    <div class="tab-content">
-        {{--messages intern (cooperation to cooperation --}}
-        <div id="messages-intern" class="tab-pane fade @if(session('fragment') == 'messages-intern' ) in active @endif">
-            @include('cooperation.admin.buildings.parts.message-box', ['messages' => $privateMessages, 'building' => $building, 'isPublic' => false])
-        </div>
-        @can('talk-to-resident', [$building])
-            {{--public messages / between the resident and cooperation--}}
-            <div id="messages-public" class="tab-pane fade @if(session('fragment') == 'messages-public' || empty(session('fragment'))) in active @endif">
-                @include('cooperation.admin.buildings.parts.message-box', ['messages' => $publicMessages, 'building' => $building, 'isPublic' => true])
+        <div class="border border-t-0 border-blue border-opacity-50 rounded-b-lg">
+            {{--messages intern (cooperation to cooperation --}}
+            <div id="messages-intern" x-bind="container" data-tab="messages-intern">
+                @include('cooperation.layouts.parts.message-box', [
+                    'privateMessages' => $privateMessages,
+                    'building' => $building,
+                    'isPublic' => false,
+                    'showParticipants' => false,
+                    'url' => route('cooperation.admin.send-message'),
+                ])
             </div>
-        @endcan
+            @can('talk-to-resident', [$building])
+                {{--public messages / between the resident and cooperation--}}
+                <div id="messages-public" x-bind="container" data-tab="messages-public">
+                    @include('cooperation.layouts.parts.message-box', [
+                        'privateMessages' => $publicMessages,
+                        'building' => $building,
+                        'isPublic' => true,
+                        'showParticipants' => false,
+                        'url' => route('cooperation.admin.send-message'),
+                    ])
+                </div>
+            @endcan
 
-        <div id="2fa" class="tab-pane fade @if(session('fragment') == '2fa' ) in active @endif">
-            <div class="panel">
-                <div class="panel-body">
-                    @if($building->user->account->hasEnabledTwoFactorAuthentication())
-                        <div class="alert alert-success" role="alert">
-                            @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.title')
-                        </div>
+            {{-- comments on the building, read only. --}}
+            <div id="building-notes" x-bind="container" data-tab="building-notes" class="p-4">
+                @foreach($buildingNotes as $buildingNote)
+                    <p class="float-right">{{$buildingNote->created_at->format('Y-m-d H:i')}}</p>
+                    <p>{{$buildingNote->note}}</p>
+                    <hr>
+                @endforeach
 
-                        <form action="{{route('cooperation.admin.cooperation.accounts.disable-2fa')}}" method="post">
+                <form action="{{route('cooperation.admin.building-notes.store')}}" method="POST">
+                    @csrf
+                    <input type="hidden" name="building[id]" value="{{$building->id}}">
+
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                        'label' => __('cooperation/admin/buildings.show.tabs.comments-on-building.note'),
+                        'id' => 'building-note',
+                        'inputName' => "building.note",
+                        'withInputSource' => false,
+                    ])
+                        <textarea id="building-note" name="building[note]"
+                                  class="form-input"
+                        >{{old('building.note')}}</textarea>
+                    @endcomponent
+                    <button type="submit" class="btn btn-outline-green">
+                        @lang('cooperation/admin/buildings.show.tabs.comments-on-building.save')
+                    </button>
+                </form>
+            </div>
+
+            <div id="2fa" x-bind="container" data-tab="2fa" class="p-4">
+                @if($building->user->account->hasEnabledTwoFactorAuthentication())
+                    @component('cooperation.layouts.components.alert', ['color' => 'green', 'dismissible' => false])
+                        @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.title')
+                    @endcomponent
+
+                    @can('disableTwoFactor', $building->user->account)
+                        <form action="{{route('cooperation.admin.cooperation.accounts.disable-2fa')}}" method="POST">
                             @csrf
-                            @method('post')
                             <input type="hidden" name="accounts[id]" value="{{$building->user->account_id}}">
-                            <button type="submit" class="btn btn-danger">
+                            <button type="submit" class="btn btn-red">
                                 @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.button')
                             </button>
                         </form>
-                    @else
-                        <div class="alert alert-info" role="alert">
-                            @lang('cooperation/admin/buildings.show.tabs.2fa.status.inactive.title')
-                        </div>
-                    @endif
-                </div>
+                    @endcan
+                @else
+                    @component('cooperation.layouts.components.alert', ['color' => 'blue-800', 'dismissible' => false])
+                        @lang('cooperation/admin/buildings.show.tabs.2fa.status.inactive.title')
+                    @endcomponent
+                @endif
             </div>
-        </div>
 
-        {{-- comments on the building, read only. --}}
-        <div id="comments-on-building" class="tab-pane fade @if(session('fragment') == 'comments-on-building' ) in active @endif">
-            <div class="panel">
-                <div class="panel-body">
-                    @forelse($buildingNotes as $buildingNote)
-                        <p class="pull-right">{{$buildingNote->created_at->format('Y-m-d H:i')}}</p>
-                        <p>{{$buildingNote->note}}</p>
-                        <hr>
-                    @empty
-                    @endforelse
-
-                    <form action="{{route('cooperation.admin.building-notes.store')}}" method="post">
-                        {{csrf_field()}}
-                        <input type="hidden" name="building[id]" value="{{$building->id}}">
-                        <div class="form-group">
-
-                            <label for="building-note">@lang('cooperation/admin/buildings.show.tabs.comments-on-building.note')</label>
-                            <textarea id="building-note" name="building[note]" class="form-control">{{old('building.note')}}</textarea>
-                        </div>
-                        <button type="submit" class="btn btn-default">
-                            @lang('cooperation/admin/buildings.show.tabs.comments-on-building.save')
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {{-- Fill in history ?? the log --}}
-        @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-            <div id="fill-in-history" class="tab-pane fade">
-                <div class="panel">
-                    <div class="panel-body">
-                        <table id="log-table"
-                               class="table-responsive table table-striped table-bordered compact nowrap"
-                               style="width: 100%">
-                            <thead>
+            {{-- Fill in history ?? the log --}}
+            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
+                <div id="fill-in-history" x-bind="container" data-tab="fill-in-history">
+                    <table id="log-table"
+                           class="table fancy-table">
+                        <thead>
                             <tr>
                                 <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
                                 <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.message')</th>
                             </tr>
-                            </thead>
-                            <tbody>
+                        </thead>
+                        <tbody>
                             @php /** @var \App\Models\Log $log */ @endphp
                             @foreach($logs as $log)
                                 <tr>
-                                    <td data-sort="{{strtotime($log->created_at->format('d-m-Y H:i'))}}">{{$log->created_at->format('d-m-Y H:i')}}</td>
-                                    <td>{{$log->message}}</td>
+                                    <td>
+                                        {{$log->created_at->format('d-m-Y H:i')}}
+                                    </td>
+                                    <td>
+                                        {{$log->message}}
+                                    </td>
                                 </tr>
                             @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
 
-    @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
+    @can('viewAny', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $building])
 
 
 {{--        <div id="files-modal" class="modal fade" role="dialog">--}}
@@ -371,17 +397,6 @@
             let cooperationId = $('#cooperation-id').val();
 
             let appointmentDate = $('#appointment-date');
-
-            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-            $('#log-table').DataTable({
-                'order': [[0, 'desc']]
-            });
-
-            // only initialize the datatable if the tab gets shown, if we wont do this the responsive ness wont work cause its hidden
-            $('.nav-tabs a').on('shown.bs.tab', function (event) {
-                $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
-            });
-            @endif
 
             $('[data-toggle="tooltip"]').tooltip();
 

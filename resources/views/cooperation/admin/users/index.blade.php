@@ -43,7 +43,7 @@
                                     <td>{{$user->getFullName()}}</td>
                                     <td>
                                         @can('show', $building)
-                                            <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                            <a href="{{route('cooperation.admin.buildings.show', compact('building'))}}">
                                                 {{$building->street}} {{$building->number}} {{$building->extension}}
                                             </a>
                                         @else

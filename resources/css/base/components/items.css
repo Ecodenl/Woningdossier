@@ -118,3 +118,112 @@
 .regulation-card-wrapper .detail-wrapper ul li:first-of-type {
     @apply mt-0;
 }
+
+/* Popover */
+.popover {
+    @apply w-max py-4 px-5 -top-2 z-100 text-center shadow-lg absolute block no-underline break-words bg-white border border-blue border-opacity-50 rounded-lg;
+    max-width: 10rem;
+}
+
+.popover .arrow {
+    @apply absolute block w-4 h-2 m-0;
+}
+
+.popover .arrow::before,
+.popover .arrow::after {
+    @apply absolute block w-4 h-2 m-0 border-transparent;
+    content: "";
+}
+
+.popover .popover-body {
+    @apply p-0 w-full;
+}
+
+/* Popover positional styling */
+/* TOP */
+.popover.popover-top {
+    @apply mb-2;
+}
+
+.popover.popover-top > .arrow {
+    @apply left-1/2 transform -translate-x-1/2 translate-y-0;
+    bottom: calc((0.5rem + 1px) * -1);
+}
+
+.popover.popover-top > .arrow::before {
+    @apply bottom-0;
+    border-top-color: rgba(65,76,87,0.5); /* This is the `border-blue` RGB, Tailwind V2 does not have border-{pos}-color separate */
+    border-width: 0.5rem 0.5rem 0;
+}
+
+.popover.popover-top > .arrow::after {
+    @apply bottom-px;
+    border-top-color: #fff;
+    border-width: 0.5rem 0.5rem 0;
+}
+
+/* RIGHT */
+.popover.popover-right {
+    @apply ml-2;
+}
+
+.popover.popover-right > .arrow {
+    @apply top-1/2 transform translate-x-0 -translate-y-1/2 w-2 h-4 my-2;
+    left: calc((1rem + 1px) * -1);
+}
+
+.popover.popover-right > .arrow::before {
+    @apply left-0;
+    border-right-color: rgba(65,76,87,0.5);
+    border-width: 0.5rem 0.5rem 0.5rem 0;
+}
+
+.popover.popover-right > .arrow::after {
+    @apply left-px;
+    border-right-color: #fff;
+    border-width: 0.5rem 0.5rem 0.5rem 0;
+}
+
+/* BOTTOM */
+.popover.popover-bottom {
+    @apply mt-2;
+}
+
+.popover.popover-bottom > .arrow {
+    @apply left-1/2 transform -translate-x-1/2 translate-y-0;
+    top: calc((0.5rem + 1px) * -1);
+}
+
+.popover.popover-bottom > .arrow::before {
+    @apply top-0;
+    border-bottom-color: rgba(65,76,87,0.5);
+    border-width: 0 0.5rem 0.5rem 0.5rem;
+}
+
+.popover.popover-bottom > .arrow::after {
+   @apply top-px;
+    border-bottom-color: #fff;
+    border-width: 0 0.5rem 0.5rem 0.5rem;
+}
+
+/* LEFT */
+.popover.popover-left {
+    @apply mr-2;
+}
+
+.popover.popover-left > .arrow {
+    @apply top-1/2 transform translate-x-0 -translate-y-1/2 w-2 h-4 my-2;
+    right: calc((1rem + 1px) * -1);
+}
+
+.popover.popover-left > .arrow::before {
+    @apply right-0;
+    border-left-color: rgba(65,76,87,0.5);
+    border-width: 0.5rem 0 0.5rem 0.5rem;
+}
+
+.popover.popover-left > .arrow::after {
+    @apply right-px;
+    border-left-color: #fff;
+    border-width: 0.5rem 0 0.5rem 0.5rem;
+}

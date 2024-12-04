@@ -8,22 +8,22 @@
                 @lang('auth.login.form.header')
             </h1>
             @if(session('verified'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'blue-800'])
+                @component('cooperation.layouts.components.alert', ['color' => 'blue-800'])
                     @lang('cooperation/auth/verify.success-log-in')
                 @endcomponent
             @endif
             @if(session('success'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'blue-800'])
+                @component('cooperation.layouts.components.alert', ['color' => 'blue-800'])
                     {{session('success')}}
                 @endcomponent
             @endif
             @if(session('status'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                @component('cooperation.layouts.components.alert', ['color' => 'green'])
                     {{ session('status') }}
                 @endcomponent
             @endif
             @if($errors->has('cooperation'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'red'])
+                @component('cooperation.layouts.components.alert', ['color' => 'red'])
                     @foreach($errors->get('cooperation') as $message)
                         {{ $message }}
                     @endforeach

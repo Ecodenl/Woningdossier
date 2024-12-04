@@ -9,7 +9,7 @@
                 @lang('auth.register.form.header')
             </h1>
             @if(session('success'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                @component('cooperation.layouts.components.alert', ['color' => 'green'])
                     {{ session('success') }}
                 @endcomponent
             @endif

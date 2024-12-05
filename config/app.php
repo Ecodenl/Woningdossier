@@ -1,17 +1,15 @@
 <?php
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Facade;
-use Illuminate\Support\Facades\Route;
 
 return [
-
     'version' => env('APP_VERSION', '1.2.0'),
 
     'domain' => env('APP_DOMAIN', 'hoomdossier.nl'),
 
-
     'aliases' => Facade::defaultAliases()->merge([
+        'Str' => \App\Helpers\Str::class,
+        'Arr' => \App\Helpers\Arr::class,
         'Redis' => Illuminate\Support\Facades\Redis::class,
         'Caster' => App\Helpers\DataTypes\Caster::class,
         'CooperationSettingHelper' => App\Helpers\Models\CooperationSettingHelper::class,

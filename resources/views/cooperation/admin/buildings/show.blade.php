@@ -121,15 +121,17 @@
         @component('cooperation.frontend.layouts.components.form-group', [
             'class' => 'w-full sm:w-1/2',
             'label' => __('cooperation/admin/buildings.show.status.label'),
-            'id' => 'building-coach-status',
+            'id' => 'building-status',
             'inputName' => "building.building_statuses.id",
             'withInputSource' => false,
         ])
             @component('cooperation.frontend.layouts.components.alpine-select')
-                <select id="building-coach-status" class="form-input hidden" autocomplete="off"
+                <select id="building-status" class="form-input hidden" autocomplete="off"
                         name="building[building_statuses][id]">
                     @foreach($statuses as $status)
-                        <option {{$mostRecentStatus?->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
+                        <option value="{{$status->id}}"
+                                @if($mostRecentStatus?->status_id == $status->id) selected data-current @endif
+                        >
                             {{ $mostRecentStatus?->status_id == $status->id ? __('cooperation/admin/buildings.show.status.current') . $status->name : $status->name }}
                         </option>
                     @endforeach
@@ -144,14 +146,13 @@
             'inputName' => "building.building_statuses.appointment_date",
             'withInputSource' => false,
         ])
-            <input autocomplete="off" id="appointment-date" name="building[building_statuses][appointment_date]"
-                   type="text" class="form-input with-append"
-                   @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) value=" {{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}" @endif
-            />
-
-            <div class="input-group-append cursor-pointer">
-                <i class="icon-md icon-calendar"></i>
-            </div>
+            @include('cooperation.layouts.parts.datepicker', [
+                'mode' => 'datetime',
+                'name' => 'building.building_statuses.appointment_date',
+                'id' => 'appointment-date',
+                'placeholder' => '', // No placeholder!
+                'date' => $mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate() ? $mostRecentStatus->appointment_date : null,
+            ])
         @endcomponent
     </div>
 
@@ -256,7 +257,7 @@
             </a>
         </nav>
 
-        <div class="border border-t-0 border-blue border-opacity-50 rounded-b-lg">
+        <div class="border border-t-0 border-blue/50 rounded-b-lg">
             {{--messages intern (cooperation to cooperation --}}
             <div id="messages-intern" x-bind="container" data-tab="messages-intern">
                 @include('cooperation.layouts.parts.message-box', [
@@ -387,257 +388,289 @@
 @push('js')
     <script type="module">
         // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
-        let originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}' @else '' @endif;
+        const originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('Y-m-d H:i')}}' @else '' @endif;
+        const buildingOwnerId = @js($building->id);
 
-        document.addEventListener('DOMContentLoaded', function () {
-
-            // get some basic information
-            let buildingOwnerId = $('input[name=building\\[id\\]]').val();
-            let userId = $('input[name=user\\[id\\]]').val();
-            let cooperationId = $('#cooperation-id').val();
-
-            let appointmentDate = $('#appointment-date');
-
-            $('[data-toggle="tooltip"]').tooltip();
-
-            scrollChatToMostRecentMessage();
-            onFormSubmitAddFragmentToRequest();
-
-
-            $('.nav-tabs .active a').trigger('shown.bs.tab');
-
-            let currentDate = new Date();
-            currentDate.setDate(currentDate.getDate() - 1);
-
-            appointmentDate.datetimepicker({
-                showTodayButton: true,
-                allowInputToggle: true,
-                locale: 'nl',
-                // format: 'L',
-                showClear: true,
-            }).on('dp.hide', function (event) {
-                // This way the right events get triggered so we will always get a nice formatted date
-                appointmentDate.find('input').blur();
-
-                // Queue the confirm so the DOM is properly updated for the browsers which seem to ignore the blur.
-                setTimeout(() => {
-                    let date = appointmentDate.find('input').val();
-
-                    if (date !== originalAppointmentDate) {
-                        let confirmMessage = "@lang('cooperation/admin/buildings.show.set-empty-appointment-date')";
-
-                        if (date.length > 0) {
-                            confirmMessage = "@lang('cooperation/admin/buildings.show.set-appointment-date')"
-                        }
-
-                        if (confirm(confirmMessage)) {
-                            $.ajax({
-                                method: 'POST',
-                                url: '{{route('cooperation.admin.building-status.set-appointment-date')}}',
-                                data: {
-                                    building_id: buildingOwnerId,
-                                    appointment_date: date
-                                },
-                            }).fail(function (response) {
-                                appointmentDate.find('input').get(0).addError('Invalid format');
-                            }).done(function () {
-                                location.reload();
-                            })
-                        } else {
-                            // if the user does not want to set / change the appointment date
-                            // we set the date back to the one we got onload.
-                            appointmentDate.find('input').val(originalAppointmentDate);
-                        }
-                    }
-                });
-            });
-
-            // delete the current user
-            $('#delete-user').click(function () {
-                if (confirm('@lang('cooperation/admin/buildings.show.delete-user')')) {
-
-                    $.ajax({
-                        url: '{{route('cooperation.admin.users.destroy')}}',
-                        method: 'POST',
-                        data: {
-                            user_id: userId,
-                            _method: 'DELETE'
-                        }
-                    }).done(function () {
-                        window.location.href = '{{route('cooperation.admin.users.index')}}'
-                    })
-                }
-            });
-
-            $('#building-status').select2({}).on('select2:selecting', function (event) {
-                let statusToSelect = $(event.params.args.data.element);
-
+        document.addEventListener('DOMContentLoaded', () => {
+            // Change building status
+            document.getElementById('building-status').addEventListener('change', function () {
                 if (confirm('@lang('cooperation/admin/buildings.show.set-status')')) {
-                    $.ajax({
-                        method: 'POST',
-                        url: '{{route('cooperation.admin.building-status.set-status')}}',
-                        data: {
-                            building_id: buildingOwnerId,
-                            status_id: statusToSelect.val(),
-                        }
-                    }).done(function () {
-                        location.reload();
-                    })
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
-            $('#associated-coaches').select2({
-                templateSelection: function (tag, container) {
-                    let option = $('#associated-coaches option[value="' + tag.id + '"]');
-                    if (option.attr('locked')) {
-                        $(container).addClass('select2-locked-tag');
-                        tag.locked = true
-                    }
-
-                    return tag.text;
-                }
-            }).on('select2:unselecting', function (event) {
-                let optionToUnselect = $(event.params.args.data.element);
-
-                // check if the option is locked
-                if (typeof optionToUnselect.attr('locked') === "undefined") {
-                    if (confirm('@lang('cooperation/admin/buildings.show.revoke-access')')) {
-                        $.ajax({
-                            url: '{{route('cooperation.messages.participants.revoke-access')}}',
-                            method: 'POST',
-                            data: {
-                                user_id: optionToUnselect.val(),
-                                building_owner_id: buildingOwnerId
-                            }
-                        }).done(function () {
-                            // just reload the page
-                            location.reload();
-                        });
-                    } else {
-                        event.preventDefault();
-                        return false;
-                    }
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            }).on('select2:selecting', function (event) {
-                let optionToSelect = $(event.params.args.data.element);
-
-                if (confirm('@lang('cooperation/admin/buildings.show.add-with-building-access')')) {
-                    $.ajax({
-                        url: '{{route('cooperation.messages.participants.add-with-building-access')}}',
-                        method: 'POST',
-                        data: {
-                            user_id: optionToSelect.val(),
-                            building_id: buildingOwnerId
-                        }
-                    }).done(function () {
-                        // just reload the page
-                        location.reload();
-                    });
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
-
-            $('#role-select').select2({
-                templateSelection: function (tag, container) {
-                    let option = $('#role-select option[value="' + tag.id + '"]');
-                    if (option.attr('locked')) {
-                        $(container).addClass('select2-locked-tag');
-                        tag.locked = true
-                    }
-
-                    return tag.text;
-                }
-            })
-                .on('select2:selecting', function (event) {
-                    let roleToSelect = $(event.params.args.data.element);
-
-                    if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {
-                        $.ajax({
-                            url: '{{route('cooperation.admin.roles.assign-role')}}',
-                            method: 'POST',
-                            data: {
-                                role_id: roleToSelect.val(),
-                                user_id: userId,
-                                cooperation_id: cooperationId
-                            }
-                        }).done(function () {
-                            // just reload the page
-                            location.reload();
-                        });
-                    } else {
-                        event.preventDefault();
-                        return false;
-                    }
-                })
-                .on('select2:unselecting', function (event) {
-                    let roleToUnselect = $(event.params.args.data.element);
-
-                    if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {
-                        $.ajax({
-                            url: '{{route('cooperation.admin.roles.remove-role')}}',
-                            method: 'POST',
-                            data: {
-                                role_id: roleToUnselect.val(),
-                                user_id: userId
-                            }
-                        }).done(function () {
-                            // just reload the page
-                            location.reload();
-                        });
-                    } else {
-                        event.preventDefault();
-                        return false;
-                    }
-                });
-        });
-
-
-
-        function scrollChatToMostRecentMessage() {
-            $('.nav-tabs a').on('shown.bs.tab', function () {
-
-                let tabId = $(this).attr('href');
-                let tab = $(tabId);
-                let chat = tab.find('.panel-chat-body')[0];
-
-                if (typeof chat !== "undefined") {
-                    chat.scrollTop = chat.scrollHeight - chat.clientHeight;
-
-                    let isChatPublic = tab.find('[name=is_public]').val();
-                    let buildingId = tab.find('[name=building_id]').val();
-
-                    $.ajax({
-                        url: '{{route('cooperation.messages.participants.set-read')}}',
-                        method: 'post',
-                        data: {
-                            is_public: isChatPublic,
-                            building_id: buildingId
+                    fetch('{{ route('cooperation.admin.building-status.set-status') }}', {
+                        method: "POST",
+                        headers: {
+                            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+                            'Content-Type': 'application/json',
                         },
-                        success: function () {
-                            updateTotalUnreadMessageCount();
-                        }
-                    })
+                        body: JSON.stringify({
+                            building_id: buildingOwnerId,
+                            status_id: this.value,
+                        }),
+                    }).then((response) => location.reload());
+                } else {
+                    // Reset status
+                    this.value = this.querySelector('option[data-current]').value;
+                    this.alpineSelect.updateSelectedValues();
                 }
             });
-        }
 
-        function onFormSubmitAddFragmentToRequest()
-        {
-            $('form').submit(function (event) {
-                $(this).append($('<input>', {
-                    type: 'hidden',
-                    name: 'fragment',
-                    value: $(this).parents('.tab-pane').prop('id'),
-                }));
+            // Appointment date
+            document.querySelector('.datepicker').addEventListener('datepicker-closed', function () {
+                const date = this.querySelector('.datepicker-value').value;
+
+                if (date !== originalAppointmentDate) {
+                    let confirmMessage = "@lang('cooperation/admin/buildings.show.set-empty-appointment-date')";
+
+                    if (date.length > 0) {
+                        confirmMessage = "@lang('cooperation/admin/buildings.show.set-appointment-date')"
+                    }
+
+                    if (confirm(confirmMessage)) {
+                        fetch('{{ route('cooperation.admin.building-status.set-appointment-date') }}', {
+                            method: "POST",
+                            headers: {
+                                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                building_id: buildingOwnerId,
+                                appointment_date: date,
+                            }),
+                        }).then((response) => location.reload());
+                    } else {
+                        // If the user does not want to set / change the appointment date,
+                        // we set the date back to the one we got onload.
+                        this.datepicker.setDate(originalAppointmentDate);
+                    }
+                }
             });
-        }
-
+        });
     </script>
+
+
+{{--        document.addEventListener('DOMContentLoaded', function () {--}}
+
+{{--            // get some basic information--}}
+{{--            let buildingOwnerId = $('input[name=building\\[id\\]]').val();--}}
+{{--            let userId = $('input[name=user\\[id\\]]').val();--}}
+{{--            let cooperationId = $('#cooperation-id').val();--}}
+
+{{--            let appointmentDate = $('#appointment-date');--}}
+
+{{--            $('[data-toggle="tooltip"]').tooltip();--}}
+
+{{--            scrollChatToMostRecentMessage();--}}
+{{--            onFormSubmitAddFragmentToRequest();--}}
+
+
+{{--            $('.nav-tabs .active a').trigger('shown.bs.tab');--}}
+
+{{--            let currentDate = new Date();--}}
+{{--            currentDate.setDate(currentDate.getDate() - 1);--}}
+
+{{--            appointmentDate.datetimepicker({--}}
+{{--                showTodayButton: true,--}}
+{{--                allowInputToggle: true,--}}
+{{--                locale: 'nl',--}}
+{{--                // format: 'L',--}}
+{{--                showClear: true,--}}
+{{--            }).on('dp.hide', function (event) {--}}
+{{--                // This way the right events get triggered so we will always get a nice formatted date--}}
+{{--                appointmentDate.find('input').blur();--}}
+
+{{--                // Queue the confirm so the DOM is properly updated for the browsers which seem to ignore the blur.--}}
+{{--                setTimeout(() => {--}}
+{{--                    let date = appointmentDate.find('input').val();--}}
+
+
+{{--                });--}}
+{{--            });--}}
+
+{{--            // delete the current user--}}
+{{--            $('#delete-user').click(function () {--}}
+{{--                if (confirm('@lang('cooperation/admin/buildings.show.delete-user')')) {--}}
+
+{{--                    $.ajax({--}}
+{{--                        url: '{{route('cooperation.admin.users.destroy')}}',--}}
+{{--                        method: 'POST',--}}
+{{--                        data: {--}}
+{{--                            user_id: userId,--}}
+{{--                            _method: 'DELETE'--}}
+{{--                        }--}}
+{{--                    }).done(function () {--}}
+{{--                        window.location.href = '{{route('cooperation.admin.users.index')}}'--}}
+{{--                    })--}}
+{{--                }--}}
+{{--            });--}}
+
+{{--            $('#building-status').select2({}).on('select2:selecting', function (event) {--}}
+{{--                let statusToSelect = $(event.params.args.data.element);--}}
+
+{{--                if (confirm('@lang('cooperation/admin/buildings.show.set-status')')) {--}}
+{{--                    $.ajax({--}}
+{{--                        method: 'POST',--}}
+{{--                        url: '{{route('cooperation.admin.building-status.set-status')}}',--}}
+{{--                        data: {--}}
+{{--                            building_id: buildingOwnerId,--}}
+{{--                            status_id: statusToSelect.val(),--}}
+{{--                        }--}}
+{{--                    }).done(function () {--}}
+{{--                        location.reload();--}}
+{{--                    })--}}
+{{--                } else {--}}
+{{--                    event.preventDefault();--}}
+{{--                    return false;--}}
+{{--                }--}}
+{{--            });--}}
+{{--            $('#associated-coaches').select2({--}}
+{{--                templateSelection: function (tag, container) {--}}
+{{--                    let option = $('#associated-coaches option[value="' + tag.id + '"]');--}}
+{{--                    if (option.attr('locked')) {--}}
+{{--                        $(container).addClass('select2-locked-tag');--}}
+{{--                        tag.locked = true--}}
+{{--                    }--}}
+
+{{--                    return tag.text;--}}
+{{--                }--}}
+{{--            }).on('select2:unselecting', function (event) {--}}
+{{--                let optionToUnselect = $(event.params.args.data.element);--}}
+
+{{--                // check if the option is locked--}}
+{{--                if (typeof optionToUnselect.attr('locked') === "undefined") {--}}
+{{--                    if (confirm('@lang('cooperation/admin/buildings.show.revoke-access')')) {--}}
+{{--                        $.ajax({--}}
+{{--                            url: '{{route('cooperation.messages.participants.revoke-access')}}',--}}
+{{--                            method: 'POST',--}}
+{{--                            data: {--}}
+{{--                                user_id: optionToUnselect.val(),--}}
+{{--                                building_owner_id: buildingOwnerId--}}
+{{--                            }--}}
+{{--                        }).done(function () {--}}
+{{--                            // just reload the page--}}
+{{--                            location.reload();--}}
+{{--                        });--}}
+{{--                    } else {--}}
+{{--                        event.preventDefault();--}}
+{{--                        return false;--}}
+{{--                    }--}}
+{{--                } else {--}}
+{{--                    event.preventDefault();--}}
+{{--                    return false;--}}
+{{--                }--}}
+{{--            }).on('select2:selecting', function (event) {--}}
+{{--                let optionToSelect = $(event.params.args.data.element);--}}
+
+{{--                if (confirm('@lang('cooperation/admin/buildings.show.add-with-building-access')')) {--}}
+{{--                    $.ajax({--}}
+{{--                        url: '{{route('cooperation.messages.participants.add-with-building-access')}}',--}}
+{{--                        method: 'POST',--}}
+{{--                        data: {--}}
+{{--                            user_id: optionToSelect.val(),--}}
+{{--                            building_id: buildingOwnerId--}}
+{{--                        }--}}
+{{--                    }).done(function () {--}}
+{{--                        // just reload the page--}}
+{{--                        location.reload();--}}
+{{--                    });--}}
+{{--                } else {--}}
+{{--                    event.preventDefault();--}}
+{{--                    return false;--}}
+{{--                }--}}
+{{--            });--}}
+
+{{--            $('#role-select').select2({--}}
+{{--                templateSelection: function (tag, container) {--}}
+{{--                    let option = $('#role-select option[value="' + tag.id + '"]');--}}
+{{--                    if (option.attr('locked')) {--}}
+{{--                        $(container).addClass('select2-locked-tag');--}}
+{{--                        tag.locked = true--}}
+{{--                    }--}}
+
+{{--                    return tag.text;--}}
+{{--                }--}}
+{{--            })--}}
+{{--                .on('select2:selecting', function (event) {--}}
+{{--                    let roleToSelect = $(event.params.args.data.element);--}}
+
+{{--                    if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {--}}
+{{--                        $.ajax({--}}
+{{--                            url: '{{route('cooperation.admin.roles.assign-role')}}',--}}
+{{--                            method: 'POST',--}}
+{{--                            data: {--}}
+{{--                                role_id: roleToSelect.val(),--}}
+{{--                                user_id: userId,--}}
+{{--                                cooperation_id: cooperationId--}}
+{{--                            }--}}
+{{--                        }).done(function () {--}}
+{{--                            // just reload the page--}}
+{{--                            location.reload();--}}
+{{--                        });--}}
+{{--                    } else {--}}
+{{--                        event.preventDefault();--}}
+{{--                        return false;--}}
+{{--                    }--}}
+{{--                })--}}
+{{--                .on('select2:unselecting', function (event) {--}}
+{{--                    let roleToUnselect = $(event.params.args.data.element);--}}
+
+{{--                    if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {--}}
+{{--                        $.ajax({--}}
+{{--                            url: '{{route('cooperation.admin.roles.remove-role')}}',--}}
+{{--                            method: 'POST',--}}
+{{--                            data: {--}}
+{{--                                role_id: roleToUnselect.val(),--}}
+{{--                                user_id: userId--}}
+{{--                            }--}}
+{{--                        }).done(function () {--}}
+{{--                            // just reload the page--}}
+{{--                            location.reload();--}}
+{{--                        });--}}
+{{--                    } else {--}}
+{{--                        event.preventDefault();--}}
+{{--                        return false;--}}
+{{--                    }--}}
+{{--                });--}}
+{{--        });--}}
+
+
+
+{{--        function scrollChatToMostRecentMessage() {--}}
+{{--            $('.nav-tabs a').on('shown.bs.tab', function () {--}}
+
+{{--                let tabId = $(this).attr('href');--}}
+{{--                let tab = $(tabId);--}}
+{{--                let chat = tab.find('.panel-chat-body')[0];--}}
+
+{{--                if (typeof chat !== "undefined") {--}}
+{{--                    chat.scrollTop = chat.scrollHeight - chat.clientHeight;--}}
+
+{{--                    let isChatPublic = tab.find('[name=is_public]').val();--}}
+{{--                    let buildingId = tab.find('[name=building_id]').val();--}}
+
+{{--                    $.ajax({--}}
+{{--                        url: '{{route('cooperation.messages.participants.set-read')}}',--}}
+{{--                        method: 'post',--}}
+{{--                        data: {--}}
+{{--                            is_public: isChatPublic,--}}
+{{--                            building_id: buildingId--}}
+{{--                        },--}}
+{{--                        success: function () {--}}
+{{--                            updateTotalUnreadMessageCount();--}}
+{{--                        }--}}
+{{--                    })--}}
+{{--                }--}}
+{{--            });--}}
+{{--        }--}}
+
+{{--        function onFormSubmitAddFragmentToRequest()--}}
+{{--        {--}}
+{{--            $('form').submit(function (event) {--}}
+{{--                $(this).append($('<input>', {--}}
+{{--                    type: 'hidden',--}}
+{{--                    name: 'fragment',--}}
+{{--                    value: $(this).parents('.tab-pane').prop('id'),--}}
+{{--                }));--}}
+{{--            });--}}
+{{--        }--}}
+
+{{--    </script>--}}
 @endpush

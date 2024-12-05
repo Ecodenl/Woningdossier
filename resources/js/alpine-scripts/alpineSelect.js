@@ -28,13 +28,13 @@ export default (initiallyOpen = false) => ({
             context.constructSelect(true);
 
             if (null !== context.select) {
-                let observer = new MutationObserver(function(mutations) {
+                let observer = new MutationObserver(function (mutations) {
                     context.constructSelect(false);
                 });
 
                 observer.observe(context.select, { childList: true });
 
-                let attributeObserver = new MutationObserver(function(mutations) {
+                let attributeObserver = new MutationObserver(function (mutations) {
                     context.setDisabledState();
                 });
 
@@ -114,6 +114,9 @@ export default (initiallyOpen = false) => ({
                 this.select.style.display = 'none';
                 // Show the new alpine select
                 this.$refs['select-input-group'].style.display = '';
+
+                // Set custom DOM prop so we can access methods and values here from the DOM.
+                this.select.alpineSelect = this;
 
                 setTimeout(() => {
                     this.updateSelectedValues();
@@ -265,7 +268,6 @@ export default (initiallyOpen = false) => ({
 
                         currentWidth += leftMargin + parseInt(getComputedStyle(newInputOption).width);
                     });
-
                 }
             } else {
                 this.$refs['select-input'].value = this.findOptionByValue(this.values)?.textContent ?? this.values;

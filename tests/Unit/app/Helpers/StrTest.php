@@ -226,4 +226,28 @@ final class StrTest extends TestCase
     {
         $this->assertEquals($expected, Str::hasReplaceables($string));
     }
+
+    public static function convertDotToHtmlProvider(): array
+    {
+        return [
+            ['', false, ''],
+            ['', true, ''],
+            [null, false, null],
+            [null, true, null],
+            ['table', false, 'table'],
+            ['table', true, 'table[]'],
+            ['table.column', false, 'table[column]'],
+            ['table.column', true, 'table[column][]'],
+            ['table.json_column.field', false, 'table[json_column][field]'],
+            ['table.json_column.field', true, 'table[json_column][field][]'],
+            ['table.json_column.field.sub_field', false, 'table[json_column][field][sub_field]'],
+            ['table.json_column.field.sub_field', true, 'table[json_column][field][sub_field][]'],
+        ];
+    }
+
+    #[DataProvider('convertDotToHtmlProvider')]
+    public function test_convert_dot_to_html($dottedName, $asArray, $expected)
+    {
+        $this->assertEquals($expected, Str::convertDotToHtml($dottedName, $asArray));
+    }
 }

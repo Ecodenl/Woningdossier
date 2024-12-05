@@ -45,6 +45,15 @@
     background-position: 3rem 50%;
 }
 
+.dt-ordering-asc .dt-column-order,
+.dt-ordering-desc .dt-column-order {
+    @apply w-3 h-3 icon-arrow-down inline-block ml-1 cursor-pointer;
+}
+
+.dt-ordering-asc .dt-column-order {
+    @apply transform rotate-180
+}
+
 .dt-search label {
     @apply mr-4;
 }
@@ -56,10 +65,14 @@
     @apply focus:border-green focus:border-opacity-100;
 }
 
-.dt-paging-button {
+.dt-paging .dt-paging-button {
     @apply btn btn-sm btn-outline-green ml-1;
 }
 
-.dt-paging-button.current {
+.dt-paging .dt-paging-button.current {
     @apply btn-green;
+}
+
+.dt-paging .ellipsis {
+    @apply ml-1;
 }

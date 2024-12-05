@@ -5,8 +5,12 @@
         $currentRole = 'cooperation-to-manage';
         $params = ['cooperation_name' => $cooperationToManage->name];
     }
+    $langKey = match(true) {
+        in_array($currentRole, [RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_COORDINATOR]) => "cooperation.{$currentRole}",
+        default => $currentRole,
+    };
 
-    $sidebarTitle = __("woningdossier.cooperation.admin.{$currentRole}.side-nav.label", $params)
+    $sidebarTitle = __("woningdossier.cooperation.admin.{$langKey}.side-nav.label", $params)
 @endphp
 
 @component('cooperation.admin.layouts.parts.sidebar.base', [

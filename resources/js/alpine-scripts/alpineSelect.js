@@ -148,7 +148,7 @@ export default (initiallyOpen = false) => ({
     },
     // Handle the click of a custom option
     changeOption(element) {
-        if (! element.classList.contains('disabled')) {
+        if (! element.classList.contains('disabled') && ! element.classList.contains('readonly  ')) {
             this.updateValue(element.getAttribute('data-value'));
             if (! this.multiple) {
                 this.close();
@@ -245,6 +245,13 @@ export default (initiallyOpen = false) => ({
 
                     if (this.disabled) {
                         newInputOption.classList.add('disabled');
+                    } else {
+                        if (option.classList.contains('disabled')) {
+                            newInputOption.classList.add('disabled');
+                        }
+                        if (option.classList.contains('readonly')) {
+                            newInputOption.classList.add('readonly');
+                        }
                     }
 
                     newInputOption.setAttribute("data-value", value);
@@ -300,7 +307,7 @@ export default (initiallyOpen = false) => ({
 
         if (option.hasAttribute('disabled')) {
             newOption.classList.add('disabled');
-        } else if (this.disabled) {
+        } else if (this.disabled || option.hasAttribute('readonly')) {
             newOption.classList.add('disabled', 'readonly');
         }
 

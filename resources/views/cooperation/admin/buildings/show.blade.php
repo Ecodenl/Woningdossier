@@ -106,14 +106,6 @@
                 </a>
             @endcan
         </div>
-        <div>
-            @can('viewAny', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $building])
-                <button role="button" class="btn btn-outline-blue" id="view-files">
-                    @lang('cooperation/admin/buildings.show.view-files')
-                    <i class="icon-sm icon-document"></i>
-                </button>
-            @endcan
-        </div>
     </div>
 
     <div class="flex flex-wrap w-full sm:pad-x-6">
@@ -194,7 +186,7 @@
                     @foreach($roles as $role)
                         @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
                             <option value="{{$role->id}}"
-                                    @cannot('delete',  [$role, Hoomdossier::user(), HoomdossierSession::getRole(true), $building->user]) disabled @endcannot
+                                    @cannot('delete', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true), $building->user]) readonly @endcannot
                                     @if($user->hasRole($role)) selected @endif
                             >
                                 {{$role->human_readable_name}}
@@ -226,9 +218,9 @@
                         'trigger' => 'hover',
                     ])
                         @if($retrievesNotifications)
-                            <i class="icon-sm icon-check-circle-purple"></i>
+                            <i class="icon-sm icon-check-circle-purple mr-1"></i>
                         @else
-                            <i class="w-3 h-3 icon-error-cross"></i>
+                            <i class="w-3 h-3 icon-error-cross mr-1"></i>
                         @endif
 
                         @slot('body')
@@ -255,6 +247,13 @@
             <a x-bind="tab" data-tab="2fa">
                 @lang('cooperation/admin/buildings.show.tabs.2fa.title')
             </a>
+
+            @can('viewAny', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $building])
+                <a x-bind="tab" data-tab="view-files" class="flex items-center">
+                    @lang('cooperation/admin/buildings.show.view-files')
+                    <i class="icon-sm icon-document-white ml-1"></i>
+                </a>
+            @endcan
         </nav>
 
         <div class="border border-t-0 border-blue/50 rounded-b-lg">
@@ -331,6 +330,12 @@
                 @endif
             </div>
 
+            @can('viewAny', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $building])
+                <div id="view-files" x-bind="container" data-tab="view-files" class="p-4">
+                    <livewire:cooperation.frontend.tool.simple-scan.my-plan.uploader :building="$building"/>
+                </div>
+            @endcan
+
             {{-- Fill in history ?? the log --}}
             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                 <div id="fill-in-history" x-bind="container" data-tab="fill-in-history">
@@ -360,29 +365,6 @@
             @endif
         </div>
     </div>
-
-    @can('viewAny', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $building])
-
-
-{{--        <div id="files-modal" class="modal fade" role="dialog">--}}
-{{--            <div class="modal-dialog" style="height: 100vh; width: 100vw; margin: 0;">--}}
-
-{{--                <!-- Modal content-->--}}
-{{--                <div class="modal-content" style="height: 100%; width: 100%; overflow: hidden;">--}}
-{{--                    <div class="modal-header">--}}
-{{--                        <button type="button" class="close" data-dismiss="modal">&times;</button>--}}
-{{--                        <h4 class="modal-title">--}}
-{{--                            @lang('cooperation/admin/buildings.show.view-files')--}}
-{{--                        </h4>--}}
-{{--                    </div>--}}
-{{--                    <div class="modal-body" style="margin: 0; padding: 0; height: 100%;">--}}
-{{--                        <iframe src="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('building', 'scan')) . "?iframe=1" }}"--}}
-{{--                                style="border: none; width: 100%; height: 100%;"></iframe>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-    @endcan
 @endsection
 
 @push('js')

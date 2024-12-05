@@ -48,7 +48,7 @@
                 <input wire:model.live="document" wire:loading.attr="disabled"
                        class="form-input" id="uploader" type="file" autocomplete="off"
                        {{-- This is a Livewire event we can capture --}}
-                       x-on:livewire-upload-finish="$dispatch('uploadDone')">
+                       x-on:livewire-upload-finish="$wire.dispatchSelf('uploadDone')">
             @endcomponent
         </div>
     @endcan

@@ -5,7 +5,7 @@
     'height' => 0,
     'offset' => 8,
     'trigger' => ['hover', 'click'],
-    'class' => 'mr-1 inline-flex items-center',
+    'class' => 'inline-flex items-center',
     'style' => null,
     //'self' => false,
     'id' => null,

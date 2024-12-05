@@ -168,6 +168,10 @@
     @apply select-none;
     content: url('/icons/document.svg');
 }
+.icon-document-white {
+    @apply select-none;
+    content: url('/icons/document-white.svg');
+}
 .icon-close-circle {
     @apply select-none;
     content: url('/icons/close-circle.svg');

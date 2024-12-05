@@ -35,7 +35,7 @@
                         $appointmentDateStrotime = strtotime($appointmentDateFormatted);
                     @endphp
                     <tr>
-                        <td data-sort="{{$appointmentDateStrotime ?? '-'}}">
+                        <td data-sort="{{$appointmentDateStrotime}}">
                             {{$appointmentDateFormatted ?? '-'}}
                         </td>
                         <td>

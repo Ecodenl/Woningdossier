@@ -1,4 +1,4 @@
-export default (initiallyOpen = false) => ({
+export default (initiallyOpen = false, withSearch = false) => ({
     // Select element
     select: null,
     // Current value(s) of the select (to by synced)
@@ -11,6 +11,9 @@ export default (initiallyOpen = false) => ({
     multiple: false,
     livewire: false,
     wireModel: null,
+    // Active searching for options
+    search: null,
+    withSearch: withSearch,
 
     init() {
         try {
@@ -62,18 +65,25 @@ export default (initiallyOpen = false) => ({
                 // as well as on switching tabs.
                 window.addEventListener('resize', (event) => {
                     context.setInputValue();
+                    context.applySearchPadding();
                 });
 
                 window.addEventListener('tab-switched', (event) => {
                     setTimeout(() => {
                         context.setInputValue();
+                        context.applySearchPadding();
                     });
                 });
             }
         });
 
         this.$watch('values', (value, oldValue) => {
+            this.search = null;
             this.setInputValue();
+            this.applySearchPadding();
+        });
+        this.$watch('search', (value, oldValue) => {
+            this.searchOptions();
         });
     },
     // Construct a fresh custom select
@@ -277,7 +287,10 @@ export default (initiallyOpen = false) => ({
                     });
                 }
             } else {
-                this.$refs['select-input'].value = this.findOptionByValue(this.values)?.textContent ?? this.values;
+                // Timeout, otherwise setting search to `null` conflicts and the input becomes empty.
+                setTimeout(() => {
+                    this.$refs['select-input'].value = this.findOptionByValue(this.values)?.textContent ?? this.values;
+                });
             }
         }
     },
@@ -355,5 +368,51 @@ export default (initiallyOpen = false) => ({
     // Find a custom select option by given value
     findOptionByValue(value) {
         return this.$refs['select-options'].querySelector(`span[data-value="${value}"]`);
+    },
+    searchOptions() {
+        const searchValue = function (value, search) {
+            if (value) {
+                value = value.toLowerCase().replace(/[-_ ]/g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+                search = search.toLowerCase().replace(/[-_ ]/g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+                return value.includes(search);
+            }
+
+            return false;
+        }
+
+        this.$refs['select-options'].querySelectorAll('.select-option').forEach((option) => {
+            if (! this.search?.trim()) {
+                option.style.display = null;
+            } else {
+                option.style.display = (searchValue(option.textContent, this.search) || searchValue(option.dataset.value, this.search))
+                    ? null
+                    : 'none';
+            }
+        });
+    },
+    applySearchPadding() {
+        // Padding not needed for non-multiple
+        if (this.withSearch && this.multiple) {
+            // Timeout, again, getComputedStyle...
+            setTimeout(() => {
+                const inputs = this.$refs['select-input-group'].querySelectorAll('.form-input-option');
+
+                let paddingTop = null;
+                let paddingLeft = null;
+                if (inputs.length > 0) {
+                    const lastOption = inputs[inputs.length - 1];
+
+                    const optionStyle = getComputedStyle(lastOption);
+                    const inputStyle = getComputedStyle(this.$refs['select-input']);
+
+                    paddingTop = String((parseInt(inputStyle.height) - 44)) + 'px';
+                    // + 4px for spacing between the last option and the text
+                    paddingLeft = String(parseInt(optionStyle.width) + parseInt(optionStyle.left) + 4) + 'px';
+                }
+
+                this.$refs['select-input'].style.paddingTop = paddingTop;
+                this.$refs['select-input'].style.paddingLeft = paddingLeft;
+            });
+        }
     }
 });

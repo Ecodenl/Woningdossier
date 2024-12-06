@@ -153,7 +153,7 @@
                 'inputName' => "user.associated_coaches",
                 'withInputSource' => false,
             ])
-                @component('cooperation.frontend.layouts.components.alpine-select')
+                @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
                     <select multiple id="associated-coaches" class="form-input hidden" name="user[associated_coaches]"
                             @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif>
                         @foreach($coaches as $coach)
@@ -175,7 +175,7 @@
             'inputName' => "user.roles",
             'withInputSource' => false,
         ])
-            @component('cooperation.frontend.layouts.components.alpine-select')
+            @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
                 <select multiple id="role-select" class="form-input hidden" name="user[roles]"
                         @cannot('editAny', $userCurrentRole) disabled @endcannot>
                     @foreach($roles as $role)

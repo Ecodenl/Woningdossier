@@ -1,4 +1,5 @@
-<div x-data="alpineSelect(!!'{{$initiallyOpen ?? false}}')" x-ref="select-wrapper" class="select-wrapper"
+@php $initiallyOpen ??= false; $withSearch ??= false; @endphp
+<div x-data="alpineSelect(@js($initiallyOpen), @js($withSearch))" x-ref="select-wrapper" class="select-wrapper"
      x-on:keyup.escape.window="close()">
     {{-- Expect at least a select with options --}}
     {{ $slot }}
@@ -12,8 +13,8 @@
         @if(! empty(($icon ?? null)))
             <i class="select-icon {{$icon}}"></i>
         @endif
-        <input class="form-input @if(! empty(($append ?? null))) with-append @endif" readonly x-ref="select-input"
-               x-on:click="toggle()">
+        <input class="form-input @if(! empty(($append ?? null))) with-append @endif" x-ref="select-input"
+               x-model="search" x-on:click="toggle()" x-bind:readonly="! withSearch" x-on:input="open = true">
         @if(! empty(($append ?? null)))
             <div class="input-group-append">
                 {!! $append !!}

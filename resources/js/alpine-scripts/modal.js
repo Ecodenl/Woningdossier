@@ -17,6 +17,6 @@ export default () => ({
         this.dispatchEvent(this.$el);
     },
     dispatchEvent(element) {
-        window.triggerCustomEvent(element, 'modal-toggled', {modalOpened: this.opened});
+        element.triggerCustomEvent('modal-toggled', {modalOpened: this.opened});
     }
 });

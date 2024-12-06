@@ -29,7 +29,7 @@
                                 </td>
                                 <td>{{$mostRecentMessage->getSender()}}</td>
                                 <td>
-                                    <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                    <a href="{{route('cooperation.admin.buildings.show', compact('building'))}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
                                     </a>
                                 </td>
@@ -52,8 +52,8 @@
 
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             $('table').DataTable({
                 order: [[ 0, "desc" ]],
                 columnDefs: [

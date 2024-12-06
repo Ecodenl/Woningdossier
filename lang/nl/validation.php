@@ -424,6 +424,9 @@ return [
         'medias.' . MediaHelper::QUOTATION => "offerte",
         'medias.' . MediaHelper::INVOICE => "factuur",
         'medias.' . MediaHelper::BILL => "rekening",
+
+        // Admin
+        'building.note' => 'opmerking over de woning',
     ],
 
     'values' => [

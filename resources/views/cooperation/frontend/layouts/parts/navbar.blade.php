@@ -27,7 +27,7 @@
         @endauth
         @if(App::environment() == 'local') {{-- currently only for local development --}}
             @if(count(config('hoomdossier.supported_locales')) > 1)
-                @component('cooperation.frontend.layouts.components.dropdown', [
+                @component('cooperation.layouts.components.dropdown', [
                     'label' => __('default.language'),
                     'class' => 'in-text',
                 ])
@@ -44,7 +44,7 @@
                 @endcomponent
             @endif
             @auth
-                @component('cooperation.frontend.layouts.components.dropdown', [
+                @component('cooperation.layouts.components.dropdown', [
                     'label' => __('cooperation/frontend/layouts.navbar.input-source'),
                     'class' => 'in-text',
                 ])
@@ -78,22 +78,8 @@
 {{--            </p>--}}
         @endif
 
-        @if (Auth::check())
-            @if(! Hoomdossier::user()->isFillingToolForOtherBuilding() && Hoomdossier::user()->getRoleNames()->count() > 1 && \App\Helpers\HoomdossierSession::hasRole())
-                @component('cooperation.frontend.layouts.components.dropdown', [
-                    'label' => __('cooperation/frontend/layouts.navbar.current-role') . \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name,
-                    'class' => 'in-text',
-                    ])
-                    @foreach(Hoomdossier::user()->roles()->orderBy('level', 'DESC')->get() as $role)
-                        <li>
-                            <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}"
-                               class="in-text">
-                                {{ $role->human_readable_name }}
-                            </a>
-                        </li>
-                    @endforeach
-                @endcomponent
-            @endif
+        @if(Auth::check())
+            @include('cooperation.layouts.parts.role-switcher')
 
             <div>
                 <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('scan')) }}"
@@ -111,7 +97,7 @@
             {{-- Keep local for ease of use --}}
             @if(app()->isLocal())
 {{--                @if($building instanceof \App\Models\Building && $building->hasCompletedQuickScan($masterInputSource))--}}
-                    @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-check-circle"></i>'])
+                    @component('cooperation.layouts.components.dropdown', ['label' => '<i class="icon-md icon-check-circle"></i>'])
                         {{-- Loaded in NavbarComposer --}}
                         @foreach($expertSteps as $expertStep)
                             @if(! in_array($expertStep->short, ['high-efficiency-boiler', 'heater', 'heat-pump']))
@@ -129,7 +115,7 @@
 {{--                @endif--}}
             @endif
 
-            @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-info"></i>'])
+            @component('cooperation.layouts.components.dropdown', ['label' => '<i class="icon-md icon-info"></i>'])
                 {{-- Loaded in NavbarComposer --}}
                 @foreach($scan->steps as $step)
                     @php $subStep = $step->subSteps->sortByDesc('order')->first(); @endphp
@@ -161,7 +147,7 @@
             @endcan
 
             @if(! Hoomdossier::user()->isFillingToolForOtherBuilding())
-                @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-account-circle"></i>'])
+                @component('cooperation.layouts.components.dropdown', ['label' => '<i class="icon-md icon-account-circle"></i>'])
                     <li>
                         <a href="{{ route('cooperation.my-account.index', compact('cooperation')) }}"
                            class="in-text">
@@ -176,7 +162,7 @@
                             </p>
                         @endif
                     </li>
-                        <li>
+                    <li>
                         <a href="{{ route('cooperation.my-account.two-factor-authentication.index', compact('cooperation')) }}"
                            class="in-text">
                             @lang('woningdossier.cooperation.navbar.two-factor-authentication')
@@ -207,7 +193,7 @@
 {{--                        </a>--}}
 {{--                    </li>--}}
                     <li>
-                        @include('cooperation.frontend.shared.parts.logout')
+                        @include('cooperation.layouts.parts.logout')
                     </li>
                     <li>
                         <span class="float-right" style="padding-right:.5em;line-height:100%;">

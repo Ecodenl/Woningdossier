@@ -15,9 +15,9 @@
     // When the temporary upload from Livewire fails, an error is thrown for the upload input. When the input is
     // multiple, one gets thrown for EVERY uploaded file. The error bag is shared with the view but not with
     // the component for whatever reason. We need this to be able to set the correct error message.
-    if($errors->any()) {
+    if ($errors->any()) {
         foreach($errors->getBag('default')->getMessages() as $key => $error) {
-            if(Str::startsWith($key, 'documents')) {
+            if (Str::startsWith($key, 'documents')) {
                 $errorToReport = __('validation.custom.uploader.wrong-files');
 
                 if (is_array($error)) {
@@ -53,7 +53,7 @@
                 <input wire:model.live="documents" wire:loading.attr="disabled"
                        class="form-input" id="uploader" type="file" multiple autocomplete="off"
                        {{-- This is a Livewire event we can capture --}}
-                       x-on:livewire-upload-finish="$dispatch('uploadDone')">
+                       x-on:livewire-upload-finish="$wire.dispatchSelf('uploadDone')">
             @endcomponent
             <div class="flex w-2/3 justify-end pt-4">
                 <p>

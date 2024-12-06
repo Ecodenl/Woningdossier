@@ -69,7 +69,7 @@
 
             <div class="flex flex-row flex-wrap w-full advice">
                 <div class="w-full md:w-8/12 md:ml-2/12">
-                    @component('cooperation.frontend.layouts.parts.alert', [
+                    @component('cooperation.layouts.components.alert', [
                         'color' => 'blue-800',
                         'dismissible' => false,
                     ])
@@ -265,7 +265,7 @@
 
             <div class="flex flex-row flex-wrap w-full total-power">
                 <div class="w-full md:w-8/12 md:ml-2/12">
-                    @component('cooperation.frontend.layouts.parts.alert', [
+                    @component('cooperation.layouts.components.alert', [
                         'color' => 'blue-800',
                         'dismissible' => false,
                     ])
@@ -358,8 +358,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             let data = {};
             $('input:not(.source-select-input), textarea, select:not(.source-select)').change(function () {
                 data[$(this).attr('name')] = $(this).val();

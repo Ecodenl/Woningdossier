@@ -43,7 +43,7 @@
                                     </td>
                                     <td>{{$user->getFullName()}}</td>
                                     <td>
-                                        <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                        <a href="{{route('cooperation.admin.buildings.show', compact('building'))}}">
                                             {{$building->street}} {{$building->number}} {{$building->extension}}
                                         </a>
                                     </td>
@@ -63,7 +63,7 @@
                                                 @lang('default.verify')
                                             </a>
                                         @else
-                                            {{ is_null($user->account->email_verified_at) ? __('default.no') : $user->account->email_verified_at->format('d-m-Y') }}
+                                            {{ (empty($user->account) || is_null($user->account->email_verified_at)) ? __('default.no') : $user->account->email_verified_at->format('d-m-Y') }}
                                         @endcan
                                     </td>
                                 </tr>
@@ -77,8 +77,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             let table = $('table');
             table.DataTable({
                 responsive: true,

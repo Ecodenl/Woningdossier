@@ -5,9 +5,6 @@ use App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin\Cooperat
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
-
-/** @noinspection PhpParamsInspection */
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -85,9 +82,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::name('messages.')->prefix('messages')->group(function () {
                 Route::name('participants.')->prefix('participants')->group(function () {
                     Route::post('revoke-access', [Cooperation\Messages\ParticipantController::class, 'revokeAccess'])->name('revoke-access');
-
                     Route::post('add-with-building-access', [Cooperation\Messages\ParticipantController::class, 'addWithBuildingAccess'])->name('add-with-building-access');
-
                     Route::post('set-read', [Cooperation\Messages\ParticipantController::class, 'setRead'])->name('set-read');
                 });
             });

@@ -7,7 +7,6 @@ export default defineConfig({
             input: [
                 'resources/css/frontend/app.css',
                 'resources/css/admin/app.css',
-                // 'resources/sass/admin/app.scss',
                 'resources/sass/pdf.scss',
                 'resources/js/app.js',
                 'resources/js/hoomdossier.js',

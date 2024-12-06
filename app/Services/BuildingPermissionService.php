@@ -13,9 +13,9 @@ class BuildingPermissionService
      */
     public static function revokePermission(User $user, Building $building): bool
     {
-        BuildingPermission::where('user_id', $user->id)->where('building_id', $building->id)->delete();
-
-        return true;
+        return BuildingPermission::where('user_id', $user->id)
+            ->where('building_id', $building->id)
+            ->delete();
     }
 
     /**

@@ -36,7 +36,7 @@
                                 {{$user->account->email}}
                             </td>
                             <td>
-                                {{implode(',', $user->roles->pluck('human_readable_name')->toArray())}}
+                                {{$user->roles->pluck('human_readable_name')->implode(', ')}}
                             </td>
                         </tr>
                     @endif
@@ -50,6 +50,7 @@
     <script type="module">
         document.addEventListener('DOMContentLoaded', function () {
             new DataTable('#table', {
+                scrollX: true,
                 language: {
                     url: '{{ asset('js/datatables-dutch.json') }}'
                 },

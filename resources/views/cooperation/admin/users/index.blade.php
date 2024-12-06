@@ -65,17 +65,18 @@
     <script type="module">
         document.addEventListener('DOMContentLoaded', function () {
             new DataTable('#table', {
-                responsive: true,
+                scrollX: true,
                 stateSave: true,
                 order: [[0, "desc"]],
-                columns: [
-                    {responsivePriority: 1},
-                    {responsivePriority: 2},
-                    {responsivePriority: 3},
-                    {responsivePriority: 4},
-                    {responsivePriority: 6},
-                    {responsivePriority: 5}
-                ],
+                // responsive: true,
+                // columns: [
+                //     {responsivePriority: 1},
+                //     {responsivePriority: 2},
+                //     {responsivePriority: 3},
+                //     {responsivePriority: 4},
+                //     {responsivePriority: 6},
+                //     {responsivePriority: 5}
+                // ],
                 language: {
                     url: '{{ asset('js/datatables-dutch.json') }}'
                 },

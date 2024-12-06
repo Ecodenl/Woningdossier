@@ -82,7 +82,7 @@ export default (name, enableTime = false) => ({
         if (currentValue !== dateValue) {
             // Only change if actually changed
             this.$refs[this.name].value = dateValue;
-            window.triggerEvent(this.$refs[this.name], 'change');
+            this.$refs[this.name].triggerEvent('change');
         }
 
         if (this.enableTime && this.$el?.classList?.contains('day-selector')) {

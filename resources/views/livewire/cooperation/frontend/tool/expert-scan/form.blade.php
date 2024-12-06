@@ -61,7 +61,7 @@
             }
 
             if (hasWireModel) {
-                triggerCustomEvent(window, 'input-updated');
+                triggerCustomEvent('input-updated');
                 Livewire.dispatch('inputUpdated');
             }
         });

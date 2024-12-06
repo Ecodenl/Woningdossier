@@ -10,11 +10,6 @@
 ])
 
 @section('content')
-    <input type="hidden" name="building[id]" value="{{$building->id}}">
-    <input type="hidden" id="cooperation-id" value="{{HoomdossierSession::getCooperation()}}">
-
-    <input type="hidden" name="user[id]" value="{{$user->id}}">
-
     @if(! $user->allowedAccess())
         <div class="w-full">
             <p class="font-bold">@lang('cooperation/admin/buildings.show.user-disallowed-access'):</p>
@@ -372,22 +367,43 @@
         // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
         const originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('Y-m-d H:i')}}' @else '' @endif;
         const buildingOwnerId = @js($building->id);
+        const userId = @js($user->id);
+
+        function fetchRequest(url, body, redirect) {
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            }).then((response) => redirect ? location.href = redirect : location.reload());
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // delete the current user
+            document.getElementById('delete-user')?.addEventListener('click', function () {
+                if (confirm('@lang('cooperation/admin/buildings.show.delete-user')')) {
+                    fetchRequest('{{route('cooperation.admin.users.destroy')}}', {
+                        user_id: userId,
+                        _method: 'DELETE'
+                    }, '{{route('cooperation.admin.users.index')}}');
+                }
+            });
+
+            const associatedCoachesSelect = document.getElementById('associated-coaches');
+            const associatedCoaches = Array.from(associatedCoachesSelect.selectedOptions).map((option) => option.value);
+
+            const roleSelect = document.getElementById('role-select');
+            const currentRoles = Array.from(roleSelect.selectedOptions).map((option) => option.value);
+
             // Change building status
             document.getElementById('building-status').addEventListener('change', function () {
                 if (confirm('@lang('cooperation/admin/buildings.show.set-status')')) {
-                    fetch('{{ route('cooperation.admin.building-status.set-status') }}', {
-                        method: "POST",
-                        headers: {
-                            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            building_id: buildingOwnerId,
-                            status_id: this.value,
-                        }),
-                    }).then((response) => location.reload());
+                    fetchRequest('{{ route('cooperation.admin.building-status.set-status') }}', {
+                        building_id: buildingOwnerId,
+                        status_id: this.value,
+                    });
                 } else {
                     // Reset status
                     this.value = this.querySelector('option[data-current]').value;
@@ -407,17 +423,10 @@
                     }
 
                     if (confirm(confirmMessage)) {
-                        fetch('{{ route('cooperation.admin.building-status.set-appointment-date') }}', {
-                            method: "POST",
-                            headers: {
-                                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                building_id: buildingOwnerId,
-                                appointment_date: date,
-                            }),
-                        }).then((response) => location.reload());
+                        fetchRequest('{{ route('cooperation.admin.building-status.set-appointment-date') }}', {
+                            building_id: buildingOwnerId,
+                            appointment_date: date,
+                        });
                     } else {
                         // If the user does not want to set / change the appointment date,
                         // we set the date back to the one we got onload.
@@ -425,234 +434,71 @@
                     }
                 }
             });
+
+            // Associated coaches
+            associatedCoachesSelect.addEventListener('change', function (event) {
+                // If length is greater, a value was removed, otherwise added
+                if (associatedCoaches.length > this.selectedOptions.length) {
+                    let removedOption = null;
+                    const currentOptions = Array.from(this.selectedOptions).map((option) => option.value);
+                    associatedCoaches.forEach((value) => removedOption = ! removedOption && ! currentOptions.includes(value) ? value : removedOption);
+
+                    if (confirm('@lang('cooperation/admin/buildings.show.revoke-access')')) {
+                        fetchRequest('{{ route('cooperation.messages.participants.revoke-access') }}', {
+                            building_owner_id: buildingOwnerId,
+                            user_id: removedOption,
+                        });
+                    } else {
+                        this.alpineSelect.updateValue(removedOption);
+                    }
+                } else {
+                    let newOption = null;
+                    Array.from(this.selectedOptions).forEach((option) => newOption = ! newOption && ! associatedCoaches.includes(option.value) ? option.value : newOption);
+
+                    if (confirm('@lang('cooperation/admin/buildings.show.add-with-building-access')')) {
+                        fetchRequest('{{ route('cooperation.messages.participants.add-with-building-access') }}', {
+                            building_id: buildingOwnerId,
+                            user_id: newOption,
+                        });
+                    } else {
+                        this.alpineSelect.updateValue(newOption);
+                    }
+                }
+            });
+
+            roleSelect.addEventListener('change', function (event) {
+                // If length is greater, a value was removed, otherwise added
+                if (currentRoles.length > this.selectedOptions.length) {
+                    let removedOption = null;
+                    const currentOptions = Array.from(this.selectedOptions).map((option) => option.value);
+                    currentRoles.forEach((value) => removedOption = ! removedOption && ! currentOptions.includes(value) ? value : removedOption);
+
+                    if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {
+                        fetchRequest('  {{ route('cooperation.admin.roles.remove-role') }}', {
+                            role_id: removedOption,
+                            user_id: userId,
+                        });
+                    } else {
+                        this.alpineSelect.updateValue(removedOption);
+                    }
+                } else {
+                    let newOption = null;
+                    Array.from(this.selectedOptions).forEach((option) => newOption = ! newOption && ! currentRoles.includes(option.value) ? option.value : newOption);
+
+                    if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {
+                        fetchRequest('{{ route('cooperation.admin.roles.assign-role') }}', {
+                            role_id: newOption,
+                            user_id: userId,
+                        });
+                    } else {
+                        this.alpineSelect.updateValue(newOption);
+                    }
+                }
+            });
+        });
+
+        window.addEventListener('tab-switched', () => {
+            setChatScroll();
         });
     </script>
-
-
-{{--        document.addEventListener('DOMContentLoaded', function () {--}}
-
-{{--            // get some basic information--}}
-{{--            let buildingOwnerId = $('input[name=building\\[id\\]]').val();--}}
-{{--            let userId = $('input[name=user\\[id\\]]').val();--}}
-{{--            let cooperationId = $('#cooperation-id').val();--}}
-
-{{--            let appointmentDate = $('#appointment-date');--}}
-
-{{--            $('[data-toggle="tooltip"]').tooltip();--}}
-
-{{--            scrollChatToMostRecentMessage();--}}
-{{--            onFormSubmitAddFragmentToRequest();--}}
-
-
-{{--            $('.nav-tabs .active a').trigger('shown.bs.tab');--}}
-
-{{--            let currentDate = new Date();--}}
-{{--            currentDate.setDate(currentDate.getDate() - 1);--}}
-
-{{--            appointmentDate.datetimepicker({--}}
-{{--                showTodayButton: true,--}}
-{{--                allowInputToggle: true,--}}
-{{--                locale: 'nl',--}}
-{{--                // format: 'L',--}}
-{{--                showClear: true,--}}
-{{--            }).on('dp.hide', function (event) {--}}
-{{--                // This way the right events get triggered so we will always get a nice formatted date--}}
-{{--                appointmentDate.find('input').blur();--}}
-
-{{--                // Queue the confirm so the DOM is properly updated for the browsers which seem to ignore the blur.--}}
-{{--                setTimeout(() => {--}}
-{{--                    let date = appointmentDate.find('input').val();--}}
-
-
-{{--                });--}}
-{{--            });--}}
-
-{{--            // delete the current user--}}
-{{--            $('#delete-user').click(function () {--}}
-{{--                if (confirm('@lang('cooperation/admin/buildings.show.delete-user')')) {--}}
-
-{{--                    $.ajax({--}}
-{{--                        url: '{{route('cooperation.admin.users.destroy')}}',--}}
-{{--                        method: 'POST',--}}
-{{--                        data: {--}}
-{{--                            user_id: userId,--}}
-{{--                            _method: 'DELETE'--}}
-{{--                        }--}}
-{{--                    }).done(function () {--}}
-{{--                        window.location.href = '{{route('cooperation.admin.users.index')}}'--}}
-{{--                    })--}}
-{{--                }--}}
-{{--            });--}}
-
-{{--            $('#building-status').select2({}).on('select2:selecting', function (event) {--}}
-{{--                let statusToSelect = $(event.params.args.data.element);--}}
-
-{{--                if (confirm('@lang('cooperation/admin/buildings.show.set-status')')) {--}}
-{{--                    $.ajax({--}}
-{{--                        method: 'POST',--}}
-{{--                        url: '{{route('cooperation.admin.building-status.set-status')}}',--}}
-{{--                        data: {--}}
-{{--                            building_id: buildingOwnerId,--}}
-{{--                            status_id: statusToSelect.val(),--}}
-{{--                        }--}}
-{{--                    }).done(function () {--}}
-{{--                        location.reload();--}}
-{{--                    })--}}
-{{--                } else {--}}
-{{--                    event.preventDefault();--}}
-{{--                    return false;--}}
-{{--                }--}}
-{{--            });--}}
-{{--            $('#associated-coaches').select2({--}}
-{{--                templateSelection: function (tag, container) {--}}
-{{--                    let option = $('#associated-coaches option[value="' + tag.id + '"]');--}}
-{{--                    if (option.attr('locked')) {--}}
-{{--                        $(container).addClass('select2-locked-tag');--}}
-{{--                        tag.locked = true--}}
-{{--                    }--}}
-
-{{--                    return tag.text;--}}
-{{--                }--}}
-{{--            }).on('select2:unselecting', function (event) {--}}
-{{--                let optionToUnselect = $(event.params.args.data.element);--}}
-
-{{--                // check if the option is locked--}}
-{{--                if (typeof optionToUnselect.attr('locked') === "undefined") {--}}
-{{--                    if (confirm('@lang('cooperation/admin/buildings.show.revoke-access')')) {--}}
-{{--                        $.ajax({--}}
-{{--                            url: '{{route('cooperation.messages.participants.revoke-access')}}',--}}
-{{--                            method: 'POST',--}}
-{{--                            data: {--}}
-{{--                                user_id: optionToUnselect.val(),--}}
-{{--                                building_owner_id: buildingOwnerId--}}
-{{--                            }--}}
-{{--                        }).done(function () {--}}
-{{--                            // just reload the page--}}
-{{--                            location.reload();--}}
-{{--                        });--}}
-{{--                    } else {--}}
-{{--                        event.preventDefault();--}}
-{{--                        return false;--}}
-{{--                    }--}}
-{{--                } else {--}}
-{{--                    event.preventDefault();--}}
-{{--                    return false;--}}
-{{--                }--}}
-{{--            }).on('select2:selecting', function (event) {--}}
-{{--                let optionToSelect = $(event.params.args.data.element);--}}
-
-{{--                if (confirm('@lang('cooperation/admin/buildings.show.add-with-building-access')')) {--}}
-{{--                    $.ajax({--}}
-{{--                        url: '{{route('cooperation.messages.participants.add-with-building-access')}}',--}}
-{{--                        method: 'POST',--}}
-{{--                        data: {--}}
-{{--                            user_id: optionToSelect.val(),--}}
-{{--                            building_id: buildingOwnerId--}}
-{{--                        }--}}
-{{--                    }).done(function () {--}}
-{{--                        // just reload the page--}}
-{{--                        location.reload();--}}
-{{--                    });--}}
-{{--                } else {--}}
-{{--                    event.preventDefault();--}}
-{{--                    return false;--}}
-{{--                }--}}
-{{--            });--}}
-
-{{--            $('#role-select').select2({--}}
-{{--                templateSelection: function (tag, container) {--}}
-{{--                    let option = $('#role-select option[value="' + tag.id + '"]');--}}
-{{--                    if (option.attr('locked')) {--}}
-{{--                        $(container).addClass('select2-locked-tag');--}}
-{{--                        tag.locked = true--}}
-{{--                    }--}}
-
-{{--                    return tag.text;--}}
-{{--                }--}}
-{{--            })--}}
-{{--                .on('select2:selecting', function (event) {--}}
-{{--                    let roleToSelect = $(event.params.args.data.element);--}}
-
-{{--                    if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {--}}
-{{--                        $.ajax({--}}
-{{--                            url: '{{route('cooperation.admin.roles.assign-role')}}',--}}
-{{--                            method: 'POST',--}}
-{{--                            data: {--}}
-{{--                                role_id: roleToSelect.val(),--}}
-{{--                                user_id: userId,--}}
-{{--                                cooperation_id: cooperationId--}}
-{{--                            }--}}
-{{--                        }).done(function () {--}}
-{{--                            // just reload the page--}}
-{{--                            location.reload();--}}
-{{--                        });--}}
-{{--                    } else {--}}
-{{--                        event.preventDefault();--}}
-{{--                        return false;--}}
-{{--                    }--}}
-{{--                })--}}
-{{--                .on('select2:unselecting', function (event) {--}}
-{{--                    let roleToUnselect = $(event.params.args.data.element);--}}
-
-{{--                    if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {--}}
-{{--                        $.ajax({--}}
-{{--                            url: '{{route('cooperation.admin.roles.remove-role')}}',--}}
-{{--                            method: 'POST',--}}
-{{--                            data: {--}}
-{{--                                role_id: roleToUnselect.val(),--}}
-{{--                                user_id: userId--}}
-{{--                            }--}}
-{{--                        }).done(function () {--}}
-{{--                            // just reload the page--}}
-{{--                            location.reload();--}}
-{{--                        });--}}
-{{--                    } else {--}}
-{{--                        event.preventDefault();--}}
-{{--                        return false;--}}
-{{--                    }--}}
-{{--                });--}}
-{{--        });--}}
-
-
-
-{{--        function scrollChatToMostRecentMessage() {--}}
-{{--            $('.nav-tabs a').on('shown.bs.tab', function () {--}}
-
-{{--                let tabId = $(this).attr('href');--}}
-{{--                let tab = $(tabId);--}}
-{{--                let chat = tab.find('.panel-chat-body')[0];--}}
-
-{{--                if (typeof chat !== "undefined") {--}}
-{{--                    chat.scrollTop = chat.scrollHeight - chat.clientHeight;--}}
-
-{{--                    let isChatPublic = tab.find('[name=is_public]').val();--}}
-{{--                    let buildingId = tab.find('[name=building_id]').val();--}}
-
-{{--                    $.ajax({--}}
-{{--                        url: '{{route('cooperation.messages.participants.set-read')}}',--}}
-{{--                        method: 'post',--}}
-{{--                        data: {--}}
-{{--                            is_public: isChatPublic,--}}
-{{--                            building_id: buildingId--}}
-{{--                        },--}}
-{{--                        success: function () {--}}
-{{--                            updateTotalUnreadMessageCount();--}}
-{{--                        }--}}
-{{--                    })--}}
-{{--                }--}}
-{{--            });--}}
-{{--        }--}}
-
-{{--        function onFormSubmitAddFragmentToRequest()--}}
-{{--        {--}}
-{{--            $('form').submit(function (event) {--}}
-{{--                $(this).append($('<input>', {--}}
-{{--                    type: 'hidden',--}}
-{{--                    name: 'fragment',--}}
-{{--                    value: $(this).parents('.tab-pane').prop('id'),--}}
-{{--                }));--}}
-{{--            });--}}
-{{--        }--}}
-
-{{--    </script>--}}
 @endpush

@@ -91,8 +91,8 @@ export default (inputSource = 'no-match') => ({
                     let input = this.inputGroup.querySelector(`input:not([disabled]):not([readonly])[type="hidden"][data-short="${short}"]`);
                     if (input) {
                         input.value = value;
-                        window.triggerEvent(input, 'input');
-                        window.triggerEvent(input, 'change');
+                        input.triggerEvent('input');
+                        input.triggerEvent('change');
                     }
                 }
             } else {
@@ -124,8 +124,8 @@ export default (inputSource = 'no-match') => ({
                             case 'textarea':
                             case 'range':
                                 input.value = value;
-                                window.triggerEvent(input, 'input');
-                                window.triggerEvent(input, 'change');
+                                input.triggerEvent('input');
+                                input.triggerEvent('change');
                                 break;
                             case 'select':
                                 let multiple = input.hasAttribute('multiple');
@@ -139,7 +139,7 @@ export default (inputSource = 'no-match') => ({
                                     input.value = value;
                                 }
 
-                                window.triggerEvent(input, 'change');
+                                input.triggerEvent('change');
                                 break;
                             case 'radio':
                                 input = this.inputGroup.querySelector(`input[type="radio"][value="${value}"]`);
@@ -149,7 +149,7 @@ export default (inputSource = 'no-match') => ({
                                         checkedInput.checked = false;
                                     }
                                     input.checked = true;
-                                    window.triggerEvent(input, 'change');
+                                    input.triggerEvent('change');
                                 }
                                 break;
                             case "checkbox":
@@ -172,7 +172,7 @@ export default (inputSource = 'no-match') => ({
                                         }
                                     }
                                     input.checked = true;
-                                    window.triggerEvent(input, 'change');
+                                    input.triggerEvent('change');
                                 }
                                 break;
                             default:

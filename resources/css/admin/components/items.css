@@ -31,6 +31,10 @@
     @apply hidden;
 }
 
+.dataTable th {
+    @apply whitespace-nowrap;
+}
+
 .dt-layout-row {
     @apply flex flex-wrap flex-row w-full justify-between items-center my-2 overflow-auto;
 }

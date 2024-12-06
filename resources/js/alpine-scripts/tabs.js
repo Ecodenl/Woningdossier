@@ -44,11 +44,12 @@ export default (defaultTab = null) => ({
     },
     switchTab(element) {
         if (element) {
+            const oldTab = this.currentTab;
             this.currentTab = this.$el.getAttribute('data-tab');
             // Use replaceState instead of setting hash directly to not affect history stack.
             history.replaceState(undefined, undefined, `#${this.currentTab}`);
             // location.hash = this.currentTab;
-            triggerCustomEvent(window, 'tab-switched');
+            triggerCustomEvent('tab-switched', {from: oldTab, to: this.currentTab});
         }
     }
 });

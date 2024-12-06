@@ -130,7 +130,7 @@ export default (initiallyOpen = false) => ({
                                 this.$wire.set(this.wireModel, this.values);
                             }
                         } else {
-                            window.triggerEvent(this.select, 'change');
+                            this.select.triggerEvent('change');
                         }
                     }
                 });
@@ -159,7 +159,7 @@ export default (initiallyOpen = false) => ({
                     this.$wire.set(this.wireModel, this.values);
                 }
             } else {
-                window.triggerEvent(this.select, 'change');
+                this.select.triggerEvent('change');
             }
         }
     },

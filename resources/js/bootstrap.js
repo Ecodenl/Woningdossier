@@ -115,11 +115,10 @@ window.initTinyMCE = function (options = {}) {
  * @param element
  * @param eventName
  */
-window.triggerEvent = function (element, eventName) {
-    // TODO: Deprecate to just the window.
-    if (((element && [Node.ELEMENT_NODE, Node.DOCUMENT_NODE].includes(element.nodeType)) || element === window) && eventName) {
+window.triggerEvent = function (eventName) {
+    if (eventName) {
         let event = new Event(eventName, {bubbles: true});
-        element.dispatchEvent(event);
+        window.dispatchEvent(event);
     }
 }
 
@@ -130,16 +129,15 @@ window.triggerEvent = function (element, eventName) {
  * @param eventName
  * @param params
  */
-window.triggerCustomEvent = function (element, eventName, params = {}) {
-    // TODO: Deprecate to just the window.
+window.triggerCustomEvent = function (eventName, params = {}) {
     if (typeof params !== 'object') {
         console.error('Params is not a valid object!');
         params = {};
     }
 
-    if (((element && [Node.ELEMENT_NODE, Node.DOCUMENT_NODE].includes(element.nodeType)) || element === window) && eventName) {
+    if (eventName) {
         let event = new CustomEvent(eventName, {bubbles: true, detail: params });
-        element.dispatchEvent(event);
+        window.dispatchEvent(event);
     }
 }
 

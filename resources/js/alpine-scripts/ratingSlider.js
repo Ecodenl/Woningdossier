@@ -50,8 +50,8 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false) =>
                 this.selectOption(this.$el);
                 if (! this.livewire) {
                     // If we don't use Livewire, the value won't be entangled and as such we should trigger events
-                    window.triggerEvent(this.$refs['rating-slider-input'], 'input');
-                    window.triggerEvent(this.$refs['rating-slider-input'], 'change');
+                    this.$refs['rating-slider-input'].triggerEvent('input');
+                    this.$refs['rating-slider-input'].triggerEvent('change');
                 }
             }
         }

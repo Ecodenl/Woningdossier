@@ -40,7 +40,7 @@
 }
 
 .dt-length label {
-    @apply ml-2;
+    @apply text-blue-500 font-light text-sm ml-2;
 }
 
 .dt-length select {
@@ -59,7 +59,7 @@
 }
 
 .dt-search label {
-    @apply mr-4;
+    @apply text-blue-500 font-light text-sm mr-4;
 }
 
 .dt-input {
@@ -79,4 +79,8 @@
 
 .dt-paging .ellipsis {
     @apply ml-1;
+}
+
+.dt-info {
+    @apply text-blue-500 font-light text-sm
 }

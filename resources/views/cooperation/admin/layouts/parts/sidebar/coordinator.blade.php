@@ -1,4 +1,4 @@
-<li class="@if(in_array(Route::currentRouteName(), ['cooperation.admin.users.index', 'cooperation.admin.buildings.show'])) active @endif">
+<li class="@if(in_array(Route::currentRouteName(), ['cooperation.admin.users.index', 'cooperation.admin.buildings.show', 'cooperation.admin.buildings.edit'])) active @endif">
     <a href="{{route('cooperation.admin.users.index')}}">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.home')</a>
 </li>
 <li class="@if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.coaches.index', 'cooperation.admin.cooperation.coaches.show'])) active @endif">

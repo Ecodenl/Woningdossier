@@ -203,7 +203,7 @@
                 <div class="flex flex-row flex-wrap w-full crawlspace-accessible">
                     <div class="w-full md:w-8/12 md:ml-2/12">
                         @component('cooperation.layouts.components.alert', [
-                            'color' => 'blue-800', 'dismissible' => false,
+                            'color' => 'blue-900', 'dismissible' => false,
                         ])
                             <p class="text-blue-800">
                                 @lang('floor-insulation.insulation-advice.text.title')

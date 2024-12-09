@@ -5,7 +5,7 @@
         <div class="bg-white rounded-3xl w-3/4 flex flex-wrap overflow-hidden min-h-15/20 max-h-19/20">
             <div class="p-10 xl:p-20 w-1/2 flex flex-col justify-between h-full overflow-auto">
                 @if(session('verified'))
-                    @component('cooperation.layouts.components.alert', ['color' => 'blue-800'])
+                    @component('cooperation.layouts.components.alert', ['color' => 'blue-900'])
                         @lang('cooperation/auth/verify.success-log-in')
                     @endcomponent
                 @endif

@@ -70,7 +70,7 @@
             <div class="flex flex-row flex-wrap w-full advice">
                 <div class="w-full md:w-8/12 md:ml-2/12">
                     @component('cooperation.layouts.components.alert', [
-                        'color' => 'blue-800',
+                        'color' => 'blue-900',
                         'dismissible' => false,
                     ])
                         <p id="solar-panels-advice" class="text-blue-800"></p>
@@ -266,7 +266,7 @@
             <div class="flex flex-row flex-wrap w-full total-power">
                 <div class="w-full md:w-8/12 md:ml-2/12">
                     @component('cooperation.layouts.components.alert', [
-                        'color' => 'blue-800',
+                        'color' => 'blue-900',
                         'dismissible' => false,
                     ])
                         <p id="solar-panels-total-power" class="text-blue-800"></p>

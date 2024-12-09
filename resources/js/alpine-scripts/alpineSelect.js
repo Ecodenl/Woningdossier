@@ -81,6 +81,12 @@ export default (initiallyOpen = false, withSearch = false) => ({
             this.search = null;
             this.setInputValue();
             this.applySearchPadding();
+
+            if (this.multiple && this.values.length > 0) {
+                this.$refs['select-input'].classList.add('no-placeholder');
+            } else {
+                this.$refs['select-input'].classList.remove('no-placeholder');
+            }
         });
         this.$watch('search', (value, oldValue) => {
             this.searchOptions();
@@ -124,6 +130,11 @@ export default (initiallyOpen = false, withSearch = false) => ({
                 this.select.style.display = 'none';
                 // Show the new alpine select
                 this.$refs['select-input-group'].style.display = '';
+
+                let firstDisabledOption = this.select.querySelector('option[disabled][selected]');
+                if (firstDisabledOption) {
+                    this.$refs['select-input'].setAttribute('placeholder', firstDisabledOption.textContent.trim());
+                }
 
                 // Set custom DOM prop so we can access methods and values here from the DOM.
                 this.select.alpineSelect = this;

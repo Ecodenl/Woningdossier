@@ -319,7 +319,7 @@
                         </form>
                     @endcan
                 @else
-                    @component('cooperation.layouts.components.alert', ['color' => 'blue-800', 'dismissible' => false])
+                    @component('cooperation.layouts.components.alert', ['color' => 'blue-900', 'dismissible' => false])
                         @lang('cooperation/admin/buildings.show.tabs.2fa.status.inactive.title')
                     @endcomponent
                 @endif
@@ -435,6 +435,7 @@
                 }
             });
 
+            @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
             // Associated coaches
             associatedCoachesSelect.addEventListener('change', function (event) {
                 // If length is greater, a value was removed, otherwise added
@@ -465,7 +466,10 @@
                     }
                 }
             });
+            @endcannot
 
+            @cannot('editAny', $userCurrentRole)
+            // User roles
             roleSelect.addEventListener('change', function (event) {
                 // If length is greater, a value was removed, otherwise added
                 if (currentRoles.length > this.selectedOptions.length) {
@@ -495,6 +499,7 @@
                     }
                 }
             });
+            @endcannot
         });
 
         window.addEventListener('tab-switched', () => {

@@ -8,12 +8,12 @@
                 @lang('auth.login.form.header')
             </h1>
             @if(session('verified'))
-                @component('cooperation.layouts.components.alert', ['color' => 'blue-800'])
+                @component('cooperation.layouts.components.alert', ['color' => 'blue-900'])
                     @lang('cooperation/auth/verify.success-log-in')
                 @endcomponent
             @endif
             @if(session('success'))
-                @component('cooperation.layouts.components.alert', ['color' => 'blue-800'])
+                @component('cooperation.layouts.components.alert', ['color' => 'blue-900'])
                     {{session('success')}}
                 @endcomponent
             @endif

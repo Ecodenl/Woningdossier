@@ -21,6 +21,11 @@ a.in-text {
 .btn {
     @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline text-sm inline-block min-w-min;
 }
+
+.btn:hover i, .btn:focus i {
+    @apply opacity-60;
+}
+
 .btn-sm {
     @apply p-2;
     font-size: 12px;

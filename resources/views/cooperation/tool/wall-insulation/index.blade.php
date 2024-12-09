@@ -258,7 +258,7 @@
                 <div id="advice-help">
                     <div class="w-full md:w-2/3 md:ml-2/12">
                         @component('cooperation.layouts.components.alert', [
-                            'color' => 'blue-800', 'dismissible' => false
+                            'color' => 'blue-900', 'dismissible' => false
                         ])
                             <p class="text-blue-800">
                                 @lang('wall-insulation.insulation-advice.text.title')

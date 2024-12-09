@@ -1,12 +1,10 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('woningdossier.cooperation.admin.cooperation.questionnaires.index.header'),
+    'panelLink' => route('cooperation.admin.cooperation.questionnaires.create')
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.header')
-            <a href="{{route('cooperation.admin.cooperation.questionnaires.create')}}"
-               class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
-        </div>
 
         <div class="panel-body">
             <div class="row">
@@ -57,24 +55,26 @@
 @push('js')
     <script src="{{asset('js/bootstrap-toggle.min.js')}}"></script>
 
-    <script>
-        $(document).ready(function () {
-            var destroyQuestionnaireRoute = '{{route('cooperation.admin.cooperation.questionnaires.destroy', ['questionnaire' => ':questionnaire-id'])}}';
+    <script type="module">
+        let destroyQuestionnaireRoute = '{{route('cooperation.admin.cooperation.questionnaires.destroy', ['questionnaire' => ':questionnaire-id'])}}';
 
-            $(document).on('click', '.destroy', function (event) {
-                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.questionnaires.destroy.are-you-sure')')) {
-                    $.ajax({
-                        url: destroyQuestionnaireRoute.replace(':questionnaire-id', $(this).data('questionnaire-id')),
-                        method: 'delete',
-                        success: function () {
-                            window.location.reload();
-                        }
-                    });
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+        document.addEventListener('click', function (event) {
+            let target = event.target.closest('.destroy') ?? event.target;
+            if (target.classList.contains('destroy') && confirm('@lang('woningdossier.cooperation.admin.cooperation.questionnaires.destroy.are-you-sure')')) {
+                $.ajax({
+                    url: destroyQuestionnaireRoute.replace(':questionnaire-id', $(this).data('questionnaire-id')),
+                    method: 'delete',
+                    success: function () {
+                        window.location.reload();
+                    }
+                });
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
             var toggleActive = $('.toggle-active');
 
             $(toggleActive).each(function (index, value) {

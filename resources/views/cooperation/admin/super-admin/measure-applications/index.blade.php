@@ -1,11 +1,9 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/measure-applications.index.title')
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/super-admin/measure-applications.index.title')
-        </div>
-
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
@@ -39,8 +37,8 @@
 
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             $('table').dataTable({
                 responsive: false
             });

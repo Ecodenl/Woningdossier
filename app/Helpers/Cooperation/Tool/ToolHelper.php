@@ -86,8 +86,8 @@ abstract class ToolHelper
     {
         $considers = $this->getValues("considerables.{$model->id}.is_considering");
 
-        // when not set, it will be null. not set = not considering
-        // almost impossible to happen as the $user->considers() method already returns a default but a fallback is never bad.
+        // When not set, it will be null. Not set = considering by default.
+        // Almost impossible to happen as the $user->considers() method already returns a default but a fallback is never bad.
         if (is_null($considers)) {
             $considers = true;
         }

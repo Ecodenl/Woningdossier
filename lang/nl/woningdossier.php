@@ -167,7 +167,6 @@ return [
                         ],
                         'edit' => 'Bewerken',
                         'show' => 'Details van deze coöperatie',
-                        'create' => 'Aanmaken',
                         'destroy' => 'Verwijder coöperatie',
                     ],
                     'create' => [

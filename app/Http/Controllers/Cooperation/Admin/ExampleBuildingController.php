@@ -25,7 +25,7 @@ class ExampleBuildingController extends Controller
         $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id')
             ->orderBy('order');
 
-        if (HoomdossierSession::currentRole() !== RoleHelper::ROLE_SUPER_ADMIN) {
+        if (HoomdossierSession::getRole(true)?->name !== RoleHelper::ROLE_SUPER_ADMIN) {
             $exampleBuildingsQuery->forMyCooperation();
         }
 

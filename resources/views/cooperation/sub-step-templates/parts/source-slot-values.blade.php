@@ -27,7 +27,7 @@
 
                     // We try to build the input source names based off the options, but if they aren't available,
                     // we will use the shorts provided
-                    // TODO: Check how often a check is done for rating-slider, perhaps change this to a function to
+                    //TODO: Check how often a check is done for rating-slider, perhaps change this to a function to
                     // check if a tool question has "sub questions"
                     if ($toolQuestion->data_type === \App\Helpers\DataTypes\Caster::JSON) {
                         foreach ($toolQuestion->options as $option) {

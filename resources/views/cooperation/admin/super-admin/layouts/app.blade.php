@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            @include('cooperation.admin.layouts.sidebar-menu')
+            @include('cooperation.admin.layouts.parts.sidebar-menu')
             <div class="col-md-9">
                 @yield('super_admin_content')
             </div>
@@ -13,18 +13,15 @@
 
 @prepend('css')
     <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.dataTables.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/dataTables.bootstrap.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.bootstrap.min.css')}}">
+    @vite('resources/sass/admin/datatables/datatables.scss')
 @endprepend
 
 @prepend('js')
+    @vite('resources/js/datatables/datatables.js')
+    @vite('resources/js/select2.js')
 
-    <script src="{{ asset('js/datatables.js') }}"></script>
-    <script src="{{asset('js/select2.js')}}"></script>
-
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
 
             $('.collapse').on('shown.bs.collapse', function(){
                 $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");

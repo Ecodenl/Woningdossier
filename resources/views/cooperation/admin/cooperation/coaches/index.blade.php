@@ -1,5 +1,5 @@
 @extends('cooperation.admin.layouts.app', [
-    'panelTitle' => __('woningdossier.cooperation.admin.cooperation.coaches.index.header'),
+    'panelTitle' => __('woningdossier.cooperation.admin.cooperation.coaches.index.header')
 ])
 
 @section('content')
@@ -62,6 +62,6 @@
                     }
                 },
             });
-        })
+        });
     </script>
 @endpush

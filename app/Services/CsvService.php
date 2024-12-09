@@ -105,7 +105,7 @@ class CsvService
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
                 $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
 
-                $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building);
+                $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($building);
                 $connectedCoachNames = User::forMyCooperation($cooperation->id)
                     ->whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
                     ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")

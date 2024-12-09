@@ -33,8 +33,8 @@
             <div class="w-full divide-y divide-blue-500 divide-opacity-50">
                 @if(! empty($panelTitle))
                     <div class="p-4 flex justify-between">
-                        <h3 class="heading-5 inline-block">
-                            {{ $panelTitle }}
+                        <h3 class="heading-5 inline-block font-normal">
+                            {!! $panelTitle !!}
                         </h3>
                     </div>
                 @endif

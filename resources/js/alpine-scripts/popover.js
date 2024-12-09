@@ -2,7 +2,6 @@ export default (
     initiallyOpen = false,
     arrow = true,
     position = 'bottom',
-    height = 0,
     offset = 8,
     trigger = ['hover'],
 ) => ({
@@ -10,7 +9,6 @@ export default (
     open: false,
     position: position,
     originalPosition: null,
-    height: height,
     offset: offset,
     arrow: arrow,
     trigger: trigger,
@@ -24,11 +22,7 @@ export default (
         this.$nextTick(() => {
             if (initiallyOpen) {
                 this.open = true;
-                this.updatePosition();
-
             }
-
-            setTimeout(() => that.calculateHeight(), 1000);
         });
 
         window.addEventListener('resize', function () {
@@ -55,19 +49,15 @@ export default (
         let button = this.$refs.popover;
         let posY = 0,
             posX = 0;
-        let minY = '',
-            minX = '';
 
-        // We have 5 tries. This is because when open is set, there is a slight delay before the dropdown is visible
-        // on the client screen. If it's not visible, then there won't be any sizes, and so we end up with the dropdown
+        // We have 5 tries. This is because when open is set, there is a slight delay before the element is visible
+        // on the client screen. If it's not visible, then there won't be any sizes, and so we end up with the element
         // being outside of the screen
         if (tries <= 5) {
             if (getComputedStyle(popover).display === 'none') {
                 setTimeout(() => this.updatePosition(++tries), 25);
             } else {
                 this.handleScreenPosition();
-                const popoverRect = popover.getBoundingClientRect();
-                const buttonRect = button.getBoundingClientRect();
 
                 switch (this.position) {
                     case "top":
@@ -97,7 +87,6 @@ export default (
         let button = this.$refs.popover;
 
         const buttonRect = button.getBoundingClientRect();
-        const popoverRect = popover.getBoundingClientRect();
 
         switch (this.originalPosition) {
             case "top":
@@ -138,23 +127,10 @@ export default (
                 break;
         }
     },
-    calculateHeight() {
-        let popover = this.$refs['body'];
-
-        // this.open = true;
-        let that = this;
-
-        this.$nextTick(function () {
-            that.height = that.$refs.popover.offsetHeight;
-            // that.open = open;
-            that.updatePosition();
-        });
-    },
     popover: {
         ['x-ref']: 'popover',
         ['x-on:click']() {
             let target = this.$event.target;
-
 
             if (this.trigger.includes('click')) {
                 if (! (target.tagName === 'BUTTON' || target.tagName === 'A' || target.getAttribute('type') === 'button')
@@ -181,14 +157,12 @@ export default (
             this.close();
         },
         ['x-on:mouseenter']() {
-            let target = this.$event.target;
             if (this.trigger.includes('hover') && null === this.currentTrigger) {
                 this.currentTrigger = 'hover';
                 this.show()
             }
         },
         ['x-on:mouseleave']() {
-            let target = this.$event.target;
             if (this.trigger.includes('hover') && 'hover' === this.currentTrigger) {
                 this.currentTrigger = null;
                 this.close();

@@ -30,7 +30,7 @@ class GiveCoachesBuildingPermission
         // and we need to check if there were "connected" coaches, if so we have to give them building permissions
         if (PrivateMessage::public()->conversation($building->id)->exists()) {
             // get all the coaches that are currently connected to the building
-            $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building, true);
+            $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatusService::getConnectedCoachesByBuilding($building, true);
 
             // we give the coaches that have "permission" to talk to a resident the permissions to access the building from the resident.
             foreach ($coachesWithAccessToResidentBuildingStatuses as $coachWithAccessToResidentBuildingStatus) {

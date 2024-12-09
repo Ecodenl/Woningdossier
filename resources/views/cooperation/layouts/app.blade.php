@@ -86,6 +86,10 @@
             // Handle Polyfill for IOS 10
             window.addEventListener('touchmove', function () {});
 
+            window.addEventListener('page-reload', function () {
+                location.reload();
+            });
+
             window.addEventListener('modal-toggled', function (event) {
                 let scrollable = document.getElementById('app-body');
                 let modalOpened = event.detail.modalOpened;

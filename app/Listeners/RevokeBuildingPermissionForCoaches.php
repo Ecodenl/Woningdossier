@@ -31,7 +31,7 @@ class RevokeBuildingPermissionForCoaches
         ]);
 
         // get all the connected coaches to the building
-        $connectedCoachesToBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building, true);
+        $connectedCoachesToBuilding = BuildingCoachStatusService::getConnectedCoachesByBuilding($building, true);
 
         // and revoke them the access to the building
         foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {

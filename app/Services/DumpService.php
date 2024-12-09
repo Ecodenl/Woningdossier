@@ -191,7 +191,7 @@ class DumpService
             ];
         } else {
             $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
-            $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+            $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($building);
             $connectedCoachNames = User::whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
                 ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
                 ->pluck('full_name')

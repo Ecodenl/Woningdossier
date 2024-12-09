@@ -2,7 +2,6 @@
     'open' => false,
     'arrow' => true,
     'position' => 'right',
-    'height' => 0,
     'offset' => 8,
     'trigger' => ['hover', 'click'],
     'class' => 'inline-flex items-center',
@@ -11,7 +10,7 @@
     'id' => null,
 ])
 
-<span x-data="popover(@js($open), @js($arrow), @js($position), @js($height), @js($offset), {{json_encode(Arr::wrap($trigger))}})"
+<span x-data="popover(@js($open), @js($arrow), @js($position), @js($offset), {{json_encode(Arr::wrap($trigger))}})"
     x-on:resize.window="updatePosition"
 {{--    @if($self) x-bind="popover" @endif--}}
     x-bind="popover"

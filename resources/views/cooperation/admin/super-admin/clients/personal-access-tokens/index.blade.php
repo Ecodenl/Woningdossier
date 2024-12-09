@@ -1,14 +1,10 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/clients/personal-access-tokens.index.header', ['client_name' => $client->name]),
+    'panelLink' => route('cooperation.admin.super-admin.clients.personal-access-tokens.create', compact('client'))
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.header', ['client_name' => $client->name])
-            <a href="{{ route('cooperation.admin.super-admin.clients.personal-access-tokens.create', compact('client')) }}"
-               class="btn btn-success">
-                @lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.header-button')
-            </a>
-        </div>
 
 
         <div class="panel-body">

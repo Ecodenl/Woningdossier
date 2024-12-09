@@ -1,14 +1,10 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/clients.index.header'),
+    'panelLink' => route('cooperation.admin.super-admin.clients.create')
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/super-admin/clients.index.header')
-            <a href="{{ route('cooperation.admin.super-admin.clients.create') }}"
-               class="btn btn-success">
-                @lang('cooperation/admin/super-admin/clients.index.header-button')
-            </a>
-        </div>
 
         <div class="panel-body">
             <div class="row">

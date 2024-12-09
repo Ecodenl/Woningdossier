@@ -6,7 +6,6 @@ return [
     ],
     'index' => [
         'header' => 'API Tokens van :client_name',
-        'header-button' => 'API Token aanmaken',
         'token-created' => 'API Token aangemaakt, deze is hieronder eenmalig zichtbaar.',
         'table' => [
             'last-used' => 'Laatste keer gebruikt',

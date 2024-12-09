@@ -1,17 +1,16 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/buildings.show.header', [
+        'name' => $user->getFullName(),
+        'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
+        'zipcode-and-city' => $building->postal_code.' '.$building->city,
+        'municipality' => $building->municipality?->name ?? __('cooperation/admin/buildings.show.unknown-municipality'),
+        'email' => $user->account->email,
+        'phone-number' => $user->phone_number,
+    ])
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/buildings.show.header', [
-                'name' => $user->getFullName(),
-                'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
-                'zipcode-and-city' => $building->postal_code.' '.$building->city,
-                'municipality' => $building->municipality?->name ?? __('cooperation/admin/buildings.show.unknown-municipality'),
-                'email' => $user->account->email,
-                'phone-number' => $user->phone_number
-            ])
-        </div>
 
         <div class="panel-body">
             {{-- delete a user --}}

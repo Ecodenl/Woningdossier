@@ -1,12 +1,10 @@
-    @extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show.header', ['name' => $user->getFullName()])
+])
 
 @section('content')
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show.header', ['name' => $user->getFullName()])
-
-        </div>
         <input type="hidden" name="user[id]" value="{{$user->id}}">
         <input type="hidden" id="cooperation-id" value="{{$cooperationToManage->id}}">
         <div class="panel-body">

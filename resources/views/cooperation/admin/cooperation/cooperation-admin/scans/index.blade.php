@@ -1,10 +1,9 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/cooperation/cooperation-admin/scans.index.title')
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/cooperation/cooperation-admin/scans.index.title')
-        </div>
 
         <div class="panel-body">
             <div class="row">

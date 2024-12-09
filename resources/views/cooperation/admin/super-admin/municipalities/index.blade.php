@@ -1,14 +1,10 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/municipalities.index.title'),
+    'panelLink' => route('cooperation.admin.super-admin.municipalities.create')
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading flex">
-            @lang('cooperation/admin/super-admin/municipalities.index.title')
-            <a href="{{route('cooperation.admin.super-admin.municipalities.create')}}"
-               class="btn btn-md btn-primary">
-                <span class="glyphicon glyphicon-plus"></span>
-            </a>
-        </div>
 
         <div class="panel-body">
             <div class="row">

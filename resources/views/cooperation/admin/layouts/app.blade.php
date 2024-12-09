@@ -32,10 +32,15 @@
         >
             <div class="w-full divide-y divide-blue-500 divide-opacity-50">
                 @if(! empty($panelTitle))
-                    <div class="p-4 flex justify-between">
+                    <div class="p-4 flex items-center justify-between">
                         <h3 class="heading-5 inline-block font-normal">
                             {!! $panelTitle !!}
                         </h3>
+                        @if(! empty($panelLink))
+                            <a href="{{ $panelLink }}" class="h-10">
+                                <i class="w-10 h-10 icon-plus-circle"></i>
+                            </a>
+                        @endif
                     </div>
                 @endif
 

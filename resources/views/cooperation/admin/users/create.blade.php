@@ -1,9 +1,9 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-user')
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-user')</div>
-
         <div class="panel-body" x-data>
             @component('cooperation.tool.components.alert', [
                 'alertType' => 'info',

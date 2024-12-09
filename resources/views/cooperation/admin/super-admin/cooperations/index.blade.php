@@ -1,14 +1,11 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('woningdossier.cooperation.admin.super-admin.cooperations.index.header'),
+    'panelLink' => route('cooperation.admin.super-admin.cooperations.create')
+])
 
 @section('content')
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.header')
-            <a href="{{route('cooperation.admin.super-admin.cooperations.create')}}" class=" btn-sm btn btn-primary pull-right">
-                @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.create')
-            </a>
-        </div>
 
         <div class="panel-body">
             <div class="row">

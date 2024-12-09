@@ -26,24 +26,24 @@
             <tbody>
 
                 @foreach($buildings as $building)
-                        @php
-                            /**
-                             * @var \App\Models\Building $building
-                             */
-                            $user = $building->user;
+                    @php
+                        /**
+                         * @var \App\Models\Building $building
+                         */
+                        $user = $building->user;
 
-                            $userCreatedAtFormatted = $user->created_at?->format('d-m-Y');
-                            $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
+                        $userCreatedAtFormatted = $user->created_at?->format('d-m-Y');
+                        $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
 
-                            $appointmentDateFormatted = null;
+                        $appointmentDateFormatted = null;
 
-                            if (! is_null($building->appointment_date)) {
-                                $appointmentDateFormatted = \Carbon\Carbon::create($building->appointment_date)->format('Y-m-d H:i');
-                            }
-                            $appointmentDateStrotime = strtotime($appointmentDateFormatted);
+                        if (! is_null($building->appointment_date)) {
+                            $appointmentDateFormatted = \Carbon\Carbon::create($building->appointment_date)->format('Y-m-d H:i');
+                        }
+                        $appointmentDateStrotime = strtotime($appointmentDateFormatted);
 
-                            $userIsAuthUser = $user->id == Hoomdossier::user()->id;
-                        @endphp
+                        $userIsAuthUser = $user->id == Hoomdossier::user()->id;
+                    @endphp
                     <tr>
                         <td data-sort="{{$userCreatedAtStrotime}}">
                             {{$userCreatedAtFormatted ?? '-'}}
@@ -53,7 +53,8 @@
                             @if($userIsAuthUser)
                                 <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
                             @else
-                                <a class="in-text" href="{{route('cooperation.admin.buildings.show', compact('building'))}}">
+                                <a class="in-text"
+                                   href="{{route('cooperation.admin.buildings.show', compact('building'))}}">
                                     {{$building->street}} {{$building->number}} {{$building->extension}}
                                 </a>
                             @endif

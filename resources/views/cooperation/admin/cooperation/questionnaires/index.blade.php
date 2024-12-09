@@ -1,12 +1,10 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('woningdossier.cooperation.admin.cooperation.questionnaires.index.header'),
+    'panelLink' => route('cooperation.admin.cooperation.questionnaires.create')
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.header')
-            <a href="{{route('cooperation.admin.cooperation.questionnaires.create')}}"
-               class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
-        </div>
 
         <div class="panel-body">
             <div class="row">

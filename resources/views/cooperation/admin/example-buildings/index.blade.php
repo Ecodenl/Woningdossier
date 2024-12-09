@@ -1,4 +1,7 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('woningdossier.cooperation.admin.example-buildings.index.header'),
+    'panelLink' => route('cooperation.admin.example-buildings.create')
+])
 
 @section('content')
     @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin'))
@@ -6,13 +9,6 @@
     @endif
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.example-buildings.index.header')
-            <a href="{{ route('cooperation.admin.example-buildings.create') }}" class="btn btn-success">
-                <i class="glyphicon glyphicon-plus"></i>
-                @lang('cooperation/admin/example-buildings.index.create-button')
-            </a>
-        </div>
 
         <div class="panel-body">
             <div class="row">

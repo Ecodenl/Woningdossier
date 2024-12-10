@@ -105,7 +105,7 @@
                 ])
             </div>
 
-            <div class="w-full">
+            <div class="w-full mt-5">
                 <button type="submit" class="btn btn-green">
                     @lang('cooperation/admin/buildings.edit.form.submit')
                 </button>

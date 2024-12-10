@@ -1,7 +1,7 @@
 <?php $questionsApplicableForValidation = ['text', 'textarea']; ?>
 <div class="form-builder ui-sortable-handle panel panel-default" @isset($id) id="{{$id}}" @endisset>
     <div class="panel-heading">
-        @lang('woningdossier.cooperation.admin.cooperation.questionnaires.edit.types.'.$question->type)
+        @lang('cooperation/admin/cooperation/cooperation-admin/questionnaires.edit.types.'.$question->type)
     </div>
     <div class="panel-body">
         <div class="row">
@@ -48,7 +48,7 @@
         @if($question->hasNoValidation() && in_array($question->type, $questionsApplicableForValidation))
         <div class="row">
             <div class="col-sm-12">
-                <a class="btn btn-primary add-validation">@lang('woningdossier.cooperation.admin.cooperation.questionnaires.edit.add-validation')</a>
+                <a class="btn btn-primary add-validation">@lang('cooperation/admin/cooperation/cooperation-admin/questionnaires.edit.add-validation')</a>
             </div>
         </div>
         @endif

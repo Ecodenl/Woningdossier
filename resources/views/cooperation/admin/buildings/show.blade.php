@@ -234,7 +234,7 @@
             </a>
 
             @if(Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-                <a data-toggle="tab" id="trigger-fill-in-history-tab" href="#fill-in-history">
+                <a x-bind="tab"  data-tab="fill-in-history">
                     @lang('cooperation/admin/buildings.show.tabs.fill-in-history.title')
                 </a>
             @endif
@@ -262,6 +262,7 @@
                     'url' => route('cooperation.admin.send-message'),
                 ])
             </div>
+
             @can('talk-to-resident', [$building])
                 {{--public messages / between the resident and cooperation--}}
                 <div id="messages-public" x-bind="container" data-tab="messages-public">
@@ -303,6 +304,34 @@
                 </form>
             </div>
 
+            {{-- Fill in history ?? the log --}}
+            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
+                <div id="fill-in-history" x-bind="container" data-tab="fill-in-history" class="data-table">
+                    <table id="log-table"
+                           class="table fancy-table">
+                        <thead>
+                            <tr>
+                                <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
+                                <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.message')</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php /** @var \App\Models\Log $log */ @endphp
+                            @foreach($logs as $log)
+                                <tr>
+                                    <td>
+                                        {{$log->created_at->format('d-m-Y H:i')}}
+                                    </td>
+                                    <td>
+                                        {{$log->message}}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+
             <div id="2fa" x-bind="container" data-tab="2fa" class="p-4">
                 @if($building->user->account->hasEnabledTwoFactorAuthentication())
                     @component('cooperation.layouts.components.alert', ['color' => 'green', 'dismissible' => false])
@@ -330,34 +359,6 @@
                     <livewire:cooperation.frontend.tool.simple-scan.my-plan.uploader :building="$building"/>
                 </div>
             @endcan
-
-            {{-- Fill in history ?? the log --}}
-            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-                <div id="fill-in-history" x-bind="container" data-tab="fill-in-history">
-                    <table id="log-table"
-                           class="table fancy-table">
-                        <thead>
-                            <tr>
-                                <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
-                                <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.message')</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php /** @var \App\Models\Log $log */ @endphp
-                            @foreach($logs as $log)
-                                <tr>
-                                    <td>
-                                        {{$log->created_at->format('d-m-Y H:i')}}
-                                    </td>
-                                    <td>
-                                        {{$log->message}}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @endif
         </div>
     </div>
 @endsection
@@ -435,7 +436,7 @@
                 }
             });
 
-            @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
+            @if(! Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
             // Associated coaches
             associatedCoachesSelect.addEventListener('change', function (event) {
                 // If length is greater, a value was removed, otherwise added
@@ -466,9 +467,9 @@
                     }
                 }
             });
-            @endcannot
+            @endif
 
-            @cannot('editAny', $userCurrentRole)
+            @can('editAny', $userCurrentRole)
             // User roles
             roleSelect.addEventListener('change', function (event) {
                 // If length is greater, a value was removed, otherwise added
@@ -499,7 +500,7 @@
                     }
                 }
             });
-            @endcannot
+            @endcan
         });
 
         window.addEventListener('tab-switched', () => {

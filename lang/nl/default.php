@@ -5,7 +5,7 @@ return [
     'buttons' => [
         'download' => 'Download bijlagen',
         'store' => 'Aanmaken',
-        'update' => 'Update',
+        'update' => 'Bijwerken',
         'destroy' => 'Verwijderen',
         'next-page' => 'Volgende pagina',
         'next' => 'Volgende',

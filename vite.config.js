@@ -11,7 +11,6 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/hoomdossier.js',
                 'resources/js/datatables.js',
-                'resources/js/select2.js',
             ],
             refresh: true,
         }),

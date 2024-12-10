@@ -91,6 +91,11 @@ export default (initiallyOpen = false, withSearch = false) => ({
         this.$watch('search', (value, oldValue) => {
             this.searchOptions();
         });
+        this.$watch('open', (value) => {
+            if (value && this.disabled) {
+                this.open = false;
+            }
+        });
     },
     // Construct a fresh custom select
     constructSelect(isFirstBoot) {
@@ -116,10 +121,10 @@ export default (initiallyOpen = false, withSearch = false) => ({
                 }
 
                 // Build the alpine select
-                let optionDropdown = this.$refs['select-options'];
+                const optionDropdown = this.$refs['select-options'];
                 // Clear any options there might be left
                 optionDropdown.children.remove();
-                let options = this.select.options;
+                const options = this.select.options;
                 // Loop options to build
                 // Note: we cannot use forEach, as options is a HTML collection, which is not an array
                 for (let i = 0; i < options.length; i++) {
@@ -307,6 +312,19 @@ export default (initiallyOpen = false, withSearch = false) => ({
     },
     // Build a custom option
     buildOption(parent, option) {
+        let optgroup = null;
+        if (option.parentElement.tagName === 'OPTGROUP') {
+            optgroup = option.parentElement.label;
+
+            if (! parent.querySelector(`.select-optgroup[data-label="${optgroup}"]`)) {
+                let newOptgroup = document.createElement('span');
+                newOptgroup.appendChild(document.createTextNode(optgroup));
+                newOptgroup.setAttribute('data-label', optgroup);
+                newOptgroup.classList.add('select-optgroup');
+                parent.appendChild(newOptgroup);
+            }
+        }
+
         // Trim to ensure it's not filled with unnecessary white space (will look ugly in the input)
         let value = option.value;
         let text = option.textContent.trim();
@@ -315,6 +333,10 @@ export default (initiallyOpen = false, withSearch = false) => ({
         let newOption = document.createElement('span');
         newOption.appendChild(document.createTextNode(text));
         newOption.setAttribute("data-value", value);
+
+        if (optgroup) {
+            newOption.setAttribute('data-optgroup', optgroup);
+        }
 
         if (option.hasAttribute("data-icon")) {
             newOption.setAttribute("data-icon", option.getAttribute("data-icon"));
@@ -356,25 +378,32 @@ export default (initiallyOpen = false, withSearch = false) => ({
         for (let i = 0; i < groupOptions.length; i++) {
             let groupOption = groupOptions[i];
             if (disabled) {
-                groupOption.classList.add('disabled');
+                groupOption.classList.add(groupOption.classList.contains('disabled') ? 'was-disabled' : 'disabled');
             } else {
-                groupOption.classList.remove('disabled');
+                groupOption.classList.remove(groupOption.classList.contains('was-disabled') ? 'was-disabled' : 'disabled');
             }
         }
 
-        let options = this.$refs['select-options'].children;
-        for (let i = 0; i < options.length; i++) {
-            let option = options[i];
-            if (disabled) {
-                if (! option.classList.contains('disabled')) {
-                    option.classList.add('disabled', 'readonly');
-                }
-            } else {
-                if (option.classList.contains('readonly')) {
-                    option.classList.remove('disabled', 'readonly');
-                }
-            }
-        }
+        // let options = this.$refs['select-options'].children;
+        // for (let i = 0; i < options.length; i++) {
+        //     let option = options[i];
+        //
+        //     if (option.hasAttribute('disabled')) {
+        //         newOption.classList.add('disabled');
+        //     } else if (disabled || option.hasAttribute('readonly')) {
+        //         newOption.classList.add('disabled', 'readonly');
+        //     }
+        //
+        //     if (disabled) {
+        //         if (! option.classList.contains('disabled')) {
+        //             option.classList.add('disabled', 'readonly');
+        //         }
+        //     } else {
+        //         if (option.classList.contains('readonly')) {
+        //             option.classList.remove('disabled', 'readonly');
+        //         }
+        //     }
+        // }
     },
     // Find a custom select option by given value
     findOptionByValue(value) {
@@ -391,14 +420,34 @@ export default (initiallyOpen = false, withSearch = false) => ({
             return false;
         }
 
-        this.$refs['select-options'].querySelectorAll('.select-option').forEach((option) => {
+        const optionDropdown = this.$refs['select-options'];
+        let visibleOptgroups = [];
+
+        optionDropdown.querySelectorAll('.select-option').forEach((option) => {
+            let optgroup = null;
+            if (option.hasAttribute('data-optgroup')) {
+                optgroup = option.dataset.optgroup;
+            }
+
             if (! this.search?.trim()) {
                 option.style.display = null;
+                if (optgroup && ! visibleOptgroups.includes(optgroup)) {
+                    visibleOptgroups.push(optgroup);
+                }
             } else {
-                option.style.display = (searchValue(option.textContent, this.search) || searchValue(option.dataset.value, this.search))
-                    ? null
-                    : 'none';
+                const visible = (searchValue(option.textContent, this.search) || searchValue(option.dataset.value, this.search));
+
+                if (optgroup && ! visibleOptgroups.includes(optgroup) && visible) {
+                    visibleOptgroups.push(optgroup);
+                }
+
+                option.style.display = visible ? null : 'none';
             }
+        });
+
+        optionDropdown.querySelectorAll('.select-optgroup').forEach((optgroup) => {
+            console.log(optgroup.label)
+            optgroup.style.display = visibleOptgroups.includes(optgroup.dataset.label) ? null : 'none';
         });
     },
     applySearchPadding() {

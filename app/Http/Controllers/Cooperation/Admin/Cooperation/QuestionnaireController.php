@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 use Illuminate\Http\Response;
 use App\Helpers\Arr;
@@ -20,9 +21,6 @@ use Illuminate\Http\Request;
 
 class QuestionnaireController extends Controller
 {
-    /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
     public function index(): View
     {
         $questionnaires = Questionnaire::all();
@@ -30,10 +28,6 @@ class QuestionnaireController extends Controller
         return view('cooperation.admin.cooperation.questionnaires.index', compact('questionnaires'));
     }
 
-    /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
     public function create(): View
     {
         $this->authorize('create', Questionnaire::class);
@@ -47,9 +41,6 @@ class QuestionnaireController extends Controller
 
     /**
      * Store a questionnaire, after this the user will get redirected to the edit page and he can add questions to the questionnaire.
-     *
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Cooperation $cooperation, QuestionnaireRequest $request): RedirectResponse
     {
@@ -65,23 +56,11 @@ class QuestionnaireController extends Controller
 
         $steps = Step::findMany($questionnaireData['steps']);
 
-        $stepIds = [];
-        foreach ($steps as $step) {
-            $orderForStep = QuestionnaireStep::whereHas('questionnaire', fn ($q) => $q->where('cooperation_id', $cooperation->id))
-                ->where('step_id', $step->id)->max('order') ?? -1;
-
-            $stepIds[$step->id] = ['order' => ++$orderForStep];
-        }
-        $questionnaire->steps()->attach($stepIds);
+        $this->attachStepIds($steps, $cooperation, $questionnaire);
 
         return redirect()->route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire'));
     }
 
-    /**
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
     public function edit(Cooperation $cooperation, Questionnaire $questionnaire): View
     {
         $this->authorize('update', $questionnaire);
@@ -90,7 +69,7 @@ class QuestionnaireController extends Controller
             $query->whereNotIn('short', ['high-efficiency-boiler', 'heat-pump', 'heater']);
         }])->get();
 
-        return view('cooperation.admin.cooperation.questionnaires.questionnaire-editor', compact('questionnaire', 'scans'));
+        return view('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire', 'scans'));
     }
 
     /**
@@ -114,14 +93,7 @@ class QuestionnaireController extends Controller
         // TODO: Maybe we want to fix questionnaire_step order?
         $questionnaire->steps()->detach();
 
-        $stepIds = [];
-        foreach ($steps as $step) {
-            $orderForStep = QuestionnaireStep::whereHas('questionnaire', fn ($q) => $q->where('cooperation_id', $cooperation->id))
-                    ->where('step_id', $step->id)->max('order') ?? -1;
-
-            $stepIds[$step->id] = ['order' => ++$orderForStep];
-        }
-        $questionnaire->steps()->attach($stepIds);
+        $this->attachStepIds($steps, $cooperation, $questionnaire);
 
         // get the data for the questionnaire
         $validation = $data['validation'] ?? [];
@@ -136,13 +108,9 @@ class QuestionnaireController extends Controller
 
         return redirect()
             ->route('cooperation.admin.cooperation.questionnaires.index')
-            ->with('success', __('woningdossier.cooperation.admin.cooperation.questionnaires.edit.success'));
+            ->with('success', __('cooperation/admin/cooperation/cooperation-admin/questionnaires.edit.success'));
     }
 
-    /**
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
-     */
     public function destroy(Cooperation $cooperation, Questionnaire $questionnaire): Response
     {
         // TODO: Maybe we want to fix questionnaire_step order?
@@ -153,11 +121,6 @@ class QuestionnaireController extends Controller
 
     /**
      * Detele a question (softdelete).
-     *
-     * @param $questionId
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function deleteQuestion(Cooperation $cooperation, $questionId): Response
     {
@@ -177,12 +140,6 @@ class QuestionnaireController extends Controller
 
     /**
      * Delete a question option.
-     *
-     * @param $questionId
-     * @param $questionOptionId
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function deleteQuestionOption(Cooperation $cooperation, $questionId, $questionOptionId): Response
     {
@@ -205,28 +162,33 @@ class QuestionnaireController extends Controller
 
     /**
      * Set the active status from a questionnaire.
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     *
-     * @return mixed
      */
-    public function setActive(Request $request)
+    public function setActive(Request $request): int
     {
-        $questionnaireId = $request->get('questionnaire_id');
-        $active = $request->get('questionnaire_active');
+        $questionnaireId = $request->input('questionnaire_id');
+        $active = $request->input('questionnaire_active');
         $questionnaire = Questionnaire::find($questionnaireId);
 
         $this->authorize('setActiveStatus', $questionnaire);
 
-        if ('true' == $active) {
-            $active = true;
-        } else {
-            $active = false;
-        }
+        $active = 'true' == $active;
 
-        $questionnaire->is_active = $active;
-        $questionnaire->save();
+        $questionnaire->update(['is_active' => $active]);
 
         return $questionnaireId;
+    }
+
+    public function attachStepIds(Collection $steps, Cooperation $cooperation, Questionnaire $questionnaire): void
+    {
+        $stepIds = [];
+        foreach ($steps as $step) {
+            $orderForStep = QuestionnaireStep::whereHas(
+                'questionnaire',
+                fn ($q) => $q->where('cooperation_id', $cooperation->id)
+            )->where('step_id', $step->id)->max('order') ?? -1;
+
+            $stepIds[$step->id] = ['order' => ++$orderForStep];
+        }
+        $questionnaire->steps()->attach($stepIds);
     }
 }

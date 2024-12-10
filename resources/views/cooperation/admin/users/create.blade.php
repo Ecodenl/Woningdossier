@@ -138,7 +138,7 @@
                 ])
             </div>
 
-            <div class="w-full" x-show="! alreadyMember">
+            <div class="w-full mt-5" x-show="! alreadyMember">
                 <button class="btn btn-green flex justify-center items-center w-full" x-bind:disabled="alreadyMember" type="submit">
                     @lang('cooperation/admin/users.create.form.submit')
                     <i class="w-3 h-3 icon-plus-purple ml-1"></i>

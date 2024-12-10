@@ -38,7 +38,7 @@
                         </h3>
                         @if(! empty($panelLink))
                             <a href="{{ $panelLink }}" class="h-10">
-                                <i class="w-10 h-10 icon-plus"></i>
+                                <i class="w-10 h-10 icon-plus-circle"></i>
                             </a>
                         @endif
                     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Traits\Models;
 
-trait HasTranslations {
+trait HasTranslations
+{
     use \Spatie\Translatable\HasTranslations;
 }

@@ -19,7 +19,6 @@
 
 @prepend('js')
     @vite('resources/js/datatables/datatables.js')
-    @vite('resources/js/select2.js')
 
     <script type="module">
         document.addEventListener('DOMContentLoaded', function () {

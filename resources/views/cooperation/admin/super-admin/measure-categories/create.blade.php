@@ -9,7 +9,7 @@
                     <div class="col-sm-6">
                         <a id="leave-creation-tool" class="btn btn-warning"
                            href="{{route('cooperation.admin.super-admin.measure-categories.index')}}">
-                            @lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool')
+                            @lang('cooperation/admin/cooperation/cooperation-admin/questionnaires.create.leave-creation-tool')
                         </a>
                     </div>
                     <div class="col-sm-6">

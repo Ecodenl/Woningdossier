@@ -18,8 +18,9 @@ class FormBuilder extends Component
     {
         $this->questions = $questionnaire->questions()->with('questionOptions')->get()->map(function (Question $question) {
             return [
-                'type' => $question->type,
+                'id' => $question->id,
                 'key' => 'question-' . $question->id,
+                'type' => $question->type,
                 'required' => $question->required,
                 'validation' => $question->validation,
                 'name' => $question->getTranslations('name'),
@@ -39,8 +40,8 @@ class FormBuilder extends Component
     {
         $questions = $this->questions;
         array_unshift($questions, [
-            'type' => $type,
             'key' => 'new-question-' . Str::random(8),
+            'type' => $type,
             'required' => false,
             'validation' => [],
             'name' => [

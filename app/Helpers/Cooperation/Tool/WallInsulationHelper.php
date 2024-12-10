@@ -105,8 +105,8 @@ class WallInsulationHelper extends ToolHelper
     {
         $updatedMeasureIds = $this->getValues('updated_measure_ids');
 
-        $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
-        $results = WallInsulation::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
+        $energyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
+        $results = WallInsulation::calculate($this->building, $this->masterInputSource, $energyHabit, $this->getValues());
 
         $step = Step::findByShort('wall-insulation');
 

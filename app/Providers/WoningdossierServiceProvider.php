@@ -60,8 +60,6 @@ class WoningdossierServiceProvider extends ServiceProvider
         CustomMeasureApplication::observe(CustomMeasureApplicationObserver::class);
         CooperationMeasureApplication::observe(CooperationMeasureApplicationObserver::class);
 
-        //View::creator('cooperation.my-account.*', MyAccountComposer::class);
-
         SessionGuard::macro('account', function () {
             return auth()->user();
         });

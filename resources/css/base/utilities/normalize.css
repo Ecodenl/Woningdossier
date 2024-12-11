@@ -1,0 +1,11 @@
+select {
+    @apply appearance-none;
+}
+
+hr {
+    @apply border-0 border-b border-solid border-blue-500 border-opacity-50 text-transparent my-5;
+}
+
+i {
+    @apply transition;
+}

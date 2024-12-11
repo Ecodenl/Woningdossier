@@ -78,7 +78,7 @@
                             @endcomponent
 
                             <div id="crawlspace-unknown-error" style="display: none;">
-                                @component('cooperation.frontend.layouts.parts.alert', [
+                                @component('cooperation.layouts.components.alert', [
                                     'color' => 'yellow', 'dismissible' => false
                                 ])
                                     <p class="text-yellow">
@@ -120,7 +120,7 @@
                                 @endcomponent
 
                                 <div id="crawlspace-no-access-error" style="display: none;">
-                                    @component('cooperation.frontend.layouts.parts.alert', [
+                                    @component('cooperation.layouts.components.alert', [
                                         'color' => 'yellow', 'dismissible' => false
                                     ])
                                         <p class="text-yellow">
@@ -202,8 +202,8 @@
 
                 <div class="flex flex-row flex-wrap w-full crawlspace-accessible">
                     <div class="w-full md:w-8/12 md:ml-2/12">
-                        @component('cooperation.frontend.layouts.parts.alert', [
-                            'color' => 'blue-800', 'dismissible' => false,
+                        @component('cooperation.layouts.components.alert', [
+                            'color' => 'blue-900', 'dismissible' => false,
                         ])
                             <p class="text-blue-800">
                                 @lang('floor-insulation.insulation-advice.text.title')
@@ -258,7 +258,7 @@
 
             <div class="flex flex-row flex-wrap w-full hidden" id="no-crawlspace-error">
                 <div class="w-full">
-                    @component('cooperation.frontend.layouts.parts.alert', [
+                    @component('cooperation.layouts.components.alert', [
                         'color' => 'red', 'dismissible' => false,
                     ])
                         <p class="text-red">
@@ -292,9 +292,9 @@
 @endsection
 
 @push('js')
-    <script>
+    <script type="module">
 
-        $(document).ready(function () {
+        document.addEventListener('DOMContentLoaded', function () {
             let data = {};
             $('input:not(.source-select-input), textarea, select:not(.source-select)').change(function () {
                 data[$(this).attr('name')] = $(this).val();

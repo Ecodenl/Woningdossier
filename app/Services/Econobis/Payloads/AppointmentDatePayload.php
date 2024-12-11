@@ -22,7 +22,7 @@ class AppointmentDatePayload extends EconobisPayload
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
         $payload = ['appointment_date' => $mostRecentStatus->appointment_date?->toDateTimeString()];
 
-        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building, true);
+        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($building, true);
 
         foreach ($connectedCoaches as $connectedCoach) {
             $coachUser = $connectedCoach->coach;

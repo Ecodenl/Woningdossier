@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $angle
  * @property int $pv_panel_orientation_id
- * @property string $yield
+ * @property numeric $yield
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\PvPanelOrientation|null $orientation
@@ -28,6 +28,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PvPanelYield extends Model
 {
+    protected $casts = [
+        'yield' => 'decimal:2',
+    ];
+
     public function orientation(): BelongsTo
     {
         return $this->belongsTo(PvPanelOrientation::class);

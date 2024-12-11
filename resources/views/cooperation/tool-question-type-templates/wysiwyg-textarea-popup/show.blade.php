@@ -42,7 +42,7 @@
 </div>
 
 @push('js')
-    <script>
+    <script type="module">
         document.addEventListener('DOMContentLoaded', () => {
             initTinyMCE({
                 content_css: '{{ asset('css/frontend/tinymce.css') }}',

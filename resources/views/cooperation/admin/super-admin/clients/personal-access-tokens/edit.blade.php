@@ -1,10 +1,9 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/clients/personal-access-tokens.edit.header', ['client_name' => $client->name])
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/super-admin/clients/personal-access-tokens.edit.header', ['client_name' => $client->name])
-        </div>
 
         <div class="panel-body">
             <div class="row">
@@ -40,8 +39,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             $('select#access').select2();
         });
     </script>

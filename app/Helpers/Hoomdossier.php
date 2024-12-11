@@ -102,4 +102,9 @@ class Hoomdossier
     {
         return Auth::user();
     }
+
+    public static function getSupportedLocales(): array
+    {
+        return config('hoomdossier.supported_locales');
+    }
 }

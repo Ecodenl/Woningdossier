@@ -1,11 +1,9 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/tool-questions.edit.header')
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/super-admin/tool-questions.edit.header')
-        </div>
-
         <div class="panel-body">
             <form action="{{route('cooperation.admin.super-admin.tool-questions.update', compact('toolQuestion'))}}" method="post">
                 <div class="form-group">

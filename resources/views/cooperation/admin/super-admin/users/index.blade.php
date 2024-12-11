@@ -1,17 +1,9 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/users.index.header')
+])
 
 @section('content')
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/super-admin/users.index.header')
-        </div>
-
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-sm-12">
-                    @include('cooperation.admin.super-admin.users.search')
-                </div>
-            </div>
-        </div>
+    <div class="flex w-full">
+        @include('cooperation.admin.super-admin.users.search')
     </div>
 @endsection

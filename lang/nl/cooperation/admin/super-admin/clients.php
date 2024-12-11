@@ -6,7 +6,6 @@ return [
     ],
     'index' => [
         'header' => 'Externe koppelingen',
-        'header-button' => 'Koppeling aanmaken',
         'table' => [
             'actions' => 'Acties',
             'edit' => 'Bewerken',

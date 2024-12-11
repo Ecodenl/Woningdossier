@@ -1,4 +1,4 @@
-@extends('cooperation.frontend.layouts.app')
+@extends('cooperation.layouts.app')
 
 @section('main')
     <div class="w-full min-h-screen flex justify-center items-center flex-col py-20">
@@ -8,7 +8,7 @@
                 @lang('auth.email.form.header')
             </h1>
             @if(session('status'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                @component('cooperation.layouts.components.alert', ['color' => 'green'])
                     {{ session('status') }}
                 @endcomponent
             @endif

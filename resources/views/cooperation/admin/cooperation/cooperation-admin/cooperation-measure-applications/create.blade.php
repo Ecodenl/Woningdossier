@@ -11,7 +11,7 @@
                     <div class="col-sm-6">
                         <a id="leave-creation-tool" class="btn btn-warning"
                            href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', compact('type'))}}">
-                            @lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool')
+                            @lang('cooperation/admin/cooperation/cooperation-admin/questionnaires.create.leave-creation-tool')
                         </a>
                     </div>
                     <div class="col-sm-6">
@@ -160,8 +160,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(() => {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
             var $icon = $('#icon');
             $icon.select2();
 

@@ -39,7 +39,7 @@ class PrivateMessageReceiverListener
         $privateMessage = $event->privateMessage;
         $groupParticipants = PrivateMessage::getGroupParticipants($buildingFromOwner);
 
-        $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($buildingFromOwner);
+        $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuilding($buildingFromOwner);
 
         // now we create for every group participant a privatemessageview
         foreach ($groupParticipants as $groupParticipant) {

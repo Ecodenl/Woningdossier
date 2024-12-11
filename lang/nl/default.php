@@ -5,7 +5,7 @@ return [
     'buttons' => [
         'download' => 'Download bijlagen',
         'store' => 'Aanmaken',
-        'update' => 'Update',
+        'update' => 'Bijwerken',
         'destroy' => 'Verwijderen',
         'next-page' => 'Volgende pagina',
         'next' => 'Volgende',
@@ -54,5 +54,31 @@ return [
     'languages' => [
         'nl' => 'Nederlands',
         'en' => 'Engels',
+    ],
+
+    // Dates
+    'months' => [
+        'january' => 'Januari',
+        'february' => 'Februari',
+        'march' => 'Maart',
+        'april' => 'April',
+        'may' => 'Mei',
+        'june' => 'Juni',
+        'july' => 'Juli',
+        'august' => 'Augustus',
+        'september' => 'September',
+        'october' => 'Oktober',
+        'november' => 'November',
+        'december' => 'December',
+    ],
+
+    'day-shorts' => [
+        'sunday' => 'Zo',
+        'monday' => 'Ma',
+        'tuesday' => 'Di',
+        'wednesday' => 'Wo',
+        'thursday' => 'Do',
+        'friday' => 'Vr',
+        'saturday' => 'Za'
     ],
 ];

@@ -20,6 +20,7 @@
     @endphp
 
     <div class="@if(! $menu) max-w-7xl @endif mx-auto sm:px-6 lg:px-8 pt-8 flex flex-wrap justify-between">
+        @include('cooperation.layouts.parts.messages')
         @if($menu)
             @include('cooperation.admin.layouts.parts.sidebar-menu')
         @endif

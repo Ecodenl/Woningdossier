@@ -26,14 +26,15 @@ return [
             'textarea' => 'Alinea',
             'select' => 'Dropdownmenu',
             'radio' => 'Selectievakjes',
-            'date' => 'Datum',
             'checkbox' => 'Meerkeuze',
+            'date' => 'Datum',
         ],
         'tabs' => [
             'edit-questionnaire' => 'Vragenlijst info',
             'edit-questions' => 'Vragen van de vragenlijst',
         ],
         'add-validation' => 'Voeg validatie toe',
+        'remove-validation' => 'Verwijder validatie',
         'success' => 'Vragenlijst is bijgewerkt',
         'leave-warning' => 'Let op! Alle wijzigingen zullen verloren gaan. Uw hiervoor gemaakte formulier is dan niet meer terug te krijgen!',
     ],
@@ -56,6 +57,34 @@ return [
         ],
         'question' => [
             'label' => 'Vraag',
+        ],
+        'option' => [
+            'label' => 'Opties',
+            'placeholder' => 'Optie...',
+        ],
+    ],
+    'form-builder' => [
+        'rules' => [
+            'numeric' => 'Getal',
+            'string' => 'Tekst',
+        ],
+        'optional-rules' => [
+            'numeric' => [
+                'between' => 'Tussen',
+                'min' => 'Minimale grootte',
+            ],
+            'string' => [
+                'email' => 'E-mailadres',
+                'max' => 'Maximaal aantal letters',
+            ],
+        ],
+        'extra-fields' => [
+            'min' => [
+                'placeholder' => 'Min...',
+            ],
+            'max' => [
+                'placeholder' => 'Max...',
+            ],
         ],
     ],
 ];

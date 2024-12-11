@@ -6,6 +6,7 @@ a {
     @apply focus:!bg-opacity-60 focus:!text-opacity-60 focus:!border-opacity-60;
 }
 
+/* Ensure text is readable in hovered buttons */
 a.btn {
     @apply hover:!text-opacity-100;
     @apply focus:!text-opacity-100;
@@ -147,13 +148,9 @@ a.in-text {
     @apply focus:!bg-opacity-60 focus:!text-opacity-60 focus:!border-opacity-60;
 }
 
+i.clickable:hover, i.clickable:focus,
 .clickable:hover i, .clickable:focus i {
     @apply opacity-60;
-}
-
-/* Purely to remove opacity when focusing on inputs */
-.has-btn:focus ~ button {
-    @apply opacity-20;
 }
 
 #app-body .disabled {

@@ -35,4 +35,22 @@ class Translation
     {
         return $translationString !== static::translate($translationString, $replaceArray);
     }
+
+    /**
+     * Translate an attribute literally
+     */
+    public static function translateAttribute(string $attribute): string
+    {
+        $attributes = __('validation.attributes');
+
+        if (isset($attributes[$attribute])) {
+            return $attributes[$attribute];
+        } else {
+            // Check potential wild cards
+            $pattern = '\.\d\.';
+            $attribute = preg_replace("/{$pattern}/i", '.*.', $attribute);
+
+            return $attributes[$attribute] ?? $attribute;
+        }
+    }
 }

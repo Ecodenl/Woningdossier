@@ -59,7 +59,7 @@
         @endphp
         <main class="bg-cover bg-center bg-no-repeat bg-white"
               style="@yield('main_style', 'background-image: url(\''. $background .'\');')">
-            {{--    @include('cooperation.frontend.layouts.parts.messages')--}}
+            {{--    @include('cooperation.layouts.parts.messages')--}}
 
             @yield('main')
         </main>

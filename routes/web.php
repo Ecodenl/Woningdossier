@@ -349,8 +349,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         ->middleware('current-role:cooperation-admin');
                     // not in the cooperation-admin group, probably need to be used for the coordinator as well.
                     Route::name('questionnaires.')->prefix('questionnaire')->middleware('current-role:cooperation-admin')->group(function () {
-                        Route::delete('delete-question/{questionId}', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'deleteQuestion'])->name('delete');
-                        Route::delete('delete-option/{questionId}/{optionId}', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'deleteQuestionOption'])->name('delete-question-option');
                         Route::post('set-active', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'setActive'])->name('set-active');
                     });
 
@@ -359,7 +357,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         // needs to be the last route due to the param
                         Route::get('home', [Cooperation\Admin\Cooperation\Coordinator\CoordinatorController::class, 'index'])->name('index');
                     });
-
 
                     /* section for the cooperation-admin */
                     Route::prefix('cooperation-admin')->name('cooperation-admin.')->middleware('current-role:cooperation-admin|super-admin')->group(function () {

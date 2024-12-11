@@ -9,13 +9,10 @@ use App\Helpers\Arr;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\QuestionnaireRequest;
 use App\Models\Cooperation;
-use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionnaireStep;
-use App\Models\QuestionOption;
 use App\Models\Scan;
 use App\Models\Step;
-use App\Services\QuestionnaireService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -95,17 +92,6 @@ class QuestionnaireController extends Controller
 
         $this->attachStepIds($steps, $cooperation, $questionnaire);
 
-        // get the data for the questionnaire
-        $validation = $data['validation'] ?? [];
-        $order = 0;
-
-        if ($request->has('questions')) {
-            foreach ($request->input('questions') as $questionIdOrUuid => $questionData) {
-                ++$order;
-                QuestionnaireService::createOrUpdateQuestion($questionnaire, $questionIdOrUuid, $questionData, $validation, $order);
-            }
-        }
-
         return redirect()
             ->route('cooperation.admin.cooperation.questionnaires.index')
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/questionnaires.edit.success'));
@@ -117,47 +103,6 @@ class QuestionnaireController extends Controller
         $questionnaire->delete();
 
         return response(200);
-    }
-
-    /**
-     * Detele a question (softdelete).
-     */
-    public function deleteQuestion(Cooperation $cooperation, $questionId): Response
-    {
-        $question = Question::find($questionId);
-
-        // since a newly added question that is not saved yet, can still be deleted. If that happens we would get an exception which we dont want
-        if ($question instanceof Question) {
-            $questionnaire = $question->questionnaire;
-            $this->authorize('delete', $questionnaire);
-
-            // rm
-            $question->delete();
-        }
-
-        return response(202);
-    }
-
-    /**
-     * Delete a question option.
-     */
-    public function deleteQuestionOption(Cooperation $cooperation, $questionId, $questionOptionId): Response
-    {
-        $question = Question::find($questionId);
-        // since a newly added question that is not saved yet, can still be deleted. If that happens we would get an exception which we dont want
-        if ($question instanceof Question) {
-            $questionnaire = $question->questionnaire;
-            $this->authorize('delete', $questionnaire);
-
-            $questionOption = QuestionOption::find($questionOptionId);
-
-            // since the question could exist, but the option dont. So check.
-            if ($questionOption instanceof QuestionOption) {
-                $questionOption->delete();
-            }
-        }
-
-        return response(202);
     }
 
     /**

@@ -87,7 +87,9 @@
                 </div>
 
                 <div id="edit-questions" x-bind="container" data-tab="edit-questions">
-                    <livewire:cooperation.admin.cooperation.cooperation-admin.questionnaires.form-builder :questionnaire="$questionnaire"/>
+                    <livewire:cooperation.admin.cooperation.cooperation-admin.questionnaires.form-builder
+                            :cooperation="$cooperation"
+                            :questionnaire="$questionnaire"/>
                 </div>
             </div>
         </div>

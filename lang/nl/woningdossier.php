@@ -262,24 +262,6 @@ return [
                 'reports' => 'Rapportages',
                 'example-buildings' => 'Voorbeeldwoningen',
             ],
-            'custom-fields' => [
-                'index' => [
-                    'rules' => [
-                        'numeric' => 'Getal',
-                        'string' => 'Tekst',
-                    ],
-                    'optional-rules' => [
-                        'numeric' => [
-                            'between' => 'Tussen',
-                            'min' => 'Minimale grootte',
-                        ],
-                        'string' => [
-                            'email' => 'E-mailadres',
-                            'max' => 'Maximaal aantal letters',
-                        ],
-                    ],
-                ],
-            ],
             'choose-roles' => [
                 'header' => 'Als welke rol wilt u doorgaan?',
                 'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen',

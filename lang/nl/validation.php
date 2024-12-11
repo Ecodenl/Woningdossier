@@ -427,6 +427,10 @@ return [
 
         // Admin
         'building.note' => 'opmerking over de woning',
+
+        // Questionnaires
+        'questions.*.name' => 'naam',
+        'questions.*.options.*.name' => 'optie',
     ],
 
     'values' => [

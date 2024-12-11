@@ -23,7 +23,7 @@
         @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.reports')
     </a>
 </li>
-<li class="@if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.questionnaires.index'])) active @endif">
+<li class="@if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.questionnaires.index', 'cooperation.admin.cooperation.questionnaires.create', 'cooperation.admin.cooperation.questionnaires.edit'])) active @endif">
     <a href="{{route('cooperation.admin.cooperation.questionnaires.index')}}">
         @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.questionnaires')
     </a>

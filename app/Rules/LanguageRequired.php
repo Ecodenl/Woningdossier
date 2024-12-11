@@ -2,20 +2,16 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use App\Helpers\Translation;
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class LanguageRequired implements ValidationRule
 {
     protected string $requiredLocale = '';
-
     protected bool $required = true;
-
     protected string $attribute = '';
 
-    /**
-     * Create a new rule instance.
-     */
     public function __construct(string $requiredLocale = 'nl', bool $required = true)
     {
         $this->requiredLocale = $requiredLocale;
@@ -27,17 +23,17 @@ class LanguageRequired implements ValidationRule
      *
      * @param mixed  $value
      */
-    public function passes($attribute, $value): bool
+    public function passes(string $attribute, mixed $value): bool
     {
         $this->attribute = $attribute;
         $requiredTranslation = $value[$this->requiredLocale] ?? null;
 
-        if (! empty($requiredTranslation) && ! is_numeric($requiredTranslation)) {
+        if (! empty($requiredTranslation) || is_numeric($requiredTranslation)) {
             return true;
         }
 
-        // If it doesn't pass we will still pass it if it is not required
-        return ! $this->required;
+        // If it's not required, we will pass it if the data is empty.
+        return ! $this->required && empty($requiredTranslation);
     }
 
     /**
@@ -46,12 +42,12 @@ class LanguageRequired implements ValidationRule
     public function message(): string
     {
         return __('validation.custom-rules.language-required', [
-            'attribute' => __('validation.attributes')[$this->attribute] ?? $this->attribute,
+            'attribute' => Translation::translateAttribute($this->attribute),
             'locale' => __('validation.attributes')[$this->requiredLocale] ?? $this->requiredLocale,
         ]);
     }
 
-    public function validate(string $attribute, mixed $value, \Closure $fail): void
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (! $this->passes($attribute, $value)) {
             $fail($this->message());

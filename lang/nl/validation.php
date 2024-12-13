@@ -90,7 +90,7 @@ return [
         'array'   => 'De :attribute moet :value waardes of minder bevatten.',
     ],
     'multiple_of'          => ':Attribute moet een veelvoud van :value zijn.',
-    'not_in'               => 'Het formaat van :attribute is ongeldig.',
+    'not_in'               => 'De waarde van :attribute is ongeldig.',
     'not_regex'            => 'De :attribute formaat is ongeldig.',
     'numeric'              => ':Attribute moet een getal bevatten',
     'present'              => 'De :attribute moet gevuld zijn.',

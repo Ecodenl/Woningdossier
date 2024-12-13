@@ -20,7 +20,7 @@
                         <td>{{$questionnaire->name}}</td>
                         <td>{{ $questionnaire->steps()->pluck('name')->implode(', ') }}</td>
                         <td>
-                            <div class="checkbox-wrapper w-40">
+                            <div class="checkbox-wrapper w-40 mb-0">
                                 <input type="checkbox" id="active-{{$questionnaire->id}}" value="1"
                                        data-questionnaire-id="{{$questionnaire->id}}"
                                        @if($questionnaire->isActive()) checked @endif class="active-questionnaire">

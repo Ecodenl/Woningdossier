@@ -136,6 +136,10 @@ a.in-text {
     @apply no-underline rounded-t-md py-2 px-4 text-white bg-blue-500;
 }
 
+.nav-tabs.tabs-square a {
+    @apply py-3;
+}
+
 .nav-tabs a.active {
     @apply text-white bg-green;
 }

@@ -251,7 +251,7 @@
             @endcan
         </nav>
 
-        <div class="border border-t-0 border-blue/50 rounded-b-lg">
+        <div class="border border-t-0 border-blue/50 rounded-b-lg p-4">
             {{--messages intern (cooperation to cooperation --}}
             <div id="messages-intern" x-bind="container" data-tab="messages-intern">
                 @include('cooperation.layouts.parts.message-box', [

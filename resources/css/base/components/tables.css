@@ -2,9 +2,35 @@
     @apply w-full;
 }
 
+/* Simple table */
+.table.simple-table {
+    @apply table-fixed;
+}
+
+.table.simple-table thead {
+    @apply border-b border-blue/50;
+}
+
+.table.simple-table thead tr th {
+    @apply px-6 py-3 text-left text-sm font-semibold text-blue-500 tracking-wide;
+}
+
+.table.simple-table tbody {
+    @apply divide-y divide-blue-500 divide-opacity-50;
+}
+
+.table.simple-table tbody tr td {
+    @apply px-6 py-4 text-blue-500 font-light text-sm;
+}
+
+/* Fancy table */
 .table.fancy-table {
-    @apply table-fixed border border-blue-500 border-opacity-50;
+    @apply table-fixed border border-blue-500/50;
     /* Can't add rounded corners (rounded-lg), border is staying square, TODO */
+}
+
+.table.fancy-table thead {
+    @apply border-b border-blue/50;
 }
 
 .table.fancy-table thead tr th {

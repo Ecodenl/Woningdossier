@@ -11,18 +11,21 @@ use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\Step;
 use App\Rules\LanguageRequired;
+use Illuminate\Routing\Redirector;
+use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Component;
-use Illuminate\Support\Facades\Session;
 
 class Form extends Component
 {
     public ?ExampleBuilding $exampleBuilding = null;
-    public $buildingTypes;
-    public $genericBuildingTypes;
-    public $cooperations;
-    public $exampleBuildingSteps;
-    public $contents = [];
-    public $contentStructure;
+    public Collection $buildingTypes;
+    public Collection $genericBuildingTypes;
+    public Collection $cooperations;
+    public Collection $exampleBuildingSteps;
+    public array $contents = [];
+    public array $contentStructure;
     public bool $isSuperAdmin = false;
 
     // Technically its available in the exampleBuildingSteps,
@@ -50,8 +53,21 @@ class Form extends Component
             'exampleBuildingValues.building_type_id' => 'required|exists:building_types,id',
             'exampleBuildingValues.is_default' => 'required|boolean',
             'exampleBuildingValues.order' => 'nullable|numeric|min:0',
-            'contents.new.build_year' => 'nullable|numeric|min:1800'
+            'contents.new.build_year' => [
+                'nullable',
+                'numeric',
+                'min:1800',
+                Rule::requiredIf(fn () => count($this->contents) <= 1),
+            ],
         ];
+
+        if ($this->exampleBuilding instanceof ExampleBuilding) {
+            $buildYears = $this->exampleBuilding->contents()->pluck('build_year')->implode(',');
+
+            if (! empty($buildYears)) {
+                $rules['contents.new.build_year'][] = 'not_in:' . $buildYears;
+            }
+        }
 
         if ($this->isSuperAdmin) {
             $rules['exampleBuildingValues.cooperation_id'] = 'nullable|exists:cooperations,id';
@@ -60,7 +76,19 @@ class Form extends Component
         return $rules;
     }
 
-    public function mount(ExampleBuilding $exampleBuilding = null)
+    protected function validationAttributes(): array
+    {
+        return [
+            'exampleBuildingValues.name' => 'naam',
+            'exampleBuildingValues.building_type_id' => 'woningtype',
+            'exampleBuildingValues.is_default' => 'standaard',
+            'exampleBuildingValues.order' => 'volgorde',
+            'exampleBuildingValues.cooperation_id' => 'coöperatie',
+            'contents.new.build_year' => 'bouwjaar'
+        ];
+    }
+
+    public function mount(ExampleBuilding $exampleBuilding = null): void
     {
         $this->isSuperAdmin = HoomdossierSession::getRole(true)?->name === RoleHelper::ROLE_SUPER_ADMIN;
         $this->buildingTypes = BuildingType::all();
@@ -72,7 +100,6 @@ class Form extends Component
                 ->pluck('building_type_id');
             $this->genericBuildingTypes = BuildingType::whereNotIn('id', $alreadyPickedBuildingTypes->toArray())->get();
 
-            $this->buildingTypes = BuildingType::all();
             $this->cooperations = Cooperation::all();
         }
 
@@ -95,6 +122,8 @@ class Form extends Component
         // exists.
         if ($exampleBuilding->exists) {
             $this->exampleBuildingValues = $exampleBuilding->attributesToArray();
+            // Use 1 or 0 to correctly bind to the select key.
+            $this->exampleBuildingValues['is_default'] = (int) $exampleBuilding->is_default;
             foreach ($exampleBuilding->contents as $exampleBuildingContent) {
                 $content = array_merge($this->contentStructure, $exampleBuildingContent->content);
                 // make sure it has all the available tool questions
@@ -118,13 +147,14 @@ class Form extends Component
         $this->contents['new'] = $this->contentStructure;
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.cooperation.admin.example-buildings.form');
     }
 
-    public function hydrateExampleBuildingSteps()
+    public function hydrateExampleBuildingSteps(): void
     {
+        // TODO: Should perhaps be computed prop?
         $this->exampleBuildingSteps = Step::whereIn('short', [
             'building-data',
             'usage-quick-scan',
@@ -145,18 +175,20 @@ class Form extends Component
             ->get();
     }
 
-    public function updated($key, $value)
+    public function updated($key, $value): void
     {
         $this->hydrateExampleBuildingSteps();
     }
 
-    public function save()
+    public function save(): Redirector
     {
         // Hydrating as fast as possible again because if the save request returns a 200ok before an actual redirect
         // happens it would then mess up the view due to missing relations...
         $this->hydrateExampleBuildingSteps();
 
         $this->validate();
+
+        // TODO: Should we validate contents based on question rules?
 
         if (! is_numeric($this->exampleBuildingValues['order'] ?? null)) {
             // Empty string isn't allowed
@@ -185,7 +217,7 @@ class Form extends Component
         foreach ($this->contents as $buildYear => $content) {
             // the build year will be empty (as a key) when its a newly added one
             // in that case the build year will be manually added in the form.
-            if (($buildYear === "new" && isset($content['build_year'])) && !empty($content['build_year'])) {
+            if (($buildYear === "new") && ! empty($content['build_year'])) {
                 $buildYear = $content['build_year'];
                 // unset it as field name.
                 unset($content['build_year']);

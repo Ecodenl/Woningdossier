@@ -34,13 +34,15 @@ export default (defaultTab = null) => ({
         },
         ['x-bind:class']() {
             return this.$el.getAttribute('data-tab') === this.currentTab ? 'active' : '';
-        }
+        },
+        'role': 'tab',
     },
     container: {
         ['x-show']() {
             return this.$el.getAttribute('data-tab') === this.currentTab;
         },
-        'x-cloak': ''
+        'x-cloak': '',
+        'role': 'tabpanel',
     },
     switchTab(element) {
         if (element) {

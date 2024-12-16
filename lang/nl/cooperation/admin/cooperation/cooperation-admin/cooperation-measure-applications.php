@@ -13,7 +13,6 @@ return [
         ],
     ],
     'create' => [
-        'label' => 'Aanmaken',
         'title' => 'Maatregel aanmaken',
     ],
     'store' => [

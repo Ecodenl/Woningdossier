@@ -80,7 +80,7 @@
 
 .input-group .form-input:hover ~ .input-group-append,
 .input-group .form-input:focus ~ .input-group-append {
-    @apply border-green border-opacity-100;
+    @apply border-green/100;
 }
 
 .radio-wrapper,
@@ -344,6 +344,12 @@ input.form-input:read-only:not(.select-wrapper input):not(.datepicker input),
     min-width: 2.75rem;
 }
 
+/* Custom height if append precedes textarea */
+.input-group .input-group-prepend:has(+ textarea.form-input) {
+    @apply h-32;
+}
+
+/* Remove left border radius if append precedes form-input */
 .input-group .input-group-prepend + .form-input {
     @apply rounded-l-none;
 }
@@ -354,7 +360,13 @@ input.form-input:read-only:not(.select-wrapper input):not(.datepicker input),
     min-width: 2.75rem;
 }
 
-.input-group .form-input.with-append {
+/* Custom height if append succeeds textarea */
+.input-group textarea.form-input +.input-group-append {
+    @apply h-32;
+}
+
+/* Remove right border and border radius if append succeeds form-input */
+.input-group .form-input:has(+.input-group-append) {
     @apply border-r-0 rounded-r-none;
 }
 

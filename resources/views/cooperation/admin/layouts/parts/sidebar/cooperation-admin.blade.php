@@ -33,12 +33,12 @@
         @lang('woningdossier.cooperation.admin.super-admin.side-nav.example-buildings')
     </a>
 </li>
-<li class="@if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications') && optional(Route::current())->parameter('type') === \App\Helpers\Models\CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE) active @endif">
+<li class="@if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications') && (\App\Helpers\Models\CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE === Route::current()?->parameter('type') || (empty(Route::current()?->parameter('type')) && Route::current()?->parameter('cooperationMeasureApplication')?->is_extensive_measure))) active @endif">
     <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => \App\Helpers\Models\CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE])}}">
         @lang('cooperation/admin/shared.sidebar.cooperation-measure-applications.extensive')
     </a>
 </li>
-<li class="@if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications') && optional(Route::current())->parameter('type') === \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE) active @endif">
+<li class="@if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications') && (\App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE === Route::current()?->parameter('type') || (empty(Route::current()?->parameter('type')) && ! Route::current()?->parameter('cooperationMeasureApplication')?->is_extensive_measure))) active @endif">
     <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE])}}">
         @lang('cooperation/admin/shared.sidebar.cooperation-measure-applications.small')
     </a>

@@ -23,13 +23,14 @@
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
                     'label' => __('cooperation/admin/cooperation/cooperation-admin/questionnaires.form.name.label'),
+                    'id' => "name-{$locale}",
                     'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
                     'inputName' => "questionnaires.name.{$locale}",
                 ])
                     <div class="input-group-prepend">
                         {{ $locale }}
                     </div>
-                    <input class="form-input" type="text" name="questionnaires[name][{{$locale}}]"
+                    <input id="{{ "name-{$locale}" }}" class="form-input" type="text" name="questionnaires[name][{{$locale}}]"
                            placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/questionnaires.form.name.placeholder')"
                            value="{{ old("questionnaires.name.{$locale}") }}">
                 @endcomponent

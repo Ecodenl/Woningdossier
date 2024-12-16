@@ -202,9 +202,16 @@ export default (initiallyOpen = false, withSearch = false) => ({
 
             this.setSelectedOptions();
         } else {
+            const isValue = this.values === value;
             // If it's not multiple, we simply set the value.
             this.values = value;
             this.select.value = value;
+
+            if (isValue) {
+                // Technically the watcher does this too, but the watcher doesn't trigger if the value doesn't change
+                this.search = null;
+                this.setInputValue();
+            }
         }
     },
     // Use the values to select the option elements

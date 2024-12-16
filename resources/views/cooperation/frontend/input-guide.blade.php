@@ -99,7 +99,7 @@
                 @endslot
                 @component('cooperation.frontend.layouts.components.alpine-select')
                     <select id="dropdown" class="form-input" name="alpine[dropdown]">
-                        <option selected disabled>Dropdown</option>
+                        <option value="" selected disabled>Dropdown</option>
                     </select>
                 @endcomponent
             @endcomponent
@@ -146,7 +146,7 @@
                 @slot('sourceSlot')
                     {!! $html !!}
                 @endslot
-                <input id="input-group-error" type="text" class="form-input with-append" placeholder="Error met waarde">
+                <input id="input-group-error" type="text" class="form-input" placeholder="Error met waarde">
                 <div class="input-group-append">
                     m<sup>2</sup>
                 </div>
@@ -232,13 +232,9 @@
                 @slot('modalBodySlot')
                     <p class="font-bold">
                         input.form-input ~ div.input-group-append
-                        <br>
-                        When applying an input-group-append, it is suggested to add styling to the input:
-                        .with-append
-                        This will make the append feel more natural
                     </p>
                 @endslot
-                <input type="text" class="form-input with-append" placeholder="Placeholder">
+                <input type="text" class="form-input" placeholder="Placeholder">
                 <div class="input-group-append">
                     m<sup>2</sup>
                 </div>
@@ -256,7 +252,7 @@
                 @endslot
                 @component('cooperation.frontend.layouts.components.alpine-select', ['icon' => 'icon-detached-house'])
                     <select id="dropdown-icon" class="form-input" name="alpine[dropdown_icon]">
-                        <option selected disabled>Placeholder icon</option>
+                        <option value="" selected disabled>Placeholder icon</option>
                     </select>
                 @endcomponent
             @endcomponent
@@ -266,7 +262,7 @@
                 @slot('sourceSlot')
                     {!! $html !!}
                 @endslot
-                <input type="text" class="form-input with-append" placeholder="Placeholder">
+                <input type="text" class="form-input" placeholder="Placeholder">
                 <div class="input-group-append">
                     kWh
                 </div>

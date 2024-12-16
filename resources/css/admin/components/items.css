@@ -70,11 +70,28 @@
 }
 
 .dt-paging .dt-paging-button {
-    @apply btn btn-sm btn-outline-green ml-1;
+    /* Sadly, applying custom classes makes Tailwind treat it as a utility causing rewrites (such as `:not(.btn)`) :c */
+    /*@apply btn btn-sm btn-outline-green ml-1;*/
+
+    @apply p-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline text-sm inline-block min-w-min;
+    font-size: 12px;
+    line-height: 1.5;
+
+    @apply border border-solid border-green border-opacity-25 border bg-white text-green;
+
+    @apply hover:border-opacity-75 hover:shadow-center-green-25;
+    @apply focus:border-opacity-75 focus:shadow-center-green-25;
+    @apply active:border-opacity-100 focus:shadow-center-green-50;
 }
 
 .dt-paging .dt-paging-button.current {
-    @apply btn-green;
+    /*@apply btn-green;*/
+
+    @apply bg-green bg-opacity-25 text-green;
+
+    @apply hover:bg-green hover:bg-opacity-80 hover:text-white hover:shadow-center-green-25;
+    @apply focus:bg-green focus:bg-opacity-80 focus:text-white focus:shadow-center-green-25;
+    @apply active:bg-green active:bg-opacity-100 active:text-white focus:shadow-center-green-50;
 }
 
 .dt-paging .ellipsis {

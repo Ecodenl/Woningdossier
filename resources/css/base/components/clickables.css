@@ -1,15 +1,9 @@
 /* Hyperlink */
-a {
+a:not(.btn) {
     @apply text-blue-900 underline font-medium cursor-pointer transition text-sm relative;
 
     @apply hover:!bg-opacity-60 hover:!text-opacity-60 hover:!border-opacity-60;
     @apply focus:!bg-opacity-60 focus:!text-opacity-60 focus:!border-opacity-60;
-}
-
-/* Ensure text is readable in hovered buttons */
-a.btn {
-    @apply hover:!text-opacity-100;
-    @apply focus:!text-opacity-100;
 }
 
 a:hover i, a:focus i {
@@ -98,7 +92,7 @@ a.in-text {
     @apply active:border-opacity-100 focus:shadow-center-orange-50;
 }
 .btn-outline-yellow {
-    @apply border border-solid border-yellow border-opacity-25 border bg-white text-yellow;
+    @apply border border-solid border-yellow border-opacity-50 border bg-white text-yellow;
 
     @apply hover:border-opacity-75 hover:shadow-center-yellow-25;
     @apply focus:border-opacity-75 focus:shadow-center-yellow-25;

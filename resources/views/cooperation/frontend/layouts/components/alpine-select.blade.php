@@ -1,3 +1,4 @@
+{{-- TODO: Move to cooperation/layouts --}}
 @php $initiallyOpen ??= false; $withSearch ??= false; @endphp
 <div x-data="alpineSelect(@js($initiallyOpen), @js($withSearch))" x-ref="select-wrapper" class="select-wrapper"
      x-on:keyup.escape.window="close()">

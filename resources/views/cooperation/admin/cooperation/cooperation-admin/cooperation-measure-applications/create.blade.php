@@ -119,7 +119,7 @@
             @component('cooperation.frontend.layouts.components.form-group', [
                 'withInputSource' => false,
                 'label' => __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.icon.label'),
-                'id'     => 'icon',
+                'id' => 'icon',
                 'class' => 'w-full lg:w-1/2 lg:pr-3',
                 'inputName' => "cooperation_measure_applications.extra.icon",
             ])

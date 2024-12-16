@@ -336,6 +336,10 @@
     @apply select-none;
     content: url('/icons/house-green.svg');
 }
+.icon-house-white {
+    @apply select-none;
+    content: url('/icons/house-white.svg');
+}
 .icon-hydronic-balance-temperature {
     @apply select-none;
     content: url('/icons/hydronic-balance-temperature.svg');
@@ -444,21 +448,9 @@
     @apply select-none;
     content: url('/icons/pencil.svg');
 }
-.icon-persons-five {
-    @apply select-none;
-    content: url('/icons/persons-five.svg');
-}
-.icon-persons-four {
-    @apply select-none;
-    content: url('/icons/persons-four.svg');
-}
 .icon-persons-more-than-seven {
     @apply select-none;
     content: url('/icons/persons-more-than-seven.svg');
-}
-.icon-persons-one {
-    @apply select-none;
-    content: url('/icons/persons-one.svg');
 }
 .icon-persons-seven {
     @apply select-none;
@@ -468,6 +460,14 @@
     @apply select-none;
     content: url('/icons/persons-six.svg');
 }
+.icon-persons-five {
+    @apply select-none;
+    content: url('/icons/persons-five.svg');
+}
+.icon-persons-four {
+    @apply select-none;
+    content: url('/icons/persons-four.svg');
+}
 .icon-persons-three {
     @apply select-none;
     content: url('/icons/persons-three.svg');
@@ -475,6 +475,19 @@
 .icon-persons-two {
     @apply select-none;
     content: url('/icons/persons-two.svg');
+}
+/* TODO: Deprecate */
+.icon-persons-one {
+    @apply select-none;
+    content: url('/icons/person.svg');
+}
+.icon-person {
+    @apply select-none;
+    content: url('/icons/person.svg');
+}
+.icon-person-white {
+    @apply select-none;
+    content: url('/icons/person-white.svg');
 }
 .icon-piggybank {
     @apply select-none;

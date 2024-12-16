@@ -438,7 +438,7 @@
                     <i class="icon-xl icon-glass-hr-tp"></i>
                 </div>
                 <div class="flex items-center w-full space-x-6">
-                    <i class="icon-xl icon-persons-one"></i>
+                    <i class="icon-xl icon-person"></i>
                     <i class="icon-xxl icon-persons-two"></i>
                     <i class="icon-xxl icon-persons-three"></i>
                     <i class="icon-xxl icon-persons-four"></i>

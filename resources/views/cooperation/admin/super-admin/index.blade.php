@@ -3,63 +3,36 @@
 ])
 
 @section('content')
-    <div class="panel panel-default">
+    <div class="w-full flex flex-wrap">
+        <div class="w-1/3 px-3">
+            <div class="flex justify-between items-center rounded-lg bg-green-700 p-4 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-xl">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m6.115 5.19.319 1.913A6 6 0 0 0 8.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 0 0 2.288-4.042 1.087 1.087 0 0 0-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 0 1-.98-.314l-.295-.295a1.125 1.125 0 0 1 0-1.591l.13-.132a1.125 1.125 0 0 1 1.3-.21l.603.302a.809.809 0 0 0 1.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 0 0 1.528-1.732l.146-.292M6.115 5.19A9 9 0 1 0 17.18 4.64M6.115 5.19A8.965 8.965 0 0 1 12 3c1.929 0 3.716.607 5.18 1.64" />
+                </svg>
 
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="glyphicon glyphicon-globe" style="font-size: 6em;"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge" style="font-size: 3em;font-weight: 600;">{{$cooperationCount}}</div>
-                                        <div>@lang('woningdossier.cooperation.admin.super-admin.index.cooperations')</div>
-                                    </div>
-                                </div>
-                            </div>
-                            {{--<a href="#">--}}
-                                {{--<div class="panel-footer">--}}
-                                    {{--<span class="pull-left">View Details</span>--}}
-                                    {{--<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>--}}
-                                    {{--<div class="clearfix"></div>--}}
-                                {{--</div>--}}
-                            {{--</a>--}}
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="glyphicon glyphicon-user" style="font-size: 6em;"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge" style="font-size: 3em;font-weight: 600;">{{$userCount}}</div>
-                                        <div>@lang('woningdossier.cooperation.admin.super-admin.index.users')</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="glyphicon glyphicon-home" style="font-size: 6em;"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge" style="font-size: 3em;font-weight: 600;">{{$buildingCount}}</div>
-                                        <div>@lang('woningdossier.cooperation.admin.super-admin.index.buildings')</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <div class="font-bold text-xxl text-right">{{$cooperationCount}}</div>
+                    <div>@lang('woningdossier.cooperation.admin.super-admin.index.cooperations')</div>
+                </div>
+            </div>
+        </div>
+        <div class="w-1/3 px-3">
+            <div class="flex justify-between items-center rounded-lg bg-green-700 p-4 text-white">
+                <i class="icon-xl icon-person-white"></i>
+
+                <div>
+                    <div class="font-bold text-xxl text-right">{{$userCount}}</div>
+                    <div>@lang('woningdossier.cooperation.admin.super-admin.index.users')</div>
+                </div>
+            </div>
+        </div>
+        <div class="w-1/3 px-3">
+            <div class="flex justify-between items-center rounded-lg bg-green-700 p-4 text-white">
+                <i class="icon-xl icon-house-white"></i>
+
+                <div>
+                    <div class="font-bold text-xxl text-right">{{$buildingCount}}</div>
+                    <div>@lang('woningdossier.cooperation.admin.super-admin.index.buildings')</div>
                 </div>
             </div>
         </div>

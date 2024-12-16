@@ -31,15 +31,17 @@
                             </div>
                         </td>
                         <td>
-                            <a class="btn btn-green mb-2"
+                            <a class="btn btn-blue mb-2 mr-2"
                                href="{{route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire'))}}">
                                 @lang('cooperation/admin/cooperation/cooperation-admin/questionnaires.index.table.columns.edit')
                             </a>
 
-                            <button data-questionnaire-id="{{$questionnaire->id}}" type="button"
-                                    class="destroy btn btn-red">
-                                @lang('cooperation/admin/cooperation/cooperation-admin/questionnaires.index.table.columns.destroy')
-                            </button>
+                            @can('delete', $questionnaire)
+                                <button data-questionnaire-id="{{$questionnaire->id}}" type="button"
+                                        class="destroy btn btn-red">
+                                    @lang('cooperation/admin/cooperation/cooperation-admin/questionnaires.index.table.columns.destroy')
+                                </button>
+                            @endcan
                         </td>
                     </tr>
                 @endforeach

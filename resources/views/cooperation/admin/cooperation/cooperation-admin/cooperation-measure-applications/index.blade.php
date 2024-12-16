@@ -21,14 +21,14 @@
                             <i class="icon-lg {{$cooperationMeasureApplication->extra['icon'] ?? 'icon-tools'}}"></i>
                         </td>
                         <td>
-                            <a class="btn btn-blue" style="display: table-cell;"
+                            <a class="btn btn-blue table-cell"
                                href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', compact('cooperationMeasureApplication'))}}">
                                 @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.edit.label')
                             </a>
 
                             @can('delete', $cooperationMeasureApplication)
                                 <form action="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.destroy', compact('cooperationMeasureApplication'))}}"
-                                      method="POST" class="pl-4" style="display: table-cell;">
+                                      method="POST" class="pl-2 table-cell">
                                     @csrf
                                     @method('DELETE')
 

@@ -428,6 +428,9 @@ return [
         // Admin
         'building.note' => 'opmerking over de woning',
 
+        // Clients
+        'clients.name' => 'naam',
+
         // Questionnaires
         'questions.*.name' => 'naam',
         'questions.*.options.*.name' => 'optie',

@@ -3,7 +3,7 @@
         @lang('woningdossier.cooperation.admin.super-admin.side-nav.home')
     </a>
 </li>
-<li class="@if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.clients.index'])) active @endif">
+<li class="@if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.super-admin.clients.')) active @endif">
     <a href="{{route('cooperation.admin.super-admin.clients.index', compact('cooperation'))}}">
         @lang('woningdossier.cooperation.admin.super-admin.side-nav.clients')
     </a>

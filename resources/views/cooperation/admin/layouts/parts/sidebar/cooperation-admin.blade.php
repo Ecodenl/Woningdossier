@@ -13,7 +13,7 @@
         @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.residents')
     </a>
 </li>
-<li class="@if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.users.create'])) active @endif">
+<li class="@if(in_array(Route::currentRouteName(), ['cooperation.admin.users.create'])) active @endif">
     <a href="{{route('cooperation.admin.users.create')}}">
         @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.create-user')
     </a>

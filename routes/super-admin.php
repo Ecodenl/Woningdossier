@@ -3,7 +3,8 @@
 use App\Http\Controllers\Cooperation;
 use Illuminate\Support\Facades\Route;
 
-Route::resource('clients', Cooperation\Admin\SuperAdmin\ClientController::class);
+Route::resource('clients', Cooperation\Admin\SuperAdmin\ClientController::class)
+    ->except(['show']);
 
 Route::resource('tool-questions', Cooperation\Admin\SuperAdmin\ToolQuestionController::class)
     ->parameter('tool-questions', 'toolQuestion')

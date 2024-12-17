@@ -32,6 +32,13 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
     protected $notificationSetting;
     protected $unreadMessageCount;
 
+    /**
+     * The number of seconds after which the job's unique lock will be released.
+     *
+     * @var int
+     */
+    public $uniqueFor = 3600;
+
     public function __construct(Cooperation $cooperation, User $user, Building $building, NotificationSetting $notificationSetting, int $unreadMessageCount)
     {
         $this->queue = Queue::APP_EXTERNAL;

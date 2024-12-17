@@ -146,6 +146,7 @@ class SendNotifications extends Command
             ->whereIn("ns.interval_id", [1, 2])
             ->whereRaw("pmv.created_at > ns.last_notified_at")
             ->select(["pmv.user_id"])
+            ->distinct()
             ->get();
     }
 

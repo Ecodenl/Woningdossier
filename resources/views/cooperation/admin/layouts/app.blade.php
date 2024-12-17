@@ -19,7 +19,7 @@
         $menu ??= true;
     @endphp
 
-    <div class="@if(! $menu) max-w-7xl @endif mx-auto sm:px-6 lg:px-8 pt-8 flex flex-wrap justify-between">
+    <div class="@if(! $menu) max-w-7xl @endif mx-auto sm:px-6 lg:px-8 pt-8 flex flex-wrap justify-between mb-10">
         @include('cooperation.layouts.parts.messages')
         @if($menu)
             @include('cooperation.admin.layouts.parts.sidebar-menu')
@@ -31,7 +31,7 @@
                  'w-full xl:w-10/12' => $menu
              ])
         >
-            <div class="w-full divide-y divide-blue-500 divide-opacity-50">
+            <div class="w-full divide-y divide-blue-500/50">
                 @if(! empty($panelTitle))
                     <div class="p-4 flex items-center justify-between">
                         <h3 class="heading-5 inline-block font-normal">

@@ -376,8 +376,8 @@ input.form-input:read-only:not(.select-wrapper input):not(.datepicker input),
 }
 
 .select-wrapper .select-dropdown {
-    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-50 top-full shadow-xl;
-    min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
+    /* min-h-12, height of 1 option. Displays better when no options are available */
+    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-50 top-full shadow-xl min-h-12 max-h-72 overflow-auto;
 }
 
 .select-wrapper .select-dropdown .select-option,

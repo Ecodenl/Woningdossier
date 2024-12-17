@@ -244,11 +244,12 @@ module.exports = {
             purple: {
                 'DEFAULT': '#622191',
                 '100': '#E1DCF2',
+                '500': '#622191',
             },
             blue: {
                 '900': '#1122C8',
                 '800': '#3781F0',
-                'DEFAULT': '#414C57',
+                'DEFAULT': '#414C57', /* TODO: DEFAULT Should match 500! */
                 '500': '#647585',
                 '100': '#F0F1F2'
             },

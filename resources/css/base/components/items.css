@@ -7,7 +7,7 @@
 
 /* Modals */
 .modal-container {
-    @apply fixed top-0 left-0 z-100 w-screen h-screen flex items-center justify-center bg-blue bg-opacity-90 cursor-default;
+    @apply fixed top-0 left-0 z-150 w-screen h-screen flex items-center justify-center bg-blue bg-opacity-90 cursor-default;
 }
 
 .modal-container .modal {

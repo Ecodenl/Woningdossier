@@ -1,4 +1,6 @@
+{{-- TODO: Move to cooperation/layouts --}}
 <div id="{{ $id ?? '' }}" class="modal-container" x-show="opened" x-cloak wire:ignore.self
+     @if(! empty($attr)) {!! $attr !!} @endif
      x-on:keydown.escape.window="if (! document.activeElement.closest('.tox-dialog')) { close(); }"
      x-on:close-modal.window="close()"
      x-on:open-modal="open()"

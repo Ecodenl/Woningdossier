@@ -14,6 +14,35 @@ try {
 } catch (e) {}
 
 /**
+ * Tiptap
+ */
+
+import { Editor } from '@tiptap/core';
+import StarterKit from '@tiptap/starter-kit';
+import Link from '@tiptap/extension-link';
+import Color from '@tiptap/extension-color';
+import TextStyle from '@tiptap/extension-text-style';
+import Underline from '@tiptap/extension-underline';
+import Superscript from '@tiptap/extension-superscript';
+import Subscript from '@tiptap/extension-subscript';
+// Custom extensions
+import { FontSize } from './tiptap-extensions/font-size.ts';
+import { BackColor } from './tiptap-extensions/back-color.ts';
+
+window.Tiptap = Editor;
+window.TiptapExt = {
+    StarterKit: StarterKit,
+    Link: Link,
+    Color: Color,
+    BackColor: BackColor,
+    TextStyle: TextStyle,
+    Underline: Underline,
+    FontSize: FontSize,
+    Superscript: Superscript,
+    Subscript: Subscript,
+};
+
+/**
  * Define functions that will be used throughout the whole application, that
  * are also required by Alpine.
  */
@@ -129,6 +158,7 @@ import Tabs from './alpine-scripts/tabs.js';
 import AdaptiveInputs from './alpine-scripts/adaptiveInput.js';
 import Popover from './alpine-scripts/popover.js';
 import Datepicker from './alpine-scripts/datepicker.js';
+import TiptapEditor from './alpine-scripts/tiptapEditor';
 
 Alpine.data('alpineSelect', AlpineSelect);
 Alpine.data('sourceSelect', SourceSelect);
@@ -143,6 +173,7 @@ Alpine.data('tabs', Tabs);
 Alpine.data('adaptiveInputs', AdaptiveInputs);
 Alpine.data('popover', Popover);
 Alpine.data('datepicker', Datepicker);
+Alpine.data('tiptapEditor', TiptapEditor);
 
 // Define AlpineJS Magic methods (below example defines "$nuke", e.g. x-on:click="$nuke")
 

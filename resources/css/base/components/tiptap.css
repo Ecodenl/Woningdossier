@@ -1,0 +1,56 @@
+/* Tiptap menu styling */
+.tiptap-menu {
+    @apply w-full flex flex-wrap items-center border border-solid border-blue-500 border-opacity-50 border-b-0 rounded-t-lg px-1;
+    min-height: 2rem;
+}
+
+.tiptap-menu [role="menu"] {
+    @apply border border-solid border-blue-500 border-opacity-50;
+}
+
+.tiptap-menu button,
+.tiptap-menu a {
+    @apply h-auto bg-white text-lg transition-all duration-100 ease-out flex items-center justify-center p-2 rounded-lg;
+    min-width: 2rem; /* Make it square by default (matching height of the bar itself) */
+
+    @apply hover:bg-blue-500/10;
+}
+
+.tiptap-menu svg {
+    @apply w-6 h-6;
+}
+
+.tiptap-menu ul li {
+    @apply flex justify-center items-center;
+}
+
+.tiptap-menu ul li button,
+.tiptap-menu ul li a {
+    @apply w-full px-6 whitespace-nowrap;
+}
+
+.tiptap-menu .spacer {
+    @apply mx-2 border-l border-solid border-blue-500 border-opacity-25 py-3;
+}
+
+.tiptap-footer {
+    @apply flex items-center h-8 p-2 border border-solid border-blue-500 border-opacity-50 border-t-0 rounded-b-lg;
+}
+
+.tiptap-footer .tiptap-current-tag {
+    @apply font-medium text-sm;
+}
+
+/* Tiptap editor styling */
+.tiptap {
+    @apply w-full overflow-auto border border-solid border-blue-500 border-opacity-50 bg-white outline-none p-2;
+    width: 100%;
+    min-height: 10rem;
+    max-height: 15rem;
+}
+
+
+/* Align styling with frontend if needed */
+/*.tiptap a {*/
+/*    @apply text-blue-500 cursor-pointer;*/
+/*}*/

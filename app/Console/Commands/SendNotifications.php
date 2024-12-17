@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SendNotifications extends Command
 {
@@ -89,6 +90,7 @@ class SendNotifications extends Command
                                 case 'daily':
                                     // if the difference between now and the last notified date is 23 hours, send him a message
                                     if ($this->almostMoreThanOneDayAgo($notifiedDiff)) {
+                                        Log::debug("Send daily mail to c " . $cooperation->id . ", u " . $user->id . ", b " . $building->id . ", unread " . $unreadMessageCount);
                                         SendUnreadMessageCountEmail::dispatch(
                                             $cooperation,
                                             $user,
@@ -100,6 +102,7 @@ class SendNotifications extends Command
                                     break;
                                 case 'weekly':
                                     if ($this->almostMoreThanOneWeekAgo($notifiedDiff)) {
+                                        Log::debug("Send weekly mail to c " . $cooperation->id . ", u " . $user->id . ", b " . $building->id . ", unread " . $unreadMessageCount);
                                         SendUnreadMessageCountEmail::dispatch(
                                             $cooperation,
                                             $user,

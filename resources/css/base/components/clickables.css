@@ -1,0 +1,162 @@
+/* Hyperlink */
+a:not(.btn) {
+    @apply text-blue-900 underline font-medium cursor-pointer transition text-sm relative;
+
+    @apply hover:!bg-opacity-60 hover:!text-opacity-60 hover:!border-opacity-60;
+    @apply focus:!bg-opacity-60 focus:!text-opacity-60 focus:!border-opacity-60;
+}
+
+a:hover i, a:focus i {
+    @apply opacity-60;
+}
+
+/* Hyperlink in paragraph */
+p a,
+.as-text a,
+a.in-text {
+    @apply text-purple no-underline font-medium;
+}
+
+/* Buttons */
+.btn {
+    @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline text-sm inline-block min-w-min;
+}
+
+.btn-sm {
+    @apply p-2;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.btn:disabled {
+    @apply cursor-not-allowed bg-gray text-white pointer-events-none;
+
+    @apply hover:bg-gray hover:bg-opacity-100 hover:text-white hover:shadow-none;
+    @apply focus:bg-gray focus:bg-opacity-100 focus:text-white focus:shadow-none;
+    @apply active:bg-gray active:bg-opacity-100 active:text-white active:shadow-none;
+}
+.btn-purple {
+    @apply bg-purple-100 bg-opacity-100 text-purple;
+
+    @apply hover:bg-purple hover:bg-opacity-90 hover:text-white hover:shadow-center-purple-25;
+    @apply focus:bg-purple focus:bg-opacity-90 focus:text-white focus:shadow-center-purple-25;
+    @apply active:bg-purple active:bg-opacity-100 active:text-white focus:shadow-center-purple-50;
+}
+.btn-orange {
+    @apply bg-orange bg-opacity-25 text-orange;
+
+    @apply hover:bg-orange hover:bg-opacity-80 hover:text-white hover:shadow-center-orange-25;
+    @apply focus:bg-orange focus:bg-opacity-80 focus:text-white focus:shadow-center-orange-25;
+    @apply active:bg-orange active:bg-opacity-100 active:text-white focus:shadow-center-orange-50;
+}
+.btn-yellow {
+    @apply bg-yellow bg-opacity-25 text-yellow;
+
+    @apply hover:bg-yellow hover:bg-opacity-80 hover:text-white hover:shadow-center-yellow-25;
+    @apply focus:bg-yellow focus:bg-opacity-80 focus:text-white focus:shadow-center-yellow-25;
+    @apply active:bg-yellow active:bg-opacity-100 active:text-white focus:shadow-center-yellow-50;
+}
+.btn-green {
+    @apply bg-green bg-opacity-25 text-green;
+
+    @apply hover:bg-green hover:bg-opacity-80 hover:text-white hover:shadow-center-green-25;
+    @apply focus:bg-green focus:bg-opacity-80 focus:text-white focus:shadow-center-green-25;
+    @apply active:bg-green active:bg-opacity-100 active:text-white focus:shadow-center-green-50;
+}
+.btn-red {
+    @apply bg-red bg-opacity-25 text-red;
+
+    @apply hover:bg-red hover:bg-opacity-80 hover:text-white hover:shadow-center-red-25;
+    @apply focus:bg-red focus:bg-opacity-80 focus:text-white focus:shadow-center-red-25;
+    @apply active:bg-red active:bg-opacity-100 active:text-white focus:shadow-center-red-50;
+}
+.btn-blue {
+    @apply bg-blue-900 bg-opacity-25 text-blue-900;
+
+    @apply hover:bg-blue-900 hover:bg-opacity-80 hover:text-white hover:shadow-center-blue-25;
+    @apply focus:bg-blue-900 focus:bg-opacity-80 focus:text-white focus:shadow-center-blue-25;
+    @apply active:bg-blue-900 active:bg-opacity-100 active:text-white focus:shadow-center-blue-50;
+}
+.btn-outline-purple {
+    @apply border border-solid border-purple border-opacity-25 border bg-white text-purple;
+
+    @apply hover:border-opacity-75 hover:shadow-center-purple-25;
+    @apply focus:border-opacity-75 focus:shadow-center-purple-25;
+    @apply active:border-opacity-100 focus:shadow-center-purple-50;
+}
+.btn-outline-orange {
+    @apply border border-solid border-orange border-opacity-25 border bg-white text-orange;
+
+    @apply hover:border-opacity-75 hover:shadow-center-orange-25;
+    @apply focus:border-opacity-75 focus:shadow-center-orange-25;
+    @apply active:border-opacity-100 focus:shadow-center-orange-50;
+}
+.btn-outline-yellow {
+    @apply border border-solid border-yellow border-opacity-50 border bg-white text-yellow;
+
+    @apply hover:border-opacity-75 hover:shadow-center-yellow-25;
+    @apply focus:border-opacity-75 focus:shadow-center-yellow-25;
+    @apply active:border-opacity-100 focus:shadow-center-yellow-50;
+}
+.btn-outline-green {
+    @apply border border-solid border-green border-opacity-25 border bg-white text-green;
+
+    @apply hover:border-opacity-75 hover:shadow-center-green-25;
+    @apply focus:border-opacity-75 focus:shadow-center-green-25;
+    @apply active:border-opacity-100 focus:shadow-center-green-50;
+}
+.btn-outline-red {
+    @apply border border-solid border-red border-opacity-25 border bg-white text-red;
+
+    @apply hover:border-opacity-75 hover:shadow-center-red-25;
+    @apply focus:border-opacity-75 focus:shadow-center-red-25;
+    @apply active:border-opacity-100 focus:shadow-center-red-50;
+}
+.btn-outline-blue {
+    @apply border border-solid border-blue-900 border-opacity-25 border bg-white text-blue-900;
+
+    @apply hover:border-opacity-75 hover:shadow-center-blue-25;
+    @apply focus:border-opacity-75 focus:shadow-center-blue-25;
+    @apply active:border-opacity-100 focus:shadow-center-blue-50;
+}
+
+
+/* Navigation tabs */
+.nav-tabs {
+    @apply flex border-b border-blue border-opacity-50;
+}
+
+.nav-tabs a {
+    @apply no-underline rounded-t-md py-2 px-4 text-white bg-blue-500;
+}
+
+.nav-tabs.tabs-square a {
+    @apply py-3;
+}
+
+.nav-tabs a.active {
+    @apply text-white bg-green;
+}
+
+/* Extra items */
+.clickable {
+    @apply cursor-pointer transition;
+
+    @apply hover:!bg-opacity-60 hover:!text-opacity-60 hover:!border-opacity-60;
+    @apply focus:!bg-opacity-60 focus:!text-opacity-60 focus:!border-opacity-60;
+}
+
+i.clickable:hover, i.clickable:focus,
+.clickable:hover i, .clickable:focus i {
+    @apply opacity-60;
+}
+
+#app-body .disabled {
+    @apply cursor-not-allowed bg-gray bg-opacity-50 pointer-events-none;
+}
+
+/* Allow making disabled items clickable specifically */
+#app-body .disabled.pointer-events-auto {
+    /* can't use @apply pointer-events-auto here as it somehow seems to conflict with itself */
+    pointer-events: auto;
+}

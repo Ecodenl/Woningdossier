@@ -29,13 +29,12 @@ class ParticipantController extends Controller
     public function revokeAccess(Cooperation $cooperation, Request $request): RedirectResponse
     {
         // get the group participant user id (which is only a coach, but still)
-        $groupParticipantUserId = $request->get('user_id');
+        $groupParticipantUserId = $request->input('user_id');
         // get the building owner id
-        $buildingOwnerId = $request->get('building_owner_id');
+        $buildingOwnerId = $request->input('building_owner_id');
 
         // the building from the user / resident
         $building = Building::find($buildingOwnerId);
-
         $revokedParticipant = User::find($groupParticipantUserId);
 
         if ($building instanceof Building) {
@@ -54,8 +53,8 @@ class ParticipantController extends Controller
      */
     public function addWithBuildingAccess(Cooperation $cooperation, Request $request): RedirectResponse
     {
-        $userId = $request->get('user_id', '');
-        $buildingId = $request->get('building_id', '');
+        $userId = $request->input('user_id', '');
+        $buildingId = $request->input('building_id', '');
 
         // the receiver of the message
         $user = $cooperation->users()->find($userId);
@@ -92,8 +91,8 @@ class ParticipantController extends Controller
      */
     public function setRead(Cooperation $cooperation, Request $request)
     {
-        $isPublic = $request->get('is_public');
-        $buildingId = $request->get('building_id');
+        $isPublic = $request->input('is_public');
+        $buildingId = $request->input('building_id');
 
         $messagesToSetRead = PrivateMessage::forMyCooperation()
             ->conversation($buildingId);

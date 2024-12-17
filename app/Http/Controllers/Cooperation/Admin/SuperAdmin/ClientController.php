@@ -8,14 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\ClientFormRequest;
 use App\Models\Client;
 use App\Models\Cooperation;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(): View
     {
         $clients = Client::all();
@@ -23,39 +19,27 @@ class ClientController extends Controller
         return view('cooperation.admin.super-admin.clients.index', compact('clients'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): View
     {
         return view('cooperation.admin.super-admin.clients.create');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show(int $id)
+    public function store(ClientFormRequest $request): RedirectResponse
     {
-        //
+        $name = $request->input('clients.name');
+        $short = Str::slug($name);
+        $client = Client::create(compact('name', 'short'));
+
+        return redirect()
+            ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
+            ->with('success', __('cooperation/admin/super-admin/clients.store.success'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     */
     public function edit(Cooperation $cooperation, Client $client): View
     {
         return view('cooperation.admin.super-admin.clients.edit', compact('client'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     */
     public function update(ClientFormRequest $request, Cooperation $cooperation, Client $client): RedirectResponse
     {
         $name = $request->input('clients.name');
@@ -68,29 +52,13 @@ class ClientController extends Controller
             ->with('success', __('cooperation/admin/super-admin/clients.update.success'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     */
-    public function store(ClientFormRequest $request): RedirectResponse
+    public function destroy(Cooperation $cooperation, Client $client): RedirectResponse
     {
-        $name = $request->input('clients.name');
-        $short = Str::slug($name);
-        $client = Client::create(compact('name', 'short'));
+        $this->authorize('delete', $client);
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
-            ->with('success', __('cooperation/admin/super-admin/clients.store.success'));
-    }
+        $client->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(int $id)
-    {
-        //
+        return redirect()->route('cooperation.admin.super-admin.clients.index')
+            ->with('success', __('cooperation/admin/super-admin/clients.destroy.success'));
     }
 }

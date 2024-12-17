@@ -9,13 +9,9 @@ use App\Http\Requests\Cooperation\Admin\SuperAdmin\PersonalAccessTokenFormReques
 use App\Models\Client;
 use App\Models\Cooperation;
 use App\Models\PersonalAccessToken;
-use Illuminate\Http\Request;
 
 class PersonalAccessTokenController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Cooperation $cooperation, Client $client): View
     {
         $client->load('tokens');
@@ -23,9 +19,6 @@ class PersonalAccessTokenController extends Controller
         return view('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('cooperation', 'client'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Cooperation $cooperation, Client $client): View
     {
         $cooperations = Cooperation::all();
@@ -38,9 +31,6 @@ class PersonalAccessTokenController extends Controller
         return view('cooperation.admin.super-admin.clients.personal-access-tokens.edit', compact('cooperation', 'client', 'cooperations', 'personalAccessToken'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(PersonalAccessTokenFormRequest $request, Cooperation $cooperation, Client $client): RedirectResponse
     {
         $newAccessToken = $client->createToken(
@@ -53,12 +43,6 @@ class PersonalAccessTokenController extends Controller
             ->with('token', $newAccessToken);
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     */
     public function update(PersonalAccessTokenFormRequest $request, Cooperation $cooperation, Client $client, PersonalAccessToken $personalAccessToken): RedirectResponse
     {
         $personalAccessToken->update([
@@ -71,11 +55,6 @@ class PersonalAccessTokenController extends Controller
             ->with('success', __('cooperation/admin/super-admin/clients/personal-access-tokens.update.success'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     */
     public function destroy(Cooperation $cooperation, Client $client, PersonalAccessToken $personalAccessToken): RedirectResponse
     {
         $personalAccessToken->delete();

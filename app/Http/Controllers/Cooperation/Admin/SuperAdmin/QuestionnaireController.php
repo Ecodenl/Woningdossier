@@ -37,7 +37,7 @@ class QuestionnaireController extends Controller
         $cooperationIds = $request->input('cooperations.id', []);
 
         // the questionnaire we will copy to the given cooperations
-        $questionnaire = Questionnaire::find($questionnaireId);
+        $questionnaire = Questionnaire::findOrFail($questionnaireId);
 
         foreach ($cooperationIds as $cooperationId) {
             $cooperation = Cooperation::find($cooperationId);

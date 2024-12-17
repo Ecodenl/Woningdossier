@@ -37,12 +37,9 @@ class TranslationController extends Controller
     }
 
     /**
-     *
-     * @param  string  $group  So we can get the translations / questions from language_line table for the step
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param string $group So we can get the translations / questions from language_line table for the step
      */
-    public function edit(Cooperation $cooperation, string $group)
+    public function edit(Cooperation $cooperation, string $group): View
     {
         // see the index file, we change the "/" to "_" otherwise it won't be picked up by routing
 
@@ -66,7 +63,8 @@ class TranslationController extends Controller
         $translations = LanguageLine::with([
             'subQuestions' => function ($query) {
                 return $query->with('helpText');
-            }, 'helpText', ])
+            }, 'helpText',
+        ])
             ->forGroup($group)
             ->mainQuestions()
             ->get();
@@ -74,11 +72,6 @@ class TranslationController extends Controller
         return view('cooperation.admin.super-admin.translations.edit', compact('translations', 'group'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param $group
-     */
     public function update(Request $request, Cooperation $cooperation, $group): RedirectResponse
     {
         $languageLinesData = $request->get('language_lines', []);

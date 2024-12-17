@@ -13,22 +13,18 @@ return [
 
         'edit' => [
             'label' => 'Gegevens bewerken',
-            'button' => '<i class="glyphicon glyphicon-pencil"></i>',
         ],
         'fill-for-user' => [
             'label' => 'Woning als coach bewerken',
-            'button' => '<i class="glyphicon glyphicon-edit"></i>',
         ],
 
         'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :municipality, :email, :phone-number',
 
         'observe-building' => [
             'label' => 'Woning bekijken',
-            'button' => '<i class="glyphicon glyphicon-eye-open"></i>',
         ],
         'delete-account' => [
             'label' => 'Account verwijderen',
-            'button' => '<i class="glyphicon glyphicon-trash"></i>',
         ],
         'role' => [
             'label' => 'Rol',

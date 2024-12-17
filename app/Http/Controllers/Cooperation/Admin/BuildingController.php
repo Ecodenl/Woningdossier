@@ -25,27 +25,15 @@ class BuildingController extends Controller
 {
     /**
      * Handles the data for the show user for a coach, coordinator and cooperation-admin.
-     *
-     * @param $buildingId
-     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
-    public function show(UserRoleService $userRoleService, Cooperation $cooperation, $buildingId)
+    public function show(UserRoleService $userRoleService, Cooperation $cooperation, Building $building): View|RedirectResponse
     {
-        // retrieve the user from the building within the current cooperation;
-        $user = $cooperation->users()->whereHas('building', function ($query) use ($buildingId) {
-            $query->where('id', $buildingId);
-        })->first();
+        $user = $building->user;
 
-        if (! $user instanceof User) {
-            \Illuminate\Support\Facades\Log::debug('An admin tried to show a building that does not seem to exists with id: '.$buildingId);
-
-            return redirect(route('cooperation.admin.index'));
+        if ($building->trashed() || ! $user instanceof User) {
+            return redirect()->route('cooperation.admin.index');
         }
-
-        $building = $user->building;
 
         $this->authorize('show', [$building]);
 
@@ -57,7 +45,7 @@ class BuildingController extends Controller
 
         $statuses = Status::ordered()->get();
 
-        $coachesWithActiveBuildingCoachStatus = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building);
+        $coachesWithActiveBuildingCoachStatus = BuildingCoachStatusService::getConnectedCoachesByBuilding($building);
 
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
 

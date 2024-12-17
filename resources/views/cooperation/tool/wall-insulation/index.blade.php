@@ -257,8 +257,8 @@
             <div class="hideable w-full">
                 <div id="advice-help">
                     <div class="w-full md:w-2/3 md:ml-2/12">
-                        @component('cooperation.frontend.layouts.parts.alert', [
-                            'color' => 'blue-800', 'dismissible' => false
+                        @component('cooperation.layouts.components.alert', [
+                            'color' => 'blue-900', 'dismissible' => false
                         ])
                             <p class="text-blue-800">
                                 @lang('wall-insulation.insulation-advice.text.title')
@@ -334,7 +334,7 @@
             <div class="hideable w-full">
                 <div class="flex flex-row flex-wrap w-full" id="cavity-wall-alert" style="display: none;">
                     <div class="w-full md:w-2/3 md:ml-2/12">
-                        @component('cooperation.frontend.layouts.parts.alert', [
+                        @component('cooperation.layouts.components.alert', [
                             'color' => 'red', 'dismissible' => false
                         ])
                         <p class="text-red"></p>
@@ -471,8 +471,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             let data = {};
             $('input:not(.source-select-input), textarea, select:not(.source-select)').change(function () {
                 data[$(this).attr('name')] = $(this).val();

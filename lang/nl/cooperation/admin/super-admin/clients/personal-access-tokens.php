@@ -6,7 +6,6 @@ return [
     ],
     'index' => [
         'header' => 'API Tokens van :client_name',
-        'header-button' => 'API Token aanmaken',
         'token-created' => 'API Token aangemaakt, deze is hieronder eenmalig zichtbaar.',
         'table' => [
             'last-used' => 'Laatste keer gebruikt',
@@ -17,12 +16,10 @@ return [
         ],
     ],
     'create' => [
-        'cooperations' => 'Tot welke Coöperaties heeft dit token toegang ? (Wanneer dit veld word leeg gelaten kan het API token bij elke coöperatie.)',
         'header' => 'API Token aanmaken voor :client_name',
         'submit' => 'Token aanmaken'
     ],
     'edit' => [
-        'cooperations' => 'Tot welke Coöperaties heeft dit token toegang ?',
         'header' => 'API Token bewerken voor :client_name',
         'submit' => 'Token bijwerken'
     ],
@@ -32,5 +29,12 @@ return [
     'destroy' => [
         'confirm' => 'Weet je zeker dat je deze token wilt verwijderen?',
         'success' => 'API Token is verwijderd.'
+    ],
+
+    'form' => [
+        'permissions' => [
+            'header' => 'Bevoegdheden',
+            'label' => 'Tot welke Coöperaties heeft deze token toegang? (Wanneer dit veld leeg wordt gelaten kan de API token bij elke coöperatie.)',
+        ],
     ],
 ];

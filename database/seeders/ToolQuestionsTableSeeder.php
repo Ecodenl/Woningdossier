@@ -412,7 +412,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     1 => [
                         'name' => 'Alleen',
                         'extra' => [
-                            'icon' => 'icon-persons-one',
+                            'icon' => 'icon-person',
                         ],
                     ],
                     2 => [

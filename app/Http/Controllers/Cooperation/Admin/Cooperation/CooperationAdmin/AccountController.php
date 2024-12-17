@@ -17,6 +17,9 @@ class AccountController extends Controller
 
         $disable($account);
 
-        return redirect()->back()->with('success', __('general.2fa.disabled'));
+        $building = $account->user()->building;
+        return redirect()->route('cooperation.admin.buildings.show', compact('building'))
+            ->withFragment('2fa')
+            ->with('success', __('general.2fa.disabled'));
     }
 }

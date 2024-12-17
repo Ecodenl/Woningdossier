@@ -13,7 +13,7 @@
         @lang('woningdossier.cooperation.admin.super-admin.side-nav.cooperations')
     </a>
 </li>
-<li class="@if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.users.index', 'cooperation.admin.super-admin.users.filter'])) active @endif">
+<li class="@if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.users.index'])) active @endif">
     <a href="{{route('cooperation.admin.super-admin.users.index')}}">
         @lang('woningdossier.cooperation.admin.super-admin.side-nav.users')
     </a>

@@ -51,7 +51,7 @@
                 'withInputSource' => false,
                 'label' => __("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.label") . '<small><br>' . __("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.help") . '</small>',
                 'class' => 'w-full',
-                'inputGroupClass' => $type === 'input' ? 'w-1/2' : '',
+                'inputGroupClass' => $type === 'input' ? 'lg:w-1/2' : '',
                 'id' => $kebabShort,
                 'inputName' => "cooperation_settings.{$short}",
             ])

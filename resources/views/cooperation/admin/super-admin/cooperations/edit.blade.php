@@ -1,5 +1,5 @@
 @extends('cooperation.admin.layouts.app', [
-    'panelTitle' => __('woningdossier.cooperation.admin.super-admin.cooperations.edit.header', ['name' => $cooperationToEdit->name])
+    'panelTitle' => __('cooperation/admin/super-admin/cooperations.edit.title', ['name' => $cooperationToEdit->name])
 ])
 
 @section('content')

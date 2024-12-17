@@ -152,51 +152,12 @@ return [
                 ],
                 'cooperations' => [
                     'index' => [
-                        'header' => 'Cooperaties',
-                        'table' => [
-                            'columns' => [
-                                'name' => 'Cooperatie naam',
-                                'slug' => 'Cooperatie Slug / Subdomein',
-                                'actions' => 'Acties',
-                            ],
-                        ],
                         'modal' => [
                             'text' => 'U staat op het punt om de coöperatie :cooperation te verwijderen, hiermee word alles verwijderd wat aan de coöperatie hangt (gebruikers, vragenlijsten, berichten etc.).',
                             'cancel' => 'Annuleren',
                             'destroy' => 'Ja, ik wil deze coöperatie verwijderen',
                         ],
-                        'edit' => 'Bewerken',
-                        'show' => 'Details van deze coöperatie',
                         'destroy' => 'Verwijder coöperatie',
-                    ],
-                    'create' => [
-                        'header' => 'Cooperatie toevoegen',
-                        'form' => [
-                            'name' => 'Naam van de coöperatie *',
-                            'slug' => 'Slug / subdomein *',
-                            'cooperation_email' => 'Coöperatie contact e-mailadres',
-                            'website_url' => 'Website URL',
-                            'create' => 'Aanmaken',
-                        ],
-                    ],
-                    'edit' => [
-                        'header' => 'Cooperatie :name bewerken',
-                        'form' => [
-                            'name' => 'Naam van de coöperatie *',
-                            'slug' => 'Slug / subdomein *',
-                            'cooperation_email' => 'Coöperatie contact e-mailadres',
-                            'website_url' => 'Website URL',
-                            'update' => 'Bijwerken',
-                        ],
-                    ],
-                    'destroy' => [
-                        'success' => 'De coöperatie is succesvol verwijderd',
-                    ],
-                    'store' => [
-                        'success' => 'Cooperatie is toegevoegd aan het Hoomdossier',
-                    ],
-                    'update' => [
-                        'success' => 'Cooperatie is bijgewerkt.',
                     ],
                     'cooperation-to-manage' => [
                         'alert-on-top' => 'Alle wijzigingen die u nu doorvoert zullen worden gedaan op de coöperatie <strong>:cooperation</strong>',

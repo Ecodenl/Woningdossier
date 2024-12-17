@@ -3,7 +3,6 @@
 return [
     'index' => [
         'header' => 'Overzicht van alle gebruikers voor uw coöperatie',
-
         'table' => [
             'columns' => [
                 'date' => 'Datum',

@@ -73,11 +73,9 @@
     /* Sadly, applying custom classes makes Tailwind treat it as a utility causing rewrites (such as `:not(.btn)`) :c */
     /*@apply btn btn-sm btn-outline-green ml-1;*/
 
-    @apply p-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline text-sm inline-block min-w-min;
+    @apply ml-1 p-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline text-sm inline-block min-w-min border border-solid border-green border-opacity-25 border bg-white text-green;
     font-size: 12px;
     line-height: 1.5;
-
-    @apply border border-solid border-green border-opacity-25 border bg-white text-green;
 
     @apply hover:border-opacity-75 hover:shadow-center-green-25;
     @apply focus:border-opacity-75 focus:shadow-center-green-25;

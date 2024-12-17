@@ -40,6 +40,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
         $this->cooperation = $cooperation;
         $this->building = $building;
         $this->unreadMessageCount = $unreadMessageCount;
+        Log::debug(__METHOD__ . " c " . $this->cooperation->id . ", u " . $this->user->id . ", b " . $this->building->id . ", unread " . $this->unreadMessageCount);
     }
 
     /**
@@ -49,6 +50,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
      */
     public function handle()
     {
+        Log::debug(__METHOD__ . " c " . $this->cooperation->id . ", u " . $this->user->id . ", b " . $this->building->id . ", unread " . $this->unreadMessageCount);
         if ($this->building instanceof Building) {
             // send the mail to the user
             Mail::to($this->user->account->email)

@@ -93,6 +93,6 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
      */
     public function uniqueId() : string
     {
-        return $this->user->id.'-'.$this->cooperation->id;
+        return __CLASS__ . '-' . $this->user->id.'-'.$this->cooperation->id;
     }
 }

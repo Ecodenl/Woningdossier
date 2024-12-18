@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
-class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
+class SendUnreadMessageCountEmail implements ShouldQueue//, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -73,6 +73,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
 
     public function failed(Throwable $exception)
     {
+        Log::debug($exception->getMessage());
         // This functionality is here for people which mistyped their email address.
         // This will set the messages to read for the user in the resident's input source.
         // This way we prevent the mail from being sent over and over again.

@@ -47,8 +47,8 @@
 .add-option-wrapper > label {
     @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500/50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
 
-    @apply hover:border-green hover:border-opacity-100;
-    @apply focus:border-green focus:border-opacity-100;
+    @apply hover:border-green/100;
+    @apply focus:border-green/100;
 }
 
 .radio-wrapper > label,

@@ -94,6 +94,6 @@ class TranslationController extends Controller
 
         return redirect()
             ->route('cooperation.admin.super-admin.translations.index')
-            ->with('success', __('woningdossier.cooperation.admin.super-admin.translations.update.success'));
+            ->with('success', __('cooperation/admin/super-admin/translations.update.success'));
     }
 }

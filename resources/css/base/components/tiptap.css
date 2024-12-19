@@ -1,7 +1,6 @@
 /* Tiptap menu styling */
 .tiptap-menu {
-    @apply w-full flex flex-wrap items-center border border-solid border-blue-500 border-opacity-50 border-b-0 rounded-t-lg px-1;
-    min-height: 2rem;
+    @apply w-full flex flex-wrap items-center border border-solid border-blue-500 border-opacity-50 border-b-0 rounded-t-lg px-1 min-h-8 bg-white;
 }
 
 .tiptap-menu [role="menu"] {
@@ -14,6 +13,11 @@
     min-width: 2rem; /* Make it square by default (matching height of the bar itself) */
 
     @apply hover:bg-blue-500/10;
+}
+
+.tiptap-menu button.text,
+.tiptap-menu a.text {
+    @apply text-blue-500 font-light text-sm;
 }
 
 .tiptap-menu svg {
@@ -34,11 +38,11 @@
 }
 
 .tiptap-footer {
-    @apply flex items-center h-8 p-2 border border-solid border-blue-500 border-opacity-50 border-t-0 rounded-b-lg;
+    @apply flex items-center h-8 p-2 border border-solid border-blue-500 border-opacity-50 border-t-0 rounded-b-lg bg-white;
 }
 
 .tiptap-footer .tiptap-current-tag {
-    @apply font-medium text-sm;
+    @apply text-blue-500 font-medium text-sm;
 }
 
 /* Tiptap editor styling */
@@ -49,6 +53,25 @@
     max-height: 15rem;
 }
 
+/* Form.css styling sync */
+.tiptap-parent:has(.tiptap:hover) .tiptap-menu,
+.tiptap-parent:has(.tiptap:hover) .tiptap-footer {
+    @apply border-green/100;
+}
+
+.tiptap-parent:has(.tiptap:hover) .tiptap {
+    @apply border-x-green/100;
+}
+
+/* NOTE: No text-red since the icons / tag labels don't need to be red */
+.form-error .tiptap-menu,
+.form-error .tiptap-footer {
+    @apply border-red;
+}
+
+.form-error .tiptap {
+    @apply border-x-red;
+}
 
 /* Align styling with frontend if needed */
 /*.tiptap a {*/

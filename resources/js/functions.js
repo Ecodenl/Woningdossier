@@ -88,6 +88,7 @@ document.on = function (event, selector, callback) {
 //--- NodeList (e.g. document.querySelectorAll)
 
 /**
+ * // TODO: check native contains method
  * Check if given element exists in the collection.
  *
  * @param element

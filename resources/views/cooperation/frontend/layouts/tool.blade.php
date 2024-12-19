@@ -1,4 +1,4 @@
-@extends('cooperation.frontend.layouts.app')
+@extends('cooperation.layouts.app')
 
 @section('header')
     <div class="w-full">
@@ -104,7 +104,7 @@
 
 @if(RouteLogic::inExpertTool(Route::currentRouteName()))
     @push('js')
-        <script>
+        <script type="module">
             $('input').keypress(function (event) {
                 // get the current keycode
                 var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -115,7 +115,7 @@
                 }
             });
 
-            $(document).ready(function () {
+            document.addEventListener('DOMContentLoaded', function () {
                 // scroll to top off page for less clunky behaviour
                 window.scrollTo(0, 0);
 
@@ -161,11 +161,6 @@
             function inputType(input) {
                 return input.prop('type');
             }
-        </script>
-        <script src="{{ asset('js/are-you-sure.js') }}"></script>
-
-        <script>
-            $("form.form-horizontal").areYouSure();
         </script>
     @endpush
 @endif

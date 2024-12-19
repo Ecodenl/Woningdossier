@@ -40,7 +40,13 @@ class DiscordNotifier
                     ]
                 ]);
             } catch (ClientException $e) {
-                report($e);
+                if ($e->getResponse()->getStatusCode() == 429) {
+                    sleep(3);
+                    $this->sendMessage($message);
+                }
+                else {
+                    report($e);
+                }
             }
         }
     }

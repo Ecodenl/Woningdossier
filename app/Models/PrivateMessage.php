@@ -166,7 +166,7 @@ class PrivateMessage extends Model
         }
 
         // All coaches with access to this building are considered a participant
-        $groupMembers = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building, true);
+        $groupMembers = BuildingCoachStatusService::getConnectedCoachesByBuilding($building, true);
 
         // TODO: Bool is always true at this point, deprecate parameter?
         // If it's a public conversation we push the building owner in it

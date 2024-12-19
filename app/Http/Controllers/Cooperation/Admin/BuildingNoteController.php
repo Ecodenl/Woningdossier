@@ -24,6 +24,6 @@ class BuildingNoteController extends Controller
             'coach_id' => Hoomdossier::user()->id,
         ]);
 
-        return redirect()->back()->with('fragment', $request->get('fragment'));
+        return redirect()->back()->withFragment('building-notes');
     }
 }

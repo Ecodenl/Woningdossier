@@ -90,7 +90,7 @@ return [
         'array'   => 'De :attribute moet :value waardes of minder bevatten.',
     ],
     'multiple_of'          => ':Attribute moet een veelvoud van :value zijn.',
-    'not_in'               => 'Het formaat van :attribute is ongeldig.',
+    'not_in'               => 'De waarde van :attribute is ongeldig.',
     'not_regex'            => 'De :attribute formaat is ongeldig.',
     'numeric'              => ':Attribute moet een getal bevatten',
     'present'              => 'De :attribute moet gevuld zijn.',
@@ -424,6 +424,16 @@ return [
         'medias.' . MediaHelper::QUOTATION => "offerte",
         'medias.' . MediaHelper::INVOICE => "factuur",
         'medias.' . MediaHelper::BILL => "rekening",
+
+        // Admin
+        'building.note' => 'opmerking over de woning',
+
+        // Clients
+        'clients.name' => 'naam',
+
+        // Questionnaires
+        'questions.*.name' => 'naam',
+        'questions.*.options.*.name' => 'optie',
     ],
 
     'values' => [

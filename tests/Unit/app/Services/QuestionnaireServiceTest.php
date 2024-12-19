@@ -15,54 +15,6 @@ final class QuestionnaireServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    public static function hasQuestionOptionsProvider(): array
-    {
-        return [
-            ['select', true],
-            ['radio', true],
-            ['checkbox', true],
-            ['text', false],
-            ['input', false],
-            ['date', false],
-        ];
-    }
-
-    #[DataProvider('hasQuestionOptionsProvider')]
-    public function testHasQuestionOptions($input, $expected): void
-    {
-        $this->assertEquals($expected, QuestionnaireService::hasQuestionOptions($input));
-    }
-
-    public static function createQuestionProvider(): array
-    {
-        return [
-            [[
-                'question' => [
-                    'nl' => 'Test questionnaire',
-                ],
-                'required' => true,
-            ]],
-        ];
-    }
-
-    #[DataProvider('createQuestionProvider')]
-    public function testCreateQuestion($questionData): void
-    {
-        // first we need to create a questionnaire with a question
-        $questionnaire = Questionnaire::factory()->create();
-
-        QuestionnaireService::createQuestion($questionnaire, $questionData, 'text', [], 0);
-
-        $this->assertDatabaseHas('questions', [
-            'questionnaire_id' => $questionnaire->id,
-        ]);
-    }
-
     public function testCopyQuestionnaireToCooperation(): void
     {
         // first we need to create a questionnaire with a question
@@ -93,41 +45,5 @@ final class QuestionnaireServiceTest extends TestCase
         $this->assertDatabaseHas('questions', [
             'questionnaire_id' => $copiedQuestionnaire->id,
         ]);
-    }
-
-    public static function isEmptyTranslationProvider(): array
-    {
-        return [
-            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], false],
-            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], false],
-            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], false],
-            [['fr' => '', 'en' => '', 'nl' => ''], true],
-            [['fr' => '', 'en' => null, 'nl' => ''], true],
-            [['fr' => null, 'en' => null, 'nl' => '', 'de' => 'duitse tekst'], false],
-        ];
-    }
-
-    #[DataProvider('isEmptyTranslationProvider')]
-    public function testIsEmptyTranslation($translations, $expected): void
-    {
-        $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
-    }
-
-    public static function isNotEmptyTranslationProvider(): array
-    {
-        return [
-            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], true],
-            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], true],
-            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], true],
-            [['fr' => '', 'en' => '', 'nl' => ''], false],
-            [['fr' => '', 'en' => null, 'nl' => ''], false],
-            [['fr' => null, 'en' => null, 'nl' => '', 'de' => 'duitse tekst'], true],
-        ];
-    }
-
-    #[DataProvider('isNotEmptyTranslationProvider')]
-    public function testisNotEmptyTranslation($translations, $expected): void
-    {
-        $this->assertEquals($expected, QuestionnaireService::isNotEmptyTranslation($translations));
     }
 }

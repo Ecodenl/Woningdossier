@@ -6,7 +6,14 @@ export default (emailUrl) => ({
     emailUrl: emailUrl,
     submitted: false,
 
-    checkEmail(element) {
+    checkEmail(element, safeValue = null) {
+        // Don't apply check if current value is safe value
+        if (safeValue && element.value.trim() === safeValue) {
+            this.showEmailWarning = false;
+            this.alreadyMember = false;
+            this.emailExists = false;
+            return;
+        }
         let goodDomains = new RegExp('\\b(nl|be|net|com|info|nu|de)\\b', 'i');
 
         // If the email does not contain a good domain return a message

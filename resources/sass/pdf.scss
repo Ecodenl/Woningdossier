@@ -1,6 +1,7 @@
-@import "admin/views/cooperation/pdf/variables";
-@import "admin/views/cooperation/pdf/layout";
-@import "admin/views/cooperation/pdf/utilities";
-@import "admin/views/cooperation/pdf/markup";
+@import "pdf/variables";
+@import "pdf/layout";
+@import "pdf/utilities";
+@import "pdf/markup";
 
-@import "admin/views/cooperation/pdf/user-report/index";
+@import "pdf/user-report/index";
+

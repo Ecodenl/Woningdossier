@@ -1,9 +1,9 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('woningdossier.cooperation.admin.cooperation.messages.index.header')
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.messages.index.header')</div>
-
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
@@ -29,7 +29,7 @@
                                 </td>
                                 <td>{{$mostRecentMessage->getSender()}}</td>
                                 <td>
-                                    <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                    <a href="{{route('cooperation.admin.buildings.show', compact('building'))}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
                                     </a>
                                 </td>
@@ -52,8 +52,8 @@
 
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             $('table').DataTable({
                 order: [[ 0, "desc" ]],
                 columnDefs: [

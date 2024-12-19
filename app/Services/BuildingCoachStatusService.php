@@ -65,7 +65,7 @@ class BuildingCoachStatusService
     /**
      * Returns all the connected coaches from a building.
      */
-    public static function getConnectedCoachesByBuildingId(Building $building, bool $eagerLoadCoach = false): Collection
+    public static function getConnectedCoachesByBuilding(Building $building, bool $eagerLoadCoach = false): Collection
     {
         return $building->buildingCoachStatuses()
             ->selectRaw('coach_id, SUM(status = ?) AS added, SUM(status = ?) AS removed', [BuildingCoachStatus::STATUS_ADDED, BuildingCoachStatus::STATUS_REMOVED])

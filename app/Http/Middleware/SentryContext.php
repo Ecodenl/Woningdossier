@@ -53,12 +53,9 @@ class SentryContext
                 $u = [
                     'account'                   => $account->id,
                     'id'                        => $user->id ?? 'none',
-                    'role'                      => HoomdossierSession::currentRole(
-                    ),
-                    'is_observing'              => HoomdossierSession::isUserObserving(
-                    ) ? 'yes' : 'no',
-                    'is_comparing'              => HoomdossierSession::isUserComparingInputSources(
-                    ) ? 'yes' : 'no',
+                    'role'                      => HoomdossierSession::getRole(true)?->name,
+                    'is_observing'              => HoomdossierSession::isUserObserving() ? 'yes' : 'no',
+                    'is_comparing'              => HoomdossierSession::isUserComparingInputSources() ? 'yes' : 'no',
                     'input_source'              => $inputSource->short,
                     'operating_on_own_building' => $building?->user_id == ($user->id ?? 0) ? 'yes' : 'no',
                     'operating_as'              => $inputSourceValue->short,

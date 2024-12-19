@@ -1,11 +1,9 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/measure-applications.edit.title')
+])
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/super-admin/measure-applications.edit.title')
-        </div>
-
         <div class="panel-body">
             <form action="{{route('cooperation.admin.super-admin.measure-applications.update', compact('measureApplication'))}}"
                   method="post">
@@ -133,8 +131,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(() => {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
             var $icon = $('#icon');
             $icon.select2();
             $icon.change(function () {

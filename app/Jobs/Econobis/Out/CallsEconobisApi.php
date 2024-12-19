@@ -107,6 +107,9 @@ trait CallsEconobisApi
 
     public function middleware(): array
     {
+        // Note: when on Laravel 11: the first middleware should be a Skip::when($this->building->trashed())
+        // as we have seen cases where the building was trashed before the job was executed,
+        // resulting in an ErrorException 'Trying to get property 'cooperation' of non-object'
         return [new EnsureCooperationHasEconobisLink($this->building->user->cooperation)];
     }
 }

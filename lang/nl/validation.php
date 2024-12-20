@@ -434,6 +434,10 @@ return [
         // Questionnaires
         'questions.*.name' => 'naam',
         'questions.*.options.*.name' => 'optie',
+
+        // Tool questions
+        'tool_questions.name' => 'naam van vraag',
+        'tool_questions.help_text' => 'help text van vraag',
     ],
 
     'values' => [

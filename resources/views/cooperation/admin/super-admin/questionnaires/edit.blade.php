@@ -16,7 +16,7 @@
             'inputName' => "questionnaires.id",
         ])
             @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
-                <select id="questionnaires" name="questionnaires[id]" id="questionnaires" class="form-input hidden">
+                <select id="questionnaires" name="questionnaires[id]" class="form-input hidden">
                     @foreach($questionnaires as $questionnaire)
                         <option value="{{$questionnaire->id}}"
                                 @if($selectedQuestionnaire->id == $questionnaire->id) selected @endif>
@@ -34,7 +34,7 @@
             'inputName' => "cooperations.id",
         ])
             @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
-                <select name="cooperations[id][]" id="cooperations" class="form-input hidden" multiple>
+                <select id="cooperations" name="cooperations[id][]" class="form-input hidden" multiple>
                     @foreach($cooperations as $cooperation)
                         <option value="{{$cooperation->id}}">
                             {{$cooperation->name}}

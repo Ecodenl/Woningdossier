@@ -104,7 +104,7 @@
             'inputName' => "cooperation_measure_applications.savings_money",
         ])
             <div class="input-group-prepend">
-                {{ $locale }}
+                <i class="icon-md icon-moneybag"></i>
             </div>
             <input id="savings-money" class="form-input" type="text" name="cooperation_measure_applications[savings_money]"
                    placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.savings.placeholder')"

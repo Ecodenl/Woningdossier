@@ -357,6 +357,7 @@ export default (initiallyOpen = false, withSearch = false) => ({
         }
         newOption.setAttribute("x-on:click", "changeOption($el)");
         newOption.classList.add('select-option');
+        option.classList.forEach((className) => newOption.classList.add(className))
 
         if (option.hasAttribute('disabled')) {
             newOption.classList.add('disabled');

@@ -408,6 +408,7 @@ return [
 
         // Measure caategories
         'measure_categories.name' => 'naam',
+        'measure_categories.name.nl' => 'naam',
         'vbjehuis_measure' => 'VerbeterJeHuis maatregel',
 
         // Woonplan comments
@@ -438,6 +439,10 @@ return [
         // Tool questions
         'tool_questions.name' => 'naam van vraag',
         'tool_questions.help_text' => 'help text van vraag',
+
+        // Tool calculation results
+        'tool_calculation_results.name' => 'naam',
+        'tool_calculation_results.help_text' => 'help text',
     ],
 
     'values' => [

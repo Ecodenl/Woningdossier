@@ -35,6 +35,9 @@ return [
         ],
         'vbjehuis-measure' => [
             'label' => 'VerbeterJeHuis maatregel',
+            'option' => [
+                'none' => 'Geen maatregel koppelen',
+            ],
         ],
     ],
 ];

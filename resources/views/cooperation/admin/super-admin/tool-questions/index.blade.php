@@ -30,7 +30,6 @@
     </div>
 @endsection
 
-
 @push('js')
     <script type="module">
         document.addEventListener('DOMContentLoaded', function () {

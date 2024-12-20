@@ -71,7 +71,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::prefix('file-storage')->name('file-storage.')->group(function () {
                 Route::post('{fileType}', [Cooperation\FileStorageController::class, 'store'])
                     ->name('store');
-                Route::get('is-being-processed/{fileType}', [Cooperation\FileStorageController::class, 'checkIfFileIsBeingProcessed'])->name('check-if-file-is-being-processed');
 
                 Route::get('download/{fileStorage}', [Cooperation\FileStorageController::class, 'download'])
                     ->name('download');

@@ -24,61 +24,21 @@ use App\Services\FileTypeService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileStorageController extends Controller
 {
     /**
      * Download method to retrieve a file from the storage.
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function download(Cooperation $cooperation, FileStorage $fileStorage): RedirectResponse
+    public function download(Cooperation $cooperation, FileStorage $fileStorage): StreamedResponse|RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
-        // because of the global scope on the file storage its impossible to retrieve a file from a other cooperation
+        // because of the global scope on the file storage its impossible to retrieve a file from another cooperation
         // but we will still do some additional checks
         $this->authorize('download', [$fileStorage, $building]);
 
         return FileStorageService::download($fileStorage);
-    }
-
-    /**
-     * * Check whether a file type is being processed for the user / input source.
-     */
-    public function checkIfFileIsBeingProcessed(Cooperation $cooperation, FileType $fileType): JsonResponse
-    {
-        $user = Hoomdossier::user();
-        $inputSource = HoomdossierSession::getInputSource(true);
-
-        if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && 'pdf-report' != $fileType->short) {
-            $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForCooperation($fileType, $cooperation);
-            $fileStorage = $fileType->files()->first();
-            $downloadLinkForFileType = route('cooperation.file-storage.download', compact('fileStorage'));
-
-            if ($fileStorage instanceof FileStorage) {
-                $this->authorize('download', $fileStorage);
-            }
-        } else {
-            $building = HoomdossierSession::getBuilding(true);
-            $buildingOwner = $building->user;
-
-            $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $buildingOwner, $inputSource);
-            $fileStorage = $fileType->files()->forMe($buildingOwner)->forInputSource($inputSource)->first();
-            $downloadLinkForFileType = $fileStorage instanceof FileStorage ? route('cooperation.file-storage.download', compact('fileStorage')) : null;
-
-            // as this checks for file processing, there's a chance it isn't picked up by the queue
-            // so we check if it actually exisits
-            if ($fileStorage instanceof FileStorage) {
-                $this->authorize('download', [$fileStorage, $building]);
-            }
-        }
-
-        return response()->json([
-            'file_created_at' => $fileStorage instanceof FileStorage ? $fileStorage->created_at->format('Y-m-d H:i') : null,
-            'file_type_name' => $fileType->name,
-            'is_file_being_processed' => $isFileBeingProcessed,
-            'file_download_link' => $downloadLinkForFileType,
-        ]);
     }
 
     public function store(Cooperation $cooperation, FileType $fileType, FileStorageFormRequest $request): RedirectResponse

@@ -417,16 +417,6 @@ export default (initiallyOpen = false, withSearch = false) => ({
         return this.$refs['select-options'].querySelector(`span[data-value="${value}"]`);
     },
     searchOptions() {
-        const searchValue = function (value, search) {
-            if (value) {
-                value = value.toLowerCase().replace(/[-_ ]/g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-                search = search.toLowerCase().replace(/[-_ ]/g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-                return value.includes(search);
-            }
-
-            return false;
-        }
-
         const optionDropdown = this.$refs['select-options'];
         let visibleOptgroups = [];
 
@@ -442,7 +432,7 @@ export default (initiallyOpen = false, withSearch = false) => ({
                     visibleOptgroups.push(optgroup);
                 }
             } else {
-                const visible = (searchValue(option.textContent, this.search) || searchValue(option.dataset.value, this.search));
+                const visible = searchValue(option.textContent, this.search) || searchValue(option.dataset.value, this.search);
 
                 if (optgroup && ! visibleOptgroups.includes(optgroup) && visible) {
                     visibleOptgroups.push(optgroup);

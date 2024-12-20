@@ -9,7 +9,7 @@
        'class' => 'w-full -mt-5',
        'inputName' => "search",
     ])
-        <input type="text" class="form-input" id="search"
+        <input type="text" class="form-input" id="search" autocomplete="off"
                placeholder="@lang('cooperation/admin/super-admin/translations.edit.search.placeholder')">
     @endcomponent
 
@@ -75,7 +75,7 @@
                                        name="language_lines[{{$locale}}][question][{{$translation->id}}]"
                                        value="{{$text}}">
                             @endif
-                            <label class="w-full text-blue-500 text-sm font-bold">
+                            <label class="w-full text-blue-500 text-sm font-bold key-label">
                                 {{"Key: {$translation->group}.{$translation->key}"}}
                             </label>
                         @endcomponent
@@ -95,10 +95,10 @@
                                         'content' => $helpText,
                                         'htmlName' => "language_lines[{$helpTextLocale}][help][{$translation->helpText->id}]",
                                     ])
+                                    <label class="w-full text-blue-500 text-sm font-bold key-label">
+                                        {{"Key: {$translation->helpText->group}.{$translation->helpText->key}"}}
+                                    </label>
                                 @endcomponent
-                                <label class="w-full text-blue-500 text-sm font-bold">
-                                    {{"Key: {$translation->helpText->group}.{$translation->helpText->key}"}}
-                                </label>
                             @endforeach
                         @endif
 
@@ -120,7 +120,7 @@
                                                    class="form-input question-input mb-0"
                                                    name="language_lines[{{$locale}}][question][{{$subQuestion->id}}]"
                                                    value="{{$text}}">
-                                            <label class="w-full text-blue-500 text-sm font-bold">
+                                            <label class="w-full text-blue-500 text-sm font-bold key-label">
                                                 {{"Key: {$subQuestion->group}.{$subQuestion->key}"}}
                                             </label>
                                         @endcomponent
@@ -141,7 +141,7 @@
                                                     'content' => $text,
                                                     'htmlName' => "language_lines[{$locale}][help][{$subQuestion->helpText->id}]",
                                                 ])
-                                                <label class="w-full text-blue-500 text-sm font-bold">
+                                                <label class="w-full text-blue-500 text-sm font-bold key-label">
                                                     {{"Key: {$subQuestion->helpText->group}.{$subQuestion->helpText->key}"}}
                                                 </label>
                                             @endcomponent
@@ -163,31 +163,26 @@
     </form>
 @endsection
 
-{{--@push('js')--}}
-{{--    <script type="module">--}}
-{{--        /**--}}
-{{--         * Remove the ï ê etc from a string.--}}
-{{--         *--}}
-{{--         * @param str--}}
-{{--         * @returns {string|void|never}--}}
-{{--         */--}}
-{{--        function removeDiacritics(str) {--}}
-{{--            return str.replace(/[^\u0000-\u007E]/g, function (string) {--}}
-{{--                return diacriticsMap[string] || string;--}}
-{{--            });--}}
-{{--        }--}}
+@push('js')
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('search').addEventListener('input', function () {
+                const search = this.value;
 
-{{--        document.addEventListener('DOMContentLoaded', function () {--}}
-{{--            $('#search').on("keyup", function () {--}}
-{{--                var value = removeDiacritics($(this).val()).toLowerCase();--}}
-{{--                $('.question-input').filter(function () {--}}
+                document.querySelectorAll('.question-input').forEach((input) => {
+                    const formGroup = input.closest('.form-group');
 
-{{--                    var translationsPanel = $(this).parent().parent().parent().parent().parent();--}}
-{{--                    var cleanTranslation = removeDiacritics($(this).val());--}}
+                    if (! search?.trim()) {
+                        formGroup.style.display = null;
+                    } else {
+                        const visible = searchValue(input.value, search)
+                            || searchValue(formGroup.querySelector('label.form-label').textContent, search)
+                            || searchValue(formGroup.querySelector('label.key-label').textContent, search);
 
-{{--                    translationsPanel.toggle(cleanTranslation.toLowerCase().indexOf(value) > -1)--}}
-{{--                });--}}
-{{--            });--}}
-{{--        });--}}
-{{--    </script>--}}
-{{--@endpush--}}
+                        formGroup.style.display = visible ? null : 'none';
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

@@ -1,6 +1,6 @@
 @if($noWysiwyg)
     <textarea id="{{ $id }}"
-              class="form-input mb-0"
+              class="form-input question-input mb-0"
               name="{{ $htmlName }}"
     >{{$content}}</textarea>
 @else
@@ -14,7 +14,7 @@
             @endslot
 
             <textarea id="{{ $id }}"
-                      class="form-input" x-ref="editor"
+                      class="form-input question-input" x-ref="editor"
                       name="{{ $htmlName }}"
             >{{$content}}</textarea>
         @endcomponent

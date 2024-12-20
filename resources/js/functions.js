@@ -67,6 +67,16 @@ window.performRequest = function (options = {}) {
     }
 }
 
+window.searchValue = function (value, search) {
+    if (value) {
+        value = value.toLowerCase().replace(/[-_ ]/g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        search = search.toLowerCase().replace(/[-_ ]/g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        return value.includes(search);
+    }
+
+    return false;
+}
+
 //--- Document
 
 /**

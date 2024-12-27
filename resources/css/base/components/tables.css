@@ -2,7 +2,16 @@
     @apply w-full;
 }
 
-/* Simple table */
+/* Extra utility to add dividing borders between columns */
+.table.table-divided thead tr th:not(:first-child) {
+    @apply border-l border-blue/25;
+}
+
+.table.table-divided tbody tr td:not(:first-child) {
+    @apply border-l border-blue/25;
+}
+
+/* Simple table with row dividers */
 .table.simple-table {
     @apply table-fixed;
 }
@@ -23,7 +32,7 @@
     @apply px-6 py-4 text-blue-500 font-light text-sm;
 }
 
-/* Fancy table */
+/* Fancy table with alternating backgrounds */
 .table.fancy-table {
     @apply table-fixed border border-blue-500/50;
     /* Can't add rounded corners (rounded-lg), border is staying square, TODO */

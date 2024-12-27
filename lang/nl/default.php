@@ -22,6 +22,7 @@ return [
         ],
         'dropdown' => [
             'choose' => 'Kies een optie',
+            'none' => 'Optie deselecteren',
         ],
     ],
 

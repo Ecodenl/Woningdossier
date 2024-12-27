@@ -54,6 +54,9 @@
                         <option value="" disabled selected>
                             @lang('default.form.dropdown.choose')
                         </option>
+                        <option value="" class="text-red">
+                            @lang('default.form.dropdown.none')
+                        </option>
                         @foreach($measures as $measure)
                             <option value="{{ $measure->id }}"
                                     @if(old("cooperation_measure_applications.measure_category", $currentMeasure) == $measure->id) selected @endif>
@@ -131,7 +134,7 @@
                             @php
                                 $iconName = "icon-" . str_replace(".{$file->getExtension()}", '', $file->getBasename());
                             @endphp
-                            <option @if($old === $iconName) selected @endif>
+                            <option value="{{ $iconName }}" @if($old === $iconName) selected @endif>
                                 {{ $iconName }}
                             </option>
                         @endforeach

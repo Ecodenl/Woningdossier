@@ -108,7 +108,7 @@
                             @php
                                 $iconName = "icon-" . str_replace(".{$file->getExtension()}", '', $file->getBasename());
                             @endphp
-                            <option @if($old === $iconName) selected @endif>
+                            <option value="{{ $iconName }}" @if($old === $iconName) selected @endif>
                                 {{ $iconName }}
                             </option>
                         @endforeach

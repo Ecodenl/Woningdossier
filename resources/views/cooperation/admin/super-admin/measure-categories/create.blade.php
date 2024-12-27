@@ -36,7 +36,7 @@
             @slot('label')
                 @lang('cooperation/admin/super-admin/measure-categories.form.vbjehuis-measure.label')
                 @if(! $vbjehuisAvailable)
-                    <small class="text-danger">
+                    <small class="text-red">
                         <br> @lang('api.verbeterjehuis.filters.measures.error')
                     </small>
                 @endif

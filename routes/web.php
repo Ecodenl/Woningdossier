@@ -41,12 +41,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
         Route::get('switch-language/{locale}', [Cooperation\UserLanguageController::class, 'switchLanguage'])->name('switch-language');
 
-
-        Route::prefix('create-building')->name('create-building.')->group(function () {
-            Route::get('', [Cooperation\CreateBuildingController::class, 'index'])->name('index');
-            Route::post('', [Cooperation\CreateBuildingController::class, 'store'])->name('store');
-        });
-
         Route::name('recover-old-email.')->prefix('recover-old-email')->group(function () {
             Route::get('{token}', [Cooperation\RecoverOldEmailController::class, 'recover'])->name('recover');
         });

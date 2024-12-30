@@ -7,6 +7,9 @@
         $action = isset($cooperationToManage) && $cooperationToManage instanceof \App\Models\Cooperation
             ? route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.settings.store', compact('cooperation', 'cooperationToManage'))
             : route('cooperation.admin.cooperation.cooperation-admin.settings.store');
+
+        $cooperationToUse = isset($cooperationToManage) && $cooperationToManage instanceof \App\Models\Cooperation
+            ? $cooperationToManage : $cooperation;
     @endphp
 
     <form class="w-full flex flex-wrap"
@@ -24,7 +27,7 @@
             ])
                 <input name="medias[{{ $tag }}]" id="file-{{ $tag }}" type="file" class="form-input"/>
 
-                @if(($image = $cooperation->firstMedia($tag)) instanceof \App\Models\Media)
+                @if(($image = $cooperationToUse->firstMedia($tag)) instanceof \App\Models\Media)
                     <input type="hidden" name="medias[{{ $tag }}_current]" value="{{ $image->id }}"
                            id="current-{{ $tag }}">
                     <div class="flex w-full items-center">

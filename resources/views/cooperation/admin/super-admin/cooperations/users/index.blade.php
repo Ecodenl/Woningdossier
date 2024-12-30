@@ -26,8 +26,7 @@
                         <td>{{$user->account->email}}</td>
                         <td>
                             <a class="btn btn-outline-blue inline-flex items-center"
-                               href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show', ['cooperationToManage' => $cooperationToManage,'user' => $user->id,])}}"
-                            >
+                               href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show', compact('cooperationToManage', 'user'))}}">
                                 <i class="icon-md icon-tools"></i>
                             </a>
                         </td>

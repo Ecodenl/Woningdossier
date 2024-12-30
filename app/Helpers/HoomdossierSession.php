@@ -198,11 +198,9 @@ class HoomdossierSession extends Session
     /**
      * Returns the role or role_id.
      *
-     * @param bool $object Set to true if you want an object returned
-     *
-     * @return int|Role|null
+     * @param bool $object Set to true if you want to the role model returned
      */
-    public static function getRole(bool $object = false)
+    public static function getRole(bool $object = false): int|Role|null
     {
         $id = self::getHoomdossierSession('role_id');
         if (! $object) {
@@ -212,29 +210,13 @@ class HoomdossierSession extends Session
         return \App\Helpers\Cache\Role::find($id);
     }
 
-    public static function currentRole($column = 'name'): string
-    {
-        $roleId = self::getRole();
-        if (! empty($roleId)) {
-            $role = Role::find($roleId);
-            if ($role instanceof Role) {
-                $result = $role->getAttribute($column);
-                if (! empty($result)) {
-                    return $result;
-                }
-            }
-        }
-
-        return '';
-    }
-
     public static function currentRoleIs($role): bool
     {
         if (! (\App\Helpers\Cache\Role::findByName($role) instanceof Role)) {
             return false;
         }
 
-        $currentRole = self::currentRole('name');
+        $currentRole = self::getRole(true)?->name;
 
         return $currentRole == $role;
     }

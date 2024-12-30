@@ -1,0 +1,118 @@
+/* Sidebar */
+#sidebar ul {
+    @apply list-none pl-0
+}
+
+#sidebar ul li {
+    @apply bg-white border-t border-blue-500 border-opacity-50 py-2 px-4;
+}
+
+#sidebar ul li:last-child {
+    @apply rounded-b-lg;
+}
+
+#sidebar ul li a {
+    @apply text-green-700 no-underline;
+
+    @apply hover:underline;
+}
+
+#sidebar ul li.active {
+    @apply bg-green-700;
+}
+
+#sidebar ul li.active a {
+    @apply text-white;
+}
+
+#sidebar .breadcrumbs {
+    @apply list-none p-0;
+}
+
+#sidebar .breadcrumbs > li {
+    @apply text-sm inline;
+}
+
+#sidebar .breadcrumbs > li a {
+    @apply text-sm;
+}
+
+#sidebar .breadcrumbs > li + li::before {
+    @apply px-1 text-purple text-sm;
+    content: '/ ';
+}
+
+/* Data table */
+.dt-scroll-body thead tr {
+    /* Fix scrollX duplicate header */
+    @apply hidden;
+}
+
+.dataTable th {
+    @apply whitespace-nowrap;
+}
+
+.dt-layout-row {
+    @apply flex flex-wrap flex-row w-full justify-between items-center my-2 overflow-auto;
+}
+
+.dt-length label {
+    @apply text-blue-500 font-light text-sm ml-2;
+}
+
+.dt-length select {
+    @apply w-20 bg-no-repeat;
+    background-image: url(/icons/arrow-down.svg);
+    background-position: 3rem 50%;
+}
+
+.dt-ordering-asc .dt-column-order,
+.dt-ordering-desc .dt-column-order {
+    @apply w-3 h-3 icon-arrow-down inline-block ml-1 cursor-pointer;
+}
+
+.dt-ordering-asc .dt-column-order {
+    @apply transform rotate-180
+}
+
+.dt-search label {
+    @apply text-blue-500 font-light text-sm mr-4;
+}
+
+.dt-input {
+    @apply cursor-pointer h-11 pl-3 mb-3 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
+
+    @apply hover:border-green hover:border-opacity-100;
+    @apply focus:border-green focus:border-opacity-100;
+}
+
+.dt-paging .dt-paging-button {
+    /* Sadly, applying custom classes makes Tailwind treat it as a utility causing rewrites (such as `:not(.btn)`) :c */
+    /*@apply btn btn-sm btn-outline-green ml-1;*/
+
+    @apply ml-1 p-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline text-sm inline-block min-w-min border border-solid border-green border-opacity-25 border bg-white text-green;
+    font-size: 12px;
+    line-height: 1.5;
+
+    @apply hover:border-opacity-75 hover:shadow-center-green-25;
+    @apply focus:border-opacity-75 focus:shadow-center-green-25;
+    @apply active:border-opacity-100 focus:shadow-center-green-50;
+}
+
+.dt-paging .dt-paging-button.current {
+    /*@apply btn-green;*/
+
+    @apply bg-green bg-opacity-25 text-green;
+
+    @apply hover:bg-green hover:bg-opacity-80 hover:text-white hover:shadow-center-green-25;
+    @apply focus:bg-green focus:bg-opacity-80 focus:text-white focus:shadow-center-green-25;
+    @apply active:bg-green active:bg-opacity-100 active:text-white focus:shadow-center-green-50;
+}
+
+.dt-paging .ellipsis {
+    @apply ml-1;
+}
+
+.dt-info {
+    @apply text-blue-500 font-light text-sm
+}

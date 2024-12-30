@@ -102,7 +102,7 @@ class EnergyLabelService
             ->forBuilding($this->building)
             ->first();
 
-        if (empty($masterFeature->energy_label_id)) {
+        if ($masterFeature instanceof BuildingFeature && empty($masterFeature->energy_label_id)) {
             $masterFeature->update(['energy_label_id' => $hydratedLabel->id]);
         }
     }
@@ -145,7 +145,10 @@ class EnergyLabelService
 
                 if ($exception instanceof ClientException) {
                     // If no key given, 401 is thrown. If address isn't found, 404 is thrown.
-                    $throw = $exception->getCode() !== 401 && $exception->getCode() !== 404;
+                    if ($exception->getResponse()->getStatusCode() == 400) {
+                        Log::error('Bad request', json_decode($exception->getResponse()->getBody()->getContents(), true));
+                    }
+                    $throw = !in_array($exception->getCode(), [400, 401, 404]);
                 }
 
                 if ($throw) {

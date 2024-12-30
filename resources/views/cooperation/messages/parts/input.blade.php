@@ -6,44 +6,22 @@
 @if($building instanceof \App\Models\Building && ! $building->trashed())
     @php $buildingId = $building->id; @endphp
 
-    {{-- Legacy support --}}
-    @if(($tailwind ?? false))
-        <form action="{{ $url }}" method="post" class="w-full" style="margin-bottom: unset;">
-            @csrf
-            <input type="hidden" name="building_id" value="{{ $buildingId }}">
-            @if(isset($isPublic))
-                <input type="hidden" name="is_public" value="{{$isPublic ? 1 : 0}}">
-            @endif
+    <form action="{{ $url }}" method="post" class="w-full" style="margin-bottom: unset;">
+        @csrf
 
-            <div class="w-full flex flex-row flex-wrap items-center">
-                <textarea id="btn-input" required autofocus autocomplete="false" name="message" type="text"
-                       class="form-input w-10/12 m-0" placeholder="@lang('my-account.messages.edit.chat.input')"
-                ></textarea>
+        <input type="hidden" name="building_id" value="{{ $buildingId }}">
+        @if(isset($isPublic))
+            <input type="hidden" name="is_public" value="{{$isPublic ? 1 : 0}}">
+        @endif
 
-                <div class="w-2/12 pl-3 flex justify-center">
-                    {{ $slot }}
-                </div>
+        <div class="w-full flex flex-row flex-wrap items-center">
+            <textarea id="btn-input" required autofocus autocomplete="false" name="message" type="text"
+                   class="form-input w-10/12 m-0" placeholder="@lang('my-account.messages.edit.chat.input')"
+            ></textarea>
+
+            <div class="w-2/12 pl-3 flex justify-center">
+                {{ $slot }}
             </div>
-        </form>
-    @else
-        <form action="{{ $url }}" method="post" style="margin-bottom: unset;">
-            @csrf
-            <div class="input-group">
-                <input type="hidden" name="building_id" value="{{ $buildingId }}">
-
-                @if(isset($isPublic))
-                    <input type="hidden" name="is_public" value="{{$isPublic ? 1 : 0}}">
-                @endif
-                <textarea id="btn-input" required autofocus autocomplete="false" name="message" type="text"
-                          rows="5" style="resize: none;"
-                          class="form-control input-md" placeholder="@lang('my-account.messages.edit.chat.input')"
-                ></textarea>
-
-                <span class="input-group-btn">
-                    {{ $slot }}
-                </span>
-
-            </div>
-        </form>
-    @endif
+        </div>
+    </form>
 @endif

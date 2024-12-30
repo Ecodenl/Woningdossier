@@ -24,7 +24,7 @@ class CooperationPolicy
 
     public function delete(Account $account, Cooperation $cooperation): bool
     {
-        // hoom mag niet.
+        // Not allowed to delete Hoom
         if ('hoom' !== $cooperation->slug) {
             return HoomdossierSession::currentRoleIs(RoleHelper::ROLE_SUPER_ADMIN);
         }

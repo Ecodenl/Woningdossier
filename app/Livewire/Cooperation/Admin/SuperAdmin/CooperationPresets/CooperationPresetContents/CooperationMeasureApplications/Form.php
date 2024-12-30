@@ -24,6 +24,9 @@ class Form extends Component
         'info' => [
             'nl' => '',
         ],
+        'extra' => [
+           'icon' => 'icon-account-circle',
+        ],
         'is_extensive_measure' => false,
     ];
 

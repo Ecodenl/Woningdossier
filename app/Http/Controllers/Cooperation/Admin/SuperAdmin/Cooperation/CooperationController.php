@@ -24,14 +24,12 @@ class CooperationController extends Controller
         return view('cooperation.admin.super-admin.cooperations.create');
     }
 
-
     public function edit(Cooperation $cooperation, Cooperation $cooperationToEdit): View
     {
         $this->authorize('update', $cooperationToEdit);
 
         return view('cooperation.admin.super-admin.cooperations.edit', compact('cooperationToEdit'));
     }
-
 
     public function destroy(Cooperation $cooperation, Cooperation $cooperationToDestroy): RedirectResponse
     {
@@ -53,6 +51,6 @@ class CooperationController extends Controller
         $cooperationToDestroy->delete();
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
-            ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.destroy.success'));
+            ->with('success', __('cooperation/admin/super-admin/cooperations.destroy.success'));
     }
 }

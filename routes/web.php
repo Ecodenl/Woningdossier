@@ -5,9 +5,6 @@ use App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin\Cooperat
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
-
-/** @noinspection PhpParamsInspection */
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,7 +30,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
         }
 
-Route::group([], base_path('routes/auth.php'));
+        Route::group([], base_path('routes/auth.php'));
 
         Route::view('styleguide', 'cooperation.frontend.styleguide');
         Route::view('input-guide', 'cooperation.frontend.input-guide');
@@ -43,12 +40,6 @@ Route::group([], base_path('routes/auth.php'));
         })->name('welcome');
 
         Route::get('switch-language/{locale}', [Cooperation\UserLanguageController::class, 'switchLanguage'])->name('switch-language');
-
-
-        Route::prefix('create-building')->name('create-building.')->group(function () {
-            Route::get('', [Cooperation\CreateBuildingController::class, 'index'])->name('index');
-            Route::post('', [Cooperation\CreateBuildingController::class, 'store'])->name('store');
-        });
 
         Route::name('recover-old-email.')->prefix('recover-old-email')->group(function () {
             Route::get('{token}', [Cooperation\RecoverOldEmailController::class, 'recover'])->name('recover');
@@ -74,7 +65,6 @@ Route::group([], base_path('routes/auth.php'));
             Route::prefix('file-storage')->name('file-storage.')->group(function () {
                 Route::post('{fileType}', [Cooperation\FileStorageController::class, 'store'])
                     ->name('store');
-                Route::get('is-being-processed/{fileType}', [Cooperation\FileStorageController::class, 'checkIfFileIsBeingProcessed'])->name('check-if-file-is-being-processed');
 
                 Route::get('download/{fileStorage}', [Cooperation\FileStorageController::class, 'download'])
                     ->name('download');
@@ -85,9 +75,7 @@ Route::group([], base_path('routes/auth.php'));
             Route::name('messages.')->prefix('messages')->group(function () {
                 Route::name('participants.')->prefix('participants')->group(function () {
                     Route::post('revoke-access', [Cooperation\Messages\ParticipantController::class, 'revokeAccess'])->name('revoke-access');
-
                     Route::post('add-with-building-access', [Cooperation\Messages\ParticipantController::class, 'addWithBuildingAccess'])->name('add-with-building-access');
-
                     Route::post('set-read', [Cooperation\Messages\ParticipantController::class, 'setRead'])->name('set-read');
                 });
             });
@@ -318,7 +306,7 @@ Route::group([], base_path('routes/auth.php'));
 
                 Route::middleware('current-role:cooperation-admin|coach|coordinator|super-admin')->group(function () {
                     Route::name('buildings.')->prefix('buildings')->group(function () {
-                        Route::get('show/{buildingId}', [Cooperation\Admin\BuildingController::class, 'show'])->name('show');
+                        Route::get('show/{building}', [Cooperation\Admin\BuildingController::class, 'show'])->name('show');
 
                         Route::middleware('current-role:cooperation-admin|coordinator|super-admin')->group(function () {
                             Route::get('{building}/edit', [Cooperation\Admin\BuildingController::class, 'edit'])->name('edit');
@@ -354,8 +342,6 @@ Route::group([], base_path('routes/auth.php'));
                         ->middleware('current-role:cooperation-admin');
                     // not in the cooperation-admin group, probably need to be used for the coordinator as well.
                     Route::name('questionnaires.')->prefix('questionnaire')->middleware('current-role:cooperation-admin')->group(function () {
-                        Route::delete('delete-question/{questionId}', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'deleteQuestion'])->name('delete');
-                        Route::delete('delete-option/{questionId}/{optionId}', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'deleteQuestionOption'])->name('delete-question-option');
                         Route::post('set-active', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'setActive'])->name('set-active');
                     });
 
@@ -364,7 +350,6 @@ Route::group([], base_path('routes/auth.php'));
                         // needs to be the last route due to the param
                         Route::get('home', [Cooperation\Admin\Cooperation\Coordinator\CoordinatorController::class, 'index'])->name('index');
                     });
-
 
                     /* section for the cooperation-admin */
                     Route::prefix('cooperation-admin')->name('cooperation-admin.')->middleware('current-role:cooperation-admin|super-admin')->group(function () {

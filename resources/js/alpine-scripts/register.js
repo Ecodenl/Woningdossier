@@ -6,7 +6,14 @@ export default (emailUrl) => ({
     emailUrl: emailUrl,
     submitted: false,
 
-    checkEmail(element) {
+    checkEmail(element, safeValue = null) {
+        // Don't apply check if current value is safe value
+        if (safeValue && element.value.trim() === safeValue) {
+            this.showEmailWarning = false;
+            this.alreadyMember = false;
+            this.emailExists = false;
+            return;
+        }
         let goodDomains = new RegExp('\\b(nl|be|net|com|info|nu|de)\\b', 'i');
 
         // If the email does not contain a good domain return a message
@@ -25,25 +32,19 @@ export default (emailUrl) => ({
             }
         }
 
-        let context = this;
-        performRequest({
-            'url': url,
-            'done': function (request) {
-                context.alreadyMember = false;
-                context.emailExists = false;
+        if (url) {
+            fetchRequest(url).then((response) => response.json()).then((response) => {
+                this.alreadyMember = false;
+                this.emailExists = false;
 
-                let response = request.response;
-
-                if (request.status === 200) {
-                    if (response.email_exists) {
-                        if (response.user_is_already_member_of_cooperation) {
-                            context.alreadyMember = true;
-                        } else {
-                            context.emailExists = true;
-                        }
+                if (response.email_exists) {
+                    if (response.user_is_already_member_of_cooperation) {
+                        this.alreadyMember = true;
+                    } else {
+                        this.emailExists = true;
                     }
                 }
-            }
-        });
+            });
+        }
     }
 });

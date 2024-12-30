@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Cooperation\Admin\SuperAdmin;
 
 use App\Helpers\Hoomdossier;
+use App\Rules\LanguageRequired;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ToolCalculationResultFormRequest extends FormRequest
@@ -21,8 +22,8 @@ class ToolCalculationResultFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tool_calculation_results.name.nl' => 'required',
-            'tool_calculation_results.help_text.nl' => 'required',
+            'tool_calculation_results.name' => new LanguageRequired(),
+            'tool_calculation_results.help_text' => new LanguageRequired(),
         ];
     }
 }

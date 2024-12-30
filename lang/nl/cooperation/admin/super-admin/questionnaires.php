@@ -22,6 +22,6 @@ return [
         ],
     ],
     'copy' => [
-        'success' => 'Vragenlijst word gekopieerd naar de opgegeven coöperaties.',
+        'success' => 'Vragenlijst word gekopieerd naar de opgegeven coöperatie(s).',
     ],
 ];

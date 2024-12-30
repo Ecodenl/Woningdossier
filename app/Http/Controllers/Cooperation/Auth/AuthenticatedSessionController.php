@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Models\Account;
 use App\Models\Building;
+use App\Services\DiscordNotifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Http\Requests\LoginRequest;
@@ -32,9 +32,10 @@ class AuthenticatedSessionController extends \Laravel\Fortify\Http\Controllers\A
             }
 
             if (! $account->user()->building instanceof Building) {
-                Log::error('no building attached for user id: '.$account->user()->id.' account id:'.$account->id);
+                app(DiscordNotifier::class)->notify('No building attached for user id: ' . $account->user()->id . '; account id: ' . $account->id);
 
-                return redirect(route('cooperation.create-building.index'))->with('warning', __('auth.login.warning'));
+                return redirect()->route('cooperation.register')
+                    ->with('warning', __('auth.login.warning'));
             }
         }
 

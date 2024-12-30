@@ -66,7 +66,7 @@
             <div class="how-none-warning">
                 <div class="flex flex-row flex-wrap w-full" id="how-none-alert" style="display: none;">
                     <div class="w-full md:w-8/12 md:ml-2/12">
-                        @component('cooperation.frontend.layouts.parts.alert', [
+                        @component('cooperation.layouts.components.alert', [
                             'color' => 'yellow',
                             'dismissible' => false,
                         ])
@@ -143,7 +143,7 @@
             <div class="living_situation-warning">
                 <div class="flex flex-row flex-wrap w-full" id="living_situation-alert" style="display: none;">
                     <div class="w-full md:w-8/12 md:ml-2/12">
-                        @component('cooperation.frontend.layouts.parts.alert', [
+                        @component('cooperation.layouts.components.alert', [
                             'color' => 'yellow', 'dismissible' => false,
                         ])
                             <ul>
@@ -204,7 +204,7 @@
             <div class="usage-warning">
                 <div class="flex flex-row flex-wrap w-full" id="usage-alert" style="display: none;">
                     <div class="w-full md:w-8/12 md:ml-2/12">
-                        @component('cooperation.frontend.layouts.parts.alert', [
+                        @component('cooperation.layouts.components.alert', [
                             'color' => 'yellow', 'dismissible' => false,
                         ])
                             <ul>
@@ -321,8 +321,8 @@
 @endsection
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', function () {
             let advices = $(".advices");
 
             advices.on('change', '.considerable', function () {

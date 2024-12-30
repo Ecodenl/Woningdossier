@@ -23,10 +23,11 @@ return [
 
             'submit' => 'Zoeken',
         ],
+        'search' => [
+            'empty-warning' => 'Vul op zijn minst 1 ding in!',
+        ],
     ],
     'show' => [
-        'header' => 'Zoeken naar gebruikers',
-
         'table' => [
             'columns' => [
                 'email' => 'Email',

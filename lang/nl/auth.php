@@ -73,7 +73,7 @@ return [
             'forgot-password' => 'Wachtwoord vergeten?',
         ],
         'no-account' => 'Nog geen account?',
-        'warning' => 'Er is geen woning gekoppeld aan uw account, om het Hoomdossier goed te gebruiken hebben wij uw adres nodig.',
+        'warning' => 'Er is geen woning gekoppeld aan uw account! Registreer opnieuw met dit e-mail adres, om een woning te koppelen.',
     ],
     'two-factor-challenge' => [
         'recovery-code-label' => 'Vul hier 1 van de 8 herstel codes in',

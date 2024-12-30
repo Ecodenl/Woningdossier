@@ -80,11 +80,7 @@ class Question extends Model
      */
     public function isRequired(): bool
     {
-        if (true == $this->required) {
-            return true;
-        }
-
-        return false;
+        return $this->required;
     }
 
     /**
@@ -92,15 +88,11 @@ class Question extends Model
      */
     public function hasValidation(): bool
     {
-        if (is_array($this->validation) && ! empty($this->validation)) {
-            return true;
-        }
-
-        return false;
+        return is_array($this->validation) && ! empty($this->validation);
     }
 
     /**
-     * Check if a question has validation.
+     * Check if a question has no validation.
      */
     public function hasNoValidation(): bool
     {
@@ -120,11 +112,7 @@ class Question extends Model
      */
     public function hasQuestionOptions(): bool
     {
-        if ($this->questionOptions()->first() instanceof QuestionOption) {
-            return true;
-        }
-
-        return false;
+        return $this->questionOptions()->exists();
     }
 
     /**

@@ -19,7 +19,6 @@ class RoofInsulationCalculator
             return 0;
         }
         $result = 0;
-        $building->getBuildingType($inputSource);
 
         $kengetalEnergySaving = Temperature::energySavingFigureRoofInsulation($measureAdvice, $heating);
         self::debug('Kengetal energebesparing = '.$kengetalEnergySaving);

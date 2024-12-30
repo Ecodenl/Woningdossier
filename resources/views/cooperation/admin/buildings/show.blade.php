@@ -1,633 +1,504 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/buildings.show.header', [
+        'name' => $user->getFullName(),
+        'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
+        'zipcode-and-city' => $building->postal_code.' '.$building->city,
+        'municipality' => $building->municipality?->name ?? __('cooperation/admin/buildings.show.unknown-municipality'),
+        'email' => $user->account->email,
+        'phone-number' => $user->phone_number,
+    ])
+])
 
 @section('content')
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/buildings.show.header', [
-                'name' => $user->getFullName(),
-                'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
-                'zipcode-and-city' => $building->postal_code.' '.$building->city,
-                'municipality' => $building->municipality?->name ?? __('cooperation/admin/buildings.show.unknown-municipality'),
-                'email' => $user->account->email,
-                'phone-number' => $user->phone_number,
-            ])
+    @if(! $user->allowedAccess())
+        <div class="w-full">
+            <p class="font-bold">@lang('cooperation/admin/buildings.show.user-disallowed-access'):</p>
+            <p class="text-red">(@lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name]))</p>
         </div>
-
-        <input type="hidden" name="building[id]" value="{{$building->id}}">
-        <input type="hidden" id="cooperation-id" value="{{\App\Helpers\HoomdossierSession::getCooperation()}}">
-
-        <input type="hidden" name="user[id]" value="{{$user->id}}">
-        <div class="panel-body">
-            @if(! $user->allowedAccess())
-                <div class="row">
-                    <div class="col-sm-12">
-                        <p class="text-warning" style="font-weight: bold;">@lang('cooperation/admin/buildings.show.user-disallowed-access'):</p>
-                        <p class="text-primary">(@lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name]))</p>
-                    </div>
-                </div>
-            @endif
-            {{-- delete a user --}}
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="btn-group">
-                        @can('delete-user', $user)
-                            <button type="button" id="delete-user" class="btn btn-danger">
-                                @lang('cooperation/admin/buildings.show.delete-account.label')
-                                @lang('cooperation/admin/buildings.show.delete-account.button')
-                            </button>
-                        @endcan
-                        @can('access-building', $building)
-                            @if($scans->count() > 1)
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        @lang('cooperation/admin/buildings.show.observe-building.label')
-                                        @lang('cooperation/admin/buildings.show.observe-building.button')
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        @foreach($scans as $scan)
-                                            @php
-                                                $transShort = app(\App\Services\Models\ScanService::class)
-                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
-                                                    ? 'home.start.buttons.continue' : 'home.start.buttons.start';
-                                            @endphp
-                                            <li>
-                                                <a href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
-                                                    @lang($transShort, ['scan' => $scan->name])
-                                                </a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @else
-                                @foreach($scans as $scan)
-                                    <a class="btn btn-primary" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
-                                        @lang('cooperation/admin/buildings.show.observe-building.label')
-                                        @lang('cooperation/admin/buildings.show.observe-building.button')
-                                    </a>
-                                @endforeach
-                            @endif
-                            {{-- TODO: This should be a policy --}}
-                            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
-                                @if($scans->count() > 1)
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            @lang('cooperation/admin/buildings.show.fill-for-user.label')
-                                            @lang('cooperation/admin/buildings.show.fill-for-user.button')
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            @foreach($scans as $scan)
-                                                @php
-                                                    $transShort = app(\App\Services\Models\ScanService::class)
-                                                        ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
-                                                        ? 'home.start.buttons.continue' : 'home.start.buttons.start';
-                                                @endphp
-                                                <li>
-                                                    <a href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
-                                                        @lang($transShort, ['scan' => $scan->name])
-                                                    </a>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                @else
-                                    @foreach($scans as $scan)
-                                        <a class="btn btn-warning" href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
-                                            @php
-                                                $transShort = app(\App\Services\Models\ScanService::class)
-                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
-                                                    ? 'home.start.buttons.continue' : 'home.start.buttons.start';
-                                            @endphp
-                                            @lang($transShort, ['scan' => $scan->name])
-                                            @lang('cooperation/admin/buildings.show.fill-for-user.button')
-                                        </a>
-                                    @endforeach
-                                @endif
-                            @endif
-                        @endcan
-                        @can('edit', $building)
-                            <a href="{{route('cooperation.admin.buildings.edit', compact('building'))}}" id="edit-building" class="btn btn-success">
-                                @lang('cooperation/admin/buildings.show.edit.label')
-                                @lang('cooperation/admin/buildings.show.edit.button')
-                            </a>
-                        @endcan
-                    </div>
-                    <div class="btn-group pull-right">
-                        @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
-                            <button role="button" class="btn btn-info" id="view-files" data-toggle="modal"
-                                    data-target="#files-modal">
-                                @lang('cooperation/admin/buildings.show.view-files')
-                                <i class="glyphicon glyphicon-file"></i>
-                            </button>
-                        @endcan
-                    </div>
-                </div>
-            </div>
-            {{-- status and appointment date --}}
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="building-coach-status">@lang('cooperation/admin/buildings.show.status.label')</label>
-                        <select autocomplete="off" class="form-control" name="building[building_statuses][id]" id="building-status">
-                            @foreach($statuses as $status)
-                                <option {{$mostRecentStatus?->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
-                                    @if($mostRecentStatus?->status_id == $status->id)
-                                        @lang('cooperation/admin/buildings.show.status.current')
-                                    @endif
-                                    {{$status->name}}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="appointment-date">@lang('cooperation/admin/buildings.show.appointment-date.label')</label>
-                        <div class='input-group date' id="appointment-date">
-                            <input autocomplete="off" id="appointment-date" name="building[building_statuses][appointment_date]" type='text' class="form-control"
-                                   @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate())
-                                       value=" {{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}"
-                                   @endif
-                            />
-
-
-                            <span class="input-group-addon">
-                               <span class="glyphicon glyphicon-calendar"></span>
+    @endif
+    <div class="flex flex-wrap w-full justify-between">
+        <div>
+            @can('delete-user', $user)
+                <button type="button" id="delete-user" class="btn btn-red">
+                    <span class="flex items-center">
+                        @lang('cooperation/admin/buildings.show.delete-account.label')
+                        <i class="icon-sm icon-trash-can ml-1"></i>
+                    </span>
+                </button>
+            @endcan
+            @can('access-building', $building)
+                @if($scans->count() > 1)
+                    @component('cooperation.layouts.components.dropdown', [
+                        'label' => __('cooperation/admin/buildings.show.observe-building.label') . '<i class="icon-sm icon-show ml-1"></i>',
+                        'class' => 'btn btn-green',
+                    ])
+                        @foreach($scans as $scan)
+                            @php
+                                $transShort = app(\App\Services\Models\ScanService::class)
+                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
+                                    ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                            @endphp
+                            <li>
+                                <a class="in-text" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
+                                    @lang($transShort, ['scan' => $scan->name])
+                                </a>
+                            </li>
+                        @endforeach
+                    @endcomponent
+                @else
+                    @foreach($scans as $scan)
+                        <a class="btn btn-green" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
+                            <span class="flex items-center">
+                                @lang('cooperation/admin/buildings.show.observe-building.label')
+                                <i class="icon-sm icon-show ml-1"></i>
                             </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{--coaches and role--}}
-            <div class="row">
-                @if($publicMessages->isNotEmpty())
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="associated-coaches">@lang('cooperation/admin/buildings.show.associated-coach.label')</label>
-                            <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
-                                @foreach($coaches as $coach)
-                                    <option
-                                            @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
-                                                selected="selected"
-                                            @endif
-                                            value="{{$coach->id}}">{{$coach->getFullName()}}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
+                        </a>
+                    @endforeach
                 @endif
-
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
-
-                        <select @cannot('editAny',$userCurrentRole) disabled="disabled" @endcannot class="form-control" name="user[roles]" id="role-select" multiple="multiple">
-                            @foreach($roles as $role)
-                                @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
-                                <option
-                                        @cannot('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $building->user]))
-                                            locked="locked" disabled="disabled"
-                                        @endcannot
-                                        @if($user->hasRole($role))
-                                            selected="selected"
-                                        @endif value="{{$role->id}}">
-                                    {{$role->human_readable_name}}
-                                </option>
-                                @endcan
+                {{-- TODO: This should be a policy --}}
+                @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
+                    @if($scans->count() > 1)
+                        @component('cooperation.layouts.components.dropdown', [
+                            'label' => __('cooperation/admin/buildings.show.fill-for-user.label') . '<i class="icon-sm icon-tools ml-1"></i>',
+                            'class' => 'btn btn-yellow',
+                        ])
+                            @foreach($scans as $scan)
+                                @php
+                                    $transShort = app(\App\Services\Models\ScanService::class)
+                                        ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
+                                        ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                                @endphp
+                                <li>
+                                    <a class="in-text" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
+                                        @lang($transShort, ['scan' => $scan->name])
+                                    </a>
+                                </li>
                             @endforeach
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            @can('create', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building, MediaHelper::BUILDING_IMAGE])
-                <livewire:cooperation.admin.buildings.uploader :building="$building" tag="{{ MediaHelper::BUILDING_IMAGE }}">
+                        @endcomponent
+                    @else
+                        @foreach($scans as $scan)
+                            <a class="btn btn-yellow" href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
+                                @php
+                                    $transShort = app(\App\Services\Models\ScanService::class)
+                                        ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
+                                        ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                                @endphp
+                                <span class="flex items-center">
+                                    @lang($transShort, ['scan' => $scan->name])
+                                    <i class="icon-sm icon-tools ml-1"></i>
+                                </span>
+                            </a>
+                        @endforeach
+                    @endif
+                @endif
             @endcan
-        </div>
-
-        <ul class="nav nav-tabs">
-
-            <li @if(session('fragment') == 'messages-intern') class="active" @endif>
-                <a data-toggle="tab" href="#messages-intern">
-                    @lang('cooperation/admin/buildings.show.tabs.messages-intern.title')
+            @can('edit', $building)
+                <a href="{{route('cooperation.admin.buildings.edit', compact('building'))}}" id="edit-building" class="btn btn-blue">
+                    <span class="flex items-center">
+                        @lang('cooperation/admin/buildings.show.edit.label')
+                        <i class="icon-sm icon-pencil ml-1"></i>
+                    </span>
                 </a>
-            </li>
-
-            @can('talk-to-resident', [$building])
-                <li @if(session('fragment') == 'messages-public' || empty(session('fragment'))) class="active" @endif>
-                    <a data-toggle="tab" href="#messages-public">
-                        @if($user->retrievesNotifications(\App\Models\NotificationType::PRIVATE_MESSAGE))
-                            <i class="glyphicon glyphicon-bell" data-placement="top" data-toggle="tooltip" title="@lang('cooperation/admin/buildings.show.tabs.messages-public.user-notification.yes')"></i>
-                        @else
-                            <i class="glyphicon glyphicon-ban-circle" data-placement="top" data-toggle="tooltip" title="@lang('cooperation/admin/buildings.show.tabs.messages-public.user-notification.no')"></i>
-                        @endif
-                        @lang('cooperation/admin/buildings.show.tabs.messages-public.title')
-                    </a>
-                </li>
             @endcan
-            <li @if(session('fragment') == 'comments-on-building') class="active" @endif>
-                <a data-toggle="tab" href="#comments-on-building">
-                    @lang('cooperation/admin/buildings.show.tabs.comments-on-building.title')
-                </a>
-            </li>
-            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-                <li>
-                    <a data-toggle="tab" id="trigger-fill-in-history-tab" href="#fill-in-history">
-                        @lang('cooperation/admin/buildings.show.tabs.fill-in-history.title')
-                    </a>
-                </li>
-            @endif
-            <li>
-                <a data-toggle="tab" href="#2fa">
-                    @lang('cooperation/admin/buildings.show.tabs.2fa.title')
-                </a>
-            </li>
-        </ul>
-
-        <div class="tab-content">
-            {{--messages intern (cooperation to cooperation --}}
-            <div id="messages-intern" class="tab-pane fade @if(session('fragment') == 'messages-intern' ) in active @endif">
-                @include('cooperation.admin.buildings.parts.message-box', ['messages' => $privateMessages, 'building' => $building, 'isPublic' => false])
-            </div>
-            @can('talk-to-resident', [$building])
-                {{--public messages / between the resident and cooperation--}}
-                <div id="messages-public" class="tab-pane fade @if(session('fragment') == 'messages-public' || empty(session('fragment'))) in active @endif">
-                    @include('cooperation.admin.buildings.parts.message-box', ['messages' => $publicMessages, 'building' => $building, 'isPublic' => true])
-                </div>
-            @endcan
-
-            <div id="2fa" class="tab-pane fade @if(session('fragment') == '2fa' ) in active @endif">
-                <div class="panel">
-                    <div class="panel-body">
-                        @if($building->user->account->hasEnabledTwoFactorAuthentication())
-                            <div class="alert alert-success" role="alert">
-                                @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.title')
-                            </div>
-
-                            <form action="{{route('cooperation.admin.cooperation.accounts.disable-2fa')}}" method="post">
-                                @csrf
-                                @method('post')
-                                <input type="hidden" name="accounts[id]" value="{{$building->user->account_id}}">
-                                <button type="submit" class="btn btn-danger">
-                                    @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.button')
-                                </button>
-                            </form>
-                        @else
-                            <div class="alert alert-info" role="alert">
-                                @lang('cooperation/admin/buildings.show.tabs.2fa.status.inactive.title')
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            {{-- comments on the building, read only. --}}
-            <div id="comments-on-building" class="tab-pane fade @if(session('fragment') == 'comments-on-building' ) in active @endif">
-                <div class="panel">
-                    <div class="panel-body">
-                        @forelse($buildingNotes as $buildingNote)
-                            <p class="pull-right">{{$buildingNote->created_at->format('Y-m-d H:i')}}</p>
-                            <p>{{$buildingNote->note}}</p>
-                            <hr>
-                        @empty
-                        @endforelse
-
-                        <form action="{{route('cooperation.admin.building-notes.store')}}" method="post">
-                            {{csrf_field()}}
-                            <input type="hidden" name="building[id]" value="{{$building->id}}">
-                            <div class="form-group">
-
-                                <label for="building-note">@lang('cooperation/admin/buildings.show.tabs.comments-on-building.note')</label>
-                                <textarea id="building-note" name="building[note]" class="form-control">{{old('building.note')}}</textarea>
-                            </div>
-                            <button type="submit" class="btn btn-default">
-                                @lang('cooperation/admin/buildings.show.tabs.comments-on-building.save')
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {{-- Fill in history ?? the log --}}
-            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-                <div id="fill-in-history" class="tab-pane fade">
-                    <div class="panel">
-                        <div class="panel-body">
-                            <table id="log-table"
-                                   class="table-responsive table table-striped table-bordered compact nowrap"
-                                   style="width: 100%">
-                                <thead>
-                                <tr>
-                                    <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
-                                    <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.message')</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @php /** @var \App\Models\Log $log */ @endphp
-                                @foreach($logs as $log)
-                                    <tr>
-                                        <td data-sort="{{strtotime($log->created_at->format('d-m-Y H:i'))}}">{{$log->created_at->format('d-m-Y H:i')}}</td>
-                                        <td>{{$log->message}}</td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            @endif
         </div>
     </div>
 
-    @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
-        <div id="files-modal" class="modal fade" role="dialog">
-            <div class="modal-dialog" style="height: 100vh; width: 100vw; margin: 0;">
+    <div class="flex flex-wrap w-full sm:pad-x-6">
+        {{-- status and appointment date --}}
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'class' => 'w-full sm:w-1/2',
+            'label' => __('cooperation/admin/buildings.show.status.label'),
+            'id' => 'building-status',
+            'inputName' => "building.building_statuses.id",
+            'withInputSource' => false,
+        ])
+            @component('cooperation.frontend.layouts.components.alpine-select')
+                <select id="building-status" class="form-input hidden" autocomplete="off"
+                        name="building[building_statuses][id]">
+                    @foreach($statuses as $status)
+                        <option value="{{$status->id}}"
+                                @if($mostRecentStatus?->status_id == $status->id) selected data-current @endif
+                        >
+                            {{ $mostRecentStatus?->status_id == $status->id ? __('cooperation/admin/buildings.show.status.current') . $status->name : $status->name }}
+                        </option>
+                    @endforeach
+                </select>
+            @endcomponent
+        @endcomponent
 
-                <!-- Modal content-->
-                <div class="modal-content" style="height: 100%; width: 100%; overflow: hidden;">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">
-                            @lang('cooperation/admin/buildings.show.view-files')
-                        </h4>
-                    </div>
-                    <div class="modal-body" style="margin: 0; padding: 0; height: 100%;">
-                        <iframe src="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('building', 'scan')) . "?iframe=1" }}"
-                                style="border: none; width: 100%; height: 100%;"></iframe>
-                    </div>
-                </div>
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'class' => 'w-full sm:w-1/2',
+            'label' => __('cooperation/admin/buildings.show.appointment-date.label'),
+            'id' => 'appointment-date',
+            'inputName' => "building.building_statuses.appointment_date",
+            'withInputSource' => false,
+        ])
+            @include('cooperation.layouts.parts.datepicker', [
+                'mode' => 'datetime',
+                'name' => 'building.building_statuses.appointment_date',
+                'id' => 'appointment-date',
+                'placeholder' => '', // No placeholder!
+                'date' => $mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate() ? $mostRecentStatus->appointment_date : null,
+            ])
+        @endcomponent
+    </div>
+
+    <div class="flex flex-wrap w-full sm:pad-x-6">
+        {{--coaches and role--}}
+        @if($publicMessages->isNotEmpty())
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'class' => 'w-full sm:w-1/2',
+                'label' => __('cooperation/admin/buildings.show.associated-coach.label'),
+                'id' => 'associated-coaches',
+                'inputName' => "user.associated_coaches",
+                'withInputSource' => false,
+            ])
+                @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
+                    <select multiple id="associated-coaches" class="form-input hidden" name="user[associated_coaches]"
+                            @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif>
+                        @foreach($coaches as $coach)
+                            <option value="{{$coach->id}}"
+                                    @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id)) selected @endif
+                            >
+                                {{$coach->getFullName()}}
+                            </option>
+                        @endforeach
+                    </select>
+                @endcomponent
+            @endcomponent
+        @endif
+
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'class' => 'w-full sm:w-1/2',
+            'label' => __('cooperation/admin/buildings.show.role.label'),
+            'id' => 'role-select',
+            'inputName' => "user.roles",
+            'withInputSource' => false,
+        ])
+            @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
+                <select multiple id="role-select" class="form-input hidden" name="user[roles]"
+                        @cannot('editAny', $userCurrentRole) disabled @endcannot>
+                    @foreach($roles as $role)
+                        @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
+                            <option value="{{$role->id}}"
+                                    @cannot('delete', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true), $user]) readonly @endcannot
+                                    @if($user->hasRole($role)) selected @endif
+                            >
+                                {{$role->human_readable_name}}
+                            </option>
+                        @endcan
+                    @endforeach
+                </select>
+            @endcomponent
+        @endcomponent
+    </div>
+
+    <div class="flex flex-wrap w-full">
+        @can('create', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $building, MediaHelper::BUILDING_IMAGE])
+            <livewire:cooperation.admin.buildings.uploader :building="$building" tag="{{ MediaHelper::BUILDING_IMAGE }}">
+        @endcan
+    </div>
+
+    <div x-data="tabs()">
+        <nav class="nav-tabs">
+            <a x-bind="tab" data-tab="messages-intern">
+                @lang('cooperation/admin/buildings.show.tabs.messages-intern.title')
+            </a>
+
+            @can('talk-to-resident', [$building])
+                <a x-bind="tab" data-tab="messages-public" x-ref="main-tab" class="flex items-center">
+                    @php $retrievesNotifications = $user->retrievesNotifications(\App\Models\NotificationType::PRIVATE_MESSAGE); @endphp
+                    @component('cooperation.layouts.components.popover', [
+                        'position' => 'top',
+                        'trigger' => 'hover',
+                    ])
+                        @if($retrievesNotifications)
+                            <i class="icon-sm icon-check-circle-purple mr-1"></i>
+                        @else
+                            <i class="w-3 h-3 icon-error-cross mr-1"></i>
+                        @endif
+
+                        @slot('body')
+                            <p>
+                                @lang('cooperation/admin/buildings.show.tabs.messages-public.user-notification.' . ($retrievesNotifications ? 'yes' : 'no'))
+                            </p>
+                        @endslot
+                    @endcomponent
+
+                    @lang('cooperation/admin/buildings.show.tabs.messages-public.title')
+                </a>
+            @endcan
+
+            <a x-bind="tab" data-tab="building-notes">
+                @lang('cooperation/admin/buildings.show.tabs.comments-on-building.title')
+            </a>
+
+            @if(Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
+                <a x-bind="tab"  data-tab="fill-in-history">
+                    @lang('cooperation/admin/buildings.show.tabs.fill-in-history.title')
+                </a>
+            @endif
+
+            <a x-bind="tab" data-tab="2fa">
+                @lang('cooperation/admin/buildings.show.tabs.2fa.title')
+            </a>
+
+            @can('viewAny', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $building])
+                <a x-bind="tab" data-tab="view-files" class="flex items-center">
+                    @lang('cooperation/admin/buildings.show.view-files')
+                    <i class="icon-sm icon-document-white ml-1"></i>
+                </a>
+            @endcan
+        </nav>
+
+        <div class="border border-t-0 border-blue/50 rounded-b-lg p-4">
+            {{--messages intern (cooperation to cooperation --}}
+            <div id="messages-intern" x-bind="container" data-tab="messages-intern">
+                @include('cooperation.layouts.parts.message-box', [
+                    'privateMessages' => $privateMessages,
+                    'building' => $building,
+                    'isPublic' => false,
+                    'showParticipants' => false,
+                    'url' => route('cooperation.admin.send-message'),
+                ])
             </div>
+
+            @can('talk-to-resident', [$building])
+                {{--public messages / between the resident and cooperation--}}
+                <div id="messages-public" x-bind="container" data-tab="messages-public">
+                    @include('cooperation.layouts.parts.message-box', [
+                        'privateMessages' => $publicMessages,
+                        'building' => $building,
+                        'isPublic' => true,
+                        'showParticipants' => false,
+                        'url' => route('cooperation.admin.send-message'),
+                    ])
+                </div>
+            @endcan
+
+            {{-- comments on the building, read only. --}}
+            <div id="building-notes" x-bind="container" data-tab="building-notes" class="p-4">
+                @foreach($buildingNotes as $buildingNote)
+                    <p class="float-right">{{$buildingNote->created_at->format('Y-m-d H:i')}}</p>
+                    <p>{{$buildingNote->note}}</p>
+                    <hr>
+                @endforeach
+
+                <form action="{{route('cooperation.admin.building-notes.store')}}" method="POST">
+                    @csrf
+                    <input type="hidden" name="building[id]" value="{{$building->id}}">
+
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                        'label' => __('cooperation/admin/buildings.show.tabs.comments-on-building.note'),
+                        'id' => 'building-note',
+                        'inputName' => "building.note",
+                        'withInputSource' => false,
+                    ])
+                        <textarea id="building-note" name="building[note]"
+                                  class="form-input"
+                        >{{old('building.note')}}</textarea>
+                    @endcomponent
+                    <button type="submit" class="btn btn-outline-green">
+                        @lang('cooperation/admin/buildings.show.tabs.comments-on-building.save')
+                    </button>
+                </form>
+            </div>
+
+            {{-- Fill in history ?? the log --}}
+            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
+                <div id="fill-in-history" x-bind="container" data-tab="fill-in-history" class="data-table">
+                    <table id="log-table"
+                           class="table fancy-table">
+                        <thead>
+                            <tr>
+                                <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
+                                <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.message')</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php /** @var \App\Models\Log $log */ @endphp
+                            @foreach($logs as $log)
+                                <tr>
+                                    <td>
+                                        {{$log->created_at->format('d-m-Y H:i')}}
+                                    </td>
+                                    <td>
+                                        {{$log->message}}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+
+            <div id="2fa" x-bind="container" data-tab="2fa" class="p-4">
+                @if($user->account->hasEnabledTwoFactorAuthentication())
+                    @component('cooperation.layouts.components.alert', ['color' => 'green', 'dismissible' => false])
+                        @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.title')
+                    @endcomponent
+
+                    @can('disableTwoFactor', $user->account)
+                        <form action="{{route('cooperation.admin.cooperation.accounts.disable-2fa')}}" method="POST">
+                            @csrf
+                            <input type="hidden" name="accounts[id]" value="{{$user->account_id}}">
+                            <button type="submit" class="btn btn-red">
+                                @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.button')
+                            </button>
+                        </form>
+                    @endcan
+                @else
+                    @component('cooperation.layouts.components.alert', ['color' => 'blue-900', 'dismissible' => false])
+                        @lang('cooperation/admin/buildings.show.tabs.2fa.status.inactive.title')
+                    @endcomponent
+                @endif
+            </div>
+
+            @can('viewAny', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $building])
+                <div id="view-files" x-bind="container" data-tab="view-files" class="p-4">
+                    <livewire:cooperation.frontend.tool.simple-scan.my-plan.uploader :building="$building"/>
+                </div>
+            @endcan
         </div>
-    @endcan
+    </div>
 @endsection
 
 @push('js')
-    <script>
+    <script type="module">
         // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
-        let originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}' @else '' @endif;
+        const originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('Y-m-d H:i')}}' @else '' @endif;
+        const buildingOwnerId = @js($building->id);
+        const userId = @js($user->id);
 
-        $(document).ready(function () {
+        function performFetch(url, body, redirect) {
+            fetchRequest(url, 'POST', body)
+                .then((response) => redirect ? location.href = redirect : location.reload());
+        }
 
-            // get some basic information
-            let buildingOwnerId = $('input[name=building\\[id\\]]').val();
-            let userId = $('input[name=user\\[id\\]]').val();
-            let cooperationId = $('#cooperation-id').val();
-
-            let appointmentDate = $('#appointment-date');
-
-            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-            $('#log-table').DataTable({
-                'order': [[0, 'desc']]
+        document.addEventListener('DOMContentLoaded', () => {
+            // delete the current user
+            document.getElementById('delete-user')?.addEventListener('click', function () {
+                if (confirm('@lang('cooperation/admin/buildings.show.delete-user')')) {
+                    performFetch('{{route('cooperation.admin.users.destroy')}}', {
+                        user_id: userId,
+                        _method: 'DELETE'
+                    }, '{{route('cooperation.admin.users.index')}}');
+                }
             });
 
-            // only initialize the datatable if the tab gets shown, if we wont do this the responsive ness wont work cause its hidden
-            $('.nav-tabs a').on('shown.bs.tab', function (event) {
-                $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
+            const associatedCoachesSelect = document.getElementById('associated-coaches');
+            const associatedCoaches = Array.from(associatedCoachesSelect.selectedOptions).map((option) => option.value);
+
+            const roleSelect = document.getElementById('role-select');
+            const currentRoles = Array.from(roleSelect.selectedOptions).map((option) => option.value);
+
+            // Change building status
+            document.getElementById('building-status').addEventListener('change', function () {
+                if (confirm('@lang('cooperation/admin/buildings.show.set-status')')) {
+                    performFetch('{{ route('cooperation.admin.building-status.set-status') }}', {
+                        building_id: buildingOwnerId,
+                        status_id: this.value,
+                    });
+                } else {
+                    // Reset status
+                    this.value = this.querySelector('option[data-current]').value;
+                    this.alpineSelect.updateSelectedValues();
+                }
+            });
+
+            // Appointment date
+            document.querySelector('.datepicker').addEventListener('datepicker-closed', function () {
+                const date = this.querySelector('.datepicker-value').value;
+
+                if (date !== originalAppointmentDate) {
+                    let confirmMessage = "@lang('cooperation/admin/buildings.show.set-empty-appointment-date')";
+
+                    if (date.length > 0) {
+                        confirmMessage = "@lang('cooperation/admin/buildings.show.set-appointment-date')"
+                    }
+
+                    if (confirm(confirmMessage)) {
+                        performFetch('{{ route('cooperation.admin.building-status.set-appointment-date') }}', {
+                            building_id: buildingOwnerId,
+                            appointment_date: date,
+                        });
+                    } else {
+                        // If the user does not want to set / change the appointment date,
+                        // we set the date back to the one we got onload.
+                        this.datepicker.setDate(originalAppointmentDate);
+                    }
+                }
+            });
+
+            @if(! Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
+            // Associated coaches
+            associatedCoachesSelect.addEventListener('change', function (event) {
+                // If length is greater, a value was removed, otherwise added
+                if (associatedCoaches.length > this.selectedOptions.length) {
+                    let removedOption = null;
+                    const currentOptions = Array.from(this.selectedOptions).map((option) => option.value);
+                    associatedCoaches.forEach((value) => removedOption = ! removedOption && ! currentOptions.includes(value) ? value : removedOption);
+
+                    if (confirm('@lang('cooperation/admin/buildings.show.revoke-access')')) {
+                        performFetch('{{ route('cooperation.messages.participants.revoke-access') }}', {
+                            building_owner_id: buildingOwnerId,
+                            user_id: removedOption,
+                        });
+                    } else {
+                        this.alpineSelect.updateValue(removedOption);
+                    }
+                } else {
+                    let newOption = null;
+                    Array.from(this.selectedOptions).forEach((option) => newOption = ! newOption && ! associatedCoaches.includes(option.value) ? option.value : newOption);
+
+                    if (confirm('@lang('cooperation/admin/buildings.show.add-with-building-access')')) {
+                        performFetch('{{ route('cooperation.messages.participants.add-with-building-access') }}', {
+                            building_id: buildingOwnerId,
+                            user_id: newOption,
+                        });
+                    } else {
+                        this.alpineSelect.updateValue(newOption);
+                    }
+                }
             });
             @endif
 
-            $('[data-toggle="tooltip"]').tooltip();
-
-            scrollChatToMostRecentMessage();
-            onFormSubmitAddFragmentToRequest();
-
-
-            $('.nav-tabs .active a').trigger('shown.bs.tab');
-
-            let currentDate = new Date();
-            currentDate.setDate(currentDate.getDate() - 1);
-
-            appointmentDate.datetimepicker({
-                showTodayButton: true,
-                allowInputToggle: true,
-                locale: 'nl',
-                // format: 'L',
-                showClear: true,
-            }).on('dp.hide', function (event) {
-                // This way the right events get triggered so we will always get a nice formatted date
-                appointmentDate.find('input').blur();
-
-                // Queue the confirm so the DOM is properly updated for the browsers which seem to ignore the blur.
-                setTimeout(() => {
-                    let date = appointmentDate.find('input').val();
-
-                    if (date !== originalAppointmentDate) {
-                        let confirmMessage = "@lang('cooperation/admin/buildings.show.set-empty-appointment-date')";
-
-                        if (date.length > 0) {
-                            confirmMessage = "@lang('cooperation/admin/buildings.show.set-appointment-date')"
-                        }
-
-                        if (confirm(confirmMessage)) {
-                            $.ajax({
-                                method: 'POST',
-                                url: '{{route('cooperation.admin.building-status.set-appointment-date')}}',
-                                data: {
-                                    building_id: buildingOwnerId,
-                                    appointment_date: date
-                                },
-                            }).fail(function (response) {
-                                appointmentDate.find('input').get(0).addError('Invalid format');
-                            }).done(function () {
-                                location.reload();
-                            })
-                        } else {
-                            // if the user does not want to set / change the appointment date
-                            // we set the date back to the one we got onload.
-                            appointmentDate.find('input').val(originalAppointmentDate);
-                        }
-                    }
-                });
-            });
-
-            // delete the current user
-            $('#delete-user').click(function () {
-                if (confirm('@lang('cooperation/admin/buildings.show.delete-user')')) {
-
-                    $.ajax({
-                        url: '{{route('cooperation.admin.users.destroy')}}',
-                        method: 'POST',
-                        data: {
-                            user_id: userId,
-                            _method: 'DELETE'
-                        }
-                    }).done(function () {
-                        window.location.href = '{{route('cooperation.admin.users.index')}}'
-                    })
-                }
-            });
-
-            $('#building-status').select2({}).on('select2:selecting', function (event) {
-                let statusToSelect = $(event.params.args.data.element);
-
-                if (confirm('@lang('cooperation/admin/buildings.show.set-status')')) {
-                    $.ajax({
-                        method: 'POST',
-                        url: '{{route('cooperation.admin.building-status.set-status')}}',
-                        data: {
-                            building_id: buildingOwnerId,
-                            status_id: statusToSelect.val(),
-                        }
-                    }).done(function () {
-                        location.reload();
-                    })
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
-            $('#associated-coaches').select2({
-                templateSelection: function (tag, container) {
-                    let option = $('#associated-coaches option[value="' + tag.id + '"]');
-                    if (option.attr('locked')) {
-                        $(container).addClass('select2-locked-tag');
-                        tag.locked = true
-                    }
-
-                    return tag.text;
-                }
-            }).on('select2:unselecting', function (event) {
-                let optionToUnselect = $(event.params.args.data.element);
-
-                // check if the option is locked
-                if (typeof optionToUnselect.attr('locked') === "undefined") {
-                    if (confirm('@lang('cooperation/admin/buildings.show.revoke-access')')) {
-                        $.ajax({
-                            url: '{{route('cooperation.messages.participants.revoke-access')}}',
-                            method: 'POST',
-                            data: {
-                                user_id: optionToUnselect.val(),
-                                building_owner_id: buildingOwnerId
-                            }
-                        }).done(function () {
-                            // just reload the page
-                            location.reload();
-                        });
-                    } else {
-                        event.preventDefault();
-                        return false;
-                    }
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            }).on('select2:selecting', function (event) {
-                let optionToSelect = $(event.params.args.data.element);
-
-                if (confirm('@lang('cooperation/admin/buildings.show.add-with-building-access')')) {
-                    $.ajax({
-                        url: '{{route('cooperation.messages.participants.add-with-building-access')}}',
-                        method: 'POST',
-                        data: {
-                            user_id: optionToSelect.val(),
-                            building_id: buildingOwnerId
-                        }
-                    }).done(function () {
-                        // just reload the page
-                        location.reload();
-                    });
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
-
-            $('#role-select').select2({
-                templateSelection: function (tag, container) {
-                    let option = $('#role-select option[value="' + tag.id + '"]');
-                    if (option.attr('locked')) {
-                        $(container).addClass('select2-locked-tag');
-                        tag.locked = true
-                    }
-
-                    return tag.text;
-                }
-            })
-                .on('select2:selecting', function (event) {
-                    let roleToSelect = $(event.params.args.data.element);
-
-                    if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {
-                        $.ajax({
-                            url: '{{route('cooperation.admin.roles.assign-role')}}',
-                            method: 'POST',
-                            data: {
-                                role_id: roleToSelect.val(),
-                                user_id: userId,
-                                cooperation_id: cooperationId
-                            }
-                        }).done(function () {
-                            // just reload the page
-                            location.reload();
-                        });
-                    } else {
-                        event.preventDefault();
-                        return false;
-                    }
-                })
-                .on('select2:unselecting', function (event) {
-                    let roleToUnselect = $(event.params.args.data.element);
+            @can('editAny', $userCurrentRole)
+            // User roles
+            roleSelect.addEventListener('change', function (event) {
+                // If length is greater, a value was removed, otherwise added
+                if (currentRoles.length > this.selectedOptions.length) {
+                    let removedOption = null;
+                    const currentOptions = Array.from(this.selectedOptions).map((option) => option.value);
+                    currentRoles.forEach((value) => removedOption = ! removedOption && ! currentOptions.includes(value) ? value : removedOption);
 
                     if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {
-                        $.ajax({
-                            url: '{{route('cooperation.admin.roles.remove-role')}}',
-                            method: 'POST',
-                            data: {
-                                role_id: roleToUnselect.val(),
-                                user_id: userId
-                            }
-                        }).done(function () {
-                            // just reload the page
-                            location.reload();
+                        performFetch('{{ route('cooperation.admin.roles.remove-role') }}', {
+                            role_id: removedOption,
+                            user_id: userId,
                         });
                     } else {
-                        event.preventDefault();
-                        return false;
+                        this.alpineSelect.updateValue(removedOption);
                     }
-                });
-        });
+                } else {
+                    let newOption = null;
+                    Array.from(this.selectedOptions).forEach((option) => newOption = ! newOption && ! currentRoles.includes(option.value) ? option.value : newOption);
 
-
-
-        function scrollChatToMostRecentMessage() {
-            $('.nav-tabs a').on('shown.bs.tab', function () {
-
-                let tabId = $(this).attr('href');
-                let tab = $(tabId);
-                let chat = tab.find('.panel-chat-body')[0];
-
-                if (typeof chat !== "undefined") {
-                    chat.scrollTop = chat.scrollHeight - chat.clientHeight;
-
-                    let isChatPublic = tab.find('[name=is_public]').val();
-                    let buildingId = tab.find('[name=building_id]').val();
-
-                    $.ajax({
-                        url: '{{route('cooperation.messages.participants.set-read')}}',
-                        method: 'post',
-                        data: {
-                            is_public: isChatPublic,
-                            building_id: buildingId
-                        },
-                        success: function () {
-                            updateTotalUnreadMessageCount();
-                        }
-                    })
+                    if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {
+                        performFetch('{{ route('cooperation.admin.roles.assign-role') }}', {
+                            role_id: newOption,
+                            user_id: userId,
+                        });
+                    } else {
+                        this.alpineSelect.updateValue(newOption);
+                    }
                 }
             });
-        }
+            @endcan
+        });
 
-        function onFormSubmitAddFragmentToRequest()
-        {
-            $('form').submit(function (event) {
-                $(this).append($('<input>', {
-                    type: 'hidden',
-                    name: 'fragment',
-                    value: $(this).parents('.tab-pane').prop('id'),
-                }));
-            });
-        }
-
+        window.addEventListener('tab-switched', () => {
+            setChatScroll();
+        });
     </script>
 @endpush

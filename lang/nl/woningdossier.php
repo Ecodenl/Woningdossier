@@ -26,19 +26,6 @@ return [
         \App\Models\BuildingCoachStatus::STATUS_ADDED => 'Toegevoegd',
     ],
     'cooperation' => [
-        'create-building' => [
-            'current-login-info' => [
-                'header' => 'Voer uw e-mail in ter controlle.',
-            ],
-            'building' => [
-                'header' => 'Vul uw adres in.',
-                'store' => 'Adres aanmaken',
-            ],
-            'store' => [
-                'success' => 'Uw adres is toegevoegd aan het Hoomdossier, u kunt nu inloggen.',
-            ],
-        ],
-
         'step' => [
             'general-data' => 'Algemene gegevens',
             'building-detail' => 'Woning details',
@@ -121,83 +108,14 @@ return [
                         ],
                     ],
                 ],
-                'translations' => [
-                    'index' => [
-                        'header' => 'Stappen waarvan u de vragen kunt vertalen',
-                        'text' => 'Hier zijn alle stappen te zien waarvan u vragen en bijbehorende helpteksten kunt aanpassen',
-                        'table' => [
-                            'columns' => [
-                                'name' => 'Stap naam',
-                                'actions' => 'Acties',
-                            ],
-                            'pdf' => 'PDF Vertalingen',
-                            'main-translations' => 'Herhalende teksten',
-                            'see' => 'Bekijk vertalingen',
-                        ],
-                    ],
-                    'edit' => [
-                        'header' => 'Alle vragen die vertaalbaar zijn op de stap :step_name. <br><span class="text-danger">Let op! Eventuele iconen worden niet in de editor getoond, wel in de broncode.</span>',
-                        'sub-question' => 'Laat sub-vragen zien',
-                        'question' => 'Vraag in taal: :locale',
-                        'help' => 'Helptext in taal: :locale',
-                        'search' => [
-                            'placeholder' => 'Zoek naar een vraag..',
-                        ],
-                        'save' => 'Wijzigingen voor de vragen, sub-vragen en helpteksten opslaan.',
-                        'close-modal' => 'Sluit venster.',
-                    ],
-                    'update' => [
-                        'success' => 'Vertalingen zijn bijgewerkt.',
-                    ],
-                ],
                 'cooperations' => [
                     'index' => [
-                        'header' => 'Cooperaties',
-                        'table' => [
-                            'columns' => [
-                                'name' => 'Cooperatie naam',
-                                'slug' => 'Cooperatie Slug / Subdomein',
-                                'actions' => 'Acties',
-                            ],
-                        ],
                         'modal' => [
                             'text' => 'U staat op het punt om de coöperatie :cooperation te verwijderen, hiermee word alles verwijderd wat aan de coöperatie hangt (gebruikers, vragenlijsten, berichten etc.).',
                             'cancel' => 'Annuleren',
                             'destroy' => 'Ja, ik wil deze coöperatie verwijderen',
                         ],
-                        'edit' => 'Bewerken',
-                        'show' => 'Details van deze coöperatie',
-                        'create' => 'Aanmaken',
                         'destroy' => 'Verwijder coöperatie',
-                    ],
-                    'create' => [
-                        'header' => 'Cooperatie toevoegen',
-                        'form' => [
-                            'name' => 'Naam van de coöperatie *',
-                            'slug' => 'Slug / subdomein *',
-                            'cooperation_email' => 'Coöperatie contact e-mailadres',
-                            'website_url' => 'Website URL',
-                            'create' => 'Aanmaken',
-                        ],
-                    ],
-                    'edit' => [
-                        'header' => 'Cooperatie :name bewerken',
-                        'form' => [
-                            'name' => 'Naam van de coöperatie *',
-                            'slug' => 'Slug / subdomein *',
-                            'cooperation_email' => 'Coöperatie contact e-mailadres',
-                            'website_url' => 'Website URL',
-                            'update' => 'Bijwerken',
-                        ],
-                    ],
-                    'destroy' => [
-                        'success' => 'De coöperatie is succesvol verwijderd',
-                    ],
-                    'store' => [
-                        'success' => 'Cooperatie is toegevoegd aan het Hoomdossier',
-                    ],
-                    'update' => [
-                        'success' => 'Cooperatie is bijgewerkt.',
                     ],
                     'cooperation-to-manage' => [
                         'alert-on-top' => 'Alle wijzigingen die u nu doorvoert zullen worden gedaan op de coöperatie <strong>:cooperation</strong>',
@@ -262,24 +180,6 @@ return [
                 'current-role' => 'Uw huidige rol:',
                 'reports' => 'Rapportages',
                 'example-buildings' => 'Voorbeeldwoningen',
-            ],
-            'custom-fields' => [
-                'index' => [
-                    'rules' => [
-                        'numeric' => 'Getal',
-                        'string' => 'Tekst',
-                    ],
-                    'optional-rules' => [
-                        'numeric' => [
-                            'between' => 'Tussen',
-                            'min' => 'Minimale grootte',
-                        ],
-                        'string' => [
-                            'email' => 'E-mailadres',
-                            'max' => 'Maximaal aantal letters',
-                        ],
-                    ],
-                ],
             ],
             'choose-roles' => [
                 'header' => 'Als welke rol wilt u doorgaan?',
@@ -446,50 +346,6 @@ return [
                         'building-type' => 'Woningtype',
                         'build-year' => 'Bouwjaar',
                         'example-building' => 'Specifieke voorbeeldwoning',
-                    ],
-                ],
-                'questionnaires' => [
-                    'index' => [
-                        'header' => 'Alle vragenlijsten voor uw coöperatie',
-                        'table' => [
-                            'columns' => [
-                                'questionnaire-name' => 'Vragenlijst naam',
-                                'step' => 'Komt na stap',
-                                'active' => 'Actief',
-                                'actions' => 'Acties',
-                                'see-results' => 'Bekijk resultaten',
-                                'edit' => 'Bewerk vragenlijst',
-                                'destroy' => 'Verwijder vragenlijst',
-                            ],
-                        ],
-                        'types' => [
-                            'text' => 'Kort antwoord',
-                            'textarea' => 'Alinea',
-                            'select' => 'Dropdownmenu',
-                            'radio' => 'Selectievakjes',
-                            'checkbox' => 'Meerkeuze',
-                            'date' => 'Datum',
-                        ],
-                    ],
-                    'destroy' => [
-                        'are-you-sure' => 'Dit verwijderd de vragenlijst, vragen en de gegeven antwoorden. Weet u zeker dat u wilt doorgaan ?',
-                        'success' => 'Vragenlijst verwijderd',
-                    ],
-                    'edit' => [
-                        'types' => [
-                            'text' => 'Kort antwoord',
-                            'textarea' => 'Alinea',
-                            'select' => 'Dropdownmenu',
-                            'radio' => 'Selectievakjes',
-                            'date' => 'Datum',
-                            'checkbox' => 'Meerkeuze',
-                        ],
-                        'add-validation' => 'Voeg validatie toe',
-                        'success' => 'Vragenlijst is bijgewerkt',
-                    ],
-                    'create' => [
-                        'leave-creation-tool' => 'Keer terug naar overzicht',
-                        'leave-creation-tool-warning' => 'Let op!, alle wijzigingen zullen verloren gaan. Uw hiervoor gemaakte formulier is dan niet meer terug te krijgen!',
                     ],
                 ],
                 /* translations specific for the cooperation-admin */

@@ -1,105 +1,88 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/cooperation/cooperation-admin/settings.index.title')
+])
 
 @section('content')
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.title')
+    @php
+        $action = isset($cooperationToManage) && $cooperationToManage instanceof \App\Models\Cooperation
+            ? route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.settings.store', compact('cooperation', 'cooperationToManage'))
+            : route('cooperation.admin.cooperation.cooperation-admin.settings.store');
+
+        $cooperationToUse = isset($cooperationToManage) && $cooperationToManage instanceof \App\Models\Cooperation
+            ? $cooperationToManage : $cooperation;
+    @endphp
+
+    <form class="w-full flex flex-wrap"
+          action="{{ $action }}"
+          enctype="multipart/form-data" method="POST">
+        @csrf
+
+        @foreach(MediaHelper::getFillableTagsForClass(\App\Models\Cooperation::class) as $tag)
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'withInputSource' => false,
+                'label' => __("cooperation/admin/cooperation/cooperation-admin/settings.index.{$tag}"),
+                'class' => 'w-full -mt-5 lg:w-1/3 lg:pr-6 flex-wrap',
+                'id' => "file-{$tag}",
+                'inputName' => "medias.{$tag}",
+            ])
+                <input name="medias[{{ $tag }}]" id="file-{{ $tag }}" type="file" class="form-input"/>
+
+                @if(($image = $cooperationToUse->firstMedia($tag)) instanceof \App\Models\Media)
+                    <input type="hidden" name="medias[{{ $tag }}_current]" value="{{ $image->id }}"
+                           id="current-{{ $tag }}">
+                    <div class="flex w-full items-center">
+                        <span class="whitespace-nowrap text-center rounded font-bold bg-green text-white p-1 py-2 text-xs overflow-hidden">
+                            @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
+                            {{$image->filename}}
+                        </span>
+                        <span class="text-red cursor-pointer font-bold ml-2"
+                              onclick="let currentImage = document.getElementById('current-{{ $tag }}'); currentImage.value = null; currentImage.nextElementSibling.style.display = 'none';">
+                            X
+                        </span>
+                    </div>
+                @endif
+            @endcomponent
+        @endforeach
+
+        @foreach(CooperationSettingHelper::getAvailableSettings() as $short => $type)
+            @php
+                $kebabShort = Str::kebab(Str::studly($short));
+                $setting = $cooperationSettings->where('short', $short)->first();
+                $colClass = $type === 'input' ? 'col-md-4' : 'col-xs-12';
+            @endphp
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'withInputSource' => false,
+                'label' => __("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.label") . '<small><br>' . __("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.help") . '</small>',
+                'class' => 'w-full',
+                'inputGroupClass' => $type === 'input' ? 'lg:w-1/2' : '',
+                'id' => $kebabShort,
+                'inputName' => "cooperation_settings.{$short}",
+            ])
+                @switch($type)
+                    @case('input')
+                        <input id="{{$kebabShort}}" type="text"
+                               value="{{old("cooperation_settings.{$short}", $setting?->value)}}"
+                               class="form-input"
+                               placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
+                               name="cooperation_settings[{{$short}}]">
+                        @break
+                    @case('textarea')
+                        <textarea id="{{$kebabShort}}" type="text"
+                                  class="form-input h-64"
+                                  placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
+                                  name="cooperation_settings[{{$short}}]"
+                        >{{old("cooperation_settings.{$short}", $setting?->value)}}</textarea>
+                        @break
+                @endswitch
+            @endcomponent
+        @endforeach
+
+        <div class="w-full mt-5">
+            <button type="submit" class="btn btn-green">
+                @lang('default.buttons.update')
+            </button>
         </div>
-
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-sm-12">
-                    @php
-                        $action = isset($cooperationToManage) && $cooperationToManage instanceof \App\Models\Cooperation
-                            ? route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.settings.store', compact('cooperation', 'cooperationToManage'))
-                            : route('cooperation.admin.cooperation.cooperation-admin.settings.store');
-                    @endphp
-
-                    <form action="{{ $action }}"
-                          enctype="multipart/form-data" method="post">
-                        @csrf
-                        <div class="row">
-                            @foreach(MediaHelper::getFillableTagsForClass(\App\Models\Cooperation::class) as $tag)
-                                <div class="col-md-4">
-                                    <label for="file-{{ $tag }}">
-                                        @lang("cooperation/admin/cooperation/cooperation-admin/settings.index.{$tag}")
-                                    </label>
-                                    <input name="medias[{{ $tag }}]" id="file-{{ $tag }}" type="file"/>
-
-                                    @if(($image = $cooperation->firstMedia($tag)) instanceof \App\Models\Media)
-                                        <input type="hidden" name="medias[{{ $tag }}_current]" value="{{ $image->id }}"
-                                               id="current-{{ $tag }}">
-                                        <div style="display: flex; align-items: center;">
-                                            <span class="label label-primary">
-                                                @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
-                                                {{$image->filename}}
-                                            </span>
-                                            <span class="text-danger"
-                                                  style="cursor: pointer; font-weight: bold; margin-left: 0.5rem;"
-                                                  onclick="let currentImage = document.getElementById('current-{{ $tag }}'); currentImage.value = null; currentImage.nextElementSibling.style.display = 'none';">
-                                                X
-                                            </span>
-                                        </div>
-                                    @endif
-
-                                    @if($errors->has("medias.{$tag}"))
-                                        {{$errors->first("medias.{$tag}")}}
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="row" style="margin-top: 1rem;">
-                            @foreach(CooperationSettingHelper::getAvailableSettings() as $short => $type)
-                                @php
-                                    $kebabShort = Str::kebab(Str::studly($short));
-                                    $setting = $cooperationSettings->where('short', $short)->first();
-                                    $colClass = $type === 'input' ? 'col-md-4' : 'col-xs-12';
-                                @endphp
-                                <div class="{{ $colClass }}">
-                                    @component('layouts.parts.components.form-group', [
-                                        'input_name' => "cooperation_settings.{$short}",
-                                    ])
-                                        <label for="{{$kebabShort}}">
-                                            @lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.label")
-                                        </label>
-                                        <small>
-                                            <br>
-                                            @lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.help")
-                                        </small>
-                                        @switch($type)
-                                            @case('input')
-                                                <input id="{{$kebabShort}}" type="text"
-                                                       value="{{old("cooperation_settings.{$short}", $setting?->value)}}"
-                                                       class="form-control"
-                                                       placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
-                                                       name="cooperation_settings[{{$short}}]">
-                                                @break
-                                            @case('textarea')
-                                                <textarea id="{{$kebabShort}}" type="text"
-                                                       class="form-control" rows="10"
-                                                       placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
-                                                       name="cooperation_settings[{{$short}}]"
-                                                >{{old("cooperation_settings.{$short}", $setting?->value)}}</textarea>
-                                                @break
-                                        @endswitch
-                                    @endcomponent
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="row mt-20">
-                            <div class="col-md-12">
-                                <button type="submit" class="btn btn-default">
-                                    @lang('default.buttons.update')
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    </form>
 @endsection
 
 @push('js')

@@ -6,7 +6,6 @@ return [
     ],
     'index' => [
         'header' => 'Externe koppelingen',
-        'header-button' => 'Koppeling aanmaken',
         'table' => [
             'actions' => 'Acties',
             'edit' => 'Bewerken',
@@ -19,6 +18,9 @@ return [
             'submit' => 'Koppeling aanmaken'
         ]
     ],
+    'store' => [
+        'success' => 'Koppeling toegevoegd, er kunnen nu API tokens worden aangemaakt.'
+    ],
     'edit' => [
         'header' => 'Externe koppeling toevoegen',
         'form' => [
@@ -28,7 +30,8 @@ return [
     'update' => [
         'success' => 'Koppeling bijgewerkt'
     ],
-    'store' => [
-        'success' => 'Koppeling toegevoegd, er kunnen nu API tokens worden aangemaakt.'
-    ],
+    'destroy' => [
+        'warning' => 'Weet je zeker dat je deze maatregel wilt verwijderen?',
+        'success' => 'Maatregel succesvol verwijderd',
+    ]
 ];

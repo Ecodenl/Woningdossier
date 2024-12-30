@@ -25,12 +25,12 @@ class SettingsController extends Controller
     public function store(SettingsFormRequest $request, Cooperation $cooperation, Cooperation $cooperationToManage): RedirectResponse
     {
         $cooperationSettings = $request->validated()['cooperation_settings'];
-        CooperationSettingHelper::syncSettings($cooperation, $cooperationSettings);
+        CooperationSettingHelper::syncSettings($cooperationToManage, $cooperationSettings);
 
         $tags = MediaHelper::getFillableTagsForClass(Cooperation::class);
         foreach ($tags as $tag) {
             $file = $request->file('medias.' . $tag);
-            $media = $cooperation->firstMedia($tag);
+            $media = $cooperationToManage->firstMedia($tag);
             if ($file instanceof UploadedFile) {
                 // Check if media for this tag already exists
                 if ($media instanceof Media) {
@@ -42,10 +42,10 @@ class SettingsController extends Controller
                 // Upload the new media, replace file if it already exists
                 $media = MediaUploader::fromSource($file)
                     ->onDuplicateIncrement()
-                    ->toDestination('uploads', $cooperation->slug)
+                    ->toDestination('uploads', $cooperationToManage->slug)
                     ->upload();
 
-                $cooperation->syncMedia($media, [$tag]);
+                $cooperationToManage->syncMedia($media, [$tag]);
             } else {
                 // Check if user has removed file.
                 if ($media instanceof Media && is_null($request->input("medias.{$tag}_current"))) {

@@ -7,6 +7,7 @@ use App\Jobs\GenerateExampleBuildingCsv;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
+use App\Models\InputSource;
 use App\Services\FileTypeService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
@@ -15,10 +16,10 @@ class CsvExport extends Component
 {
     use AuthorizesRequests;
 
-    public $cooperation;
-    public $fileType;
-    public $fileStorage;
-    public $inputSource;
+    public Cooperation $cooperation;
+    public FileType $fileType;
+    public ?FileStorage $fileStorage;
+    public InputSource $inputSource;
 
     public function mount(Cooperation $cooperation)
     {

@@ -1,12 +1,10 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/cooperation-preset-contents.create.title'),
+])
 
 @section('content')
-    <section class="section">
-        <div class="container">
-            @php
-                $view = "cooperation.admin.super-admin.cooperation-presets.cooperation-preset-contents.{$cooperationPreset->short}.form";
-            @endphp
-            <livewire:dynamic-component :component="$view" :cooperation-preset="$cooperationPreset"/>
-        </div>
-    </section>
+    @php
+        $view = "cooperation.admin.super-admin.cooperation-presets.cooperation-preset-contents.{$cooperationPreset->short}.form";
+    @endphp
+    <livewire:dynamic-component :component="$view" :cooperation-preset="$cooperationPreset"/>
 @endsection

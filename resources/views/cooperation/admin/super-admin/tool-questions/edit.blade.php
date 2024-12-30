@@ -1,47 +1,50 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/tool-questions.edit.header')
+])
 
 @section('content')
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/super-admin/tool-questions.edit.header')
-        </div>
+    <form class="flex flex-wrap w-full"
+          action="{{route('cooperation.admin.super-admin.tool-questions.update', compact('toolQuestion'))}}"
+          method="POST">
+        @csrf
+        @method('PUT')
 
-        <div class="panel-body">
-            <form action="{{route('cooperation.admin.super-admin.tool-questions.update', compact('toolQuestion'))}}" method="post">
-                <div class="form-group">
-                    <a href="{{route('cooperation.admin.super-admin.tool-questions.index')}}"
-                       class="btn btn-default">
-                        <i class="glyphicon glyphicon-chevron-left"></i>
-                        @lang('woningdossier.cooperation.tool.back-to-overview')
-                    </a>
+        @foreach($toolQuestion->getTranslations('name') as $locale => $translation)
+            @component('cooperation.frontend.layouts.components.form-group', [
+               'withInputSource' => false,
+               'id' => "tool-questions-name",
+               'label' => $loop->first ? __('cooperation/admin/super-admin/tool-questions.edit.form.name') : '',
+               'class' => 'w-full -mt-5',
+               'inputName' => 'tool_questions.name',
+            ])
+                <div class="input-group-prepend">
+                    {{ $locale }}
                 </div>
-                @csrf
-                @method('put')
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            <label for="tool-questions">@lang('cooperation/admin/super-admin/tool-questions.edit.form.name')</label>
-                            @foreach($toolQuestion->getTranslations('name') as $locale => $translation)
-                                <input class="form-control" type="text" name="tool_questions[name][{{$locale}}]" value="{{old("tool_questions.name.{$locale}", $translation)}}">
-                            @endforeach
-                        </div>
-                    </div>
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            <label for="tool-questions">@lang('cooperation/admin/super-admin/tool-questions.edit.form.help-text')</label>
-                            @foreach($toolQuestion->getTranslations('help_text') as $locale => $translation)
-                                <textarea class="form-control"  name="tool_questions[help_text][{{$locale}}]">{{old("tool_questions.help_text.{$locale}", $translation)}}</textarea>
-                            @endforeach
-                        </div>
-                    </div>
+                <input class="form-input" type="text" name="tool_questions[name][{{$locale}}]"
+                       value="{{old("tool_questions.name.{$locale}", $translation)}}">
+            @endcomponent
+        @endforeach
 
+        @foreach($toolQuestion->getTranslations('help_text') as $locale => $translation)
+            @component('cooperation.frontend.layouts.components.form-group', [
+               'withInputSource' => false,
+               'id' => "tool-questions-help-text",
+               'label' => $loop->first ? __('cooperation/admin/super-admin/tool-questions.edit.form.help-text') : '',
+               'class' => 'w-full ' . (! $loop->first ? '-mt-5' : ''),
+               'inputName' => 'tool_questions.help_text',
+            ])
+                <div class="input-group-prepend">
+                    {{ $locale }}
                 </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <button class="btn btn-primary">@lang('cooperation/admin/super-admin/tool-questions.edit.form.submit')</button>
-                    </div>
-                </div>
-            </form>
+                <textarea class="form-input" name="tool_questions[help_text][{{$locale}}]"
+                >{{old("tool_questions.help_text.{$locale}", $translation)}}</textarea>
+            @endcomponent
+        @endforeach
+
+        <div class="w-full mt-5">
+            <button class="btn btn-green">
+                @lang('cooperation/admin/super-admin/tool-questions.edit.form.submit')
+            </button>
         </div>
-    </div>
+    </form>
 @endsection

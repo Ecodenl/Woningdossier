@@ -129,7 +129,7 @@
                 @lang('cooperation/admin/buildings.edit.address-info-title')
             </h3>
 
-            <div class="w-full sm:w-8/12" x-show="! alreadyMember">
+            <div class="w-full" x-show="! alreadyMember">
                 @include('cooperation.layouts.address', [
                     'withLabels' => true,
                     'checks' => [

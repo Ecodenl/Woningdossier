@@ -181,7 +181,7 @@
                     @foreach($roles as $role)
                         @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
                             <option value="{{$role->id}}"
-                                    @cannot('delete', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true), $building->user]) readonly @endcannot
+                                    @cannot('delete', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true), $user]) readonly @endcannot
                                     @if($user->hasRole($role)) selected @endif
                             >
                                 {{$role->human_readable_name}}
@@ -333,15 +333,15 @@
             @endif
 
             <div id="2fa" x-bind="container" data-tab="2fa" class="p-4">
-                @if($building->user->account->hasEnabledTwoFactorAuthentication())
+                @if($user->account->hasEnabledTwoFactorAuthentication())
                     @component('cooperation.layouts.components.alert', ['color' => 'green', 'dismissible' => false])
                         @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.title')
                     @endcomponent
 
-                    @can('disableTwoFactor', $building->user->account)
+                    @can('disableTwoFactor', $user->account)
                         <form action="{{route('cooperation.admin.cooperation.accounts.disable-2fa')}}" method="POST">
                             @csrf
-                            <input type="hidden" name="accounts[id]" value="{{$building->user->account_id}}">
+                            <input type="hidden" name="accounts[id]" value="{{$user->account_id}}">
                             <button type="submit" class="btn btn-red">
                                 @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.button')
                             </button>
@@ -479,7 +479,7 @@
                     currentRoles.forEach((value) => removedOption = ! removedOption && ! currentOptions.includes(value) ? value : removedOption);
 
                     if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {
-                        fetchRequest('  {{ route('cooperation.admin.roles.remove-role') }}', {
+                        fetchRequest('{{ route('cooperation.admin.roles.remove-role') }}', {
                             role_id: removedOption,
                             user_id: userId,
                         });

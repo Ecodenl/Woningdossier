@@ -1,5 +1,5 @@
 {{-- Nav bar --}}
-<div class="flex flex-wrap flex-row justify-between items-center w-full bg-white h-12 px-5 xl:px-20 relative z-150 shadow-lg">
+<div class="flex flex-wrap flex-row justify-between items-center w-full bg-white h-12 px-5 xl:px-8 relative z-150 shadow-lg">
     @php $building = \App\Helpers\HoomdossierSession::getBuilding(true); @endphp
     <div class="flex flex-row flex-wrap justify-between items-center space-x-4">
         <a href="{{ route('cooperation.admin.index') }}">

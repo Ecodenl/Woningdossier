@@ -39,12 +39,12 @@
                         <td>
                             <a title="Kopiëren"
                                href="{{ route('cooperation.admin.example-buildings.copy', compact('exampleBuilding')) }}"
-                               class="btn btn-outline-yellow inline-flex items-center ">
+                               class="btn btn-outline-yellow inline-flex items-center">
                                 <i class="icon-md icon-document"></i>
                             </a>
                             <a title="Bewerken"
                                href="{{ route('cooperation.admin.example-buildings.edit', compact('exampleBuilding')) }}"
-                               class="btn btn-outline-blue inline-flex items-center ">
+                               class="btn btn-outline-blue inline-flex items-center">
                                 <i class="icon-md icon-tools"></i>
                             </a>
                             <form style="display:inline;" method="POST"

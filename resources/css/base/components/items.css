@@ -31,7 +31,7 @@
 }
 
 .modal-container .modal.confirm-modal {
-    @apply w-9/10 md:3/4 xl:w-1/2 mt-16;
+    @apply w-9/10 md:w-3/4 xl:w-1/2 mt-16;
 }
 
 /* Drag and drop cards */

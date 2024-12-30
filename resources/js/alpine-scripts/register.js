@@ -32,25 +32,19 @@ export default (emailUrl) => ({
             }
         }
 
-        let context = this;
-        performRequest({
-            'url': url,
-            'done': function (request) {
-                context.alreadyMember = false;
-                context.emailExists = false;
+        if (url) {
+            fetchRequest(url).then((response) => response.json()).then((response) => {
+                this.alreadyMember = false;
+                this.emailExists = false;
 
-                let response = request.response;
-
-                if (request.status === 200) {
-                    if (response.email_exists) {
-                        if (response.user_is_already_member_of_cooperation) {
-                            context.alreadyMember = true;
-                        } else {
-                            context.emailExists = true;
-                        }
+                if (response.email_exists) {
+                    if (response.user_is_already_member_of_cooperation) {
+                        this.alreadyMember = true;
+                    } else {
+                        this.emailExists = true;
                     }
                 }
-            }
-        });
+            });
+        }
     }
 });

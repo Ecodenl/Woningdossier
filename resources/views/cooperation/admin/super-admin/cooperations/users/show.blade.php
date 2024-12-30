@@ -54,15 +54,9 @@
         const userId = @js($user->id);
         const cooperationId = @js($cooperationToManage->id);
 
-        function fetchRequest(url, body, redirect) {
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            }).then((response) => redirect ? location.href = redirect : location.reload());
+        function performFetch(url, body, redirect) {
+            fetchRequest(url, 'POST', body)
+                .then((response) => redirect ? location.href = redirect : location.reload());
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -79,7 +73,7 @@
                     currentRoles.forEach((value) => removedOption = ! removedOption && ! currentOptions.includes(value) ? value : removedOption);
 
                     if (confirm('@lang('woningdossier.cooperation.admin.users.show.remove-role')')) {
-                        fetchRequest('{{ route('cooperation.admin.roles.remove-role') }}', {
+                        performFetch('{{ route('cooperation.admin.roles.remove-role') }}', {
                             role_id: removedOption,
                             user_id: userId,
                             cooperation_id: cooperationId
@@ -92,7 +86,7 @@
                     Array.from(this.selectedOptions).forEach((option) => newOption = ! newOption && ! currentRoles.includes(option.value) ? option.value : newOption);
 
                     if (confirm('@lang('woningdossier.cooperation.admin.users.show.give-role')')) {
-                        fetchRequest('{{ route('cooperation.admin.roles.assign-role') }}', {
+                        performFetch('{{ route('cooperation.admin.roles.assign-role') }}', {
                             role_id: newOption,
                             user_id: userId,
                         });

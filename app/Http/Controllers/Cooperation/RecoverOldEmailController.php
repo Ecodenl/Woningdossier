@@ -7,7 +7,7 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Cooperation;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class RecoverOldEmailController extends Controller
 {
@@ -18,9 +18,9 @@ class RecoverOldEmailController extends Controller
      */
     public function recover(Cooperation $cooperation, $token): RedirectResponse
     {
-        if (\Auth::check()) {
+        if (Auth::check()) {
             HoomdossierSession::destroy();
-            \Auth::logout();
+            Auth::logout();
         }
 
         // get the user that wants his email to get recovered

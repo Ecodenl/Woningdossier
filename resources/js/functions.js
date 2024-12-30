@@ -37,34 +37,25 @@ window.triggerCustomEvent = function (eventName, params = {}) {
 }
 
 /**
- * Simple wrapper for Http requests.
- * Options:
- * - url: URL object, required.
- * - done: Callback when request is done, retrieves request object, optional.
- * @param options
+ * Simple wrapper for repetitive fetch requests.
+ * Returns the promise for simple `.then` chaining.
  */
-window.performRequest = function (options = {}) {
-    // TODO: Deprecate to Fetch
-    if (! options instanceof Object) {
-        options = {};
+window.fetchRequest = function (url, method = 'GET', body = {}) {
+    const config = {
+        method: method,
+        headers: {
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
     }
 
-    let url = options.url || null;
-
-    if ((window.XMLHttpRequest || window.ActiveXObject) && url instanceof URL) {
-        let request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP");
-        request.onreadystatechange = function () {
-            // Ajax finished and ready
-            if (request.readyState === window.XMLHttpRequest.DONE && options.done) {
-                options.done(request);
-            }
-        };
-
-        request.open(options.method || 'GET', url.toString());
-        request.setRequestHeader('Accept', 'application/json');
-        request.responseType = 'json';
-        request.send();
+    if (Object.keys(body).length > 0 && method !== 'GET') {
+        config['body'] = JSON.stringify(body);
     }
+    console.log(config)
+
+    return fetch(url, config);
 }
 
 window.searchValue = function (value, search) {

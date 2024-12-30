@@ -370,22 +370,16 @@
         const buildingOwnerId = @js($building->id);
         const userId = @js($user->id);
 
-        function fetchRequest(url, body, redirect) {
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            }).then((response) => redirect ? location.href = redirect : location.reload());
+        function performFetch(url, body, redirect) {
+            fetchRequest(url, 'POST', body)
+                .then((response) => redirect ? location.href = redirect : location.reload());
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             // delete the current user
             document.getElementById('delete-user')?.addEventListener('click', function () {
                 if (confirm('@lang('cooperation/admin/buildings.show.delete-user')')) {
-                    fetchRequest('{{route('cooperation.admin.users.destroy')}}', {
+                    performFetch('{{route('cooperation.admin.users.destroy')}}', {
                         user_id: userId,
                         _method: 'DELETE'
                     }, '{{route('cooperation.admin.users.index')}}');
@@ -401,7 +395,7 @@
             // Change building status
             document.getElementById('building-status').addEventListener('change', function () {
                 if (confirm('@lang('cooperation/admin/buildings.show.set-status')')) {
-                    fetchRequest('{{ route('cooperation.admin.building-status.set-status') }}', {
+                    performFetch('{{ route('cooperation.admin.building-status.set-status') }}', {
                         building_id: buildingOwnerId,
                         status_id: this.value,
                     });
@@ -424,7 +418,7 @@
                     }
 
                     if (confirm(confirmMessage)) {
-                        fetchRequest('{{ route('cooperation.admin.building-status.set-appointment-date') }}', {
+                        performFetch('{{ route('cooperation.admin.building-status.set-appointment-date') }}', {
                             building_id: buildingOwnerId,
                             appointment_date: date,
                         });
@@ -446,7 +440,7 @@
                     associatedCoaches.forEach((value) => removedOption = ! removedOption && ! currentOptions.includes(value) ? value : removedOption);
 
                     if (confirm('@lang('cooperation/admin/buildings.show.revoke-access')')) {
-                        fetchRequest('{{ route('cooperation.messages.participants.revoke-access') }}', {
+                        performFetch('{{ route('cooperation.messages.participants.revoke-access') }}', {
                             building_owner_id: buildingOwnerId,
                             user_id: removedOption,
                         });
@@ -458,7 +452,7 @@
                     Array.from(this.selectedOptions).forEach((option) => newOption = ! newOption && ! associatedCoaches.includes(option.value) ? option.value : newOption);
 
                     if (confirm('@lang('cooperation/admin/buildings.show.add-with-building-access')')) {
-                        fetchRequest('{{ route('cooperation.messages.participants.add-with-building-access') }}', {
+                        performFetch('{{ route('cooperation.messages.participants.add-with-building-access') }}', {
                             building_id: buildingOwnerId,
                             user_id: newOption,
                         });
@@ -479,7 +473,7 @@
                     currentRoles.forEach((value) => removedOption = ! removedOption && ! currentOptions.includes(value) ? value : removedOption);
 
                     if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {
-                        fetchRequest('{{ route('cooperation.admin.roles.remove-role') }}', {
+                        performFetch('{{ route('cooperation.admin.roles.remove-role') }}', {
                             role_id: removedOption,
                             user_id: userId,
                         });
@@ -491,7 +485,7 @@
                     Array.from(this.selectedOptions).forEach((option) => newOption = ! newOption && ! currentRoles.includes(option.value) ? option.value : newOption);
 
                     if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {
-                        fetchRequest('{{ route('cooperation.admin.roles.assign-role') }}', {
+                        performFetch('{{ route('cooperation.admin.roles.assign-role') }}', {
                             role_id: newOption,
                             user_id: userId,
                         });

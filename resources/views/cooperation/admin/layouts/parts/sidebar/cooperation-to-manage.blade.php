@@ -1,11 +1,13 @@
 @slot('breadcrumbsSlot')
     @if(! empty($breadcrumbs))
-        <div class="col-md-12">
-            <ol class="breadcrumb">
+        <div class="w-full mb-4 py-2 px-4 bg-blue/10 rounded-lg">
+            <ol class="breadcrumbs">
                 @foreach($breadcrumbs as $breadcrumb)
-                    <li {{Route::currentRouteName() == $breadcrumb['route'] ? 'class="active"' : ''}}>
+                    <li class="{{Route::currentRouteName() == $breadcrumb['route'] ? 'active' : ''}}">
                         @if(Route::currentRouteName() == $breadcrumb['route'])
-                            <a href="{{$breadcrumb['url']}}">{{$breadcrumb['name']}}</a>
+                            <a class="in-text" href="{{$breadcrumb['url']}}">
+                                {{$breadcrumb['name']}}
+                            </a>
                         @else
                             {{$breadcrumb['name']}}
                         @endif

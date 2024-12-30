@@ -26,6 +26,14 @@
     @apply px-4 pb-6 break-words;
 }
 
+.modal-container:has(.modal.confirm-modal) {
+    @apply items-start;
+}
+
+.modal-container .modal.confirm-modal {
+    @apply w-9/10 md:3/4 xl:w-1/2 mt-16;
+}
+
 /* Drag and drop cards */
 .card-wrapper {
     @apply rounded-lg bg-blue-100 p-1 lg:p-3 space-y-3;

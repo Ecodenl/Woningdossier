@@ -106,7 +106,6 @@
                                     @endcomponent
                                 @endif
                             </div>
-
                         </div>
                     @endforeach
                 </div>

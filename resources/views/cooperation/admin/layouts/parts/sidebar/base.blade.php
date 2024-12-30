@@ -1,9 +1,9 @@
 <div id="sidebar" class="w-full mb-4 xl:w-3/20 xl:mb-0">
-    <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-lg" x-data="{open: true}">
-        @if(! empty($breadcrumbsSlot))
-            {{ $breadcrumbsSlot }}
-        @endif
+    @if(! empty($breadcrumbsSlot))
+        {{ $breadcrumbsSlot }}
+    @endif
 
+    <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-lg" x-data="{open: true}">
         <div class="flex items-center cursor-pointer p-2" x-on:click="open = !open">
             <h3 class="heading-5 inline-block mr-2 select-none">
                 {{ $sidebarTitle }}

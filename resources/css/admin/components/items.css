@@ -25,6 +25,23 @@
     @apply text-white;
 }
 
+#sidebar .breadcrumbs {
+    @apply list-none p-0;
+}
+
+#sidebar .breadcrumbs > li {
+    @apply text-sm inline;
+}
+
+#sidebar .breadcrumbs > li a {
+    @apply text-sm;
+}
+
+#sidebar .breadcrumbs > li + li::before {
+    @apply px-1 text-purple text-sm;
+    content: '/ ';
+}
+
 /* Data table */
 .dt-scroll-body thead tr {
     /* Fix scrollX duplicate header */

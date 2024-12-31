@@ -2,10 +2,11 @@
 services:
     laravel.test:
         build:
-            context: docker/8.3
+            context: ./vendor/laravel/sail/runtimes/8.3
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
+                NODE_VERSION: 22
         image: sail-8.3/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'

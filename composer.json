@@ -19,7 +19,7 @@
         "ecodenl/lvbag-php-wrapper": "^2.0",
         "guzzlehttp/guzzle": "^7.8",
         "laravel/fortify": "^1.20",
-        "laravel/framework": "^11.29",
+        "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.3",

@@ -243,7 +243,7 @@ class UserService
         $data['address']['extension'] ??= null;
         $buildingData = $data['address'];
 
-        // Create the building for the user
+        // Create the building for the user.
         $building = Building::create($buildingData);
         $building->user()->associate($user)->save();
 
@@ -267,6 +267,7 @@ class UserService
         AttachEnergyLabel::dispatch($building);
 
         app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
+        // Attach cooperation.
         $user->cooperation()->associate(
             $cooperation
         )->save();
@@ -274,6 +275,9 @@ class UserService
         $user->assignRole($roles);
 
         app(BuildingStatusService::class)->forBuilding($building)->setStatus('active');
+
+        // Don't want to keep anything eager loaded.
+        $user->unsetRelations();
 
         return $user;
     }

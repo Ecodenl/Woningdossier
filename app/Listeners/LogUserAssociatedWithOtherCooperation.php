@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\Queue;
 use App\Models\Log;
 use App\Models\User;
@@ -13,7 +14,7 @@ class LogUserAssociatedWithOtherCooperation implements ShouldQueue
     /**
      * Handle the event.
      */
-    public function handle(object $event): void
+    public function handle(UserAssociatedWithOtherCooperation $event): void
     {
         Log::create([
             'loggable_type' => User::class,

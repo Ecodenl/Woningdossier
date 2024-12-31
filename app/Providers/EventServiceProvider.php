@@ -84,10 +84,6 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             LogRegisteredUserListener::class,
         ],
-        UserAssociatedWithOtherCooperation::class => [
-            LogUserAssociatedWithOtherCooperation::class,
-            SendUserAssociatedWithCooperationMail::class,
-        ],
         FillingToolForUserEvent::class => [
             FillingToolForUserListener::class,
             LogFillingToolForUserListener::class,

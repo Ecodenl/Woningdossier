@@ -24,7 +24,7 @@ class CurrentRoleMiddleware
 
         // if no role is set, logout and invalidate the session.
         if (empty(HoomdossierSession::getRole())) {
-            Log::debug('Account id: '.Hoomdossier::account()->id.' is logged in but has no role in his session');
+            Log::debug('Account id: ' . Hoomdossier::account()->id . ' is logged in but has no role in his session.');
             Auth::logout();
             session()->invalidate();
 

@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 
 class Form extends Scannable
 {
@@ -39,7 +41,7 @@ class Form extends Scannable
         'save',
     ];
 
-    public function mount(Step $step, Cooperation $cooperation)
+    public function mount(Step $step, Cooperation $cooperation): void
     {
         $this->subSteps = $step->subSteps()->with([
             'toolQuestions' => function ($query) {
@@ -52,7 +54,7 @@ class Form extends Scannable
         $this->performCalculations();
     }
 
-    public function render()
+    public function render(): View
     {
         if ($this->loading) {
             $this->dispatch('input-updated');
@@ -60,7 +62,8 @@ class Form extends Scannable
         return view('livewire.cooperation.frontend.tool.expert-scan.form');
     }
 
-    public function getSubSteppablesProperty()
+    #[Computed]
+    public function subSteppables(): Collection
     {
         $subSteppables = collect();
         foreach ($this->subSteps as $subStep) {
@@ -72,7 +75,8 @@ class Form extends Scannable
         return $subSteppables;
     }
 
-    public function getToolQuestionsProperty()
+    #[Computed]
+    public function toolQuestions()
     {
         $toolQuestions = collect();
         foreach ($this->subSteps as $subStep) {

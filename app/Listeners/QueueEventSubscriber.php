@@ -2,7 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Jobs\PdfReport;
 use App\Services\Models\NotificationService;
 use App\Traits\Queue\HasNotifications;
 use Illuminate\Queue\Events\JobProcessed;
@@ -10,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class QueueEventSubscriber
 {
-    public function deactivateNotification($event)
+    public function deactivateNotification(JobProcessed $event)
     {
         $payload = $event->job->payload();
         $command = unserialize($payload['data']['command']);
@@ -41,4 +40,3 @@ class QueueEventSubscriber
         ];
     }
 }
-

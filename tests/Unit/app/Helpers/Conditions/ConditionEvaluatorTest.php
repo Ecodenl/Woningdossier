@@ -15,51 +15,43 @@ final class ConditionEvaluatorTest extends TestCase
     {
         $answers   = $this->getTestCollection();
         $evaluator = ConditionEvaluator::init();
-        $evaluated = $evaluator->evaluateCollection(
-            $this->simpleAnd(),
-            $answers
+        $evaluated = $evaluator->setAnswers($answers)->evaluate(
+            $this->simpleAnd()
         );
         $this->assertTrue($evaluated);
 
-        $evaluated = $evaluator->evaluateCollection(
-            $this->simpleAnd(false),
-            $answers
+        $evaluated = $evaluator->setAnswers($answers)->evaluate(
+            $this->simpleAnd(false)
         );
         $this->assertFalse($evaluated);
 
-        $evaluated = $evaluator->evaluateCollection(
-            $this->complexAnd(true, false),
-            $answers
+        $evaluated = $evaluator->setAnswers($answers)->evaluate(
+            $this->complexAnd(true, false)
         );
         $this->assertTrue($evaluated);
 
-        $evaluated = $evaluator->evaluateCollection(
-            $this->complexAnd(true, true),
-            $answers
+        $evaluated = $evaluator->setAnswers($answers)->evaluate(
+            $this->complexAnd(true, true)
         );
         $this->assertTrue($evaluated);
 
-        $evaluated = $evaluator->evaluateCollection(
-            $this->complexAnd(false, true),
-            $answers
+        $evaluated = $evaluator->setAnswers($answers)->evaluate(
+            $this->complexAnd(false, true)
         );
         $this->assertTrue($evaluated);
 
-        $evaluated = $evaluator->evaluateCollection(
-            $this->complexAnd(false, false),
-            $answers
+        $evaluated = $evaluator->setAnswers($answers)->evaluate(
+            $this->complexAnd(false, false)
         );
         $this->assertFalse($evaluated);
 
-        $evaluated = $evaluator->evaluateCollection(
-            $this->simpleOr(),
-            $answers
+        $evaluated = $evaluator->setAnswers($answers)->evaluate(
+            $this->simpleOr()
         );
         $this->assertTrue($evaluated);
 
-        $evaluated = $evaluator->evaluateCollection(
-            $this->simpleOr(false),
-            $answers
+        $evaluated = $evaluator->setAnswers($answers)->evaluate(
+            $this->simpleOr(false)
         );
         $this->assertFalse($evaluated);
     }
@@ -112,10 +104,9 @@ final class ConditionEvaluatorTest extends TestCase
 
         $evaluator = ConditionEvaluator::init();
 
-        foreach($answers as $info) {
-            $evaluated = $evaluator->evaluateCollection(
-                $this->combineAndOr(),
-                $info[0],
+        foreach ($answers as $info) {
+            $evaluated = $evaluator->setAnswers($info[0])->evaluate(
+                $this->combineAndOr()
             );
             $this->assertEquals($info[1], $evaluated);
         }

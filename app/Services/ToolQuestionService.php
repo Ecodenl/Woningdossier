@@ -262,7 +262,7 @@ class ToolQuestionService
 
         $toolQuestionsToUnset = [];
         foreach ($conditionalCustomValues as $conditionalCustomValue) {
-            if (! $evaluator->evaluateCollection($conditionalCustomValue->conditions, $answers)) {
+            if (! $evaluator->setAnswers($answers)->evaluate($conditionalCustomValue->conditions)) {
                 $answer = $this->building->getAnswer($this->currentInputSource, $conditionalCustomValue->toolQuestion);
 
                 // TODO: Expand this if there are single-value answers
@@ -286,7 +286,7 @@ class ToolQuestionService
         // should be reset
 
         //foreach ($toolQuestionValuables as $conditionalValuable) {
-        //    if (! $evaluator->evaluateCollection($conditionalValuable->conditions, $answers)) {
+        //    if (! $evaluator->setAnswers($answers)->evaluate($conditionalValuable->conditions)) {
         //        $answer = $this->building->getAnswer($this->currentInputSource, $conditionalValuable->toolQuestion);
         //
         //        // TODO: Expand this if there are multi-value answers

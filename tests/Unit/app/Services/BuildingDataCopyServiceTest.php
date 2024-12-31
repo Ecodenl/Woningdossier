@@ -6,19 +6,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Services\BuildingDataCopyService;
-use Tests\CreatesApplication;
 use Tests\TestCase;
 
 final class BuildingDataCopyServiceTest extends TestCase
 {
-    use CreatesApplication;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
-
     public static function makeTargetsValuesProvider(): array
     {
         return [

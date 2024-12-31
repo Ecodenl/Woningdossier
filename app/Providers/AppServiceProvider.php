@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
+use App\Listeners\EconobisEventSubscriber;
+use App\Listeners\QueueEventSubscriber;
+use App\Listeners\UserEventSubscriber;
 use App\Models\Cooperation;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use App\Policies\UserPolicy;
 use App\Policies\RolePolicy;
@@ -98,6 +102,7 @@ class AppServiceProvider extends ServiceProvider
         Translatable::fallback(App::getFallbackLocale());
 
         $this->bootAuth();
+        $this->attachSubscribers();
     }
 
     /**
@@ -129,5 +134,12 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::define('send-user-information-to-econobis', [UserPolicy::class, 'sendUserInformationToEconobis']);
         Gate::define('editAny', [RolePolicy::class, 'editAny']);
+    }
+
+    public function attachSubscribers(): void
+    {
+        Event::subscribe(UserEventSubscriber::class);
+        Event::subscribe(QueueEventSubscriber::class);
+        Event::subscribe(EconobisEventSubscriber::class);
     }
 }

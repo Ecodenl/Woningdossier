@@ -46,14 +46,14 @@ class EconobisEventSubscriber
         }
     }
 
-    public function sendScanStatusToEconobis($event)
+    public function sendScanStatusToEconobis(BuildingCompletedHisFirstSubStep|UserResetHisBuilding $event)
     {
         if ($this->canUserSendInformationToEconobis($event)) {
             SendScanStatusToEconobis::dispatch($event->building);
         }
     }
 
-    public function sendBuildingFilledInAnswersToEconobis($event)
+    public function sendBuildingFilledInAnswersToEconobis(UserResetHisBuilding $event)
     {
         if ($this->canUserSendInformationToEconobis($event)) {
             SendBuildingFilledInAnswersToEconobis::dispatch($event->building);

@@ -17,9 +17,13 @@ use App\Models\ToolQuestion;
 use App\Services\Models\BuildingService;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
+use Illuminate\Routing\Redirector;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 
 class Form extends Scannable
 {
@@ -27,7 +31,7 @@ class Form extends Scannable
     public Step $step;
     public SubStep $subStep;
 
-    public function mount(Scan $scan, Step $step, SubStep $subStep)
+    public function mount(Scan $scan, Step $step, SubStep $subStep): void
     {
         // Only load in properties that are not order inclusive
         $subStep->load([
@@ -40,23 +44,25 @@ class Form extends Scannable
         $this->build();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.cooperation.frontend.tool.simple-scan.form');
     }
 
-    public function getSubSteppablesProperty()
+    #[Computed]
+    public function subSteppables(): Collection
     {
         return $this->subStep->subSteppables()->orderBy('order')->with(['subSteppable', 'toolQuestionType'])->get();
     }
 
-    public function getToolQuestionsProperty()
+    #[Computed]
+    public function toolQuestions(): Collection
     {
         // Eager loaded in hydration
         return $this->subStep->toolQuestions;
     }
 
-    public function save()
+    public function save(): Redirector
     {
         $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
             ->forStep($this->step)

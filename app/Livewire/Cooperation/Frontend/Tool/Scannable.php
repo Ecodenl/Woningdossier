@@ -13,6 +13,7 @@ use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 abstract class Scannable extends Component
@@ -35,7 +36,7 @@ abstract class Scannable extends Component
 
     public bool $dirty = false;
 
-    public function build()
+    public function build(): void
     {
         $this->cooperation = HoomdossierSession::getCooperation(true);
         $this->building = HoomdossierSession::getBuilding(true);
@@ -51,9 +52,11 @@ abstract class Scannable extends Component
         $this->evaluateToolQuestions();
     }
 
-    abstract public function getSubSteppablesProperty();
+    #[Computed]
+    abstract public function subSteppables();
 
-    abstract public function getToolQuestionsProperty();
+    #[Computed]
+    abstract public function toolQuestions();
 
     abstract public function save();
 
@@ -89,7 +92,7 @@ abstract class Scannable extends Component
         $this->dispatch('refreshAlerts', answers: $this->filledInAnswers)->to('cooperation.frontend.layouts.parts.alerts');
     }
 
-    public function updated($field, $value)
+    public function updated($field, $value): void
     {
         if (Str::contains($field, 'filledInAnswers')) {
             $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);

@@ -13,6 +13,11 @@
                     {{ session('success') }}
                 @endcomponent
             @endif
+            @if(session('warning'))
+                @component('cooperation.layouts.components.alert', ['color' => 'yellow'])
+                    {{ session('warning') }}
+                @endcomponent
+            @endif
             <form class="w-full flex flex-wrap justify-center" method="POST" id="register"
                   action="{{ route('cooperation.register') }}">
                 @csrf
@@ -22,12 +27,16 @@
                     'inputName' => 'email',
                 ])
                     <input class="form-input" type="text" name="email" value="{{ old('email') }}"
-                           placeholder="@lang('auth.register.form.email')" x-on:change="checkEmail($el)">
+                           placeholder="@lang('auth.register.form.email')"
+                           x-on:change="checkEmail($el)" x-init="if ($el.value) {checkEmail($el);}">
                     <p class="text-red w-full text-left" x-show="showEmailWarning" x-cloak>
                         @lang('auth.register.form.possible-wrong-email')
                     </p>
                     <p class="text-blue-800 w-full text-left" x-show="alreadyMember" x-cloak>
                         @lang('auth.register.form.already-member')
+                    </p>
+                    <p class="text-blue-800 w-full text-left" x-show="noBuilding" x-cloak>
+                        @lang('auth.register.form.no-building')
                     </p>
                     <p class="text-blue-800 w-full text-left" x-show="emailExists" x-cloak>
                         @lang('auth.register.form.email-exists')
@@ -37,7 +46,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
                     'inputName' => 'first_name',
-                    'attr' => 'x-show="! alreadyMember"',
+                    'attr' => 'x-show="! alreadyMember && ! noBuilding"',
                 ])
                     <input class="form-input" type="text" name="first_name" value="{{ old('first_name') }}"
                            placeholder="@lang('auth.register.form.first-name')">
@@ -46,7 +55,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
                     'inputName' => 'last_name',
-                    'attr' => 'x-show="! alreadyMember"',
+                    'attr' => 'x-show="! alreadyMember && ! noBuilding"',
                 ])
                     <input class="form-input" type="text" name="last_name" value="{{ old('last_name') }}"
                            placeholder="@lang('auth.register.form.last-name')">
@@ -61,12 +70,12 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5',
                     'inputName' => 'phone_number',
-                    'attr' => 'x-show="! alreadyMember"',
+                    'attr' => 'x-show="! alreadyMember && ! noBuilding"',
                 ])
                     <input class="form-input" type="text" name="phone_number" value="{{ old('phone_number') }}"
                            placeholder="@lang('auth.register.form.phone-number')">
                 @endcomponent
-                <div class="flex w-full flex-col" x-show="! alreadyMember && ! emailExists">
+                <div class="flex w-full flex-col" x-show="! alreadyMember && ! emailExists && ! noBuilding">
                     <div class="flex justify-start">
                         <span class="text-green text-sm">@lang('validation.custom.password.min')</span>
                     </div>
@@ -102,7 +111,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5',
                     'inputName' => 'allow_access',
-                    'attr' => 'x-show="! alreadyMember"',
+                    'attr' => 'x-show="! alreadyMember && ! noBuilding"',
                 ])
                     <div class="checkbox-wrapper mb-1">
                         <input id="allow-access" name="allow_access" type="checkbox" value="1" x-model="allowAccess">
@@ -118,7 +127,7 @@
 
                 {{-- When clicking the button, we disable it. We don't have to do anything fancy, since it won't have pointer events when disabled --}}
                 <button class="btn btn-purple w-full mt-3" type="submit" x-on:click="setTimeout(() => {submitted = true;});"
-                        x-bind:disabled="! allowAccess || alreadyMember || submitted">
+                        x-bind:disabled="submitted || alreadyMember || (! allowAccess && ! noBuilding)">
                     @lang('auth.register.form.submit')
                 </button>
             </form>

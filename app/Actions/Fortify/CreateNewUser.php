@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\Models\Building;
 use App\Models\User;
 use App\Helpers\RoleHelper;
 use App\Http\Requests\AddressFormRequest;
@@ -59,12 +60,25 @@ class CreateNewUser implements CreatesNewUsers
             'allow_access' => 'required|accepted',
         ], (new AddressFormRequest())->rules());
 
-        // try to get the account
+        $cooperation = $this->request->route('cooperation');
+
+        // Try to get the account from the given email.
         $account = Account::where('email', $this->get('email'))->first();
-        // if the account exists but the user is not associated with the current cooperation
-        // then we unset the email and password rule because we dont need to validate them, we handle them in the controller
-        if ($account instanceof Account && ! $account->isAssociatedWith($this->request->route('cooperation'))) {
+        // If the account exists but the user is not associated with the current cooperation,
+        // then we unset the email and password rule because we don't need to validate them, we handle them in the controller.
+        if ($account instanceof Account && ! $account->isAssociatedWith($cooperation)) {
             unset($rules['email'], $rules['password']);
+        }
+        // If the account has a user for the current cooperation, but no building, we only want to validate the address rules.
+        if ($account instanceof Account && ($user = $account->users()->forMyCooperation($cooperation->id)->first()) instanceof User && ! $user->building instanceof Building) {
+            unset(
+                $rules['email'],
+                $rules['password'],
+                $rules['first_name'],
+                $rules['last_name'],
+                $rules['phone_number'],
+                $rules['allow_access'],
+            );
         }
 
         return $rules;

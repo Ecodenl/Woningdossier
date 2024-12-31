@@ -225,41 +225,30 @@ class UserService
      */
     public static function create(Cooperation $cooperation, array $roles, $account, $data)
     {
-        Log::debug('account id for registration: '.$account->id);
+        if (! ($user = $account->users()->forMyCooperation($cooperation->id)->first()) instanceof User) {
+            // Create the user for an account
+            /** @var User $user */
+            $user = User::create(
+                [
+                    'extra' => $data['extra'] ?? null,
+                    'account_id' => $account->id,
+                    'first_name' => $data['first_name'],
+                    'last_name' => $data['last_name'],
+                    'phone_number' => $data['phone_number'] ?? '',
+                ]
+            );
+        }
 
-        // Create the user for an account
-        /** @var User $user */
-        $user = User::create(
-            [
-                'extra' => $data['extra'] ?? null,
-                'account_id' => $account->id,
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'phone_number' => $data['phone_number'] ?? '',
-            ]
-        );
-
-        // filter relevant data from the request
+        // Filter relevant data from the request
         $data['address']['extension'] ??= null;
         $buildingData = $data['address'];
 
-        // create the building for the user
-        $building = $user->building()->save(new Building($buildingData));
+        // Create the building for the user
+        $building = Building::create($buildingData);
+        $building->user()->associate($user)->save();
 
         // We need an input source. From the API, roles are passed as string. From the other sources as ID. We just
         // fetch them all and grab the first one.
-        /**
-         * @TODO Check $roles:
-         * Due to improved ULID/UUID/GUID support, package methods that accept a Permission or Role ID
-         * must receive the ID as an integer. If a numeric string is passed, the functions will attempt
-         * to look up the role/permission as a string. This may lead to errors such as:
-         *
-         * "There is no permission named '123' for guard 'web'."
-         *
-         * This happens because '123' is treated as a string, not an integer.<br>
-         *
-         * @see https://spatie.be/docs/laravel-permission/v6/upgrading
-         */
         $rolesWithSources = Role::has('inputSource')->with('inputSource')->where(
             fn (Builder $q) => $q->whereIn('id', $roles)->orWhereIn('name', $roles)
         )->get();

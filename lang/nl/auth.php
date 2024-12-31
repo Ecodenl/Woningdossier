@@ -34,6 +34,7 @@ return [
             'email' => 'E-mailadres',
             'email-exists' => 'Het e-mailadres is al geregistreerd, wij hebben nog een aantal gegevens van uw nodig. U kunt hierna inloggen met uw E-mailadres en huidige wachtwoord.',
             'already-member' => 'U bent al lid van deze coöperatie, ga naar de <strong><a href='.url('login').'>Login pagina</a></strong>',
+            'no-building' => 'U bent al lid van deze coöperatie, maar heeft geen gekoppelde woning. Na het invullen van uw adres kunt u inloggen met uw E-mailadres en huidige wachtwoord.',
             'connect' => 'Koppelen aan deze coöperatie',
             'first-name' => 'Voornaam',
             'last-name' => 'Achternaam',

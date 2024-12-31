@@ -40,6 +40,6 @@ class ExportToolQuestionTranslations extends Command
     {
         $excel->store(new ToolQuestionsExport, 'tool-questions.csv', 'local', Excel::CSV);
 
-        return 0;
+        return self::SUCCESS;
     }
 }

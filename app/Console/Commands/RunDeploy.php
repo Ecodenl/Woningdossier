@@ -36,7 +36,7 @@ class RunDeploy extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         $commands = [
             SeedCommand::class => [
@@ -58,5 +58,7 @@ class RunDeploy extends Command
                 $this->call($command, $arguments);
             }
         }
+
+        return self::SUCCESS;
     }
 }

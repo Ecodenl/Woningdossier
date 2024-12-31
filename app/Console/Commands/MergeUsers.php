@@ -37,7 +37,7 @@ class MergeUsers extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         $userId1 = (int) $this->argument('userId1');
         $userId2 = (int) $this->argument('userId2');
@@ -69,5 +69,7 @@ class MergeUsers extends Command
 
 //        Artisan::call('user:delete', ['user' => $userId2]);
         Log::info(sprintf('Users %s and %s were merged', $userId1, $userId2));
+
+        return self::SUCCESS;
     }
 }

@@ -107,6 +107,6 @@ class SyncMeasures extends Command
             $this->error('Something is going on with VerbeterJeHuis!');
         });
 
-        return 0;
+        return self::SUCCESS;
     }
 }

@@ -45,6 +45,6 @@ class AppointmentDate extends Command
             Building::findOrFail($this->argument('building'))
         );
 
-        return 0;
+        return self::SUCCESS;
     }
 }

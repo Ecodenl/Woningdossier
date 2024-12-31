@@ -37,11 +37,13 @@ class CleanupAudits extends Command
     /**
      * Execute the console command.
      */
-    public function handle(DiscordNotifier $discordNotifier): void
+    public function handle(DiscordNotifier $discordNotifier): int
     {
         $deleteCount = Audit::where('created_at', '<=', Carbon::now()->subMonths(4))->delete();
         if ($deleteCount > 0) {
             $discordNotifier->notify("Deleted {$deleteCount} 4 month old audits.");
         }
+
+        return self::SUCCESS;
     }
 }

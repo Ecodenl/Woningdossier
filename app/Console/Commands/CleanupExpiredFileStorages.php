@@ -49,6 +49,6 @@ class CleanupExpiredFileStorages extends Command
             }
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 }

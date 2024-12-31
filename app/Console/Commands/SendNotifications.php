@@ -41,7 +41,7 @@ class SendNotifications extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         // get the current notification type
         $notificationType = NotificationType::where('short',
@@ -122,6 +122,8 @@ class SendNotifications extends Command
         }
 
         $this->info('Done');
+
+        return self::SUCCESS;
     }
 
     /**

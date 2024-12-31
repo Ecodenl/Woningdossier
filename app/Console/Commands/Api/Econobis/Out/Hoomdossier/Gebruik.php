@@ -49,6 +49,7 @@ class Gebruik extends Command
                     SendBuildingFilledInAnswersToEconobis::dispatch($user->building);
                 }
             });
-        return 0;
+
+        return self::SUCCESS;
     }
 }

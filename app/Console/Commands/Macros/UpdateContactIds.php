@@ -32,7 +32,7 @@ class UpdateContactIds extends Command
      */
     protected $description = 'Update contact IDs in the database using file in storage';
 
-    public function handle(): void
+    public function handle(): int
     {
         $cooperationSlug = $this->argument('cooperation');
         $cooperation = Cooperation::where('slug', $cooperationSlug)->first();
@@ -68,5 +68,7 @@ class UpdateContactIds extends Command
                 Log::info("User not found account {$accountId} does not have a link with the provided cooperation");
             }
         }
+
+        return self::SUCCESS;
     }
 }

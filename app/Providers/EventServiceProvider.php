@@ -60,66 +60,6 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        NoMappingFoundForBagMunicipality::class => [
-            CreateTargetlessMappingForMunicipality::class,
-        ],
-        NoMappingFoundForVbjehuisMunicipality::class => [
-            MissingVbjehuisMapping::class,
-        ],
-        PrivateMessageReceiverEvent::class => [
-            PrivateMessageReceiverListener::class,
-        ],
-        CooperationMeasureApplicationUpdated::class => [
-            RefreshRelatedAdvices::class,
-        ],
-        CustomMeasureApplicationChanged::class => [
-            RefreshRelatedAdvices::class,
-        ],
-        BuildingAddressUpdated::class => [
-            RefreshBuildingUserHisAdvices::class,
-        ],
-        Login::class => [
-            SuccessFullLoginListener::class,
-        ],
-        Registered::class => [
-            LogRegisteredUserListener::class,
-        ],
-        FillingToolForUserEvent::class => [
-            FillingToolForUserListener::class,
-            LogFillingToolForUserListener::class,
-        ],
-        ObservingToolForUserEvent::class => [
-            ObservingToolForUserListener::class,
-            LogObservingToolForUserListener::class,
-        ],
-        StepDataHasBeenChanged::class => [
-            StepDataHasBeenChangedListener::class,
-        ],
-        UserChangedHisEmailEvent::class => [
-            SetOldEmailListener::class,
-        ],
-        ParticipantRevokedEvent::class => [
-            ParticipantRevokedListener::class,
-            SetMessagesUnreadForRevokedUserOnBuilding::class,
-        ],
-        ParticipantAddedEvent::class => [
-            ParticipantAddedListener::class,
-        ],
-        UserAllowedAccessToHisBuilding::class => [
-            GiveCoachesBuildingPermission::class,
-            LogAllowedAccessToBuilding::class,
-        ],
-        UserRevokedAccessToHisBuilding::class => [
-            LogRevokedAccessToBuilding::class,
-            RevokeBuildingPermissionForCoaches::class,
-            SetMessagesReadForBuilding::class,
-        ],
-        StepCleared::class => [
-            DeleteUserActionPlanAdvicesForStep::class,
-        ],
-        Audited::class => [
-            AuditedListener::class,
-        ],
     ];
 
     /**

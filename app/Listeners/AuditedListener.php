@@ -10,14 +10,6 @@ class AuditedListener implements ShouldQueue
 {
     public $queue = Queue::LOGS;
 
-    /**
-     * Create the Auditing event listener.
-     */
-    public function __construct()
-    {
-        // ...
-    }
-
     public function handle(Audited $event): void
     {
         // the audit model

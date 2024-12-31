@@ -2,8 +2,8 @@
 
 namespace App\Listeners;
 
+use App\Events\UserAllowedAccessToHisBuilding;
 use App\Helpers\HoomdossierSession;
-use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
@@ -16,7 +16,7 @@ class GiveCoachesBuildingPermission
     /**
      * Handle the event.
      */
-    public function handle(object $event): void
+    public function handle(UserAllowedAccessToHisBuilding $event): void
     {
         $user = $event->user;
         $building = $event->building;

@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\FillingToolForUserEvent;
 use App\Helpers\HoomdossierSession;
 use App\Models\BuildingFeature;
 use App\Models\InputSource;
@@ -24,7 +25,7 @@ class FillingToolForUserListener
     /**
      * Handle the event.
      */
-    public function handle(object $event): void
+    public function handle(FillingToolForUserEvent $event): void
     {
         // The building the user wants to fill.
         $building = $event->building;

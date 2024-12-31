@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class LogUserAssociatedWithOtherCooperation implements ShouldQueue
 {
     public $queue = Queue::LOGS;
+
     /**
      * Handle the event.
      */

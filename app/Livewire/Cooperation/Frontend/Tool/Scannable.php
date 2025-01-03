@@ -183,14 +183,14 @@ abstract class Scannable extends Component
     }
 
     // specific for the popup questions
-    public function resetToOriginalAnswer($toolQuestionShort)
+    public function resetToOriginalAnswer(string $toolQuestionShort): void
     {
         $this->filledInAnswers[$toolQuestionShort] = $this->originalAnswers[$toolQuestionShort];
         $this->dispatch('reset-question', short: $toolQuestionShort);
     }
 
     // specific to the popup question
-    public function saveSpecificToolQuestion($toolQuestionShort)
+    public function saveSpecificToolQuestion(string $toolQuestionShort): void
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 

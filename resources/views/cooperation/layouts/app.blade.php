@@ -58,7 +58,7 @@
             $background = optional($cooperation?->firstMedia(MediaHelper::BACKGROUND))->getUrl() ?: asset('images/background.jpg');
         @endphp
         <main class="bg-cover bg-center bg-no-repeat bg-white"
-              style="@yield('main_style', 'background-image: url(\''. $background .'\');')">
+              style="@yield('main_style', "background-image: url('{$background}');")">
             {{--    @include('cooperation.layouts.parts.messages')--}}
 
             @yield('main')
@@ -84,7 +84,7 @@
             });
 
             // Handle Polyfill for IOS 10
-            window.addEventListener('touchmove', function () {});
+            window.addEventListener('touchmove', function () { }, {passive: false});
 
             window.addEventListener('page-reload', function () {
                 location.reload();

@@ -210,15 +210,23 @@
                         textarea.form-input
                         <br>
                         <span class="text-red">
-                            Note: The textarea should be wrapped by the tiny textarea component:
+                            Note: The textarea should be wrapped by the tiptap textarea component:
                             <br>
-                            @@component('cooperation.frontend.layouts.components.wysiwyg')
+                            @@component('cooperation.layouts.components.tiptap')
+                            <br><br>
+                            A parent element (usually a wrapping div) should initiate the editor script: x-data="tiptapEditor(@@js($content))"
+                            <br>
+                            For Livewire, use `tiptapEditor($wire.entangle('prop'))` instead.
+                            <br>
+                            The textarea should be given an `x-ref`: x-ref="editor"
                         </span>
                     </p>
                 @endslot
-                @component('cooperation.frontend.layouts.components.wysiwyg')
-                    <textarea id="tiny-text-area" class="form-input" placeholder="Text area"></textarea>
-                @endcomponent
+                <div class="w-full" x-data="tiptapEditor()">
+                    @component('cooperation.layouts.components.tiptap')
+                        <textarea id="wysiwyg-text-area" class="form-input" placeholder="Wysiwyg editor" x-ref="editor"></textarea>
+                    @endcomponent
+                </div>
             @endcomponent
         </div>
     </div>

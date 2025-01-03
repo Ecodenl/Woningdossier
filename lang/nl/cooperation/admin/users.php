@@ -17,6 +17,7 @@ return [
     ],
     'create' => [
         'form' => [
+            'no-building' => 'De gebruiker met dit e-mailadres is al actief bij deze coöperatie!',
             'already-member' => 'De gebruiker met dit e-mailadres is al actief bij deze coöperatie!',
             'e-mail-exists' => 'Er is al een account met dit e-mailadres. Indien u doorgaat wordt dit account aan uw cooperatie gekoppeld met de rollen die u opgeeft.',
             'first-name' => 'Voornaam',

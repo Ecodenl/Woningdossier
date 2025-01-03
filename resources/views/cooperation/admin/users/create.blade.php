@@ -32,7 +32,7 @@
                     'label' => __('users.column-translations.first_name'),
                     'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
                     'inputName' => 'users.first_name',
-                    'attr' => 'x-show="! alreadyMember"',
+                    'attr' => 'x-show="! alreadyMember && ! noBuilding"',
                 ])
                 <input class="form-input" type="text" name="users[first_name]" value="{{ old('users.first_name') }}">
             @endcomponent
@@ -41,7 +41,7 @@
                 'label' => __('users.column-translations.last_name'),
                 'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
                 'inputName' => 'users.last_name',
-                'attr' => 'x-show="! alreadyMember"',
+                'attr' => 'x-show="! alreadyMember && ! noBuilding"',
             ])
                 <input class="form-input" type="text" name="users[last_name]" value="{{ old('users.last_name') }}">
             @endcomponent
@@ -60,6 +60,9 @@
                 <p class="text-blue-800 w-full text-left mb-2" x-show="alreadyMember" x-cloak>
                     @lang('cooperation/admin/users.create.form.already-member')
                 </p>
+                <p class="text-blue-800 w-full text-left mb-2" x-show="noBuilding" x-cloak>
+                    @lang('cooperation/admin/users.create.form.no-building')
+                </p>
                 <p class="text-blue-800 w-full text-left mb-2" x-show="emailExists" x-cloak>
                     @lang('cooperation/admin/users.create.form.e-mail-exists')
                 </p>
@@ -69,7 +72,7 @@
                     'label' => __('users.column-translations.phone_number'),
                     'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
                     'inputName' => 'users.phone_number',
-                    'attr' => 'x-show="! alreadyMember"',
+                    'attr' => 'x-show="! alreadyMember && ! noBuilding"',
                 ])
                 <input class="form-input" type="text" name="users[phone_number]" value="{{ old('users.phone_number') }}">
             @endcomponent
@@ -80,7 +83,7 @@
                 'id' => 'role-select',
                 'inputName' => "roles",
                 'withInputSource' => false,
-                'attr' => 'x-show="! alreadyMember"',
+                'attr' => 'x-show="! alreadyMember && ! noBuilding"',
             ])
                 @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
                     <select multiple id="role-select" class="form-input hidden" name="roles[]"
@@ -107,7 +110,7 @@
                 'id' => 'associated-coaches',
                 'inputName' => "coach_id",
                 'withInputSource' => false,
-                'attr' => 'x-show="! alreadyMember"',
+                'attr' => 'x-show="! alreadyMember && ! noBuilding"',
             ])
                 @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
                     <select id="associated-coaches" class="form-input hidden" name="coach_id">
@@ -125,11 +128,11 @@
 
             {{-- TODO: Contact ID? --}}
 
-            <h3 class="w-full heading-4 my-4" x-show="! alreadyMember">
+            <h3 class="w-full heading-4 my-4" x-show="! alreadyMember && ! noBuilding">
                 @lang('cooperation/admin/buildings.edit.address-info-title')
             </h3>
 
-            <div class="w-full" x-show="! alreadyMember">
+            <div class="w-full" x-show="! alreadyMember && ! noBuilding">
                 @include('cooperation.layouts.address', [
                     'withLabels' => true,
                     'checks' => [
@@ -138,8 +141,10 @@
                 ])
             </div>
 
-            <div class="w-full mt-5" x-show="! alreadyMember">
-                <button class="btn btn-green flex justify-center items-center w-full" x-bind:disabled="alreadyMember" type="submit">
+            <div class="w-full mt-5" x-show="! alreadyMember && ! noBuilding">
+                <button class="btn btn-green flex justify-center items-center w-full" type="submit"
+                        x-on:click="setTimeout(() => {submitted = true;});"
+                        x-bind:disabled="submitted || alreadyMember || noBuilding">
                     @lang('cooperation/admin/users.create.form.submit')
                     <i class="w-3 h-3 icon-plus-purple ml-1"></i>
                 </button>

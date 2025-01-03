@@ -104,7 +104,7 @@ textarea.form-input {
 input.form-input:read-only:not(.select-wrapper input):not(.datepicker input),
 .radio-wrapper input[type="radio"]:disabled + label,
 .checkbox-wrapper input[type="checkbox"]:disabled + label {
-    @apply cursor-not-allowed bg-gray bg-opacity-50;
+    @apply cursor-not-allowed bg-gray/50;
 
     /* Safari a worthless browser? Of course! */
     -webkit-text-fill-color: #647585;

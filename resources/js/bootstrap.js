@@ -193,5 +193,5 @@ import {polyfill} from "mobile-drag-drop";
 
 // Init & Settings
 polyfill({
-
+    forceApply: true
 });

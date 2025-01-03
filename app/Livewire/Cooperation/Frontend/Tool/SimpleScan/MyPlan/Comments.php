@@ -60,13 +60,13 @@ class Comments extends Component
     }
 
     // Semi-duplicate code from Scannable
-    public function resetToOriginalAnswer(string $toolQuestionShort)
+    public function resetToOriginalAnswer(string $toolQuestionShort): void
     {
         $this->filledInAnswers[$toolQuestionShort] = $this->originalAnswers[$toolQuestionShort];
         $this->dispatch('reset-question', short: $toolQuestionShort);
     }
 
-    public function saveSpecificToolQuestion(string $toolQuestionShort)
+    public function saveSpecificToolQuestion(string $toolQuestionShort): void
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 

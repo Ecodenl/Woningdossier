@@ -11,7 +11,11 @@ export default (content) => {
         init() {
             this.livewire = content && typeof content === 'object' && content._x_interceptor;
 
-            this.buildTiptap();
+            // If we don't, Livewire won't have updated the value of the textarea yet, and then the initial
+            // value is empty.
+            setTimeout(() => {
+                this.buildTiptap();
+            });
         },
         buildTiptap() {
             let element = this.$refs['editor'];
@@ -24,6 +28,7 @@ export default (content) => {
             let context = this;
             editor = new Tiptap({
                 element: div,
+                editable: ! element.hasAttribute('disabled'),
                 extensions: [
                     TiptapExt.StarterKit.configure({
                         // history: false,
@@ -169,6 +174,13 @@ export default (content) => {
                 // Sync content if backend has changed.
                 editor.commands.setContent(content, false);
             });
+
+            // Ensure we change disabled state based on the textarea attribute.
+            let attributeObserver = new MutationObserver(function (mutations) {
+                editor.setOptions({editable: ! element.hasAttribute('disabled')})
+            });
+
+            attributeObserver.observe(element, { attributeFilter: ['disabled'] });
         },
         destroy() {
             editor.destroy();

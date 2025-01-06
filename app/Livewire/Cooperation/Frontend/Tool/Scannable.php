@@ -11,6 +11,7 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
@@ -53,14 +54,14 @@ abstract class Scannable extends Component
     }
 
     #[Computed]
-    abstract public function subSteppables();
+    abstract public function subSteppables(): Collection;
 
     #[Computed]
-    abstract public function toolQuestions();
+    abstract public function toolQuestions(): Collection;
 
     abstract public function save();
 
-    protected function setValidationForToolQuestions()
+    protected function setValidationForToolQuestions(): void
     {
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             switch ($toolQuestion->data_type) {
@@ -87,12 +88,12 @@ abstract class Scannable extends Component
         }
     }
 
-    protected function refreshAlerts()
+    protected function refreshAlerts(): void
     {
         $this->dispatch('refreshAlerts', answers: $this->filledInAnswers)->to('cooperation.frontend.layouts.parts.alerts');
     }
 
-    public function updated($field, $value): void
+    public function updated(string $field, mixed $value): void
     {
         if (Str::contains($field, 'filledInAnswers')) {
             $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);
@@ -124,7 +125,7 @@ abstract class Scannable extends Component
         $this->setDirty(true);
     }
 
-    protected function evaluateToolQuestions()
+    protected function evaluateToolQuestions(): void
     {
         $evaluator = ConditionEvaluator::init()
             ->building($this->building)
@@ -264,7 +265,7 @@ abstract class Scannable extends Component
         }
     }
 
-    protected function setFilledInAnswers()
+    protected function setFilledInAnswers(): void
     {
         // base key where every answer is stored
         foreach ($this->toolQuestions as $index => $toolQuestion) {
@@ -352,8 +353,7 @@ abstract class Scannable extends Component
 
                         // TODO: This doesn't take answers into account that aren't in the current FORM
                         if ($toolQuestion instanceof ToolQuestion) {
-                            $validation[$index] = $ruleParams[0] . ':' . str_replace($short,
-                                    "filledInAnswers.{$toolQuestion->short}", $ruleParams[1]);
+                            $validation[$index] = $ruleParams[0] . ':' . str_replace($short, "filledInAnswers.{$toolQuestion->short}", $ruleParams[1]);
                         }
                     }
                 }
@@ -363,7 +363,7 @@ abstract class Scannable extends Component
         return $validation;
     }
 
-    protected function setDirty(bool $dirty)
+    protected function setDirty(bool $dirty): void
     {
         $this->dirty = $dirty;
     }

@@ -11,6 +11,7 @@ export default (initiallyOpen = false, withSearch = false) => ({
     multiple: false,
     livewire: false,
     wireModel: null,
+    wireModelLive: false,
     // Active searching for options
     search: null,
     withSearch: withSearch,
@@ -21,10 +22,6 @@ export default (initiallyOpen = false, withSearch = false) => ({
         } catch (e) {
             this.livewire = false;
         }
-
-        //TODO: README! For now, we will ALWAYS set Livewire as false, as it's causing unexpected behaviour
-        // simply caused by the page being too slow
-        this.livewire = false;
 
         let context = this;
         setTimeout(() => {
@@ -44,16 +41,25 @@ export default (initiallyOpen = false, withSearch = false) => ({
                 attributeObserver.observe(context.select, { attributeFilter: ['disabled'] });
 
                 // Bind event listener for change
-                // TODO: Check if values update correctly when data is changed on Livewire side
+                // TODO: Check if values update correctly when data is changed on Livewire side > Probably done correctly via the constructSelect!
                 context.select.addEventListener('change', (event) => {
                     context.updateSelectedValues();
                 });
             }
 
             if (context.livewire && null !== context.select) {
-                //TODO: This works for now, but the wire:model can have extra options such as .lazy, which will
-                // not be caught this way. Might require different resolving in the future
-                context.wireModel = context.select.getAttribute('wire:model');
+                // We don't know what the wire:model attribute is, so we do a like check :)
+                const wireModelAttribute = context.select.getAttributeLike('wire:model%')
+
+                if (null !== wireModelAttribute) {
+                    if (wireModelAttribute.includes('.live')) {
+                        this.wireModelLive = true;
+                    }
+                    context.wireModel = context.select.getAttribute(wireModelAttribute);
+                } else {
+                    // No wire:model? Can't connect to Livewire
+                    context.livewire = false;
+                }
             }
 
             if (context.values === null && context.multiple) {
@@ -72,7 +78,7 @@ export default (initiallyOpen = false, withSearch = false) => ({
                     setTimeout(() => {
                         context.setInputValue();
                         context.applySearchPadding();
-                    });
+                    }, 25);
                 });
             }
         });
@@ -153,11 +159,10 @@ export default (initiallyOpen = false, withSearch = false) => ({
                     if (! isFirstBoot && JSON.stringify(before) !== JSON.stringify(after)) {
                         if (this.livewire) {
                             if (this.wireModel) {
-                                this.$wire.set(this.wireModel, this.values);
+                                this.$wire.set(this.wireModel, this.values, this.wireModelLive);
                             }
-                        } else {
-                            this.select.triggerEvent('change');
                         }
+                        this.select.triggerEvent('change');
                     }
                 });
             }
@@ -182,11 +187,10 @@ export default (initiallyOpen = false, withSearch = false) => ({
 
             if (this.livewire) {
                 if (this.wireModel) {
-                    this.$wire.set(this.wireModel, this.values);
+                    this.$wire.set(this.wireModel, this.values, this.wireModelLive);
                 }
-            } else {
-                this.select.triggerEvent('change');
             }
+            this.select.triggerEvent('change');
         }
     },
     // Update a/the selected value
@@ -444,7 +448,6 @@ export default (initiallyOpen = false, withSearch = false) => ({
         });
 
         optionDropdown.querySelectorAll('.select-optgroup').forEach((optgroup) => {
-            console.log(optgroup.label)
             optgroup.style.display = visibleOptgroups.includes(optgroup.dataset.label) ? null : 'none';
         });
     },

@@ -20,6 +20,7 @@ use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -76,7 +77,7 @@ class Form extends Scannable
     }
 
     #[Computed]
-    public function toolQuestions()
+    public function toolQuestions(): Collection
     {
         $toolQuestions = collect();
         foreach ($this->subSteps as $subStep) {
@@ -87,12 +88,12 @@ class Form extends Scannable
         return $toolQuestions;
     }
 
-    public function inputUpdated()
+    public function inputUpdated(): void
     {
         $this->loading = true;
     }
 
-    public function updated($field, $value)
+    public function updated(string $field, mixed $value): void
     {
         parent::updated($field, $value);
 
@@ -102,7 +103,7 @@ class Form extends Scannable
         $this->loading = false;
     }
 
-    public function save()
+    public function save(): Redirector
     {
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
@@ -183,10 +184,9 @@ class Form extends Scannable
         $this->saveFilledInAnswers();
     }
 
-    public function saveFilledInAnswers()
+    public function saveFilledInAnswers(): Redirector
     {
         if ($this->dirty) {
-
             $stepShortsToRecalculate = [];
             $shouldDoFullRecalculate = false;
             $dirtyToolQuestions = [];
@@ -201,7 +201,6 @@ class Form extends Scannable
                     /** @var ToolQuestion $toolQuestion */
                     $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                     if ($this->building->user->account->can('answer', $toolQuestion)) {
-
                         // Although redundant, this step is necessary.
                         // The sub steppable component 'reverseFormats' converts the data back to a human-readable form.
                         // So when we actually start saving it we have to format it one more time
@@ -291,7 +290,7 @@ class Form extends Scannable
         );
     }
 
-    public function performCalculations()
+    public function performCalculations(): void
     {
         $conditions = $this->getCalculatorConditions('hr-boiler');
 

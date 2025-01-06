@@ -51,9 +51,9 @@
 
             let hasWireModel = false;
             for (const attr of target.attributes) {
-                if (attr.name.startsWith('wire:model.live')) {
+                if (attr.name.startsWith('wire:model')) {
                     // Ensure we don't trigger updates if it's deferred to maintain defer logic.
-                    if (! attr.name.includes('defer')) {
+                    if (attr.name.includes('.live')) {
                         hasWireModel = true;
                         break;
                     }
@@ -64,15 +64,6 @@
                 triggerCustomEvent('input-updated');
                 Livewire.dispatch('inputUpdated');
             }
-        });
-
-        document.addEventListener('input-update-processed', () => {
-            tinymce.remove();
-            setTimeout(() => {
-                initTinyMCE({
-                    content_css: '{{ asset('css/frontend/tinymce.css') }}',
-                });
-            });
         });
     </script>
 @endpush

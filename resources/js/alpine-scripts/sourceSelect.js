@@ -28,7 +28,7 @@ export default (inputSource = 'no-match') => ({
         } else {
             // Note: we cannot use forEach, as options is a HTML collection, which is not an array
             for (let i = 0; i < children.length; i++) {
-                let short = children[i].getAttribute('data-input-source-short');
+                const short = children[i].dataset.inputSourceShort;
                 children[i].classList.add('source-select-option');
                 children[i].classList.add(`source-${short}`);
 
@@ -43,7 +43,7 @@ export default (inputSource = 'no-match') => ({
         // Fetch related input group
         let formGroup = this.$refs['source-select-wrapper'].closest('.form-group');
         if (null !== formGroup) {
-           this.inputGroup = formGroup.querySelector('.input-group');
+            this.inputGroup = formGroup.querySelector('.input-group');
         }
 
         this.setSourceValue(inputSource);
@@ -65,8 +65,8 @@ export default (inputSource = 'no-match') => ({
     },
     changeOption(element) {
         if (! element.classList.contains('disabled')) {
-            this.setSourceValue(element.getAttribute('data-input-source-short'));
-            this.setElementValue(element.getAttribute('data-input-value'));
+            this.setSourceValue(element.dataset.inputSourceShort);
+            this.setElementValue(element.dataset.inputValue);
         }
     },
     setSourceValue(value, text = null) {
@@ -156,13 +156,13 @@ export default (inputSource = 'no-match') => ({
                                 input = this.inputGroup.querySelector(`input[type="checkbox"][value="${value}"]`);
                                 if (input) {
                                     if (clear) {
-                                        if (input.hasAttribute('wire:model')) {
+                                        const wireModelAttribute = input.getAttributeLike('wire:model%')
+                                        if (wireModelAttribute !== null) {
                                             // Livewire, clear all for wire:model
-                                            let wireModel = input.getAttribute('wire:model');
-                                            let items = document.querySelectorAll(`input[type="checkbox"][wire\\:model="${wireModel}"]`);
-                                            for (let i = 0; i < items.length; i++) {
-                                                items[i].checked = false;
-                                            }
+                                            let wireModel = input.getAttribute(wireModelAttribute);
+                                            document.querySelectorAll(`input[type="checkbox"][${CSS.escape(wireModelAttribute)}="${wireModel}"]`).forEach((item) => {
+                                                item.checked = false;
+                                            })
                                         } else {
                                             let name = input.getAttribute('name');
                                             let items = document.querySelectorAll(`input[type="checkbox"][name="${name}"]`);

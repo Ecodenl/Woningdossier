@@ -64,7 +64,7 @@ return [
     */
 
     'temporary_file_upload' => [
-        'disk' => null,        // Example: 'local', 's3'              Default: 'default'
+        'disk' => null,        // Example: 'local', 's3'              | Default: 'default'
         // Let me explain the 150 char length; Livewire adds a 30 char hash, 2 dashes, a "meta" string
         // and finally base64 encodes the filename (including extension). base64 is always 4 chars for 1 to 3 chars.
         // This means that encoding a string of 162 creates 216 characters, but one of 263 creates 220. We can have
@@ -150,7 +150,8 @@ return [
     |
     */
 
-    'inject_morph_markers' => true,
+    // Ensure disabled! Else morph markers will appear in scripts as well, causing issues.
+    'inject_morph_markers' => false,
 
     /*
     |---------------------------------------------------------------------------

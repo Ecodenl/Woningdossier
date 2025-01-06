@@ -234,6 +234,52 @@ Object.defineProperty(Element.prototype, 'triggerCustomEvent', {
 });
 
 /**
+ * Get the attribute that includes / startsWith / endsWith the given
+ * attributeSelector.
+ * - Includes format: %{attributeSelector}% or {attributeSelector}
+ * - StartsWith format: {$attributeSelector}%
+ * - EndsWith format: %{$attributeSelector}
+ *
+ * @param attributeSelector
+ * @returns string
+ */
+Object.defineProperty(Element.prototype, 'getAttributeLike', {
+    value: function (attributeSelector) {
+        // Ensure at least something sensible was given
+        if (! attributeSelector) {
+            return null;
+        }
+        const firstChar = attributeSelector.slice(0, 1);
+        const lastChar = attributeSelector.slice(-1);
+
+        if (firstChar === '%') {
+            attributeSelector = attributeSelector.slice(1);
+        }
+        if (lastChar === '%') {
+            attributeSelector = attributeSelector.slice(0 ,-1);
+        }
+
+        // Use correct method for "like" search.
+        let method = 'includes';
+        if (firstChar !== '%' && lastChar === '%') {
+            method = 'startsWith';
+        } else if (firstChar === '%' && lastChar !== '%') {
+            method = 'endsWith';
+        }
+
+        for (const attr of this.attributes) {
+            if (attr.name[method](attributeSelector)) {
+                return attr.name;
+            }
+        }
+
+        return null;
+    },
+    enumerable: false,
+    configurable: false,
+});
+
+/**
  * Add form error.
  */
 Object.defineProperty(Element.prototype, 'addError', {
@@ -288,7 +334,7 @@ Object.defineProperty(Element.prototype, 'removeError', {
  * Remove all elements in the HTML collection
  */
 Object.defineProperty(HTMLCollection.prototype, 'remove', {
-    value: function() {
+    value: function () {
         Array.from(this).forEach((element) => {
             element.remove();
         });
@@ -303,7 +349,7 @@ Object.defineProperty(HTMLCollection.prototype, 'remove', {
  * Remove all elements in the node list
  */
 Object.defineProperty(NodeList.prototype, 'remove', {
-    value: function() {
+    value: function () {
         Array.from(this).forEach((element) => {
             element.remove();
         });

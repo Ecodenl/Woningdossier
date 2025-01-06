@@ -1,4 +1,4 @@
-<textarea wire:model.blur="filledInAnswers.{{$toolQuestion['short']}}" id="{{$toolQuestion->short}}" class="form-input"
+<textarea wire:model.blur="filledInAnswers.{{$toolQuestion->short}}" id="{{$toolQuestion->short}}" class="form-input"
           placeholder="{{$toolQuestion->placeholder}}"
           @if(($disabled ?? false))
               disabled

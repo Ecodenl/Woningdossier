@@ -320,6 +320,36 @@
     </div>
 
     <div class="w-full">
+        @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Rating slider'])
+            @slot('sourceSlot')
+                <li class="change-input-value source-select-option source-resident" x-on:click="changeOption($el)"
+                    data-input-value="{&quot;comfort&quot;:5,&quot;renewable&quot;:3}" data-input-source-short="resident">
+                    Bewoner: Comfort: 5, Duurzaamheid: 3
+                </li>
+            @endslot
+
+            <div class="w-full grid grid-rows-3 grid-cols-2 grid-flow-row justify-items-center gap-x-32 lg:gap-x-64 gap-y-8">
+                @include('cooperation.frontend.layouts.parts.rating-slider', [
+                    'inputName' => 'comfort',
+                    'inputShort' => 'comfort',
+                    'min' => 1,
+                    'max' => 5,
+                    'disabled' => false,
+                    'label' => 'Comfort',
+                ])
+                @include('cooperation.frontend.layouts.parts.rating-slider', [
+                    'inputName' => 'renewable',
+                    'inputShort' => 'renewable',
+                    'min' => 1,
+                    'max' => 5,
+                    'disabled' => false,
+                    'label' => 'Duurzaamheid',
+                ])
+            </div>
+        @endcomponent
+    </div>
+
+    <div class="w-full">
         <div class="flex items-center justify-end w-full">
             <button class="btn btn-purple">
                 Opslaan

@@ -1,7 +1,7 @@
 <div x-data="modal()" class="w-full flex">
     <div class="w-full" x-data="tiptapEditor($wire.entangle('filledInAnswers.{{$toolQuestion->short}}'))" x-on:click="toggle()" wire:ignore>
         @component('cooperation.layouts.components.tiptap')
-            <textarea wire:model.blur.defer="filledInAnswers.{{$toolQuestion->short}}" id="clickable-{{$toolQuestion->short}}"
+            <textarea wire:model.blur="filledInAnswers.{{$toolQuestion->short}}" id="clickable-{{$toolQuestion->short}}"
                       class="form-input" placeholder="{{$toolQuestion->placeholder}}"
                       x-ref="editor"
                       @if(($disabled ?? false))
@@ -17,7 +17,7 @@
     @component('cooperation.frontend.layouts.components.modal', ['class' => 'w-full md:w-1/2'])
         <div class="w-full" x-data="tiptapEditor($wire.entangle('filledInAnswers.{{$toolQuestion->short}}'))" wire:ignore>
             @component('cooperation.layouts.components.tiptap')
-                <textarea wire:model.blur.defer="filledInAnswers.{{$toolQuestion->short}}" id="{{$toolQuestion->short}}"
+                <textarea wire:model.blur="filledInAnswers.{{$toolQuestion->short}}" id="{{$toolQuestion->short}}"
                           class="form-input" placeholder="{{$toolQuestion->placeholder}}"
                           x-ref="editor"
                           @if(($disabled ?? false))

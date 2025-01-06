@@ -35,7 +35,8 @@
         </div>
 
         @foreach($subSteps as $subStep)
-            <div x-bind="container" data-tab="{{$subStep->slug}}" wire:ignore.self>
+            <div x-bind="container" data-tab="{{$subStep->slug}}" wire:ignore.self
+                 wire:key="{{ "container-{$subStep->slug}" }}">
                  @include('cooperation.frontend.tool.expert-scan.parts.sub-steppable', [
                     'subSteppables' => $this->subSteppables->where('sub_step_id', $subStep->id)
                  ])
@@ -53,7 +54,7 @@
             for (const attr of target.attributes) {
                 if (attr.name.startsWith('wire:model')) {
                     // Ensure we don't trigger updates if it's deferred to maintain defer logic.
-                    if (attr.name.includes('.live')) {
+                    if (attr.name.includes('.live') || attr.name.includes('.blur')) {
                         hasWireModel = true;
                         break;
                     }

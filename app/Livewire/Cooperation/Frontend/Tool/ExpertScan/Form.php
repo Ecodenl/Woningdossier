@@ -181,7 +181,7 @@ class Form extends Scannable
             }
         }
 
-        $this->saveFilledInAnswers();
+        return $this->saveFilledInAnswers();
     }
 
     public function saveFilledInAnswers(): Redirector

@@ -11,9 +11,9 @@ a:hover i, a:focus i {
 }
 
 /* Hyperlink in paragraph */
-p a,
-.as-text a,
-a.in-text {
+p a:not(.btn),
+.as-text a:not(.btn),
+a:not(.btn).in-text {
     @apply text-purple no-underline font-medium;
 }
 

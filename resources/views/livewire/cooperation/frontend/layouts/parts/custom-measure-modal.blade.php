@@ -47,14 +47,17 @@
            'id' => "custom-measure-application-{$index}-measure-category-wrapper",
            'withInputSource' => false,
         ])
-            @component('cooperation.frontend.layouts.components.alpine-select')
+            @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
                 <select class="form-input hidden"
                         wire:model.live="customMeasureApplicationsFormData.{{$index}}.measure_category"
                         id="custom-measure-application-{{$index}}-measure-category"
                         @if($disabled) disabled @endif
                 >
-                    <option value="">
+                    <option disabled selected value="">
                         @lang('default.form.dropdown.choose')
+                    </option>
+                    <option value="" class="text-red">
+                        @lang('default.form.dropdown.none')
                     </option>
                     @foreach($measures as $measure)
                         <option value="{{ $measure->id }}">

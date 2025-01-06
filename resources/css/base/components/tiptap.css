@@ -77,11 +77,10 @@
 
 /* Disabled styling */
 .tiptap-parent:has(textarea[disabled]) .tiptap-menu button {
-    @apply pointer-events-none;
+    @apply pointer-events-none bg-transparent;
 }
 
 .tiptap-parent:has(textarea[disabled]) .tiptap-menu,
-.tiptap-parent:has(textarea[disabled]) .tiptap-menu button,
 .tiptap-parent:has(textarea[disabled]) .tiptap,
 .tiptap-parent:has(textarea[disabled]) .tiptap-footer {
     @apply cursor-not-allowed bg-gray/50;

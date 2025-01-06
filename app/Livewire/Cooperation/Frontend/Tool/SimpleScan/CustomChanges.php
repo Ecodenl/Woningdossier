@@ -11,6 +11,7 @@ use App\Models\CustomMeasureApplication;
 use App\Models\Scan;
 use App\Models\UserActionPlanAdvice;
 use Illuminate\Support\Arr;
+use Illuminate\View\View;
 
 class CustomChanges extends CustomMeasureForm
 {
@@ -24,7 +25,7 @@ class CustomChanges extends CustomMeasureForm
 
     public string $type;
 
-    public function mount()
+    public function mount(): void
     {
         $this->build(HoomdossierSession::getBuilding(true));
 
@@ -34,20 +35,20 @@ class CustomChanges extends CustomMeasureForm
         $this->setMeasureApplications();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.cooperation.frontend.tool.simple-scan.custom-changes');
     }
 
-    public function updatedSelectedCooperationMeasureApplications($value)
+    public function updatedSelectedCooperationMeasureApplications(): void
     {
         // This triggers when the `$this->selectedCooperationMeasureApplications` is updated.
         abort_if(HoomdossierSession::isUserObserving(), 403);
         $key = 'cooperationMeasureApplications';
 
         // Let's diff with previous values, to define which index has changed
-        $added = array_diff($value, $this->previousSelectedState[$key]);
-        $removed = array_diff($this->previousSelectedState[$key], $value);
+        $added = array_diff($this->selectedCooperationMeasureApplications, $this->previousSelectedState[$key]);
+        $removed = array_diff($this->previousSelectedState[$key], $this->selectedCooperationMeasureApplications);
 
         $index = empty($added) ? Arr::first($removed) : Arr::first($added);
         // If removed is not empty, it's not visible, if it is empty, it is visible
@@ -90,16 +91,15 @@ class CustomChanges extends CustomMeasureForm
         $this->previousSelectedState[$key] = $this->selectedCooperationMeasureApplications;
     }
 
-    public function updatedSelectedCustomMeasureApplications($value)
+    public function updatedSelectedCustomMeasureApplications(): void
     {
         // This triggers when the `$this->selectedCustomMeasureApplications` is updated.
         abort_if(HoomdossierSession::isUserObserving(), 403);
-
         $key = 'customMeasureApplications';
 
         // Let's diff with previous values, to define which index has changed
-        $added = array_diff($value, $this->previousSelectedState[$key]);
-        $removed = array_diff($this->previousSelectedState[$key], $value);
+        $added = array_diff($this->selectedCustomMeasureApplications, $this->previousSelectedState[$key]);
+        $removed = array_diff($this->previousSelectedState[$key], $this->selectedCustomMeasureApplications);
 
         $index = empty($added) ? Arr::first($removed) : Arr::first($added);
         // If removed is not empty, it's not visible, if it is empty, it is visible
@@ -152,7 +152,7 @@ class CustomChanges extends CustomMeasureForm
         $this->setMeasureApplications();
     }
 
-    private function setMeasureApplications()
+    private function setMeasureApplications(): void
     {
         $this->customMeasureApplicationsFormData = [];
         $this->cooperationMeasureApplicationsFormData = [];

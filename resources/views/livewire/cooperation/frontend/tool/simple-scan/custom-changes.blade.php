@@ -2,18 +2,19 @@
     $disabled = \App\Helpers\HoomdossierSession::isUserObserving();
 @endphp
 <div class="w-full grid grid-rows-2 grid-cols-4 grid-flow-row justify-items-center">
-    @foreach($cooperationMeasureApplicationsFormData as $index => $customMeasureApplicationFormData)
+    @foreach($cooperationMeasureApplicationsFormData as $index => $cooperationMeasureApplicationFormData)
         <div class="checkbox-wrapper media-wrapper">
             <input type="checkbox" id="cooperation-measure-{{$index}}" value="{{ $index }}"
                    wire:model.live="selectedCooperationMeasureApplications"
+                   wire:loading.attr="disabled" wire:target="selectedCooperationMeasureApplications, selectedCustomMeasureApplications"
                    @if($disabled) disabled="disabled" @endif
             >
             <label for="cooperation-measure-{{$index}}">
                 <span class="media-icon-wrapper">
-                    <i class="{{ $customMeasureApplicationFormData['extra']['icon'] }}"></i>
+                    <i class="{{ $cooperationMeasureApplicationFormData['extra']['icon'] }}"></i>
                 </span>
                 <span class="checkmark"></span>
-                <span>{{ $customMeasureApplicationFormData['name'] }}</span>
+                <span>{{ $cooperationMeasureApplicationFormData['name'] }}</span>
             </label>
         </div>
     @endforeach
@@ -26,6 +27,7 @@
                     @if(! $loop->last)
                         <input type="checkbox" id="custom-measure-{{$index}}" value="{{ $index }}"
                                wire:model.live="selectedCustomMeasureApplications"
+                               wire:loading.attr="disabled" wire:target="selectedCooperationMeasureApplications, selectedCustomMeasureApplications"
                                @if($disabled) disabled @endif>
 
                     @endif

@@ -174,7 +174,7 @@ export default (initiallyOpen = false, withSearch = false) => ({
     },
     // Handle the click of a custom option
     changeOption(element) {
-        if (! element.classList.contains('disabled') && ! element.classList.contains('readonly  ')) {
+        if (! element.classList.contains('disabled') && ! element.classList.contains('readonly')) {
             this.updateValue(element.getAttribute('data-value'));
             if (! this.multiple) {
                 this.close();

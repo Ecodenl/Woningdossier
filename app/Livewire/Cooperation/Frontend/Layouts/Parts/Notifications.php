@@ -6,6 +6,8 @@ use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\Models\NotificationService;
+use Illuminate\Routing\Redirector;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class Notifications extends Component
@@ -16,7 +18,7 @@ class Notifications extends Component
     public array $types;
     public bool $hasRedirected = false;
 
-    public function mount($nextUrl, $types)
+    public function mount(string $nextUrl, string|array $types): void
     {
         $this->nextUrl = $nextUrl;
         $this->types = (array) $types;
@@ -24,7 +26,7 @@ class Notifications extends Component
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
     }
 
-    public function render()
+    public function render(): View
     {
         if (! $this->hasRedirected) {
             $this->checkNotification();

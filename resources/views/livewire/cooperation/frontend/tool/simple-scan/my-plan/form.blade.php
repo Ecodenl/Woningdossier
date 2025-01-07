@@ -128,20 +128,20 @@
                                 <div class="w-full h-full space-y-2">
                                     @if(! $disabled && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
                                         <button class="btn btn-green flex w-full items-center justify-center" wire:key="trashed-button"
-                                                x-on:click="document.querySelector('#trashed').triggerEvent('open-modal'); close();">
+                                                x-on:click="close(); document.querySelector('#trashed').triggerEvent('open-modal');">
                                             @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.button')
                                         </button>
                                     @endif
                                     @if(! $scan->isLiteScan())
                                         <button class="btn btn-green flex w-full items-center justify-center" wire:key="expert-button"
-                                                x-on:click="document.querySelector('#expert').triggerEvent('open-modal'); close();">
+                                                x-on:click="close(); document.querySelector('#expert').triggerEvent('open-modal');">
                                             @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.button')
                                         </button>
                                     @endif
                                     @if(! $disabled && ! $scan->isLiteScan())
                                         @php $lastIndex = array_key_last($customMeasureApplicationsFormData); @endphp
                                         <button class="btn btn-green flex w-full items-center justify-center" wire:key="custom-button"
-                                                x-on:click="document.querySelector('#edit-{{$lastIndex}}').triggerEvent('open-modal'); close();">
+                                                x-on:click="close(); document.querySelector('#edit-{{$lastIndex}}').triggerEvent('open-modal');">
                                             @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.add.button')
                                         </button>
                                     @endif

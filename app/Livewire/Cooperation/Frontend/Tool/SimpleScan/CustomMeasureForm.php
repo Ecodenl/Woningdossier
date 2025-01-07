@@ -46,7 +46,7 @@ abstract class CustomMeasureForm extends Component
         ];
     }
 
-    public function build(Building $building)
+    public function build(Building $building): void
     {
         $this->building = $building;
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -222,7 +222,7 @@ abstract class CustomMeasureForm extends Component
         return null;
     }
 
-    protected function loadCustomMeasures()
+    protected function loadCustomMeasures(): void
     {
         // Retrieve the user's custom measures
         $customMeasureApplications = $this->building->customMeasureApplications()

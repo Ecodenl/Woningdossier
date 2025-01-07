@@ -24,6 +24,7 @@ use Illuminate\Support\Collection;
 use App\Helpers\Arr;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class Form extends CustomMeasureForm
 {
@@ -59,7 +60,7 @@ class Form extends CustomMeasureForm
     // Notifications
     public array $notifications = [];
 
-    public function mount(Building $building)
+    public function mount(Building $building): void
     {
         $this->build($building);
         
@@ -73,12 +74,12 @@ class Form extends CustomMeasureForm
         $this->recalculate();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.form');
     }
 
-    public function save(int $index)
+    public function save(int $index): void
     {
         $customMeasureApplication = $this->submit($index, false);
         $this->loadCustomMeasures();
@@ -98,7 +99,7 @@ class Form extends CustomMeasureForm
         $this->recalculate();
     }
 
-    public function cardMoved(string $fromCategory, string $toCategory, string $id, string $newOrder)
+    public function cardMoved(string $fromCategory, string $toCategory, string $id, string $newOrder): void
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
@@ -175,7 +176,7 @@ class Form extends CustomMeasureForm
         $this->refreshAlerts();
     }
 
-    public function cardTrashed(string $fromCategory, string $id)
+    public function cardTrashed(string $fromCategory, string $id): void
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
@@ -204,7 +205,7 @@ class Form extends CustomMeasureForm
         $this->refreshAlerts();
     }
 
-    public function recalculate()
+    public function recalculate(): void
     {
         // ---------------------------------------------------------------------
         // investment
@@ -333,7 +334,7 @@ class Form extends CustomMeasureForm
         $this->evaluateCalculationResult('comfort', $totalComfort);
     }
 
-    public function reorder($category)
+    public function reorder($category): void
     {
         // Reorder for each card in the list. We don't need to check invisible items, so we don't have to check
         // any other cards
@@ -342,7 +343,7 @@ class Form extends CustomMeasureForm
         }
     }
 
-    public function updateAdvice($id, array $update)
+    public function updateAdvice($id, array $update): void
     {
         // Get moved advice (will be for master input source)
         $advice = UserActionPlanAdvice::allInputSources()
@@ -382,7 +383,7 @@ class Form extends CustomMeasureForm
         }
     }
 
-    public function addHiddenCardToBoard(string $category, string $id)
+    public function addHiddenCardToBoard(string $category, string $id): void
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
@@ -420,11 +421,10 @@ class Form extends CustomMeasureForm
         $this->refreshAlerts();
     }
 
-    public function checkNotifications()
+    public function checkNotifications(): void
     {
         $notificationService = NotificationService::init()
-            ->forBuilding($this->building)
-            ->forInputSource($this->masterInputSource);
+            ->forBuilding($this->building);
 
         foreach ($this->notifications as $index => $notification) {
             if ($notificationService->setType($notification['type'])->setUuid($notification['uuid'])->isNotActive()) {
@@ -440,10 +440,8 @@ class Form extends CustomMeasureForm
 
     /**
      * Reload the data of an advice.
-     *
-     * @param $advice
      */
-    public function reload($advice): void
+    public function reload(int|UserActionPlanAdvice $advice): void
     {
         if (! $advice instanceof UserActionPlanAdvice) {
             $advice = UserActionPlanAdvice::allInputSources()->withInvisible()->find($advice);
@@ -467,7 +465,7 @@ class Form extends CustomMeasureForm
         }
     }
 
-    public function evaluateCalculationResult(string $field, $calculation, bool $setValue = true)
+    public function evaluateCalculationResult(string $field, float $calculation, bool $setValue = true): int
     {
         // TODO: This will most likely come from the database at one point
         $calculationConditions = $this->calculationMap[$field];
@@ -503,12 +501,12 @@ class Form extends CustomMeasureForm
         return $value;
     }
 
-    protected function refreshAlerts()
+    protected function refreshAlerts(): void
     {
         $this->dispatch('refreshAlerts')->to('cooperation.frontend.layouts.parts.alerts');
     }
 
-    private function loadVisibleCards()
+    private function loadVisibleCards(): void
     {
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
@@ -525,7 +523,7 @@ class Form extends CustomMeasureForm
         }
     }
 
-    private function loadHiddenCards()
+    private function loadHiddenCards(): void
     {
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
@@ -628,18 +626,17 @@ class Form extends CustomMeasureForm
         return $cards;
     }
 
-    private function setField($field, $value)
+    private function setField($field, $value): void
     {
         $this->{$field} = $value;
     }
 
-    private function dispatchRegulationUpdate(UserActionPlanAdvice $advice)
+    private function dispatchRegulationUpdate(UserActionPlanAdvice $advice): void
     {
         $job = new RefreshRegulationsForUserActionPlanAdvice($advice);
 
         NotificationService::init()
             ->forBuilding($this->building)
-            ->forInputSource($this->masterInputSource)
             ->setType(RefreshRegulationsForUserActionPlanAdvice::class)
             ->setActive([$job->uuid]);
 

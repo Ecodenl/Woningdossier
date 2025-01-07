@@ -8,6 +8,7 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\Models\NotificationService;
 use App\Services\UserActionPlanAdviceService;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class MyRegulations extends Component
@@ -17,7 +18,7 @@ class MyRegulations extends Component
     public bool $isRefreshing;
     public InputSource $masterInputSource;
 
-    public function mount(Building $building)
+    public function mount(Building $building): void
     {
         $this->building = $building;
         $this->masterInputSource = InputSource::master();
@@ -25,12 +26,12 @@ class MyRegulations extends Component
         $this->checkNotifications();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.cooperation.frontend.tool.simple-scan.my-regulations');
     }
 
-    public function refreshRegulations()
+    public function refreshRegulations(): void
     {
         UserActionPlanAdviceService::init()
             ->forUser($this->building->user)
@@ -39,7 +40,7 @@ class MyRegulations extends Component
         $this->isRefreshing = true;
     }
 
-    public function checkNotifications()
+    public function checkNotifications(): void
     {
         $this->isRefreshing = NotificationService::init()
             ->forBuilding($this->building)
@@ -47,7 +48,7 @@ class MyRegulations extends Component
             ->isActive();
     }
 
-    public function checkIfIsRefreshed()
+    public function checkIfIsRefreshed(): void
     {
         $oldIsRefreshing = $this->isRefreshing;
         $this->checkNotifications();

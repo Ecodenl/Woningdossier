@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class QueueEventSubscriber
 {
-    public function deactivateNotification(JobProcessed $event)
+    public function deactivateNotification(JobProcessed $event): void
     {
         $payload = $event->job->payload();
         $command = unserialize($payload['data']['command']);

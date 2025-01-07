@@ -85,7 +85,7 @@
 
 
     <!-- living_situation: natural, mechanic, balanced, decentral -->
-        @if(in_array($buildingVentilation->calculate_value, [1,2,3,4,]))
+        @if(in_array($buildingVentilation->calculate_value, [1,2,3,4]))
         <!-- living_situation: natural, mechanic, balanced, decentral -->
             <div class="flex flex-row flex-wrap w-full natural mechanic balanced decentral">
                 <div class="w-full">
@@ -425,13 +425,13 @@
                         console.log(data.considerables);
                         @endif
                         if (data.hasOwnProperty('considerables') && data.considerables.length !== 0) {
-                            advices.html('<div class="w-full sm:w-3/4"><strong>Verbetering</strong></div><div class="w-full sm:w-1/4"><strong>Meenemen in berekening ?</strong></div>');
+                            advices.html('<div class="w-full sm:w-3/4"><span class="heading-5">Verbetering</span></div><div class="w-full sm:w-1/4"><span class="heading-5">Meenemen in berekening ?</span></div>');
                             $.each(data.considerables, function (considerableId, considerable) {
                                 var checked = '';
                                 if (considerable.hasOwnProperty('is_considerable') && considerable.is_considerable == true) {
                                     checked = ' checked="checked"';
                                 }
-                                advices.append('<div class="w-full sm:w-3/4">' + considerable.name + '</div><div class="w-full sm:w-1/4"><input id="considerable-' + considerableId + '" class="considerable" type="checkbox" name="considerables['+considerableId+'][is_considering]" value="1" '+checked+'></div>');
+                                advices.append('<div class="w-full sm:w-3/4"><p>' + considerable.name + '</p></div><div class="w-full sm:w-1/4"><input id="considerable-' + considerableId + '" class="considerable" type="checkbox" name="considerables['+considerableId+'][is_considering]" value="1" '+checked+'></div>');
                                 checkMeasureRelatedQuestions(considerableId);
                             });
                             indicationForCosts.show();

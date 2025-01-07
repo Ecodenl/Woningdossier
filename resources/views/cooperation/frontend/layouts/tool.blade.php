@@ -52,7 +52,7 @@
                                                                                             :step="$currentStep"
                                                                                             :questionnaire="$questionnaire ?? null"/>
                                 @else
-                                    @if(! \App\helpers\HoomdossierSession::isUserObserving())
+                                    @if(! HoomdossierSession::isUserObserving())
                                         <button class="float-right btn btn-purple submit-main-form">
                                             @lang('default.buttons.save')
                                         </button>
@@ -65,7 +65,7 @@
                             </div>
 
                             <div class="px-4 py-8">
-                                @if(! \App\helpers\HoomdossierSession::isUserObserving())
+                                @if(! HoomdossierSession::isUserObserving())
                                     @php
                                         // This only shows in expert, and since lite can't go to expert, we just
                                         // fetch the quick scan.
@@ -124,7 +124,7 @@
 
             function whenObservingDisableInputs()
             {
-                var isUserObservingTool = '{{\App\Helpers\HoomdossierSession::getIsObserving()}}';
+                var isUserObservingTool = '{{HoomdossierSession::getIsObserving()}}';
 
                 if (isUserObservingTool) {
                     var tabContent = $('.tab-content');

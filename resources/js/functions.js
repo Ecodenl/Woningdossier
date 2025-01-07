@@ -4,6 +4,28 @@
 
 //--- Window
 
+window.hoomdossierRound = function (value, bucket) {
+
+    if (value !== null) {
+        if (typeof bucket === "undefined") {
+            bucket = 5;
+        }
+
+        return Math.round(value / bucket) * bucket;
+    }
+    return 0;
+};
+
+window.hoomdossierNumberFormat = function (value, locale, decimals) {
+    if (value !== null) {
+        if (typeof value === "string") {
+            value = parseFloat(value);
+        }
+        return value.toLocaleString(locale, {minimumFractionDigits: decimals});
+    }
+    return 0;
+};
+
 /**
  * Trigger a default event
  *

@@ -30,7 +30,7 @@
                                         name="element[{{ $floorInsulation->id }}]">
                                     @foreach($floorInsulation->values()->orderBy('order')->get() as $elementValue)
                                         <option data-calculate-value="{{$elementValue->calculate_value}}"
-                                                @if(old('element.' . $floorInsulation->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $floorInsulation->id), 'element_value_id')) == $elementValue->id) selected="selected"
+                                                @if(old('element.' . $floorInsulation->id, Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $floorInsulation->id), 'element_value_id')) == $elementValue->id) selected="selected"
                                                 @endif value="{{ $elementValue->id }}">
                                             {{ $elementValue->value }}
                                         </option>
@@ -293,7 +293,6 @@
 
 @push('js')
     <script type="module">
-
         document.addEventListener('DOMContentLoaded', function () {
             let data = {};
             $('input:not(.source-select-input), textarea, select:not(.source-select)').change(function () {
@@ -376,7 +375,6 @@
                 $("#hideable").show();
                 $("#answers").show();
                 $("#has-no-crawlspace").show();
-                console.log('reset');
             }
 
             function crawlspaceOptions() {

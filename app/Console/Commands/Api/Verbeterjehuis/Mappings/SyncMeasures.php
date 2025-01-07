@@ -46,9 +46,9 @@ class SyncMeasures extends Command
             'floor-insulation' => [1503, 1555], // Woningisolatie / Vloer
             'bottom-insulation' => [1503, 1555], // Woningisolatie / Vloer
             'floor-insulation-research' => [1503, 1555], // Woningisolatie / Vloer
-            'cavity-wall-insulation' => [1503, 1608], // Woningisolatie / Groene daken/gevels
-            'facade-wall-insulation' => [1503, 1608], // Woningisolatie / Groene daken/gevels
-            'wall-insulation-research' => [1503, 1608], // Woningisolatie / Groene daken/gevels
+            'cavity-wall-insulation' => [1503, 1519], // Woningisolatie / Muur
+            'facade-wall-insulation' => [1503, 1519], // Woningisolatie / Muur
+            'wall-insulation-research' => [1503, 1519], // Woningisolatie / Muur
             'glass-in-lead' => [1503, 1545], // Woningisolatie / Glas
             'hrpp-glass-only' => [1503, 1545], // Woningisolatie / Glas
             'hrpp-glass-frames' => [1503, 1545], // Woningisolatie / Glas

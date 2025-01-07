@@ -51,7 +51,7 @@ class HeaterHelper extends ToolHelper
                     ),
                 ],
             ],
-            'has_completed_expert' => ConditionService::init()->building($this->building)->inputSource($this->inputSource)->hasCompletedSteps(['heating']),
+            'has_completed_expert' => ConditionService::init()->building($this->building)->inputSource($this->masterInputSource)->hasCompletedSteps(['heating']),
             'building_heaters' => $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
             'user_energy_habits' => [
                 'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
@@ -73,8 +73,7 @@ class HeaterHelper extends ToolHelper
         if ($this->considers($step) ) {
             if ($this->getValues('has_completed_expert')) {
                 // User has finished expert step, so we will use the expert logic
-                $results = Heater::calculate($this->building, $this->inputSource);
-
+                $results = Heater::calculate($this->building, $this->masterInputSource);
             } else {
                 // User has not yet finished the expert step. We must calculate using current water comfort, which
                 // is another caveat.
@@ -84,7 +83,7 @@ class HeaterHelper extends ToolHelper
                     ->where('extra->calculate_value', $comfort?->calculate_value)
                     ->first();
 
-                $results = Heater::calculate($this->building, $this->inputSource,
+                $results = Heater::calculate($this->building, $this->masterInputSource,
                     collect(['new-water-comfort' => $newComfortEqual?->short]));
             }
 

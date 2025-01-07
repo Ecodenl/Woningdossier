@@ -15,6 +15,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Services\Models\BuildingService;
+use App\Services\Models\SubStepService;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
 use Illuminate\Routing\Redirector;
@@ -184,11 +185,11 @@ class Form extends Scannable
         }
 
         // Now mark the sub step as complete
-        $completedSubStep = CompletedSubStep::allInputSources()->firstOrCreate([
-            'sub_step_id' => $this->subStep->id,
-            'building_id' => $this->building->id,
-            'input_source_id' => $this->currentInputSource->id
-        ]);
+        $completedSubStep = SubStepService::init()
+            ->building($this->building)
+            ->inputSource($this->currentInputSource)
+            ->subStep($this->subStep)
+            ->complete();
 
         $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
             ->forStep($this->step)

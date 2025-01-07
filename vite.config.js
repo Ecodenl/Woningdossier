@@ -7,7 +7,7 @@ export default defineConfig({
             input: [
                 'resources/css/frontend/app.css',
                 'resources/css/admin/app.css',
-                'resources/sass/pdf.scss',
+                'resources/css/pdf/pdf.css',
                 'resources/js/app.js',
                 'resources/js/datatables.js',
             ],

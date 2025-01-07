@@ -1,0 +1,7 @@
+/* Tailwind */
+@import '../shared/components/tailwind.css';
+
+/* PDF CSS */
+@import './layout.css';
+@import './typography.css';
+@import './page-styles.css';

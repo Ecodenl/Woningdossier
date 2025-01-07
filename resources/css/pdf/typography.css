@@ -1,0 +1,72 @@
+.container h1 {
+    @apply font-bold;
+    font-family: Helvetice, sans-serif;
+    font-size: 26px;
+    color: #18825F;
+    line-height: 1.5;
+    margin: 0 0 4rem;
+    padding: 0;
+}
+
+.container h2 {
+    @apply text-purple-500 font-bold;
+    font-family: Helvetice, sans-serif;
+    font-size: 20px;
+    line-height: 1.5;
+    margin: 0 0 0.25rem;
+    padding: 0;
+}
+
+.container h3 {
+    @apply text-purple-500 font-bold;
+    font-family: Helvetice, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0 0 0.25rem;
+    padding: 0;
+}
+
+.container h4 {
+    @apply font-bold;
+    font-family: Helvetice, sans-serif;
+    font-size: 12px;
+    color: #18825F;
+    line-height: 1.5;
+    margin: 0 0 0.25rem;
+    padding: 0;
+}
+
+.container h5 {
+    @apply font-bold;
+    font-family: Helvetice, sans-serif;
+    font-size: 12px;
+    color: #18825F;
+    line-height: 1.5;
+    margin: 0.25rem 0 0;
+    padding: 0;
+}
+
+.container .as-text,
+.container p {
+    @apply text-black;
+    font-family: Helvetice, sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.2px;
+    margin: 0;
+    padding: 0;
+}
+
+.container small {
+    @apply text-black;
+    font-family: Helvetice, sans-serif;
+    font-size: 8px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+
+.container .comment {
+    word-wrap: break-word !important;
+    white-space: pre-line;
+}

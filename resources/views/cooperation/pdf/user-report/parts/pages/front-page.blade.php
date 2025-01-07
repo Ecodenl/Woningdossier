@@ -42,7 +42,6 @@
                 {{$postalCity}}
             </h1>
 
-
             <div id="cooperation-info">
                 <h2 class="text-green">
                     {{ $userCooperation->name }}

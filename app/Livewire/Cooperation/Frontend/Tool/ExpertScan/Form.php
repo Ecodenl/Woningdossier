@@ -13,7 +13,6 @@ use App\Helpers\DataTypes\Caster;
 use App\Helpers\Hoomdossier;
 use App\Helpers\ToolQuestionHelper;
 use App\Livewire\Cooperation\Frontend\Tool\Scannable;
-use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;

@@ -53,9 +53,19 @@
             let hasWireModel = false;
             for (const attr of target.attributes) {
                 if (attr.name.startsWith('wire:model')) {
-                    // Ensure we don't trigger updates if it's deferred to maintain defer logic.
-                    if (attr.name.includes('.live') || attr.name.includes('.blur')) {
-                        hasWireModel = true;
+                    const attributeModifiersThatAreConsideredLive = [
+                        '.live', '.blur', '.lazy', '.change',
+                    ];
+
+                    for (const modifier of attributeModifiersThatAreConsideredLive) {
+                        // Ensure we don't trigger updates if it's deferred to maintain defer logic.
+                        if (attr.name.includes(modifier)) {
+                            hasWireModel = true;
+                            break;
+                        }
+                    }
+
+                    if (hasWireModel) {
                         break;
                     }
                 }

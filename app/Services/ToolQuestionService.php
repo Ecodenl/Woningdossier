@@ -191,9 +191,9 @@ class ToolQuestionService
                 Log::debug($answerData);
 
                 $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
-                // There are some cases where there is no building feature, for example if the BAG was unavailable
-                // after an account was reset. In 99% of the times, this check will pass. Saving a new question WILL
-                // create the building feature.
+                // We've had cases where the building feature doesn't exist. It should exist, however.
+                // If it's missing, it should get created when saving answers and thus it should resolve itself.
+                // To ensure we don't do something we can't, we simply won't dispatch.
                 if ($oldBuildingFeature instanceof BuildingFeature) {
                     // apply the example building for the given changes.
                     // we give him the old building features, otherwise we cant verify the changes

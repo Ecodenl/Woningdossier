@@ -27,7 +27,7 @@
 
                 $h1FontSize = 26;
                 if ($longestLine > 84) {
-                    $h1FontSize = 8; // Basically too small too read but what gives, your address shouldn't be _this_ long :)
+                    $h1FontSize = 8; // Basically too small to read but what gives, your address shouldn't be _this_ long :)
                 } elseif ($longestLine > 40) {
                     $h1FontSize = 14;
                 } elseif ($longestLine > 22) {

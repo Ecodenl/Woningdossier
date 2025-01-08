@@ -356,7 +356,7 @@
 
             @can('viewAny', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $building])
                 <div id="view-files" x-bind="container" data-tab="view-files" class="p-4">
-                    <livewire:cooperation.frontend.tool.simple-scan.my-plan.uploader :building="$building"/>
+                    <livewire:cooperation.frontend.tool.simple-scan.my-plan.uploader :building="$building" :fromCooperation="true"/>
                 </div>
             @endcan
         </div>

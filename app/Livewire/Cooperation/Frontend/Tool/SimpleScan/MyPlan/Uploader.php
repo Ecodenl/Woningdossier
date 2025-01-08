@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Plank\Mediable\Facades\MediaUploader;
@@ -27,14 +28,14 @@ class Uploader extends Component
     public $documents; // The temporary uploaded files do some weird shenanigans so we can't type this
     public Collection $files;
     public array $fileData = [];
+    public bool $fromCooperation = false;
 
     protected $listeners = [
         'uploadDone' => 'saveFiles',
     ];
 
-    public function mount(Building $building)
+    public function mount(Building $building): void
     {
-        $this->building = $building;
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         // We want all media regardless of tag
@@ -51,12 +52,12 @@ class Uploader extends Component
         }
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.uploader');
     }
 
-    public function updated(string $field)
+    public function updated(string $field): void
     {
         if (Str::endsWith($field, ['title', 'description', 'share_with_cooperation', 'tag'])) {
             $this->updateMedia($field);
@@ -64,7 +65,7 @@ class Uploader extends Component
     }
 
     // Called from $listeners
-    public function saveFiles()
+    public function saveFiles(): void
     {
         $this->resetErrorBag('documents');
 
@@ -82,9 +83,7 @@ class Uploader extends Component
             );
 
             if ($validator->passes()) {
-                // If we're in an iframe currently, then we know it's being done from the admin and share should be true.
-                // Otherwise, we check if the user has allowed cooperation access
-                $shareWithCooperation = (bool) (request()->input('iframe', false) ?: $this->building->user->allow_access);
+                $shareWithCooperation = $this->fromCooperation ?: $this->building->user->allow_access;
 
                 $media = MediaUploader::fromSource($document->getRealPath())
                     ->toDestination('uploads', "buildings/{$this->building->id}")
@@ -116,7 +115,7 @@ class Uploader extends Component
         $this->documents = [];
     }
 
-    public function updateMedia(string $field)
+    public function updateMedia(string $field): void
     {
         // We know the field is built as "fileData.{$id}.{$name}", so we can safely get the second value.
         $fileId = explode('.', $field)[1];
@@ -149,7 +148,7 @@ class Uploader extends Component
         }
     }
 
-    public function delete($fileId)
+    public function delete($fileId): void
     {
         $file = $this->files->where('id', $fileId)->first();
 

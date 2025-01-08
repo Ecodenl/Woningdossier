@@ -8,9 +8,9 @@ use App\Models\Scan as ScanModel;
 
 class Scan extends BaseCache
 {
-    const CACHE_KEY_ALL_SHORTS = 'Scan_allShorts';
-    const CACHE_KEY_SIMPLE_SHORTS = 'Scan_simpleShorts';
-    const CACHE_KEY_EXPERT_SHORTS = 'Scan_expertShorts';
+    const string CACHE_KEY_ALL_SHORTS = 'Scan_allShorts';
+    const string CACHE_KEY_SIMPLE_SHORTS = 'Scan_simpleShorts';
+    const string CACHE_KEY_EXPERT_SHORTS = 'Scan_expertShorts';
 
     public static function allShorts(): array
     {
@@ -33,7 +33,7 @@ class Scan extends BaseCache
             config('hoomdossier.cache.times.default'),
             function () {
                 if (Schema::hasTable('scans')) {
-                    return ScanModel::simple()->pluck('short')->toArray();
+                    return ScanModel::simpleScans()->pluck('short')->toArray();
                 }
                 return [];
             }
@@ -47,7 +47,7 @@ class Scan extends BaseCache
             config('hoomdossier.cache.times.default'),
             function () {
                 if (Schema::hasTable('scans')) {
-                    return ScanModel::expert()->pluck('short')->toArray();
+                    return ScanModel::expertScans()->pluck('short')->toArray();
                 }
                 return [];
             }

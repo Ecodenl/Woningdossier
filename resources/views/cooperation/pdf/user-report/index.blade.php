@@ -10,13 +10,21 @@
         {{--
             PostCSS does the same as webpack (converts bold to 700), and the Tailwind defintion by default is 700, so
             we will keep this here.
-         --}}
+        --}}
         <style>
-            h1, h2, h3, h4, h5 {
-                font-weight: bold;
+            h1, h2, h3, h4, h5, strong {
+                font-weight: bold !important;
+            }
+            em {
+                font-style: italic;
+            }
+            u {
+                text-decoration: underline;
+            }
+            s {
+                text-decoration: line-through;
             }
         </style>
-
 
         {{-- Define footer (an/or header) by name --}}
         <style>
@@ -42,7 +50,6 @@
         @elseif(! empty($coachHelp))
             @include('cooperation.pdf.user-report.parts.pages.coach-help')
         @endif
-
 
         {{-- Global footer --}}
         @include('cooperation.pdf.user-report.parts.footer-note')

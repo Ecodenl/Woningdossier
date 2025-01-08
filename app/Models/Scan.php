@@ -27,11 +27,11 @@ use Illuminate\Support\Facades\App;
  * @property-read int|null $sub_steps_count
  * @property-read mixed $translations
  * @method static Builder<static>|Scan bySlug(string $slug, string $locale = 'nl')
- * @method static Builder<static>|Scan expert()
+ * @method static Builder<static>|Scan expertScans()
  * @method static Builder<static>|Scan newModelQuery()
  * @method static Builder<static>|Scan newQuery()
  * @method static Builder<static>|Scan query()
- * @method static Builder<static>|Scan simple()
+ * @method static Builder<static>|Scan simpleScans()
  * @method static Builder<static>|Scan whereCreatedAt($value)
  * @method static Builder<static>|Scan whereId($value)
  * @method static Builder<static>|Scan whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
@@ -48,9 +48,9 @@ class Scan extends Model
 {
     use HasTranslations, HasShortTrait;
 
-    const LITE = 'lite-scan';
-    const QUICK = 'quick-scan';
-    const EXPERT = 'expert-scan';
+    const string LITE = 'lite-scan';
+    const string QUICK = 'quick-scan';
+    const string EXPERT = 'expert-scan';
 
     protected $translatable = ['name', 'slug'];
 
@@ -98,12 +98,12 @@ class Scan extends Model
     }
 
     // Scopes
-    public function scopeSimple(Builder $query)
+    public function scopeSimpleScans(Builder $query)
     {
         return $query->whereIn('short', [static::LITE, static::QUICK]);
     }
 
-    public function scopeExpert(Builder $query)
+    public function scopeExpertScans(Builder $query)
     {
         return $query->whereIn('short', [static::EXPERT]);
     }

@@ -13,7 +13,7 @@
             );
     @endphp
     <div class="w-100">
-        <div class="pull-left" style="width: 50%">
+        <div class="float-left" style="width: 50%">
             <h1 class="p-0 m-0">
                 {{$user->getFullName()}}
             </h1>
@@ -43,10 +43,10 @@
             </h1>
 
             <div id="cooperation-info">
-                <h2 class="text-green">
+                <h2 class="text-green-600">
                     {{ $userCooperation->name }}
                 </h2>
-                <h2 class="text-green">
+                <h2 class="text-green-600">
                     {{ date('d-m-Y') }}
                     <br>
                     @php
@@ -74,9 +74,9 @@
                 </h2>
             </div>
         </div>
-        <div class="pull-right">
+        <div class="float-right">
             @if($logo instanceof \App\Models\Media)
-                <img class="pull-right" src="{{ pdfAsset($logo->getPath()) }}" alt="{{ $userCooperation->name }}"
+                <img class="float-right" src="{{ pdfAsset($logo->getPath()) }}" alt="{{ $userCooperation->name }}"
                      style="max-height: 250px;">
             @else
                 <h3>
@@ -95,5 +95,4 @@
     <h1 class="text-center">
         {{ strip_tags(__('pdf/user-report.pages.front-page.title')) }}
     </h1>
-
 @endcomponent

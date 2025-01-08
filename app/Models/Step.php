@@ -169,14 +169,14 @@ class Step extends Model
     /** @deprecated Use scopeForScan instead */
     public function scopeQuickScan(Builder $query): Builder
     {
-        $quickScan = Scan::findByShort(Scan::QUICK);
+        $quickScan = Scan::quick();
         return $this->scopeForScan($query, $quickScan);
     }
 
     /** @deprecated Use scopeForScan instead */
     public function scopeExpert(Builder $query): Builder
     {
-        $expertScan = Scan::findByShort(Scan::EXPERT);
+        $expertScan = Scan::expert();
         return $this->scopeForScan($query, $expertScan);
     }
 

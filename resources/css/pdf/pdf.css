@@ -5,3 +5,6 @@
 @import './layout.css';
 @import './typography.css';
 @import './page-styles.css';
+
+/* Custom config for PDF */
+@config './tailwind.pdf.config.js';

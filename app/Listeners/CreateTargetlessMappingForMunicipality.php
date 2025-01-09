@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\NoMappingFoundForBagMunicipality;
 use App\Helpers\MappingHelper;
 use App\Helpers\Queue;
 use App\Mail\Admin\MissingBagMunicipalityMappingEmail;
@@ -11,7 +12,6 @@ use Illuminate\Support\Facades\Mail;
 
 class CreateTargetlessMappingForMunicipality implements ShouldQueue
 {
-
     public $queue = Queue::APP_EXTERNAL;
 
     public MappingService $mappingService;
@@ -28,7 +28,7 @@ class CreateTargetlessMappingForMunicipality implements ShouldQueue
     /**
      * Handle the event.
      */
-    public function handle(object $event): void
+    public function handle(NoMappingFoundForBagMunicipality $event): void
     {
         $this->mappingService
             ->from($event->municipalityName)

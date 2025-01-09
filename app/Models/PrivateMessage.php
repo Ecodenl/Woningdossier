@@ -27,24 +27,24 @@ use Illuminate\Support\Collection;
  * @property-read \App\Models\Building|null $building
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PrivateMessageView> $privateMessageViews
  * @property-read int|null $private_message_views_count
- * @method static Builder|PrivateMessage conversation(int $buildingId)
- * @method static Builder|PrivateMessage forMyCooperation()
- * @method static Builder|PrivateMessage myPrivateMessages()
- * @method static Builder|PrivateMessage newModelQuery()
- * @method static Builder|PrivateMessage newQuery()
- * @method static Builder|PrivateMessage private()
- * @method static Builder|PrivateMessage public()
- * @method static Builder|PrivateMessage query()
- * @method static Builder|PrivateMessage whereBuildingId($value)
- * @method static Builder|PrivateMessage whereCreatedAt($value)
- * @method static Builder|PrivateMessage whereFromCooperationId($value)
- * @method static Builder|PrivateMessage whereFromUser($value)
- * @method static Builder|PrivateMessage whereFromUserId($value)
- * @method static Builder|PrivateMessage whereId($value)
- * @method static Builder|PrivateMessage whereIsPublic($value)
- * @method static Builder|PrivateMessage whereMessage($value)
- * @method static Builder|PrivateMessage whereToCooperationId($value)
- * @method static Builder|PrivateMessage whereUpdatedAt($value)
+ * @method static Builder<static>|PrivateMessage conversation(int $buildingId)
+ * @method static Builder<static>|PrivateMessage forMyCooperation()
+ * @method static Builder<static>|PrivateMessage myPrivateMessages()
+ * @method static Builder<static>|PrivateMessage newModelQuery()
+ * @method static Builder<static>|PrivateMessage newQuery()
+ * @method static Builder<static>|PrivateMessage private()
+ * @method static Builder<static>|PrivateMessage public()
+ * @method static Builder<static>|PrivateMessage query()
+ * @method static Builder<static>|PrivateMessage whereBuildingId($value)
+ * @method static Builder<static>|PrivateMessage whereCreatedAt($value)
+ * @method static Builder<static>|PrivateMessage whereFromCooperationId($value)
+ * @method static Builder<static>|PrivateMessage whereFromUser($value)
+ * @method static Builder<static>|PrivateMessage whereFromUserId($value)
+ * @method static Builder<static>|PrivateMessage whereId($value)
+ * @method static Builder<static>|PrivateMessage whereIsPublic($value)
+ * @method static Builder<static>|PrivateMessage whereMessage($value)
+ * @method static Builder<static>|PrivateMessage whereToCooperationId($value)
+ * @method static Builder<static>|PrivateMessage whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class PrivateMessage extends Model
@@ -55,13 +55,16 @@ class PrivateMessage extends Model
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'is_public'    => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_public'    => 'boolean',
+        ];
+    }
 
     public function scopeForMyCooperation(Builder $query): Builder
     {
@@ -155,29 +158,20 @@ class PrivateMessage extends Model
      * Get all the "group members".
      * Returns a collection of all the participants for a chat from a building.
      */
-    public static function getGroupParticipants(?int $buildingId, bool $publicConversation = true): Collection
+    public static function getGroupParticipants(?Building $building = null, bool $publicConversation = true): Collection
     {
-        // create a collection of group members
-        $groupMembers = collect();
+        // Check if building exists. We do this so we can pass nullable buildings for ease of use.
+        if (! $building instanceof Building || ! $building->exists) {
+            return collect();
+        }
 
-        $building = Building::find($buildingId);
+        // All coaches with access to this building are considered a participant
+        $groupMembers = BuildingCoachStatusService::getConnectedCoachesByBuilding($building, true);
 
-        if ($building instanceof Building) {
-            // get the coaches with access to the building
-            $coachesWithAccess = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building, true);
-
-            // if its a public conversation we push the building owner in it
-            if ($publicConversation) {
-                // get the owner of the building,
-                if ($building->user instanceof User) {
-                    $groupMembers->push($building->user);
-                }
-            }
-
-            // put the coaches with access to the groupmembers
-            foreach ($coachesWithAccess as $coachWithAccess) {
-                $groupMembers->push($coachWithAccess->coach);
-            }
+        // TODO: Bool is always true at this point, deprecate parameter?
+        // If it's a public conversation we push the building owner in it
+        if ($publicConversation && $building->user instanceof User) {
+            $groupMembers->prepend($building->user);
         }
 
         return $groupMembers;

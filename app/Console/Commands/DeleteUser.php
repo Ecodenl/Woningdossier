@@ -35,7 +35,7 @@ class DeleteUser extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         // Note: the range cannot contain spaces like "1 - 2" as this would
         // result in an error on the command: it would see multiple arguments.
@@ -58,6 +58,6 @@ class DeleteUser extends Command
             }
         }
 
-        return;
+        return self::SUCCESS;
     }
 }

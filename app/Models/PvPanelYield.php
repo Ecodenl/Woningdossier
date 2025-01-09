@@ -11,23 +11,27 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $angle
  * @property int $pv_panel_orientation_id
- * @property string $yield
+ * @property numeric $yield
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\PvPanelOrientation|null $orientation
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield query()
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield whereAngle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield wherePvPanelOrientationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield whereYield($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield whereAngle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield wherePvPanelOrientationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelYield whereYield($value)
  * @mixin \Eloquent
  */
 class PvPanelYield extends Model
 {
+    protected $casts = [
+        'yield' => 'decimal:2',
+    ];
+
     public function orientation(): BelongsTo
     {
         return $this->belongsTo(PvPanelOrientation::class);

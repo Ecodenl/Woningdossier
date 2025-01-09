@@ -22,19 +22,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
  * @method static \Database\Factories\InterestFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Interest newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Interest newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Interest query()
- * @method static \Illuminate\Database\Eloquent\Builder|Interest whereCalculateValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Interest whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Interest whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Interest whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|Interest whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|Interest whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|Interest whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|Interest whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Interest whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Interest whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest whereCalculateValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Interest whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Interest extends Model

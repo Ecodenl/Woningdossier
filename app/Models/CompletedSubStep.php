@@ -22,21 +22,21 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\Building $building
  * @property-read \App\Models\InputSource $inputSource
  * @property-read \App\Models\SubStep $subStep
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep forBuilding($building)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep forMe(?\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep forUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep query()
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereSubStepId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep forBuilding(\App\Models\Building|int $building)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep forUser(\App\Models\User|int $user)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep whereSubStepId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CompletedSubStep extends Model implements Auditable

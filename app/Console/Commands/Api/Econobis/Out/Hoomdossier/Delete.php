@@ -48,6 +48,6 @@ class Delete extends Command
             )->resolveAccountRelated()
         );
 
-        return 0;
+        return self::SUCCESS;
     }
 }

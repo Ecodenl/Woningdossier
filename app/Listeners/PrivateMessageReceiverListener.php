@@ -2,8 +2,8 @@
 
 namespace App\Listeners;
 
+use App\Events\PrivateMessageReceiverEvent;
 use App\Models\Account;
-use App\Models\Building;
 use App\Models\Client;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
@@ -14,18 +14,9 @@ use App\Services\BuildingCoachStatusService;
 class PrivateMessageReceiverListener
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Handle the event.
      */
-    public function handle(object $event): void
+    public function handle(PrivateMessageReceiverEvent $event): void
     {
         $authenticatedUser = $event->authenticatable;
         $isClient = $authenticatedUser instanceof Client;
@@ -35,12 +26,11 @@ class PrivateMessageReceiverListener
             $user = $authenticatedUser->users()->where('cooperation_id', $event->cooperation->id)->first();
         }
 
-        $groupParticipants = PrivateMessage::getGroupParticipants($event->privateMessage->building_id);
-
         $buildingFromOwner = $event->privateMessage->building;
         $privateMessage = $event->privateMessage;
+        $groupParticipants = PrivateMessage::getGroupParticipants($buildingFromOwner);
 
-        $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($buildingFromOwner);
+        $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuilding($buildingFromOwner);
 
         // now we create for every group participant a privatemessageview
         foreach ($groupParticipants as $groupParticipant) {

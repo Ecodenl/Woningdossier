@@ -12,9 +12,6 @@ use Illuminate\Http\Request;
 
 class ToolQuestionController extends Controller
 {
-    /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
     public function index(): View
     {
         $toolQuestions = ToolQuestion::all();
@@ -22,10 +19,6 @@ class ToolQuestionController extends Controller
         return view('cooperation.admin.super-admin.tool-questions.index', compact('toolQuestions'));
     }
 
-    /**
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
     public function edit(Cooperation $cooperation, ToolQuestion $toolQuestion): View
     {
         return view('cooperation.admin.super-admin.tool-questions.edit', compact('toolQuestion'));

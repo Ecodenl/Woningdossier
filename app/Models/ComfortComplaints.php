@@ -11,13 +11,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortComplaints newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortComplaints newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortComplaints query()
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortComplaints whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortComplaints whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortComplaints whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ComfortComplaints whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortComplaints newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortComplaints newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortComplaints query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortComplaints whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortComplaints whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortComplaints whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ComfortComplaints whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ComfortComplaints extends Model

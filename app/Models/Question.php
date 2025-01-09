@@ -30,26 +30,26 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \App\Models\Questionnaire $questionnaire
  * @property-read mixed $translations
  * @method static \Database\Factories\QuestionFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Question newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Question onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Question query()
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereQuestionnaireId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereRequired($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereValidation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Question withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Question withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereQuestionnaireId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereRequired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereValidation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question withoutTrashed()
  * @mixin \Eloquent
  */
 class Question extends Model
@@ -67,21 +67,20 @@ class Question extends Model
         'name', 'type', 'order', 'required', 'questionnaire_id', 'validation',
     ];
 
-    protected $casts = [
-        'required' => 'bool',
-        'validation' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'required' => 'bool',
+            'validation' => 'array',
+        ];
+    }
 
     /**
      * Check if a question is required.
      */
     public function isRequired(): bool
     {
-        if (true == $this->required) {
-            return true;
-        }
-
-        return false;
+        return $this->required;
     }
 
     /**
@@ -89,15 +88,11 @@ class Question extends Model
      */
     public function hasValidation(): bool
     {
-        if (is_array($this->validation) && ! empty($this->validation)) {
-            return true;
-        }
-
-        return false;
+        return is_array($this->validation) && ! empty($this->validation);
     }
 
     /**
-     * Check if a question has validation.
+     * Check if a question has no validation.
      */
     public function hasNoValidation(): bool
     {
@@ -117,11 +112,7 @@ class Question extends Model
      */
     public function hasQuestionOptions(): bool
     {
-        if ($this->questionOptions()->first() instanceof QuestionOption) {
-            return true;
-        }
-
-        return false;
+        return $this->questionOptions()->exists();
     }
 
     /**

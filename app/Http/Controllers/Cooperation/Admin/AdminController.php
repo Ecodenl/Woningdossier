@@ -15,12 +15,10 @@ class AdminController extends Controller
         $user = \App\Helpers\Hoomdossier::user();
         $building = $user->building;
         $role = HoomdossierSession::getRole(true);
-
-        $buildingId = HoomdossierSession::getBuilding(false);
         HoomdossierSession::switchRole($building, $role);
 
         // If they can start/stop a session, they can see a user's building.
-        return redirect()->route('cooperation.admin.buildings.show', compact('buildingId'));
+        return redirect()->route('cooperation.admin.buildings.show', compact('building'));
     }
 
     public function index()

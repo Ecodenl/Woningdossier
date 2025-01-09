@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('example_building_id')->unsigned();
             $table->foreign('example_building_id')->references('id')->on('example_buildings')->onDelete('restrict');
 
-            $table->integer('build_year')->nullable()->default(null);
+            $table->integer('build_year')->nullable();
             $table->text('content')->nullable();
 
             $table->timestamps();

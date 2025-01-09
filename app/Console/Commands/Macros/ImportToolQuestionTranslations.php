@@ -53,6 +53,6 @@ class ImportToolQuestionTranslations extends Command
             Excel::CSV
         );
 
-        return 0;
+        return self::SUCCESS;
     }
 }

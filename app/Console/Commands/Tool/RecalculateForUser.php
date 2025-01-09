@@ -124,5 +124,7 @@ class RecalculateForUser extends Command
         $bar->finish();
 
         $this->output->newLine();
+
+        return self::SUCCESS;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Models\Building;
 use Illuminate\Http\JsonResponse;
 use App\Events\Registered;
 use App\Events\UserAllowedAccessToHisBuilding;
@@ -45,15 +46,19 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
         /** @var \App\Actions\Fortify\CreateNewUser $creator */
         $user = $creator->request($request)->create($request->all());
         $account = $user->account;
+        $building = $user->building;
 
         if ($account->wasRecentlyCreated) {
             $account->sendEmailVerificationNotification();
             event(new Registered($user->cooperation, $user));
-        } else {
+        } elseif ($user->wasRecentlyCreated) {
+            // We don't want to dispatch this if only a building was made
             UserAssociatedWithOtherCooperation::dispatch($user->cooperation, $user);
         }
-        // at this point, a user can't register without accepting the privacy terms.
-        UserAllowedAccessToHisBuilding::dispatch($user, $user->building);
+
+        // At this point, a user can't register without accepting the privacy terms. If he just added a building,
+        // he should have already accepted it.
+        UserAllowedAccessToHisBuilding::dispatch($user, $building);
 
         $this->guard->login($account);
 
@@ -70,17 +75,23 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
         $email = $request->get('email');
         $account = Account::where('email', $email)->first();
 
-        $response = ['email_exists' => false, 'user_is_already_member_of_cooperation' => false];
+        $response = [
+            'email_exists' => false,
+            'user_is_already_member_of_cooperation' => false,
+            'user_has_no_building' => false,
+        ];
 
         if ($account instanceof Account) {
             $response['email_exists'] = true;
 
             // check if the user is a member of the cooperation
-            if ($account->users()->forMyCooperation($cooperationToCheckFor->id)->first() instanceof User) {
+            if (($user = $account->users()->forMyCooperation($cooperationToCheckFor->id)->first()) instanceof User) {
                 $response['user_is_already_member_of_cooperation'] = true;
-            }
 
-            return response()->json($response);
+                if (! $user->building instanceof Building) {
+                    $response['user_has_no_building'] = true;
+                }
+            }
         }
 
         return response()->json($response);

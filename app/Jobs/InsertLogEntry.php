@@ -18,28 +18,17 @@ class InsertLogEntry implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $loggableType;
-    public $loggableId;
-    public $buildingId;
-    public $message;
-    public $crucial;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $loggableType, int $loggableId, int $buildingId, string $message, bool $crucial = false)
+    public function __construct(public string $loggableType, public int $loggableId, public int $buildingId, public string $message, public bool $crucial = false)
     {
         $this->queue = Queue::LOGS;
-        $this->loggableType = $loggableType;
-        $this->loggableId = $loggableId;
-        $this->buildingId = $buildingId;
-        $this->message = $message;
         // crucial = false -> if the job is already running, it will not be released back to the queue; It doesn't matter if the job is not ran again.
         // e.g. it doesn't matter if we have one or multiple "User X heeft een wijziging doorgevoerd in het actieplan" entries at the same timestamp.
         // crucial = true -> if the job is already running, it will be released back to the queue
-        $this->crucial = $crucial;
     }
 
     /**
@@ -58,9 +47,10 @@ class InsertLogEntry implements ShouldQueue
     /**
      * Get the middleware the job should pass through.
      */
-    public function middleware(): array {
+    public function middleware(): array
+    {
         $withoutOverlapping = new WithoutOverlapping(sprintf('insert-log-entry-%s-%s-%s', $this->loggableType, $this->loggableId, $this->buildingId));
-        if (!$this->crucial) {
+        if (! $this->crucial) {
             return [
                 $withoutOverlapping->dontRelease(),
             ];

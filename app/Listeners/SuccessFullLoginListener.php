@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Illuminate\Auth\Events\Login;
 use Illuminate\Http\RedirectResponse;
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
@@ -31,10 +32,8 @@ class SuccessFullLoginListener
 
     /**
      * Handle the event.
-     *
-     * @param $event
      */
-    public function handle($event): ?RedirectResponse
+    public function handle(Login $event): ?RedirectResponse
     {
         /** @var Account $account */
         $account = $event->user;

@@ -32,6 +32,13 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
     protected $notificationSetting;
     protected $unreadMessageCount;
 
+    /**
+     * The number of seconds after which the job's unique lock will be released.
+     *
+     * @var int
+     */
+    public $uniqueFor = 3600;
+
     public function __construct(Cooperation $cooperation, User $user, Building $building, NotificationSetting $notificationSetting, int $unreadMessageCount)
     {
         $this->queue = Queue::APP_EXTERNAL;
@@ -62,6 +69,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
 
     public function failed(Throwable $exception)
     {
+        Log::debug($exception->getMessage());
         // This functionality is here for people which mistyped their email address.
         // This will set the messages to read for the user in the resident's input source.
         // This way we prevent the mail from being sent over and over again.
@@ -81,6 +89,6 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
      */
     public function uniqueId() : string
     {
-        return $this->user->id.'-'.$this->cooperation->id;
+        return __CLASS__ . '-' . $this->user->id.'-'.$this->cooperation->id;
     }
 }

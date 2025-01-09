@@ -13,11 +13,16 @@ return new class extends Migration
     {
         Schema::create('completed_questionnaires', function (Blueprint $table) {
             $table->increments('id');
+
             $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->unsignedInteger('input_source_id')->nullable();
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete(null);
 
             $table->integer('questionnaire_id')->unsigned();
-            $table->foreign('questionnaire_id')->references('id')->on('questionnaires')->onDelete('restrict');
+            $table->foreign('questionnaire_id')->references('id')->on('questionnaires')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

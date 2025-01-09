@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\UserRevokedAccessToHisBuilding;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Log;
@@ -10,18 +11,9 @@ use App\Models\User;
 class LogRevokedAccessToBuilding
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Handle the event.
      */
-    public function handle(object $event): void
+    public function handle(UserRevokedAccessToHisBuilding $event): void
     {
         Log::create([
             'loggable_type' => User::class,

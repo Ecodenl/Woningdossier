@@ -26,8 +26,8 @@ class ReportController extends Controller
         $questionnaires = $cooperation->questionnaires;
 
         // Is there any file being processed for my cooperation
-        $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
+        $filesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
 
-        return view('cooperation.admin.cooperation.reports.index', compact('questionnaires', 'reportFileTypeCategory', 'anyFilesBeingProcessed'));
+        return view('cooperation.admin.cooperation.reports.index', compact('questionnaires', 'reportFileTypeCategory', 'filesBeingProcessed'));
     }
 }

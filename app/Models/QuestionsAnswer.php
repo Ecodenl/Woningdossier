@@ -20,22 +20,22 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource $inputSource
  * @property-read \App\Models\Question $question
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer forBuilding($building)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer forMe(?\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer forUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer query()
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer whereAnswer($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer whereQuestionId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer forBuilding(\App\Models\Building|int $building)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer forUser(\App\Models\User|int $user)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer whereAnswer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer whereQuestionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class QuestionsAnswer extends Model

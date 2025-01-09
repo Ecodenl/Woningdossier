@@ -43,13 +43,24 @@ class SubStepService
     /**
      * Complete a sub step for a building.
      */
-    public function complete(): void
+    public function complete(): CompletedSubStep
     {
-        CompletedSubStep::allInputSources()->firstOrCreate([
+        $completedSubStep = CompletedSubStep::allInputSources()->firstOrCreate([
             'sub_step_id' => $this->subStep->id,
             'input_source_id' => $this->inputSource->id,
             'building_id' => $this->building->id,
         ]);
+
+        // If it wasn't recently created, we want to ensure the master exists, because if it isn't being created
+        // then it won't save to the master either. By hitting a save, it will duplicate to the master, if necessary.
+        // A noteworthy example is when both a resident and coach have answers, and the resident resets their input
+        // source, leaving only the coach data. Without this extra save, their steps will never trigger a master
+        // otherwise and leave the coach in an infinite loop until the resident creates new answers.
+        if (! $completedSubStep->wasRecentlyCreated) {
+            $completedSubStep->save();
+        }
+
+        return $completedSubStep;
     }
 
     /**
@@ -57,10 +68,10 @@ class SubStepService
      */
     public function incomplete(): void
     {
-        optional(CompletedSubStep::allInputSources()->where([
+        CompletedSubStep::allInputSources()->where([
             'sub_step_id' => $this->subStep->id,
             'input_source_id' => $this->inputSource->id,
             'building_id' => $this->building->id,
-        ])->first())->delete();
+        ])->first()?->delete();
     }
 }

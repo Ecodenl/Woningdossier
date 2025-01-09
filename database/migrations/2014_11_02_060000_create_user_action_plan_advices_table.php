@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_action_plan_advices', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
 
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
@@ -26,6 +26,8 @@ return new class extends Migration
             $table->index('user_action_plan_advisable_type', 'user_action_plan_advisable_type_index');
 
             $table->string('category')->nullable();
+            $table->integer('order')->default(0);
+
             $table->boolean('visible')->default(false);
 
             $table->boolean('subsidy_available')->default(0);
@@ -39,9 +41,9 @@ return new class extends Migration
 
             $table->integer('year')->nullable();
             $table->boolean('planned')->default(true);
-            $table->integer('planned_year')->nullable()->default(null);
+            $table->integer('planned_year')->nullable();
 
-            $table->unsignedInteger('step_id')->nullable()->default(null);
+            $table->unsignedInteger('step_id')->nullable();
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('cascade');
 
             $table->timestamps();

@@ -83,7 +83,7 @@
                             {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
                             {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
                             <li>
-                                @include('cooperation.frontend.shared.parts.logout')
+                                @include('cooperation.layouts.parts.logout')
                             </li>
                         </ul>
                     </li>

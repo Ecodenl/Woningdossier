@@ -23,6 +23,8 @@ class RefreshRegulationsForUserActionPlanAdvice extends NonHandleableJobAfterRes
 
     public $tries = 3;
 
+    public $deleteWhenMissingModels = true;
+
     /**
      * Create a new job instance.
      *

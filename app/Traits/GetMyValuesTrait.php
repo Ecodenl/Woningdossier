@@ -33,7 +33,7 @@ trait GetMyValuesTrait
      * Boot this trait.
      * (https://www.archybold.com/blog/post/booting-eloquent-model-traits)
      */
-    public static function bootGetMyValuesTrait()
+    public static function bootGetMyValuesTrait(): void
     {
         static::saved(function (Model $model) {
             // might be handy to prevent getting into an infinite loop (-:>
@@ -64,16 +64,16 @@ trait GetMyValuesTrait
     }
 
     /**
-     * Returns if this model has a particular attribute.
+     * Returns if this model has a particular column.
      * This should be done on the database table as this is also used during
      * creation in which attributes may not be set.
      */
-    public function hasAttribute(string $attribute): bool
+    public function hasColumn(string $attribute): bool
     {
         return \App\Helpers\Cache\Schema::hasColumn($this->getTable(), $attribute);
     }
 
-    protected function saveForMasterInputSource()
+    protected function saveForMasterInputSource(): void
     {
         $tablesToIgnore = [
             'user_action_plan_advice_comments', 'step_comments', 'private_message_views', 'file_storages'
@@ -125,7 +125,7 @@ trait GetMyValuesTrait
             }
 
             foreach ($crucialRelationCombinationIds as $crucialRelationCombinationId) {
-                if ($this->hasAttribute($crucialRelationCombinationId)) {
+                if ($this->hasColumn($crucialRelationCombinationId)) {
                     $shouldAdd = $crucialRelationCombinationId !== 'tool_question_custom_value_id';
 
                     if (! $shouldAdd) {
@@ -149,10 +149,9 @@ trait GetMyValuesTrait
                     $data,
                 );
         }
-
     }
 
-    protected function deleteForMasterInputSource()
+    protected function deleteForMasterInputSource(): void
     {
         $tablesToIgnore = [
             'user_action_plan_advice_comments', 'step_comments',
@@ -178,7 +177,7 @@ trait GetMyValuesTrait
             $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
 
             foreach ($crucialRelationCombinationIds as $crucialRelationCombinationId) {
-                if ($this->hasAttribute($crucialRelationCombinationId)) {
+                if ($this->hasColumn($crucialRelationCombinationId)) {
                     $shouldAdd = $crucialRelationCombinationId !== 'tool_question_custom_value_id';
 
                     if (! $shouldAdd) {
@@ -208,40 +207,34 @@ trait GetMyValuesTrait
 
     /**
      * Scope all the available input for a user.
-     *
-     * @param $query
-     *
-     * @return mixed
      */
-    public function scopeForMe($query, User $user = null)
+    public function scopeForMe(Builder $query, User $user = null): Builder
     {
         $whereUserOrBuildingId = $this->determineWhereColumn($user);
 
-        return $query->withoutGlobalScope(GetValueScope::class)
+        return $query->allInputSources()
             ->where($whereUserOrBuildingId)
-            ->join('input_sources',
-                $this->getTable() . '.input_source_id', '=',
-                'input_sources.id')
+            ->join('input_sources', $this->getTable() . '.input_source_id', '=', 'input_sources.id')
             ->orderBy('input_sources.order', 'ASC')
             ->select([$this->getTable() . '.*']);
     }
 
 
-    public function scopeForBuilding(Builder $query, $building)
+    public function scopeForBuilding(Builder $query, int|Building $building): Builder
     {
         $id = $building instanceof Building ? $building->id : $building;
 
         return $query->where('building_id', $id);
     }
 
-    public function scopeForUser(Builder $query, $user)
+    public function scopeForUser(Builder $query, int|User $user): Builder
     {
         $id = $user instanceof User ? $user->id : $user;
 
         return $query->where('user_id', $id);
     }
 
-    public function scopeAllInputSources(Builder $query)
+    public function scopeAllInputSources(Builder $query): Builder
     {
         return $query->withoutGlobalScope(GetValueScope::class);
     }
@@ -289,13 +282,9 @@ trait GetMyValuesTrait
     /**
      * Method to only scope the resident input source.
      *
-     * @param $query
-     *
-     * @return mixed
      * @deprecated
-     *
      */
-    public function scopeResidentInput($query)
+    public function scopeResidentInput(Builder $query): Builder
     {
         $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
@@ -333,10 +322,8 @@ trait GetMyValuesTrait
 
     /**
      * Get the coach input from a collection that comes from the forMe() scope.
-     *
-     * @return mixed
      */
-    public static function getCoachInput(Collection $inputSourcesForMe)
+    public static function getCoachInput(Collection $inputSourcesForMe): mixed
     {
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
         if (self::hasCoachInputSource($inputSourcesForMe)) {
@@ -347,10 +334,8 @@ trait GetMyValuesTrait
 
     /**
      * Get the resident input from a collection that comes from the forMe() scope.
-     *
-     * @return mixed
      */
-    public static function getResidentInput(Collection $inputSourcesForMe)
+    public static function getResidentInput(Collection $inputSourcesForMe): mixed
     {
         $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
@@ -361,9 +346,7 @@ trait GetMyValuesTrait
     }
 
     /**
-     * Get a input source name.
-     *
-     * @return string name
+     * Get an input source name.
      */
     public function getInputSourceName(): string
     {

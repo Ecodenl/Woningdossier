@@ -48,43 +48,43 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\Step|null $step
  * @property-read \App\Models\User $user
  * @property-read Model|\Eloquent $userActionPlanAdvisable
- * @method static Builder|UserActionPlanAdvice allInputSources()
- * @method static Builder|UserActionPlanAdvice category(string $category)
- * @method static Builder|UserActionPlanAdvice cooperationMeasureForType(string $type, \App\Models\InputSource $inputSource)
+ * @method static Builder<static>|UserActionPlanAdvice allInputSources()
+ * @method static Builder<static>|UserActionPlanAdvice category(string $category)
+ * @method static Builder<static>|UserActionPlanAdvice cooperationMeasureForType(string $type, \App\Models\InputSource $inputSource)
  * @method static \Database\Factories\UserActionPlanAdviceFactory factory($count = null, $state = [])
- * @method static Builder|UserActionPlanAdvice forAdvisable(\Illuminate\Database\Eloquent\Model $advisable)
- * @method static Builder|UserActionPlanAdvice forBuilding($building)
- * @method static Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
- * @method static Builder|UserActionPlanAdvice forMe(?\App\Models\User $user = null)
- * @method static Builder|UserActionPlanAdvice forStep(\App\Models\Step $step)
- * @method static Builder|UserActionPlanAdvice forUser($user)
- * @method static Builder|UserActionPlanAdvice getCategorized()
- * @method static Builder|UserActionPlanAdvice invisible()
- * @method static Builder|UserActionPlanAdvice newModelQuery()
- * @method static Builder|UserActionPlanAdvice newQuery()
- * @method static Builder|UserActionPlanAdvice query()
- * @method static Builder|UserActionPlanAdvice residentInput()
- * @method static Builder|UserActionPlanAdvice whereCategory($value)
- * @method static Builder|UserActionPlanAdvice whereCosts($value)
- * @method static Builder|UserActionPlanAdvice whereCreatedAt($value)
- * @method static Builder|UserActionPlanAdvice whereId($value)
- * @method static Builder|UserActionPlanAdvice whereInputSourceId($value)
- * @method static Builder|UserActionPlanAdvice whereLoanAvailable($value)
- * @method static Builder|UserActionPlanAdvice whereOrder($value)
- * @method static Builder|UserActionPlanAdvice wherePlanned($value)
- * @method static Builder|UserActionPlanAdvice wherePlannedYear($value)
- * @method static Builder|UserActionPlanAdvice whereSavingsElectricity($value)
- * @method static Builder|UserActionPlanAdvice whereSavingsGas($value)
- * @method static Builder|UserActionPlanAdvice whereSavingsMoney($value)
- * @method static Builder|UserActionPlanAdvice whereStepId($value)
- * @method static Builder|UserActionPlanAdvice whereSubsidyAvailable($value)
- * @method static Builder|UserActionPlanAdvice whereUpdatedAt($value)
- * @method static Builder|UserActionPlanAdvice whereUserActionPlanAdvisableId($value)
- * @method static Builder|UserActionPlanAdvice whereUserActionPlanAdvisableType($value)
- * @method static Builder|UserActionPlanAdvice whereUserId($value)
- * @method static Builder|UserActionPlanAdvice whereVisible($value)
- * @method static Builder|UserActionPlanAdvice whereYear($value)
- * @method static Builder|UserActionPlanAdvice withInvisible()
+ * @method static Builder<static>|UserActionPlanAdvice forAdvisable(\Illuminate\Database\Eloquent\Model $advisable)
+ * @method static Builder<static>|UserActionPlanAdvice forBuilding(\App\Models\Building|int $building)
+ * @method static Builder<static>|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
+ * @method static Builder<static>|UserActionPlanAdvice forMe(?\App\Models\User $user = null)
+ * @method static Builder<static>|UserActionPlanAdvice forStep(\App\Models\Step $step)
+ * @method static Builder<static>|UserActionPlanAdvice forUser(\App\Models\User|int $user)
+ * @method static Builder<static>|UserActionPlanAdvice getCategorized()
+ * @method static Builder<static>|UserActionPlanAdvice invisible()
+ * @method static Builder<static>|UserActionPlanAdvice newModelQuery()
+ * @method static Builder<static>|UserActionPlanAdvice newQuery()
+ * @method static Builder<static>|UserActionPlanAdvice query()
+ * @method static Builder<static>|UserActionPlanAdvice residentInput()
+ * @method static Builder<static>|UserActionPlanAdvice whereCategory($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereCosts($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereCreatedAt($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereId($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereInputSourceId($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereLoanAvailable($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereOrder($value)
+ * @method static Builder<static>|UserActionPlanAdvice wherePlanned($value)
+ * @method static Builder<static>|UserActionPlanAdvice wherePlannedYear($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereSavingsElectricity($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereSavingsGas($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereSavingsMoney($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereStepId($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereSubsidyAvailable($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereUpdatedAt($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereUserActionPlanAdvisableId($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereUserActionPlanAdvisableType($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereUserId($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereVisible($value)
+ * @method static Builder<static>|UserActionPlanAdvice whereYear($value)
+ * @method static Builder<static>|UserActionPlanAdvice withInvisible()
  * @mixin \Eloquent
  */
 #[ScopedBy(VisibleScope::class)]
@@ -117,23 +117,26 @@ class UserActionPlanAdvice extends Model implements Auditable
         'subsidy_available'
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'planned' => 'boolean',
-        'visible' => 'boolean',
-        'subsidy_available' => 'boolean',
-        'loan_available' => 'boolean',
-        'costs' => 'array',
-    ];
-
     protected array $ignoreAttributes = [
         'loan_available',
         'subsidy_available',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'planned' => 'boolean',
+            'visible' => 'boolean',
+            'subsidy_available' => 'boolean',
+            'loan_available' => 'boolean',
+            'costs' => 'array',
+        ];
+    }
 
     // Scopes
     public function scopeGetCategorized(Builder $query): Collection

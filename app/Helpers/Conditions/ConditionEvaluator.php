@@ -126,19 +126,14 @@ class ConditionEvaluator
             $this->setAnswers($this->getToolAnswersForConditions($conditions));
         }
 
-        return $this->evaluateCollection($conditions, $this->answers);
+        return $this->evaluateCollection($conditions);
     }
 
-    /**
-     * @deprecated Use setAnswers instead + evaluate!
-     * Deprecated label to make more distinct that it needs to be updated
-     * Todo: the $collection parameter should be replaced with $this->answers and the method should become protected.
-     */
-    public function evaluateCollection(array $conditions, Collection $collection)
+    protected function evaluateCollection(array $conditions): bool
     {
         $result = false;
         foreach ($conditions as $andClause) {
-            $result = $result || $this->evaluateAnd($andClause, $collection);
+            $result = $result || $this->evaluateAnd($andClause, $this->answers);
         }
 
         return empty($conditions) || $result;

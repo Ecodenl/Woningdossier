@@ -80,6 +80,6 @@ class PdfReport extends Command
                 }
             }, FileStorage::getModel()->getTable().'.'.FileStorage::getModel()->getKeyName(), 'file_storage_id');
 
-        return 0;
+        return self::SUCCESS;
     }
 }

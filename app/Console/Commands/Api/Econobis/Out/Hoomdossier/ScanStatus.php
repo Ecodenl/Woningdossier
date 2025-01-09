@@ -52,6 +52,6 @@ class ScanStatus extends Command
 
         Log::debug('Response', $response);
 
-        return 0;
+        return self::SUCCESS;
     }
 }

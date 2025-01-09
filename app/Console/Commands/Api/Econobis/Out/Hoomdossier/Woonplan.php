@@ -80,6 +80,6 @@ class Woonplan extends Command
                 }
             }, 'users.id', 'id');
 
-        return 0;
+        return self::SUCCESS;
     }
 }

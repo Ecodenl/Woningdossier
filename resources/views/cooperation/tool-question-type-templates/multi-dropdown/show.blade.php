@@ -7,9 +7,9 @@
         ->getQuestionValues();
 @endphp
 @component('cooperation.frontend.layouts.components.alpine-select')
-    <select multiple id="{{$toolQuestion->short}}" class="form-input hidden" data-livewire-id="{{$this->id}}"
+    <select multiple id="{{$toolQuestion->short}}" class="form-input hidden" data-livewire-id="{{$this->getId()}}"
             x-on:component-ready.window="if ($event.detail.id == $el.getAttribute('data-livewire-id')) { constructSelect(); }"
-            wire:model="filledInAnswers.{{$toolQuestion->short}}"
+            wire:model.live="filledInAnswers.{{$toolQuestion->short}}"
             @if(($disabled ?? false))
                 disabled
             @else
@@ -17,7 +17,7 @@
                 x-on:input-update-processed.window="$el.removeAttribute('disabled');"
             @endif>
         @foreach($questionValues as $toolQuestionValue)
-            <option value="{{ $toolQuestionValue['value'] }}"
+            <option value="{{ $toolQuestionValue['value'] }}" wire:key="{{$toolQuestion->short}}-{{$toolQuestionValue['value']}}"
                     @if(! empty($toolQuestionValue['extra']['icon'])) data-icon="{{ $toolQuestionValue['extra']['icon'] }}" @endif>
                 {{ $toolQuestionValue['name'] }}
             </option>

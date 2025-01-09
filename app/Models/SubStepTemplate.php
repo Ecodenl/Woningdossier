@@ -16,19 +16,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $translations
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate query()
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate whereLocale(string $column, string $locale)
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate whereLocales(string $column, array $locales)
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubStepTemplate whereView($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubStepTemplate whereView($value)
  * @mixin \Eloquent
  */
 class SubStepTemplate extends Model

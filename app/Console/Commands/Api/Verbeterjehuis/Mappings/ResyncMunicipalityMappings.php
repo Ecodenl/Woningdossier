@@ -40,7 +40,7 @@ class ResyncMunicipalityMappings extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $vbjehuisMunicipalities = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Cities']) ?? [];
 

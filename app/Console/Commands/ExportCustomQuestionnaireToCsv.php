@@ -39,7 +39,7 @@ class ExportCustomQuestionnaireToCsv extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         $questionnaire = Questionnaire::find(
             $this->argument('questionnaireId')
@@ -67,5 +67,7 @@ class ExportCustomQuestionnaireToCsv extends Command
         } else {
             $this->alert("No questionnaire with ID: {$this->argument('questionnaireId')} found");
         }
+
+        return self::SUCCESS;
     }
 }

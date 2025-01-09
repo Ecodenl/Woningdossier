@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('price_indexings', function (Blueprint $table) {
             $table->increments('id');
-            $table->json('name');
             $table->string('short');
+            $table->json('name');
             $table->decimal('percentage', 5, 2);
             $table->timestamps();
         });

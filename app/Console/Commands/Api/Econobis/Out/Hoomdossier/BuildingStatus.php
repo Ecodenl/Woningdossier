@@ -42,6 +42,7 @@ class BuildingStatus extends Command
         SendBuildingStatusToEconobis::dispatch(
             Building::findOrFail($this->argument('building'))
         );
-        return 0;
+
+        return self::SUCCESS;
     }
 }

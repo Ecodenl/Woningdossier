@@ -1,165 +1,154 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-user')
+])
 
 @section('content')
-    <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-user')</div>
+    @component('cooperation.layouts.components.alert', [
+        'color' => 'blue-900',
+        'dismissible' => false,
+        'display' => false,
+        'attr' => 'style="display: none;" x-on:duplicates-checked.window="$el.style.display = $event.detail.showDuplicateError ? \'\' : \'none\'"',
+    ])
+        @lang('auth.register.form.duplicate-address')
+    @endcomponent
 
-        <div class="panel-body" x-data>
-            @component('cooperation.tool.components.alert', [
-                'alertType' => 'info',
-                'dismissible' => false,
-                'attr' => 'style="display: none;" x-on:duplicates-checked.window="$el.style.display = $event.detail.showDuplicateError ? \'\' : \'none\'"',
-            ])
-                @lang('auth.register.form.duplicate-address')
+    <div class="flex w-full xl:w-2/3"
+         x-data="register('{{route('cooperation.check-existing-email', ['cooperation' => $cooperation, 'forCooperation' => $cooperationToManage ?? $cooperation])}}')">
+        <form class="w-full flex flex-wrap"
+              @if(isset($cooperationToManage))
+                  action="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.store', compact('cooperation', 'cooperationToManage'))}}"
+              @else
+                  action="{{route('cooperation.admin.users.store', compact('cooperation'))}}"
+              @endif
+              method="POST">
+            @csrf
+
+            <h3 class="w-full heading-4 mb-4">
+                @lang('cooperation/admin/buildings.edit.account-user-info-title')
+            </h3>
+
+            @component('cooperation.frontend.layouts.components.form-group', [
+                    'withInputSource' => false,
+                    'label' => __('users.column-translations.first_name'),
+                    'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
+                    'inputName' => 'users.first_name',
+                    'attr' => 'x-show="! alreadyMember && ! noBuilding"',
+                ])
+                <input class="form-input" type="text" name="users[first_name]" value="{{ old('users.first_name') }}">
             @endcomponent
-            <div class="row"
-                 x-data="register('{{route('cooperation.check-existing-email', ['cooperation' => $cooperation, 'forCooperation' => $cooperationToManage ?? $cooperation])}}')">
-                <form class="has-address-data col-sm-12"
-                      @if(isset($cooperationToManage))
-                          action="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.store', compact('cooperation', 'cooperationToManage'))}}"
-                      @else
-                          action="{{route('cooperation.admin.users.store', compact('cooperation'))}}"
-                      @endif
-                      method="post">
-                    @csrf
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'withInputSource' => false,
+                'label' => __('users.column-translations.last_name'),
+                'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
+                'inputName' => 'users.last_name',
+                'attr' => 'x-show="! alreadyMember && ! noBuilding"',
+            ])
+                <input class="form-input" type="text" name="users[last_name]" value="{{ old('users.last_name') }}">
+            @endcomponent
 
-                    <h3>@lang('cooperation/admin/buildings.edit.account-user-info-title')</h3>
-                    <div class="row">
-                        <div class="col-md-6 col-lg-4" x-show="! alreadyMember">
-                            @component('layouts.parts.components.form-group', [
-                                'input_name' => 'users.first_name'
-                            ])
-                                <label for="first-name" class="control-label">
-                                    @lang('users.column-translations.first_name')
-                                </label>
-                                <input id="first-name" type="text" class="form-control" name="users[first_name]"
-                                       value="{{ old('users.first_name') }}" required autofocus>
-                            @endcomponent
-                        </div>
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'withInputSource' => false,
+                'label' => __('accounts.column-translations.email'),
+                'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
+                'inputName' => 'accounts.email',
+            ])
+                <input class="form-input" type="text" name="accounts[email]" value="{{ old('accounts.email') }}"
+                       x-on:change="checkEmail($el)">
+                <p class="text-red w-full text-left mb-2" x-show="showEmailWarning" x-cloak>
+                    @lang('auth.register.form.possible-wrong-email')
+                </p>
+                <p class="text-blue-800 w-full text-left mb-2" x-show="alreadyMember" x-cloak>
+                    @lang('cooperation/admin/users.create.form.already-member')
+                </p>
+                <p class="text-blue-800 w-full text-left mb-2" x-show="noBuilding" x-cloak>
+                    @lang('cooperation/admin/users.create.form.no-building')
+                </p>
+                <p class="text-blue-800 w-full text-left mb-2" x-show="emailExists" x-cloak>
+                    @lang('cooperation/admin/users.create.form.e-mail-exists')
+                </p>
+            @endcomponent
+            @component('cooperation.frontend.layouts.components.form-group', [
+                    'withInputSource' => false,
+                    'label' => __('users.column-translations.phone_number'),
+                    'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
+                    'inputName' => 'users.phone_number',
+                    'attr' => 'x-show="! alreadyMember && ! noBuilding"',
+                ])
+                <input class="form-input" type="text" name="users[phone_number]" value="{{ old('users.phone_number') }}">
+            @endcomponent
 
-                        <div class="col-md-6 col-lg-4" x-show="! alreadyMember">
-                            @component('layouts.parts.components.form-group', [
-                                'input_name' => 'users.last_name'
-                            ])
-                                <label for="last-name" class="control-label">
-                                    @lang('users.column-translations.last_name')
-                                </label>
-                                <input id="last-name" type="text" class="form-control" name="users[last_name]"
-                                       value="{{ old('users.last_name') }}" required>
-                            @endcomponent
-                        </div>
-                    </div>
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
+                'label' => __('cooperation/admin/users.create.form.roles'),
+                'id' => 'role-select',
+                'inputName' => "roles",
+                'withInputSource' => false,
+                'attr' => 'x-show="! alreadyMember && ! noBuilding"',
+            ])
+                @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
+                    <select multiple id="role-select" class="form-input hidden" name="roles[]"
+                            @cannot('editAny', $userCurrentRole) disabled @endcannot>
+                        <option selected disabled>@lang('cooperation/admin/users.create.form.select-role')</option>
+                        @foreach($roles as $role)
+                            @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
+                                <option value="{{$role->id}}"
+                                        @if(in_array($role->id, old('roles', []))) selected @endif
+                                >
+                                    {{$role->human_readable_name}}
+                                </option>
+                            @endcan
+                        @endforeach
+                    </select>
+                @endcomponent
+            @endcomponent
 
-                    <div class="row">
-                        <div class="col-md-6 col-lg-4">
-                            @component('layouts.parts.components.form-group', [
-                                'input_name' => 'accounts.email'
-                            ])
-                                <label for="email" class="control-label">
-                                    @lang('accounts.column-translations.email')
-                                </label>
-                                <input id="email" type="email" class="form-control" name="accounts[email]"
-                                       value="{{ old('accounts.email') }}" required x-on:change="checkEmail($el)">
-                                <p class="text-info" x-show="alreadyMember" x-cloak>
-                                    @lang('cooperation/admin/users.create.form.already-member')
-                                </p>
-                                <p class="text-info" x-show="emailExists" x-cloak>
-                                    @lang('cooperation/admin/users.create.form.e-mail-exists')
-                                </p>
-                            @endcomponent
-                        </div>
-                        <div class="col-md-6 col-lg-4" x-show="! alreadyMember">
-                            @component('layouts.parts.components.form-group', [
-                                'input_name' => 'users.phone_number'
-                            ])
-                                <label for="phone-number" class="control-label">
-                                    @lang('users.column-translations.phone_number')
-                                </label>
-                                <input id="phone-number" type="text" class="form-control" name="users[phone_number]"
-                                       value="{{ old('users.phone_number') }}">
-                            @endcomponent
-                        </div>
-                    </div>
+            <div class="w-full"></div>
 
-                    <div class="row">
-                        <div class="col-md-6 col-lg-4" x-show="! alreadyMember">
-                            @component('layouts.parts.components.form-group', [
-                                       'input_name' => 'roles',
-                                    ])
-                                <label for="roles">@lang('cooperation/admin/users.create.form.roles')</label>
-                                <select @cannot('editAny',$userCurrentRole) disabled="disabled" @endcannot class="form-control roles" name="roles[]"
-                                       id="role-select" multiple="multiple">
-                                    @foreach($roles as $role)
-                                        @can('view', [$role, Hoomdossier::user(), $userCurrentRole])
-                                            <option value="{{$role->id}}" @if(in_array($role->id, old('roles', []))) selected="selected" @endif>
-                                                {{$role->human_readable_name}}
-                                            </option>
-                                        @endcan
-                                    @endforeach
-                                </select>
-                            @endcomponent
-                        </div>
-                    </div>
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
+                'label' => __('cooperation/admin/users.create.form.select-coach'),
+                'id' => 'associated-coaches',
+                'inputName' => "coach_id",
+                'withInputSource' => false,
+                'attr' => 'x-show="! alreadyMember && ! noBuilding"',
+            ])
+                @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
+                    <select id="associated-coaches" class="form-input hidden" name="coach_id">
+                        <option selected disabled>@lang('cooperation/admin/users.create.form.select-coach')</option>
+                        @foreach($coaches as $coach)
+                            <option value="{{$coach->id}}"
+                                    @if(old('coach_id') == $coach->id) selected @endif
+                            >
+                                {{$coach->getFullName()}}
+                            </option>
+                        @endforeach
+                    </select>
+                @endcomponent
+            @endcomponent
 
-                    <div class="row">
-                        <div class="col-md-6 col-lg-4" x-show="! alreadyMember">
-                            @component('layouts.parts.components.form-group', [
-                               'input_name' => 'coach_id',
-                            ])
-                                <label for="coach">@lang('cooperation/admin/users.create.form.select-coach')</label>
-                                <select name="coach_id" class="coach form-control" id="coach">
-                                    @foreach($coaches as $coach)
-                                        <option value="{{$coach->id}}"
-                                                @if(old('coach_id') == $coach->id) selected @endif>
-                                            {{$coach->getFullName()}}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            @endcomponent
-                        </div>
-                    </div>
-                    {{-- TODO: Contact ID? --}}
+            {{-- TODO: Contact ID? --}}
 
-                    <h3 x-show="! alreadyMember">@lang('cooperation/admin/buildings.edit.address-info-title')</h3>
-                    <div class="row">
-                        <div class="col-xs-8" x-show="! alreadyMember">
-                            @include('cooperation.layouts.address-bootstrap', [
-                                'withLabels' => true,
-                                'checks' => [
-                                    'correct_address', 'duplicates',
-                                ],
-                            ])
-                        </div>
-                    </div>
+            <h3 class="w-full heading-4 my-4" x-show="! alreadyMember && ! noBuilding">
+                @lang('cooperation/admin/buildings.edit.address-info-title')
+            </h3>
 
-                    <div class="row">
-                        <div class="col-sm-12 save-button" x-show="! alreadyMember">
-                            <button class="btn btn-primary btn-block" x-bind:disabled="alreadyMember"
-                                    type="submit">@lang('cooperation/admin/users.create.form.submit')
-                                <span class="glyphicon glyphicon-plus"></span></button>
-                        </div>
-                    </div>
-                </form>
+            <div class="w-full" x-show="! alreadyMember && ! noBuilding">
+                @include('cooperation.layouts.address', [
+                    'withLabels' => true,
+                    'checks' => [
+                        'correct_address', 'duplicates',
+                    ],
+                ])
             </div>
-        </div>
+
+            <div class="w-full mt-5" x-show="! alreadyMember && ! noBuilding">
+                <button class="btn btn-green flex justify-center items-center w-full" type="submit"
+                        x-on:click="setTimeout(() => {submitted = true;});"
+                        x-bind:disabled="submitted || alreadyMember || noBuilding">
+                    @lang('cooperation/admin/users.create.form.submit')
+                    <i class="w-3 h-3 icon-plus-purple ml-1"></i>
+                </button>
+            </div>
+        </form>
     </div>
 @endsection
-
-@push('js')
-    <script>
-        $(document).ready(function () {
-            let oldSelectedRoles = [];
-
-            $(".roles").select2({
-                placeholder: "@lang('cooperation/admin/users.create.form.select-role')",
-                maximumSelectionLength: Infinity
-            }).select2('val', oldSelectedRoles);
-
-            $(".coach").select2({
-                placeholder: "@lang('cooperation/admin/users.create.form.select-coach')",
-                maximumSelectionLength: Infinity,
-                allowClear: true
-            }).val(null).trigger("change");
-        });
-    </script>
-@endpush

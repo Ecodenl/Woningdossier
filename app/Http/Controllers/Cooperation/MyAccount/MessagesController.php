@@ -13,11 +13,13 @@ use App\Models\PrivateMessage;
 use App\Services\PrivateMessageService;
 use App\Services\PrivateMessageViewService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class MessagesController extends Controller
 {
+    /**
+     * @deprecated literally a redirect to edit
+     */
     public function index(Cooperation $cooperation): RedirectResponse
     {
         DeprecationLogger::log(__METHOD__ . ' used!');
@@ -28,9 +30,9 @@ class MessagesController extends Controller
     {
         //TODO: Should we redirect if the current user has a role that should resolve to the admin according to
         // the navbar / Messages Livewire component?
-        $buildingId = HoomdossierSession::getBuilding();
+        $building = HoomdossierSession::getBuilding(true);
         $privateMessages = PrivateMessage::public()
-            ->conversation($buildingId)
+            ->conversation($building->id)
             ->get();
 
         // TODO: See if we can deprecate this
@@ -38,19 +40,20 @@ class MessagesController extends Controller
         // currently (as of 30-10-2020), this shouldnt be needed anymore.
         // this is on register a private message will be created.
         if (! $privateMessages->first() instanceof PrivateMessage) {
+            DeprecationLogger::alert("Redirecting conversation request!");
             return redirect()->route('cooperation.conversation-requests.index', ['requestType' => PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION]);
         }
 
         $this->authorize('update', $privateMessages->first());
 
-        $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
+        $groupParticipants = PrivateMessage::getGroupParticipants($building);
 
         // Only residents read this box
         $resident = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         PrivateMessageViewService::markAsReadByUser($privateMessages, Hoomdossier::user(), $resident);
         //PrivateMessageViewService::setRead($privateMessages);
 
-        return view('cooperation.my-account.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants'));
+        return view('cooperation.my-account.messages.edit', compact('privateMessages', 'building', 'groupParticipants'));
     }
 
     public function store(ChatRequest $request): RedirectResponse

@@ -46,7 +46,7 @@
 
 @if($isInExpertTool)
     @push('js')
-        <script>
+        <script type="module">
             $('button[id*=submit-custom-questionnaire]').on('click', function () {
                 var questionnaireId = $(this).data('questionnaire-id');
                 // we could just find the questionnaire form and submit it, but the html5 validation wont be triggered.

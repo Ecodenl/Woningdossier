@@ -19,24 +19,24 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $inputSource
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forBuilding($building)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forCurrentInputSource()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forMe(?\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView query()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView wherePrivateMessageId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereReadAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereToCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView forBuilding(\App\Models\Building|int $building)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView forCurrentInputSource()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView forUser(\App\Models\User|int $user)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView wherePrivateMessageId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereReadAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereToCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereUserId($value)
  * @mixin \Eloquent
  */
 class PrivateMessageView extends Model
@@ -47,9 +47,12 @@ class PrivateMessageView extends Model
         'input_source_id', 'private_message_id', 'user_id', 'to_cooperation_id', 'read_at',
     ];
 
-    protected $casts = [
-        'read_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'read_at' => 'datetime',
+        ];
+    }
 
     /**
      * Get the total unread messages for a user within its given cooperation and after a specific date.

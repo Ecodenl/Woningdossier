@@ -68,6 +68,6 @@ class MonitorQueue extends Command
             ->where('created_at', '<=', Carbon::now()->subDays(7))
             ->delete();
 
-        return 0;
+        return self::SUCCESS;
     }
 }

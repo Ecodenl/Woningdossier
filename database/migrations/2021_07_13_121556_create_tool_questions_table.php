@@ -14,19 +14,19 @@ return new class extends Migration
     {
         Schema::create('tool_questions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('short')->nullable()->default(null);
-            $table->string('save_in')->nullable()->default(null);
+            $table->string('short')->nullable();
+            $table->string('save_in')->nullable();
             $table->unsignedInteger('for_specific_input_source_id')->nullable();
             $table->foreign('for_specific_input_source_id')->references('id')->on('input_sources')->onDelete('set null');
             $table->json('name');
             $table->json('help_text');
-            $table->json('placeholder')->nullable()->default(null);
+            $table->json('placeholder')->nullable();
             $table->string('data_type')->default(Caster::STRING);
             $table->boolean('coach')->default(true);
             $table->boolean('resident')->default(true);
-            $table->json('options')->nullable()->default(null);
-            $table->json('validation')->nullable()->default(null);
-            $table->string('unit_of_measure')->nullable()->default(null);
+            $table->json('options')->nullable();
+            $table->json('validation')->nullable();
+            $table->string('unit_of_measure')->nullable();
             $table->timestamps();
         });
     }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('appliance_properties', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('appliance_id')->unsigned()->nullable()->default(null);
+            $table->integer('appliance_id')->unsigned()->nullable();
             $table->foreign('appliance_id')->references('id')->on('appliances')->onDelete('restrict');
 
             $table->string('name')->default('');

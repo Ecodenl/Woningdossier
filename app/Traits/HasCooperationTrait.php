@@ -11,7 +11,7 @@ trait HasCooperationTrait
     /**
      * Boot the trait.
      */
-    public static function bootHasCooperationTrait()
+    public static function bootHasCooperationTrait(): void
     {
         // only add the scope if the app is not running in the console.
         if (! App::runningInConsole()) {
@@ -20,14 +20,14 @@ trait HasCooperationTrait
         }
     }
 
-    public function scopeForMyCooperation(Builder $builder, $cooperationId)
+    public function scopeForMyCooperation(Builder $builder, $cooperationId): Builder
     {
         return $builder
             ->withoutGlobalScope(CooperationScope::class)
             ->where('cooperation_id', $cooperationId);
     }
 
-    public function scopeForAllCooperations(Builder $query)
+    public function scopeForAllCooperations(Builder $query): Builder
     {
         return $query->withoutGlobalScope(new CooperationScope());
     }

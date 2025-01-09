@@ -10,6 +10,7 @@ use App\Helpers\Sanitizers\HtmlSanitizer;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Models\CompletedStep;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
@@ -189,9 +190,14 @@ class ToolQuestionService
                 Log::debug($answerData);
 
                 $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
-                // apply the example building for the given changes.
-                // we give him the old building features, otherwise we cant verify the changes
-                ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
+                // We've had cases where the building feature doesn't exist. It should exist, however.
+                // If it's missing, it should get created when saving answers and thus it should resolve itself.
+                // To ensure we don't do something we can't, we simply won't dispatch.
+                if ($oldBuildingFeature instanceof BuildingFeature) {
+                    // apply the example building for the given changes.
+                    // we give him the old building features, otherwise we cant verify the changes
+                    ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
+                }
             }
         }
 
@@ -256,7 +262,7 @@ class ToolQuestionService
 
         $toolQuestionsToUnset = [];
         foreach ($conditionalCustomValues as $conditionalCustomValue) {
-            if (! $evaluator->evaluateCollection($conditionalCustomValue->conditions, $answers)) {
+            if (! $evaluator->setAnswers($answers)->evaluate($conditionalCustomValue->conditions)) {
                 $answer = $this->building->getAnswer($this->currentInputSource, $conditionalCustomValue->toolQuestion);
 
                 // TODO: Expand this if there are single-value answers
@@ -280,7 +286,7 @@ class ToolQuestionService
         // should be reset
 
         //foreach ($toolQuestionValuables as $conditionalValuable) {
-        //    if (! $evaluator->evaluateCollection($conditionalValuable->conditions, $answers)) {
+        //    if (! $evaluator->setAnswers($answers)->evaluate($conditionalValuable->conditions)) {
         //        $answer = $this->building->getAnswer($this->currentInputSource, $conditionalValuable->toolQuestion);
         //
         //        // TODO: Expand this if there are multi-value answers

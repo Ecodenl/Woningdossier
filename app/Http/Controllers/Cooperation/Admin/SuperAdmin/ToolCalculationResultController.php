@@ -12,9 +12,6 @@ use Illuminate\Http\Request;
 
 class ToolCalculationResultController extends Controller
 {
-    /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
     public function index(): View
     {
         $toolCalculationResults = ToolCalculationResult::where('short', 'LIKE', '%heat-pump%')
@@ -25,19 +22,11 @@ class ToolCalculationResultController extends Controller
         return view('cooperation.admin.super-admin.tool-calculation-results.index', compact('toolCalculationResults'));
     }
 
-    /**
-     * @param \App\Models\ToolCalculationResult $toolQuestion
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
     public function edit(Cooperation $cooperation, ToolCalculationResult $toolCalculationResult): View
     {
         return view('cooperation.admin.super-admin.tool-calculation-results.edit', compact('toolCalculationResult'));
     }
 
-    /**
-     * @param \App\Models\ToolCalculationResult $toolQuestion
-     */
     public function update(ToolCalculationResultFormRequest $request, Cooperation $cooperation, ToolCalculationResult $toolCalculationResult): RedirectResponse
     {
         $toolCalculationResult->update($request->validated()['tool_calculation_results']);

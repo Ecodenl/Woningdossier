@@ -35,13 +35,15 @@ class CleanupPasswordResets extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         // Expire is in minutes.
         $expires = config('auth.passwords.users.expire');
 
         $hasExpired = Carbon::now()->subMinutes($expires);
 
-        DB::table('password_resets')->where('created_at', '<', $hasExpired)->delete();
+        DB::table('password_reset_tokens')->where('created_at', '<', $hasExpired)->delete();
+
+        return self::SUCCESS;
     }
 }

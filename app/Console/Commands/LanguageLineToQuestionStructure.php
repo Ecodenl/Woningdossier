@@ -34,7 +34,7 @@ class LanguageLineToQuestionStructure extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         // temporary command to convert normal translations to question like structure
         // this will be removed in the near future as refactor is needed
@@ -66,5 +66,7 @@ class LanguageLineToQuestionStructure extends Command
                 }
             }
         }
+
+        return self::SUCCESS;
     }
 }

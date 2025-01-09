@@ -34,6 +34,7 @@ return [
             'email' => 'E-mailadres',
             'email-exists' => 'Het e-mailadres is al geregistreerd, wij hebben nog een aantal gegevens van uw nodig. U kunt hierna inloggen met uw E-mailadres en huidige wachtwoord.',
             'already-member' => 'U bent al lid van deze coöperatie, ga naar de <strong><a href='.url('login').'>Login pagina</a></strong>',
+            'no-building' => 'U bent al lid van deze coöperatie, maar heeft geen gekoppelde woning. Na het invullen van uw adres kunt u inloggen met uw E-mailadres en huidige wachtwoord.',
             'connect' => 'Koppelen aan deze coöperatie',
             'first-name' => 'Voornaam',
             'last-name' => 'Achternaam',
@@ -73,7 +74,7 @@ return [
             'forgot-password' => 'Wachtwoord vergeten?',
         ],
         'no-account' => 'Nog geen account?',
-        'warning' => 'Er is geen woning gekoppeld aan uw account, om het Hoomdossier goed te gebruiken hebben wij uw adres nodig.',
+        'warning' => 'Er is geen woning gekoppeld aan uw account! Registreer opnieuw met dit e-mail adres, om een woning te koppelen.',
     ],
     'two-factor-challenge' => [
         'recovery-code-label' => 'Vul hier 1 van de 8 herstel codes in',

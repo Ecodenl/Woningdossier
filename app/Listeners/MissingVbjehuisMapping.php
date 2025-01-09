@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\NoMappingFoundForVbjehuisMunicipality;
 use App\Helpers\Queue;
 use App\Mail\Admin\MissingVbjehuisMunicipalityMappingEmail;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,19 +13,9 @@ class MissingVbjehuisMapping implements ShouldQueue
     public $queue = Queue::APP_EXTERNAL;
 
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Handle the event.
      */
-    public function handle(object $event): void
+    public function handle(NoMappingFoundForVbjehuisMunicipality $event): void
     {
         $recipients = explode(',', config('hoomdossier.contact.email.admin'));
         foreach ($recipients as $recipient) {

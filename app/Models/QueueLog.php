@@ -13,14 +13,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $size
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static Builder|QueueLog forQueue(string $queueName)
- * @method static Builder|QueueLog newModelQuery()
- * @method static Builder|QueueLog newQuery()
- * @method static Builder|QueueLog query()
- * @method static Builder|QueueLog whereCreatedAt($value)
- * @method static Builder|QueueLog whereQueue($value)
- * @method static Builder|QueueLog whereSize($value)
- * @method static Builder|QueueLog whereUpdatedAt($value)
+ * @method static Builder<static>|QueueLog forQueue(string $queueName)
+ * @method static Builder<static>|QueueLog newModelQuery()
+ * @method static Builder<static>|QueueLog newQuery()
+ * @method static Builder<static>|QueueLog query()
+ * @method static Builder<static>|QueueLog whereCreatedAt($value)
+ * @method static Builder<static>|QueueLog whereQueue($value)
+ * @method static Builder<static>|QueueLog whereSize($value)
+ * @method static Builder<static>|QueueLog whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class QueueLog extends Model

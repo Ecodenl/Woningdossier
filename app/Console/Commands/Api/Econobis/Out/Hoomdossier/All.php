@@ -52,5 +52,7 @@ class All extends Command
             $this->call($command, ['building' => $this->argument('building')]);
             $this->info("Processed {$command}");
         }
+
+        return self::SUCCESS;
     }
 }

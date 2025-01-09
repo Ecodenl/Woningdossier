@@ -28,37 +28,38 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeasureApplication> $measureApplications
  * @property-read int|null $measure_applications_count
  * @property-read Step|null $parentStep
+ * @property-read \App\Models\QuestionnaireStep|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $questionnaires
  * @property-read int|null $questionnaires_count
  * @property-read \App\Models\Scan|null $scan
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
  * @property-read mixed $translations
- * @method static Builder|Step childrenForStep(\App\Models\Step $step)
- * @method static Builder|Step expert()
+ * @method static Builder<static>|Step childrenForStep(\App\Models\Step $step)
+ * @method static Builder<static>|Step expert()
  * @method static \Database\Factories\StepFactory factory($count = null, $state = [])
- * @method static Builder|Step forScan(\App\Models\Scan $scan)
- * @method static Builder|Step newModelQuery()
- * @method static Builder|Step newQuery()
- * @method static Builder|Step ordered()
- * @method static Builder|Step query()
- * @method static Builder|Step quickScan()
- * @method static Builder|Step recalculable()
- * @method static Builder|Step whereCreatedAt($value)
- * @method static Builder|Step whereId($value)
- * @method static Builder|Step whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static Builder|Step whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
- * @method static Builder|Step whereLocale(string $column, string $locale)
- * @method static Builder|Step whereLocales(string $column, array $locales)
- * @method static Builder|Step whereName($value)
- * @method static Builder|Step whereOrder($value)
- * @method static Builder|Step whereParentId($value)
- * @method static Builder|Step whereScanId($value)
- * @method static Builder|Step whereShort($value)
- * @method static Builder|Step whereSlug($value)
- * @method static Builder|Step whereUpdatedAt($value)
- * @method static Builder|Step withGeneralData()
- * @method static Builder|Step withoutChildren()
+ * @method static Builder<static>|Step forScan(\App\Models\Scan $scan)
+ * @method static Builder<static>|Step newModelQuery()
+ * @method static Builder<static>|Step newQuery()
+ * @method static Builder<static>|Step ordered()
+ * @method static Builder<static>|Step query()
+ * @method static Builder<static>|Step quickScan()
+ * @method static Builder<static>|Step recalculable()
+ * @method static Builder<static>|Step whereCreatedAt($value)
+ * @method static Builder<static>|Step whereId($value)
+ * @method static Builder<static>|Step whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|Step whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|Step whereLocale(string $column, string $locale)
+ * @method static Builder<static>|Step whereLocales(string $column, array $locales)
+ * @method static Builder<static>|Step whereName($value)
+ * @method static Builder<static>|Step whereOrder($value)
+ * @method static Builder<static>|Step whereParentId($value)
+ * @method static Builder<static>|Step whereScanId($value)
+ * @method static Builder<static>|Step whereShort($value)
+ * @method static Builder<static>|Step whereSlug($value)
+ * @method static Builder<static>|Step whereUpdatedAt($value)
+ * @method static Builder<static>|Step withGeneralData()
+ * @method static Builder<static>|Step withoutChildren()
  * @mixin \Eloquent
  */
 class Step extends Model
@@ -168,14 +169,14 @@ class Step extends Model
     /** @deprecated Use scopeForScan instead */
     public function scopeQuickScan(Builder $query): Builder
     {
-        $quickScan = Scan::findByShort(Scan::QUICK);
+        $quickScan = Scan::quick();
         return $this->scopeForScan($query, $quickScan);
     }
 
     /** @deprecated Use scopeForScan instead */
     public function scopeExpert(Builder $query): Builder
     {
-        $expertScan = Scan::findByShort(Scan::EXPERT);
+        $expertScan = Scan::expert();
         return $this->scopeForScan($query, $expertScan);
     }
 

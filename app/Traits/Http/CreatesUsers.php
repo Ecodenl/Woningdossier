@@ -59,7 +59,7 @@ trait CreatesUsers
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {
             // find the coach to give permissions
-            $coach = User::find($request->input('coach_id'));
+            $coach = User::forAllCooperations()->find($request->input('coach_id'));
 
             // now give the selected coach access with permission to the new created building
             BuildingPermissionService::givePermission($coach, $building);

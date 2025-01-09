@@ -90,7 +90,7 @@ return [
         'array'   => 'De :attribute moet :value waardes of minder bevatten.',
     ],
     'multiple_of'          => ':Attribute moet een veelvoud van :value zijn.',
-    'not_in'               => 'Het formaat van :attribute is ongeldig.',
+    'not_in'               => 'De waarde van :attribute is ongeldig.',
     'not_regex'            => 'De :attribute formaat is ongeldig.',
     'numeric'              => ':Attribute moet een getal bevatten',
     'present'              => 'De :attribute moet gevuld zijn.',
@@ -408,6 +408,7 @@ return [
 
         // Measure caategories
         'measure_categories.name' => 'naam',
+        'measure_categories.name.nl' => 'naam',
         'vbjehuis_measure' => 'VerbeterJeHuis maatregel',
 
         // Woonplan comments
@@ -424,6 +425,24 @@ return [
         'medias.' . MediaHelper::QUOTATION => "offerte",
         'medias.' . MediaHelper::INVOICE => "factuur",
         'medias.' . MediaHelper::BILL => "rekening",
+
+        // Admin
+        'building.note' => 'opmerking over de woning',
+
+        // Clients
+        'clients.name' => 'naam',
+
+        // Questionnaires
+        'questions.*.name' => 'naam',
+        'questions.*.options.*.name' => 'optie',
+
+        // Tool questions
+        'tool_questions.name' => 'naam van vraag',
+        'tool_questions.help_text' => 'help text van vraag',
+
+        // Tool calculation results
+        'tool_calculation_results.name' => 'naam',
+        'tool_calculation_results.help_text' => 'help text',
     ],
 
     'values' => [

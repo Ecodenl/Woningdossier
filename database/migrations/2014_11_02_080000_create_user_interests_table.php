@@ -12,12 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_interests', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
 
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
-            $table->enum('interested_in_type', ['service', 'element', 'measure_application', 'roof_type']);
+            $table->integer('input_source_id')->unsigned()->nullable()->default(1);
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('set null');
+
+            $table->string('interested_in_type');
             $table->integer('interested_in_id')->unsigned();
 
             $table->integer('interest_id')->unsigned();

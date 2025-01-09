@@ -45,10 +45,10 @@
                'id' => 'file-uploader',
                'inputName' => 'document'
             ])
-                <input wire:model="document" wire:loading.attr="disabled"
+                <input wire:model.live="document" wire:loading.attr="disabled"
                        class="form-input" id="uploader" type="file" autocomplete="off"
                        {{-- This is a Livewire event we can capture --}}
-                       x-on:livewire-upload-finish="livewire.emit('uploadDone')">
+                       x-on:livewire-upload-finish="$wire.dispatchSelf('uploadDone')">
             @endcomponent
         </div>
     @endcan

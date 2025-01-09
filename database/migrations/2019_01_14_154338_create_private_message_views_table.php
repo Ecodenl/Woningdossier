@@ -20,10 +20,13 @@ return new class extends Migration
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->integer('cooperation_id')->unsigned()->nullable();
-            $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
+            $table->unsignedInteger('input_source_id')->nullable();
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete(null);
 
-            $table->dateTime('read_at')->nullable()->default(null);
+            $table->integer('to_cooperation_id')->unsigned()->nullable();
+            $table->foreign('to_cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
+
+            $table->dateTime('read_at')->nullable();
 
             $table->timestamps();
         });

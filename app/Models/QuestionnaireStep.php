@@ -17,15 +17,15 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Questionnaire $questionnaire
  * @property-read \App\Models\Step $step
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep query()
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereQuestionnaireId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereStepId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionnaireStep newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionnaireStep newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionnaireStep query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionnaireStep whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionnaireStep whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionnaireStep whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionnaireStep whereQuestionnaireId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionnaireStep whereStepId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionnaireStep whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class QuestionnaireStep extends Pivot

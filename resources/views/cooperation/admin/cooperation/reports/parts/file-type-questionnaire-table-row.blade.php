@@ -1,13 +1,11 @@
 @foreach($questionnaires as $questionnaire)
-    <?php
+    @php
         $file = $fileType->files()->mostRecent($questionnaire)->first();
-
 
         $questionnaireForFileType = $fileType
             ->files()
             ->where('questionnaire_id', $questionnaire->id)
             ->first();
-
 
         $questionnaireForFileTypeExists = $questionnaireForFileType instanceof \App\Models\FileStorage;
         $questionnaireBeingProcessed = $fileType->isQuestionnaireBeingProcessed($questionnaire);
@@ -18,43 +16,39 @@
         if ($questionnaire->isNotActive()) {
             $fileName .= " (INACTIEF)";
         }
-    ?>
+    @endphp
     <tr>
-        <td>{{$fileName}}
-            <ul>
-                @if($questionnaireForFileType instanceof \App\Models\FileStorage && !$questionnaireBeingProcessed)
-                    <li>
-                        <a @if(!$questionnaireBeingProcessed)
-                           href="{{route('cooperation.file-storage.download', ['fileStorage' => $questionnaireForFileType])}}" @endif>
-                            {{$fileName}}
-                            ({{$questionnaireForFileType->created_at->format('Y-m-d H:i')}})
-                        </a>
-                    </li>
-                @endif
-            </ul>
+        <td>
+            {{$fileName}}
+            @if($questionnaireForFileType instanceof \App\Models\FileStorage && ! $questionnaireBeingProcessed)
+                <a class="in-text block" href="{{route('cooperation.file-storage.download', ['fileStorage' => $questionnaireForFileType])}}">
+                    {{$fileName}}
+                    ({{$questionnaireForFileType->created_at->format('Y-m-d H:i')}})
+                </a>
+            @endif
         </td>
 
         <td>
-            <form action="{{route('cooperation.file-storage.store', ['fileType' => $fileType->short])}}"
-                  method="post">
-                <input type="hidden" name="file_storages[questionnaire_id]"
-                       value="{{$questionnaire->id}}">
-                @csrf
-                <button
-                        @if($questionnaireBeingProcessed) disabled="disabled"
-                        type="button" data-toggle="tooltip"
-                        title="@lang('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')"
-                        @else
-                        type="submit"
-                        @endif
-                        class="btn btn-{{$questionnaireBeingProcessed ? 'warning' : 'primary'}}"
-                >
-                    @lang('cooperation/frontend/tool.my-plan.downloads.create-report')
-                    @if($questionnaireBeingProcessed)
-                        <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
-                    @endif
-                </button>
-            </form>
+            @if($questionnaireBeingProcessed)
+                <div title="@lang('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')">
+                    <button class="btn btn-green flex items-center" type="button" disabled>
+                        @lang('cooperation/frontend/tool.my-plan.downloads.create-report')
+                        <i class="icon-sm icon-ventilation-fan animate-spin-slow ml-1"></i>
+                    </button>
+                </div>
+            @else
+                <form action="{{route('cooperation.file-storage.store', ['fileType' => $fileType->short])}}"
+                      method="POST">
+                    @csrf
+
+                    <input type="hidden" name="file_storages[questionnaire_id]"
+                           value="{{$questionnaire->id}}">
+
+                    <button class="btn btn-green" type="submit">
+                        @lang('cooperation/frontend/tool.my-plan.downloads.create-report')
+                    </button>
+                </form>
+            @endif
         </td>
     </tr>
 @endforeach

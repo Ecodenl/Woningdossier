@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\ObservingToolForUserEvent;
 use App\Helpers\HoomdossierSession;
 use App\Services\Models\BuildingService;
 use App\Models\InputSource;
@@ -23,7 +24,7 @@ class ObservingToolForUserListener
     /**
      * Handle the event.
      */
-    public function handle(object $event): void
+    public function handle(ObservingToolForUserEvent $event): void
     {
         // the building we want to observe
         $building = $event->building;

@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\SendNotifications;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Facades\App;
 use App\Console\Commands\CleanupExpiredFileStorages;
@@ -12,7 +13,7 @@ use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Woonplan;
 use App\Console\Commands\Api\Econobis\Out\Hoomdossier\PdfReport;
 use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Gebruik;
 
-Schedule::command('send:notifications --type=private-message')->everyFifteenMinutes();
+Schedule::command(SendNotifications::class, ['--type' => 'private-message'])->everyFifteenMinutes();
 
 Schedule::command(MonitorQueue::class)->everyFiveMinutes();
 

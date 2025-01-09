@@ -16,6 +16,6 @@ class AvailableScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('available_until', '>=', Carbon::now()->format('Y-m-d H:i:s'));
+        $builder->where('available_until', '>=', Carbon::now());
     }
 }

@@ -42,7 +42,7 @@ class CleanupPasswordResets extends Command
 
         $hasExpired = Carbon::now()->subMinutes($expires);
 
-        DB::table('password_resets')->where('created_at', '<', $hasExpired)->delete();
+        DB::table('password_reset_tokens')->where('created_at', '<', $hasExpired)->delete();
 
         return self::SUCCESS;
     }

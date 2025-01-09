@@ -149,7 +149,6 @@ trait GetMyValuesTrait
                     $data,
                 );
         }
-
     }
 
     protected function deleteForMasterInputSource(): void
@@ -213,11 +212,9 @@ trait GetMyValuesTrait
     {
         $whereUserOrBuildingId = $this->determineWhereColumn($user);
 
-        return $query->withoutGlobalScope(GetValueScope::class)
+        return $query->allInputSources()
             ->where($whereUserOrBuildingId)
-            ->join('input_sources',
-                $this->getTable() . '.input_source_id', '=',
-                'input_sources.id')
+            ->join('input_sources', $this->getTable() . '.input_source_id', '=', 'input_sources.id')
             ->orderBy('input_sources.order', 'ASC')
             ->select([$this->getTable() . '.*']);
     }

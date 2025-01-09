@@ -20,7 +20,7 @@ return [
         'users' => [
             'provider' => 'accounts',
             'table' => 'password_reset_tokens',
-            'expire' => env('AUTH_PASSWORD_RESET_EXPIRE', 43200),
+            'expire' => env('AUTH_PASSWORD_RESET_EXPIRE', 43200), // 720 hours == 30 days
             'throttle' => 60,
         ],
     ],

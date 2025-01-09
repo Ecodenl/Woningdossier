@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\AVG;
 
-use App\Models\BuildingFeature;
 use App\Services\DiscordNotifier;
 use Carbon\Carbon;
 use Illuminate\Console\Command;

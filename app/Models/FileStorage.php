@@ -6,6 +6,7 @@ use App\Scopes\AvailableScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\HasCooperationTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -86,11 +87,19 @@ class FileStorage extends Model
     }
 
     /**
-     * Query to scope the expired files.
+     * Scope to query without the available scope, meaning all file storages will be returned.
      */
     public function scopeWithExpired(Builder $query): Builder
     {
         return $query->withoutGlobalScope(new AvailableScope());
+    }
+
+    /**
+     * Scope to query only the expired files.
+     */
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query->withExpired()->where('available_until', '<', Carbon::now());
     }
 
     /**

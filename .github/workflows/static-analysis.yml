@@ -99,4 +99,5 @@ jobs:
         run: composer install --prefer-dist
 
       - name: Run phpcs - PSR2 check
-        run: ./vendor/bin/phpcs --standard=PSR2 app
+        run: ./vendor/bin/phpcs --standard=phpbcs.xml app
+#        run: ./vendor/bin/phpcs --standard=PSR2 app

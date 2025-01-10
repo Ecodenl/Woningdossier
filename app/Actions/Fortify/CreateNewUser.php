@@ -30,7 +30,7 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Validate and create a newly registered user.
      */
-    public function create(array $input): User
+    public function create(array $input): Account
     {
         $this->request ??= request();
         $this->input = $input;
@@ -40,7 +40,8 @@ class CreateNewUser implements CreatesNewUsers
 
         $cooperation = $this->request->route('cooperation');
 
-        return UserService::register($cooperation, [RoleHelper::ROLE_RESIDENT], $input);
+        $user = UserService::register($cooperation, [RoleHelper::ROLE_RESIDENT], $input);
+        return $user->account;
     }
 
     private function rules(): array

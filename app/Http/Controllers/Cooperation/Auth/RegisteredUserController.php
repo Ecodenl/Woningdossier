@@ -44,8 +44,8 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
     public function store(Request $request, CreatesNewUsers $creator): RegisterResponse
     {
         /** @var \App\Actions\Fortify\CreateNewUser $creator */
-        $user = $creator->request($request)->create($request->all());
-        $account = $user->account;
+        $account = $creator->request($request)->create($request->all());
+        $user = $account->user();
         $building = $user->building;
 
         if ($account->wasRecentlyCreated) {

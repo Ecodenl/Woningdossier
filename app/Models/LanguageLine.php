@@ -49,7 +49,7 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
 
         static::creating(function ($model) {
             if (static::where('group', $model->group)->where('key', $model->key)->first() instanceof LanguageLine) {
-                \Log::debug('duplicate key: '.$model->key);
+                \Log::debug('duplicate key: ' . $model->key);
             }
         });
     }

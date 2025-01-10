@@ -195,13 +195,11 @@ class HeatPump extends Calculator
             $energyUsage,
             'heating.current.gas.bruto',
             0
-        )) +
-            (data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get(
-                $energyUsage,
-                'tap_water.current.gas.bruto',
-                0
-            )) +
-            (data_get($energyUsage, 'cooking.new.gas', 0) - data_get($energyUsage, 'cooking.current.gas', 0));
+        )) + (data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get(
+            $energyUsage,
+            'tap_water.current.gas.bruto',
+            0
+        )) + (data_get($energyUsage, 'cooking.new.gas', 0) - data_get($energyUsage, 'cooking.current.gas', 0));
         // New gas usage will probably (ideally) be less than new. Savings is the difference, but * -1!
         $savingsGas = $savingsGas * -1;
 
@@ -221,16 +219,10 @@ class HeatPump extends Calculator
 //                                       (data_get($energyUsage, 'cooking.new.electricity', 0) - data_get($energyUsage, 'cooking.current.electricity', 0));
 
         //Log::debug("C77 (meerverbruik elektra): (newNettoElectricityUsageHeating + newNettoElectricityUsageTapWater + newNettoElectricityUsageCooking) - (currentNettoElectricityUsageHeating - currentNettoElectricityUsageTapWater - currentNettoElectricityUsageCooking)");
-        $extraConsumptionElectricity = ($newNettoElectricityUsageHeating +
-                $newNettoElectricityUsageTapWater +
-                $newNettoElectricityUsageCooking) -
-            $currentNettoElectricityUsageHeating -
-            $currentNettoElectricityUsageTapWater -
-            $currentNettoElectricityUsageCooking;
+        $extraConsumptionElectricity = ($newNettoElectricityUsageHeating + $newNettoElectricityUsageTapWater + $newNettoElectricityUsageCooking) - $currentNettoElectricityUsageHeating - $currentNettoElectricityUsageTapWater - $currentNettoElectricityUsageCooking;
         //Log::debug("C77 (meerverbruik elektra): (" . $newNettoElectricityUsageHeating . ' + ' . $newNettoElectricityUsageTapWater  . ' + ' . $newNettoElectricityUsageCooking . ') - ' . $currentNettoElectricityUsageHeating . ' - ' . $currentNettoElectricityUsageTapWater . ' - ' . $currentNettoElectricityUsageCooking . ' = ' . $extraConsumptionElectricity);
 
-        $savingsCo2 = RawCalculator::calculateCo2Savings($savingsGas) -
-            ($extraConsumptionElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
+        $savingsCo2 = RawCalculator::calculateCo2Savings($savingsGas) - ($extraConsumptionElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
         //Log::debug("C78: " . $savingsCo2 . " (CO2 besparing)");
 
         $calculatedMoneySavings = app(CalculatorService::class)

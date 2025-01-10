@@ -61,7 +61,7 @@ class InsulatedGlazing
                     }
 
                     $result['measure'][$measureApplication->id] = [
-                        'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, (int)$buildingInsulatedGlazingsData['m2'], (int)$buildingInsulatedGlazingsData['windows']),
+                        'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, (int) $buildingInsulatedGlazingsData['m2'], (int) $buildingInsulatedGlazingsData['windows']),
                         'savings_gas' => $gasSavings,
                         // calculated outside this foreach
                         //'savings_co2' => RawCalculator::calculateCo2Savings($gasSavings),
@@ -127,7 +127,7 @@ class InsulatedGlazing
         $framesValueId = 0;
 
         if (array_key_exists($frames->id, $buildingElements)) {
-            $framesValueId = (int)$buildingElements[$frames->id];
+            $framesValueId = (int) $buildingElements[$frames->id];
         }
         $frameElementValue = ElementValue::find($framesValueId);
 
@@ -164,7 +164,7 @@ class InsulatedGlazing
             $lastPaintedYear = 2000;
             // Only calculate if last painted year is set
             if (array_key_exists('last_painted_year', $buildingPaintworkStatuses) && ! is_null($buildingPaintworkStatuses['last_painted_year'])) {
-                $year = (int)$buildingPaintworkStatuses['last_painted_year'];
+                $year = (int) $buildingPaintworkStatuses['last_painted_year'];
                 if ($year > 1950) {
                     $lastPaintedYear = $year;
                 }

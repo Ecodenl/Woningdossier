@@ -34,16 +34,16 @@ class RawCalculator
 
         $roomTempCalculator = new RoomTemperatureCalculator($energyHabit);
         $averageHouseTemperature = $roomTempCalculator->getAverageHouseTemperature();
-        self::debug(__METHOD__.' Average house temperature = '.$averageHouseTemperature);
+        self::debug(__METHOD__ . ' Average house temperature = ' . $averageHouseTemperature);
         $kengetalEnergySaving = Temperature::energySavingFigureWallInsulation($measureAdvice, $averageHouseTemperature);
-        self::debug(__METHOD__.' Kengetal energiebesparing = '.$kengetalEnergySaving);
+        self::debug(__METHOD__ . ' Kengetal energiebesparing = ' . $kengetalEnergySaving);
 
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(
                 $surface * $kengetalEnergySaving,
                 self::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
             );
-            self::debug(__METHOD__.' '.$result.' = min('.$surface.' * '.$kengetalEnergySaving.', '.self::maxGasSavings($building, $inputSource, $energyHabit, $element->element).')');
+            self::debug(__METHOD__ . ' ' . $result . ' = min(' . $surface . ' * ' . $kengetalEnergySaving . ', ' . self::maxGasSavings($building, $inputSource, $energyHabit, $element->element) . ')');
         }
 
         return $result;
@@ -59,7 +59,7 @@ class RawCalculator
     public static function calculateCo2Savings($gasSavings)
     {
         $result = $gasSavings * Kengetallen::CO2_SAVING_GAS;
-        self::debug(__METHOD__.' CO2 besparing: '.$result.' = '.$gasSavings.' * '.Kengetallen::CO2_SAVING_GAS);
+        self::debug(__METHOD__ . ' CO2 besparing: ' . $result . ' = ' . $gasSavings . ' * ' . Kengetallen::CO2_SAVING_GAS);
 
         return $result;
     }
@@ -74,7 +74,7 @@ class RawCalculator
     public static function calculateMoneySavings($gasSavings, $euroSavingsGas)
     {
         $result = $gasSavings * $euroSavingsGas;
-        self::debug(__METHOD__." Euro's besparing: ".$result.' = '.$gasSavings.' * '.$euroSavingsGas);
+        self::debug(__METHOD__ . " Euro's besparing: " . $result . ' = ' . $gasSavings . ' * ' . $euroSavingsGas);
 
         return $result;
     }
@@ -87,7 +87,7 @@ class RawCalculator
             $result = max($surface * $measureApplication->costs, $measureApplication->minimal_costs);
         }
 
-        self::debug(__METHOD__.' Cost indication: '.$result.' = max('.$surface.' * '.$measureApplication->costs.', '.$measureApplication->minimal_costs.')');
+        self::debug(__METHOD__ . ' Cost indication: ' . $result . ' = max(' . $surface . ' * ' . $measureApplication->costs . ', ' . $measureApplication->minimal_costs . ')');
 
         return $result;
     }
@@ -104,7 +104,7 @@ class RawCalculator
      */
     public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, ?int $applicationYear = null, bool $applyIndexing = true): float|int
     {
-        self::debug(__METHOD__.' for measure '.$measure->measure_name);
+        self::debug(__METHOD__ . ' for measure ' . $measure->measure_name);
         if (! is_numeric($number) || $number <= 0) {
             return 0;
         }
@@ -118,7 +118,7 @@ class RawCalculator
         }
 
         $total = max($number * $measure->costs, $measure->minimal_costs);
-        self::debug(__METHOD__.' Non indexed costs: '.$total.' = max('.$number.' * '.$measure->costs.', '.$measure->minimal_costs.')');
+        self::debug(__METHOD__ . ' Non indexed costs: ' . $total . ' = max(' . $number . ' * ' . $measure->costs . ', ' . $measure->minimal_costs . ')');
         // Apply indexing (general indexing which applies for measures)
 
         if ($applyIndexing) {
@@ -134,7 +134,7 @@ class RawCalculator
 
         $totalIndexed = $total * pow((1 + ($costIndex / 100)), $yearFactor);
 
-        self::debug(__METHOD__.' Indexed costs: '.$totalIndexed.' = '.$total.' * '.(1 + ($costIndex / 100)).'^'.$yearFactor);
+        self::debug(__METHOD__ . ' Indexed costs: ' . $totalIndexed . ' = ' . $total . ' * ' . (1 + ($costIndex / 100)) . '^' . $yearFactor);
 
         return $totalIndexed;
     }
@@ -170,7 +170,7 @@ class RawCalculator
         }
 
         $costsIndexed = $costs * pow((1 + ($costIndex / 100)), $yearFactor);
-        self::debug(__METHOD__.' Re-indexed costs: '.$costsIndexed.' = '.$costs.' * '.(1 + ($costIndex / 100)).'^'.$yearFactor);
+        self::debug(__METHOD__ . ' Re-indexed costs: ' . $costsIndexed . ' = ' . $costs . ' * ' . (1 + ($costIndex / 100)) . '^' . $yearFactor);
 
         return $costsIndexed;
     }
@@ -212,9 +212,9 @@ class RawCalculator
             if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
                 $saving = $maxSaving->max_saving;
             }
-            self::debug(__METHOD__.' Max saving for building_type '.$buildingType->id.' + element '.$element->id.' ('.$element->short.') = '.$saving.'%');
+            self::debug(__METHOD__ . ' Max saving for building_type ' . $buildingType->id . ' + element ' . $element->id . ' (' . $element->short . ') = ' . $saving . '%');
             $result = $usage * ($saving / 100);
-            self::debug(__METHOD__.' '.$result.' = '.$usage.' * '.($saving / 100));
+            self::debug(__METHOD__ . ' ' . $result . ' = ' . $usage . ' * ' . ($saving / 100));
         }
 
         // when someone fills in a way to low non realistic gas usage it will be below 0

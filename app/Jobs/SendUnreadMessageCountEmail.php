@@ -63,7 +63,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
             $this->notificationSetting->last_notified_at = Carbon::now();
             $this->notificationSetting->save();
         } else {
-            Log::debug('it seems like user id '.$this->user->id.' has no building!');
+            Log::debug('it seems like user id ' . $this->user->id . ' has no building!');
         }
     }
 
@@ -89,6 +89,6 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
      */
     public function uniqueId() : string
     {
-        return __CLASS__ . '-' . $this->user->id.'-'.$this->cooperation->id;
+        return __CLASS__ . '-' . $this->user->id . '-' . $this->cooperation->id;
     }
 }

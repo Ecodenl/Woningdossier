@@ -51,10 +51,10 @@ class DeleteUser extends Command
         foreach ($userIds as $userId) {
             $user = User::find($userId);
             if ($user instanceof User) {
-                \Log::warning('Deleting user '.$user->id);
+                \Log::warning('Deleting user ' . $user->id);
                 UserService::deleteUser($user);
-                \Log::info('User '.$user->id.' was deleted');
-                $this->info('User '.$user->id.' was deleted');
+                \Log::info('User ' . $user->id . ' was deleted');
+                $this->info('User ' . $user->id . ' was deleted');
             }
         }
 

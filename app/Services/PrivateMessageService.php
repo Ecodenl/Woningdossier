@@ -67,7 +67,7 @@ class PrivateMessageService
             self::REQUEST_TYPE_MEASURE,
         ]);
 
-        return isset($requestTypesThatAreTranslatable[$requestType]) ? __('conversation-requests.request-types.'.$requestType) : null;
+        return isset($requestTypesThatAreTranslatable[$requestType]) ? __('conversation-requests.request-types.' . $requestType) : null;
     }
 
     /**

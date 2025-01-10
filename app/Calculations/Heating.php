@@ -121,7 +121,7 @@ class Heating extends Calculator
                 $heatSources
             )) {
                 Log::debug(
-                    __METHOD__.' - correcting situation (because no hr-boiler / district-heating => assign gas rest to wtw and not to heating'
+                    __METHOD__ . ' - correcting situation (because no hr-boiler / district-heating => assign gas rest to wtw and not to heating'
                 );
                 $wtw[$situation]['gas'] = $amountGas - $cooking[$situation]['gas'];
             }
@@ -158,7 +158,8 @@ class Heating extends Calculator
         array $wtwUsage,
         string $heatPumpTypeShort = '',
         string $boilerSettingComfortHeatShort = ''
-    ) : array {
+    ) : array
+    {
         // either 'new' or 'current'
         $case = Str::contains($heatSourceShort, 'new-') ? 'new' : 'current';
         //Log::debug(__METHOD__.' - case: '.$case);
@@ -278,13 +279,13 @@ class Heating extends Calculator
             $heatingTemperature = ToolQuestion::findByShort(
                 'new-boiler-setting-comfort-heat'
             )
-                                              ->toolQuestionCustomValues()
-                                              ->whereShort(
-                                                  $this->getAnswer(
-                                                      $boilerSettingComfortHeatShort
-                                                  )
-                                              )
-                                              ->first();
+                ->toolQuestionCustomValues()
+                ->whereShort(
+                    $this->getAnswer(
+                        $boilerSettingComfortHeatShort
+                    )
+                )
+                ->first();
 
 
             if (in_array('hr-boiler', $heatSources)) {
@@ -457,7 +458,7 @@ class Heating extends Calculator
     ): array {
         // either 'new' or 'current'
         $case = Str::contains($heatSourceShort, 'new-') ? 'new' : 'current';
-        Log::debug(__METHOD__.' - case: '.$case);
+        Log::debug(__METHOD__ . ' - case: ' . $case);
 
         // Note the energy usage for tap water will be EITHER gas (m3) or
         // electricity (kWh). Which means one of the two array keys will be 0
@@ -638,13 +639,13 @@ class Heating extends Calculator
             $heatingTemperature = ToolQuestion::findByShort(
                 'new-boiler-setting-comfort-heat'
             )
-                                              ->toolQuestionCustomValues()
-                                              ->whereShort(
-                                                  $this->getAnswer(
-                                                      $boilerSettingComfortHeatShort
-                                                  )
-                                              )
-                                              ->first();
+                ->toolQuestionCustomValues()
+                ->whereShort(
+                    $this->getAnswer(
+                        $boilerSettingComfortHeatShort
+                    )
+                )
+                ->first();
 
             $characteristics = $this->lookupHeatPumpCharacteristics(
                 $heatPumpConfigurable,
@@ -711,10 +712,10 @@ class Heating extends Calculator
                     return HeatPumpCharacteristic::forHeatPumpConfigurable(
                         $heatPumpConfigurable
                     )
-                                                 ->forHeatingTemperature(
-                                                     $heatingTemperature
-                                                 )
-                                                 ->first();
+                        ->forHeatingTemperature(
+                            $heatingTemperature
+                        )
+                        ->first();
                 }
             );
         }

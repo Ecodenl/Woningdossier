@@ -71,7 +71,7 @@ class CloneDataService
             // get the data from the input source that we want to clone
             $cloneableDatas = DB::table($table)->where($wheres)->get()->toArray();
 
-            $clonerClass = "App\Services\Cloning\Cloners\\".Str::ucfirst(Str::camel(Str::singular($table))).'Table';
+            $clonerClass = "App\Services\Cloning\Cloners\\" . Str::ucfirst(Str::camel(Str::singular($table))) . 'Table';
             $customClonerExists = class_exists($clonerClass, true);
 
             // sometimes there are edge cases, those will be solved by a cloner class.

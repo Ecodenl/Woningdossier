@@ -18,7 +18,7 @@ class RedirectIfIsObservingBuilding
     {
         if (HoomdossierSession::isUserObserving()) {
             $user = Hoomdossier::user();
-            Log::debug(__CLASS__.'::'.__METHOD__);
+            Log::debug(__CLASS__ . '::' . __METHOD__);
             Log::debug("Middleware: user id: {$user->id} tried to access {$request->route()->uri} while observing");
 
             return redirect()->back();

@@ -112,9 +112,7 @@ class Form extends Component
         $cooperationToEditFormData = $validatedData['cooperationToEditFormData'];
 
         // when you can create, you can update.
-        $authAbility = $this->cooperationToEdit instanceof Cooperation && $this->cooperationToEdit->exists
-            ? 'update'
-            : 'create';
+        $authAbility = $this->cooperationToEdit instanceof Cooperation && $this->cooperationToEdit->exists ? 'update' : 'create';
         $authArg = match ($authAbility) {
             'update' => $this->cooperationToEdit,
             'create' => Cooperation::class,

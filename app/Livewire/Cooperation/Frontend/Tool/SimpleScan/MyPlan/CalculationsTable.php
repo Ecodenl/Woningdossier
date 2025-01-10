@@ -109,7 +109,7 @@ class CalculationsTable extends Component
         } else {
             $this->tableData['cost-gas'] = [
                 'name' => __('cooperation/frontend/tool.my-plan.calculations.values.gas-cost'),
-                'value' => $kengetallenService->resolve(KengetallenCodes::EURO_SAVINGS_GAS).'€ / m<sup>3</sup>',
+                'value' => $kengetallenService->resolve(KengetallenCodes::EURO_SAVINGS_GAS) . '€ / m<sup>3</sup>',
                 'source' => 'RVO'
             ];
         }
@@ -119,7 +119,7 @@ class CalculationsTable extends Component
         } else {
             $this->tableData['cost-electricity'] = [
                 'name' => __('cooperation/frontend/tool.my-plan.calculations.values.electricity-cost'),
-                'value' => $kengetallenService->resolve(KengetallenCodes::EURO_SAVINGS_ELECTRICITY).' € / kWh',
+                'value' => $kengetallenService->resolve(KengetallenCodes::EURO_SAVINGS_ELECTRICITY) . ' € / kWh',
                 'source' => 'RVO'
             ];
         }
@@ -128,9 +128,7 @@ class CalculationsTable extends Component
             if (array_key_exists($toolQuestion->id, $answers)) {
                 $firstKey = array_key_first($answers[$toolQuestion->id]);
 
-                $answerToMakeReadable = $toolQuestion->data_type === Caster::ARRAY
-                    ? Arr::pluck($answers[$toolQuestion->id], 'answer')
-                    : $answers[$toolQuestion->id][$firstKey]['answer'] ?? null;
+                $answerToMakeReadable = $toolQuestion->data_type === Caster::ARRAY ? Arr::pluck($answers[$toolQuestion->id], 'answer') : $answers[$toolQuestion->id][$firstKey]['answer'] ?? null;
 
                 // Answer might be null, e.g. roof type can have null surface if for example created via mapping
                 if (! is_null($answerToMakeReadable)) {

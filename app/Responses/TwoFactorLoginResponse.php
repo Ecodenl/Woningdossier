@@ -23,8 +23,6 @@ class TwoFactorLoginResponse implements TwoFactorLoginResponseContract
 
         $redirect = 1 == $user->roles->count() ? RoleHelper::getUrlByRole($role) : '/admin';
 
-        return $request->wantsJson()
-            ? new JsonResponse('', 204)
-            : redirect()->intended($redirect);
+        return $request->wantsJson() ? new JsonResponse('', 204) : redirect()->intended($redirect);
     }
 }

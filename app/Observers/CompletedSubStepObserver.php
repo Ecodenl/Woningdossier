@@ -44,7 +44,7 @@ class CompletedSubStepObserver
 
             if ($step instanceof Step && $inputSource instanceof InputSource && $building instanceof Building) {
                 // Master is handled by GetMyValuesTrait
-                if (!$inputSource->isMaster()) {
+                if (! $inputSource->isMaster()) {
                     StepHelper::completeStepIfNeeded($step, $building, $inputSource, $building->user);
                     CompleteRelatedSubStep::dispatch($subStep, $building, $inputSource);
                 }

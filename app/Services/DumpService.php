@@ -345,7 +345,7 @@ class DumpService
             $userEnergyHabit,
             (new InsulatedGlazingHelper($user, $inputSource))
                 ->createValues()
-            ->getValues()
+                ->getValues()
         );
 
         $calculations['floor-insulation'] = FloorInsulation::calculate(

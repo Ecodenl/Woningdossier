@@ -33,9 +33,7 @@ class PasswordResetResponse implements \Laravel\Fortify\Contracts\PasswordResetR
     {
         $cooperation = $request->route('cooperation');
 
-        return $request->wantsJson()
-            ? new JsonResponse(['message' => trans($this->status)], 200)
-            : redirect(Fortify::redirects('password-reset', route('cooperation.auth.login', compact('cooperation'))))
-                ->with('status', trans($this->status));
+        return $request->wantsJson() ? new JsonResponse(['message' => trans($this->status)], 200) : redirect(Fortify::redirects('password-reset', route('cooperation.auth.login', compact('cooperation'))))
+            ->with('status', trans($this->status));
     }
 }

@@ -68,14 +68,14 @@ class RoofInsulationController extends ToolController
             /** var BuildingRoofType $currentRoofType */
             foreach ($currentRoofTypes as $currentRoofType) {
                 $cat = RoofInsulation::getRoofTypeCategory($currentRoofType->roofType);
-                if (!empty($cat)) {
+                if (! empty($cat)) {
                     $currentCategorizedRoofTypes[$cat] = $currentRoofType->toArray();
                 }
             }
 
             foreach ($currentRoofTypesForMe as $currentRoofTypeForMe) {
                 $cat = RoofInsulation::getRoofTypeCategory($currentRoofTypeForMe->roofType);
-                if (!empty($cat)) {
+                if (! empty($cat)) {
                     // we do not want this to be an array, otherwise we would have to add additional functionality to the input group component.
                     $currentCategorizedRoofTypesForMe[$cat][] = $currentRoofTypeForMe;
                 }
@@ -163,7 +163,7 @@ class RoofInsulationController extends ToolController
         }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
-        if (!empty($dirtyAttributes)) {
+        if (! empty($dirtyAttributes)) {
             UserToolDataChanged::dispatch($user);
         }
         $dirtyNames = array_keys($dirtyAttributes);

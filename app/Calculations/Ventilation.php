@@ -31,7 +31,8 @@ class Ventilation
         InputSource $inputSource,
         ?UserEnergyHabit $energyHabit,
         array $calculateData
-    ): array {
+    ): array
+    {
         $step = Step::findByShort('ventilation');
 
         /** @var BuildingService $buildingVentilationService */

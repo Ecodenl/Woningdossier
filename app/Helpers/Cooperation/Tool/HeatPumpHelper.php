@@ -108,8 +108,7 @@ class HeatPumpHelper extends ToolHelper
                         // If they use low temp, we suggest a full heat pump. Otherwise we always suggest hybrid.
                         // In the case the user is unsure about their temp usage, as mentioned above, we assume the
                         // worst case and thus also suggest hybrid
-                        $heatPumpToCalculate = $heatingTemp === 'temp-low' ? 'full-heat-pump-outside-air'
-                            : 'hybrid-heat-pump-outside-air';
+                        $heatPumpToCalculate = $heatingTemp === 'temp-low' ? 'full-heat-pump-outside-air' : 'hybrid-heat-pump-outside-air';
                     }
                 }
             }

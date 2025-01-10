@@ -194,9 +194,7 @@ abstract class CustomMeasureForm extends Component
                 $service = MappingService::init()
                     //->type(MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
                     ->from($from);
-                $measureCategory instanceof MeasureCategory
-                    ? $service->sync([$measureCategory], MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
-                    : $service->detach();
+                $measureCategory instanceof MeasureCategory ? $service->sync([$measureCategory], MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY) : $service->detach();
 
                 // Update the user action plan advice linked to this custom measure
                 $customMeasureApplication

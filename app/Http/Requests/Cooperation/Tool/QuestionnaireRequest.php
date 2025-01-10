@@ -42,7 +42,7 @@ class QuestionnaireRequest extends FormRequest
 
         foreach ($questions as $question) {
             // instead of using the array key as name in validation we give a "dynamic" name
-            $attributes['questions.'.$question->id] = "vraag '{$question->name}'";
+            $attributes['questions.' . $question->id] = "vraag '{$question->name}'";
         }
 
         return $attributes;
@@ -57,7 +57,7 @@ class QuestionnaireRequest extends FormRequest
 
         // loop through the questions
         foreach ($this->questions as $question) {
-            $validationRules['questions.'.$question->id] = QuestionnaireService::createValidationRuleForQuestion($question);
+            $validationRules['questions.' . $question->id] = QuestionnaireService::createValidationRuleForQuestion($question);
         }
 
         return $validationRules;
@@ -83,9 +83,9 @@ class QuestionnaireRequest extends FormRequest
                     // check whether the question exists or not.
                     if (! Question::find($questionId) instanceof Question) {
                         $validator->errors()->add('faulty_question', 'Er is iets fout gegaan, vul het formulier opniew in.');
-                        Log::debug(__METHOD__.'user submitted a custom questionnaire but question was not found.');
-                        Log::debug(__METHOD__."question_id: {$questionId}");
-                        Log::debug(__METHOD__."questionnaire_id: {$this->get('questionnaire_id')}");
+                        Log::debug(__METHOD__ . 'user submitted a custom questionnaire but question was not found.');
+                        Log::debug(__METHOD__ . "question_id: {$questionId}");
+                        Log::debug(__METHOD__ . "questionnaire_id: {$this->get('questionnaire_id')}");
                     }
                 }
             }

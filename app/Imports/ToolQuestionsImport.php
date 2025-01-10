@@ -29,7 +29,7 @@ class ToolQuestionsImport implements ToCollection, WithCustomCsvSettings, WithHe
                             'help_text' => $row['help_text'],
                         ]);
                 } else {
-                    Log::debug(__CLASS__."{$short} does not exist in the tool questions!");
+                    Log::debug(__CLASS__ . "{$short} does not exist in the tool questions!");
                 }
             }
         }

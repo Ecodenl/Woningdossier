@@ -41,8 +41,6 @@ class PasswordResetLinkController extends \Laravel\Fortify\Http\Controllers\Pass
             $status = Password::INVALID_USER;
         }
 
-        return $status == Password::RESET_LINK_SENT
-                    ? app(SuccessfulPasswordResetLinkRequestResponse::class, ['status' => $status])
-                    : app(FailedPasswordResetLinkRequestResponse::class, ['status' => $status]);
+        return $status == Password::RESET_LINK_SENT ? app(SuccessfulPasswordResetLinkRequestResponse::class, ['status' => $status]) : app(FailedPasswordResetLinkRequestResponse::class, ['status' => $status]);
     }
 }

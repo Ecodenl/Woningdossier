@@ -117,6 +117,6 @@ class DownloadPdf extends Component
     private function getFileNameForFileType(FileType $fileType, User $user, InputSource $inputSource): string
     {
         // 1234AB11-Bewonster-A-g-Bewoner.pdf;
-        return trim($user->building->postal_code).$user->building->number.'-'.Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
+        return trim($user->building->postal_code) . $user->building->number . '-' . Str::slug($user->getFullName()) . '-' . $inputSource->name . '.pdf';
     }
 }

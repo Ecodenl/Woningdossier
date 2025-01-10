@@ -78,7 +78,7 @@ class BuildingDataCopyService
             if ($targetValues->isEmpty()) {
                 // transform the source values to a insertable format for the target.
                 $insertableTargetValues = $sourceValues
-                    ->map(fn($sourceValue, $key) => static::createInsertFromSourceArray((array)$sourceValue, $target))
+                    ->map(fn($sourceValue, $key) => static::createInsertFromSourceArray((array) $sourceValue, $target))
                     ->toArray();
 
                 DB::table($table)->insert($insertableTargetValues);
@@ -92,7 +92,7 @@ class BuildingDataCopyService
                     }
 
                     // and insert the source values.
-                    DB::table($table)->insert(static::createInsertFromSourceArray((array)$sourceValue, $target));
+                    DB::table($table)->insert(static::createInsertFromSourceArray((array) $sourceValue, $target));
                 }
             }
         }
@@ -220,14 +220,14 @@ class BuildingDataCopyService
 
         if (array_key_exists('extra', $fromData)) {
             $extra = json_decode($fromData['extra'], true);
-            if (!is_null($extra)) {
+            if (! is_null($extra)) {
                 $fromData['extra'] = static::filterExtraColumn($extra);
             }
             // some extra column contain "null", we dont want that
             if ($fromData['extra'] == "null") {
                 $fromData['extra'] = null;
             }
-            if (!empty($fromData['extra'])) {
+            if (! empty($fromData['extra'])) {
                 $fromData['extra'] = json_encode($fromData['extra']);
             }
 
@@ -248,12 +248,12 @@ class BuildingDataCopyService
     {
         if ($toValue instanceof \stdClass) {
             // if the source has no valid data we dont do a update
-            if (!empty($updateData = static::createUpdateArray((array)$toValue, (array)$fromValue))) {
+            if (! empty($updateData = static::createUpdateArray((array) $toValue, (array) $fromValue))) {
                 $toValueQuery->update($updateData);
             }
         } else {
             // unset the stuff we dont want to insert
-            $fromValue = static::createUpdateArray((array)$toValue, (array)$fromValue);
+            $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
             // change the input source id to the 'to' id
             $fromValue['input_source_id'] = $to->id;
             $fromValue[$buildingOrUserColumn] = $buildingOrUserId;
@@ -317,7 +317,7 @@ class BuildingDataCopyService
     {
         return array_filter($extraColumnData, function ($extraValue, $extraKey) {
             // if the string is not considered empty, and its need an update. Then we add it
-            return !Str::isConsideredEmptyAnswer($extraValue) && static::keyNeedsUpdate($extraKey);
+            return ! Str::isConsideredEmptyAnswer($extraValue) && static::keyNeedsUpdate($extraKey);
         }, ARRAY_FILTER_USE_BOTH);
     }
 
@@ -332,7 +332,7 @@ class BuildingDataCopyService
         $updateArray = [];
 
         // if the desired input source has a extra key and its not empty, then we start to compare and merge the extra column.
-        if (array_key_exists('extra', $inputSourceToCopy) && !empty($inputSourceToCopy['extra']) && is_array($inputSourceToCopy['extra'])) {
+        if (array_key_exists('extra', $inputSourceToCopy) && ! empty($inputSourceToCopy['extra']) && is_array($inputSourceToCopy['extra'])) {
             if (empty($inputSourceToUpdate['extra'])) {
                 $inputSourceToCopyExtra = json_decode($inputSourceToCopy['extra'], true);
 
@@ -365,7 +365,7 @@ class BuildingDataCopyService
         // now update the "normal" values
         foreach ($inputSourceToCopy as $desiredInputSourceKey => $desiredInputSourceAnswer) {
             // if the answer from the desired input source is not empty and the key needs a update, then we update the resident his answer.
-            if ((!empty($desiredInputSourceAnswer) || static::isRadioInput($desiredInputSourceKey)) && static::keyNeedsUpdate($desiredInputSourceKey)) {
+            if ((! empty($desiredInputSourceAnswer) || static::isRadioInput($desiredInputSourceKey)) && static::keyNeedsUpdate($desiredInputSourceKey)) {
                 $updateArray[$desiredInputSourceKey] = $desiredInputSourceAnswer;
             }
         }

@@ -141,9 +141,7 @@ class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
 
         $currentHeatSourceWarmTapWater = $this->building->getAnswer($this->masterInputSource, ToolQuestion::findByShort('heat-source-warm-tap-water'));
         if (in_array('hr-boiler', $source)) {
-            $newHeatSourceWarmTapWater = empty($currentHeatSourceWarmTapWater)
-                ? ['hr-boiler']
-                : $currentHeatSourceWarmTapWater;
+            $newHeatSourceWarmTapWater = empty($currentHeatSourceWarmTapWater) ? ['hr-boiler'] : $currentHeatSourceWarmTapWater;
             if (false !== ($index = array_search('none', $newHeatSourceWarmTapWater))) {
                 // Replace none with hr-boiler
                 $newHeatSourceWarmTapWater = array_replace($newHeatSourceWarmTapWater, [$index => 'hr-boiler']);

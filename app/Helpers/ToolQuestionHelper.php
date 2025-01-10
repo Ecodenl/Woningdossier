@@ -259,7 +259,7 @@ class ToolQuestionHelper
                 }
             } else {
                 // so no columns for the table are found, al of the extra saved in parts are columns.
-                $column = implode('.', $savedInParts).'.'.$column;
+                $column = implode('.', $savedInParts) . '.' . $column;
             }
         }
 

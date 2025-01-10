@@ -146,20 +146,20 @@ class PrivateMessageView extends Model
     public static function getTotalUnreadMessagesForCooperation(int $cooperationId): int
     {
         return static::where('to_cooperation_id', $cooperationId)
-                   ->whereNull('input_source_id')
-                   ->where('read_at', null)
-                   ->count();
+            ->whereNull('input_source_id')
+            ->where('read_at', null)
+            ->count();
     }
 
     public static function getTotalUnreadMessagesForUserWithInputSource($userId, $inputSourceId): int
     {
         return static::select('private_messages.*')
-                    ->where('private_message_views.user_id', '=', $userId)
-                    ->where('input_source_id', '=', $inputSourceId)
-                    ->where('read_at', null)
-                    ->join('private_messages', function ($query) {
+            ->where('private_message_views.user_id', '=', $userId)
+            ->where('input_source_id', '=', $inputSourceId)
+            ->where('read_at', null)
+            ->join('private_messages', function ($query) {
                         $query->on('private_message_views.private_message_id', '=', 'private_messages.id');
-                    })->count();
+            })->count();
     }
 
     /**
@@ -169,15 +169,15 @@ class PrivateMessageView extends Model
     {
         // get all the private message id's for a building
         $privateMessageIdsForBuilding = $building->privateMessages
-                                                 ->pluck('id')
-                                                 ->all();
+            ->pluck('id')
+            ->all();
 
         // get the unread messages for the cooperation
         if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             return static::where('to_cooperation_id', HoomdossierSession::getCooperation())
-                         ->whereIn('private_message_id', $privateMessageIdsForBuilding)
-                         ->whereNull('read_at')
-                         ->count();
+                ->whereIn('private_message_id', $privateMessageIdsForBuilding)
+                ->whereNull('read_at')
+                ->count();
         } else {
             return static::where('user_id', Hoomdossier::user()->id)
                          ->forCurrentInputSource()

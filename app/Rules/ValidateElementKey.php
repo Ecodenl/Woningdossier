@@ -35,7 +35,7 @@ class ValidateElementKey implements ValidationRule
         if (! array_key_exists($element->id, $value)) {
             $building = HoomdossierSession::getBuilding(true);
             $inputSource = HoomdossierSession::getInputSource(true);
-            Log::debug(__METHOD__."user is messing around. user_id {$building->user_id} input_source_id: {$inputSource->id}");
+            Log::debug(__METHOD__ . "user is messing around. user_id {$building->user_id} input_source_id: {$inputSource->id}");
 
             return false;
         }

@@ -16,7 +16,7 @@ class BaseCache
     {
         $prefix = config('hoomdossier.cache.prefix', '');
 
-        return $prefix.sprintf($string, ...$parameters);
+        return $prefix . sprintf($string, ...$parameters);
     }
 
     /**
@@ -32,7 +32,7 @@ class BaseCache
             $prefix .= "{$cooperation->slug}_";
         }
 
-        return $prefix.sprintf($string, ...$parameters);
+        return $prefix . sprintf($string, ...$parameters);
     }
 
     /**

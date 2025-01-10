@@ -37,7 +37,7 @@ trait DecimalReplacementTrait
                 $subjects = $this->extractSubjects($decimals, $inputKey);
 
                 foreach ($subjects as $subjectKey => $subjectValue) {
-                    $this->createReplaceArray($mainInputKey.'.'.$subjectKey);
+                    $this->createReplaceArray($mainInputKey . '.' . $subjectKey);
                 }
             } else {
                 $this->createReplaceArray($inputKey);

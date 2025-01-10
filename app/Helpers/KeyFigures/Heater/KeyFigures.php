@@ -52,8 +52,8 @@ class KeyFigures implements KeyFiguresInterface
         $ttl = 60 * 60 * 24; // 24 hours
         return cache()->remember($key, $ttl, function () use ($residentCount, $comfortLevel) {
             return KeyFigureConsumptionTapWater::where('resident_count', $residentCount)
-                                               ->where('comfort_level_tap_water_id', $comfortLevel->id)
-                                               ->first();
+                ->where('comfort_level_tap_water_id', $comfortLevel->id)
+                ->first();
         });
     }
 

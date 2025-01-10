@@ -16,8 +16,6 @@ class LogoutResponse implements \Laravel\Fortify\Contracts\LogoutResponse
     {
         $cooperation = $request->route('cooperation');
 
-        return $request->wantsJson()
-            ? new JsonResponse('', 204)
-            : redirect(Fortify::redirects(route('cooperation.auth.login', compact('cooperation'))));
+        return $request->wantsJson() ? new JsonResponse('', 204) : redirect(Fortify::redirects(route('cooperation.auth.login', compact('cooperation'))));
     }
 }

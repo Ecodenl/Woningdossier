@@ -26,8 +26,7 @@ class UserFormRequest extends FormRequest
      */
     public function rules(): array
     {
-        $cooperationToCheckFor = $this->route('cooperationToManage') instanceof Cooperation
-            ? $this->route('cooperationToManage') : $this->route('cooperation');
+        $cooperationToCheckFor = $this->route('cooperationToManage') instanceof Cooperation ? $this->route('cooperationToManage') : $this->route('cooperation');
 
         $rules = array_merge([
             'accounts.email' => ['required', 'email', Rule::unique('accounts', 'email')],

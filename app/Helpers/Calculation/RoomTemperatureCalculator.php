@@ -206,8 +206,7 @@ class RoomTemperatureCalculator
     protected function calculateAverage($room)
     {
         return (
-            ($this->rooms[$room]['temp high'] * $this->rooms[$room]['hours high']) +
-            ($this->rooms[$room]['temp low'] * $this->rooms[$room]['hours low'])
+            ($this->rooms[$room]['temp high'] * $this->rooms[$room]['hours high']) + ($this->rooms[$room]['temp low'] * $this->rooms[$room]['hours low'])
         ) / 24;
     }
 }

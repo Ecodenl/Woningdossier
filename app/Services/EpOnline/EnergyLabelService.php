@@ -148,7 +148,7 @@ class EnergyLabelService
                     if ($exception->getResponse()->getStatusCode() == 400) {
                         Log::error('Bad request', json_decode($exception->getResponse()->getBody()->getContents(), true));
                     }
-                    $throw = !in_array($exception->getCode(), [400, 401, 404]);
+                    $throw = ! in_array($exception->getCode(), [400, 401, 404]);
                 }
 
                 if ($throw) {

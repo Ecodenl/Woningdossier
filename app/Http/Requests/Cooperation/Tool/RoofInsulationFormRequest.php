@@ -103,23 +103,23 @@ class RoofInsulationFormRequest extends FormRequest
             // when the roof type category exists add validation
             if (! empty($roofTypeCategory)) {
                 $validator->addRules([
-                    $brt.'.'.$roofTypeCategory.'.roof_surface' => 'required|numeric|min:0',
-                    $brt.'.'.$roofTypeCategory.'.insulation_roof_surface' => 'required|numeric|min:0|needs_to_be_lower_or_same_as:'.$brt.'.'.$roofTypeCategory.'.roof_surface',
+                    $brt . '.' . $roofTypeCategory . '.roof_surface' => 'required|numeric|min:0',
+                    $brt . '.' . $roofTypeCategory . '.insulation_roof_surface' => 'required|numeric|min:0|needs_to_be_lower_or_same_as:' . $brt . '.' . $roofTypeCategory . '.roof_surface',
                     //$brt.'.'.$roofTypeCategory.'.extra.zinc_replaced_date' => 'nullable|numeric|between:1960,'.$max,
                 ]);
 
                 // bitumen is only possible on a flat roof
                 if ('flat' === $roofTypeCategory) {
                     $validator->addRules([
-                        $brt.'.'.$roofTypeCategory.'.extra.bitumen_replaced_date' => 'nullable|numeric|between:1970,'.$max,
+                        $brt . '.' . $roofTypeCategory . '.extra.bitumen_replaced_date' => 'nullable|numeric|between:1970,' . $max,
                     ]);
                 }
 
                 // there is a extra default option that is not a  measure application, "niet".
                 // the value is 0, when thats selected do not validate
-                if ('0' !== $this->input($brt.'.'.$roofTypeCategory.'.extra.measure_application_id')) {
+                if ('0' !== $this->input($brt . '.' . $roofTypeCategory . '.extra.measure_application_id')) {
                     $validator->addRules([
-                        $brt.'.'.$roofTypeCategory.'.extra.measure_application_id' => ['required', 'exists:measure_applications,id'],
+                        $brt . '.' . $roofTypeCategory . '.extra.measure_application_id' => ['required', 'exists:measure_applications,id'],
                     ]);
                 }
             }

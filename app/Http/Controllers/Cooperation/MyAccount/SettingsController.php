@@ -59,7 +59,7 @@ class SettingsController extends Controller
         $masterInputSource = InputSource::master();
         ResetDossierForUser::dispatchSync($user, $masterInputSource);
         foreach ($inputSourceIds as $inputSourceId) {
-            Log::debug("resetting for input source ".$inputSourceId);
+            Log::debug("resetting for input source " . $inputSourceId);
             $relevantInputSource = InputSource::find($inputSourceId);
             ResetDossierForUser::dispatchSync($user, $relevantInputSource);
         }

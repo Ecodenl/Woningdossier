@@ -75,7 +75,7 @@ class SimpleScanComposer
         // now with a max order.
         $summedOrder = (int) DB::table(
             $questionnaireCountQuery->clone()->where('s.order', '<', $step->order)
-            ->union($subStepCountQuery->clone()->where('s.order', '<', $step->order)),
+                ->union($subStepCountQuery->clone()->where('s.order', '<', $step->order)),
             'x'
         )
             ->selectRaw('SUM(x.total) AS sum')

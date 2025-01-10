@@ -298,11 +298,9 @@ class Form extends CustomMeasureForm
         }
 
         // calculate to kg. (set gas and electricity to same unit)
-        $co2Reductions = $totalGasSavings * Kengetallen::CO2_SAVING_GAS +
-            $totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY;
+        $co2Reductions = $totalGasSavings * Kengetallen::CO2_SAVING_GAS + $totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY;
 
-        $co2Current = $usageGas * Kengetallen::CO2_SAVING_GAS +
-            $usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY;
+        $co2Current = $usageGas * Kengetallen::CO2_SAVING_GAS + $usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY;
 
         // To calculate the new percentage, we need the new situation
         $co2New = $co2Current - $co2Reductions;

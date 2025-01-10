@@ -25,9 +25,7 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
     public function prepareForValidation()
     {
         // On create, we have a type. On update we have a model.
-        $this->isExtensive = ($measure = $this->route('cooperationMeasureApplication')) instanceof CooperationMeasureApplication
-            ? $measure->is_extensive_measure
-            : $this->route('type') === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
+        $this->isExtensive = ($measure = $this->route('cooperationMeasureApplication')) instanceof CooperationMeasureApplication ? $measure->is_extensive_measure : $this->route('type') === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
     }
 
     /**

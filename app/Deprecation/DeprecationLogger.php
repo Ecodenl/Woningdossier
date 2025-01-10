@@ -14,17 +14,17 @@ class DeprecationLogger
 {
     public static function remindMe(string $message): void
     {
-        Log::warning('Note to self: '.$message);
+        Log::warning('Note to self: ' . $message);
     }
 
     public static function warning(string $message): void
     {
-        Log::warning('DEPRECATION WARNING: '.$message);
+        Log::warning('DEPRECATION WARNING: ' . $message);
     }
 
     public static function alert(string $message): void
     {
-        Log::alert('DEPRECATION ALERT: '.$message);
+        Log::alert('DEPRECATION ALERT: ' . $message);
     }
 
     public static function log(string $message): void

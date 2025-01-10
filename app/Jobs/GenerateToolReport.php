@@ -44,7 +44,7 @@ class GenerateToolReport implements ShouldQueue
     public function handle(): void
     {
         if (App::runningInConsole()) {
-            Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
+            Log::debug(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
         }
 
         // Define dump type based on file type

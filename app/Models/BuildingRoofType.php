@@ -114,7 +114,7 @@ class BuildingRoofType extends Model
 
     public function measureApplication(): BelongsTo
     {
-        \Log::critical(__METHOD__.': Dit werkt niet!!');
+        \Log::critical(__METHOD__ . ': Dit werkt niet!!');
 
         return $this->belongsTo(MeasureApplication::class);
     }

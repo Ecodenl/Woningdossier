@@ -85,9 +85,7 @@ class CooperationMeasureApplication extends Model
     # Model Methods
     public function getType(): string
     {
-        return $this->is_extensive_measure
-            ? CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE
-            : CooperationMeasureApplicationHelper::SMALL_MEASURE;
+        return $this->is_extensive_measure ? CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE : CooperationMeasureApplicationHelper::SMALL_MEASURE;
     }
 
     # Scopes

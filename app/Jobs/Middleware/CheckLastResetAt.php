@@ -40,7 +40,7 @@ class CheckLastResetAt
                 $displayName = get_class($job->job);
             }
 
-            Log::debug("{$displayName} Checking for reset queued time: ".$job->queuedAt()->format('Y-m-d H:i:s'));
+            Log::debug("{$displayName} Checking for reset queued time: " . $job->queuedAt()->format('Y-m-d H:i:s'));
 
 
             $resetIsDoneAfterThisJobHasBeenQueued = $this->resetIsDoneAfterThisJobHasBeenQueued(

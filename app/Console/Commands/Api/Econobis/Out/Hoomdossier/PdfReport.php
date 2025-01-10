@@ -46,8 +46,8 @@ class PdfReport extends Command
     public function handle(): int
     {
         $interval = $this->option('interval');
-        $interval = is_numeric($interval) ? (int)$interval : null;
-        $interval = is_null($interval) ? config("hoomdossier.services.econobis.interval.".SendPdfReportToEconobis::class) : $interval;
+        $interval = is_numeric($interval) ? (int) $interval : null;
+        $interval = is_null($interval) ? config("hoomdossier.services.econobis.interval." . SendPdfReportToEconobis::class) : $interval;
         $datetime = Carbon::now()->subMinutes($interval);
 
         // Applies available_until global scope
@@ -78,7 +78,7 @@ class PdfReport extends Command
                     Log::debug("Sending PDF report to Econobis for building {$fileStorage->building_id}");
                     SendPdfReportToEconobis::dispatch($fileStorage->building)->onQueue(Queue::APP_EXTERNAL);
                 }
-            }, FileStorage::getModel()->getTable().'.'.FileStorage::getModel()->getKeyName(), 'file_storage_id');
+            }, FileStorage::getModel()->getTable() . '.' . FileStorage::getModel()->getKeyName(), 'file_storage_id');
 
         return self::SUCCESS;
     }

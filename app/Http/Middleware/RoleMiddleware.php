@@ -20,9 +20,7 @@ class RoleMiddleware
             throw UnauthorizedException::notLoggedIn();
         }
 
-        $roles = is_array($role)
-            ? $role
-            : explode('|', $role);
+        $roles = is_array($role) ? $role : explode('|', $role);
 
         if (! Hoomdossier::user()->hasAnyRole($roles)) {
             throw UnauthorizedException::forRoles($roles);

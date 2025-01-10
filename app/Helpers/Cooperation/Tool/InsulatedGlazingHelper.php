@@ -229,17 +229,16 @@ class InsulatedGlazingHelper extends ToolHelper
             'glass-in-lead',
         ])->select('id')->pluck('id');
 
-        $considerablesForMeasures =
-            $this->user
-                ->considerables(MeasureApplication::class)
-                ->wherePivot('input_source_id', $this->masterInputSource->id)
-                ->wherePivotIn('considerable_id', $measureApplicationIds)
-                ->get()->keyBy('pivot.considerable_id')
-                ->map(function ($considerable) {
+        $considerablesForMeasures = $this->user
+            ->considerables(MeasureApplication::class)
+            ->wherePivot('input_source_id', $this->masterInputSource->id)
+            ->wherePivotIn('considerable_id', $measureApplicationIds)
+            ->get()->keyBy('pivot.considerable_id')
+            ->map(function ($considerable) {
                     return [
                         'is_considering' => $considerable->pivot->is_considering
                     ];
-                })->toArray();
+            })->toArray();
 
         $this->setValues([
             'considerables' => $considerablesForMeasures,

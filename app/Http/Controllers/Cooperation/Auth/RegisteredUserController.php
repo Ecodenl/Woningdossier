@@ -31,7 +31,7 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
             CooperationSettingHelper::SHORT_REGISTER_URL
         );
 
-        if (!empty($registerUrl)) {
+        if (! empty($registerUrl)) {
             return redirect()->away($registerUrl);
         }
 

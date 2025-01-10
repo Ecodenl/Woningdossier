@@ -150,20 +150,19 @@ class CsvService
                 $questionAnswerForBuilding = [];
                 // note the order, this is important.
                 // otherwise the data will be retrieved in a different order each time and that will result in mixed data in the rows
-                $questionAnswersForCurrentQuestionnaire =
-                    DB::table('questionnaires')
-                        ->where('questionnaires.id', $questionnaire->id)
-                        ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
+                $questionAnswersForCurrentQuestionnaire = DB::table('questionnaires')
+                    ->where('questionnaires.id', $questionnaire->id)
+                    ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
                         // this may cause weird results, but meh
-                        ->whereNull('questions.deleted_at')
-                        ->leftJoin(
-                            'questions_answers',
-                            function ($leftJoin) use ($building, $inputSource) {
-                                $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
-                                    ->where('questions_answers.input_source_id', $inputSource->id)
-                                    ->where('questions_answers.building_id', '=', $building->id);
-                            }
-                        )
+                    ->whereNull('questions.deleted_at')
+                    ->leftJoin(
+                        'questions_answers',
+                        function ($leftJoin) use ($building, $inputSource) {
+                            $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
+                                ->where('questions_answers.input_source_id', $inputSource->id)
+                                ->where('questions_answers.building_id', '=', $building->id);
+                        }
+                    )
                         ->select('questions_answers.answer', 'questions.id as question_id', 'questions.name as question_name', 'questions.deleted_at')
                         ->orderBy('questions.order')
                         ->get()->pullTranslationFromJson('question_name');
@@ -176,7 +175,7 @@ class CsvService
                     if ($currentQuestion instanceof Question) {
                         // when the question has options, the answer is imploded.
                         if ($currentQuestion->hasQuestionOptions()) {
-                            if (!empty($answer)) {
+                            if (! empty($answer)) {
                                 // this will contain the question option ids
                                 // and filter out the empty answers.
                                 $answers = array_filter(explode('|', $answer));
@@ -217,7 +216,7 @@ class CsvService
             return $value;
         }
 
-        if (!is_numeric($value)) {
+        if (! is_numeric($value)) {
             return $value;
         }
 
@@ -271,7 +270,7 @@ class CsvService
      */
     protected static function isYear(string $column, string $extraValue = ''): bool
     {
-        if (!is_null($column)) {
+        if (! is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

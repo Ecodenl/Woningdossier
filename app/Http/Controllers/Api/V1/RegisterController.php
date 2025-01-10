@@ -151,7 +151,7 @@ class RegisterController extends Controller
             'client' => Arr::only($client->attributesToArray(), ['id', 'name']),
         ];
 
-        if (!app()->runningUnitTests()) {
+        if (! app()->runningUnitTests()) {
             // the access token in mocked in a broken way.
             $logContext['personal_access_token'] = Arr::only($client->currentAccessToken()->attributesToArray(), ['id', 'name']);
         }

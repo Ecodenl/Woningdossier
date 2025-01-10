@@ -272,7 +272,8 @@ class UserActionPlanAdviceService
         UserActionPlanAdvice $userActionPlanAdvice,
         MeasureApplication $measureApplication,
         Collection $oldAdvices
-    ) {
+    )
+    {
         $oldAdvice = $oldAdvices
             ->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
             ->where('user_action_plan_advisable_id', '=', $measureApplication->id)
@@ -445,8 +446,7 @@ class UserActionPlanAdviceService
                     $floorShorts = ['floor-insulation', 'bottom-insulation', 'floor-insulation-research'];
 
                     // Define tool question based on the measure short
-                    $toolQuestionShort = in_array($measureApplication->short, $floorShorts) ? 'current-floor-insulation'
-                        : 'current-wall-insulation';
+                    $toolQuestionShort = in_array($measureApplication->short, $floorShorts) ? 'current-floor-insulation' : 'current-wall-insulation';
 
                     $relevantQuestion = ToolQuestion::findByShort($toolQuestionShort);
                     $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
@@ -454,8 +454,7 @@ class UserActionPlanAdviceService
                     if ($elementValue instanceof ElementValue) {
                         // If the value is 1 or 2 (onbekend, geen), we want it in to-do
                         // If it's "niet van toepassing" it should be hidden, so we don't worry about it
-                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE
-                            : static::CATEGORY_TO_DO;
+                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     }
                     break;
 
@@ -490,8 +489,7 @@ class UserActionPlanAdviceService
                     if ($elementValue instanceof ElementValue) {
                         // If the value is 1 or 2 (onbekend, geen), we want it in to-do
                         // If it's "niet van toepassing" it should be hidden, so we don't worry about it
-                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE
-                            : static::CATEGORY_TO_DO;
+                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     }
                     break;
 
@@ -532,8 +530,7 @@ class UserActionPlanAdviceService
 
                     if ($elementValue instanceof ElementValue) {
                         // If available, it's complete. Calculate value 1 and 2 are "ja".
-                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_TO_DO
-                            : static::CATEGORY_COMPLETE;
+                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_TO_DO : static::CATEGORY_COMPLETE;
                     }
                     break;
 
@@ -575,8 +572,7 @@ class UserActionPlanAdviceService
                                 // If it's not 10 years old, it's complete
                                 // If it's between 10 and 13, it's later
                                 // If it's older than 13 years, it's to-do
-                                $category = $diff < 10 ? static::CATEGORY_COMPLETE
-                                    : ($diff >= 13 ? static::CATEGORY_TO_DO : static::CATEGORY_LATER);
+                                $category = $diff < 10 ? static::CATEGORY_COMPLETE : ($diff >= 13 ? static::CATEGORY_TO_DO : static::CATEGORY_LATER);
                             } else {
                                 // No placing date available. We will assume it's fine
                                 $category = static::CATEGORY_COMPLETE;
@@ -610,8 +606,7 @@ class UserActionPlanAdviceService
                         // No need to check further, it'll fall back to TO DO anyway
                     } else {
                         // If they don't have a sun-boiler, we will put it in to-do
-                        $category = in_array('sun-boiler', $currentSituation) ? static::CATEGORY_COMPLETE
-                            : static::CATEGORY_TO_DO;
+                        $category = in_array('sun-boiler', $currentSituation) ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     }
                     break;
 
@@ -762,8 +757,7 @@ class UserActionPlanAdviceService
                         }
                         // No need to check further, it'll fall back to TO DO anyway
                     } else {
-                        $category = in_array('heat-pump-boiler', $currentSituation)
-                            ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                        $category = in_array('heat-pump-boiler', $currentSituation) ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     }
                     break;
 

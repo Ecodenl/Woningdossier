@@ -150,7 +150,7 @@ class BuildingService
                 ->havingRaw('nma.input_source_id = latest_source_id')
                 ->get()
                 ->groupBy('tool_question_id')
-                ->map(fn($val) => $val->map(fn($subVal) => (array)$subVal)->toArray());
+                ->map(fn($val) => $val->map(fn($subVal) => (array) $subVal)->toArray());
         }
 
         $ids = $toolQuestions->whereNotNull('save_in')->pluck('id')->toArray();
@@ -223,7 +223,7 @@ class BuildingService
                     ->leftJoin('input_sources AS is', 'nma.input_source_id', '=', 'is.id')
                     ->havingRaw('nma.input_source_id = latest_source_id')
                     ->get()
-                    ->map(fn($val) => (array)$val)
+                    ->map(fn($val) => (array) $val)
                     ->toArray();
 
                 $answersForSaveIn->put($toolQuestionId, $answersForResolved);

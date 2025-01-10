@@ -117,8 +117,7 @@ class ToolHelper
                         // If it's a tool question we prefix with 'question_', if it's a tool label we
                         // prefix with 'label_' and otherwise it must be a calculation result so we
                         // prefix with 'calculation_'.
-                        $prefix = $isToolQuestion ? 'question_'
-                            : ($isToolLabel ? 'label_' : 'calculation_');
+                        $prefix = $isToolQuestion ? 'question_' : ($isToolLabel ? 'label_' : 'calculation_');
 
                         $shortToSave = $prefix . $model->short;
 

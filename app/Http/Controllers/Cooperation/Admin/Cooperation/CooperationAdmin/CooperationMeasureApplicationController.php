@@ -87,9 +87,7 @@ class CooperationMeasureApplicationController extends Controller
         $measureCategory = MeasureCategory::find($measureCategory);
         $mappingService
             ->from($cooperationMeasureApplication);
-        $measureCategory instanceof MeasureCategory ?
-            $mappingService->sync([$measureCategory], MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY)
-            : $mappingService->detach();
+        $measureCategory instanceof MeasureCategory ? $mappingService->sync([$measureCategory], MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY) : $mappingService->detach();
 
         CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 

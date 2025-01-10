@@ -147,7 +147,7 @@ class RoofInsulationHelper extends ToolHelper
                     //    }
                     //}
                     if (array_key_exists('tiles_condition', $extra)) {
-                        $tilesCondition = (int)$extra['tiles_condition'];
+                        $tilesCondition = (int) $extra['tiles_condition'];
 
                         $surface = $roofCatData['roof_surface'] ?? 0;
                         if ($tilesCondition > 0 && $surface > 0) {
@@ -183,7 +183,7 @@ class RoofInsulationHelper extends ToolHelper
                         }
                     }
                     if ($isBitumenRoof && array_key_exists('bitumen_replaced_date', $extra)) {
-                        $bitumenReplaceYear = (int)$extra['bitumen_replaced_date'];
+                        $bitumenReplaceYear = (int) $extra['bitumen_replaced_date'];
                         if ($bitumenReplaceYear <= 0) {
                             $bitumenReplaceYear = Carbon::now()->year - 10;
                         }

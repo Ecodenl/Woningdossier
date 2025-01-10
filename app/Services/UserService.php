@@ -112,7 +112,7 @@ class UserService
      */
     public function resetUser(InputSource $inputSource)
     {
-        Log::debug(__METHOD__." ".$this->user->id." for input source ".$inputSource->short);
+        Log::debug(__METHOD__ . " " . $this->user->id . " for input source " . $inputSource->short);
         // only remove the example building id from the building
         $user = $this->user;
         $building = $this->user->building;
@@ -258,9 +258,7 @@ class UserService
         )->get();
 
         // Fallback to resident in case of illogical situation.
-        $inputSource = $rolesWithSources->isNotEmpty()
-            ? $rolesWithSources->first()->inputSource
-            : InputSource::resident();
+        $inputSource = $rolesWithSources->isNotEmpty() ? $rolesWithSources->first()->inputSource : InputSource::resident();
 
         CheckBuildingAddress::dispatchSync($building, $inputSource);
         // check if the connection was successful, if not dispatch it on the regular queue so it retries.
@@ -379,7 +377,7 @@ class UserService
 
         foreach ($tables as $column => $tablesWithColumn) {
             foreach ($tablesWithColumn as $tableWithColumn) {
-                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.';');
+                Log::debug('UPDATE ' . $tableWithColumn . ' SET ' . $column . ' = ' . $user1->id . ' WHERE ' . $column . ' = ' . $user2->id . ';');
                 DB::table($tableWithColumn)
                     ->where($column, '=', $user2->id)
                     ->update([$column => $user1->id]);
@@ -401,7 +399,7 @@ class UserService
 
         foreach ($tables as $column => $tablesWithColumn) {
             foreach ($tablesWithColumn as $tableWithColumn) {
-                Log::debug('Checking input sources for '.$tableWithColumn);
+                Log::debug('Checking input sources for ' . $tableWithColumn);
                 $inputSources = DB::table($tableWithColumn)
                     ->where($column, '=', $user1->id)
                     ->select('input_source_id')
@@ -409,10 +407,10 @@ class UserService
                     ->pluck('input_source_id')
                     ->toArray();
 
-                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.' AND WHERE input_source NOT IN ('.implode(
+                Log::debug('UPDATE ' . $tableWithColumn . ' SET ' . $column . ' = ' . $user1->id . ' WHERE ' . $column . ' = ' . $user2->id . ' AND WHERE input_source NOT IN (' . implode(
                     ',',
                     $inputSources
-                ).');');
+                ) . ');');
                 DB::table($tableWithColumn)
                     ->where($column, '=', $user2->id)
                     ->whereNotIn('input_source_id', $inputSources)

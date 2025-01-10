@@ -74,7 +74,7 @@ class Temperature implements KeyFiguresInterface
         foreach ($consts as $const => $measure) {
             $calculationKey = constant("self::$const");
             foreach (self::$calculationValues[$calculationKey] as $heatingCalcValue => $fig) {
-                $figures[$const.'_'.$heatingCalcValue] = $fig;
+                $figures[$const . '_' . $heatingCalcValue] = $fig;
             }
         }
 

@@ -89,9 +89,9 @@ class BuildingPolicy
         if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COACH)) {
             // check if the coach has building permission
             $coachHasBuildingPermission = Building::withTrashed()
-                    ->find($building->id)
-                    ->buildingPermissions()
-                    ->where('user_id', $user->id)->first() instanceof BuildingPermission;
+                ->find($building->id)
+                ->buildingPermissions()
+                ->where('user_id', $user->id)->first() instanceof BuildingPermission;
 
             return $building->user->allowedAccess() && $coachHasBuildingPermission;
         }

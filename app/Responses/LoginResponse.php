@@ -30,8 +30,6 @@ class LoginResponse implements \Laravel\Fortify\Contracts\LoginResponse
             $redirect = $intended;
         }
 
-        return $request->wantsJson()
-            ? response()->json(['two_factor' => false])
-            : redirect()->to($redirect);
+        return $request->wantsJson() ? response()->json(['two_factor' => false]) : redirect()->to($redirect);
     }
 }

@@ -58,10 +58,10 @@ class ConversationRequestController extends Controller
 
         $buildingStatusService->forBuilding(HoomdossierSession::getBuilding(true))->setStatus('pending');
 
-        $successMessage = __('conversation-requests.store.success.'.InputSource::COACH_SHORT);
+        $successMessage = __('conversation-requests.store.success.' . InputSource::COACH_SHORT);
 
         if (InputSource::RESIDENT_SHORT == HoomdossierSession::getInputSource(true)->short) {
-            $successMessage = __('conversation-requests.store.success.'.InputSource::RESIDENT_SHORT, ['url' => route('cooperation.my-account.messages.edit', compact('cooperation'))]);
+            $successMessage = __('conversation-requests.store.success.' . InputSource::RESIDENT_SHORT, ['url' => route('cooperation.my-account.messages.edit', compact('cooperation'))]);
         }
 
         $scan = $cooperation->scans()->where('scans.short', '!=', Scan::EXPERT)->first();

@@ -52,7 +52,7 @@ class CooperationScanService
     {
         $scansToSync = [
             'quick-scan' => ['quick-scan', 'expert-scan'],
-            'lite-scan' =>  ['lite-scan'],
+            'lite-scan' => ['lite-scan'],
             'both-scans' => ['quick-scan', 'lite-scan', 'expert-scan'],
         ];
 

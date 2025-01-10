@@ -80,7 +80,7 @@ class InsulatedGlazingController extends ToolController
                     ->first();
                 $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
 
-                if (!$currentInsulatedGlazingInputs->isEmpty()) {
+                if (! $currentInsulatedGlazingInputs->isEmpty()) {
                     $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInputs;
                 }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
@@ -165,7 +165,7 @@ class InsulatedGlazingController extends ToolController
         }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
-        if (!empty($dirtyAttributes)) {
+        if (! empty($dirtyAttributes)) {
             UserToolDataChanged::dispatch($user);
         }
 
@@ -180,7 +180,7 @@ class InsulatedGlazingController extends ToolController
                 if (SupportStr::startsWith($dirtyName, 'building_insulated_glazings')) {
                     // Format always has the ID as second attr
                     $id = explode('.', Str::htmlArrToDot($dirtyName))[1] ?? null;
-                    if (!is_null($id) && !in_array($id, $updatedMeasureIds)) {
+                    if (! is_null($id) && ! in_array($id, $updatedMeasureIds)) {
                         // Add ID
                         $updatedMeasureIds[] = $id;
                     }

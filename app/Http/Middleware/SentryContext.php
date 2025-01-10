@@ -70,7 +70,7 @@ class SentryContext
 
                 if (! $building?->user instanceof User) {
                     Log::error(
-                        "SentryContext : building -> user is no instance of App\Models\User !! a: ".$account->id.', u: '.$user->id.', b: '.$building?->id
+                        "SentryContext : building -> user is no instance of App\Models\User !! a: " . $account->id . ', u: ' . $user->id . ', b: ' . $building?->id
                     );
                 }
 

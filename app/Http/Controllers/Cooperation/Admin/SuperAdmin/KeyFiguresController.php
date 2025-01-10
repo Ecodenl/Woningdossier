@@ -99,7 +99,7 @@ class KeyFiguresController extends Controller
                 $maxSaving->buildingType->name,
                 $maxSaving->element->name
             );
-            $figures[$k] = $maxSaving->max_saving.'%';
+            $figures[$k] = $maxSaving->max_saving . '%';
         }
 
         return $figures;
@@ -121,7 +121,7 @@ class KeyFiguresController extends Controller
             foreach ($hrBoiler->values as $boiler) {
                 $efficiency = $boiler->keyFigureBoilerEfficiency;
                 foreach (['heating', 'wtw'] as $for) {
-                    $figures[$boiler->value.' '.__('key-figures.boiler.'.$for)] = $efficiency->$for.'%';
+                    $figures[$boiler->value . ' ' . __('key-figures.boiler.' . $for)] = $efficiency->$for . '%';
                 }
             }
         }

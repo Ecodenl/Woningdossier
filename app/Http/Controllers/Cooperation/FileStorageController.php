@@ -53,7 +53,7 @@ class FileStorageController extends Controller
 
         $questionnaire = Questionnaire::find($request->input('file_storages.questionnaire_id'));
 
-        Log::debug('Generate '.$fileType->short.' file..');
+        Log::debug('Generate ' . $fileType->short . ' file..');
         Log::debug('Context:');
         $account = Hoomdossier::account();
         $inputSourceValue = HoomdossierSession::getInputSourceValue();
@@ -190,7 +190,7 @@ class FileStorageController extends Controller
             $url = route('cooperation.admin.cooperation.reports.index');
         } else {
             $scan = $cooperation->scans()->where('scans.short', '!=', Scan::EXPERT)->first();
-            $url = route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')).'#download-section';
+            $url = route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')) . '#download-section';
         }
 
         Log::debug($url);
@@ -207,7 +207,7 @@ class FileStorageController extends Controller
     {
         if ('pdf-report' == $fileType->short) {
             // 2013es14-Bewonster-A-g-Bewoner.pdf;
-            $fileName = trim($user->building->postal_code).$user->building->number.'-'.Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
+            $fileName = trim($user->building->postal_code) . $user->building->number . '-' . Str::slug($user->getFullName()) . '-' . $inputSource->name . '.pdf';
         } else {
             $fileName = (new FileTypeService($fileType))->niceFileName();
         }

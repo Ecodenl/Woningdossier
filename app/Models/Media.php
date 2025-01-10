@@ -66,7 +66,7 @@ class Media extends \Plank\Mediable\Media
     # Model methods
     public function getUrl(): string
     {
-        $url =  parent::getUrl();
+        $url = parent::getUrl();
 
         // Do some magic to ensure the correct subdomain is used within the host
         $mediaUrlHost = Request::create($url)->getSchemeAndHttpHost();

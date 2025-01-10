@@ -48,7 +48,8 @@ class HeatPumpCharacteristic extends Model
     public function scopeForHeatingTemperature(
         Builder $query,
         ToolQuestionCustomValue $heatingTemperature
-    ) {
+    )
+    {
         return $this->scopeForToolQuestionCustomValue(
             $query,
             $heatingTemperature
@@ -58,7 +59,8 @@ class HeatPumpCharacteristic extends Model
     public function scopeForToolQuestionCustomValue(
         Builder $query,
         ToolQuestionCustomValue $toolQuestionCustomValue
-    ) {
+    )
+    {
         return $query->where(
             'tool_question_custom_value_id',
             '=',
@@ -69,16 +71,17 @@ class HeatPumpCharacteristic extends Model
     public function scopeForHeatPumpConfigurable(
         Builder $query,
         Model $configurable
-    ) {
+    )
+    {
         return $query->where(
             'heat_pump_configurable_type',
             '=',
             get_class($configurable)
         )
-                     ->where(
-                         'heat_pump_configurable_id',
-                         '=',
-                         $configurable->id
-                     );
+            ->where(
+                'heat_pump_configurable_id',
+                '=',
+                $configurable->id
+            );
     }
 }

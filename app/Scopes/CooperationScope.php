@@ -19,6 +19,6 @@ class CooperationScope implements Scope
         $cooperationId = HoomdossierSession::getCooperation() ?? 0;
 
         $builder->where('cooperation_id', '=', $cooperationId)
-                ->orWhere('cooperation_id', '=', null);
+            ->orWhere('cooperation_id', '=', null);
     }
 }

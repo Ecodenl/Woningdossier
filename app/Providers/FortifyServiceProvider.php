@@ -79,9 +79,7 @@ class FortifyServiceProvider extends ServiceProvider
         );
 
         RateLimiter::for('login', function (Request $request) {
-            return app()->isLocal()
-                ? Limit::none()
-                : Limit::perMinute(50)->by($request->email . $request->ip());
+            return app()->isLocal() ? Limit::none() : Limit::perMinute(50)->by($request->email . $request->ip());
         });
 
         Fortify::registerView(function () {

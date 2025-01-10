@@ -29,7 +29,7 @@ abstract class NonHandleableListenerAfterReset implements ShouldQueue, ShouldNot
             $payload = $this->job->payload();
             $displayName = $payload['displayName'];
 
-            Log::debug("{$displayName} Checking for reset cached time: ".$this->queuedAt());
+            Log::debug("{$displayName} Checking for reset cached time: " . $this->queuedAt());
 
             if ($this->resetIsDoneAfterThisJobHasBeenQueued($building, InputSource::master(), $this->queuedAt())) {
                 return;

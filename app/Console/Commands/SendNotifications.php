@@ -56,7 +56,7 @@ class SendNotifications extends Command
             $userIdsData = $this->getUserIdsToNotify();
             foreach ($userIdsData as $userIdData) {
                 $user = User::with(['cooperation', 'building'])->withoutGlobalScopes()->find($userIdData->user_id);
-                if (!$user instanceof User) {
+                if (! $user instanceof User) {
                     continue;
                 }
                 // same goes for the building
@@ -162,7 +162,7 @@ class SendNotifications extends Command
      */
     protected function almostMoreThanOneDayAgo(\DateInterval $diff): bool
     {
-        if (!\App::environment('production')) {
+        if (! \App::environment('production')) {
             return $diff->h >= 1 || $diff->days >= 1;
         }
 
@@ -181,7 +181,7 @@ class SendNotifications extends Command
      */
     protected function almostMoreThanOneWeekAgo(\DateInterval $diff): bool
     {
-        if (!\App::environment('production')) {
+        if (! \App::environment('production')) {
             return $diff->h >= 4 || $diff->days >= 1;
         }
 

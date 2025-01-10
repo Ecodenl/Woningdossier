@@ -96,7 +96,7 @@ class VentilationHelper extends ToolHelper
 
         foreach ($measureApplications as $measureApplication) {
             $considerables[$measureApplication->id] = [
-                'is_considering'=> $this->user->considers($measureApplication, $this->masterInputSource),
+                'is_considering' => $this->user->considers($measureApplication, $this->masterInputSource),
                 'name' => $measureApplication->measure_name
             ];
         }
@@ -204,7 +204,7 @@ class VentilationHelper extends ToolHelper
 
         $allWarnings = array_merge($allWarnings, self::getHowWarnings(), self::getUsageWarnings(), self::getLivingSituationWarnings());
 
-        if (!is_null($value)) {
+        if (! is_null($value)) {
             return $allWarnings[$value];
         }
 

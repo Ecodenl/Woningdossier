@@ -39,15 +39,15 @@ class RecalculateStepForUser extends NonHandleableJobAfterReset
      */
     public function handle(): void
     {
-        Log::debug('Recalculating step: '.$this->step->name);
-        $stepClass = 'App\\Helpers\\Cooperation\Tool\\'.Str::singular(Str::studly($this->step->short)).'Helper';
+        Log::debug('Recalculating step: ' . $this->step->name);
+        $stepClass = 'App\\Helpers\\Cooperation\Tool\\' . Str::singular(Str::studly($this->step->short)) . 'Helper';
 
         // Some steps don't have tool helpers. Let's check if it exists first
         if (class_exists($stepClass)) {
             /** @var ToolHelper $stepHelperClass */
             $stepHelperClass = new $stepClass($this->user, $this->inputSource);
             // if we dont want the old advices, turn it of.
-            if (!$this->withOldAdvices) {
+            if (! $this->withOldAdvices) {
                 $stepHelperClass = $stepHelperClass->withoutOldAdvices();
             }
             $stepHelperClass->createValues()->createAdvices();

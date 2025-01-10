@@ -234,14 +234,14 @@ class Building extends Model implements MediableInterface
                 // weird cases like building values.
                 if (is_array($value)) {
                     foreach ($value as $definitiveValue) {
-                        $answer = $questionValues->isNotEmpty() && !is_null($definitiveValue) && isset($questionValues[$definitiveValue]) ? $questionValues[$definitiveValue] : $definitiveValue;
+                        $answer = $questionValues->isNotEmpty() && ! is_null($definitiveValue) && isset($questionValues[$definitiveValue]) ? $questionValues[$definitiveValue] : $definitiveValue;
                         $answers[$inputSource->short][] = [
                             'answer' => $answer,
                             'value' => $definitiveValue,
                         ];
                     }
                 } else {
-                    $answer = $questionValues->isNotEmpty() && !is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
+                    $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
                     $answers[$inputSource->short][] = [
                         'answer' => $answer,
                         'value' => $value,
@@ -349,7 +349,8 @@ class Building extends Model implements MediableInterface
     public function isOwnerOfFileStorage(
         InputSource $inputSource,
         FileStorage $fileStorage
-    ): bool {
+    ): bool
+    {
         $fileIsGeneratedByBuilding = $fileStorage->building_id == $this->id;
         $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == $inputSource->id;
 
@@ -399,12 +400,12 @@ class Building extends Model implements MediableInterface
     {
         if ($inputSource instanceof InputSource) {
             return $this->completedSteps()
-                    ->forInputSource($inputSource)
-                    ->where('step_id', $step->id)->count() > 0;
+                ->forInputSource($inputSource)
+                ->where('step_id', $step->id)->count() > 0;
         }
 
         return $this->completedSteps()
-                ->where('step_id', $step->id)->count() > 0;
+            ->where('step_id', $step->id)->count() > 0;
     }
 
     /**
@@ -421,14 +422,14 @@ class Building extends Model implements MediableInterface
 
     public function hasNotCompletedScan(Scan $scan, InputSource $inputSource): bool
     {
-        return !$this->hasCompletedScan($scan, $inputSource);
+        return ! $this->hasCompletedScan($scan, $inputSource);
     }
 
     public function hasCompletedScan(Scan $scan, InputSource $inputSource): bool
     {
         $steps = $scan->steps;
         foreach ($steps as $step) {
-            if (!$this->hasCompleted($step, $inputSource)) {
+            if (! $this->hasCompleted($step, $inputSource)) {
                 return false;
             }
         }
@@ -465,7 +466,7 @@ class Building extends Model implements MediableInterface
      */
     public function hasNotCompleted(Step $step, InputSource $inputSource = null): bool
     {
-        return !$this->hasCompleted($step, $inputSource);
+        return ! $this->hasCompleted($step, $inputSource);
     }
 
     /**

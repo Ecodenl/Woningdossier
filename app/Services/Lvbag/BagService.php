@@ -82,10 +82,10 @@ class BagService
                 $huisletter = array_shift($extensions);
                 $huisnummertoevoeging = implode('', $extensions);
 
-                if (!empty($huisletter)) {
+                if (! empty($huisletter)) {
                     $filteredExtensions['huisletter'] = $huisletter;
                 }
-                if (!empty($huisnummertoevoeging)) {
+                if (! empty($huisnummertoevoeging)) {
                     $filteredExtensions['huisnummertoevoeging'] = $huisnummertoevoeging;
                 }
                 $addressExpanded = $this->listAddressExpanded(
@@ -113,8 +113,8 @@ class BagService
     {
         return new AddressExpanded($this->wrapCall(function () use ($attributes) {
             $list = $this->lvbag
-                    ->adresUitgebreid()
-                    ->list($attributes) ?? [];
+                ->adresUitgebreid()
+                ->list($attributes) ?? [];
             return array_shift($list);
         }));
     }
@@ -127,7 +127,7 @@ class BagService
             $result['endpoint_failure'] = false;
         } catch (\Exception $exception) {
             if ($exception->getCode() !== 200) {
-                Log::error($exception->getMessage() .' '. $exception->getTraceAsString());
+                Log::error($exception->getMessage() . ' ' . $exception->getTraceAsString());
                 $result['endpoint_failure'] = true;
             }
         }

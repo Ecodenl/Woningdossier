@@ -84,16 +84,14 @@ class NotificationService
         // explicitly want to check for master, ensure so via static::forInputSource, otherwise we will ignore master,
         // so we get the row with non-master/null input source (since even when deleting a null input source row, it
         // will delete the master due to uuid).
-        $this->inputSource instanceof InputSource
-            ? $query->forInputSource($this->inputSource)
-            : $query->allInputSources()->where(function ($query) {
+        $this->inputSource instanceof InputSource ? $query->forInputSource($this->inputSource) : $query->allInputSources()->where(function ($query) {
                 // LME: MySQL treats NULL not as undefined but as unknown. When we query "not equals", the
                 // values that are NULL are not returned, as MySQL is not sure if it matches or not. This is a failsafe.
                 // By querying as OR on the same column, we get the required result. We could also use the null safe
                 // operator ( <=> ), but that reads awkward.
                 $query->where('input_source_id', '!=', InputSource::master()->id)
                     ->orWhereNull('input_source_id');
-            });
+        });
 
         if (isset($this->uuid)) {
             $query->forUuid($this->uuid);

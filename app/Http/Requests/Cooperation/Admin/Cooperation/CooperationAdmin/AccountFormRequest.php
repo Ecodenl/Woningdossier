@@ -30,7 +30,7 @@ class AccountFormRequest extends FormRequest
                     $account = Account::find($value);
                     if ($account instanceof Account) {
                         if ($account->users()->where('cooperation_id', $this->route('cooperation')->id)->doesntExist()) {
-                            $fail('The '.$attribute.' is invalid.');
+                            $fail('The ' . $attribute . ' is invalid.');
                         }
                     }
                 },

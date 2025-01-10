@@ -14,7 +14,7 @@ class InputSourceController extends Controller
     {
         $inputSource = InputSource::find($inputSourceValueId);
 
-        if ($inputSource instanceof  InputSource) {
+        if ($inputSource instanceof InputSource) {
             HoomdossierSession::setInputSourceValue($inputSource);
         }
 

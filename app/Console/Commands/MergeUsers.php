@@ -45,11 +45,11 @@ class MergeUsers extends Command
         $user2 = User::find($userId2);
 
         if (! $user1 instanceof User) {
-            $this->error('No user with ID '.$userId1);
+            $this->error('No user with ID ' . $userId1);
             exit;
         }
         if (! $user2 instanceof User) {
-            $this->error('No user with ID '.$userId2);
+            $this->error('No user with ID ' . $userId2);
             exit;
         }
         if ($user1->cooperation_id !== $user2->cooperation_id) {

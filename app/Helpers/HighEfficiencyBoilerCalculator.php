@@ -61,8 +61,8 @@ class HighEfficiencyBoilerCalculator
         // yes, array_sum is a method, but this is easier to compare to the theory
         $result = $amountGas - $usageNew;
 
-        $this->debug('Gas usage ( '.$usageNew.' ) with new boiler: '.json_encode($usage));
-        $this->debug('Results in saving of '.$result.' = '.$amountGas.' - '.$usageNew);
+        $this->debug('Gas usage ( ' . $usageNew . ' ) with new boiler: ' . json_encode($usage));
+        $this->debug('Results in saving of ' . $result . ' = ' . $amountGas . ' - ' . $usageNew);
 
         return $result;
     }
@@ -88,7 +88,7 @@ class HighEfficiencyBoilerCalculator
         }
         $boilerEfficiency = $boiler->keyFigureBoilerEfficiency;
 
-        $this->debug(__METHOD__.' boiler efficiencies of boiler: '.$boilerEfficiency->heating.'% (heating) and '.$boilerEfficiency->wtw.'% (tap water)');
+        $this->debug(__METHOD__ . ' boiler efficiencies of boiler: ' . $boilerEfficiency->heating . '% (heating) and ' . $boilerEfficiency->wtw . '% (tap water)');
 
         $cookType = $this->getAnswer('cook-type');
 
@@ -115,7 +115,7 @@ class HighEfficiencyBoilerCalculator
         $result['heating']['bruto'] = $amountGas - $result['tap_water']['bruto'] - $result['cooking'];
         $result['heating']['netto'] = $result['heating']['bruto'] * ($boilerEfficiency->heating / 100);
 
-        $this->debug(__METHOD__.' Gas usage: '.json_encode($result));
+        $this->debug(__METHOD__ . ' Gas usage: ' . json_encode($result));
 
         return $result;
     }
@@ -134,7 +134,7 @@ class HighEfficiencyBoilerCalculator
         }
 
         if ($last + $measureApplication->maintenance_interval <= Carbon::now()->year) {
-            $this->debug('Last replace is longer than '.$measureApplication->maintenance_interval.' years ago.');
+            $this->debug('Last replace is longer than ' . $measureApplication->maintenance_interval . ' years ago.');
             $year = Carbon::now()->year;
         } else {
             $year = $last + $measureApplication->maintenance_interval;

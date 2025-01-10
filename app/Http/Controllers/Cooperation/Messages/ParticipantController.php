@@ -75,8 +75,8 @@ class ParticipantController extends Controller
             $coachMail = (new NotifyCoachParticipantAdded($resident, $user))->onQueue(Queue::APP_EXTERNAL);
             $residentMail = (new NotifyResidentParticipantAdded($resident, $user))->onQueue(Queue::APP_EXTERNAL);
 
-            Mail::to([['email' => $user->account->email, 'name'=> $user->getFullName()]])->queue($coachMail);
-            Mail::to([['email' => $resident->account->email, 'name'=> $resident->getFullName()]])->queue($residentMail);
+            Mail::to([['email' => $user->account->email, 'name' => $user->getFullName()]])->queue($coachMail);
+            Mail::to([['email' => $resident->account->email, 'name' => $resident->getFullName()]])->queue($residentMail);
         }
 
         // since the coordinator is the only one who can do this atm.

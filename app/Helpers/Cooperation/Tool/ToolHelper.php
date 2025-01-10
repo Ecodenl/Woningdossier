@@ -104,7 +104,7 @@ abstract class ToolHelper
 
     protected function getConditionConsiderable(string $short): array
     {
-        $conditions =  [
+        $conditions = [
             [
                 [
                     'column' => 'fn',

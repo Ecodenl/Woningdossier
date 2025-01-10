@@ -12,7 +12,8 @@ class CsvHelper
         string $file,
         string $delimiter = ',',
         bool $csvHeaderAsArrayKeys = true
-    ): array {
+    ): array
+    {
         $header = null;
         $updatedHeader = null;
         $data = [];
@@ -47,7 +48,7 @@ class CsvHelper
     public static function escapeLeadingZero($string)
     {
         if ('0' == substr($string, 0, 1)) {
-            $string = "'".$string;
+            $string = "'" . $string;
         }
 
         return $string;

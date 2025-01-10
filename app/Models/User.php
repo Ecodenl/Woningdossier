@@ -176,7 +176,7 @@ class User extends Model implements AuthorizableContract
     # Unsorted
     public function considers(Model $model, InputSource $inputSource): bool
     {
-        $considerableModel =  $this->considerablesForModel($model)
+        $considerableModel = $this->considerablesForModel($model)
             ->wherePivot('input_source_id', $inputSource->id)
             ->first();
 
@@ -304,12 +304,10 @@ class User extends Model implements AuthorizableContract
         $notificationType = NotificationType::where('short', $notificationTypeShort)->first();
         $notInterestedInterval = NotificationInterval::where('short', 'no-interest')->first();
 
-        $doesUserRetrievesNotifications =
-
-            $this->notificationSettings()
-                ->where('type_id', $notificationType->id)
-                ->where('interval_id', '!=', $notInterestedInterval->id)
-                ->exists();
+        $doesUserRetrievesNotifications = $this->notificationSettings()
+            ->where('type_id', $notificationType->id)
+            ->where('interval_id', '!=', $notInterestedInterval->id)
+            ->exists();
 
         return $doesUserRetrievesNotifications;
     }
@@ -421,7 +419,7 @@ class User extends Model implements AuthorizableContract
      */
     public function isNotRemovedFromBuildingCoachStatus($buildingId): bool
     {
-        return !$this->isRemovedFromBuildingCoachStatus($buildingId);
+        return ! $this->isRemovedFromBuildingCoachStatus($buildingId);
     }
 
     /**
@@ -449,7 +447,7 @@ class User extends Model implements AuthorizableContract
      */
     public function hasNotRole($roles): bool
     {
-        return !$this->hasRole($roles);
+        return ! $this->hasRole($roles);
     }
 
     /**
@@ -509,7 +507,7 @@ class User extends Model implements AuthorizableContract
      */
     public function hasNotMultipleRoles(): bool
     {
-        return !$this->hasMultipleRoles();
+        return ! $this->hasMultipleRoles();
     }
 
     /**

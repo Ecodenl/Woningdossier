@@ -23,9 +23,9 @@ class CheckForCooperationRedirect
             Log::channel('single')->debug($request->url());
         }
 
-        if (!$cooperation instanceof Cooperation) {
+        if (! $cooperation instanceof Cooperation) {
             //Log::debug("DBG cooperation is not an instance of Cooperation");
-            if (!empty($cooperation)) {
+            if (! empty($cooperation)) {
                 //Log::debug("DBG cooperation is not empty ( = '" . $cooperation . "')");
                 $redirect = CooperationRedirect::from($cooperation)->first();
 

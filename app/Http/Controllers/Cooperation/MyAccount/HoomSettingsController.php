@@ -39,6 +39,6 @@ class HoomSettingsController extends Controller
         $account->update($accountData);
 
         return redirect()->route('cooperation.my-account.index')
-                         ->with('success', __('my-account.hoom-settings.store.success'));
+            ->with('success', __('my-account.hoom-settings.store.success'));
     }
 }

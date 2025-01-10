@@ -30,7 +30,7 @@ class UserChangedHisEmailEvent
      */
     public function __construct(User $user, Account $account, $oldEmail, $newEmail)
     {
-        Log::debug('User changed his mail from '.$oldEmail.' to '.$newEmail);
+        Log::debug('User changed his mail from ' . $oldEmail . ' to ' . $newEmail);
         $this->user = $user;
         $this->account = $account;
         $this->oldEmail = $oldEmail;

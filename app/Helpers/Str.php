@@ -123,7 +123,7 @@ class Str extends \Illuminate\Support\Str
 
     public static function lcfirst($string)
     {
-        return SupportStr::lower(SupportStr::substr($string, 0, 1)).SupportStr::substr($string, 1);
+        return SupportStr::lower(SupportStr::substr($string, 0, 1)) . SupportStr::substr($string, 1);
     }
 
     public static function isValidJson($value, $arrayOnly = true): bool
@@ -223,9 +223,9 @@ class Str extends \Illuminate\Support\Str
         // Nothing to replace if no dots
         if ($htmlName->contains('.')) {
             $htmlName = $htmlName->replaceFirst('.', '[') // Replace first dot with opening bracket
-            ->replace('*', '') // Remove wildcards
-            ->replace('.', '][') // Replace other dots with separating brackets
-            ->append(']'); // Add final bracket
+                ->replace('*', '') // Remove wildcards
+                ->replace('.', '][') // Replace other dots with separating brackets
+                ->append(']'); // Add final bracket
         }
 
         if ($asArray) {
@@ -279,9 +279,9 @@ class Str extends \Illuminate\Support\Str
         // Nothing to replace if no dots
         if ($htmlName->contains('.')) {
             $htmlName = $htmlName->replaceFirst('.', '[') // Replace first dot with opening bracket
-            ->replace('*', '') // Remove wildcards
-            ->replace('.', '][') // Replace other dots with separating brackets
-            ->append(']'); // Add final bracket
+                ->replace('*', '') // Remove wildcards
+                ->replace('.', '][') // Replace other dots with separating brackets
+                ->append(']'); // Add final bracket
         }
 
         if ($asArray) {

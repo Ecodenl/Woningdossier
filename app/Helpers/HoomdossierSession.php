@@ -85,7 +85,7 @@ class HoomdossierSession extends Session
      */
     public static function setHoomdossierSession($key, $value)
     {
-        self::put('hoomdossier_session.'.$key, $value);
+        self::put('hoomdossier_session.' . $key, $value);
     }
 
     /**
@@ -98,7 +98,7 @@ class HoomdossierSession extends Session
      */
     public static function getHoomdossierSession($key, $default = null)
     {
-        return self::get('hoomdossier_session.'.$key, $default);
+        return self::get('hoomdossier_session.' . $key, $default);
     }
 
     /**
@@ -310,7 +310,7 @@ class HoomdossierSession extends Session
 
     public static function switchRole(Building $building, Role $role)
     {
-        Log::debug('Switching roles from '.static::getRole().' to '.$role->id);
+        Log::debug('Switching roles from ' . static::getRole() . ' to ' . $role->id);
 
         // set the new sessions!
         static::setRole($role);

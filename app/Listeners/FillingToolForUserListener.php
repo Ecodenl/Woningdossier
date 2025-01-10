@@ -39,7 +39,7 @@ class FillingToolForUserListener
         $currentSourceFeature = $building->buildingFeatures()->forInputSource($inputSourceValue)->first();
 
         if (! $currentSourceFeature instanceof BuildingFeature) {
-            $masterFeature =  $building->buildingFeatures()->forInputSource(InputSource::master())->first();
+            $masterFeature = $building->buildingFeatures()->forInputSource(InputSource::master())->first();
             if ($masterFeature instanceof BuildingFeature) {
                 $replica = $masterFeature->replicate();
                 $replica->input_source_id = $inputSourceValue->id;

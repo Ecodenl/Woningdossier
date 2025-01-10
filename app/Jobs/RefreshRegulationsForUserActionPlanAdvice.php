@@ -50,7 +50,7 @@ class RefreshRegulationsForUserActionPlanAdvice extends NonHandleableJobAfterRes
             UserActionPlanAdviceService::init()
                 ->forUser($this->userActionPlanAdvice->user)
                 ->refreshRegulations($this->userActionPlanAdvice);
-        } catch (ConnectException|ServerException $connectException) {
+        } catch (ConnectException | ServerException $connectException) {
             $this->release(10);
         }
     }

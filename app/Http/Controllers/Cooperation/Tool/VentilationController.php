@@ -103,7 +103,7 @@ class VentilationController extends ToolController
         StepCommentService::save($building, $inputSource, $step, $stepComments['comment']);
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
-        if (!empty($dirtyAttributes)) {
+        if (! empty($dirtyAttributes)) {
             UserToolDataChanged::dispatch($buildingOwner);
         }
         $updatedMeasureIds = [];

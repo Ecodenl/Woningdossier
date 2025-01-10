@@ -56,7 +56,7 @@ class WallInsulation
             $advice = "alerts.description.title";
             //$result['measure'] = null;
         }
-        $result['insulation_advice'] = __('wall-insulation.'.$advice);
+        $result['insulation_advice'] = __('wall-insulation.' . $advice);
 
         $calculator = app(CalculatorService::class)->forBuilding($building);
         $elementValueId = array_shift($elements);

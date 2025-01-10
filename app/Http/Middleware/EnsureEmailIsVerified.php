@@ -18,9 +18,7 @@ class EnsureEmailIsVerified
     {
         $user = Hoomdossier::account();
         if (! $user || ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail())) {
-            return $request->expectsJson()
-                ? abort(403, 'Your email address is not verified.')
-                : Redirect::route('cooperation.auth.verification.notice');
+            return $request->expectsJson() ? abort(403, 'Your email address is not verified.') : Redirect::route('cooperation.auth.verification.notice');
         }
 
         return $next($request);

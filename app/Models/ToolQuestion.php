@@ -21,14 +21,14 @@ use Illuminate\Support\Collection;
  * @property string|null $short
  * @property string|null $save_in
  * @property int|null $for_specific_input_source_id
- * @property array $name
- * @property array $help_text
- * @property array|null $placeholder
+ * @property array<array-key, mixed> $name
+ * @property array<array-key, mixed> $help_text
+ * @property array<array-key, mixed>|null $placeholder
  * @property string $data_type
  * @property bool $coach
  * @property bool $resident
- * @property array|null $options
- * @property array|null $validation
+ * @property array<array-key, mixed>|null $options
+ * @property array<array-key, mixed>|null $validation
  * @property string|null $unit_of_measure
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

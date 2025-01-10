@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $type
  * @property string $short
- * @property array $conditions
- * @property array $text
+ * @property array<array-key, mixed> $conditions
+ * @property array<array-key, mixed> $text
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $translations

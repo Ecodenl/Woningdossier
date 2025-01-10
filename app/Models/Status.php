@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Status
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property string $short
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at

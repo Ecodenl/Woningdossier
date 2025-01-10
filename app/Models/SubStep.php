@@ -16,10 +16,10 @@ use Illuminate\Support\Facades\App;
  * App\Models\SubStep
  *
  * @property int $id
- * @property array $name
- * @property array $slug
+ * @property array<array-key, mixed> $name
+ * @property array<array-key, mixed> $slug
  * @property int $order
- * @property array|null $conditions
+ * @property array<array-key, mixed>|null $conditions
  * @property int $step_id
  * @property int|null $sub_step_template_id
  * @property \Illuminate\Support\Carbon|null $created_at

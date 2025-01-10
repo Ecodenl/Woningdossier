@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\FacadePlasteredSurface
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property int|null $calculate_value
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at

@@ -30,7 +30,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $last_name
  * @property string $phone_number
  * @property string|null $last_visited_url
- * @property array|null $extra
+ * @property array<array-key, mixed>|null $extra
  * @property bool $allow_access
  * @property \Illuminate\Support\Carbon|null $tool_last_changed_at
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at

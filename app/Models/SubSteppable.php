@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $sub_steppable_id
  * @property string|null $sub_steppable_type
  * @property int|null $tool_question_type_id
- * @property array|null $conditions
+ * @property array<array-key, mixed>|null $conditions
  * @property string|null $size
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

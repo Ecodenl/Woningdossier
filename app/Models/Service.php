@@ -12,11 +12,11 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Service
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property string $short
  * @property int $service_type_id
  * @property int $order
- * @property array $info
+ * @property array<array-key, mixed> $info
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ServiceType $serviceType

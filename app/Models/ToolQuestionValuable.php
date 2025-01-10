@@ -16,8 +16,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $order
  * @property int $tool_question_valuable_id
  * @property string $tool_question_valuable_type
- * @property array|null $extra
- * @property array|null $conditions
+ * @property array<array-key, mixed>|null $extra
+ * @property array<array-key, mixed>|null $conditions
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ToolQuestion $toolQuestion

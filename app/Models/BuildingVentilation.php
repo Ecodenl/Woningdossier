@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int|null $input_source_id
  * @property int $building_id
- * @property array|null $how
- * @property array|null $living_situation
- * @property array|null $usage
+ * @property array<array-key, mixed>|null $how
+ * @property array<array-key, mixed>|null $living_situation
+ * @property array<array-key, mixed>|null $usage
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building $building

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $id
  * @property string $group
  * @property string $key
- * @property array $text
+ * @property array<array-key, mixed> $text
  * @property int|null $step_id
  * @property int|null $main_language_line_id
  * @property int|null $help_language_line_id

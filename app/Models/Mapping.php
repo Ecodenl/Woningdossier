@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string|null $target_model_type
  * @property int|null $target_model_id
  * @property string|null $target_value
- * @property array|null $target_data
+ * @property array<array-key, mixed>|null $target_data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Model|\Eloquent|null $mappable

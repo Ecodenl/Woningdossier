@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
  * App\Models\ExampleBuilding
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property int|null $building_type_id
  * @property int|null $cooperation_id
  * @property int|null $order

@@ -32,7 +32,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property bool $subsidy_available
  * @property bool $loan_available
  * @property int $order
- * @property array|null $costs
+ * @property array<array-key, mixed>|null $costs
  * @property string|null $savings_gas
  * @property string|null $savings_electricity
  * @property string|null $savings_money

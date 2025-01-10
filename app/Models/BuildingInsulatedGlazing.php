@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $building_heating_id
  * @property string|null $m2
  * @property int|null $windows
- * @property array|null $extra
+ * @property array<array-key, mixed>|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building $building

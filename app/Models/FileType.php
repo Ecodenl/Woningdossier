@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property int $file_type_category_id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property string $short
  * @property string $content_type
  * @property \Illuminate\Support\Carbon|null $duration

@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * App\Models\Questionnaire
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property int|null $step_id
  * @property int $cooperation_id
  * @property int $order

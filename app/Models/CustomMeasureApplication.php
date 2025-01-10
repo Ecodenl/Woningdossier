@@ -16,8 +16,8 @@ use Spatie\Translatable\HasTranslations;
  * App\Models\CustomMeasureApplication
  *
  * @property int $id
- * @property array $name
- * @property array $info
+ * @property array<array-key, mixed> $name
+ * @property array<array-key, mixed> $info
  * @property string $hash
  * @property int $building_id
  * @property int $input_source_id

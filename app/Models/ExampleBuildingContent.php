@@ -12,7 +12,7 @@ use Illuminate\Support\Arr;
  * @property int $id
  * @property int $example_building_id
  * @property int|null $build_year
- * @property array|null $content
+ * @property array<array-key, mixed>|null $content
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ExampleBuilding $exampleBuilding

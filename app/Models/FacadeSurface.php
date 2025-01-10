@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\FacadeSurface
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property int|null $calculate_value
  * @property int $order
- * @property array $execution_term_name
+ * @property array<array-key, mixed> $execution_term_name
  * @property int|null $term_years
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

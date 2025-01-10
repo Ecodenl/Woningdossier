@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Request;
  * @property string|null $variant_name
  * @property int|null $original_media_id
  * @property int|null $input_source_id
- * @property array|null $custom_properties
+ * @property array<array-key, mixed>|null $custom_properties
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $alt

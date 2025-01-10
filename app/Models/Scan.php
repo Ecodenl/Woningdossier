@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\App;
  * App\Models\Scan
  *
  * @property int $id
- * @property array $name
- * @property array $slug
+ * @property array<array-key, mixed> $name
+ * @property array<array-key, mixed> $slug
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

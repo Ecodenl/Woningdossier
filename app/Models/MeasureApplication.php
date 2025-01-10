@@ -19,20 +19,20 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  *
  * @property int $id
  * @property string $measure_type
- * @property array $measure_name
- * @property array|null $measure_info
+ * @property array<array-key, mixed> $measure_name
+ * @property array<array-key, mixed>|null $measure_info
  * @property string $short
  * @property string $application
- * @property array|null $cost_range
+ * @property array<array-key, mixed>|null $cost_range
  * @property string|null $savings_money
  * @property float $costs
- * @property array $cost_unit
+ * @property array<array-key, mixed> $cost_unit
  * @property float $minimal_costs
  * @property int $maintenance_interval
- * @property array $maintenance_unit
+ * @property array<array-key, mixed> $maintenance_unit
  * @property int $step_id
  * @property bool $has_calculations
- * @property array|null $configurations
+ * @property array<array-key, mixed>|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string $info

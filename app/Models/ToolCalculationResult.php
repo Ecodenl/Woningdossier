@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * App\Models\ToolCalculationResult
  *
  * @property int $id
- * @property array $name
- * @property array|null $help_text
+ * @property array<array-key, mixed> $name
+ * @property array<array-key, mixed>|null $help_text
  * @property string $short
  * @property string $data_type
  * @property string|null $unit_of_measure

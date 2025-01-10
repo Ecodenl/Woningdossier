@@ -16,11 +16,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $tool_question_id
  * @property string $short
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property bool $show
  * @property int $order
- * @property array|null $extra
- * @property array|null $conditions
+ * @property array<array-key, mixed>|null $extra
+ * @property array<array-key, mixed>|null $conditions
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ToolQuestion $toolQuestion

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\BuildingHeating
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property int|null $degree
  * @property int|null $calculate_value
  * @property bool $is_default

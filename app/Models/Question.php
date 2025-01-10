@@ -14,11 +14,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * App\Models\Question
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property string $type
  * @property int $order
  * @property bool $required
- * @property array|null $validation
+ * @property array<array-key, mixed>|null $validation
  * @property int $questionnaire_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

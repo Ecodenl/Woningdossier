@@ -12,10 +12,10 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $element_id
- * @property array $value
+ * @property array<array-key, mixed> $value
  * @property float|null $calculate_value
  * @property int $order
- * @property array|null $configurations
+ * @property array<array-key, mixed>|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Element $element

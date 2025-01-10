@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\RoofType
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property string $short
  * @property int $calculate_value
  * @property int|null $order

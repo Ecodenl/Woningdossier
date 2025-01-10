@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $tokenable_id
  * @property string $name
  * @property string $token
- * @property array|null $abilities
+ * @property array<array-key, mixed>|null $abilities
  * @property \Illuminate\Support\Carbon|null $last_used_at
  * @property \Illuminate\Support\Carbon|null $expires_at
  * @property \Illuminate\Support\Carbon|null $created_at

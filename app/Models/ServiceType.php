@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\ServiceType
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property string $iso
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

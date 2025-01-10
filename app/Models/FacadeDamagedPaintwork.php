@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\FacadeDamagedPaintwork
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property int|null $calculate_value
  * @property int $order
  * @property int|null $term_years

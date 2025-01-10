@@ -13,11 +13,11 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int|null $service_id
- * @property array $value
+ * @property array<array-key, mixed> $value
  * @property int|null $calculate_value
  * @property int $order
  * @property bool $is_default
- * @property array|null $configurations
+ * @property array<array-key, mixed>|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\KeyFigureBoilerEfficiency|null $keyFigureBoilerEfficiency

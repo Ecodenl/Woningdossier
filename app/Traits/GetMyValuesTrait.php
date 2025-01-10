@@ -35,14 +35,14 @@ trait GetMyValuesTrait
      */
     public static function bootGetMyValuesTrait(): void
     {
-        static::saved(function (Model $model) {
+        static::saved(function (self $model) {
             // might be handy to prevent getting into an infinite loop (-:>
             if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT, InputSource::EXTERNAL_SHORT])) {
                 $model->saveForMasterInputSource();
             }
         });
 
-        static::deleting(function (Model $model) {
+        static::deleting(function (self $model) {
             // might be handy to prevent getting into an infinite loop (-:>
             if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT, InputSource::EXTERNAL_SHORT])) {
                 $supportedClasses = [

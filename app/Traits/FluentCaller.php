@@ -4,8 +4,8 @@ namespace App\Traits;
 
 trait FluentCaller
 {
-    public static function init()
+    public static function init(): self
     {
-        return new static(...func_get_args());
+        return new self(...func_get_args());
     }
 }

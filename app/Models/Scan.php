@@ -55,23 +55,23 @@ class Scan extends Model
     protected $translatable = ['name', 'slug'];
 
     // Static calls
-    public static function lite(): ?Model
+    public static function lite(): ?self
     {
         return static::findByShort(self::LITE);
     }
 
-    public static function quick(): ?Model
+    public static function quick(): ?self
     {
         return self::findByShort(self::QUICK);
     }
 
-    public static function expert(): ?Model
+    public static function expert(): ?self
     {
         return self::findByShort(self::EXPERT);
     }
 
     // Model Methods
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         $locale = App::getLocale();
         return "slug->{$locale}";

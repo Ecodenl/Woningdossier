@@ -771,7 +771,7 @@ class UserActionPlanAdviceService
                     $relevantQuestions = SmallMeasureHelper::MEASURE_QUESTION_LINK[$measureApplication->short];
 
                     // TODO: Hopefully this service becomes fluent so we don't need to keep doing this
-                    $instance = new static;
+                    $instance = new self;
                     $instance->building = $building;
                     $instance->inputSource = $masterInputSource;
 

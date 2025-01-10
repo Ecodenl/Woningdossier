@@ -54,7 +54,7 @@ class WoonplanService
         return $this;
     }
 
-    public function canEnterExpertScan(Cooperation $cooperation)
+    public function canEnterExpertScan(Cooperation $cooperation): bool
     {
         // first check that the cooperation has the expert-scan
         if ($cooperation->scans()->where('short', Scan::EXPERT)->exists()) {
@@ -68,6 +68,7 @@ class WoonplanService
 
     public function buildingCompletedFirstFourSteps(): bool
     {
+        /** @var \Illuminate\Support\Collection<\App\Models\Step> $steps */
         $steps = $this->scan->steps()->where('short', '!=', 'small-measures')->get();
         foreach ($steps as $step) {
             if ($this->building->hasNotCompleted($step, $this->inputSource)) {

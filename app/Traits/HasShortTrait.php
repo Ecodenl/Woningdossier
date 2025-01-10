@@ -10,10 +10,8 @@ trait HasShortTrait
 {
     /**
      * Find a record by its short.
-     *
-     * @param $short
      */
-    public static function findByShort($short): ?Model
+    public static function findByShort(string $short): ?self
     {
         $cacheKey = 'HasShortTrait_find_by_short_%s_%s';
         $className = get_class(self::getModel());
@@ -32,7 +30,7 @@ trait HasShortTrait
         return self::whereIn('short', $shorts)->get();
     }
 
-    public static function clearShortCache(string $short)
+    public static function clearShortCache(string $short): void
     {
         $cacheKey = 'HasShortTrait_find_by_short_%s_%s';
         $className = get_class(self::getModel());

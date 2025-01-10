@@ -58,7 +58,6 @@ class RawCalculator
      */
     public static function calculateCo2Savings($gasSavings)
     {
-
         $result = $gasSavings * Kengetallen::CO2_SAVING_GAS;
         self::debug(__METHOD__.' CO2 besparing: '.$result.' = '.$gasSavings.' * '.Kengetallen::CO2_SAVING_GAS);
 
@@ -82,10 +81,6 @@ class RawCalculator
 
     public static function calculateCostIndication($surface, MeasureApplication $measureApplication)
     {
-        if (! $measureApplication instanceof MeasureApplication) {
-            return 0;
-        }
-
         if (null == $surface || '0.0' == $surface) {
             $result = 0;
         } else {
@@ -107,7 +102,7 @@ class RawCalculator
      *
      * @return float|int
      */
-    public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, ?int $applicationYear = null, bool $applyIndexing = true)
+    public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, ?int $applicationYear = null, bool $applyIndexing = true): float|int
     {
         self::debug(__METHOD__.' for measure '.$measure->measure_name);
         if (! is_numeric($number) || $number <= 0) {

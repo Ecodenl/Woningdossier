@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\FileType;
 use Illuminate\Support\Str;
 
-class FileTypeService {
-
+class FileTypeService
+{
     public FileType $fileType;
 
     public function __construct(FileType $fileType)

@@ -95,9 +95,19 @@ class RoofInsulationController extends ToolController
         }
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'building', 'primaryRoofTypes', 'secondaryRoofTypes', 'typeIds',
-            'buildingFeaturesForMe', 'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
-            'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe',
+            'building',
+            'primaryRoofTypes',
+            'secondaryRoofTypes',
+            'typeIds',
+            'buildingFeaturesForMe',
+            'currentRoofTypes',
+            'roofTileStatuses',
+            'roofInsulation',
+            'currentRoofTypesForMe',
+            'heatings',
+            'measureApplications',
+            'currentCategorizedRoofTypes',
+            'currentCategorizedRoofTypesForMe',
             'measureRelatedAnswersCategorized'
         ));
     }
@@ -107,8 +117,12 @@ class RoofInsulationController extends ToolController
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
-        $result = \App\Calculations\RoofInsulation::calculate($building,
-            $this->masterInputSource, $building->user->energyHabit()->forInputSource($this->masterInputSource)->first(), $request->all());
+        $result = \App\Calculations\RoofInsulation::calculate(
+            $building,
+            $this->masterInputSource,
+            $building->user->energyHabit()->forInputSource($this->masterInputSource)->first(),
+            $request->all()
+        );
 
         return response()->json($result);
     }
@@ -185,8 +199,13 @@ class RoofInsulationController extends ToolController
             }
         }
 
-        $values = $request->only('considerables', 'building_roof_type_ids', 'building_features',
-            'building_roof_types', 'step_comments');
+        $values = $request->only(
+            'considerables',
+            'building_roof_type_ids',
+            'building_features',
+            'building_roof_types',
+            'step_comments'
+        );
         $values['updated_measure_ids'] = $updatedMeasureIds;
 
         // Usually we let the completeStore function handle the completion, but we NEED the step to be completed

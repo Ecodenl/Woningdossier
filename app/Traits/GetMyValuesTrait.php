@@ -253,10 +253,11 @@ trait GetMyValuesTrait
     public function scopeForInputSource(
         Builder $query,
         InputSource $inputSource
-    ): Builder
-    {
-        return $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id',
-            $inputSource->id);
+    ): Builder {
+        return $query->withoutGlobalScope(GetValueScope::class)->where(
+            'input_source_id',
+            $inputSource->id
+        );
     }
 
     /**
@@ -327,8 +328,10 @@ trait GetMyValuesTrait
     {
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
         if (self::hasCoachInputSource($inputSourcesForMe)) {
-            return $inputSourcesForMe->where('input_source_id',
-                $coachInputSource->id)->first();
+            return $inputSourcesForMe->where(
+                'input_source_id',
+                $coachInputSource->id
+            )->first();
         }
     }
 
@@ -340,8 +343,10 @@ trait GetMyValuesTrait
         $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
         if (self::hasResidentInputSource($inputSourcesForMe)) {
-            return $inputSourcesForMe->where('input_source_id',
-                $residentInputSource->id)->first();
+            return $inputSourcesForMe->where(
+                'input_source_id',
+                $residentInputSource->id
+            )->first();
         }
     }
 

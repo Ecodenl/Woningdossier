@@ -97,8 +97,10 @@ class Ventilation
                     // because: either there is no crack sealing or it's all okay
                     $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
-                    if (in_array('none', Arr::get($calculateData,
-                                'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                    if (in_array('none', Arr::get(
+                        $calculateData,
+                        'building_ventilations.how'
+                    ) ?? []) || $currentCrackSealingCalculateValue < 2) {
                         unset($measures['crack-sealing']);
                     }
 
@@ -127,8 +129,10 @@ class Ventilation
                     // because: either there is no crack sealing or it's all okay
                     $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
-                    if (in_array('none', Arr::get($calculateData,
-                                'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                    if (in_array('none', Arr::get(
+                        $calculateData,
+                        'building_ventilations.how'
+                    ) ?? []) || $currentCrackSealingCalculateValue < 2) {
                         unset($measures['crack-sealing']);
                     }
 
@@ -157,15 +161,16 @@ class Ventilation
                     // because: either there is no crack sealing or it's all okay
                     $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
-                    if (in_array('none', Arr::get($calculateData,
-                                'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                    if (in_array('none', Arr::get(
+                        $calculateData,
+                        'building_ventilations.how'
+                    ) ?? []) || $currentCrackSealingCalculateValue < 2) {
                         unset($measures['crack-sealing']);
                     }
 
                     $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
                     $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
-
             }
 
             if (array_key_exists('crack-sealing', $measures)) {
@@ -193,19 +198,27 @@ class Ventilation
                     $result['crack_sealing']['savings_gas'] = Number::isNegative($gasSaving) ? 0 : $gasSaving;
 
                     /** @var MeasureApplication $measureApplication */
-                    $measureApplication = MeasureApplication::where('short',
-                        'crack-sealing')->first();
+                    $measureApplication = MeasureApplication::where(
+                        'short',
+                        'crack-sealing'
+                    )->first();
 
-                    $result['crack_sealing']['cost_indication'] = RawCalculator::calculateMeasureApplicationCosts($measureApplication,
-                        1, null, false);
+                    $result['crack_sealing']['cost_indication'] = RawCalculator::calculateMeasureApplicationCosts(
+                        $measureApplication,
+                        1,
+                        null,
+                        false
+                    );
                     $result['crack_sealing']['savings_co2'] = RawCalculator::calculateCo2Savings($result['crack_sealing']['savings_gas']);
 
                     $result['crack_sealing']['savings_money'] = app(CalculatorService::class)
                         ->forBuilding($building)
                         ->calculateMoneySavings($result['crack_sealing']['savings_gas']);
 
-                    $result['crack_sealing']['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['crack_sealing']['cost_indication'],
-                        $result['crack_sealing']['savings_money']), 1);
+                    $result['crack_sealing']['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest(
+                        $result['crack_sealing']['cost_indication'],
+                        $result['crack_sealing']['savings_money']
+                    ), 1);
                 }
             }
             // al conditions have been checked, we can safely get the measures

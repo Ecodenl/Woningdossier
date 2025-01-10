@@ -54,7 +54,7 @@ class CreateBuildingFormRequest extends FormRequest
 
         // Replace ALL data fields before they're sent to the validator
         //$this->replace([
-        //	'house_number_extension' => strtolower(preg_replace("/[\s-]+/", "", $this->get('house_number_extension', ''))),
+        //  'house_number_extension' => strtolower(preg_replace("/[\s-]+/", "", $this->get('house_number_extension', ''))),
         //]);
 
         // Fire the parent getValidatorInstance method

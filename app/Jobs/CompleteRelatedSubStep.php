@@ -87,6 +87,5 @@ class CompleteRelatedSubStep extends NonHandleableJobAfterReset
             ScanFlowService::init($subStep->step->scan, $building, $inputSource)
                 ->evaluateSubSteps($subStepsToCheck, $evaluator);
         }
-
     }
 }

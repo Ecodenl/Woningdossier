@@ -34,7 +34,8 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
     {
         // retrieve all the password resets
         $records = $this->getTable()->where(
-            'email', $user->getEmailForPasswordReset()
+            'email',
+            $user->getEmailForPasswordReset()
         )->get();
 
         // Loop all tokens because there could be more than one for this e-mail. We can't just check the first

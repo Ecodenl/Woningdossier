@@ -49,7 +49,12 @@ class VentilationController extends ToolController
             ->getMeasureRelatedAnswers(Step::findByShort('ventilation'));
 
         return view('cooperation.tool.ventilation.index', compact(
-            'building', 'buildingVentilation', 'howValues', 'livingSituationValues', 'usageValues', 'measureRelatedAnswers',
+            'building',
+            'buildingVentilation',
+            'howValues',
+            'livingSituationValues',
+            'usageValues',
+            'measureRelatedAnswers',
         ));
     }
 

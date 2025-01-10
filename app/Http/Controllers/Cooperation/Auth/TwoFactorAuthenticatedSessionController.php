@@ -20,5 +20,4 @@ class TwoFactorAuthenticatedSessionController extends FortifiesTwoFactorAuthenti
 
         return app(TwoFactorChallengeViewResponse::class);
     }
-
 }

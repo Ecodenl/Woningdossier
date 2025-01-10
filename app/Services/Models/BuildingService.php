@@ -266,8 +266,10 @@ class BuildingService
         // to cascade on delete, but mappings are a morph relation without foreign key constraints, so we must
         // delete them ourselves.
         DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
-            ->whereIn('from_model_id',
-                $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray())
+            ->whereIn(
+                'from_model_id',
+                $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray()
+            )
             ->delete();
 
         // table will be removed anyways.

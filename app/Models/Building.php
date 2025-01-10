@@ -349,8 +349,7 @@ class Building extends Model implements MediableInterface
     public function isOwnerOfFileStorage(
         InputSource $inputSource,
         FileStorage $fileStorage
-    ): bool
-    {
+    ): bool {
         $fileIsGeneratedByBuilding = $fileStorage->building_id == $this->id;
         $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == $inputSource->id;
 
@@ -360,8 +359,7 @@ class Building extends Model implements MediableInterface
     /**
      * Scope to return the buildings with most recent information from the building status.
      */
-    public function scopeWithRecentBuildingStatusInformation(Builder $query
-    ): Builder
+    public function scopeWithRecentBuildingStatusInformation(Builder $query): Builder
     {
         $recentBuildingStatuses = DB::table('building_statuses')
             ->selectRaw(
@@ -559,8 +557,7 @@ class Building extends Model implements MediableInterface
                 '=',
                 'e.id'
             )
-            ->where('e.short', $short)->select(['building_elements.*']
-            )->get();
+            ->where('e.short', $short)->select(['building_elements.*'])->get();
     }
 
     public function getBuildingService(string $short, InputSource $inputSource): ?BuildingService
@@ -725,7 +722,7 @@ class Building extends Model implements MediableInterface
                 // Break the loop if there are no incomplete sub steps left.
                 $passes = true;
             }
-        } while(! $passes);
+        } while (! $passes);
 
         // If no sub step was found, just return to the first available one. This is a fallback, and generally should
         // not happen.

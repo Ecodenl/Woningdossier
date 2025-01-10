@@ -35,14 +35,14 @@ class SentryContext
                     true
                 );
 
-                if ( ! $inputSource instanceof InputSource) {
+                if (! $inputSource instanceof InputSource) {
                     $inputSource = new \stdClass;
                     if (App::runningInConsole()) {
                         $inputSource->short = 'not set (running on cli)';
                     }
                     $inputSource->short = '';
                 }
-                if ( ! $inputSourceValue instanceof InputSource) {
+                if (! $inputSourceValue instanceof InputSource) {
                     $inputSourceValue = new \stdClass;
                     if (App::runningInConsole()) {
                         $inputSourceValue->short = 'not set (running on cli)';
@@ -68,7 +68,7 @@ class SentryContext
                 ];
 
 
-                if ( ! $building?->user instanceof User) {
+                if (! $building?->user instanceof User) {
                     Log::error(
                         "SentryContext : building -> user is no instance of App\Models\User !! a: ".$account->id.', u: '.$user->id.', b: '.$building?->id
                     );

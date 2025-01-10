@@ -330,18 +330,28 @@ class DumpService
             $calculations[$short] = $calculator::calculate($building, $inputSource);
         }
 
-        $calculations['wall-insulation'] = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['wall-insulation'] = WallInsulation::calculate(
+            $building,
+            $inputSource,
+            $userEnergyHabit,
             (new WallInsulationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
         );
 
-        $calculations['insulated-glazing'] = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['insulated-glazing'] = InsulatedGlazing::calculate(
+            $building,
+            $inputSource,
+            $userEnergyHabit,
             (new InsulatedGlazingHelper($user, $inputSource))
                 ->createValues()
-                ->getValues());
+            ->getValues()
+        );
 
-        $calculations['floor-insulation'] = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['floor-insulation'] = FloorInsulation::calculate(
+            $building,
+            $inputSource,
+            $userEnergyHabit,
             (new FloorInsulationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -363,7 +373,10 @@ class DumpService
                 ->getValues()
         );
 
-        $calculations['ventilation'] = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['ventilation'] = Ventilation::calculate(
+            $building,
+            $inputSource,
+            $userEnergyHabit,
             (new VentilationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -386,7 +399,7 @@ class DumpService
         }
 
         if (Str::contains($key, 'percentage_consumption') || Str::contains($key, 'savings_')
-            || (Str::contains($key, 'cost') && ! Str::contains( $key, 'roof-insulation'))) {
+            || (Str::contains($key, 'cost') && ! Str::contains($key, 'roof-insulation'))) {
             $shouldRound = true;
         }
 

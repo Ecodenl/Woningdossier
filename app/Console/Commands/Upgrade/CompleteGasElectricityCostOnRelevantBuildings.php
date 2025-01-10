@@ -70,8 +70,7 @@ class CompleteGasElectricityCostOnRelevantBuildings extends Command
                     $incompleteGasElectricityForBuildingInputSourcesCombinations = DB::table('steps')
                         ->selectRaw('steps.id as step_id,
                                             completed_steps.building_id as building_id, 
-                                            completed_steps.input_source_id'
-                        )
+                                            completed_steps.input_source_id')
                         ->leftJoin('completed_steps', 'steps.id', 'completed_steps.step_id')
                         ->leftJoin('completed_sub_steps', function (JoinClause $leftJoin) use ($subStepToComplete) {
                             $leftJoin->on('completed_steps.building_id', 'completed_sub_steps.building_id')

@@ -15,7 +15,7 @@ class VentilationUsage extends QuestionValuable
     {
         $values = collect();
 
-        foreach(VentilationHelper::getUsageValues() as $value => $name) {
+        foreach (VentilationHelper::getUsageValues() as $value => $name) {
             $values->push(compact('value', 'name'));
         }
 

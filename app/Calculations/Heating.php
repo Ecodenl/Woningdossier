@@ -78,7 +78,7 @@ class Heating extends Calculator
             'new-heat-pump-type',
             'new-boiler-setting-comfort-heat',
             'new-boiler-type',
-//            data_get($heatingCurrent, 'gas.netto', 0), // netto!
+            //data_get($heatingCurrent, 'gas.netto', 0), // netto!
             0, // only used in current situation
             data_get($cooking, 'new')
         );
@@ -109,18 +109,17 @@ class Heating extends Calculator
         // because cooking is fairly stable / always around 37, the wtw gas
         // usage should be the leftover of the amount gas - cooking.
         // correction should only be done on the current situation.
-        foreach (
-            [
+        foreach ([
                 'current' => 'heat-source',
                 //'new'     => 'new-heat-source',
             ] as $situation => $heatSourceShort
         ) {
             $heatSources = $this->getAnswer($heatSourceShort) ?? [];
 
-            if ( ! in_array('hr-boiler', $heatSources) && ! in_array(
-                    'district-heating',
-                    $heatSources
-                )) {
+            if (! in_array('hr-boiler', $heatSources) && ! in_array(
+                'district-heating',
+                $heatSources
+            )) {
                 Log::debug(
                     __METHOD__.' - correcting situation (because no hr-boiler / district-heating => assign gas rest to wtw and not to heating'
                 );
@@ -184,15 +183,15 @@ class Heating extends Calculator
         /** @var array $heatSources */
         $heatSources = $this->getAnswer($heatSourceShort) ?? [];
 
-        if ( ! in_array('hr-boiler', $heatSources) && ! in_array(
-                'district-heating',
-                $heatSources
-            )) {
+        if (! in_array('hr-boiler', $heatSources) && ! in_array(
+            'district-heating',
+            $heatSources
+        )) {
             //Log::debug(__METHOD__.' - No HR boiler or district heating');
             // we can only handle heat pump for 'new' case. We bail if 'current'
             // in the other cases we can't calculate anything yet, so we bail
             // always.
-            if ( ! in_array('heat-pump', $heatSources)) {
+            if (! in_array('heat-pump', $heatSources)) {
 //                Log::debug(
 //                    __METHOD__.' - no heat pump, no hr-boiler, no district-heating, cannot calculate, so all is 0.'
 //                );
@@ -225,9 +224,9 @@ class Heating extends Calculator
         // district heating or HR boiler
         if (in_array('district-heating', $heatSources) ||
             (in_array('hr-boiler', $heatSources) && ! in_array(
-                    'heat-pump',
-                    $heatSources
-                ))) {
+                'heat-pump',
+                $heatSources
+            ))) {
             //Log::debug(__METHOD__.' - district heating or HR boiler');
             if ($case === 'current') {
                 $energyConsumption = $amountGas;
@@ -564,12 +563,11 @@ class Heating extends Calculator
             // we can only do this in the current situation as the new situation
             // would contain a cyclic dependency.
             if ($case === 'current' && ! in_array('hr-boiler', $heatSources) && ! in_array(
-                    'district-heating',
-                    $heatSources
-                ) && $amountGas > 0) {
+                'district-heating',
+                $heatSources
+            ) && $amountGas > 0) {
                 //Log::debug(__METHOD__.' - Gas based wtw, but no gas-based heating. We will use the amountGas - cooking(gas) instead of the table-values');
                 $gasUsageWtw = $amountGas - data_get($cookingUsage, 'gas', 0);
-
             }
             // step 1: Gas usage wtw from table
             $energyConsumption = $gasUsageWtw;
@@ -750,14 +748,14 @@ class Heating extends Calculator
     }
 
 
-    protected function getBoilerKeyFigureEfficiency(string $boilerTypeShort
-    ): ?KeyFigureBoilerEfficiency {
+    protected function getBoilerKeyFigureEfficiency(string $boilerTypeShort): ?KeyFigureBoilerEfficiency
+    {
         $boiler = ToolHelper::getServiceValueByCustomValue(
             'boiler',
             $boilerTypeShort,
             $this->getAnswer($boilerTypeShort)
         );
-        if ( ! $boiler instanceof ServiceValue) {
+        if (! $boiler instanceof ServiceValue) {
             // if even the current boiler wasn't present, the user probably already
             // has a heat pump, so we will calculate with the most efficient boiler
             $boiler = Service::findByShort('boiler')->values()->orderByDesc(
@@ -767,5 +765,4 @@ class Heating extends Calculator
 
         return $boiler->keyFigureBoilerEfficiency;
     }
-
 }

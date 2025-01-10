@@ -46,7 +46,7 @@ class DoUpgrade extends Command
         ];
 
         foreach ($commands as $command => $variants) {
-            if ( ! is_array(Arr::first($variants))) {
+            if (! is_array(Arr::first($variants))) {
                 $variants = [$variants];
             }
 

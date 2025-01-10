@@ -146,8 +146,10 @@ class UserService
 
         // Remove all mappings related to custom measure applications
         DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
-            ->whereIn('from_model_id',
-                $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray())
+            ->whereIn(
+                'from_model_id',
+                $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray()
+            )
             ->delete();
         // Remove custom measure applications the user has made
         $building->customMeasureApplications()->forInputSource($inputSource)->delete();
@@ -168,7 +170,9 @@ class UserService
         if (! in_array($inputSource->short, [InputSource::MASTER_SHORT])) {
             // re-query the bag
             $addressData = app(BagService::class)->addressExpanded(
-                $building->postal_code, $building->number, $building->extension
+                $building->postal_code,
+                $building->number,
+                $building->extension
             )->prepareForBuilding();
 
             if (! empty(($addressData['bag_addressid'] ?? null))) {
@@ -405,8 +409,10 @@ class UserService
                     ->pluck('input_source_id')
                     ->toArray();
 
-                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.' AND WHERE input_source NOT IN ('.implode(',',
-                        $inputSources).');');
+                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.' AND WHERE input_source NOT IN ('.implode(
+                    ',',
+                    $inputSources
+                ).');');
                 DB::table($tableWithColumn)
                     ->where($column, '=', $user2->id)
                     ->whereNotIn('input_source_id', $inputSources)

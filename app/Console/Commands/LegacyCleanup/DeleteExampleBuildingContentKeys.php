@@ -43,10 +43,10 @@ class DeleteExampleBuildingContentKeys extends Command
             'solar-panels.-.building_pv_panels.total_installed_power',
         ];
 
-        foreach(ExampleBuildingContent::cursor() as $exampleBuildingContent) {
+        foreach (ExampleBuildingContent::cursor() as $exampleBuildingContent) {
             $content = $exampleBuildingContent->content;
             // forget the keys we need to remove
-            foreach($keysToRemove as $keyToRemove) {
+            foreach ($keysToRemove as $keyToRemove) {
                 Arr::forget($content, $keyToRemove);
             }
 

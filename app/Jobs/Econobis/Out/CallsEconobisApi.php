@@ -97,8 +97,7 @@ trait CallsEconobisApi
             // TODO: In PHP 8, just use the nullsafe operator (?->)
             if (!isset($this->building)) {
                 $cooperationId = 'No building for building ID ' . $buildingId . ' so no cooperation either';
-            }
-            else {
+            } else {
                 $cooperationId = $this->building?->user?->cooperation?->id ?? 'No cooperation ID';
             }
             DiscordNotifier::init()->notify(get_class($exception)." Failed to send [{$environment}] '{$class}' building_id: {$buildingId} cooperation_id: {$cooperationId}");

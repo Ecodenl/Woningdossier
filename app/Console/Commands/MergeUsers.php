@@ -60,8 +60,12 @@ class MergeUsers extends Command
         Log::warning(
             sprintf(
                 'Merging users %s %s (%s) and %s %s (%s)',
-                $user1->first_name, $user1->last_name, $user1->id,
-                $user2->first_name, $user2->last_name, $user2->id
+                $user1->first_name,
+                $user1->last_name,
+                $user1->id,
+                $user2->first_name,
+                $user2->last_name,
+                $user2->id
             )
         );
 

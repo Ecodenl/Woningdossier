@@ -92,8 +92,11 @@ class RoofInsulationHelper extends ToolHelper
 
                                 // We only want to check old advices if the updated attributes are not relevant to this measure
                                 if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
-                                        $oldAdvices);
+                                    UserActionPlanAdviceService::checkOldAdvices(
+                                        $actionPlanAdvice,
+                                        $measureApplication,
+                                        $oldAdvices
+                                    );
                                 }
 
                                 $actionPlanAdvice->save();
@@ -168,8 +171,11 @@ class RoofInsulationHelper extends ToolHelper
 
                                 // We only want to check old advices if the updated attributes are not relevant to this measure
                                 if (! in_array($replaceMeasure->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure,
-                                        $oldAdvices);
+                                    UserActionPlanAdviceService::checkOldAdvices(
+                                        $actionPlanAdvice,
+                                        $replaceMeasure,
+                                        $oldAdvices
+                                    );
                                 }
 
                                 $actionPlanAdvice->save();
@@ -202,8 +208,11 @@ class RoofInsulationHelper extends ToolHelper
 
                             // We only want to check old advices if the updated attributes are not relevant to this measure
                             if (! in_array($replaceMeasure->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure,
-                                    $oldAdvices);
+                                UserActionPlanAdviceService::checkOldAdvices(
+                                    $actionPlanAdvice,
+                                    $replaceMeasure,
+                                    $oldAdvices
+                                );
                             }
 
                             $actionPlanAdvice->save();

@@ -129,11 +129,12 @@ class ToolQuestion extends Model
                     // so now get the actual morphed model.
                     $valuable = $toolQuestionValuable->tool_question_valuable;
                     if ($valuable instanceof Model) {
-
                         // these will also be available in the frontend, to the user.
                         // be careful choosing what you allow.
-                        $questionValue = Arr::only($valuable->toArray(),
-                            ['calculate_value', 'short', 'building_type_id', 'cooperation_id']);
+                        $questionValue = Arr::only(
+                            $valuable->toArray(),
+                            ['calculate_value', 'short', 'building_type_id', 'cooperation_id']
+                        );
                         $questionValue['extra'] = $toolQuestionValuable->extra;
                         // the humane readable name is either set in the name or value column.
                         $questionValue['name'] = $valuable->name ?? $valuable->value ?? $valuable->measure_name;

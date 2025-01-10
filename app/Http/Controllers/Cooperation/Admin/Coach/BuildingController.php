@@ -27,4 +27,3 @@ class BuildingController extends Controller
         return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildings'));
     }
 }
-

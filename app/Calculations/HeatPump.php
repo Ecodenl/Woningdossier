@@ -191,10 +191,16 @@ class HeatPump extends Calculator
         //$savingsGas = $amountGas - data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage, 'cooking.gas.electricity', 0);
         //Log::debug('C76 (gasbesparing): = ' . "$amountGas - ($newNettoGasUsageHeating + $newNettoGasUsageTapWater + $newNettoGasUsageCooking) = $savingsGas");
 
-        $savingsGas = (data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage,
-                    'heating.current.gas.bruto', 0)) +
-            (data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage,
-                    'tap_water.current.gas.bruto', 0)) +
+        $savingsGas = (data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get(
+            $energyUsage,
+            'heating.current.gas.bruto',
+            0
+        )) +
+            (data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get(
+                $energyUsage,
+                'tap_water.current.gas.bruto',
+                0
+            )) +
             (data_get($energyUsage, 'cooking.new.gas', 0) - data_get($energyUsage, 'cooking.current.gas', 0));
         // New gas usage will probably (ideally) be less than new. Savings is the difference, but * -1!
         $savingsGas = $savingsGas * -1;
@@ -299,8 +305,11 @@ class HeatPump extends Calculator
 
     public function lookupHeatPumpCharacteristics(): ?HeatPumpCharacteristic
     {
-        $heatPumpConfigurable = ToolHelper::getServiceValueByCustomValue('heat-pump', 'new-heat-pump-type',
-            $this->getAnswer('new-heat-pump-type'));
+        $heatPumpConfigurable = ToolHelper::getServiceValueByCustomValue(
+            'heat-pump',
+            'new-heat-pump-type',
+            $this->getAnswer('new-heat-pump-type')
+        );
 
         if ($heatPumpConfigurable instanceof Model && $this->heatingTemperature instanceof ToolQuestionCustomValue) {
             return HeatPumpCharacteristic::forHeatPumpConfigurable($heatPumpConfigurable)

@@ -70,7 +70,7 @@ class HeaterHelper extends ToolHelper
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        if ($this->considers($step) ) {
+        if ($this->considers($step)) {
             if ($this->getValues('has_completed_expert')) {
                 // User has finished expert step, so we will use the expert logic
                 $results = Heater::calculate($this->building, $this->masterInputSource);
@@ -83,8 +83,11 @@ class HeaterHelper extends ToolHelper
                     ->where('extra->calculate_value', $comfort?->calculate_value)
                     ->first();
 
-                $results = Heater::calculate($this->building, $this->masterInputSource,
-                    collect(['new-water-comfort' => $newComfortEqual?->short]));
+                $results = Heater::calculate(
+                    $this->building,
+                    $this->masterInputSource,
+                    collect(['new-water-comfort' => $newComfortEqual?->short])
+                );
             }
 
             if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {

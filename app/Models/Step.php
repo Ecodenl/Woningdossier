@@ -86,7 +86,7 @@ class Step extends Model
         // so this method is supposed to resolve the child route binding (any relationship)
         // which could be any child of the step
         // the sub step has a translatable slug, which is impossible to configure on the routes
-        if ($childType === 'subStep' && $field === 'slug'){
+        if ($childType === 'subStep' && $field === 'slug') {
             $field = (new SubStep())->getRouteKeyName();
             return parent::resolveChildRouteBinding($childType, $value, $field);
         }

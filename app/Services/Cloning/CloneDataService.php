@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-class CloneDataService {
-
+class CloneDataService
+{
     use FluentCaller;
 
     public Building $building;

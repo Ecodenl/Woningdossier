@@ -83,5 +83,4 @@ class Client
     {
         return $this->request('GET', $uri, $options);
     }
-
 }

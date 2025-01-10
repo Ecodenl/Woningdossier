@@ -99,10 +99,21 @@ class InsulatedGlazingController extends ToolController
             ->getMeasureRelatedAnswers(Step::findByShort('insulated-glazing'));
 
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'myBuildingElements', 'buildingOwner',
-            'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
-            'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
-            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility',
+            'building',
+            'myBuildingElements',
+            'buildingOwner',
+            'heatings',
+            'measureApplications',
+            'insulatedGlazings',
+            'buildingInsulatedGlazings',
+            'crackSealing',
+            'frames',
+            'woodElements',
+            'buildingFeaturesForMe',
+            'paintworkStatuses',
+            'woodRotStatuses',
+            'buildingInsulatedGlazingsForMe',
+            'buildingPaintworkStatusesOrderedOnInputSourceCredibility',
             'measureRelatedAnswers'
         ));
     }
@@ -184,8 +195,13 @@ class InsulatedGlazingController extends ToolController
             }
         }
 
-        $values = $request->only('considerables', 'building_insulated_glazings', 'building_features',
-            'building_elements', 'building_paintwork_statuses');
+        $values = $request->only(
+            'considerables',
+            'building_insulated_glazings',
+            'building_features',
+            'building_elements',
+            'building_paintwork_statuses'
+        );
         $values['updated_measure_ids'] = $updatedMeasureIds;
 
         (new InsulatedGlazingHelper($user, $inputSource))

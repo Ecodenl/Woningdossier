@@ -61,10 +61,18 @@ class WallInsulationController extends ToolController
             ->getMeasureRelatedAnswers(Step::findByShort('wall-insulation'));
 
         return view('cooperation.tool.wall-insulation.index', compact(
-             'building', 'facadeInsulation', 'buildingFeaturesOrderedOnCredibility',
-            'surfaces', 'buildingFeature', 'typeIds',
-            'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe',
-            'buildingElements', 'buildingFeaturesRelationShip', 'measureRelatedAnswers'
+            'building',
+            'facadeInsulation',
+            'buildingFeaturesOrderedOnCredibility',
+            'surfaces',
+            'buildingFeature',
+            'typeIds',
+            'facadePlasteredSurfaces',
+            'facadeDamages',
+            'buildingFeaturesForMe',
+            'buildingElements',
+            'buildingFeaturesRelationShip',
+            'measureRelatedAnswers'
         ));
     }
 

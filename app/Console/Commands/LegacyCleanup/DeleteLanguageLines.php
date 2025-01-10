@@ -55,7 +55,7 @@ class DeleteLanguageLines extends Command
             if ($degenMode === false && $this->confirm("Do you want to remove the following translation \r\n $translationKey \r\n" . __($translationKey) . "\r\n")) {
                 LanguageLine::where(compact('group', 'key'))->delete();
                 $this->info("Deleted");
-            } else if ($degenMode === true) {
+            } elseif ($degenMode === true) {
                 LanguageLine::where(compact('group', 'key'))->delete();
                 $this->info("Deleted");
             } else {

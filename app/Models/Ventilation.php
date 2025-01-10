@@ -42,5 +42,5 @@ class Ventilation extends Model
             3 => static::BALANCED,
             4 => static::DECENTRAL,
         ];
-    }    
+    }
 }

@@ -124,9 +124,12 @@ class WallInsulation
                 //$year = Carbon::now()->year + $facadePlasteredSurface->term_years;
                 $year = Carbon::now()->year + $facadeDamagedPaintwork->term_years;
             }
-            $costs = RawCalculator::calculateMeasureApplicationCosts($measureApplication,
+            $costs = RawCalculator::calculateMeasureApplicationCosts(
+                $measureApplication,
                 $number,
-                $year, false);
+                $year,
+                false
+            );
             $result['paint_wall'] = compact('costs', 'year');
         }
 

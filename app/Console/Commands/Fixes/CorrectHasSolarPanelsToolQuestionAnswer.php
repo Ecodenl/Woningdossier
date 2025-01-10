@@ -40,7 +40,7 @@ class CorrectHasSolarPanelsToolQuestionAnswer extends Command
 
         $toolQuestionAnswersToUpdate = DB::table('building_services')
             ->select(['tool_question_answers.id', 'building_services.building_id', 'building_services.input_source_id'])
-            ->leftJoin('tool_question_answers', function(JoinClause $join) {
+            ->leftJoin('tool_question_answers', function (JoinClause $join) {
                 $join
                     ->on('building_services.building_id', '=', 'tool_question_answers.building_id')
                     ->whereRaw('building_services.input_source_id = tool_question_answers.input_source_id');
@@ -57,7 +57,4 @@ class CorrectHasSolarPanelsToolQuestionAnswer extends Command
 
         $this->info("Total tool question answers corrected: {$updatedCount}");
     }
-    
-    
-    
 }

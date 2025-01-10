@@ -113,7 +113,7 @@ class GenerateToolReport implements ShouldQueue
                     ]
                 );
             }, 'energyHabit' => fn ($q) => $q->forInputSource($inputSource)])
-            ->chunkById(100, function($users) use ($dumpService, &$rows, &$chunkNo) {
+            ->chunkById(100, function ($users) use ($dumpService, &$rows, &$chunkNo) {
                 foreach ($users as $user) {
                     $rows[$user->building->id] = $dumpService->user($user)->generateDump();
                     if ($this->fileType->short === 'total-report') {

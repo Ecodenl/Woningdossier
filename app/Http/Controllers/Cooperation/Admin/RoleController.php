@@ -55,7 +55,7 @@ class RoleController extends Controller
             $user = User::find($userId);
         }
 
-        $this->authorize('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
+        $this->authorize('delete', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
 
         // we cant delete a role if the user only has 1 role.
         if ($user->hasMultipleRoles()) {

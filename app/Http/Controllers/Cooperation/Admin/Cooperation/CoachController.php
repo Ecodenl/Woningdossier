@@ -53,7 +53,11 @@ class CoachController extends Controller
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();
 
         return view('cooperation.admin.cooperation.coaches.show', compact(
-            'connectedBuildingsForUser', 'userToShow', 'roles', 'buildingFromUser', 'buildings'
+            'connectedBuildingsForUser',
+            'userToShow',
+            'roles',
+            'buildingFromUser',
+            'buildings'
         ));
     }
 }

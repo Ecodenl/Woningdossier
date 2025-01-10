@@ -43,8 +43,7 @@ class DiscordNotifier
                 if ($e->getResponse()->getStatusCode() == 429) {
                     sleep(3);
                     $this->sendMessage($message);
-                }
-                else {
+                } else {
                     report($e);
                 }
             }

@@ -37,7 +37,7 @@ class CompletedSubStepObserver
 
             // so the sub step thats completed right now is the first one
             // the first progress has been made, so we will notify Econobis.
-            if($otherCompletedSubStepsForScan === 0 && $inputSource->isMaster()) {
+            if ($otherCompletedSubStepsForScan === 0 && $inputSource->isMaster()) {
                 Log::debug("total $otherCompletedSubStepsForScan scan: {$scan->name} substepado: {$subStep->id}");
                 BuildingCompletedHisFirstSubStep::dispatch($building);
             }

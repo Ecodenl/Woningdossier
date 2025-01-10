@@ -65,11 +65,20 @@ class SolarPanelsController extends ToolController
             ->inputSource(HoomdossierSession::getInputSource(true))
             ->getMeasureRelatedAnswers(Step::findByShort('solar-panels'));
 
-        return view('cooperation.tool.solar-panels.index',
+        return view(
+            'cooperation.tool.solar-panels.index',
             compact(
-                'building', 'pvPanelOrientations', 'buildingOwner', 'typeIds', 'totalSolarPanelService',
-                'energyHabitsOrderedOnInputSourceCredibility', 'pvPanelsOrderedOnInputSourceCredibility', 'totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility',
-                'hasSolarPanelsToolQuestion', 'hasSolarAnswersOrderedOnInputSourceCredibility', 'measureRelatedAnswers'
+                'building',
+                'pvPanelOrientations',
+                'buildingOwner',
+                'typeIds',
+                'totalSolarPanelService',
+                'energyHabitsOrderedOnInputSourceCredibility',
+                'pvPanelsOrderedOnInputSourceCredibility',
+                'totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility',
+                'hasSolarPanelsToolQuestion',
+                'hasSolarAnswersOrderedOnInputSourceCredibility',
+                'measureRelatedAnswers'
             )
         );
     }

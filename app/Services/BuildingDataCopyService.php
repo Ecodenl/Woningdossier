@@ -49,7 +49,6 @@ class BuildingDataCopyService
         // the source could have more data than the target, that case we will insert the missing data
         // but we also need to keep in mind the way data is stored eg; element_id & element_value_id.
         foreach ($tables as $table => $tableColumns) {
-
             $whereColumn = $tableColumns['where_column'];
             $additionalWhereColumn = $tableColumns['additional_where_column'] ?? null;
             // building to copy data from
@@ -84,7 +83,6 @@ class BuildingDataCopyService
 
                 DB::table($table)->insert($insertableTargetValues);
             } else {
-
                 foreach ($sourceValues as $sourceValue) {
                     // get the possible targets, we will remove them and insert the source values instead
                     $possibleTargetValues = self::getPossibleTargetValues($sourceValue, $targetValues, $whereColumn, $additionalWhereColumn);
@@ -221,7 +219,6 @@ class BuildingDataCopyService
         $fromData['input_source_id'] = $to->id;
 
         if (array_key_exists('extra', $fromData)) {
-
             $extra = json_decode($fromData['extra'], true);
             if (!is_null($extra)) {
                 $fromData['extra'] = static::filterExtraColumn($extra);

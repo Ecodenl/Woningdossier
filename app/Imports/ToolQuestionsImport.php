@@ -17,7 +17,7 @@ class ToolQuestionsImport implements ToCollection, WithCustomCsvSettings, WithHe
     {
         foreach ($rows as $row) {
             $short = $row['short'];
-            if ( ! empty($short)) {
+            if (! empty($short)) {
                 $toolQuestionTable = (new ToolQuestion())->getTable();
 
                 if (DB::table($toolQuestionTable)->where('short', $short)->exists()) {

@@ -21,8 +21,9 @@ class TwoFactorAuthenticationController extends Controller
         $building = HoomdossierSession::getBuilding(true);
 
         return view('cooperation.my-account.two-factor-authentication.index', compact(
-            'user', 'account', 'building',
+            'user',
+            'account',
+            'building',
         ));
     }
-
 }

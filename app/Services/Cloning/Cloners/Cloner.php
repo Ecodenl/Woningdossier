@@ -4,8 +4,8 @@ namespace App\Services\Cloning\Cloners;
 
 use App\Models\InputSource;
 
-abstract class Cloner {
-
+abstract class Cloner
+{
     protected array $data;
 
     protected InputSource $inputSource;

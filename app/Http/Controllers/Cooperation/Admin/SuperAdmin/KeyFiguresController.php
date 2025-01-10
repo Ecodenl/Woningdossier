@@ -40,11 +40,13 @@ class KeyFiguresController extends Controller
 
         $measureApplications = MeasureApplication::all();
 
-        return view('cooperation.admin.super-admin.key-figures.index',
+        return view(
+            'cooperation.admin.super-admin.key-figures.index',
             compact(
                 'keyfigures',
                 'measureApplications'
-            ));
+            )
+        );
     }
 
     // todo refactor
@@ -53,21 +55,26 @@ class KeyFiguresController extends Controller
         $figures = [];
 
         // Insulated glazing key figures
-        $igMeasures = MeasureApplication::whereIn('short',
+        $igMeasures = MeasureApplication::whereIn(
+            'short',
             [
                 'glass-in-lead',
                 'hrpp-glass-only',
                 'hrpp-glass-frames',
                 'hr3p-frames',
-            ])->get();
+            ]
+        )->get();
         $igmIds = $igMeasures->pluck('id');
 
-        $keyFigureTemperatures = KeyFigureTemperature::whereIn('measure_application_id',
-            $igmIds)->get();
+        $keyFigureTemperatures = KeyFigureTemperature::whereIn(
+            'measure_application_id',
+            $igmIds
+        )->get();
 
         /** @var KeyFigureTemperature $keyFigureTemperature */
         foreach ($keyFigureTemperatures as $keyFigureTemperature) {
-            $k = sprintf('%s (%s) %s',
+            $k = sprintf(
+                '%s (%s) %s',
                 $keyFigureTemperature->measureApplication->measure_name,
                 $keyFigureTemperature->insulatingGlazing->name,
                 $keyFigureTemperature->buildingHeating->name
@@ -86,10 +93,12 @@ class KeyFiguresController extends Controller
         $maxSavings = BuildingTypeElementMaxSaving::all();
         /** @var BuildingTypeElementMaxSaving $maxSaving */
         foreach ($maxSavings as $maxSaving) {
-            $k = sprintf('%s %s - %s',
+            $k = sprintf(
+                '%s %s - %s',
                 __('key-figures.max-savings.prefix'),
                 $maxSaving->buildingType->name,
-                $maxSaving->element->name);
+                $maxSaving->element->name
+            );
             $figures[$k] = $maxSaving->max_saving.'%';
         }
 

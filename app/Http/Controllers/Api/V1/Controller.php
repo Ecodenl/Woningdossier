@@ -80,6 +80,6 @@ class Controller extends BaseController
      */
     public function index(Request $request): Response
     {
-        return response([],200);
+        return response([], 200);
     }
 }

@@ -195,8 +195,10 @@ class UserActionPlanAdviceService
             }
 
             // get the right matching roof type.
-            $buildingRoofType = $user->building->roofTypes()->forInputSource($advice->inputSource)->where('roof_type_id',
-                $roofType->id)->first();
+            $buildingRoofType = $user->building->roofTypes()->forInputSource($advice->inputSource)->where(
+                'roof_type_id',
+                $roofType->id
+            )->first();
 
             if ($buildingRoofType->elementValue->calculate_value >= 3) {
                 $savingsMoney = 'ntb.';
@@ -204,8 +206,10 @@ class UserActionPlanAdviceService
         } elseif (in_array($step->short, ['floor-insulation', 'wall-insulation'])) {
             $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
 
-            if (optional($user->building->getBuildingElement($elementShort,
-                    $advice->inputSource)->elementValue)->calculate_value >= 3
+            if (optional($user->building->getBuildingElement(
+                $elementShort,
+                $advice->inputSource
+            )->elementValue)->calculate_value >= 3
             ) {
                 $savingsMoney = 'ntb.';
             }
@@ -268,8 +272,7 @@ class UserActionPlanAdviceService
         UserActionPlanAdvice $userActionPlanAdvice,
         MeasureApplication $measureApplication,
         Collection $oldAdvices
-    )
-    {
+    ) {
         $oldAdvice = $oldAdvices
             ->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
             ->where('user_action_plan_advisable_id', '=', $measureApplication->id)
@@ -324,7 +327,8 @@ class UserActionPlanAdviceService
                             ->inputSource($masterInputSource);
 
                         if ($conditionService->hasCompletedSteps(['heating'])) {
-                            $serviceValue = ToolHelper::getServiceValueByCustomValue('heat-pump',
+                            $serviceValue = ToolHelper::getServiceValueByCustomValue(
+                                'heat-pump',
                                 'new-heat-pump-type',
                                 static::getQuickAnswer('new-heat-pump-type', $building, $masterInputSource)
                             );
@@ -334,10 +338,16 @@ class UserActionPlanAdviceService
                             $interestQuestion = ToolQuestion::findByShort('interested-in-heat-pump-variant');
 
                             if ($conditionService->forModel($interestQuestion)->isViewable()) {
-                                $interest = static::getQuickAnswer('interested-in-heat-pump-variant',
-                                    $building, $masterInputSource);
-                                $temp = static::getQuickAnswer('boiler-setting-comfort-heat',
-                                    $building, $masterInputSource);
+                                $interest = static::getQuickAnswer(
+                                    'interested-in-heat-pump-variant',
+                                    $building,
+                                    $masterInputSource
+                                );
+                                $temp = static::getQuickAnswer(
+                                    'boiler-setting-comfort-heat',
+                                    $building,
+                                    $masterInputSource
+                                );
 
                                 $visible = $interest === 'hybrid-heat-pump'
                                     || ($interest === 'unsure' && $temp !== 'temp-low');
@@ -533,15 +543,21 @@ class UserActionPlanAdviceService
 
                     $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
                     $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
-                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion),
-                        $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
+                    $currentSituation = array_merge(
+                        $building->getAnswer($masterInputSource, $heatSourceQuestion),
+                        $building->getAnswer($masterInputSource, $heatSourceWaterQuestion)
+                    );
                     if ($hasAnsweredHeating) {
                         $newHeatSourceQuestion = ToolQuestion::findByShort('new-heat-source');
                         $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
-                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion),
-                            $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
-                        $replaceAnswer = $building->getAnswer($masterInputSource,
-                            ToolQuestion::findByShort('hr-boiler-replace'));
+                        $newSituation = array_merge(
+                            $building->getAnswer($masterInputSource, $newHeatSourceQuestion),
+                            $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion)
+                        );
+                        $replaceAnswer = $building->getAnswer(
+                            $masterInputSource,
+                            ToolQuestion::findByShort('hr-boiler-replace')
+                        );
 
                         if (in_array('hr-boiler', $currentSituation) && in_array('hr-boiler', $newSituation)) {
                             $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
@@ -572,15 +588,21 @@ class UserActionPlanAdviceService
                 case 'sun-boiler':
                     $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
                     $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
-                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion),
-                        $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
+                    $currentSituation = array_merge(
+                        $building->getAnswer($masterInputSource, $heatSourceQuestion),
+                        $building->getAnswer($masterInputSource, $heatSourceWaterQuestion)
+                    );
                     if ($hasAnsweredHeating) {
                         $newHeatSourceQuestion = ToolQuestion::findByShort('new-heat-source');
                         $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
-                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion),
-                            $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
-                        $replaceAnswer = $building->getAnswer($masterInputSource,
-                            ToolQuestion::findByShort('sun-boiler-replace'));
+                        $newSituation = array_merge(
+                            $building->getAnswer($masterInputSource, $newHeatSourceQuestion),
+                            $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion)
+                        );
+                        $replaceAnswer = $building->getAnswer(
+                            $masterInputSource,
+                            ToolQuestion::findByShort('sun-boiler-replace')
+                        );
 
                         if (in_array('sun-boiler', $currentSituation) && in_array('sun-boiler', $newSituation)) {
                             $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
@@ -666,15 +688,21 @@ class UserActionPlanAdviceService
                 case 'heat-pump':
                     $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
                     $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
-                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion),
-                        $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
+                    $currentSituation = array_merge(
+                        $building->getAnswer($masterInputSource, $heatSourceQuestion),
+                        $building->getAnswer($masterInputSource, $heatSourceWaterQuestion)
+                    );
                     if ($hasAnsweredHeating) {
                         $newHeatSourceQuestion = ToolQuestion::findByShort('new-heat-source');
                         $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
-                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion),
-                            $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
-                        $replaceAnswer = $building->getAnswer($masterInputSource,
-                            ToolQuestion::findByShort('heat-pump-replace'));
+                        $newSituation = array_merge(
+                            $building->getAnswer($masterInputSource, $newHeatSourceQuestion),
+                            $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion)
+                        );
+                        $replaceAnswer = $building->getAnswer(
+                            $masterInputSource,
+                            ToolQuestion::findByShort('heat-pump-replace')
+                        );
 
                         if (in_array('heat-pump', $currentSituation) && in_array('heat-pump', $newSituation)) {
                             $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
@@ -683,9 +711,11 @@ class UserActionPlanAdviceService
                     } else {
                         if (in_array('heat-pump', $currentSituation)) {
                             $calculateValue = ServiceValue::find(
-                                    $building->getAnswer($masterInputSource,
-                                        ToolQuestion::findByShort('heat-pump-type'))
-                                )->calculate_value ?? null;
+                                $building->getAnswer(
+                                    $masterInputSource,
+                                    ToolQuestion::findByShort('heat-pump-type')
+                                )
+                            )->calculate_value ?? null;
 
                             // We complete it if it's the current heat pump and isn't for maintenance yet.
                             if (! is_null($calculateValue)
@@ -693,8 +723,10 @@ class UserActionPlanAdviceService
                             ) {
                                 $category = self::CATEGORY_COMPLETE;
 
-                                $placeYear = $building->getAnswer($masterInputSource,
-                                    ToolQuestion::findByShort('heat-pump-placed-date'));
+                                $placeYear = $building->getAnswer(
+                                    $masterInputSource,
+                                    ToolQuestion::findByShort('heat-pump-placed-date')
+                                );
 
                                 if (is_numeric($placeYear)) {
                                     $diff = now()->format('Y') - $placeYear;
@@ -716,11 +748,15 @@ class UserActionPlanAdviceService
                     if ($hasAnsweredHeating) {
                         $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
                         $newSituation = $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion);
-                        $replaceAnswer = $building->getAnswer($masterInputSource,
-                            ToolQuestion::findByShort('heat-pump-boiler-replace'));
+                        $replaceAnswer = $building->getAnswer(
+                            $masterInputSource,
+                            ToolQuestion::findByShort('heat-pump-boiler-replace')
+                        );
 
-                        if (in_array('heat-pump-boiler', $currentSituation) && in_array('heat-pump-boiler',
-                                $newSituation)
+                        if (in_array('heat-pump-boiler', $currentSituation) && in_array(
+                            'heat-pump-boiler',
+                            $newSituation
+                        )
                         ) {
                             $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
                         }

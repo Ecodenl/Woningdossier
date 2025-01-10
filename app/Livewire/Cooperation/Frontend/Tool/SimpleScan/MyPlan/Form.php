@@ -316,14 +316,16 @@ class Form extends CustomMeasureForm
         // ---------------------------------------------------------------------
         // comfort
         // ---------------------------------------------------------------------
-        $completeComfortCards = Arr::where($this->cards[UserActionPlanAdviceService::CATEGORY_COMPLETE],
+        $completeComfortCards = Arr::where(
+            $this->cards[UserActionPlanAdviceService::CATEGORY_COMPLETE],
             function ($value, $key) {
                 return isset($value['comfort']);
             }
         );
         $completeComfort = array_sum(Arr::pluck($completeComfortCards, 'comfort'));
 
-        $toDoComfortCards = Arr::where($this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO],
+        $toDoComfortCards = Arr::where(
+            $this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO],
             function ($value, $key) {
                 return isset($value['comfort']);
             }

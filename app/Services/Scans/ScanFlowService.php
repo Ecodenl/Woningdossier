@@ -247,8 +247,11 @@ class ScanFlowService
         // There are incomplete steps left, set the sub step
         if (! $nextSubStep instanceof SubStep && $nextStep instanceof Step) {
             // retrieve all incomplete sub steps for the building
-            $incompleteSubSteps = SubStepHelper::getIncompleteSubSteps($this->building, $nextStep,
-                $this->inputSource);
+            $incompleteSubSteps = SubStepHelper::getIncompleteSubSteps(
+                $this->building,
+                $nextStep,
+                $this->inputSource
+            );
             foreach ($incompleteSubSteps as $subStep) {
                 if ($this->building->user->account->can('show', [$subStep, $this->building])) {
                     $nextSubStep = $subStep;
@@ -307,7 +310,6 @@ class ScanFlowService
                         ->on('sub_steps.id', '=', 'completed_sub_steps.sub_step_id')
                         ->where('completed_sub_steps.input_source_id', $masterInputSource->id)
                         ->where('building_id', $building->id);
-
                 })
                 ->orderByDesc('completed_sub_steps.created_at')
                 ->first();

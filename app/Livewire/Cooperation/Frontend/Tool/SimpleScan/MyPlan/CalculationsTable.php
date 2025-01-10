@@ -133,10 +133,14 @@ class CalculationsTable extends Component
                     : $answers[$toolQuestion->id][$firstKey]['answer'] ?? null;
 
                 // Answer might be null, e.g. roof type can have null surface if for example created via mapping
-                if ( ! is_null($answerToMakeReadable)) {
+                if (! is_null($answerToMakeReadable)) {
                     $this->tableData[$toolQuestion->short]['name'] = $toolQuestion->name;
                     $this->tableData[$toolQuestion->short]['value'] = ToolQuestionHelper::getHumanReadableAnswer(
-                        $this->building, $this->masterInputSource, $toolQuestion, true, $answerToMakeReadable
+                        $this->building,
+                        $this->masterInputSource,
+                        $toolQuestion,
+                        true,
+                        $answerToMakeReadable
                     );
                     $this->tableData[$toolQuestion->short]['source'] = $answers[$toolQuestion->id][$firstKey]['input_source_name'] ?? null;
 
@@ -147,7 +151,7 @@ class CalculationsTable extends Component
                             ->getFormatForUser();
                     }
 
-                    if ( ! empty($toolQuestion->unit_of_measure)) {
+                    if (! empty($toolQuestion->unit_of_measure)) {
                         $this->tableData[$toolQuestion->short]['value'] .= " {$toolQuestion->unit_of_measure}";
                     }
                 }
@@ -161,11 +165,11 @@ class CalculationsTable extends Component
             foreach ($this->toolCalculationResults as $toolCalculationResult) {
                 $answer = $sunBoilerResults[$toolCalculationResult->short] ?? null;
 
-                if ( ! is_null($answer)) {
+                if (! is_null($answer)) {
                     $this->tableData[$toolCalculationResult->short]['name'] = $toolCalculationResult->name;
                     $this->tableData[$toolCalculationResult->short]['value'] = $answer;
 
-                    if ( ! empty($toolCalculationResult->unit_of_measure)) {
+                    if (! empty($toolCalculationResult->unit_of_measure)) {
                         $this->tableData[$toolCalculationResult->short]['value'] .= " {$toolCalculationResult->unit_of_measure}";
                     }
 

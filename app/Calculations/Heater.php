@@ -78,8 +78,10 @@ class Heater extends Calculator
 
             $systemSpecs = KeyFigures::getSystemSpecifications($result['consumption']['water'], $helpFactor);
 
-            if (is_array($systemSpecs) && array_key_exists('boiler', $systemSpecs) && array_key_exists('collector',
-                    $systemSpecs)) {
+            if (is_array($systemSpecs) && array_key_exists('boiler', $systemSpecs) && array_key_exists(
+                'collector',
+                $systemSpecs
+            )) {
                 $result['specs'] = [
                     'size_boiler' => $systemSpecs['boiler'],
                     'size_collector' => $systemSpecs['collector'],
@@ -94,14 +96,20 @@ class Heater extends Calculator
                     ->forBuilding($this->building)
                     ->calculateMoneySavings($result['savings_gas']));
 
-                $componentCostBoiler = HeaterComponentCost::where('component', 'boiler')->where('size',
-                    $result['specs']['size_boiler'])->first();
-                $componentCostCollector = HeaterComponentCost::where('component', 'collector')->where('size',
-                    $result['specs']['size_collector'])->first();
+                $componentCostBoiler = HeaterComponentCost::where('component', 'boiler')->where(
+                    'size',
+                    $result['specs']['size_boiler']
+                )->first();
+                $componentCostCollector = HeaterComponentCost::where('component', 'collector')->where(
+                    'size',
+                    $result['specs']['size_collector']
+                )->first();
                 $result['cost_indication'] = $componentCostBoiler->cost + $componentCostCollector->cost;
 
-                $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'],
-                    $result['savings_money']), 1);
+                $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest(
+                    $result['cost_indication'],
+                    $result['savings_money']
+                ), 1);
 
 
                 $answer = array_merge($this->getAnswer('heat-source'), $this->getAnswer('heat-source-warm-tap-water'));

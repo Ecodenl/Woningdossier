@@ -25,8 +25,11 @@ class HomeController extends Controller
         $coordinatorCount = $cooperationToManage->users()->withoutGlobalScopes()->role('coordinator')->count();
 
         return view('cooperation.admin.super-admin.cooperations.home.index', compact(
-            'coachCount', 'residentCount', 'coordinatorCount',
-            'breadcrumbs', 'cooperationToManage'
+            'coachCount',
+            'residentCount',
+            'coordinatorCount',
+            'breadcrumbs',
+            'cooperationToManage'
         ));
     }
 }

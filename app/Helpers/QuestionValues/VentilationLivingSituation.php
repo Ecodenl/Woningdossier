@@ -15,7 +15,7 @@ class VentilationLivingSituation extends QuestionValuable
     {
         $values = collect();
 
-        foreach(VentilationHelper::getLivingSituationValues() as $value => $name) {
+        foreach (VentilationHelper::getLivingSituationValues() as $value => $name) {
             $values->push(compact('value', 'name'));
         }
 

@@ -64,5 +64,4 @@ class ClauseBuilder
 
         return $result;
     }
-
 }

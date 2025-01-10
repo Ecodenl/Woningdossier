@@ -79,7 +79,9 @@ class DownloadPdf extends Component
             'input_source_id' => $this->inputSource->id,
             'file_type_id' => $this->fileType->id,
             'filename' => $this->getFileNameForFileType(
-                $this->fileType, $this->user, $this->inputSource
+                $this->fileType,
+                $this->user,
+                $this->inputSource
             ),
         ]);
 

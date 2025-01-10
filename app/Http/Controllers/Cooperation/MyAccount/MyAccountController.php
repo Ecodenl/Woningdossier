@@ -27,7 +27,12 @@ class MyAccountController extends Controller
         $buildingPermissions = BuildingPermission::where('building_id', $building->id)->get();
 
         return view('cooperation.my-account.index', compact(
-            'user', 'account', 'building', 'notificationIntervals', 'notificationSettings', 'buildingPermissions'
+            'user',
+            'account',
+            'building',
+            'notificationIntervals',
+            'notificationSettings',
+            'buildingPermissions'
         ));
     }
 }

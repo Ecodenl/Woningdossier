@@ -50,10 +50,16 @@ class HighEfficiencyBoiler extends Calculator
 
         $year = $this->getAnswer('boiler-placed-date');
         $result['replace_year'] = $hrBoilerCalculator->determineApplicationYear($measure, $year);
-        $result['cost_indication'] = RawCalculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year'],
-            false);
-        $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'],
-            $result['savings_money']), 1, '.', '');
+        $result['cost_indication'] = RawCalculator::calculateMeasureApplicationCosts(
+            $measure,
+            1,
+            $result['replace_year'],
+            false
+        );
+        $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest(
+            $result['cost_indication'],
+            $result['savings_money']
+        ), 1, '.', '');
 
         return $result;
     }

@@ -62,12 +62,22 @@ class BuildingController extends Controller
         $userCurrentRole = HoomdossierSession::getRole(true);
 
         return view('cooperation.admin.buildings.show', compact(
-            'userRoleService', 'userCurrentRole',
-                'user', 'building', 'roles', 'coaches', 'scans',
-                'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
-                'publicMessages', 'buildingNotes', 'statuses', 'logs', 'scan',
-            )
-        );
+            'userRoleService',
+            'userCurrentRole',
+            'user',
+            'building',
+            'roles',
+            'coaches',
+            'scans',
+            'coachesWithActiveBuildingCoachStatus',
+            'mostRecentStatus',
+            'privateMessages',
+            'publicMessages',
+            'buildingNotes',
+            'statuses',
+            'logs',
+            'scan',
+        ));
     }
 
     public function edit(Cooperation $cooperation, Building $building): View

@@ -65,10 +65,17 @@ class FloorInsulationController extends ToolController
             ->getMeasureRelatedAnswers(Step::findByShort('floor-insulation'));
 
         return view('cooperation.tool.floor-insulation.index', compact(
-            'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe',
+            'floorInsulation',
+            'buildingInsulation',
+            'buildingInsulationForMe',
             'buildingElementsOrderedOnInputSourceCredibility',
-            'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingFeaturesOrderedOnInputSourceCredibility',
-            'crawlspacePresent', 'building', 'measureRelatedAnswers'
+            'crawlspace',
+            'buildingCrawlspace',
+            'typeIds',
+            'buildingFeaturesOrderedOnInputSourceCredibility',
+            'crawlspacePresent',
+            'building',
+            'measureRelatedAnswers'
         ));
     }
 

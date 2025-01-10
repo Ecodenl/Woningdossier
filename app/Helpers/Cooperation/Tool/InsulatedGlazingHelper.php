@@ -63,7 +63,8 @@ class InsulatedGlazingHelper extends ToolHelper
                 ];
             }
         }
-        ModelService::deleteAndCreate(BuildingElement::class,
+        ModelService::deleteAndCreate(
+            BuildingElement::class,
             [
                 'building_id' => $this->building->id,
                 'input_source_id' => $this->inputSource->id,
@@ -113,7 +114,6 @@ class InsulatedGlazingHelper extends ToolHelper
             $measureApplication = MeasureApplication::where('id', $measureId)->where('step_id', $step->id)->first();
 
             if ($this->considers($measureApplication) && array_key_exists('costs', $data) && $data['costs'] > 0) {
-
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($data);
                     $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($data['costs']);
@@ -124,8 +124,11 @@ class InsulatedGlazingHelper extends ToolHelper
 
                     // We only want to check old advices if the updated attributes are not relevant to this measure
                     if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
-                            $oldAdvices);
+                        UserActionPlanAdviceService::checkOldAdvices(
+                            $actionPlanAdvice,
+                            $measureApplication,
+                            $oldAdvices
+                        );
                     }
 
                     $actionPlanAdvice->save();
@@ -152,8 +155,11 @@ class InsulatedGlazingHelper extends ToolHelper
 
                     // We only want to check old advices if the updated attributes are not relevant to this measure
                     if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
-                            $oldAdvices);
+                        UserActionPlanAdviceService::checkOldAdvices(
+                            $actionPlanAdvice,
+                            $measureApplication,
+                            $oldAdvices
+                        );
                     }
 
                     $actionPlanAdvice->save();
@@ -229,7 +235,7 @@ class InsulatedGlazingHelper extends ToolHelper
                 ->wherePivot('input_source_id', $this->masterInputSource->id)
                 ->wherePivotIn('considerable_id', $measureApplicationIds)
                 ->get()->keyBy('pivot.considerable_id')
-                ->map(function($considerable) {
+                ->map(function ($considerable) {
                     return [
                         'is_considering' => $considerable->pivot->is_considering
                     ];

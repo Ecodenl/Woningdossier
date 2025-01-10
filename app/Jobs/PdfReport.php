@@ -192,7 +192,6 @@ class PdfReport extends NonHandleableJobAfterReset
                             if ($userActionPlanAdvice->userActionPlanAdvisable->step_id === $smallMeasureAdvicestep->id) {
                                 $smallMeasureAdvices['small-measures'][] = $userActionPlanAdvice;
                             }
-
                         } else {
                             if ($userActionPlanAdvice->userActionPlanAdvisable instanceof CooperationMeasureApplication) {
                                 $smallMeasureAdvices['cooperation-measures'][] = $userActionPlanAdvice;

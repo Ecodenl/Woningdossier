@@ -156,12 +156,14 @@ class CsvService
                         ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
                         // this may cause weird results, but meh
                         ->whereNull('questions.deleted_at')
-                        ->leftJoin('questions_answers',
+                        ->leftJoin(
+                            'questions_answers',
                             function ($leftJoin) use ($building, $inputSource) {
                                 $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
                                     ->where('questions_answers.input_source_id', $inputSource->id)
                                     ->where('questions_answers.building_id', '=', $building->id);
-                            })
+                            }
+                        )
                         ->select('questions_answers.answer', 'questions.id as question_id', 'questions.name as question_name', 'questions.deleted_at')
                         ->orderBy('questions.order')
                         ->get()->pullTranslationFromJson('question_name');

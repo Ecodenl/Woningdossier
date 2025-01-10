@@ -69,7 +69,6 @@ class InsulatedGlazingFormRequest extends FormRequest
         $big = 'building_insulated_glazings.';
 
         foreach ($this->get('considerables') as $considerableId => $considerData) {
-
             // if the user considers the measure we will add the rules, else we wont.
             if ($considerData['is_considering']) {
                 $validator->addRules([

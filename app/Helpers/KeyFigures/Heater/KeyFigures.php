@@ -55,8 +55,6 @@ class KeyFigures implements KeyFiguresInterface
                                                ->where('comfort_level_tap_water_id', $comfortLevel->id)
                                                ->first();
         });
-
-
     }
 
     public static function getSystemSpecifications(int $waterConsumption, float $helpFactor): array

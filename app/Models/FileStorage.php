@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static Builder<static>|FileStorage allInputSources()
  * @method static Builder<static>|FileStorage beingProcessed()
+ * @method static Builder<static>|FileStorage expired()
  * @method static Builder<static>|FileStorage forAllCooperations()
  * @method static Builder<static>|FileStorage forBuilding(\App\Models\Building|int $building)
  * @method static Builder<static>|FileStorage forInputSource(\App\Models\InputSource $inputSource)

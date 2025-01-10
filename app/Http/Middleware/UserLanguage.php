@@ -22,8 +22,10 @@ class UserLanguage
         if (app()->environment('local')) {
             // Set the language from the URL segment (this allows us to later on
             // add a language switcher via URL for better front-site indexing).
-            if (in_array($request->segment(1),
-                config('hoomdossier.supported_locales'))) {
+            if (in_array(
+                $request->segment(1),
+                config('hoomdossier.supported_locales')
+            )) {
                 Session::put('locale', $request->segment(1));
                 //return Redirect::to(substr($request->path(), 3));
             }

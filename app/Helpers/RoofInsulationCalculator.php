@@ -13,8 +13,16 @@ use Carbon\Carbon;
 
 class RoofInsulationCalculator
 {
-    public static function calculateGasSavings(Building $building, InputSource $inputSource, ElementValue $element, UserEnergyHabit $energyHabit, BuildingHeating $heating, $surface, $totalSurface, $measureAdvice)
-    {
+    public static function calculateGasSavings(
+        Building $building,
+        InputSource $inputSource,
+        ElementValue $element,
+        UserEnergyHabit $energyHabit,
+        BuildingHeating $heating,
+        $surface,
+        $totalSurface,
+        $measureAdvice
+    ) {
         if (0 == $totalSurface) {
             return 0;
         }
@@ -28,7 +36,11 @@ class RoofInsulationCalculator
                 $surface * $kengetalEnergySaving,
                 ($surface / $totalSurface) * RawCalculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
             );
-            self::debug($result . ' = min(' . $surface . ' * ' . $kengetalEnergySaving . ', (' . $surface / $totalSurface . ') * ' . RawCalculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element) . ')');
+            self::debug(
+                $result
+                . ' = min(' . $surface . ' * ' . $kengetalEnergySaving . ', (' . $surface / $totalSurface . ') * '
+                . RawCalculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element) . ')'
+            );
         }
 
         return $result;

@@ -253,8 +253,7 @@ trait GetMyValuesTrait
     public function scopeForInputSource(
         Builder $query,
         InputSource $inputSource
-    ): Builder
-    {
+    ): Builder {
         return $query->withoutGlobalScope(GetValueScope::class)->where(
             'input_source_id',
             $inputSource->id
@@ -266,8 +265,10 @@ trait GetMyValuesTrait
      */
     protected function determineWhereColumn(User $user = null): array
     {
-        // because recent changes in the application with jobs / commands running on the commandline we need to obtain data from objects as much as possible
-        // so for now, if the user is given we will get the building from that and otherwise from the session. In the future we should get rid of session usage in methods as much as we can.
+        // because recent changes in the application with jobs / commands running on the commandline we need to
+        // obtain data from objects as much as possible
+        // so for now, if the user is given we will get the building from that and otherwise from the session.
+        // In the future we should get rid of session usage in methods as much as we can.
         $building = $user->building ?? HoomdossierSession::getBuilding(true);
 
         // determine what table we are using

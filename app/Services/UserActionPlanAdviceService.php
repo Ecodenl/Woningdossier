@@ -272,8 +272,7 @@ class UserActionPlanAdviceService
         UserActionPlanAdvice $userActionPlanAdvice,
         MeasureApplication $measureApplication,
         Collection $oldAdvices
-    )
-    {
+    ) {
         $oldAdvice = $oldAdvices
             ->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
             ->where('user_action_plan_advisable_id', '=', $measureApplication->id)
@@ -776,7 +775,8 @@ class UserActionPlanAdviceService
                     // then the measure won't even be applied.
                     if (in_array('want-to', $answers)) {
                         $category = static::CATEGORY_TO_DO;
-                    } else { // (in_array('already-do', $answers)) {
+                    } else {
+                        // elseif (in_array('already-do', $answers)) {
                         $category = static::CATEGORY_COMPLETE;
                     }
                     break;

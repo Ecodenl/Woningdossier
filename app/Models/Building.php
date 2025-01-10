@@ -234,7 +234,9 @@ class Building extends Model implements MediableInterface
                 // weird cases like building values.
                 if (is_array($value)) {
                     foreach ($value as $definitiveValue) {
-                        $answer = $questionValues->isNotEmpty() && ! is_null($definitiveValue) && isset($questionValues[$definitiveValue]) ? $questionValues[$definitiveValue] : $definitiveValue;
+                        $answer = $questionValues->isNotEmpty() && ! is_null($definitiveValue) && isset($questionValues[$definitiveValue])
+                            ? $questionValues[$definitiveValue]
+                            : $definitiveValue;
                         $answers[$inputSource->short][] = [
                             'answer' => $answer,
                             'value' => $definitiveValue,
@@ -349,8 +351,7 @@ class Building extends Model implements MediableInterface
     public function isOwnerOfFileStorage(
         InputSource $inputSource,
         FileStorage $fileStorage
-    ): bool
-    {
+    ): bool {
         $fileIsGeneratedByBuilding = $fileStorage->building_id == $this->id;
         $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == $inputSource->id;
 

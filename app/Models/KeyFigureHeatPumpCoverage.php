@@ -34,8 +34,7 @@ class KeyFigureHeatPumpCoverage extends Model
     public function scopeForHeatingTemperature(
         Builder $query,
         ToolQuestionCustomValue $heatingTemperature
-    )
-    {
+    ) {
         return $this->scopeForToolQuestionCustomValue(
             $query,
             $heatingTemperature
@@ -45,8 +44,7 @@ class KeyFigureHeatPumpCoverage extends Model
     public function scopeForToolQuestionCustomValue(
         Builder $query,
         ToolQuestionCustomValue $toolQuestionCustomValue
-    )
-    {
+    ) {
         return $query->where(
             'tool_question_custom_value_id',
             '=',

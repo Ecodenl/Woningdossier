@@ -11,19 +11,19 @@ class Caster
 
     // TODO: Convert these into custom classes
 
-    public const STRING = 'string';
-    public const HTML_STRING = 'html_string'; // String that contains HTML and should be sanitized
-    public const INT = 'int';
-    public const INT_5 = 'int_5'; // INT with bucket 5 for rounding
-    public const FLOAT = 'float';
-    public const NON_ROUNDING_FLOAT = 'non_rounding_float';
-    public const BOOL = 'bool';
-    public const ARRAY = 'array';
-    public const JSON = 'json';
-    public const IDENTIFIER = 'identifier';
+    public const string STRING = 'string';
+    public const string HTML_STRING = 'html_string'; // String that contains HTML and should be sanitized
+    public const string INT = 'int';
+    public const string INT_5 = 'int_5'; // INT with bucket 5 for rounding
+    public const string FLOAT = 'float';
+    public const string NON_ROUNDING_FLOAT = 'non_rounding_float';
+    public const string BOOL = 'bool';
+    public const string ARRAY = 'array';
+    public const string JSON = 'json';
+    public const string IDENTIFIER = 'identifier';
 
     protected string $dataType;
-    protected $value;
+    protected mixed $value;
     protected bool $force = false;
 
     public function dataType(string $dataType): self
@@ -32,7 +32,7 @@ class Caster
         return $this;
     }
 
-    public function value($value): self
+    public function value(mixed $value): self
     {
         $this->value = $value;
         return $this;
@@ -49,10 +49,8 @@ class Caster
 
     /**
      * Cast a value to given type.
-     *
-     * @return array|bool|float|int|mixed|string|null
      */
-    public function getCast()
+    public function getCast(): null|int|float|string|bool|array
     {
         if (is_null($this->value) && ! $this->force) {
             return null;
@@ -96,10 +94,8 @@ class Caster
 
     /**
      * Reverse formatted will mean anything that the code can understand.
-     *
-     * @return mixed|string|int
      */
-    public function reverseFormatted()
+    public function reverseFormatted(): null|int|float|string
     {
         // if needed, the cast can be applied per datatype. (like the forUser method)
         $value = $this->value;
@@ -125,10 +121,8 @@ class Caster
     }
     /**
      * Format a value to a human format.
-     *
-     * @return array|bool|float|int|mixed|string|null
      */
-    public function getFormatForUser()
+    public function getFormatForUser(): null|string
     {
         $value = $this->getCast();
         if (is_null($value)) {
@@ -141,6 +135,7 @@ class Caster
                 $value = NumberFormatter::formatNumberForUser($value, true, false);
                 break;
 
+            case static::NON_ROUNDING_FLOAT:
             case static::FLOAT:
                 $value = NumberFormatter::formatNumberForUser($value, false, false);
                 break;

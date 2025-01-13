@@ -169,12 +169,8 @@ class NumberFormatter
 
     /**
      * Format a number for user display
-     *
-     * @param $number
-     *
-     * @return array|int|string|string[]|null
      */
-    public static function formatNumberForUser($number, bool $isInteger = false, bool $alwaysNumber = true)
+    public static function formatNumberForUser(string|int|float $number, bool $isInteger = false, bool $alwaysNumber = true): ?string
     {
         // TODO: Make this work with incorrect values (reverseFormat?)
 
@@ -191,7 +187,7 @@ class NumberFormatter
 
         // We don't want decimals on a 0
         if (Str::isConsideredEmptyAnswer($number)) {
-            $number = 0;
+            $number = '0';
         }
 
         return $number;

@@ -14,7 +14,8 @@ final class CasterTest extends TestCase
             [Caster::STRING, 10, false, '10'],
             [Caster::STRING, '10', false, '10'],
             [Caster::STRING, 'gibberish', false, 'gibberish'],
-            [Caster::STRING, null, false, ''],
+            [Caster::STRING, null, false, null],
+            [Caster::STRING, null, true, ''],
             [Caster::STRING, true, false, '1'],
             [Caster::STRING, false, false, ''],
             [Caster::INT, 'gibberish', false, 0],
@@ -93,7 +94,7 @@ final class CasterTest extends TestCase
             [Caster::JSON, '{"a":"a","b":"b","c":{"a":"a"}}', false, ['a' => 'a', 'b' => 'b', 'c' => ['a' => 'a']]],
             [Caster::JSON, 10, false, 10],
             [Caster::JSON, 10.3, false, 10.3],
-            [Caster::JSON, '10', false, '10'],
+            [Caster::JSON, '10', false, 10],
             [Caster::JSON, null, false, null],
             [Caster::JSON, null, true, null],
             [Caster::IDENTIFIER, 10, false, 10],
@@ -106,14 +107,14 @@ final class CasterTest extends TestCase
     }
 
     #[DataProvider('getCastProvider')]
-    public function test_get_cast(string $dataType, $value, bool $force, $expected): void
+    public function test_get_cast(string $dataType, mixed $value, bool $force, mixed $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {
             $caster->force();
         }
 
-        $this->assertEquals($expected, $caster->getCast());
+        $this->assertSame($expected, $caster->getCast());
     }
 
     public static function reverseFormattedProvider(): array
@@ -155,14 +156,14 @@ final class CasterTest extends TestCase
     }
 
     #[DataProvider('reverseFormattedProvider')]
-    public function test_reverse_formatted(string $dataType, $value, bool $force, $expected): void
+    public function test_reverse_formatted(string $dataType, mixed $value, bool $force, mixed $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {
             $caster->force();
         }
 
-        $this->assertEquals($expected, $caster->reverseFormatted());
+        $this->assertSame($expected, $caster->reverseFormatted());
     }
 
     public static function getFormatForUserProvider(): array
@@ -179,7 +180,7 @@ final class CasterTest extends TestCase
             [Caster::INT, '10,3', false, '10'],
             [Caster::INT, '10.73', false, '11'],
             [Caster::INT, '10,73', false, '10'],
-            [Caster::INT, 'AmIANumber?', false, null],
+            [Caster::INT, 'AmIANumber?', false, '0'],
             [Caster::INT_5, null, false, null],
             [Caster::INT_5, null, true, '0'],
             [Caster::INT_5, '0', false, '0'],
@@ -190,7 +191,7 @@ final class CasterTest extends TestCase
             [Caster::INT_5, '12.73', false, '15'],
             [Caster::INT_5, '13', false, '15'],
             [Caster::INT_5, '10,73', false, '10'],
-            [Caster::INT_5, 'AmIANumber?', false, null],
+            [Caster::INT_5, 'AmIANumber?', false, '0'],
             [Caster::FLOAT, null, false, null],
             [Caster::FLOAT, null, true, '0'],
             [Caster::FLOAT, '0', false, '0'],
@@ -203,12 +204,12 @@ final class CasterTest extends TestCase
             [Caster::FLOAT, '10,735', false, '10,0'],
             [Caster::FLOAT, '10,75', false, '10,0'],
             [Caster::FLOAT, '10.75', false, '10,8'],
-            [Caster::FLOAT, 'AmIANumber?', false, null],
+            [Caster::FLOAT, 'AmIANumber?', false, '0'],
         ];
     }
 
     #[DataProvider('getFormatForUserProvider')]
-    public function test_get_format_for_user(string $dataType, $value, bool $force, $expected): void
+    public function test_get_format_for_user(string $dataType, mixed $value, bool $force, mixed $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {
@@ -216,6 +217,6 @@ final class CasterTest extends TestCase
         }
 
         // Note: Test currently does not support locale. When we do add a second locale, this will need revisiting.
-        $this->assertEquals($expected, $caster->getFormatForUser());
+        $this->assertSame($expected, $caster->getFormatForUser());
     }
 }

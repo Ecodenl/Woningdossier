@@ -17,9 +17,11 @@ class MissingVbjehuisMapping implements ShouldQueue
      */
     public function handle(NoMappingFoundForVbjehuisMunicipality $event): void
     {
-        $recipients = explode(',', config('hoomdossier.contact.email.admin'));
-        foreach ($recipients as $recipient) {
-            Mail::to($recipient)->send(new MissingVbjehuisMunicipalityMappingEmail($event->municipality->name));
+        $recipients = array_filter(explode(',', config('hoomdossier.contact.email.admin')));
+        if (! empty($recipients)) {
+            foreach ($recipients as $recipient) {
+                Mail::to($recipient)->send(new MissingVbjehuisMunicipalityMappingEmail($event->municipality->name));
+            }
         }
     }
 }

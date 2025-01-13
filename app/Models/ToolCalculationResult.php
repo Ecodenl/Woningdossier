@@ -44,7 +44,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  */
 class ToolCalculationResult extends Model
 {
-    use HasTranslations, HasShortTrait;
+    use HasTranslations,
+        HasShortTrait;
 
     protected $fillable = [
         'name',

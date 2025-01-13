@@ -337,11 +337,13 @@ class ToolQuestionService
         }
     }
 
-    private function clearAnswer(ToolQuestion $toolQuestion, array $where)
+    private function clearAnswer(ToolQuestion $toolQuestion, array $where): void
     {
         if (is_null($toolQuestion->save_in)) {
             // We don't want to mess with the master if it's the example building
-            $whereIn = $this->currentInputSource->short === InputSource::EXAMPLE_BUILDING_SHORT ? [$this->currentInputSource->id] : [$this->masterInputSource->id, $this->currentInputSource->id];
+            $whereIn = $this->currentInputSource->short === InputSource::EXAMPLE_BUILDING_SHORT
+                ? [$this->currentInputSource->id]
+                : [$this->masterInputSource->id, $this->currentInputSource->id];
 
             $toolQuestion->toolQuestionAnswers()
                 ->allInputSources()

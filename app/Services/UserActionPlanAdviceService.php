@@ -37,16 +37,11 @@ class UserActionPlanAdviceService
 {
     use RetrievesAnswers, FluentCaller;
 
-    const CATEGORY_COMPLETE = 'complete';
-    const CATEGORY_TO_DO = 'to-do';
-    const CATEGORY_LATER = 'later';
+    const string CATEGORY_COMPLETE = 'complete';
+    const string CATEGORY_TO_DO = 'to-do';
+    const string CATEGORY_LATER = 'later';
 
     protected User $user;
-
-    public function __construct()
-    {
-        //
-    }
 
     public function forUser(User $user): self
     {

@@ -11,14 +11,14 @@ trait HasShortTrait
     /**
      * Find a record by its short.
      */
-    public static function findByShort(string $short): ?self
+    public static function findByShort(string $short): ?static
     {
         $cacheKey = 'HasShortTrait_find_by_short_%s_%s';
-        $className = get_class(self::getModel());
+        $className = get_class(static::getModel());
 
         return BaseCache::cacheModel(
             BaseCache::getCacheKey($cacheKey, $className, $short),
-            self::whereShort($short)
+            static::whereShort($short)
         );
     }
 
@@ -27,13 +27,13 @@ trait HasShortTrait
      */
     public static function findByShorts(array $shorts): Collection
     {
-        return self::whereIn('short', $shorts)->get();
+        return static::whereIn('short', $shorts)->get();
     }
 
     public static function clearShortCache(string $short): void
     {
         $cacheKey = 'HasShortTrait_find_by_short_%s_%s';
-        $className = get_class(self::getModel());
+        $className = get_class(static::getModel());
 
         BaseCache::clear(BaseCache::getCacheKey($cacheKey, $className, $short));
     }

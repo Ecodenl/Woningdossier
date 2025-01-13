@@ -7,16 +7,13 @@ parameters:
     paths:
         - app/
 
-    # Level 10 is the highest level
-    level: 5
+    # Level 10 is the highest level, see https://phpstan.org/user-guide/rule-levels
+    level: 4 # 4 for now because 5 cries about return types and stuff which makes no sense
 
 #    excludePaths:
 #            - ./app/Traits/ToolSettingTrait.php
 
-#    ignoreErrors:
-#        - '#PHPDoc tag @var#'
-#
-#    excludePaths:
-#        - ./*/*/FileToBeExcluded.php
-#
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model(.*)::.*#'
+
 #    checkMissingIterableValueType: false

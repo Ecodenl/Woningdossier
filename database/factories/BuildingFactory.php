@@ -16,7 +16,7 @@ class BuildingFactory extends Factory
             'municipality_id' => null,
             'street' => $this->faker->streetName(),
             'number' => $this->faker->numberBetween(3, 22),
-            'extension' => null,
+            'extension' => '',
             'city' => 'bubba',
             'postal_code' => $this->faker->postcode(),
             'owner' => $this->faker->boolean(),

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cooperation\Admin;
 
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;

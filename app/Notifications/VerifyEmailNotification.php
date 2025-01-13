@@ -45,9 +45,14 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      */
     protected function verificationUrl($notifiable): string
     {
+        $expiry = (int) config('auth.passwords.users.expire');
+        if ($expiry === 0) {
+            $expiry = 43200;
+        }
+
         return URL::temporarySignedRoute(
             'cooperation.auth.verification.verify',
-            Carbon::now()->addMinutes(config('auth.passwords.users.expire')),
+            Carbon::now()->addMinutes($expiry),
             [
                 'cooperation' => $this->user->cooperation,
                 'id' => $notifiable->getKey(),

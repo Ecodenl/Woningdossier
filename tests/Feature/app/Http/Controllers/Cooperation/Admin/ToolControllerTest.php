@@ -135,8 +135,12 @@ final class ToolControllerTest extends TestCase
 
         $municipality = Municipality::factory()->create();
     
-        $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
-        $this->mockLvbagClientAdresUitgebreid($fallbackData)->mockLvbagClientWoonplaats($fromMunicipalityName)->createLvbagMock();
+        $fromMunicipalityName = $this->faker->randomElement([
+            'Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood'
+        ]);
+        $this->mockLvbagClientAdresUitgebreid($fallbackData)
+            ->mockLvbagClientWoonplaats($fromMunicipalityName)
+            ->createLvbagMock();
     
         MappingService::init()
             ->from($fromMunicipalityName)
@@ -232,6 +236,7 @@ final class ToolControllerTest extends TestCase
             ->create(['user_id' => $coach->id]);
 
         $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+        /** @var Role $role */
         $role = Role::findByName(RoleHelper::ROLE_COACH);
 
         $this->actingAs($coachAccount);

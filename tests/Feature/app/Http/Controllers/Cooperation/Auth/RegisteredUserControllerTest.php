@@ -59,8 +59,6 @@ final class RegisteredUserControllerTest extends TestCase
         /** @var Client $client */
         $this->formData['password_confirmation'] = $this->formData['password'];
         $response = $this->post(route('cooperation.register.store', compact('cooperation')), $this->formData);
-\Log::debug($response->statusText());
-\Log::debug($response->getStatusCode());
         $response->assertRedirect(route('cooperation.auth.verification.notice', compact('cooperation')));
 
         $this->assertDatabaseHas('accounts', ['email' => $this->formData['email']]);

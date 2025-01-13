@@ -184,7 +184,11 @@ class ToolQuestionHelper
         ],
     ];
 
-    public static function stepShortsForToolQuestion(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource): array
+    public static function stepShortsForToolQuestion(
+        ToolQuestion $toolQuestion,
+        Building $building,
+        InputSource $inputSource
+    ): array
     {
         if (isset(self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short])) {
             $data = self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short];
@@ -208,9 +212,13 @@ class ToolQuestionHelper
      * Simple method to determine whether the given tool question should use the old advice on a recalculate
      *
      */
-    public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource): bool
+    public static function shouldToolQuestionDoFullRecalculate(
+        ToolQuestion $toolQuestion,
+        Building $building,
+        InputSource $inputSource
+    ): bool
     {
-        if (in_array($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE, true)) {
+        if (!empty($building) &&in_array($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE, true)) {
             $pass = true;
 
             // Only return if it passes the conditions (if there are any)

@@ -13,12 +13,16 @@ class BuildingFactory extends Factory
     public function definition(): array
     {
         return [
+            'municipality_id' => null,
             'street' => $this->faker->streetName(),
             'number' => $this->faker->numberBetween(3, 22),
+            'extension' => null,
             'city' => 'bubba',
             'postal_code' => $this->faker->postcode(),
             'owner' => $this->faker->boolean(),
             'primary' => $this->faker->boolean(),
+            'bag_addressid' => '',
+            'bag_woonplaats_id' => null,
         ];
     }
 

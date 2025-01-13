@@ -124,15 +124,17 @@ class Building extends Model implements MediableInterface
         HasMedia;
 
     public $fillable = [
+        'municipality_id',
         'street',
         'number',
+        'extension',
         'city',
         'postal_code',
+        //'country_code',
+        //'owner',
+        //'primary',
         'bag_addressid',
-        'municipality_id',
         'bag_woonplaats_id',
-        'extension',
-        'is_active',
     ];
 
     // Static methods
@@ -145,13 +147,6 @@ class Building extends Model implements MediableInterface
             // TODO: This doesn't delete the files
             $building->media()->delete();
         });
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'is_active' => 'boolean',
-        ];
     }
 
     // Model methods
@@ -195,7 +190,8 @@ class Building extends Model implements MediableInterface
             ];
         }
 
-        // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
+        // This means we should get the answer the "traditional way", from another
+        // table (not from the tool_question_answers)
         if (! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table = $saveIn['table'];
@@ -243,7 +239,9 @@ class Building extends Model implements MediableInterface
                         ];
                     }
                 } else {
-                    $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
+                    $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value])
+                        ? $questionValues[$value]
+                        : $value;
                     $answers[$inputSource->short][] = [
                         'answer' => $answer,
                         'value' => $value,
@@ -291,7 +289,8 @@ class Building extends Model implements MediableInterface
 
         $answer = null;
         $where['input_source_id'] = $inputSource->id;
-        // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
+        // This means we should get the answer the "traditional way", from another
+        // table (not from the tool_question_answers).
         if (! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table = $saveIn['table'];
@@ -351,7 +350,8 @@ class Building extends Model implements MediableInterface
     public function isOwnerOfFileStorage(
         InputSource $inputSource,
         FileStorage $fileStorage
-    ): bool {
+    ): bool
+    {
         $fileIsGeneratedByBuilding = $fileStorage->building_id == $this->id;
         $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == $inputSource->id;
 

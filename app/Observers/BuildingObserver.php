@@ -6,13 +6,13 @@ use App\Models\Building;
 
 class BuildingObserver
 {
-    public function saving(Building $building)
+    public function saving(Building $building): void
     {
         // Not allowed as null
         $building->extension ??= '';
     }
 
-    public function saved(Building $building)
+    public function saved(Building $building): void
     {
         \App\Helpers\Cache\Building::wipe($building->id);
     }
@@ -20,7 +20,7 @@ class BuildingObserver
     /**
      * Deleting event.
      */
-    public function deleting(Building $building)
+    public function deleting(Building $building): void
     {
         $building->user_id             = null;
         $building->country_code        = 'nl';

@@ -60,6 +60,8 @@ final class ToolControllerTest extends TestCase
     #[DataProvider('routeProvider')]
     public function test_accessing_tool_controller_fails_if_no_access(string $routeName): void
     {
+        $this->createLvbagMock();
+
         [$resident, $coach] = $this->getFakeUsers();
 
         $building = $resident->building;
@@ -75,8 +77,9 @@ final class ToolControllerTest extends TestCase
     #[DataProvider('routeEventProvider')]
     public function test_accessing_tool_controler_dispatches_event(string $routeName, string $event): void
     {
-        Event::fake($event);
+        $this->createLvbagMock();
 
+        Event::fake($event);
         [$resident, $coach] = $this->getFakeUsers();
 
         $building = $resident->building;
@@ -96,8 +99,9 @@ final class ToolControllerTest extends TestCase
     #[DataProvider('routeProvider')]
     public function test_accessing_tool_controller_attempts_to_attach_municipality(string $routeName): void
     {
-        Bus::fake(CheckBuildingAddress::class);
+        $this->createLvbagMock();
 
+        Bus::fake(CheckBuildingAddress::class);
         [$resident, $coach] = $this->getFakeUsers();
 
         $building = $resident->building;
@@ -167,6 +171,8 @@ final class ToolControllerTest extends TestCase
     #[DataProvider('routeProvider')]
     public function test_regulations_do_not_refresh_when_accessing_tool_controller_if_no_municipality_attached(string $routeName): void
     {
+        $this->createLvbagMock();
+
         Bus::fake([RefreshRegulationsForBuildingUser::class]);
         [$resident, $coach] = $this->getFakeUsers();
 
@@ -180,17 +186,40 @@ final class ToolControllerTest extends TestCase
         $this->get(
             route($routeName, compact('cooperation', 'building', 'scan'))
         );
-    
+
+        $this->assertDatabaseHas('buildings', [
+            'id' => $building->id,
+            'municipality_id' => null,
+        ]);
         Bus::assertNotDispatched(RefreshRegulationsForBuildingUser::class);
     }
 
     #[DataProvider('routeProvider')]
     public function test_regulations_only_refresh_when_accessing_tool_controller_if_municipality_attached(string $routeName): void
     {
+        $fallbackData = [
+            'street' => $this->faker->streetName(),
+            'number' => $this->faker->numberBetween(3, 22),
+            'city' => 'bubba',
+            'extension' => 'd',
+            'postal_code' => $this->faker->postcode(),
+        ];
+
         Bus::fake([RefreshRegulationsForBuildingUser::class]);
         [$resident, $coach] = $this->getFakeUsers();
 
         $municipality = Municipality::factory()->create();
+
+        $fromMunicipalityName = $this->faker->randomElement([
+            'Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood'
+        ]);
+        $this->mockLvbagClientAdresUitgebreid($fallbackData)
+            ->mockLvbagClientWoonplaats($fromMunicipalityName)
+            ->createLvbagMock();
+
+        MappingService::init()
+            ->from($fromMunicipalityName)
+            ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
 
         $building = $resident->building;
         $building->update([
@@ -206,6 +235,10 @@ final class ToolControllerTest extends TestCase
             route($routeName, compact('cooperation', 'building', 'scan'))
         );
 
+        $this->assertDatabaseHas('buildings', [
+            'id' => $building->id,
+            'municipality_id' => $municipality->id,
+        ]);
         Bus::assertDispatched(RefreshRegulationsForBuildingUser::class);
     }
 

@@ -98,14 +98,19 @@ final class AuthenticatedSessionControllerTest extends TestCase
         $building = Building::factory()
             ->create([
                 'user_id' => $user->id,
-                // the id doesnt really matter in this case as the endpoint will always return a valid value due to mock.
+                // The BAG ID doesn't really matter in this case as the endpoint will
+                // always return a valid value due to mock.
                 'bag_woonplaats_id' => '1234',
             ]);
 
         $municipality = Municipality::factory()->create();
 
-        $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
-        $this->mockLvbagClientAdresUitgebreid($fallbackData)->mockLvbagClientWoonplaats($fromMunicipalityName)->createLvbagMock();
+        $fromMunicipalityName = $this->faker->randomElement([
+            'Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood'
+        ]);
+        $this->mockLvbagClientAdresUitgebreid($fallbackData)
+            ->mockLvbagClientWoonplaats($fromMunicipalityName)
+            ->createLvbagMock();
 
         MappingService::init()
             ->from($fromMunicipalityName)

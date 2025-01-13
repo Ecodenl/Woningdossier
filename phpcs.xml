@@ -3,10 +3,16 @@
     <description>The coding standard for our project.</description>
 
     <rule ref="PSR1">
-        <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps" />
+        <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
     </rule>
 
-    <rule ref="PSR2"/>
+    <rule ref="PSR2">
+        <!-- https://stackoverflow.com/questions/37399031/php-codesniffer-ignore-exclude-underscore-rule-in-methods/37401598#37401598 -->
+        <!-- This rule forces braces of multiline functions to be on the same line -->
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.NewlineBeforeOpenBrace"/>
+        <!-- Forces ternary statements to be on a single line -->
+        <exclude name="Squiz.WhiteSpace.OperatorSpacing.SpacingBefore"/>
+    </rule>
 
     <rule ref="PSR2.Classes.ClassDeclaration"/>
     <rule ref="PSR2.Classes.PropertyDeclaration"/>
@@ -63,6 +69,7 @@
     <rule ref="PEAR.WhiteSpace.ObjectOperatorIndent"/>
     <rule ref="PEAR.WhiteSpace.ScopeClosingBrace"/>
 
+    <!-- TODO: PHP Unit currently not available -->
     <!--<rule ref="PHPUnitStandard.Testing.FileNameSuffix"/>-->
     <!--<rule ref="PHPUnitStandard.Testing.NoOutputFunctions"/>-->
     <!--<rule ref="PHPUnitStandard.Testing.NoOutputStatements"/>-->

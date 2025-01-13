@@ -244,7 +244,8 @@ class BuildingService
         $newMunicipality = $building->municipality_id;
 
         // Check if a municipality was attached. If not, dispatch it on the regular queue so it retries.
-        // If the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated will be fired from the attachMunicipality method.
+        // If the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated
+        // will be fired from the attachMunicipality method.
         // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job.
         // If the municipality hasn't changed, however, we will manually dispatch a refresh.
         if (is_null($newMunicipality)) {

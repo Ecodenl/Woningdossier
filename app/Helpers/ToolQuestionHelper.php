@@ -218,7 +218,7 @@ class ToolQuestionHelper
         InputSource $inputSource
     ): bool
     {
-        if (!empty($building) &&in_array($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE, true)) {
+        if (in_array($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE, true)) {
             $pass = true;
 
             // Only return if it passes the conditions (if there are any)

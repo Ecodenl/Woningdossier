@@ -22,7 +22,8 @@ class RoofInsulationCalculator
         $surface,
         $totalSurface,
         $measureAdvice
-    ) {
+    )
+    {
         if (0 == $totalSurface) {
             return 0;
         }

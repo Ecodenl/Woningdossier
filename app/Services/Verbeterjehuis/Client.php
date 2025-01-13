@@ -72,7 +72,10 @@ class Client
         $result = json_decode($contents, true);
 
         if (! is_array($result)) {
-            DiscordNotifier::init()->notify("Vbjehuis Search result is not an array! URI: {$uri}, Options: " . json_encode($options) . " Result: " . json_encode($result) . " Code: {$response->getStatusCode()}");
+            DiscordNotifier::init()->notify(
+                "Vbjehuis Search result is not an array! URI: {$uri}, Options: "
+                . json_encode($options) . " Result: " . json_encode($result) . " Code: {$response->getStatusCode()}"
+            );
             $result = [];
         }
 

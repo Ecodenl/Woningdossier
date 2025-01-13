@@ -77,7 +77,7 @@ class Ventilation
 
             // now check al the conditions for the measures.
             switch ($ventilationType) {
-                case \App\Models\Ventilation::NATURAL;
+                case \App\Models\Ventilation::NATURAL:
                     // "different" type which returns early
                     unset($measures['crack-sealing']);
 
@@ -85,7 +85,7 @@ class Ventilation
                     $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
-                case \App\Models\Ventilation::MECHANICAL;
+                case \App\Models\Ventilation::MECHANICAL:
                     if ($currentlyDemandDriven) {
                         // if the ventilation is already demand driven, remove that advice
                         unset($measures['ventilation-demand-driven']);
@@ -109,7 +109,7 @@ class Ventilation
                     $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
-                case \App\Models\Ventilation::BALANCED;
+                case \App\Models\Ventilation::BALANCED:
                     // always unset
                     unset($measures['ventilation-decentral-wtw']);
 
@@ -141,7 +141,7 @@ class Ventilation
                     $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
-                case \App\Models\Ventilation::DECENTRAL;
+                case \App\Models\Ventilation::DECENTRAL:
                     // always unset
                     unset($measures['ventilation-balanced-wtw']);
 

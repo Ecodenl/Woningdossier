@@ -272,7 +272,8 @@ class UserActionPlanAdviceService
         UserActionPlanAdvice $userActionPlanAdvice,
         MeasureApplication $measureApplication,
         Collection $oldAdvices
-    ) {
+    )
+    {
         $oldAdvice = $oldAdvices
             ->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
             ->where('user_action_plan_advisable_id', '=', $measureApplication->id)

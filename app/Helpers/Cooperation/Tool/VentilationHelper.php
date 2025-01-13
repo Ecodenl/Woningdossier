@@ -48,10 +48,13 @@ class VentilationHelper extends ToolHelper
             if ($this->considers($measureApplication) && $measureApplication instanceof MeasureApplication) {
                 if ('crack-sealing' == $measureApplication->short) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
-                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['result']['crack_sealing']['cost_indication'] ?? null);
+                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts(
+                        $results['result']['crack_sealing']['cost_indication'] ?? null
+                    );
                 } else {
                     $actionPlanAdvice = new UserActionPlanAdvice();
-                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts(null); // To force an array format
+                    // To force an array format
+                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts(null);
                 }
 
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
@@ -202,7 +205,12 @@ class VentilationHelper extends ToolHelper
     {
         $allWarnings = [];
 
-        $allWarnings = array_merge($allWarnings, self::getHowWarnings(), self::getUsageWarnings(), self::getLivingSituationWarnings());
+        $allWarnings = array_merge(
+            $allWarnings,
+            self::getHowWarnings(),
+            self::getUsageWarnings(),
+            self::getLivingSituationWarnings()
+        );
 
         if (! is_null($value)) {
             return $allWarnings[$value];

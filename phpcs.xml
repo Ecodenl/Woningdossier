@@ -36,7 +36,8 @@
     <rule ref="Generic.Files.LineLength">
         <properties>
             <property name="lineLimit" value="120"/>
-            <property name="absoluteLineLimit" value="200"/>
+            <!-- A hard limit for errors is nice, but it also counts things like translation strings, which when compacted don't always read nice -->
+<!--            <property name="absoluteLineLimit" value="200"/>-->
         </properties>
     </rule>
     <rule ref="Generic.PHP.ForbiddenFunctions">

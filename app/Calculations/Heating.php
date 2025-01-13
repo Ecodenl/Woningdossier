@@ -455,7 +455,8 @@ class Heating extends Calculator
         string $boilerTypeShort = '',
         int $amountGas = 0,
         array $cookingUsage = []
-    ): array {
+    ): array
+    {
         // either 'new' or 'current'
         $case = Str::contains($heatSourceShort, 'new-') ? 'new' : 'current';
         Log::debug(__METHOD__ . ' - case: ' . $case);
@@ -696,7 +697,8 @@ class Heating extends Calculator
     public function lookupHeatPumpCharacteristics(
         ?Model $heatPumpConfigurable,
         ?ToolQuestionCustomValue $heatingTemperature
-    ): ?HeatPumpCharacteristic {
+    ): ?HeatPumpCharacteristic
+    {
         if ($heatPumpConfigurable instanceof Model && $heatingTemperature instanceof ToolQuestionCustomValue) {
             $key = sprintf(
                 'heat-pump-characteristics-%s-%s',

@@ -22,7 +22,8 @@ class SendNotifications extends Command
      *
      * @var string
      */
-    protected $signature = 'send:notifications {--type= : Notification type to be send, if left empty all notification types will be sent.}';
+    protected $signature = 'send:notifications
+                            {--type= : Notification type to send, if left empty all notification types will be sent.}';
 
     /**
      * The console command description.
@@ -30,16 +31,6 @@ class SendNotifications extends Command
      * @var string
      */
     protected $description = 'Send the user notifications based on their interval and last_notified_at';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
@@ -67,7 +58,10 @@ class SendNotifications extends Command
                 $notificationSetting = $user->notificationSettings()->where('type_id', $notificationType->id)->first();
 
                 // if the notification setting, building and cooperation exists do some things.
-                if ($notificationSetting instanceof NotificationSetting && $building instanceof Building && $cooperation instanceof Cooperation) {
+                if ($notificationSetting instanceof NotificationSetting
+                    && $building instanceof Building
+                    && $cooperation instanceof Cooperation
+                ) {
                     $now = Carbon::now();
 
                     // check if the user has a last notified at
@@ -75,7 +69,8 @@ class SendNotifications extends Command
                         $lastNotifiedAt = $notificationSetting->last_notified_at;
                         $notifiedDiff = $now->diff($lastNotifiedAt);
 
-                        // get the total unread messages for a user within its given cooperation, after the last notified at. We dont want to spam users.
+                        // Get the total unread messages for a user within its given cooperation, after the
+                        // last notified at. We dont want to spam users.
                         $unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForUserAndCooperationAfterSpecificDate(
                             $user,
                             $cooperation,
@@ -86,9 +81,14 @@ class SendNotifications extends Command
                         if ($unreadMessageCount > 0) {
                             switch ($notificationSetting->interval->short) {
                                 case 'daily':
-                                    // if the difference between now and the last notified date is 23 hours, send him a message
+                                    // If the difference between now and the last notified
+                                    // date is 23 hours, send them a message
                                     if ($this->almostMoreThanOneDayAgo($notifiedDiff)) {
-                                        Log::debug("Send daily mail to c " . $cooperation->id . ", u " . $user->id . ", b " . $building->id . ", unread " . $unreadMessageCount);
+                                        Log::debug(
+                                            "Send daily mail to c " . $cooperation->id
+                                            . ", u " . $user->id . ", b " . $building->id
+                                            . ", unread " . $unreadMessageCount
+                                        );
                                         SendUnreadMessageCountEmail::dispatch(
                                             $cooperation,
                                             $user,
@@ -100,7 +100,11 @@ class SendNotifications extends Command
                                     break;
                                 case 'weekly':
                                     if ($this->almostMoreThanOneWeekAgo($notifiedDiff)) {
-                                        Log::debug("Send weekly mail to c " . $cooperation->id . ", u " . $user->id . ", b " . $building->id . ", unread " . $unreadMessageCount);
+                                        Log::debug(
+                                            "Send weekly mail to c " . $cooperation->id
+                                            . ", u " . $user->id . ", b " . $building->id .
+                                            ", unread " . $unreadMessageCount
+                                        );
                                         SendUnreadMessageCountEmail::dispatch(
                                             $cooperation,
                                             $user,
@@ -133,7 +137,10 @@ class SendNotifications extends Command
 
     protected function getUserIdsToNotify(): Collection
     {
-        // select pmv.private_message_id, pmv.user_id, pmv.created_at, ns.last_notified_at from private_message_views as pmv left join notification_settings as ns on pmv.user_id = ns.user_id where pmv.read_at is null and ns.interval_id in (1,2) and pmv.created_at > ns.last_notified_at
+        // select pmv.private_message_id, pmv.user_id, pmv.created_at, ns.last_notified_at
+        // from private_message_views as pmv
+        // left join notification_settings as ns on pmv.user_id = ns.user_id
+        // where pmv.read_at is null and ns.interval_id in (1,2) and pmv.created_at > ns.last_notified_at
         return DB::table("private_message_views as pmv")
             ->select(
                 "pmv.private_message_id",

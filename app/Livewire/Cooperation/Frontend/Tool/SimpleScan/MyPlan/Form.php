@@ -479,14 +479,14 @@ class Form extends CustomMeasureForm
                     $value = $calculationCondition['value'];
                     break;
                 }
-            } // Full range
-            elseif (! empty($condition['from']) && ! empty($condition['to'])) {
+            } elseif (! empty($condition['from']) && ! empty($condition['to'])) {
+                // Full range
                 if ($calculation >= $condition['from'] && $calculation < $condition['to']) {
                     $value = $calculationCondition['value'];
                     break;
                 }
-            } // Bottom range only
-            elseif (! empty($condition['from']) && empty($condition['to'])) {
+            } elseif (! empty($condition['from']) && empty($condition['to'])) {
+                // Bottom range only
                 if ($calculation >= $condition['from']) {
                     $value = $calculationCondition['value'];
                     break;

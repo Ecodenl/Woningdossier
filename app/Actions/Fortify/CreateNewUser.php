@@ -61,17 +61,23 @@ class CreateNewUser implements CreatesNewUsers
             'allow_access' => 'required|accepted',
         ], (new AddressFormRequest())->rules());
 
+        /** @var \App\Models\Cooperation $cooperation */
         $cooperation = $this->request->route('cooperation');
 
         // Try to get the account from the given email.
         $account = Account::where('email', $this->get('email'))->first();
         // If the account exists but the user is not associated with the current cooperation,
-        // then we unset the email and password rule because we don't need to validate them, we handle them in the controller.
+        // then we unset the email and password rule because we don't need to validate them, we
+        // handle them in the controller.
         if ($account instanceof Account && ! $account->isAssociatedWith($cooperation)) {
             unset($rules['email'], $rules['password']);
         }
-        // If the account has a user for the current cooperation, but no building, we only want to validate the address rules.
-        if ($account instanceof Account && ($user = $account->users()->forMyCooperation($cooperation->id)->first()) instanceof User && ! $user->building instanceof Building) {
+        // If the account has a user for the current cooperation, but no building, we only want to
+        // validate the address rules.
+        if ($account instanceof Account
+            && ($user = $account->users()->forMyCooperation($cooperation->id)->first()) instanceof User
+            && ! $user->building instanceof Building
+        ) {
             unset(
                 $rules['email'],
                 $rules['password'],

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -124,7 +125,8 @@ class User extends Model implements AuthorizableContract
      * @var array
      */
     protected $fillable = [
-        'tool_last_changed_at', 'extra', 'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access', 'regulations_refreshed_at',
+        'tool_last_changed_at', 'extra', 'first_name', 'last_name', 'phone_number',
+        'account_id', 'allow_access', 'regulations_refreshed_at',
         'last_visited_url',
     ];
 
@@ -356,14 +358,6 @@ class User extends Model implements AuthorizableContract
     /**
      * The cooperations the user is associated with.
      */
-    public function cooperations(): BelongsToMany
-    {
-        return $this->belongsToMany(Cooperation::class, 'cooperation_user');
-    }
-
-    /**
-     * The cooperations the user is associated with.
-     */
     public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class, 'cooperation_id', 'id');
@@ -399,7 +393,10 @@ class User extends Model implements AuthorizableContract
     public function isRemovedFromBuildingCoachStatus($buildingId): bool
     {
         // get the last known coach status for the current coach
-        $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $this->id)->where('building_id', $buildingId)->get()->last();
+        $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $this->id)
+            ->where('building_id', $buildingId)
+            ->get()
+            ->last();
 
         if ($buildingCoachStatus instanceof BuildingCoachStatus) {
             // if the coach his last known building status for the current building is removed
@@ -463,15 +460,14 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Function to check if a user has a role, and if the user has that role check if the role is set in the Hoomdossier session.
-     *
-     * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
+     * Function to check if a user has a role, and if the user has that role check if
+     * the role is set in the Hoomdossier session.
      */
-    public function hasRoleAndIsCurrentRole($roles): bool
+    public function hasRoleAndIsCurrentRole(string|array|Role|Collection $roles): bool
     {
         // collect the role names from the gives roles.
         $roleNames = [];
-        if (is_string($roles) && false !== strpos($roles, '|')) {
+        if (is_string($roles) && str_contains($roles, '|')) {
             $roleNames = $this->convertPipeToArray($roles);
         }
 
@@ -512,8 +508,6 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Retrieve the completed questionnaires from the user.
-     *
-     * @param InputSource $inputSource
      */
     public function completedQuestionnaires(): BelongsToMany
     {
@@ -543,16 +537,8 @@ class User extends Model implements AuthorizableContract
     {
         return $this->belongsTo(Account::class);
     }
-
     /**
-     * Get the user its bcrypted password from the accounts table.
-     */
-    public function getAuthPassword(): string
-    {
-        return $this->account->password;
-    }
 
-    /**
      * Get the user its email from the accounts table.
      */
     public function getEmailForPasswordReset(): string
@@ -560,11 +546,11 @@ class User extends Model implements AuthorizableContract
         return $this->account->email;
     }
 
-    public function logout()
+    public function logout(): void
     {
         // used in the handler.php
         HoomdossierSession::destroy();
-        \Auth::logout();
+        Auth::logout();
         request()->session()->invalidate();
     }
 }

@@ -29,8 +29,7 @@ class UsersTableSeeder extends Seeder
         ];
 
         /** @var \stdClass $cooperation */
-        $cooperation = DB::table('cooperations')->where('slug',
-            'hoom')->first();
+        $cooperation = DB::table('cooperations')->where('slug', 'hoom')->first();
 
         foreach ($accounts as $account) {
             $users = $account['users'];

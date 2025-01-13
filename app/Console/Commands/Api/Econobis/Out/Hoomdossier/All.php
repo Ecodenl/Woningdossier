@@ -16,7 +16,8 @@ class All extends Command
      *
      * @var string
      */
-    protected $signature = 'api:econobis:out:hoomdossier:all {building : The id of the building you would like to process.}';
+    protected $signature = 'api:econobis:out:hoomdossier:all 
+                            {building : The id of the building you would like to process.}';
 
     /**
      * The console command description.
@@ -24,16 +25,6 @@ class All extends Command
      * @var string
      */
     protected $description = 'Run all out commands.';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.

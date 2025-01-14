@@ -20,35 +20,30 @@ class CompletedSubStepObserver
         // Check if this sub step finished the step
         $subStep = $completedSubStep->subStep;
 
-        if ($subStep instanceof SubStep) {
-            $step = $subStep->step;
-            $inputSource = $completedSubStep->inputSource;
-            $building = $completedSubStep->building;
+        $step = $subStep->step;
+        $inputSource = $completedSubStep->inputSource;
+        $building = $completedSubStep->building;
 
-            $scan = $step->scan;
-            $scanRelatedSubStepIds = $scan->subSteps->pluck('id');
+        $scan = $step->scan;
+        $scanRelatedSubStepIds = $scan->subSteps->pluck('id');
 
-            $otherCompletedSubStepsForScan = $building
-                ->completedSubSteps()
-                ->forInputSource($inputSource)
-                ->whereIn('sub_step_id', $scanRelatedSubStepIds)
-                ->where('sub_step_id', '!=', $completedSubStep->sub_step_id)
-                ->count();
+        $otherCompletedSubStepsForScan = $building
+            ->completedSubSteps()
+            ->forInputSource($inputSource)
+            ->whereIn('sub_step_id', $scanRelatedSubStepIds)
+            ->where('sub_step_id', '!=', $completedSubStep->sub_step_id)
+            ->count();
 
-            // so the sub step thats completed right now is the first one
-            // the first progress has been made, so we will notify Econobis.
-            if ($otherCompletedSubStepsForScan === 0 && $inputSource->isMaster()) {
-                Log::debug("total $otherCompletedSubStepsForScan scan: {$scan->name} substepado: {$subStep->id}");
-                BuildingCompletedHisFirstSubStep::dispatch($building);
-            }
+        // so the sub step thats completed right now is the first one
+        // the first progress has been made, so we will notify Econobis.
+        if ($otherCompletedSubStepsForScan === 0 && $inputSource->isMaster()) {
+            BuildingCompletedHisFirstSubStep::dispatch($building);
+        }
 
-            if ($step instanceof Step && $inputSource instanceof InputSource && $building instanceof Building) {
-                // Master is handled by GetMyValuesTrait
-                if (! $inputSource->isMaster()) {
-                    StepHelper::completeStepIfNeeded($step, $building, $inputSource, $building->user);
-                    CompleteRelatedSubStep::dispatch($subStep, $building, $inputSource);
-                }
-            }
+        // Master is handled by GetMyValuesTrait
+        if (! $inputSource->isMaster()) {
+            StepHelper::completeStepIfNeeded($step, $building, $inputSource, $building->user);
+            CompleteRelatedSubStep::dispatch($subStep, $building, $inputSource);
         }
     }
 }

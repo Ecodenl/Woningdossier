@@ -32,8 +32,7 @@ class PrivateMessagePolicy
 
         if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH])) {
             return $user->isNotRemovedFromBuildingCoachStatus($buildingId);
-        }
-        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_RESIDENT])) {
+        } elseif ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_RESIDENT])) {
             if (HoomdossierSession::getBuilding(false) === $buildingId) {
                 return true;
             }

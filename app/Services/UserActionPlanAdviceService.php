@@ -160,114 +160,13 @@ class UserActionPlanAdviceService
     }
 
     /**
-     * Check if can return the savings money or have to return "ntb."
-     * We do this when the selected insulation is "Matige isolatie (tot 8 cm isolatie)" or higher also known als
-     * calculate_value >= 3.
-     *
-     * @param $savingsMoney
-     *
-     * @return string|int
-     */
-    public static function checkSavingsMoney(UserActionPlanAdvice $advice, $savingsMoney)
-    {
-        $user = $advice->user;
-        $step = $advice->step;
-
-        if ('roof-insulation' == $step->short) {
-            // the energy saving measure application shorts.
-            $flatRoofMeasureApplications = ['roof-insulation-flat-replace-current', 'roof-insulation-flat-current'];
-            $pitchedRoofMeasureApplications = [
-                'roof-insulation-pitched-replace-tiles',
-                'roof-insulation-pitched-inside',
-            ];
-
-            // check the current advice its measure application, this way we can determine which roofType we have to check
-            if (in_array($advice->userActionPlanAdvisable->short, $pitchedRoofMeasureApplications)) {
-                $roofType = RoofType::findByShort('pitched');
-            }
-            if (in_array($advice->userActionPlanAdvisable->short, $flatRoofMeasureApplications)) {
-                $roofType = RoofType::findByShort('flat');
-            }
-
-            // get the right matching roof type.
-            $buildingRoofType = $user->building->roofTypes()->forInputSource($advice->inputSource)->where(
-                'roof_type_id',
-                $roofType->id
-            )->first();
-
-            if ($buildingRoofType->elementValue->calculate_value >= 3) {
-                $savingsMoney = 'ntb.';
-            }
-        } elseif (in_array($step->short, ['floor-insulation', 'wall-insulation'])) {
-            $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
-
-            if (optional($user->building->getBuildingElement(
-                $elementShort,
-                $advice->inputSource
-            )->elementValue)->calculate_value >= 3
-            ) {
-                $savingsMoney = 'ntb.';
-            }
-        }
-
-        return $savingsMoney;
-    }
-
-    /**
-     * Get the action plan categorized under measure type.
-     */
-    public static function getCategorizedActionPlan(User $user, InputSource $inputSource, bool $withAdvices = true): array
-    {
-        $result = [];
-
-        $advices = UserActionPlanAdvice::forInputSource($inputSource)
-            ->where('user_id', $user->id)
-            ->with('user.building', 'userActionPlanAdvisable', 'step')
-            ->where('user_action_plan_advisable_type', MeasureApplication::class)
-            ->orderBy('step_id', 'asc')
-            ->orderBy('year', 'asc')
-            ->get();
-
-        /** @var UserActionPlanAdvice $advice */
-        foreach ($advices as $advice) {
-            if ($advice->step instanceof Step) {
-                /** @var MeasureApplication $measureApplication */
-                $measureApplication = $advice->userActionPlanAdvisable;
-
-                if (is_null($advice->year)) {
-                    $advice->year = 0;
-                }
-
-                // check if we have to set the $savingsMoney to ntb.
-                if ('energy_saving' == $advice->userActionPlanAdvisable->measure_type) {
-                    $advice->savings_money = self::checkSavingsMoney($advice, $advice->savings_money);
-                }
-
-                // if advices are not desirable and the measureApplication is not an advice it will be added to the result
-                if (! $withAdvices && ! $measureApplication->isAdvice()) {
-                    $result[$measureApplication->measure_type][$advice->step->slug][$measureApplication->short] = $advice;
-                }
-
-                // if advices are desirable we always add it.
-                if ($withAdvices) {
-                    $result[$measureApplication->measure_type][$advice->step->slug][$measureApplication->short] = $advice;
-                }
-            }
-        }
-
-        ksort($result);
-
-        return $result;
-    }
-
-    /**
      * Set properties from old advices on another advice
      */
     public static function checkOldAdvices(
         UserActionPlanAdvice $userActionPlanAdvice,
         MeasureApplication $measureApplication,
         Collection $oldAdvices
-    )
+    ): void
     {
         $oldAdvice = $oldAdvices
             ->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
@@ -287,7 +186,7 @@ class UserActionPlanAdviceService
     /**
      * Set the visibility of a user action plan advice
      */
-    public static function setAdviceVisibility(UserActionPlanAdvice $userActionPlanAdvice)
+    public static function setAdviceVisibility(UserActionPlanAdvice $userActionPlanAdvice): void
     {
         $building = $userActionPlanAdvice->user->building;
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -314,49 +213,48 @@ class UserActionPlanAdviceService
                     }
                 }
             } elseif ($advisable->measure_type === MeasureApplication::ENERGY_SAVING) {
-                switch ($advisable->short) {
-                    case 'high-efficiency-boiler-replace':
-                        // We can't look at measures, because during recalculate they might not have been processed
-                        // yet... We'll have to follow the same logic as in the heat pump helper...
-                        $conditionService = ConditionService::init()
-                            ->building($building)
-                            ->inputSource($masterInputSource);
+                // We can't look at measures, because during recalculate they might not have been processed
+                // yet... We'll have to follow the same logic as in the heat pump helper...
+                if ($advisable->short == 'high-efficiency-boiler-replace') {
+                    $conditionService = ConditionService::init()
+                        ->building($building)
+                        ->inputSource($masterInputSource);
 
-                        if ($conditionService->hasCompletedSteps(['heating'])) {
-                            $serviceValue = ToolHelper::getServiceValueByCustomValue(
-                                'heat-pump',
-                                'new-heat-pump-type',
-                                static::getQuickAnswer('new-heat-pump-type', $building, $masterInputSource)
+                    if ($conditionService->hasCompletedSteps(['heating'])) {
+                        $serviceValue = ToolHelper::getServiceValueByCustomValue(
+                            'heat-pump',
+                            'new-heat-pump-type',
+                            static::getQuickAnswer('new-heat-pump-type', $building, $masterInputSource)
+                        );
+
+                        $visible = ($serviceValue->calculate_value ?? 0) <= 3;
+                    } else {
+                        $interestQuestion = ToolQuestion::findByShort('interested-in-heat-pump-variant');
+
+                        if ($conditionService->forModel($interestQuestion)->isViewable()) {
+                            $interest = static::getQuickAnswer(
+                                'interested-in-heat-pump-variant',
+                                $building,
+                                $masterInputSource
+                            );
+                            $temp = static::getQuickAnswer(
+                                'boiler-setting-comfort-heat',
+                                $building,
+                                $masterInputSource
                             );
 
-                            $visible = ($serviceValue->calculate_value ?? 0) <= 3;
+                            $visible = $interest === 'hybrid-heat-pump'
+                                || ($interest === 'unsure' && $temp !== 'temp-low');
                         } else {
-                            $interestQuestion = ToolQuestion::findByShort('interested-in-heat-pump-variant');
+                            $heatPumpQuestion = ToolQuestion::findByShort('heat-pump-type');
 
-                            if ($conditionService->forModel($interestQuestion)->isViewable()) {
-                                $interest = static::getQuickAnswer(
-                                    'interested-in-heat-pump-variant',
-                                    $building,
-                                    $masterInputSource
-                                );
-                                $temp = static::getQuickAnswer(
-                                    'boiler-setting-comfort-heat',
-                                    $building,
-                                    $masterInputSource
-                                );
+                            if ($conditionService->forModel($heatPumpQuestion)->isViewable()) {
+                                $id = static::getQuickAnswer('heat-pump-type', $building, $masterInputSource);
 
-                                $visible = $interest === 'hybrid-heat-pump'
-                                    || ($interest === 'unsure' && $temp !== 'temp-low');
-                            } else {
-                                $heatPumpQuestion = ToolQuestion::findByShort('heat-pump-type');
-
-                                if ($conditionService->forModel($heatPumpQuestion)->isViewable()) {
-                                    $id = static::getQuickAnswer('heat-pump-type', $building, $masterInputSource);
-
-                                    $visible = (ServiceValue::find($id)->calculate_value ?? 0) <= 3;
-                                }
+                                $visible = (ServiceValue::find($id)->calculate_value ?? 0) <= 3;
                             }
                         }
+                    }
                 }
             }
         }

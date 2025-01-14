@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\UserEnergyHabit;
+use Illuminate\Support\Facades\Log;
 
 class FloorInsulationCalculator
 {
@@ -30,8 +31,10 @@ class FloorInsulationCalculator
         return $result;
     }
 
-    protected static function debug($line)
+    protected static function debug(string $line): void
     {
-        // \Log::debug($line);
+        if (config('hoomdossier.services.enable_calculation_logging')) {
+            Log::channel('calculations')->debug($line);
+        }
     }
 }

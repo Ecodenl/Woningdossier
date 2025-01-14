@@ -7,18 +7,6 @@ use Ramsey\Uuid\Uuid;
 class Translation
 {
     /**
-     * Get the translation from the translations table based on uuid.
-     *
-     * @param $uuid
-     *
-     * @return mixed|string
-     */
-    protected static function getTranslationFromUuid($uuid)
-    {
-        return \App\Models\Translation::getTranslationFromKey($uuid);
-    }
-
-    /**
      * Get a translation using the default function.
      *
      * @return array|mixed|string|null

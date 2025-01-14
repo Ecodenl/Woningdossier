@@ -40,8 +40,8 @@ use Illuminate\Support\Str;
 
 class DumpService
 {
-    const MODE_CSV = 'csv';
-    const MODE_PDF = 'pdf';
+    const string MODE_CSV = 'csv';
+    const string MODE_PDF = 'pdf';
 
     use FluentCaller;
 
@@ -144,7 +144,7 @@ class DumpService
 
                 if ($step instanceof Step) {
                     foreach (Arr::dot($content) as $dottedKey => $header) {
-                        Arr::set($structure[$stepShort], $dottedKey, "{$step->name}: {$header}");
+                        Arr::set($structure[$stepShort], $dottedKey, "{$step->getTranslation('name', 'nl')}: {$header}");
                     }
                 }
             }

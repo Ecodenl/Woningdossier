@@ -81,10 +81,8 @@ trait CreatesUsers
 
     /**
      * Send the mail to the created user.
-     *
-     * @param Request $request
      */
-    public function sendAccountConfirmationMail(Cooperation $cooperation, Account $account, User $user)
+    public function sendAccountConfirmationMail(Cooperation $cooperation, Account $account, User $user): void
     {
         $token = app('auth.password.broker')->createToken($account);
 

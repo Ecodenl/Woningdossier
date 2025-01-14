@@ -38,20 +38,6 @@ class FileStoragePolicy
     }
 
     /**
-     * Determine whether the user can view the fileStorage.
-     */
-    public function view(Account $account, FileStorage $fileStorage): bool
-    {
-    }
-
-    /**
-     * Determine whether the user can create fileStorages.
-     */
-    public function create(User $user): bool
-    {
-    }
-
-    /**
      * Determine whether the user can store a file.
      */
     public function store(Account $account, FileStorage $fileStorage, FileType $fileType): bool
@@ -74,19 +60,5 @@ class FileStoragePolicy
         }
 
         return false;
-    }
-
-    /**
-     * Determine whether the user can update the fileStorage.
-     */
-    public function update(Account $account, FileStorage $fileStorage): bool
-    {
-    }
-
-    /**
-     * Determine whether the user can delete the fileStorage.
-     */
-    public function delete(Account $account, FileStorage $fileStorage): bool
-    {
     }
 }

@@ -73,25 +73,8 @@ class UserPolicy
     {
         // check if the user can delete a user, and if the user to be destroyed is a member of the user his cooperation
         // remove the cooperations stuff
-        return $this->deleteUser($account, $userToDestroy) && $userToDestroy->cooperation->id == HoomdossierSession::getCooperation();
-    }
-
-    /**
-     * Check if a user is allowed to participate in a group chat or not.
-     *
-     * @param $buildingId
-     */
-    public function participateInGroupChat(Account $account, $buildingId): bool
-    {
-        $user = $account->user();
-        // if the user is a coach and has a active building coach status, return true
-        if ($user->hasRole(RoleHelper::ROLE_COACH) && $user->isNotRemovedFromBuildingCoachStatus($buildingId)) {
-            return true;
-        } elseif ($user->hasRole(RoleHelper::ROLE_RESIDENT) && HoomdossierSession::getBuilding() == $buildingId) {
-            return true;
-        }
-
-        return false;
+        return $this->deleteUser($account, $userToDestroy)
+            && $userToDestroy->cooperation->id === HoomdossierSession::getCooperation();
     }
 
     /**

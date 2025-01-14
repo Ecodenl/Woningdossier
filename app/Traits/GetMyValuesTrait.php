@@ -180,13 +180,15 @@ trait GetMyValuesTrait
                 if ($this->hasColumn($crucialRelationCombinationId)) {
                     $shouldAdd = $crucialRelationCombinationId !== 'tool_question_custom_value_id';
 
-                    if (! $shouldAdd) {
-                        // Conditional logic, tool_question_custom_value_id should only be evaluated if the
-                        // question is a checkbox
-                        if (! empty($data['tool_question_id']) && ($toolQuestion = ToolQuestion::find($data['tool_question_id'])) instanceof ToolQuestion) {
-                            $shouldAdd = $toolQuestion->data_type = Caster::ARRAY;
-                        }
-                    }
+                    //TODO: As of right now, array answers are ALWAYS cleared without model events before saving, so
+                    // this does NOT apply.
+                    //if (! $shouldAdd) {
+                    //    // Conditional logic, tool_question_custom_value_id should only be evaluated if the
+                    //    // question is a checkbox
+                    //    if (! empty($data['tool_question_id']) && ($toolQuestion = ToolQuestion::find($data['tool_question_id'])) instanceof ToolQuestion) {
+                    //        $shouldAdd = $toolQuestion->data_type = Caster::ARRAY;
+                    //    }
+                    //}
 
                     if ($shouldAdd) {
                         $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
@@ -322,35 +324,6 @@ trait GetMyValuesTrait
         }
 
         return false;
-    }
-
-    /**
-     * Get the coach input from a collection that comes from the forMe() scope.
-     */
-    public static function getCoachInput(Collection $inputSourcesForMe): mixed
-    {
-        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-        if (self::hasCoachInputSource($inputSourcesForMe)) {
-            return $inputSourcesForMe->where(
-                'input_source_id',
-                $coachInputSource->id
-            )->first();
-        }
-    }
-
-    /**
-     * Get the resident input from a collection that comes from the forMe() scope.
-     */
-    public static function getResidentInput(Collection $inputSourcesForMe): mixed
-    {
-        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-
-        if (self::hasResidentInputSource($inputSourcesForMe)) {
-            return $inputSourcesForMe->where(
-                'input_source_id',
-                $residentInputSource->id
-            )->first();
-        }
     }
 
     /**

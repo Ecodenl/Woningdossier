@@ -15,7 +15,7 @@ use App\Services\UserActionPlanAdviceService;
 
 class HeatPumpHelper extends ToolHelper
 {
-    const MEASURE_SERVICE_LINK = [
+    const array MEASURE_SERVICE_LINK = [
         'hybrid-heat-pump-outside-air' => 1,
         'hybrid-heat-pump-ventilation-air' => 2,
         'hybrid-heat-pump-pvt-panels' => 3,
@@ -24,13 +24,13 @@ class HeatPumpHelper extends ToolHelper
         'full-heat-pump-pvt-panels' => 6,
     ];
 
-    public function saveValues(): ToolHelper
+    public function saveValues(): static
     {
         // Format isn't applicable for this helper, but it is required due to abstraction
         return $this;
     }
 
-    public function createValues(): ToolHelper
+    public function createValues(): static
     {
         // Technically not correct but it makes it easier to reuse considerable for the heat pump boiler
         $heatPump = Step::findByShort('heat-pump');
@@ -56,7 +56,7 @@ class HeatPumpHelper extends ToolHelper
         return $this;
     }
 
-    public function createAdvices(): ToolHelper
+    public function createAdvices(): static
     {
         $updatedMeasureIds = $this->getValues('updated_measure_ids');
 

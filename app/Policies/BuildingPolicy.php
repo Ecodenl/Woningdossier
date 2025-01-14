@@ -15,15 +15,6 @@ class BuildingPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
     public function edit(Account $account, Building $building)
     {
         $user = $account->user();

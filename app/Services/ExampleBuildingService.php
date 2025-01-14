@@ -42,7 +42,7 @@ class ExampleBuildingService
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         // Clear the current example building data
-        self::log('Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ") building id {$building->id}");
+        self::log('Lookup ' . $exampleBuilding->getTranslation('name', 'nl') . ' for ' . $buildYear . " (" . $inputSource->name . ") building id {$building->id}");
         $contents = $exampleBuilding->getContentForYear($buildYear);
 
         if (! $contents instanceof ExampleBuildingContent) {
@@ -66,7 +66,7 @@ class ExampleBuildingService
 
             // Some building types do not have a generic example building
             if ($genericExampleBuilding instanceof ExampleBuilding) {
-                self::log("Example building is specific. Generic counterpart is " . $genericExampleBuilding->name);
+                self::log("Example building is specific. Generic counterpart is " . $genericExampleBuilding->getTranslation('name', 'nl'));
 
                 $genericContent = $genericExampleBuilding->getContentForYear($buildYear);
 
@@ -79,7 +79,7 @@ class ExampleBuildingService
 
 
         self::log(
-            'Applying Example Building ' . $exampleBuilding->name . ' (' . $exampleBuilding->id . ', ' . $contents->build_year . ') for input source ' . $inputSource->name
+            'Applying Example Building ' . $exampleBuilding->getTranslation('name', 'nl') . ' (' . $exampleBuilding->id . ', ' . $contents->build_year . ') for input source ' . $inputSource->name
         );
 
 

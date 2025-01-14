@@ -24,7 +24,7 @@ class BuildingObserver
     {
         $building->user_id             = null;
         $building->country_code        = 'nl';
-        $building->primary             = false;
+        $building->primary             = 0;
         $building->save();
 
         // delete the privatemessages from the building

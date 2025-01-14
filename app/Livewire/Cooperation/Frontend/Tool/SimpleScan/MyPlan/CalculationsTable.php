@@ -128,7 +128,9 @@ class CalculationsTable extends Component
             if (array_key_exists($toolQuestion->id, $answers)) {
                 $firstKey = array_key_first($answers[$toolQuestion->id]);
 
-                $answerToMakeReadable = $toolQuestion->data_type === Caster::ARRAY ? Arr::pluck($answers[$toolQuestion->id], 'answer') : $answers[$toolQuestion->id][$firstKey]['answer'] ?? null;
+                $answerToMakeReadable = $toolQuestion->data_type === Caster::ARRAY
+                    ? Arr::pluck($answers[$toolQuestion->id], 'answer')
+                    : $answers[$toolQuestion->id][$firstKey]['answer'] ?? null;
 
                 // Answer might be null, e.g. roof type can have null surface if for example created via mapping
                 if (! is_null($answerToMakeReadable)) {

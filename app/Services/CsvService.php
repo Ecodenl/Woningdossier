@@ -23,10 +23,8 @@ class CsvService
 {
     /**
      * Return the base headers for a csv.
-     *
-     * @param $anonymize
      */
-    public static function getBaseHeaders($anonymize): array
+    public static function getBaseHeaders(bool $anonymize): array
     {
         if ($anonymize) {
             return [
@@ -65,8 +63,6 @@ class CsvService
 
     /**
      * Method to dump the results of a given questionnaire.
-     *
-     * @param Cooperation $cooperation
      */
     public static function dumpForQuestionnaire(Questionnaire $questionnaire, bool $anonymize): array
     {
@@ -100,7 +96,6 @@ class CsvService
 //                    $inputSource = $coachInputSource;
 //                }
 
-                /** @var Collection $conversationRequestsForBuilding */
                 $createdAt = $user->created_at?->format('Y-m-d');
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
                 $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
@@ -203,84 +198,5 @@ class CsvService
         array_unshift($rows, $headers);
 
         return $rows;
-    }
-
-
-
-    protected static function formatFieldOutput($column, $value, $maybe1, $maybe2)
-    {
-        $decimals = 0;
-        $shouldRound = false;
-
-        if (self::isYear($column) || self::isYear($maybe1, $maybe2)) {
-            return $value;
-        }
-
-        if (! is_numeric($value)) {
-            return $value;
-        }
-
-        if (in_array($column, ['interest_comparable'])) {
-            $decimals = 1;
-        }
-        if ('specs' == $column && 'size_collector' == $maybe1) {
-            $decimals = 1;
-        }
-        if ('paintwork' == $column && 'costs' == $maybe1) {
-            /// round the cost for paintwork
-            $shouldRound = true;
-        }
-
-        return self::formatOutput($column, $value, $decimals, $shouldRound);
-    }
-
-    /**
-     * Format the output of the given column and value.
-     *
-     * @param mixed $value
-     *
-     * @return float|int|string
-     */
-    protected static function formatOutput(string $column, $value, int $decimals = 0, bool $shouldRound = false)
-    {
-        if (in_array($column, ['percentage_consumption']) ||
-            false !== stristr($column, 'savings_') ||
-            stristr($column, 'cost')) {
-            $value = NumberFormatter::round($value);
-        }
-        if ($shouldRound) {
-            $value = NumberFormatter::round($value);
-        }
-        // We should let Excel do the separation of thousands
-        return number_format($value, $decimals, ',', '');
-        //return NumberFormatter::format($value, $decimals, $shouldRound);
-    }
-
-    protected static function translateExtraValueIfNeeded($value)
-    {
-        if (in_array($value, ['yes', 'no', 'unknown'])) {
-            $key = 'general.options.%s.title';
-
-            return Translation::translate(sprintf($key, $value));
-        }
-    }
-
-    /**
-     * Returns whether or not two (optional!) columns contain a year or not.
-     */
-    protected static function isYear(string $column, string $extraValue = ''): bool
-    {
-        if (! is_null($column)) {
-            if (false !== stristr($column, 'year')) {
-                return true;
-            }
-            if ('extra' == $column) {
-                return in_array($extraValue, [
-                    'year',
-                ]);
-            }
-        }
-
-        return false;
     }
 }

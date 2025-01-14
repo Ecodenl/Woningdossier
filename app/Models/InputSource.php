@@ -33,12 +33,12 @@ class InputSource extends Model
 
     use HasShortTrait;
 
-    const RESIDENT_SHORT = 'resident';
-    const COACH_SHORT = 'coach';
-    const COOPERATION_SHORT = 'cooperation';
-    const MASTER_SHORT = 'master';
-    const EXAMPLE_BUILDING_SHORT = 'example-building';
-    const EXTERNAL_SHORT = 'external';
+    const string RESIDENT_SHORT = 'resident';
+    const string COACH_SHORT = 'coach';
+    const string COOPERATION_SHORT = 'cooperation';
+    const string MASTER_SHORT = 'master';
+    const string EXAMPLE_BUILDING_SHORT = 'example-building';
+    const string EXTERNAL_SHORT = 'external';
 
     /**
      * Check if the input source is a resident.

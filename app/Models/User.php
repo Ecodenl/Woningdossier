@@ -119,11 +119,6 @@ class User extends Model implements AuthorizableContract
 
     protected $guard_name = 'web';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'tool_last_changed_at', 'extra', 'first_name', 'last_name', 'phone_number',
         'account_id', 'allow_access', 'regulations_refreshed_at',
@@ -386,17 +381,15 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Check if a user is not removed from the building coach status table.
-     *
-     * @param $buildingId
+     * Check if a user is removed from the building coach status table.
      */
-    public function isRemovedFromBuildingCoachStatus($buildingId): bool
+    public function isRemovedFromBuildingCoachStatus(int $buildingId): bool
     {
         // get the last known coach status for the current coach
         $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $this->id)
             ->where('building_id', $buildingId)
-            ->get()
-            ->last();
+            ->orderByDesc('id')
+            ->first();
 
         if ($buildingCoachStatus instanceof BuildingCoachStatus) {
             // if the coach his last known building status for the current building is removed
@@ -409,12 +402,7 @@ class User extends Model implements AuthorizableContract
         return false;
     }
 
-    /**
-     * Return the opposite of the isRemovedFromBuildingCoachStatus function.
-     *
-     * @param $buildingId
-     */
-    public function isNotRemovedFromBuildingCoachStatus($buildingId): bool
+    public function isNotRemovedFromBuildingCoachStatus(int $buildingId): bool
     {
         return ! $this->isRemovedFromBuildingCoachStatus($buildingId);
     }
@@ -429,7 +417,7 @@ class User extends Model implements AuthorizableContract
 //        if (is_null(HoomdossierSession::getBuilding())) {
 //            return false;
 //        } else {
-        if ($this->building->id != HoomdossierSession::getBuilding()) {
+        if ($this->building->id !== HoomdossierSession::getBuilding()) {
             return true;
         }
 

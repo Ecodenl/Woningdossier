@@ -11,9 +11,22 @@ parameters:
     level: 4 # 4 for now because 5 cries about return types and stuff which makes no sense
 
 #    excludePaths:
-#            - ./app/Traits/ToolSettingTrait.php
+#        - ./app/Traits/ToolSettingTrait.php
 
     ignoreErrors:
+        # These errors are ignored because Larastan is unable to realise these are fine within Laravel magic
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model(.*)::.*#'
+        #- '#Access to an undefined property Illuminate\\Database\\Eloquent\\Model(.*)::.*#'
+        - '#Access to an undefined property.*#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\(.*)::.*#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder(.*)::.*#'
+        - '#Method .*::findByShort\(\) should return .* but returns Illuminate\\Database\\Eloquent\\Model(.*)#'
 
-#    checkMissingIterableValueType: false
+        # These errors are ignored because we are 100% certain it's not actually an issue
+        - '#Unsafe usage of new static(.*)#'
+
+        # This is a surpression of an error we cannot fix from here and must be fixed in the wrapper
+        - '#.*Ecodenl\\LvbagPhpWrapper.*#'
+
+#    tips:
+#        treatPhpDocTypesAsCertain: false

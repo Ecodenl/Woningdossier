@@ -15,6 +15,7 @@ use App\Traits\FluentCaller;
 use App\Traits\HasDynamicAnswers;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class HighEfficiencyBoilerCalculator
 {
@@ -28,10 +29,7 @@ class HighEfficiencyBoilerCalculator
         $this->answers = $answers;
     }
 
-    /**
-     * @return mixed
-     */
-    public function calculateGasSavings()
+    public function calculateGasSavings(): float
     {
         // It is possible the user does not have a boiler currently!
         $current = $this->calculateGasUsage();
@@ -120,12 +118,7 @@ class HighEfficiencyBoilerCalculator
         return $result;
     }
 
-    /**
-     * @param $last
-     *
-     * @return float|int|string
-     */
-    public function determineApplicationYear(MeasureApplication $measureApplication, $last)
+    public function determineApplicationYear(MeasureApplication $measureApplication, ?int $last): int
     {
         $this->debug(__METHOD__);
 
@@ -143,8 +136,10 @@ class HighEfficiencyBoilerCalculator
         return $year;
     }
 
-    protected function debug($line)
+    protected function debug(string $line): void
     {
-        // \Log::debug($line);
+        if (config('hoomdossier.services.enable_calculation_logging')) {
+            Log::channel('calculations')->debug($line);
+        }
     }
 }

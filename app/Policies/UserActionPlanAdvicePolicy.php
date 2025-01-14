@@ -15,19 +15,12 @@ class UserActionPlanAdvicePolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any user action plan advice.
-     */
-    public function viewAny(Account $user): bool
-    {
-        //
-    }
-
-    /**
      * Determine whether the user can view the user action plan advice.
      */
     public function view(Account $user, UserActionPlanAdvice $userActionPlanAdvice): bool
     {
-        $authorize = $user->users()->pluck('id')->contains($userActionPlanAdvice->user_id);
+        // Gets the user(s?) for the current session cooperation.
+        $authorize = $user->users()->where('id', $userActionPlanAdvice->user_id)->exists();
 
         // we want to log this, as this is not meant to happen,
         // it means the user is trying to mess up hoomdossier
@@ -44,45 +37,5 @@ class UserActionPlanAdvicePolicy
             (new DiscordNotifier())->notify("Account id {$user->id} with **current** user id {$userId} tried to access (denied) `{$userActionPlanAdvice->toJson()}`");
         }
         return $authorize;
-    }
-
-    /**
-     * Determine whether the user can create user action plan advice.
-     */
-    public function create(Account $user): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can update the user action plan advice.
-     */
-    public function update(Account $user, UserActionPlanAdvice $userActionPlanAdvice): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can delete the user action plan advice.
-     */
-    public function delete(Account $user, UserActionPlanAdvice $userActionPlanAdvice): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the user action plan advice.
-     */
-    public function restore(Account $user, UserActionPlanAdvice $userActionPlanAdvice): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the user action plan advice.
-     */
-    public function forceDelete(Account $user, UserActionPlanAdvice $userActionPlanAdvice): bool
-    {
-        //
     }
 }

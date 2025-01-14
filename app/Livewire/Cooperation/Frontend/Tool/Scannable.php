@@ -90,7 +90,8 @@ abstract class Scannable extends Component
 
     protected function refreshAlerts(): void
     {
-        $this->dispatch('refreshAlerts', answers: $this->filledInAnswers)->to('cooperation.frontend.layouts.parts.alerts');
+        $this->dispatch('refreshAlerts', answers: $this->filledInAnswers)
+            ->to('cooperation.frontend.layouts.parts.alerts');
     }
 
     public function updated(string $field, mixed $value): void

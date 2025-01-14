@@ -15,6 +15,7 @@ use App\Models\PriceIndexing;
 use App\Models\UserEnergyHabit;
 use App\Services\Kengetallen\KengetallenService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class RawCalculator
 {
@@ -68,10 +69,8 @@ class RawCalculator
      * Calculate the money savings in euro / m3 gas based on the key figure.
      *
      * @param float|int $gasSavings
-     *
-     * @return float|int
      */
-    public static function calculateMoneySavings($gasSavings, $euroSavingsGas)
+    public static function calculateMoneySavings($gasSavings, float $euroSavingsGas): float
     {
         $result = $gasSavings * $euroSavingsGas;
         self::debug(__METHOD__ . " Euro's besparing: " . $result . ' = ' . $gasSavings . ' * ' . $euroSavingsGas);
@@ -226,8 +225,10 @@ class RawCalculator
         return $result;
     }
 
-    protected static function debug($line)
+    protected static function debug(string $line): void
     {
-        // \Log::debug($line);
+        if (config('hoomdossier.services.enable_calculation_logging')) {
+            Log::channel('calculations')->debug($line);
+        }
     }
 }

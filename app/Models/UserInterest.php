@@ -95,7 +95,6 @@ class UserInterest extends Model
         $serviceInterests = $this->where('interested_in_type', 'element')->get();
         /** @var self $serviceInterest */
         foreach ($serviceInterests as $serviceInterest) {
-            $serviceInterest->interested_in_id;
             $element = Element::find($serviceInterest->interested_in_id);
             if ($element instanceof Element) {
                 $interests[] = $element;
@@ -111,7 +110,6 @@ class UserInterest extends Model
         $serviceInterests = $this->where('interested_in_type', 'measure_application')->get();
         /** @var self $serviceInterest */
         foreach ($serviceInterests as $serviceInterest) {
-            $serviceInterest->interested_in_id;
             $element = MeasureApplication::find($serviceInterest->interested_in_id);
             if ($element instanceof MeasureApplication) {
                 $interests[] = $element;
@@ -127,7 +125,6 @@ class UserInterest extends Model
         $serviceInterests = $this->where('interested_in_type', 'roof_type')->get();
         /** @var self $serviceInterest */
         foreach ($serviceInterests as $serviceInterest) {
-            $serviceInterest->interested_in_id;
             $element = RoofType::find($serviceInterest->interested_in_id);
             if ($element instanceof RoofType) {
                 $interests[] = $element;

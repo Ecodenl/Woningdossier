@@ -15,6 +15,10 @@ return [
             'path' => storage_path('logs/api.log'),
             'days' => 14
         ],
+        'calculations' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/calculations.log'),
+            'days' => 14
+        ],
     ],
-
 ];

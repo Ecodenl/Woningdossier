@@ -19,6 +19,7 @@ use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
 use App\Traits\Services\HasBuilding;
 use App\Traits\Services\HasInputSources;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -35,11 +36,9 @@ class BuildingService
     }
 
     /**
-     * convenient way of setting a appointment date on a building.
-     *
-     * @param  string
+     * Convenient way of setting a appointment date on a building.
      */
-    public function setAppointmentDate($appointmentDate): void
+    public function setAppointmentDate(?Carbon $appointmentDate): void
     {
         $this->building->buildingStatuses()->create([
             'status_id' => $this->building->getMostRecentBuildingStatus()->status_id,
@@ -76,15 +75,17 @@ class BuildingService
         if ($scan->isQuickScan()) {
             $quickScan = Scan::findByShort(Scan::QUICK);
             $woonplanService = WoonplanService::init($this->building)->scan($quickScan);
-            // iknow, the variable is not needed.
-            // just got it here as a description since this same statement is found in different context.
-            $canRecalculate = $woonplanService->buildingCompletedFirstFourSteps() || $woonplanService->buildingHasMeasureApplications();
-            return $canRecalculate;
+            return $woonplanService->buildingCompletedFirstFourSteps()
+                || $woonplanService->buildingHasMeasureApplications();
         }
 
         if ($scan->isLiteScan()) {
             return $this->building->hasCompletedScan($scan, InputSource::findByShort(InputSource::MASTER_SHORT));
         }
+
+        // Apparently not a simple scan. Since this code is only used in the simple scan form, it shouldn't
+        // be any other scan.
+        return false;
     }
 
     /**

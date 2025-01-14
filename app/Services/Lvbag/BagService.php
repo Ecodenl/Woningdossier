@@ -34,7 +34,9 @@ class BagService
         // we can, but if the result is 100, we will attempt another fetch since there _might_ be more.
         do {
             ++$page;
-            $list = $this->wrapCall(fn () => $this->lvbag->adresUitgebreid()->page($page)->pageSize(100)->list($attributes) ?? []);
+            $list = $this->wrapCall(
+                fn () => $this->lvbag->adresUitgebreid()->page($page)->pageSize(100)->list($attributes) ?? []
+            );
             $filtered = array_filter(array_unique(array_map(function ($address) {
                 return trim(($address['huisletter'] ?? '') . ($address['huisnummertoevoeging'] ?? ''));
             }, $list)));

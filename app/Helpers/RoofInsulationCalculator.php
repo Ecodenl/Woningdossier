@@ -10,6 +10,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class RoofInsulationCalculator
 {
@@ -66,8 +67,10 @@ class RoofInsulationCalculator
         return $year;
     }
 
-    protected static function debug($line)
+    protected static function debug(string $line): void
     {
-        // \Log::debug($line);
+        if (config('hoomdossier.services.enable_calculation_logging')) {
+            Log::channel('calculations')->debug($line);
+        }
     }
 }

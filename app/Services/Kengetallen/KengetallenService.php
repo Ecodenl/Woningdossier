@@ -15,8 +15,6 @@ class KengetallenService
 
     /**
      * The resolvers, sorted based on priority
-     *
-     * @var array|string[]
      */
     public array $resolvers = [
         BuildingDefined::class,
@@ -25,10 +23,8 @@ class KengetallenService
 
     /**
      * Resolves a kengetallen value.
-     *
-     * @return mixed|void
      */
-    public function resolve(string $kengetallenCode)
+    public function resolve(string $kengetallenCode): float
     {
         foreach ($this->resolvers as $resolver) {
             $value = $this->get(new $resolver(), $kengetallenCode);
@@ -36,15 +32,16 @@ class KengetallenService
                 return $value;
             }
         }
+
+        // Technically this is ALWAYS the case since it's the final clause in the loop, but we add it anyway
+        // so Larastan doesn't cry.
+        return $this->get(new RvoDefined(), $kengetallenCode);
     }
 
     /**
      * Returns the value for the given code on the resolver.
-     *
-     * @param $resolver
-     * @return mixed
      */
-    public function get(KengetallenDefiner $resolver, string $kengetallenCode)
+    public function get(KengetallenDefiner $resolver, string $kengetallenCode): ?float
     {
         return $resolver
             ->context([
@@ -66,5 +63,9 @@ class KengetallenService
                 return $resolver;
             }
         }
+
+        // Technically this is ALWAYS the case since it's the final clause in the loop, but we add it anyway
+        // so Larastan doesn't cry.
+        return new RvoDefined();
     }
 }

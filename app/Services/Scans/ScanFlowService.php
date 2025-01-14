@@ -413,7 +413,7 @@ class ScanFlowService
                     $visibleQuestions++;
 
                     $answer = $this->getAnswer($toolQuestion->short, false);
-                    if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
+                    if (! empty($answer) || is_numeric($answer)) {
                         $questionsWithAnswers++;
                     }
                 }

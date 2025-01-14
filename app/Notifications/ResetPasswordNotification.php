@@ -54,8 +54,6 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
      * Get the notification's channels.
      *
      * @param mixed $notifiable
-     *
-     * @return array|string
      */
     public function via($notifiable): array
     {

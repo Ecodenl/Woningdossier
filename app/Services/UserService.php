@@ -221,13 +221,8 @@ class UserService
 
     /**
      * Method to create a new user with all necessary actions to make the tool work.
-     *
-     * @param $account
-     * @param $data
-     *
-     * @return User|\Illuminate\Database\Eloquent\Model
      */
-    public static function create(Cooperation $cooperation, array $roles, $account, $data)
+    public static function create(Cooperation $cooperation, array $roles, Account $account, array $data): User
     {
         if (! ($user = $account->users()->forMyCooperation($cooperation->id)->first()) instanceof User) {
             // Create the user for an account

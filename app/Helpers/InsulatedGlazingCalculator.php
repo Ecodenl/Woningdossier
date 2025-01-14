@@ -14,6 +14,7 @@ use App\Models\PaintworkStatus;
 use App\Models\UserEnergyHabit;
 use App\Models\WoodRotStatus;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class InsulatedGlazingCalculator
 {
@@ -110,8 +111,10 @@ class InsulatedGlazingCalculator
         return $year;
     }
 
-    protected static function debug($line)
+    protected static function debug(string $line): void
     {
-        // \Log::debug($line);
+        if (config('hoomdossier.services.enable_calculation_logging')) {
+            Log::channel('calculations')->debug($line);
+        }
     }
 }

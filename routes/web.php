@@ -91,7 +91,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::post('reset-dossier', [Cooperation\MyAccount\SettingsController::class, 'resetFile'])->name('reset-file');
                 });
 
-                Route::resource('hoom-settings', Cooperation\MyAccount\HoomSettingsController::class);
+                Route::resource('hoom-settings', Cooperation\MyAccount\HoomSettingsController::class)
+                    ->only('update');
 
                 Route::resource('notification-settings', Cooperation\MyAccount\NotificationSettingsController::class)->only([
                     'index', 'show', 'update',

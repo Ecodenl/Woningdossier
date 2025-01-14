@@ -164,7 +164,7 @@ class EnergyLabelService
     /**
      * Normalize the zipcode so it works with the EP API.
      */
-    private function getNormalizedZipcode(): ?string
+    private function getNormalizedZipcode(): string
     {
         $zipcode = $this->building->postal_code;
         preg_match('/^(\d{4})\s?([a-zA-Z]{2})$/', $zipcode, $matches);
@@ -176,7 +176,7 @@ class EnergyLabelService
         return '';
     }
 
-    private function log(string $message, array $data = [])
+    private function log(string $message, array $data = []): void
     {
         if (config('hoomdossier.services.enable_logging')) {
             Log::debug($message, $data);

@@ -7,6 +7,8 @@ use App\Events\UserChangedHisEmailEvent;
 use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\MyAccount\HoomSettingsRequest;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
 
 class HoomSettingsController extends Controller
 {
@@ -22,20 +24,21 @@ class HoomSettingsController extends Controller
 
         $accountData = $data['account'];
 
-        // hash the password
-        $accountData['password'] = \Hash::make($accountData['password']);
+        // Hash the password
+        $accountData['password'] = Hash::make($accountData['password']);
 
-        // if the password from the request is empty, we unset all password key values from the array.
+        // If the password from the request is empty, we unset all password key values from the array.
         if (empty($request->input('account.password'))) {
             unset($accountData['password'], $accountData['password_confirmation'], $accountData['current_password']);
         }
 
-        // check if the user changed his email, if so. We set the old email and send the user a email so he can change it back.
+        // Check if the user changed his email. If so, we set the old email
+        // and send the user an email so he can change it back.
         if ($account->email != $accountData['email']) {
-            \Event::dispatch(new UserChangedHisEmailEvent($user, $account, $account->email, $accountData['email']));
+            Event::dispatch(new UserChangedHisEmailEvent($user, $account, $account->email, $accountData['email']));
         }
 
-        // update the account data
+        // Update the account data
         $account->update($accountData);
 
         return redirect()->route('cooperation.my-account.index')

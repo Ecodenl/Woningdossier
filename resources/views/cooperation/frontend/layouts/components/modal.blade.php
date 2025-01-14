@@ -8,7 +8,7 @@
      x-transition:leave="ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
 >
     <div class="modal {{$class ?? ''}}" style="{{ $style ?? '' }}" x-ref="modal"
-         x-on:click.outside="if (! document.activeElement.closest('.tox-dialog')) { close(); }">
+         x-on:click.outside="if (! $event.target.closest('#tiptap-link-modal') || $el.closest('#tiptap-link-modal')) { close(); }">
         <div class="modal-header">
             <i class="icon-sm icon-info mr-3"></i>
             <h6 class="heading-6">

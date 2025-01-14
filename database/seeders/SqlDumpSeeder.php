@@ -11,6 +11,7 @@ class SqlDumpSeeder extends Seeder
      */
     public function run(): void
     {
+        // TODO: Deprecate this!
         $db = config('database.connections.'.config('database.default'));
 
         $sqlFiles = [

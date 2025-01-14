@@ -10,7 +10,7 @@ class BuildingStatusService
 {
     use HasBuilding;
 
-    private function resolveStatusModel($status)
+    private function resolveStatusModel(string|Status $status): Status
     {
         $statusModel = null;
 
@@ -30,7 +30,7 @@ class BuildingStatusService
      *
      * @param  string|Status  $status
      */
-    public function setStatus($status): void
+    public function setStatus(string|Status $status): void
     {
         $statusModel = $this->resolveStatusModel($status);
 

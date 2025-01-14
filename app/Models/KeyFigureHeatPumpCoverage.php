@@ -30,11 +30,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureHeatPumpCoverage extends Model
 {
-
     public function scopeForHeatingTemperature(
         Builder $query,
         ToolQuestionCustomValue $heatingTemperature
-    )
+    ): Builder
     {
         return $this->scopeForToolQuestionCustomValue(
             $query,
@@ -45,7 +44,7 @@ class KeyFigureHeatPumpCoverage extends Model
     public function scopeForToolQuestionCustomValue(
         Builder $query,
         ToolQuestionCustomValue $toolQuestionCustomValue
-    )
+    ): Builder
     {
         return $query->where(
             'tool_question_custom_value_id',
@@ -54,7 +53,7 @@ class KeyFigureHeatPumpCoverage extends Model
         );
     }
 
-    public function scopeForBetaFactor(Builder $query, $betafactor)
+    public function scopeForBetaFactor(Builder $query, $betafactor): Builder
     {
         $round = floor($betafactor * 10) / 10;
 

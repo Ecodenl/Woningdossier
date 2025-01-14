@@ -11,20 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cooperations', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('slug');
-            $table->string('cooperation_email')->nullable();
-            $table->string('website_url')->nullable();
-            $table->string('econobis_wildcard')->nullable();
-            $table->longText('econobis_api_key')->nullable();
-            $table->timestamps();
-        });
+        // Necessary due to renaming! If deployed, remove wrapper again
+        if (! Schema::hasTable('cooperations')) {
+            Schema::create('cooperations', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('slug');
+                $table->string('cooperation_email')->nullable();
+                $table->string('website_url')->nullable();
+                $table->string('econobis_wildcard')->nullable();
+                $table->longText('econobis_api_key')->nullable();
+                $table->timestamps();
+            });
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
-        });
+            Schema::table('users', function (Blueprint $table) {
+                $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
+            });
+        }
     }
 
     /**

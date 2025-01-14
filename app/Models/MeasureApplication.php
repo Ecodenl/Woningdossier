@@ -77,8 +77,8 @@ class MeasureApplication extends Model
         HasShortTrait,
         HasMappings;
 
-    const ENERGY_SAVING = 'energy_saving';
-    const MAINTENANCE = 'maintenance';
+    const string ENERGY_SAVING = 'energy_saving';
+    const string MAINTENANCE = 'maintenance';
 
     protected $translatable = [
         'measure_name', 'measure_info', 'cost_unit', 'maintenance_unit',
@@ -123,12 +123,12 @@ class MeasureApplication extends Model
     # Attributes
     public function getNameAttribute(): string
     {
-        return $this->measure_name;
+        return $this->getTranslation('measure_name', 'nl');
     }
 
     public function getInfoAttribute(): string
     {
-        return $this->measure_info;
+        return $this->getTranslation('measure_info', 'nl');
     }
 
     # Scopes
@@ -152,14 +152,5 @@ class MeasureApplication extends Model
             UserActionPlanAdvice::class,
             'user_action_plan_advisable'
         )->withoutGlobalScope(VisibleScope::class);
-    }
-
-    /**
-     * Returns all the interest levels given for the interest.
-     */
-    public function interests(): MorphToMany
-    {
-        return $this->morphToMany(Interest::class, 'interested_in', 'user_interests');
-//        return $this->morphed(Interest::class, 'interested_in', 'user_interests');
     }
 }

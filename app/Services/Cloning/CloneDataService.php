@@ -33,13 +33,12 @@ class CloneDataService
         'completed_steps',
         'completed_sub_steps',
         'considerables',
-            // the CMA must run before the user_action_plan_advices, this is KEY!
+        // the CMA must run before the user_action_plan_advices, this is KEY!
         'custom_measure_applications',
         'questions_answers',
         'tool_question_answers',
         'user_action_plan_advices',
         'user_energy_habits',
-
     ];
 
     public function __construct(Building $building, InputSource $inputSource, InputSource $cloneableInputSource)
@@ -49,7 +48,7 @@ class CloneDataService
         $this->cloneableInputSource = $cloneableInputSource;
     }
 
-    public function clone()
+    public function clone(): void
     {
         // the building feature is set upon registry, so we will delete it before we clone it to prevent duplicate results
         Log::debug("Removing building features before cloning for building {$this->building->id} input source {$this->inputSource->short}");

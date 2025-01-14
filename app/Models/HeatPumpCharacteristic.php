@@ -42,13 +42,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class HeatPumpCharacteristic extends Model
 {
-    const TYPE_HYBRID = 'hybrid';
-    const TYPE_FULL = 'full';
+    const string TYPE_HYBRID = 'hybrid';
+    const string TYPE_FULL = 'full';
 
     public function scopeForHeatingTemperature(
         Builder $query,
         ToolQuestionCustomValue $heatingTemperature
-    )
+    ): Builder
     {
         return $this->scopeForToolQuestionCustomValue(
             $query,
@@ -59,7 +59,7 @@ class HeatPumpCharacteristic extends Model
     public function scopeForToolQuestionCustomValue(
         Builder $query,
         ToolQuestionCustomValue $toolQuestionCustomValue
-    )
+    ): Builder
     {
         return $query->where(
             'tool_question_custom_value_id',
@@ -71,7 +71,7 @@ class HeatPumpCharacteristic extends Model
     public function scopeForHeatPumpConfigurable(
         Builder $query,
         Model $configurable
-    )
+    ): Builder
     {
         return $query->where(
             'heat_pump_configurable_type',

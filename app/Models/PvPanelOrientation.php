@@ -34,9 +34,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PvPanelOrientation extends Model
 {
-    use HasFactory;
-
-    use HasTranslations;
+    use HasFactory,
+        HasTranslations;
 
     protected $translatable = [
         'name',

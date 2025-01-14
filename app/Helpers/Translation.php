@@ -2,16 +2,12 @@
 
 namespace App\Helpers;
 
-use Ramsey\Uuid\Uuid;
-
 class Translation
 {
     /**
      * Get a translation using the default function.
-     *
-     * @return array|mixed|string|null
      */
-    public static function translate(string $translationString, array $replaceArray = [])
+    public static function translate(string $translationString, array $replaceArray = []): string
     {
         return __($translationString, $replaceArray);
     }

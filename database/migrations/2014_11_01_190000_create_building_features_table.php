@@ -23,11 +23,6 @@ return new class extends Migration
             $table->unsignedInteger('example_building_id')->nullable();
             $table->foreign('example_building_id')->references('id')->on('example_buildings')->onDelete('set null');
 
-            // NOTE: Building heating applications table gets created later, so foreign is added on
-            // the '2019_10_30_132046_create_building_heating_applications_table' migration.
-            $table->integer('building_heating_application_id')->unsigned()->nullable();
-            //$table->foreign('building_heating_application_id')->references('id')->on('building_heating_applications')->onDelete('cascade');
-
             $table->integer('building_category_id')->unsigned()->nullable();
             $table->foreign('building_category_id')->references('id')->on('building_categories')->onDelete('restrict');
 

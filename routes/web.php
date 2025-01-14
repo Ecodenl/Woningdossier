@@ -296,7 +296,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::post('message', [Cooperation\Admin\MessagesController::class, 'sendMessage'])->name('send-message');
 
-                    Route::resource('building-notes', Cooperation\Admin\BuildingNoteController::class)->only('store');
+                    Route::resource('building-notes', Cooperation\Admin\BuildingNoteController::class)
+                        ->only('store');
 
                     Route::prefix('building-status')->name('building-status.')->group(function () {
                         Route::post('set-status', [Cooperation\Admin\BuildingStatusController::class, 'setStatus'])->name('set-status');

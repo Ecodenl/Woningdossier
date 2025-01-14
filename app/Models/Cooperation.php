@@ -135,11 +135,6 @@ class Cooperation extends Model implements MediableInterface
         return $this->hasMany(CooperationMeasureApplication::class);
     }
 
-    public function style(): HasOne
-    {
-        return $this->hasOne(CooperationStyle::class);
-    }
-
     public function questionnaires(): HasMany
     {
         return $this->hasMany(Questionnaire::class);

@@ -190,43 +190,6 @@ class User extends Model implements AuthorizableContract
         return $this->allow_access;
     }
 
-    /**
-     * Return the intermediary table of the interests.
-     */
-    public function userInterests(): HasMany
-    {
-        return $this->hasMany(UserInterest::class);
-    }
-
-    /**
-     * Scope like method because of relationships.
-     *
-     * @param $interestedInType
-     * @param $interestedInId
-     */
-    public function userInterestsForSpecificType($interestedInType, $interestedInId, InputSource $inputSource = null): HasMany
-    {
-        if ($inputSource instanceof InputSource) {
-            return $this->userInterests()
-                ->where('interested_in_type', $interestedInType)
-                ->where('interested_in_id', $interestedInId)
-                ->forInputSource($inputSource);
-        }
-
-        return $this->userInterests()
-            ->where('interested_in_type', $interestedInType)
-            ->where('interested_in_id', $interestedInId);
-    }
-
-
-    /**
-     * Return all the interest levels of a user.
-     */
-    public function interests(): HasManyThrough
-    {
-        return $this->hasManyThrough(Interest::class, UserInterest::class, 'user_id', 'id', 'id', 'interest_id');
-    }
-
     // ------ User -> Account table / model migration stuff -------
 
     public function getEmailAttribute()
@@ -320,11 +283,6 @@ class User extends Model implements AuthorizableContract
     public function buildingNotes(): HasMany
     {
         return $this->hasMany(BuildingNotes::class, 'coach_id', 'id');
-    }
-
-    public function motivations(): HasMany
-    {
-        return $this->hasMany(UserMotivation::class);
     }
 
     /**

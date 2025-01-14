@@ -28,8 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureInsulationFactor extends Model
 {
-
-    public function scopeForInsulationFactor(Builder $query, $factor)
+    public function scopeForInsulationFactor(Builder $query, $factor): Builder
     {
         $factor = number_format($factor, 2, '.', '');
 

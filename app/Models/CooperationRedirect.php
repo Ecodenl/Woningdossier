@@ -28,13 +28,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CooperationRedirect extends Model
 {
-
     public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class);
     }
 
-    public function scopeFrom(Builder $query, string $slug)
+    public function scopeFrom(Builder $query, string $slug): Builder
     {
         $slug = strtolower(strip_tags($slug));
 

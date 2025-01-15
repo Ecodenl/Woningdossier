@@ -31,7 +31,7 @@ class RegisterFormRequest extends ApiRequest
     /**
      * so fields can be modified or added before validation.
      */
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
         $this->cooperation = $this->route('cooperation');
 

@@ -5,6 +5,7 @@ namespace App\Livewire\Cooperation\Admin\SuperAdmin\Cooperations;
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
@@ -104,7 +105,7 @@ class Form extends Component
         }
     }
 
-    public function save(): Redirector
+    public function save(): Redirector|RedirectResponse
     {
         $validatedData = $this->validate();
         // just to be sure.

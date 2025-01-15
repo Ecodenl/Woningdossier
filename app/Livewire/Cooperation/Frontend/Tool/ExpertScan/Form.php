@@ -20,6 +20,7 @@ use App\Models\ToolQuestion;
 use App\Services\Models\SubStepService;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Collection;
@@ -184,7 +185,7 @@ class Form extends Scannable
         return $this->saveFilledInAnswers();
     }
 
-    public function saveFilledInAnswers(): Redirector
+    public function saveFilledInAnswers(): Redirector|RedirectResponse
     {
         if ($this->dirty) {
             $stepShortsToRecalculate = [];

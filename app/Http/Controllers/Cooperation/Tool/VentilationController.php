@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
 use App\Calculations\Ventilation;
@@ -23,11 +24,6 @@ use Illuminate\Http\Request;
 
 class VentilationController extends ToolController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function index(LegacyService $legacyService): View
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -58,12 +54,7 @@ class VentilationController extends ToolController
         ));
     }
 
-    /**
-     * Method to store the data from the ventilation form.
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function store(VentilationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
+    public function store(VentilationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;

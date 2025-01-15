@@ -33,8 +33,15 @@ class SolarPanelFormRequest extends FormRequest
 
         $rules = [
             $question => $hasSolarPanelsToolQuestion->validation,
-            'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
-            'building_pv_panels.peak_power' => ['required', 'numeric', Rule::in(KeyFigures::getPeakPowers())],
+            'considerables.*.is_considering' => [
+                'required',
+                Rule::in(array_keys(ConsiderableHelper::getConsiderableValues())),
+            ],
+            'building_pv_panels.peak_power' => [
+                'required',
+                'numeric',
+                Rule::in(KeyFigures::getPeakPowers()),
+            ],
             'building_pv_panels.number' => 'required|numeric|min:0',
             'building_services.*.extra.value' => [
                 'nullable',

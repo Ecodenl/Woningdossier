@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Traits\GetMyValuesTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -19,24 +20,24 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $inputSource
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView forBuilding(\App\Models\Building|int $building)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView forCurrentInputSource()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView forMe(?\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView forUser(\App\Models\User|int $user)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView wherePrivateMessageId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereReadAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereToCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivateMessageView whereUserId($value)
+ * @method static Builder<static>|PrivateMessageView allInputSources()
+ * @method static Builder<static>|PrivateMessageView forBuilding(\App\Models\Building|int $building)
+ * @method static Builder<static>|PrivateMessageView forCurrentInputSource()
+ * @method static Builder<static>|PrivateMessageView forInputSource(\App\Models\InputSource $inputSource)
+ * @method static Builder<static>|PrivateMessageView forMe(?\App\Models\User $user = null)
+ * @method static Builder<static>|PrivateMessageView forUser(\App\Models\User|int $user)
+ * @method static Builder<static>|PrivateMessageView newModelQuery()
+ * @method static Builder<static>|PrivateMessageView newQuery()
+ * @method static Builder<static>|PrivateMessageView query()
+ * @method static Builder<static>|PrivateMessageView residentInput()
+ * @method static Builder<static>|PrivateMessageView whereCreatedAt($value)
+ * @method static Builder<static>|PrivateMessageView whereId($value)
+ * @method static Builder<static>|PrivateMessageView whereInputSourceId($value)
+ * @method static Builder<static>|PrivateMessageView wherePrivateMessageId($value)
+ * @method static Builder<static>|PrivateMessageView whereReadAt($value)
+ * @method static Builder<static>|PrivateMessageView whereToCooperationId($value)
+ * @method static Builder<static>|PrivateMessageView whereUpdatedAt($value)
+ * @method static Builder<static>|PrivateMessageView whereUserId($value)
  * @mixin \Eloquent
  */
 class PrivateMessageView extends Model
@@ -59,16 +60,20 @@ class PrivateMessageView extends Model
      *
      * @param  $specificDate
      */
-    public static function getTotalUnreadMessagesForUserAndCooperationAfterSpecificDate(User $user, Cooperation $cooperation, $specificDate): int
+    public static function getTotalUnreadMessagesForUserAndCooperationAfterSpecificDate(
+        User $user,
+        Cooperation $cooperation,
+        $specificDate
+    ): int
     {
         $cooperationUnreadMessagesCount = 0;
 
         // if the user has the role coordinator or cooperation-admin get them as well
         if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
             $cooperationUnreadMessagesCount = self::where('to_cooperation_id', $cooperation->id)
-                                                  ->where('created_at', '>=', $specificDate)
-                                                  ->where('read_at', null)
-                                                  ->count();
+                ->where('created_at', '>=', $specificDate)
+                ->where('read_at', null)
+                ->count();
         }
 
         // get the unread messages for the user itself within its given cooperation after a given date.
@@ -76,13 +81,11 @@ class PrivateMessageView extends Model
             ->where('private_message_views.user_id', $user->id)
             ->where('read_at', null)
             ->where('private_message_views.created_at', '>=', $specificDate)
-            ->join('private_messages', function ($query) use ($cooperation) {
+            ->join('private_messages', function ($query) {
                 $query->on('private_message_views.private_message_id', '=', 'private_messages.id');
             })->count();
 
-        $totalUnreadMessagesCount = $userUnreadMessages + $cooperationUnreadMessagesCount;
-
-        return $totalUnreadMessagesCount;
+        return $userUnreadMessages + $cooperationUnreadMessagesCount;
     }
 
     /**
@@ -90,13 +93,10 @@ class PrivateMessageView extends Model
      *
      * Normally we would use the GetValueTrait which applies the global GetValueScope.
      *
-     * BUT: the input_source_id will sometimes be empty (coordinator and cooperation-admin), so we cant use the global scope.
-     *
-     * @param $query
-     *
-     * @return mixed
+     * BUT: the input_source_id will sometimes be empty (coordinator and cooperation-admin), so we
+     * can't use the global scope.
      */
-    public function scopeForCurrentInputSource($query)
+    public function scopeForCurrentInputSource(Builder $query): Builder
     {
         return $query->where('input_source_id', HoomdossierSession::getInputSourceValue());
     }

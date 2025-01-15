@@ -101,7 +101,7 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * so fields can be modified or added before validation.
      */
-    private function prepareForValidation()
+    private function prepareForValidation(): void
     {
         // Add new data field before it gets sent to the validator
         $this->set([

@@ -24,16 +24,6 @@ class RunDeploy extends Command
     It also MUST contain atomic code to prevent problems in case this command isn\'t cleared for a new deployment.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): int
@@ -50,6 +40,8 @@ class RunDeploy extends Command
         ];
 
         foreach ($commands as $command => $variants) {
+            // Ignore the error since it only triggers if the $commands currently hold no non-variant based commands.
+            /** @phpstan-ignore empty.variable */
             if (empty($variants)) {
                 $this->call($command);
             }

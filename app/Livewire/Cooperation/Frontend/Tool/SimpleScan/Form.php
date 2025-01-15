@@ -8,7 +8,6 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Helpers\ToolQuestionHelper;
 use App\Livewire\Cooperation\Frontend\Tool\Scannable;
-use App\Models\CompletedSubStep;
 use App\Helpers\Hoomdossier;
 use App\Models\Scan;
 use App\Models\Step;
@@ -18,6 +17,7 @@ use App\Services\Models\BuildingService;
 use App\Services\Models\SubStepService;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
@@ -63,7 +63,7 @@ class Form extends Scannable
         return $this->subStep->toolQuestions;
     }
 
-    public function save(): Redirector
+    public function save(): Redirector|RedirectResponse
     {
         $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
             ->forStep($this->step)

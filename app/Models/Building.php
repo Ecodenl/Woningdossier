@@ -172,12 +172,12 @@ class Building extends Model implements MediableInterface
     }
 
     // Unsorted
-    public function getAnswerForAllInputSources(ToolQuestion $toolQuestion, bool $withMaster = false)
+    public function getAnswerForAllInputSources(ToolQuestion $toolQuestion, bool $withMaster = false): array
     {
         // TODO: See if and how we can reduce query calls here
         $inputSources = InputSource::all();
 
-        $answers = null;
+        $answers = [];
         $where = [];
 
         if (! $withMaster) {
@@ -258,7 +258,7 @@ class Building extends Model implements MediableInterface
                 ->get();
 
             foreach ($toolQuestionAnswers as $index => $toolQuestionAnswer) {
-                $answer = $toolQuestionAnswer->toolQuestionCustomValue?->name ?? $toolQuestionAnswer->answer;
+                $answer = $toolQuestionAnswer->toolQuestionCustomValue->name ?? $toolQuestionAnswer->answer;
                 $answers[$toolQuestionAnswer->inputSource->short][$index] = [
                     'answer' => $answer,
                     'value' => $toolQuestionAnswer->toolQuestionCustomValue->short ?? $answer,
@@ -267,8 +267,8 @@ class Building extends Model implements MediableInterface
         }
 
         // As last step, we want to clean up empty values
-        foreach (($answers ?? []) as $short => $answer) {
-            if (empty($answer) || (is_array($answer) && Arr::isWholeArrayEmpty($answer))) {
+        foreach ($answers as $short => $answer) {
+            if (Arr::isWholeArrayEmpty($answer)) {
                 unset($answers[$short]);
             }
         }
@@ -409,18 +409,6 @@ class Building extends Model implements MediableInterface
             ->where('step_id', $step->id)->count() > 0;
     }
 
-    /**
-     * Check if all quick scan steps have been completed
-     *
-     * @deprecated
-     * @depends-annotations(use hasCompletedScan instead)
-     */
-    public function hasCompletedQuickScan(InputSource $inputSource): bool
-    {
-        $scan = Scan::findByShort('quick-scan');
-        return $this->hasCompletedScan($scan, $inputSource);
-    }
-
     public function hasNotCompletedScan(Scan $scan, InputSource $inputSource): bool
     {
         return ! $this->hasCompletedScan($scan, $inputSource);
@@ -512,10 +500,7 @@ class Building extends Model implements MediableInterface
         return $this->hasMany(BuildingVentilation::class);
     }
 
-    /**
-     * @param $short
-     */
-    public function getBuildingElement($short, InputSource $inputSource = null): ?BuildingElement
+    public function getBuildingElement(string $short, InputSource $inputSource = null): ?BuildingElement
     {
         if ($inputSource instanceof InputSource) {
             return $this->buildingElements()
@@ -531,6 +516,7 @@ class Building extends Model implements MediableInterface
                 );
         }
 
+        /** @var null|BuildingElement */
         return $this->buildingElements()
             ->leftJoin(
                 'elements as e',
@@ -688,6 +674,7 @@ class Building extends Model implements MediableInterface
             ->forBuilding($this)
             ->pluck('step_id');
 
+        /** @var null|Step */
         return $scan
             ->steps()
             ->whereNotIn('id', $completedStepIds)
@@ -734,6 +721,7 @@ class Building extends Model implements MediableInterface
                 ->first();
         }
 
+        /** @var null|\App\Models\SubStep $firstIncompleteSubStep */
         return $firstIncompleteSubStep;
     }
 }

@@ -20,9 +20,12 @@ class NavbarComposer
 
     public function create(View $view): void
     {
+        /** @var \App\Models\Cooperation $cooperation */
+        $cooperation = $this->request->route('cooperation');
+
         $view->with(
             'scans',
-            $this->request->route('cooperation')->scans()->where('short', '!=', Scan::EXPERT)->get()
+            $cooperation->scans()->where('short', '!=', Scan::EXPERT)->get()
         );
     }
 }

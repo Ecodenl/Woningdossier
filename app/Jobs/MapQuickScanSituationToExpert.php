@@ -222,17 +222,18 @@ class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
         $this->saveAnswer(ToolQuestion::findByShort('heat-pump-preferred-power'), $results['advised_system']['desired_power']);
     }
 
-    protected function evaluateClause(array $clause, $answer): bool
+    protected function evaluateClause(array $clause, mixed $answer): bool
     {
         // TODO: If this expands drastically, we will want to use the ConditionEvaluator instead
         // For now we use a simple shell variant
 
-        extract($clause);
-        /**
-         * @var $value
-         * @var string $operator
-         * @var $result
-         */
+        //extract($clause);
+        /** @var string $column */
+        $column = $clause['column'];
+        /** @var string $operator */
+        $operator = $clause['operator'] ?? '';
+        /** @var mixed $value */
+        $value = $clause['value'] ?? null;
 
         switch ($operator) {
             case Clause::GT:

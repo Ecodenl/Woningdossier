@@ -4,6 +4,7 @@ namespace App\Http\Requests\Cooperation\Admin;
 
 use App\Http\Requests\AddressFormRequest;
 use App\Models\Account;
+use App\Models\Cooperation;
 use App\Models\User;
 use App\Rules\PhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
@@ -13,17 +14,16 @@ use Illuminate\Validation\Validator;
 
 class BuildingFormRequest extends FormRequest
 {
-    /**
-     * @var Account
-     */
-    private $account = null;
-    private $user = null;
-    private $cooperation = null;
+    private ?Account $account = null;
+    private ?User $user = null;
+    private ?Cooperation $cooperation = null;
 
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
-        $this->account = $this->route('building')->user->account;
-        $this->user = $this->route('building')->user;
+        /** @var \App\Models\Building $building */
+        $building = $this->route('building');
+        $this->account = $building->user->account;
+        $this->user = $building->user;
         $this->cooperation = $this->route('cooperation');
     }
 

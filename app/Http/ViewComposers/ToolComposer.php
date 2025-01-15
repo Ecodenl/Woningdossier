@@ -13,13 +13,13 @@ use Illuminate\View\View;
 
 class ToolComposer
 {
-    private ?Cooperation $cooperation;
-    private ?User $currentUser;
-    private ?array $commentsByStep;
-    private ?Step $currentStep;
-    private ?Step $currentSubStep;
-    private ?Building $currentBuilding;
-    private ?User $buildingOwner;
+    private ?Cooperation $cooperation = null;
+    private ?User $currentUser = null;
+    private ?array $commentsByStep = null;
+    private ?Step $currentStep = null;
+    private ?Step $currentSubStep = null;
+    private ?Building $currentBuilding = null;
+    private ?User $buildingOwner = null;
 
     public function create(View $view): void
     {

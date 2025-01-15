@@ -40,8 +40,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class QuestionsAnswer extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
+    use GetValueTrait,
+        GetMyValuesTrait;
     
 
     protected $fillable = [

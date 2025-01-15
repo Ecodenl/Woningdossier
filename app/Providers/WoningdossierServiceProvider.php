@@ -33,7 +33,6 @@ use App\Models\ToolQuestionAnswer;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Validation\Rule;
 
 class WoningdossierServiceProvider extends ServiceProvider
 {
@@ -60,13 +59,6 @@ class WoningdossierServiceProvider extends ServiceProvider
         SessionGuard::macro('account', function () {
             return auth()->user();
         });
-
-        // new laravel versions have a requiredIf method in which we can pass a condition closure etc.
-        // https://github.com/laravel/framework/blob/5.8/src/Illuminate/Validation/Rules/RequiredIf.php
-        // for now just easy true false.
-        Rule::macro('requiredIf', function ($shouldPass) {
-            return $shouldPass ? 'required' : '';
-        });
     }
 
     /**
@@ -82,18 +74,6 @@ class WoningdossierServiceProvider extends ServiceProvider
             }
 
             return $cooperation;
-        });
-
-        $this->app->bind('CooperationStyle', function () {
-            $cooperationStyle = null;
-            if (Session::has('cooperation')) {
-                // we know this as we've cached it earlier
-                $c = Session::get('cooperation');
-
-                $cooperationStyle = \App\Helpers\Cache\Cooperation::getStyle($c);
-            }
-
-            return $cooperationStyle;
         });
     }
 }

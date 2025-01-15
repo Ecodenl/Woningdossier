@@ -20,8 +20,10 @@ class NavbarComposer
 
     public function create(View $view): void
     {
+        /** @var \App\Models\Cooperation $cooperation */
         $cooperation = $this->request->route('cooperation');
         // Load the first available scan if it's not in the current route (think of my account)
+        /** @var Scan $scan */
         $scan = $this->request->route('scan', $cooperation->scans()->where('short', '!=', Scan::EXPERT)->first());
         $scan->load(['steps.subSteps']);
 

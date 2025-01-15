@@ -7,7 +7,10 @@ use App\Models\CooperationPreset;
 use App\Models\CooperationPresetContent;
 use App\Models\MeasureCategory;
 use App\Rules\LanguageRequired;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Collection;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class Form extends Component
@@ -59,11 +62,7 @@ class Form extends Component
         ];
     }
 
-    protected $listeners = [
-        'fieldUpdate',
-    ];
-
-    public function mount(?CooperationPresetContent $cooperationPresetContent = null)
+    public function mount(?CooperationPresetContent $cooperationPresetContent = null): void
     {
         // Normally we can let Livewire set the model for us, however, on create we don't have one. Yet, by casting
         // a model as null, we get a fresh model object, on which we can call things such as ->exists.
@@ -77,24 +76,12 @@ class Form extends Component
         $this->measures = MeasureCategory::all();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.cooperation.admin.super-admin.cooperation-presets.cooperation-preset-contents.cooperation-measure-applications.form');
     }
 
-    public function fieldUpdate($field, $value)
-    {
-        $prop = $this->beforeFirstDot($field);
-
-        if ($this->containsDots($field)) {
-            $key = $this->afterFirstDot($field);
-            data_set($this->{$prop}, $key, $value);
-        } else {
-            $this->{$prop} = $value;
-        }
-    }
-
-    public function save()
+    public function save(): Redirector|RedirectResponse
     {
         $content = $this->validate()['content'];
         $content['is_deletable'] = ! $content['is_extensive_measure'];

@@ -77,7 +77,7 @@ class VentilationHelper extends ToolHelper
 
     public function createValues(): ToolHelper
     {
-        /** @var BuildingVentilation $buildingVentilation */
+        /** @var BuildingVentilation|null $buildingVentilation */
         $buildingVentilation = $this
             ->building
             ->buildingVentilations()

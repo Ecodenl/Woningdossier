@@ -20,7 +20,7 @@ class MeasureApplicationFormRequest extends FormRequest
         return Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin');
     }
 
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
         $this->measureApplication = $this->route('measureApplication');
     }

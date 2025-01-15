@@ -26,7 +26,7 @@ class InsulatedGlazingFormRequest extends FormRequest
         return Auth::check();
     }
 
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
         $this->decimals([
             'building_insulated_glazings' => 'm2',
@@ -37,7 +37,6 @@ class InsulatedGlazingFormRequest extends FormRequest
     public function rules(LegacyService $legacyService): array
     {
         $max = Carbon::now()->year;
-        /** @var Collection $noInterests */
 
         $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('insulated-glazing'));
 

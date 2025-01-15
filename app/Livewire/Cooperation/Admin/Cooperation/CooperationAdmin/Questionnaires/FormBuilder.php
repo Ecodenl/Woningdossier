@@ -9,6 +9,8 @@ use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
 use App\Rules\LanguageRequired;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\Features\SupportRedirects\Redirector;
 
@@ -204,7 +206,7 @@ class FormBuilder extends Component
         });
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.cooperation.admin.cooperation.cooperation-admin.questionnaires.form-builder');
     }
@@ -336,7 +338,7 @@ class FormBuilder extends Component
         $this->questions = $questions;
     }
 
-    public function save(): Redirector
+    public function save(): Redirector|RedirectResponse
     {
         $this->validate();
 

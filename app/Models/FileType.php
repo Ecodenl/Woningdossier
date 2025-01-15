@@ -48,11 +48,6 @@ class FileType extends Model
         'name',
     ];
 
-    /**
-     * Attributes that should be casted to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'duration' => 'datetime',
     ];

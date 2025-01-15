@@ -21,10 +21,12 @@ class ChecksConditionsForSubSteps
     {
         $building = HoomdossierSession::getBuilding(true);
 
+        /** @var \App\Models\Scan $scan */
         $scan = $request->route('scan');
+        /** @var \App\Models\Step $step */
+        $step = $request->route('step');
         /** @var SubStep $subStep */
         $subStep = $request->route('subStep');
-        $step = $request->route('step');
 
         $returnToNextStep = $request->user()->cannot('show', [$subStep, $building]);
 

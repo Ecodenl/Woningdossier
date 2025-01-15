@@ -252,7 +252,7 @@ class HoomdossierSession extends Session
     public static function getBuilding(bool $hydrate = false): null|int|Building
     {
         $building = self::getHoomdossierSession('building_id');
-        if ($hydrate) {
+        if ($hydrate && ! empty($building)) {
             $building = \App\Helpers\Cache\Building::find($building);
         }
 

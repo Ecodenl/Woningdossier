@@ -216,7 +216,7 @@ class InsulatedGlazingHelper extends ToolHelper
         $buildingElementsArray = [];
 
         $buildingWoodElement = $buildingElements->where('element_id', $woodElements->id)->pluck('element_value_id')->toArray();
-        $buildingElementsArray[$woodElements->id] = array_combine($buildingWoodElement, $buildingWoodElement) ?? null;
+        $buildingElementsArray[$woodElements->id] = array_combine($buildingWoodElement, $buildingWoodElement);
 
         $buildingFrameElement = $buildingElements->where('element_id', $frames->id)->first();
         $buildingElementsArray[$frames->id] = $buildingFrameElement->element_value_id ?? null;

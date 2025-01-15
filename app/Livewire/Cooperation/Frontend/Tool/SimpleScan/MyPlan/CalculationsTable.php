@@ -31,8 +31,6 @@ class CalculationsTable extends Component
     public InputSource $masterInputSource;
     private KengetallenService $kengetallenService;
 
-    private array $fixedData = [];
-
     private array $toolQuestionShorts = [
         'gas-price-euro',
         'electricity-price-euro',

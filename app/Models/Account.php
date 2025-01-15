@@ -60,11 +60,6 @@ class Account extends Authenticatable implements MustVerifyEmail
     protected $fillable = ['email', 'password', 'email_verified_at', 'old_email', 'old_email_token',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];

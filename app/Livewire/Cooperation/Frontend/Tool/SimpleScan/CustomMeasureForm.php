@@ -145,7 +145,6 @@ abstract class CustomMeasureForm extends Component
             // If a hash and ID are set, then a measure has been edited
             if (! is_null($measure['hash']) && ! is_null($measure['id'])) {
                 // ID is set for master input source, so we fetch the master input source custom measure
-                /** @var CustomMeasureApplication $customMeasureApplication */
                 $masterCustomMeasureApplication = CustomMeasureApplication::forInputSource($this->masterInputSource)
                     ->where('hash', $measure['hash'])
                     ->where('id', $measure['id'])
@@ -183,8 +182,10 @@ abstract class CustomMeasureForm extends Component
                     ->allInputSources()->max('order') ?? -1) + 1;
             }
 
-            // The default "voeg onderdeel toe" also holds data, but the name will be empty. So when name empty; do not save
-            if (isset($customMeasureApplication) && $customMeasureApplication instanceof CustomMeasureApplication) {
+            // The default "voeg onderdeel toe" also holds data, but the name will be empty.
+            // So when name empty; do not save.
+            // We don't have to check instanceof, since if it's set, it's guaranteed a model.
+            if (isset($customMeasureApplication)) {
                 // !important! this has to be done before the userActionPlanAdvice relation is made
                 // otherwise the observer will fire when the mapping hasnt been done yet.
 

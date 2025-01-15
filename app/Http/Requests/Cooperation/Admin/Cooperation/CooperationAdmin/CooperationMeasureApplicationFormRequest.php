@@ -22,7 +22,7 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
         return Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole('cooperation-admin');
     }
 
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
         // On create, we have a type. On update we have a model.
         $this->isExtensive = ($measure = $this->route('cooperationMeasureApplication')) instanceof CooperationMeasureApplication ? $measure->is_extensive_measure : $this->route('type') === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;

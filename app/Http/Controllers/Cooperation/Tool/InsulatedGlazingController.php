@@ -32,16 +32,8 @@ use Illuminate\Support\Str as SupportStr;
 
 class InsulatedGlazingController extends ToolController
 {
-    /**
-     * Display a listing of the resources.
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function index(LegacyService $legacyService): View
     {
-        /**
-         * @var Building
-         */
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
@@ -69,6 +61,7 @@ class InsulatedGlazingController extends ToolController
             'glass-in-lead',
         ];
 
+        $measureApplications = [];
         foreach ($measureApplicationShorts as $measureApplicationShort) {
             $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 

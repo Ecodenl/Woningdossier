@@ -82,15 +82,15 @@ class SubStep extends Model
         ];
     }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         $locale = App::getLocale();
         return "slug->{$locale}";
     }
 
-    public function getRouteKey()
+    public function getRouteKey(): string
     {
-        return $this->slug;
+        return $this->getTranslation('slug', App::getLocale());
     }
 
     // Scopes

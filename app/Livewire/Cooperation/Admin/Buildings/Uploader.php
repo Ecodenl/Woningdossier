@@ -35,6 +35,7 @@ class Uploader extends Component
         $this->tag = $tag;
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
+        /** @phpstan-ignore assign.propertyType */
         $this->image = $building->firstMedia($tag);
     }
 
@@ -79,6 +80,7 @@ class Uploader extends Component
                 ->upload();
 
             $this->building->syncMedia($media, $this->tag);
+            /** @phpstan-ignore assign.propertyType */
             $this->image = $media;
         } else {
             $this->addError(

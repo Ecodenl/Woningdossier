@@ -58,9 +58,6 @@ class ExampleBuilding extends Model
         'name', 'building_type_id', 'cooperation_id', 'order', 'is_default',
     ];
 
-    /**
-     * The "booting" method of the model.
-     */
     protected static function boot(): void
     {
         parent::boot();
@@ -98,10 +95,7 @@ class ExampleBuilding extends Model
         return $this->belongsTo(Cooperation::class);
     }
 
-    /**
-     * @param $year
-     */
-    public function getContentForYear($year): ?ExampleBuildingContent
+    public function getContentForYear(int $year): ?ExampleBuildingContent
     {
         $content = $this->contents()
             ->where('build_year', '<=', $year)
@@ -112,6 +106,7 @@ class ExampleBuilding extends Model
             return $content;
         }
 
+        /** @var ExampleBuildingContent|null */
         return $this->contents()
             ->whereNull('build_year')
             ->first();

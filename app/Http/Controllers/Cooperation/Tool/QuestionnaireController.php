@@ -28,8 +28,9 @@ class QuestionnaireController extends Controller
         $questionnaire = Questionnaire::find($request->input('questionnaire_id'));
 
         if (is_array($questions) && ! empty($questions)) {
-            // the question answer can be a string or int.
-            // it does not matter how we save it. Later when retrieving the answers we determine how we should show them based on the question type
+            // The question answer can be a string or an integer.
+            // It does not matter how we save it. Later when retrieving the answers we
+            // determine how we should show them based on the question type.
             foreach ($questions as $questionId => $questionAnswer) {
                 // this will only be a array if the user can select multiple answers for one question.
                 // in the current state this will only be applied for a checkbox.

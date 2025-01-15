@@ -24,11 +24,6 @@ use App\Services\ToolQuestionService;
 
 class FloorInsulationController extends ToolController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function index(LegacyService $legacyService): View
     {
         $typeIds = [4];
@@ -97,9 +92,6 @@ class FloorInsulationController extends ToolController
         return response()->json($result);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(FloorInsulationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);

@@ -15,7 +15,7 @@ class BuildingNoteRequest extends FormRequest
         return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'coordinator', 'cooperation-admin']);
     }
 
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
         $this->redirect = url()->previous() . '#building-notes';
     }

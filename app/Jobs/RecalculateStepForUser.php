@@ -39,7 +39,7 @@ class RecalculateStepForUser extends NonHandleableJobAfterReset
      */
     public function handle(): void
     {
-        Log::debug('Recalculating step: ' . $this->step->name);
+        Log::debug('Recalculating step: ' . $this->step->getTranslation('name', 'nl'));
         $stepClass = 'App\\Helpers\\Cooperation\Tool\\' . Str::singular(Str::studly($this->step->short)) . 'Helper';
 
         // Some steps don't have tool helpers. Let's check if it exists first
@@ -54,7 +54,7 @@ class RecalculateStepForUser extends NonHandleableJobAfterReset
         }
     }
 
-    public function failed(Throwable $exception)
+    public function failed(Throwable $exception): void
     {
         $this->deactivateNotification();
 

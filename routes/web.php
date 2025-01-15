@@ -15,6 +15,16 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// When a user goes to www.hoomdossier.nl, it aborts as 404 since it's failing to find cooperation "www". While
+// technically correct, it can be confusing. We just redirect them to the index page.
+Route::domain('www.' . config('hoomdossier.domain'))->group(function () {
+    // Can't call route('index') since it will keep the www. domain.
+    Route::get('', fn() => redirect(str_replace('://www.', '://', Request::url())));
+    // Non-existent route, fall back to index.
+    Route::fallback(fn() => redirect()->route('index'));
+});
+
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
     Route::middleware('cooperation')->name('cooperation.')->group(function () {
         if ('local' == app()->environment()) {
@@ -76,7 +86,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::name('participants.')->prefix('participants')->group(function () {
                     Route::post('revoke-access', [Cooperation\Messages\ParticipantController::class, 'revokeAccess'])->name('revoke-access');
                     Route::post('add-with-building-access', [Cooperation\Messages\ParticipantController::class, 'addWithBuildingAccess'])->name('add-with-building-access');
-                    Route::post('set-read', [Cooperation\Messages\ParticipantController::class, 'setRead'])->name('set-read');
                 });
             });
 
@@ -177,27 +186,41 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::post('', [Cooperation\Tool\QuestionnaireController::class, 'store'])->name('store');
                 });
 
-                Route::resource('building-type', Cooperation\Tool\BuildingTypeController::class)->only('store');
-
+                // TODO: Deprecate
+                // Heat pump > Heating
                 Route::get('heat-pump', function () {
                     Log::debug('HeatPumpController::index redirecting to heating');
 
                     return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
                 })->name('heat-pump.index');
 
+                // HR boiler > Heating
+                Route::prefix('high-efficiency-boiler')->name('high-efficiency-boiler.')->group(function () {
+                    Route::get('', function () {
+                        Log::debug('HighEfficiencyBoilerController::index redirecting to heating');
+
+                        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
+                    })->name('index');
+                });
+
+                // Heater (solar boiler) > Heating
+                Route::prefix('heater')->name('heater.')->group(function () {
+                    Route::get('', function () {
+                        Log::debug('HeaterController::index redirecting to heating');
+
+                        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
+                    })->name('index');
+                });
+                // TODO: End deprecation
+
+                // Ventilation
                 Route::prefix('ventilation')->name('ventilation.')->group(function () {
                     Route::resource('', Cooperation\Tool\VentilationController::class)->only('index', 'store');
                     Route::post('calculate', [Cooperation\Tool\VentilationController::class, 'calculate'])->name('calculate');
                 });
 
                 // Wall Insulation
-                Route::prefix('/wall-insulation')->name('wall-insulation.')->group(function () {
-                    Route::resource('', Cooperation\Tool\WallInsulationController::class)->only('index', 'store');
-                    Route::post('calculate', [Cooperation\Tool\WallInsulationController::class, 'calculate'])->name('calculate');
-                });
-
-                // Wall Insulation
-                Route::prefix('verwarming')->name('heating.')->group(function () {
+                Route::prefix('wall-insulation')->name('wall-insulation.')->group(function () {
                     Route::resource('', Cooperation\Tool\WallInsulationController::class)->only('index', 'store');
                     Route::post('calculate', [Cooperation\Tool\WallInsulationController::class, 'calculate'])->name('calculate');
                 });
@@ -220,28 +243,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::post('calculate', [Cooperation\Tool\RoofInsulationController::class, 'calculate'])->name('calculate');
                 });
 
-                // HR boiler
-                Route::prefix('high-efficiency-boiler')->name('high-efficiency-boiler.')->group(function () {
-                    Route::get('', function () {
-                        Log::debug('HighEfficiencyBoilerController::index redirecting to heating');
-
-                        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
-                    })->name('index');
-                });
-
                 // Solar panels
                 Route::prefix('solar-panels')->name('solar-panels.')->group(function () {
                     Route::resource('', Cooperation\Tool\SolarPanelsController::class)->only('index', 'store');
                     Route::post('calculate', [Cooperation\Tool\SolarPanelsController::class, 'calculate'])->name('calculate');
-                });
-
-                // Heater (solar boiler)
-                Route::prefix('heater')->name('heater.')->group(function () {
-                    Route::get('', function () {
-                        Log::debug('HeaterController::index redirecting to heating');
-
-                        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
-                    })->name('index');
                 });
             });
 
@@ -400,7 +405,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 });
 
 Route::get('/', function () {
-    if (stristr(\Request::url(), '://www.')) {
+    if (str_contains(\Illuminate\Support\Facades\Request::url(), '://www.')) {
         // The user has prefixed the subdomain with a www subdomain.
         // Remove the www part and redirect to that.
         return redirect(str_replace('://www.', '://', Request::url()));

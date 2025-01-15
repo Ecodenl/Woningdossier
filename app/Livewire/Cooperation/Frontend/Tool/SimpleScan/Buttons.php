@@ -92,6 +92,7 @@ class Buttons extends Component
             ->step($this->previousStep);
 
         if ($this->subStep instanceof SubStep) {
+            /** @phpstan-ignore assign.propertyType */
             $this->previousSubStep = $this
                 ->step
                 ->subSteps()
@@ -110,6 +111,7 @@ class Buttons extends Component
                         $this->previousQuestionnaire = $questionnaireService->resolveQuestionnaire(false);
                     } else {
                         // the previous step is a different one, so we should get the last sub step of the previous step
+                        /** @phpstan-ignore assign.propertyType */
                         $this->previousSubStep = $this->previousStep->subSteps()->orderByDesc('order')->first();
                     }
                 }
@@ -118,6 +120,7 @@ class Buttons extends Component
             if (isset($this->previousStep) && $this->account->cannot('show', [$this->previousSubStep, $this->building])) {
                 // so the user is not allowed to see this sub step
                 // now we also have to set the subStep so this won't do an infinite loop
+                /** @phpstan-ignore assign.propertyType */
                 $this->subStep = $this->previousSubStep;
                 $this->setPreviousStep();
             }
@@ -132,11 +135,13 @@ class Buttons extends Component
                 $this->previousQuestionnaire = $potentialQuestionnaire;
             } else {
                 // No more questionnaires, let's start the logic to get a previous sub step
+                /** @phpstan-ignore assign.propertyType */
                 $this->previousSubStep = $this->step->subSteps()->orderByDesc('order')->first();
 
                 if ($this->account->cannot('show', [$this->previousSubStep, $this->building])) {
                     // so the user is not allowed to see this sub step
                     // now we also have to set the subStep so this won't do an infinite loop
+                    /** @phpstan-ignore assign.propertyType */
                     $this->subStep = $this->previousSubStep;
                     $this->setPreviousStep();
                 }

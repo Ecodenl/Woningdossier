@@ -22,10 +22,15 @@ class SimpleScanComposer
 
     public function create(View $view): void
     {
+        /** @var \App\Models\Scan $scan */
         $scan = $this->request->route('scan');
+        /** @var \App\Models\Step|null $step */
         $step = $this->request->route('step');
+        /** @var \App\Models\SubStep|null $subStep */
         $subStep = $this->request->route('subStep');
+        /** @var \App\Models\Questionnaire|null $questionnaire */
         $questionnaire = $this->request->route('questionnaire');
+        /** @var \App\Models\Cooperation $cooperation */
         $cooperation = $this->request->route('cooperation');
 
         if (is_null($subStep)) {

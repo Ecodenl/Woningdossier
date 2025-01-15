@@ -35,7 +35,6 @@ class InsulatedGlazing
             'measure' => [],
         ];
 
-
         $buildingInsulatedGlazings = $calculateData['building_insulated_glazings'] ?? [];
 
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazingsData) {

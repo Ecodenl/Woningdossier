@@ -25,7 +25,7 @@ class QuestionnaireRequest extends FormRequest
         return Auth::check();
     }
 
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
         $this->questions = Questionnaire::find($this->input('questionnaire_id'))->questions;
         $this->redirect = url()->previous();

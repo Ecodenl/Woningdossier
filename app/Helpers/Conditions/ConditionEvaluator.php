@@ -172,13 +172,13 @@ class ConditionEvaluator
 
     protected function evaluateClause(array $clause, Collection $collection): bool
     {
-        extract($clause);
-        $operator = $operator ?? '';
-        /**
-         * @var string $column
-         * @var string $operator
-         * @var $value
-         */
+        //extract($clause);
+        /** @var string $column */
+        $column = $clause['column'];
+        /** @var string $operator */
+        $operator = $clause['operator'] ?? '';
+        /** @var mixed $value */
+        $value = $clause['value'] ?? null;
 
         if ($this->explain) {
             $v = $value ?? "No value";

@@ -6,7 +6,6 @@ use Illuminate\Http\RedirectResponse;
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\StepHelper;
 use App\Helpers\Hoomdossier;
-use App\Helpers\SubStepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -15,18 +14,16 @@ use App\Services\Models\SubStepService;
 use App\Services\Scans\ScanFlowService;
 use Illuminate\Http\Request;
 
-class ToolController extends Controller
+abstract class ToolController extends Controller
 {
-    /**
-     * @var Step
-     */
-    protected $step;
+    protected ?Step $step;
 
     protected InputSource $masterInputSource;
 
     public function __construct(Request $request)
     {
         $slug = str_replace('/tool/', '', $request->getRequestUri());
+        // Is null if there is currently no request! This only happens when in the console.
         $this->step = Step::where('slug', $slug)->first();
 
         $this->masterInputSource = InputSource::master();
@@ -34,9 +31,6 @@ class ToolController extends Controller
 
     /**
      * Instead of doing the same thing in all expert controllers, localize the logic to here.
-     *
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function completeStore(Step $step, Building $building, InputSource $inputSource): RedirectResponse
     {

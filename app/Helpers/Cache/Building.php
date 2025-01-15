@@ -20,7 +20,7 @@ class Building extends BaseCache
         );
     }
 
-    public static function wipe($id): void
+    public static function wipe(int $id): void
     {
         static::clear(self::getCacheKey(static::CACHE_KEY_FIND, $id));
     }

@@ -13,9 +13,11 @@ class MunicipalityCoupleRequest extends FormRequest
 {
     protected Municipality $municipality;
 
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
-        $this->municipality = $this->route('municipality');
+        /** @var Municipality $municipality */
+        $municipality = $this->route('municipality');
+        $this->municipality = $municipality;
     }
 
     /**
@@ -52,7 +54,7 @@ class MunicipalityCoupleRequest extends FormRequest
                 'nullable',
                 function ($attribute, $value, $fail) {
                     $parts = explode('-', $value, 2);
-                    $id = $parts[0] ?? '';
+                    $id = $parts[0];
                     $name = $parts[1] ?? '';
 
                     // So the value is not null, but is it valid?

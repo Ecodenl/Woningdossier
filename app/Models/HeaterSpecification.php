@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $liters
  * @property int $savings
  * @property int $boiler
- * @property string $collector
+ * @property numeric $collector
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterSpecification newModelQuery()
@@ -28,4 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class HeaterSpecification extends Model
 {
+    protected $casts = [
+        'collector' => 'decimal:1',
+    ];
 }

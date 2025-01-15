@@ -54,9 +54,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Question extends Model
 {
-    use HasFactory;
-
-    use SoftDeletes,
+    use HasFactory,
+        SoftDeletes,
         HasTranslations;
 
     protected $translatable = [
@@ -128,31 +127,11 @@ class Question extends Model
 
     /**
      * Return the question answers for all input sources.
-     *
-     * @return mixed
      */
-    public function questionAnswersForMe()
+    public function questionAnswersForMe(): HasMany
     {
         // only there for eager loading, user in the App\Http\ViewComposers\ToolComposer
         return $this->questionAnswers()->forMe();
-    }
-
-    /**
-     * Return the answer on a question for a building and input source.
-     *
-     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
-     */
-    public function getAnswerForCurrentInputSource()
-    {
-        $currentAnswerForInputSource = $this->questionAnswers()
-            ->where('building_id', HoomdossierSession::getBuilding())
-            ->where('input_source_id', HoomdossierSession::getInputSource())->first();
-
-        if ($currentAnswerForInputSource instanceof QuestionsAnswer) {
-            return $currentAnswerForInputSource->answer;
-        }
-
-        return null;
     }
 
     /**

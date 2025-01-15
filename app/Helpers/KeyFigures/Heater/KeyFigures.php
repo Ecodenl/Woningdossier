@@ -13,9 +13,9 @@ use App\Models\UserEnergyHabit;
 
 class KeyFigures implements KeyFiguresInterface
 {
-    const M3_GAS_TO_KWH = 8.792; // m3 gas -> kWh
+    const float M3_GAS_TO_KWH = 8.792; // m3 gas -> kWh
 
-    protected static $angles = [
+    protected static array $angles = [
         20 => 20,
         30 => 30,
         40 => 40,

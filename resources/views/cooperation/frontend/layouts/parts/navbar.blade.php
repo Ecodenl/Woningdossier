@@ -96,7 +96,7 @@
 
             {{-- Keep local for ease of use --}}
             @if(app()->isLocal())
-{{--                @if($building instanceof \App\Models\Building && $building->hasCompletedQuickScan($masterInputSource))--}}
+{{--                @if($building instanceof \App\Models\Building && $building->hasCompletedScan(Scan::quick(), $masterInputSource))--}}
                     @component('cooperation.layouts.components.dropdown', ['label' => '<i class="icon-md icon-check-circle"></i>'])
                         {{-- Loaded in NavbarComposer --}}
                         @foreach($expertSteps as $expertStep)

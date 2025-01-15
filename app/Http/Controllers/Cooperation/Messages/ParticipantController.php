@@ -83,37 +83,4 @@ class ParticipantController extends Controller
         return redirect()->back()
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
     }
-
-    /**
-     * Method to set a collection of messages to read.
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function setRead(Cooperation $cooperation, Request $request)
-    {
-        $isPublic = $request->input('is_public');
-        $buildingId = $request->input('building_id');
-
-        $messagesToSetRead = PrivateMessage::forMyCooperation()
-            ->conversation($buildingId);
-
-        // check which messages we have to set read
-        if ($isPublic) {
-            $messagesToSetRead = $messagesToSetRead->public();
-        } else {
-            $messagesToSetRead = $messagesToSetRead->private();
-        }
-
-        $messagesToSetRead = $messagesToSetRead->get();
-
-        if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-            PrivateMessageViewService::markAsReadByCooperation($messagesToSetRead, $cooperation);
-        } elseif (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
-            $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-            PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
-        } else {
-            $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-            PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
-        }
-    }
 }

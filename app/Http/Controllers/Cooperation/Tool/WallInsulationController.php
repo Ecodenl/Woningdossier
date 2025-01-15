@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
 use App\Calculations\WallInsulation;
@@ -29,11 +30,6 @@ use App\Services\ToolQuestionService;
 
 class WallInsulationController extends ToolController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function index(LegacyService $legacyService): View
     {
         $typeIds = [3];
@@ -51,7 +47,6 @@ class WallInsulationController extends ToolController
 
         $buildingFeaturesForMe = BuildingFeature::withoutGlobalScope(GetValueScope::class)->forMe()->get();
 
-        /** @var BuildingElement $houseInsulation */
         $surfaces = FacadeSurface::orderBy('order')->get();
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
@@ -76,13 +71,7 @@ class WallInsulationController extends ToolController
         ));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function store(WallInsulationRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
+    public function store(WallInsulationRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);

@@ -70,18 +70,6 @@ class BuildingPvPanel extends Model implements Auditable
         return $this->belongsTo(Building::class);
     }
 
-    /**
-     * Make sure that null is casted to the integer 0.
-     */
-    public function setNumberAttribute(string $value): void
-    {
-        if (is_null($value)) {
-            $value = 0;
-        }
-
-        $this->attributes['number'] = $value;
-    }
-
     public function orientation(): BelongsTo
     {
         return $this->belongsTo(PvPanelOrientation::class, 'pv_panel_orientation_id', 'id');

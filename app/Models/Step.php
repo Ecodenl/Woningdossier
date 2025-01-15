@@ -109,18 +109,20 @@ class Step extends Model
     }
 
     // Model methods
-    public function resolveChildRouteBinding($childType, $value, $field)
+    public function resolveChildRouteBinding($childType, $value, $field): ?Model
     {
-        // so this method is supposed to resolve the child route binding (any relationship)
-        // which could be any child of the step
-        // the sub step has a translatable slug, which is impossible to configure on the routes
+        // So this method is supposed to resolve the child route binding (any relationship)
+        // which could be any child of the step.
+        // the sub step has a translatable slug, which is impossible to configure on the routes, so we ensure
+        // we alter the slug to the translatable type.
         if ($childType === 'subStep' && $field === 'slug') {
             $field = (new SubStep())->getRouteKeyName();
-            return parent::resolveChildRouteBinding($childType, $value, $field);
         }
+
+        return parent::resolveChildRouteBinding($childType, $value, $field);
     }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }
@@ -140,8 +142,9 @@ class Step extends Model
         return $this->hasMany(SubStep::class);
     }
 
-    public function nextStepForScan()
+    public function nextStepForScan(): ?Step
     {
+        /** @var null|Step */
         return $this
             ->scan
             ->steps()
@@ -150,8 +153,9 @@ class Step extends Model
             ->first();
     }
 
-    public function previousStepForScan()
+    public function previousStepForScan(): ?Step
     {
+        /** @var null|Step */
         return $this
             ->scan
             ->steps()

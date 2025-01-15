@@ -11,6 +11,7 @@ use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\Step;
 use App\Rules\LanguageRequired;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
@@ -180,7 +181,7 @@ class Form extends Component
         $this->hydrateExampleBuildingSteps();
     }
 
-    public function save(): Redirector
+    public function save(): Redirector|RedirectResponse
     {
         // Hydrating as fast as possible again because if the save request returns a 200ok before an actual redirect
         // happens it would then mess up the view due to missing relations...

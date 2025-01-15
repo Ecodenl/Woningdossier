@@ -71,7 +71,7 @@ class Step extends Model
     protected $fillable = ['slug', 'name', 'order'];
 
     protected $translatable = [
-        'name'
+        'name',
     ];
 
     protected static function boot()
@@ -81,6 +81,34 @@ class Step extends Model
         static::addGlobalScope(new NoGeneralDataScope());
     }
 
+    // Static calls
+    public static function allSlugs(): array
+    {
+        return [
+            "ventilation",
+            "wall-insulation",
+            "insulated-glazing",
+            "floor-insulation",
+            "roof-insulation",
+            "high-efficiency-boiler",
+            "heat-pump",
+            "solar-panels",
+            "heater",
+            "woninggegevens",
+            "bewoners-gebruik",
+            "woonwensen",
+            "woonstatus",
+            "verwarming",
+            "kleine-maatregelen",
+            "woninggegevens",
+            "bewoners-gebruik",
+            "woonwensen",
+            "woonstatus",
+            "kleine-maatregelen",
+        ];
+    }
+
+    // Model methods
     public function resolveChildRouteBinding($childType, $value, $field)
     {
         // so this method is supposed to resolve the child route binding (any relationship)

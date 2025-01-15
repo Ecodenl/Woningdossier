@@ -70,6 +70,30 @@ class Scan extends Model
         return self::findByShort(self::EXPERT);
     }
 
+    public static function allShorts(): array
+    {
+        return [
+            self::EXPERT,
+            self::QUICK,
+            self::LITE,
+        ];
+    }
+
+    public static function simpleShorts(): array
+    {
+        return [
+            self::QUICK,
+            self::LITE,
+        ];
+    }
+
+    public static function expertShorts(): array
+    {
+        return [
+            self::EXPERT,
+        ];
+    }
+
     // Model Methods
     public function getRouteKeyName(): string
     {

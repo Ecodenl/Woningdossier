@@ -117,33 +117,17 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::as('frontend.')->middleware(['track-visited-url'])->group(function () {
                 Route::resource('help', Cooperation\Frontend\HelpController::class)->only('index');
                 Route::as('tool.')->group(function () {
-                    $scans = \App\Helpers\Cache\Scan::allShorts();
-                    $simpleScans = \App\Helpers\Cache\Scan::simpleShorts();
-
-                    // TODO: Deprecate to whereIn in L9
                     Route::get('{scan}', [Cooperation\Frontend\Tool\ScanController::class, 'redirect'])
                         ->name('scan.redirect')
-                        ->where(collect(['scan'])
-                            ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $scans)])
-                            ->all()
-                        );
+                        ->whereIn('scan', \App\Models\Scan::allShorts());
 
                     Route::prefix('{scan}')
-                        ->where(collect(['scan'])
-                            ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $simpleScans)])
-                            ->all()
-                        )
+                        ->whereIn('scan', \App\Models\Scan::simpleShorts())
                         ->as('simple-scan.')
                         ->middleware('cooperation-has-scan')
                         ->group(function () {
-                            $steps = \App\Helpers\Cache\Step::allSlugs();
-
                             Route::prefix('{step:slug}')
-                                ->where(
-                                    collect(['step'])
-                                        ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $steps)])
-                                        ->all()
-                                )
+                                ->whereIn('step', \App\Models\Step::allSlugs())
                                 ->group(function () {
                                     // Define this route as last to not match above routes as step/sub step combo
                                     Route::get('{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])

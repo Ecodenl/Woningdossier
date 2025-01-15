@@ -6,24 +6,23 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\Step;
+use App\Models\User;
 use Illuminate\View\View;
 
 class ToolComposer
 {
-    private $cooperation;
-    private $currentUser;
-    private $commentsByStep;
-    private $currentStep;
-    private $currentSubStep;
-    private $currentBuilding;
-    private $buildingOwner;
+    private ?Cooperation $cooperation;
+    private ?User $currentUser;
+    private ?array $commentsByStep;
+    private ?Step $currentStep;
+    private ?Step $currentSubStep;
+    private ?Building $currentBuilding;
+    private ?User $buildingOwner;
 
-    public function create(View $view)
+    public function create(View $view): void
     {
-        //$view->with('cooperation', app()->make('Cooperation'));
-        //$view->with('cooperationStyle', app()->make('CooperationStyle'));
-
         $user = Hoomdossier::user();
 
         $view->with('user', $user);
@@ -33,7 +32,7 @@ class ToolComposer
         }
 
         if (is_null($this->currentUser)) {
-            $this->currentUser = Hoomdossier::user();
+            $this->currentUser = $user;
         }
         if (is_null($this->currentStep)) {
             $toolUrl = explode('/', request()->getRequestUri());
@@ -68,12 +67,9 @@ class ToolComposer
         }
 
         $view->with('commentsByStep', $this->commentsByStep);
-        //$view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
         $view->with('inputSources', \App\Helpers\Cache\InputSource::getOrdered());
-        //$view->with('myUnreadMessagesCount', $this->unreadMessageCount);
 
         // TODO: Should this stay?
-        $view->with('interests', \App\Helpers\Cache\Interest::getOrdered());
         $view->with('currentStep', $this->currentStep);
         $view->with('currentSubStep', $this->currentSubStep);
 

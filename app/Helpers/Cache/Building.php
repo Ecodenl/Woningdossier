@@ -2,13 +2,12 @@
 
 namespace App\Helpers\Cache;
 
-use App\Models\InputSource;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Building as BuildingModel;
 
 class Building extends BaseCache
 {
-    const CACHE_KEY_FIND = 'Building_find_%s';
+    const string CACHE_KEY_FIND = 'Building_find_%s';
 
     public static function find(int $id): ?BuildingModel
     {
@@ -21,7 +20,7 @@ class Building extends BaseCache
         );
     }
 
-    public static function wipe($id)
+    public static function wipe($id): void
     {
         static::clear(self::getCacheKey(static::CACHE_KEY_FIND, $id));
     }

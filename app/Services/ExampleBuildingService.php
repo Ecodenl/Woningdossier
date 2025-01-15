@@ -161,8 +161,6 @@ class ExampleBuildingService
         $building->heater()->forInputSource($inputSource)->delete();
         $building->toolQuestionAnswers()->forInputSource($inputSource)->delete();
         if ($building->user instanceof User) {
-            // remove interests
-            $building->user->userInterests()->forInputSource($inputSource)->delete();
             // remove energy habits
             $building->user->energyHabit()->forInputSource($inputSource)->delete();
         }

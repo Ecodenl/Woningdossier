@@ -41,7 +41,6 @@ use Plank\Mediable\MediableInterface;
  * @property-read \App\Models\CooperationScan|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Scan> $scans
  * @property-read int|null $scans_count
- * @property-read \App\Models\CooperationStyle|null $style
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
  * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])

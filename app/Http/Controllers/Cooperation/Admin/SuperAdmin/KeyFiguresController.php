@@ -20,7 +20,7 @@ class KeyFiguresController extends Controller
     {
         // we handle translations in the view.
         $keyfigures = [
-            'general'   => ( new \ReflectionClass(Kengetallen::class) )->getConstants(),
+            'general' => ( new \ReflectionClass(Kengetallen::class) )->getConstants(),
         ];
 
         // Bank

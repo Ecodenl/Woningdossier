@@ -258,7 +258,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:roof_types,id'],
                 'save_in' => 'building_features.roof_type_id',
                 'short' => 'roof-type',
-                'translation' => 'cooperation/tool/general-data/building-characteristics.index.roof-type',
+                'translation' => 'Type dak',
                 'tool_question_values' => $roofTypes,
                 'extra' => [
                     'column' => 'short',
@@ -295,7 +295,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'numeric', 'integer', 'between:1000,' . date('Y')],
                 'save_in' => 'building_features.build_year',
                 'short' => 'build-year',
-                'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year',
+                'translation' => 'Wat is het bouwjaar?',
                 'options' => ['min' => 1000, 'max' => date('Y'), 'value' => 1930, 'step' => 1],
             ],
             [
@@ -303,7 +303,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['numeric', 'integer', 'between:1,5'],
                 'save_in' => 'building_features.building_layers',
                 'short' => 'building-layers',
-                'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-layers',
+                'translation' => 'Hoeveel bouwlagen heeft het huis?',
                 'options' => ['min' => 1, 'max' => 6, 'value' => 3, 'step' => 1],
             ],
             [
@@ -318,7 +318,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['numeric', 'in:1,2,0,3', 'exists:tool_question_custom_values,short'],
                 'save_in' => 'building_features.monument',
                 'short' => 'monument',
-                'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument',
+                'translation' => 'Is het een monument?',
                 'tool_question_custom_values' => [
                     1 => [
                         'name' => __('woningdossier.cooperation.radiobutton.yes'),
@@ -343,7 +343,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['numeric', 'exists:energy_labels,id'],
                 'save_in' => 'building_features.energy_label_id',
                 'short' => 'energy-label',
-                'translation' => 'cooperation/tool/general-data/building-characteristics.index.energy-label',
+                'translation' => 'Wat is het huidige energielabel?',
                 'tool_question_values' => $energyLabels,
                 'extra' => [
                     'column' => 'name',
@@ -383,7 +383,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'numeric', 'min:20', 'max:999999'],
                 'save_in' => 'building_features.surface',
                 'short' => 'surface',
-                'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
+                'translation' => 'Wat is de gebruiksoppervlakte van de woning?',
                 'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
@@ -392,7 +392,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "step_comments.{$stepBuildingData->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'building-data-comment-resident',
-                'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
+                'translation' => 'Toelichting gebouwkenmerken',
             ],
             [
                 'data_type' => Caster::HTML_STRING,
@@ -400,7 +400,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "step_comments.{$stepBuildingData->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'building-data-comment-coach',
-                'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
+                'translation' => 'Toelichting gebouwkenmerken',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -463,7 +463,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'data_type' => Caster::INT,
                 'validation' => ['required', 'numeric', 'integer', 'min:10', 'max:30', 'gte:thermostat-low'],
                 'save_in' => 'user_energy_habits.thermostat_high',
-                'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
+                'translation' => 'Op welke temperatuur staat de thermostaat op de hoge stand?',
                 'short' => 'thermostat-high',
                 'options' => ['min' => 10, 'max' => 30, 'value' => 20, 'step' => 1],
                 'unit_of_measure' => '°',
@@ -472,7 +472,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'data_type' => Caster::INT,
                 'validation' => ['required', 'numeric', 'integer', 'min:10', 'max:30'],
                 'save_in' => 'user_energy_habits.thermostat_low',
-                'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
+                'translation' => 'Op welke temperatuur staat de thermostaat op lage stand?',
                 'short' => 'thermostat-low',
                 'options' => ['min' => 10, 'max' => 30, 'value' => 16, 'step' => 1],
                 'unit_of_measure' => '°',
@@ -482,7 +482,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'numeric', 'integer', 'between:1,24'],
                 'save_in' => 'user_energy_habits.hours_high',
                 'short' => 'hours-high',
-                'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.hours-high',
+                'translation' => 'Hoeveel uren per dag staat de thermostaat op hoge stand?',
                 'options' => ['min' => 0, 'max' => 24, 'value' => 12, 'step' => 1],
             ],
             [
@@ -490,7 +490,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:building_heatings,id'],
                 'save_in' => 'user_energy_habits.heating_first_floor',
                 'short' => 'heating-first-floor',
-                // was cooperation/tool/general-data/usage.index.heating-habits.heating-first-floor
                 'translation' => 'Wat is de situatie op de eerste verdieping?',
                 'tool_question_values' => $heatings,
                 'extra' => [
@@ -508,7 +507,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:building_heatings,id'],
                 'save_in' => 'user_energy_habits.heating_second_floor',
                 'short' => 'heating-second-floor',
-                // was cooperation/tool/general-data/usage.index.heating-habits.heating-second-floor
                 'translation' => 'Wat is de situatie op de tweede verdieping?',
                 'tool_question_values' => $heatings,
                 'extra' => [
@@ -560,7 +558,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'numeric', 'integer', 'min:0',  'max:9999999999'],
                 'save_in' => 'user_energy_habits.amount_gas',
                 'short' => 'amount-gas',
-                'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.gas-usage',
+                'translation' => 'Wat is het gasgebruik van afgelopen jaar?',
                 'unit_of_measure' => __('general.unit.cubic-meters.title'),
             ],
             [
@@ -568,7 +566,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'numeric', 'integer', 'min:-10000', 'max:9999999999'],
                 'save_in' => 'user_energy_habits.amount_electricity',
                 'short' => 'amount-electricity',
-                'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.amount-electricity',
+                'translation' => 'Wat is het elektragebruik van het afgelopen jaar?',
                 'unit_of_measure' => 'kWh'
             ],
             [
@@ -591,7 +589,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'usage-quick-scan-comment-resident',
-                'translation' => 'cooperation/tool/general-data/usage.index.comment',
+                'translation' => 'Toelichting gebruik van de woning',
             ],
             [
                 'data_type' => Caster::HTML_STRING,
@@ -599,7 +597,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'usage-quick-scan-comment-coach',
-                'translation' => 'cooperation/tool/general-data/usage.index.comment',
+                'translation' => 'Toelichting gebruik van de woning',
             ],
             [
                 'data_type' => Caster::INT,
@@ -668,7 +666,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'living-requirements-comment-resident',
-                'translation' => 'cooperation/tool/general-data/interest.index.comment',
+                'translation' => 'Toelichting op interesse en motivatie',
             ],
             [
                 'data_type' => Caster::HTML_STRING,
@@ -676,7 +674,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'living-requirements-comment-coach',
-                'translation' => 'cooperation/tool/general-data/interest.index.comment',
+                'translation' => 'Toelichting op interesse en motivatie',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1368,7 +1366,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.element.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'residential-status-element-comment-resident',
-                'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
+                'translation' => 'Toelichting huidige staat isolatie',
             ],
             [
                 'data_type' => Caster::HTML_STRING,
@@ -1376,7 +1374,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.element.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'residential-status-element-comment-coach',
-                'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
+                'translation' => 'Toelichting huidige staat isolatie',
             ],
             [
                 'data_type' => Caster::HTML_STRING,
@@ -1384,7 +1382,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.service.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'residential-status-service-comment-resident',
-                'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
+                'translation' => 'Toelichting huidige staat installaties',
             ],
             [
                 'data_type' => Caster::HTML_STRING,
@@ -1392,7 +1390,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.service.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'residential-status-service-comment-coach',
-                'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
+                'translation' => 'Toelichting huidige staat installaties',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,

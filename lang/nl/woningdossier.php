@@ -26,17 +26,7 @@ return [
         \App\Models\BuildingCoachStatus::STATUS_ADDED => 'Toegevoegd',
     ],
     'cooperation' => [
-        'step' => [
-            'general-data' => 'Algemene gegevens',
-            'building-detail' => 'Woning details',
-        ],
-
         'chat' => [
-            'modal' => [
-                'text' => 'Naar welk groepsgesprek wilt u gaan?',
-                'public' => 'Publiek',
-                'private' => 'Privé',
-            ],
             'group-participants' => [
                 'revoke-access' => 'Weet u zeker dat u deze gebruiker van uit het groepsgesprek wilt verwijderen? Deze gebruiker heeft hierna geen toegang meer tot de woning.',
             ],
@@ -485,26 +475,6 @@ return [
                 'degrees' => 'graden',
                 'kwh' => 'kWh',
                 'hours' => 'uren',
-            ],
-
-            'general-data' => [
-                'title' => 'Algemene gegevens',
-                'coach-input' => [
-                    'copy' => [
-                        'title' => 'Neem coach antwoorden over',
-                        'help' => 'Weet u zeker dat u alle antwoorden van de coach wilt overnemen? Uw huidige antwoorden zullen worden overschreven door die van de coach.',
-                    ],
-                ],
-
-                'example-building-input' => [
-                    'copy' => [
-                        'help' => 'Weet u zeker dat u alle waardes van de voorbeeldwoning wilt overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de voorbeeldwoning.',
-                    ],
-                ],
-
-                'example-building' => [
-                    'example-building-type' => 'Kies de best passende voorbeeldwoning',
-                ],
             ],
 
             'wall-insulation' => [

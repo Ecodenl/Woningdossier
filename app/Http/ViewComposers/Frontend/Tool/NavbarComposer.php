@@ -18,7 +18,7 @@ class NavbarComposer
         $this->request = $request;
     }
 
-    public function create(View $view)
+    public function create(View $view): void
     {
         $cooperation = $this->request->route('cooperation');
         // Load the first available scan if it's not in the current route (think of my account)

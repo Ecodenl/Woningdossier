@@ -26,7 +26,7 @@
                 @endforeach
                 @foreach($steps as $step)
                     <tr>
-                        <td>{{$step->parentStep?->name.'/'. $step->name}}</td>
+                        <td>{{$step->name}}</td>
                         <td>
                             <a class="btn btn-blue"
                                href="{{route('cooperation.admin.super-admin.translations.edit', ['group' => $step->short])}}">

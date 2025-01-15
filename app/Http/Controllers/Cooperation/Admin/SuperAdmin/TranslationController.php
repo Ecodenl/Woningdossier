@@ -13,15 +13,10 @@ use Illuminate\Support\Facades\Artisan;
 
 class TranslationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function index(): View
     {
         $steps = Step::whereNotIn('short', [
-            'heat-pump', 'heater', 'high-efficiency-boiler',
+            'heat-pump', 'heater', 'high-efficiency-boiler', 'heating',
         ])->get();
 
         $mailLangFiles = [
@@ -45,11 +40,7 @@ class TranslationController extends Controller
 
         $group = str_replace('_', '/', $group);
         // it is what it is, for the time being this will do. TODO: should be refactored
-        $step = Step::withGeneralData()->whereShort($group)->first();
 
-        if ($step instanceof Step && ! is_null($step->parent_id)) {
-            $group = "cooperation/tool/general-data/{$group}";
-        }
         if ('ventilation' == $group) {
             $group = "cooperation/tool/{$group}";
         }

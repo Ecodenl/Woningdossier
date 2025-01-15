@@ -155,7 +155,7 @@ class UserService
         $building->customMeasureApplications()->forInputSource($inputSource)->delete();
 
         // remove the action plan advices from the user
-        $user->actionPlanAdvices()->withInvisible()->forInputSource($inputSource)->delete();
+        $user->userActionPlanAdvices()->withInvisible()->forInputSource($inputSource)->delete();
         // remove the energy habits from a user
         $user->energyHabit()->forInputSource($inputSource)->delete();
 
@@ -304,12 +304,8 @@ class UserService
         }
 
         // remove the action plan advices from the user
-        $user->actionPlanAdvices()->withoutGlobalScopes()->delete();
+        $user->userActionPlanAdvices()->withoutGlobalScopes()->delete();
 
-        // remove the user interests
-        // we keep the user interests table until we are 100% sure it can be removed
-        // but because of gdpr we have to keep this until the table is removed
-        $user->userInterests()->withoutGlobalScopes()->delete();
         // we cant use the relationship because we just want to delete everything
         Considerable::forUser($user)->allInputSources()->delete();
         // remove the energy habits from a user
@@ -318,8 +314,6 @@ class UserService
         $user->notificationSettings()->withoutGlobalScopes()->delete();
         // first detach the roles from the user
         $user->roles()->detach($user->roles);
-        // remove the user his motivations
-        $user->motivations()->delete();
 
         // remove the user itself.
         $user->delete();
@@ -356,7 +350,6 @@ class UserService
                 'logs',
                 //'notification_settings', will be deleted
                 'private_message_views',
-                //'user_motivations', will be deleted
             ],
             'from_user_id' => [
                 'private_messages',
@@ -388,7 +381,6 @@ class UserService
                 'user_action_plan_advice_comments',
                 'user_action_plan_advices',
                 'user_energy_habits',
-                'user_interests',
             ],
         ];
 

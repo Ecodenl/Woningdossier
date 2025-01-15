@@ -4,13 +4,11 @@ namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Helpers\ConsiderableHelper;
 use App\Http\Requests\DecimalReplacementTrait;
-use App\Models\Interest;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Services\LegacyService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;

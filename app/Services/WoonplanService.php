@@ -82,7 +82,7 @@ class WoonplanService
     {
         // simple method to check whether the user has measure applications
         // in his user action plan advice.
-        return $this->building->user->actionPlanAdvices()
+        return $this->building->user->userActionPlanAdvices()
             ->withInvisible()
             ->forInputSource($this->inputSource)
             ->where('user_action_plan_advisable_type', MeasureApplication::class)

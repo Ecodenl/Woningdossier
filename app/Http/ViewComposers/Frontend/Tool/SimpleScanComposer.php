@@ -20,7 +20,7 @@ class SimpleScanComposer
         $this->request = $request;
     }
 
-    public function create(View $view)
+    public function create(View $view): void
     {
         $scan = $this->request->route('scan');
         $step = $this->request->route('step');

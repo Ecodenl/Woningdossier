@@ -274,9 +274,6 @@ class BuildingService
             )
             ->delete();
 
-        // table will be removed anyways.
-        DB::table('building_appliances')->whereBuildingId($building->id)->delete();
-
         $building->forceDelete();
     }
 }

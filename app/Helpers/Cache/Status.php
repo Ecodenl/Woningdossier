@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 
 class Status extends BaseCache
 {
-    const CACHE_KEY_FIND = 'Status_find_%s';
+    const string CACHE_KEY_FIND = 'Status_find_%s';
 
     public static function find(int $id): ?StatusModel
     {

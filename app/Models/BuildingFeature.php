@@ -66,7 +66,6 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingFeature residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingFeature whereBuildYear($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingFeature whereBuildingCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingFeature whereBuildingHeatingApplicationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingFeature whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingFeature whereBuildingLayers($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingFeature whereBuildingTypeCategoryId($value)

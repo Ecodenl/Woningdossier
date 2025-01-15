@@ -16,7 +16,7 @@ class SubNavComposer
         $this->request = $request;
     }
 
-    public function create(View $view)
+    public function create(View $view): void
     {
         $cooperation = $this->request->route('cooperation');
 

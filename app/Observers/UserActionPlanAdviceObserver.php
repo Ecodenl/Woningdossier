@@ -15,7 +15,6 @@ use App\Services\ConditionService;
 use App\Services\Models\UserCostService;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceObserver
 {

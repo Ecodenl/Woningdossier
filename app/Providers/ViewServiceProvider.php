@@ -37,7 +37,6 @@ class ViewServiceProvider extends ServiceProvider
         View::creator('cooperation.frontend.layouts.parts.sub-nav', SubNavComposer::class);
 
         View::creator('*', CooperationComposer::class);
-        View::creator('cooperation.admin.*', AdminComposer::class);
         View::creator('cooperation.admin.layouts.navbar', AdminNavbarComposer::class);
 
         View::creator(

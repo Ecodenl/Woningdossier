@@ -122,8 +122,7 @@
                 whenObservingDisableInputs();
             });
 
-            function whenObservingDisableInputs()
-            {
+            function whenObservingDisableInputs() {
                 var isUserObservingTool = '{{HoomdossierSession::getIsObserving()}}';
 
                 if (isUserObservingTool) {
@@ -140,27 +139,6 @@
                 $('#main-tab #main-content form').submit();
                 $('.submit-main-form').prop('disabled', 'disabled').addClass('disabled');
             });
-
-            $('#copy-coach-input').on('submit', function (event) {
-                if (confirm('@lang('woningdossier.cooperation.tool.general-data.coach-input.copy.help')')) {
-
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
-            $('#copy-example-building-input').on('submit', function (event) {
-                if (confirm('@lang('woningdossier.cooperation.tool.general-data.example-building-input.copy.help')')) {
-
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
-
-            function inputType(input) {
-                return input.prop('type');
-            }
         </script>
     @endpush
 @endif

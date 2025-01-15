@@ -2,13 +2,14 @@
 
 namespace App\Helpers\Cache;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Account as AccountModel;
 
 class Account extends BaseCache
 {
-    const CACHE_KEY_FIND = 'Account_find_%s';
-    const CACHE_KEY_USER = 'Account_user_%s';
+    const string CACHE_KEY_FIND = 'Account_find_%s';
+    const string CACHE_KEY_USER = 'Account_user_%s';
 
     public static function find(int $id): ?AccountModel
     {
@@ -21,7 +22,7 @@ class Account extends BaseCache
         );
     }
 
-    public static function user(AccountModel $account)
+    public static function user(AccountModel $account): ?User
     {
         return Cache::remember(
             self::getCooperationCacheKey(static::CACHE_KEY_USER, $account->id),

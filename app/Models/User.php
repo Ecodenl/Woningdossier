@@ -39,8 +39,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $refreshing_regulations
  * @property-read \App\Models\Account|null $account
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $actionPlanAdvices
- * @property-read int|null $action_plan_advices_count
  * @property-read \App\Models\Building|null $building
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingCoachStatus> $buildingCoachStatuses
  * @property-read int|null $building_coach_statuses_count
@@ -54,19 +52,13 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $completedQuestionnaires
  * @property-read int|null $completed_questionnaires_count
  * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Cooperation> $cooperations
- * @property-read int|null $cooperations_count
  * @property-read \App\Models\UserEnergyHabit|null $energyHabit
  * @property-read mixed $email
  * @property-read mixed $is_admin
  * @property-read mixed $old_email_token
  * @property-read mixed $oldemail
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Interest> $interests
- * @property-read int|null $interests_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Log> $logs
  * @property-read int|null $logs_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserMotivation> $motivations
- * @property-read int|null $motivations_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationSetting> $notificationSettings
  * @property-read int|null $notification_settings_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
@@ -79,8 +71,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $user_action_plan_advices_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserCost> $userCosts
  * @property-read int|null $user_costs_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserInterest> $userInterests
- * @property-read int|null $user_interests_count
  * @method static Builder<static>|User byContact($contact)
  * @method static Builder<static>|User econobisContacts()
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
@@ -283,14 +273,6 @@ class User extends Model implements AuthorizableContract
     public function buildingNotes(): HasMany
     {
         return $this->hasMany(BuildingNotes::class, 'coach_id', 'id');
-    }
-
-    /**
-     * @deprecated use userActionPlanAdvices
-     */
-    public function actionPlanAdvices(): HasMany
-    {
-        return $this->hasMany(UserActionPlanAdvice::class);
     }
 
     public function userActionPlanAdvices(): HasMany

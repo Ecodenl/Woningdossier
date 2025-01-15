@@ -2,21 +2,22 @@
 
 namespace App\Helpers\Cache;
 
+use App\Models\Step as StepModel;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Schema;
 
 class Step extends BaseCache
 {
-    const CACHE_KEY_GET_ORDERED = 'Step_getOrdered';
-    const CACHE_KEY_ALL_SLUGS = 'Step_allSlugs';
+    const string CACHE_KEY_GET_ORDERED = 'Step_getOrdered';
+    const string CACHE_KEY_ALL_SLUGS = 'Step_allSlugs';
 
-    public static function getOrdered()
+    public static function getOrdered(): Collection
     {
         return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_GET_ORDERED),
             config('hoomdossier.cache.times.default'),
             function () {
-                return \App\Models\Step::ordered()->get();
+                return StepModel::ordered()->get();
             }
         );
     }
@@ -27,10 +28,7 @@ class Step extends BaseCache
             self::getCacheKey(static::CACHE_KEY_ALL_SLUGS),
             config('hoomdossier.cache.times.default'),
             function () {
-                if (Schema::hasTable('steps')) {
-                    return \App\Models\Step::pluck('slug')->toArray();
-                }
-                return [];
+                return StepModel::pluck('slug')->toArray();
             }
         );
     }

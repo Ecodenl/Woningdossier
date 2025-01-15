@@ -55,7 +55,7 @@
                                     $advisables = [];
                                     $type = \App\Helpers\Models\CooperationMeasureApplicationHelper::getTypeForScan($scan);
                                 @endphp
-                                @foreach($building->user->actionPlanAdvices()->forInputSource($masterInputSource)->get() as $advice)
+                                @foreach($building->user->userActionPlanAdvices()->forInputSource($masterInputSource)->get() as $advice)
                                     @php
                                         if ($advice->user_action_plan_advisable_type === \App\Models\CustomMeasureApplication::class) {
                                             $advisable = $advice->userActionPlanAdvisable()

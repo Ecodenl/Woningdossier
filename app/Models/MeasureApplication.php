@@ -37,8 +37,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string $info
  * @property-read string $name
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Interest> $interests
- * @property-read int|null $interests_count
  * @property-read \App\Models\Step $step
  * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices

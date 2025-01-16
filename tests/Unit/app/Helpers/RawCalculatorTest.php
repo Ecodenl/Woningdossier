@@ -6,11 +6,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\RawCalculator;
 use Tests\TestCase;
 
-final class CalculatorTest extends TestCase
+final class RawCalculatorTest extends TestCase
 {
-    protected function setUp(): void
+    public function testMaxGasSavings()
     {
-        parent::setUp();
         $this->markTestIncomplete();
+        //RawCalculator::maxGasSavings();
     }
 }

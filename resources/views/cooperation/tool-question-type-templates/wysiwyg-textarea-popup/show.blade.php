@@ -1,34 +1,39 @@
 <div x-data="modal()" class="w-full flex">
-    @component('cooperation.frontend.layouts.components.wysiwyg', [
-        'attr' => 'x-on:click="toggle()"',
-        'disabled' => $disabled ?? false,
-        'withScript' => false,
-    ])
-        <textarea wire:model.lazy.defer="filledInAnswers.{{$toolQuestion->short}}"
-                  id="clickable-{{$toolQuestion->short}}" wire:ignore
-                  class="form-input"
-                  placeholder="{{$toolQuestion->placeholder}}"
-                  @if(($disabled ?? false)) disabled @endif>
-        </textarea>
-    @endcomponent
-
-    @component('cooperation.frontend.layouts.components.modal', ['class' => 'w-full md:w-1/2'])
-        @component('cooperation.frontend.layouts.components.wysiwyg', [
-            'disabled' => $disabled ?? false,
-            'withScript' => false,
-        ])
-            <textarea wire:model.lazy.defer="filledInAnswers.{{$toolQuestion->short}}"
-                  id="{{$toolQuestion->short}}"
-                  class="form-input w-full"
-                  placeholder="{{$toolQuestion->placeholder}}"
-                  @if(($disabled ?? false)) disabled @endif
+    <div class="w-full" x-data="tiptapEditor($wire.entangle('filledInAnswers.{{$toolQuestion->short}}'))" x-on:click="toggle()" wire:ignore>
+        @component('cooperation.layouts.components.tiptap')
+            <textarea wire:model.change="filledInAnswers.{{$toolQuestion->short}}" id="clickable-{{$toolQuestion->short}}"
+                      class="form-input" placeholder="{{$toolQuestion->placeholder}}"
+                      x-ref="editor"
+                      @if(($disabled ?? false))
+                          disabled
+                      @else
+                          x-on:input-updated.window="$el.setAttribute('disabled', true);"
+                          x-on:input-update-processed.window="$el.removeAttribute('disabled');"
+                      @endif
             ></textarea>
         @endcomponent
+    </div>
+
+    @component('cooperation.frontend.layouts.components.modal', ['class' => 'w-full md:w-1/2'])
+        <div class="w-full" x-data="tiptapEditor($wire.entangle('filledInAnswers.{{$toolQuestion->short}}'))" wire:ignore>
+            @component('cooperation.layouts.components.tiptap')
+                <textarea wire:model.change="filledInAnswers.{{$toolQuestion->short}}" id="{{$toolQuestion->short}}"
+                          class="form-input" placeholder="{{$toolQuestion->placeholder}}"
+                          x-ref="editor"
+                          @if(($disabled ?? false))
+                              disabled
+                          @else
+                              x-on:input-updated.window="$el.setAttribute('disabled', true);"
+                              x-on:input-update-processed.window="$el.removeAttribute('disabled');"
+                          @endif
+                ></textarea>
+            @endcomponent
+        </div>
 
         @slot('header')
             {{ $toolQuestion->name }}
         @endslot
-        <div class="flex justify-end space-x-2">
+        <div class="flex justify-end space-x-2 mt-5">
             <button class="btn btn-orange" wire:click="resetToOriginalAnswer('{{$toolQuestion->short}}')"
                     x-on:click="close()">
                 @lang('default.buttons.cancel')
@@ -40,29 +45,3 @@
         </div>
     @endcomponent
 </div>
-
-@push('js')
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            initTinyMCE({
-                content_css: '{{ asset('css/frontend/tinymce.css') }}',
-                setup: (editor) => {
-                    // Click doesn't trigger when the editor is readonly. This is fine.
-                    editor.on('click', (event) => {
-                        // This is purely for the popup textareas...
-                        window.triggerEvent(editor.targetElm.closest('.tiny-editor'), 'click');
-                    });
-                    editor.on('change', (event) => {
-                        // Okay, hear me out: Due to the popup, we have 2 tiny editors that are meant to be in sync.
-                        // Instead of waiting for a full server request circle and detecting the textarea changing
-                        // values, and potentially overriding any user input, we instead just manually update the
-                        // tiny editor. This is faster, more reliable and less junky for the user.
-                        if (! editor.id.startsWith('clickable-')) {
-                            tinymce.get(`clickable-${editor.id}`).setContent(editor.getContent());
-                        }
-                    });
-                },
-            });
-        });
-    </script>
-@endpush

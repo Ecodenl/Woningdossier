@@ -10,10 +10,8 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
 {
     /**
      * Create a new token record.
-     *
-     * @return string
      */
-    public function create(CanResetPasswordContract $user)
+    public function create(CanResetPasswordContract $user): string
     {
         $email = $user->getEmailForPasswordReset();
 
@@ -31,16 +29,13 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
 
     /**
      * Determine if a token record exists and is valid.
-     *
-     * @param string $token
-     *
-     * @return bool
      */
-    public function exists(CanResetPasswordContract $user, $token)
+    public function exists(CanResetPasswordContract $user, $token): bool
     {
         // retrieve all the password resets
         $records = $this->getTable()->where(
-            'email', $user->getEmailForPasswordReset()
+            'email',
+            $user->getEmailForPasswordReset()
         )->get();
 
         // Loop all tokens because there could be more than one for this e-mail. We can't just check the first

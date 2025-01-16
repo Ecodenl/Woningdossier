@@ -25,29 +25,20 @@ class GenerateExampleBuildingCsv implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $cooperation;
-    public $fileType;
-    public $fileStorage;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Cooperation $cooperation, FileType $fileType, FileStorage $fileStorage)
+    public function __construct(public Cooperation $cooperation, public FileType $fileType, public FileStorage $fileStorage)
     {
         $this->queue = Queue::EXPORTS;
-        $this->cooperation = $cooperation;
-        $this->fileType = $fileType;
-        $this->fileStorage = $fileStorage;
     }
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $contentStructure = ContentStructureService::init(
             ToolHelper::getContentStructure(ToolHelper::STRUCT_TOTAL, DumpService::MODE_CSV)

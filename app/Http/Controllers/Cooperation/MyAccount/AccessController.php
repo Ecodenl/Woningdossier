@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use Illuminate\Http\RedirectResponse;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserRevokedAccessToHisBuilding;
 use App\Helpers\HoomdossierSession;
@@ -10,7 +11,7 @@ use Illuminate\Http\Request;
 
 class AccessController extends Controller
 {
-    public function allowAccess(Request $request)
+    public function allowAccess(Request $request): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
 

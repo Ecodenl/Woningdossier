@@ -2,17 +2,17 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class AddNewTranslationsToLanguageLinesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @note we use the LanguageLine model so the cache get flushed.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
+        // TODO: This should be default in the lang files so it can be imported with the command
+
         $languageLinesData = [
             'solar-panels' => [
                 'indication-for-costs.performance.ideal' => ['nl' => 'Ideaal'],
@@ -99,10 +99,8 @@ class AddNewTranslationsToLanguageLinesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

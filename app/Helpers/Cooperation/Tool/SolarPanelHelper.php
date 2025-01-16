@@ -78,7 +78,7 @@ class SolarPanelHelper extends ToolHelper
                 $actionPlanAdvice->step()->associate($step);
 
                 // We only want to check old advices if the updated attributes are not relevant to this measure
-                if (!in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
                     UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
                 }
 

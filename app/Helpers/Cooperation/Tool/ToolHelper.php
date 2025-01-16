@@ -17,19 +17,15 @@ abstract class ToolHelper
     use RetrievesAnswers,
         FluentCaller;
 
-    /** @var User */
-    public $user;
-
+    public User $user;
     public InputSource $masterInputSource;
 
     public bool $withOldAdvices = true;
 
     /**
      * What values the controller expects.
-     *
-     * @var array
      */
-    public $values;
+    public array $values;
 
     public function __construct(User $user, InputSource $inputSource)
     {
@@ -56,22 +52,16 @@ abstract class ToolHelper
         return $this->withOldAdvices;
     }
 
-    public function setValues(array $values)
+    public function setValues(array $values): static
     {
         $this->values = $values;
-
         return $this;
     }
 
     /**
      * Get the values or a direct value from the value array.
-     *
-     *
-     * @param null $key
-     *
-     * @return array|\ArrayAccess|mixed
      */
-    public function getValues($key = null)
+    public function getValues(?string $key = null): mixed
     {
         if (is_null($key)) {
             return $this->values;
@@ -104,7 +94,7 @@ abstract class ToolHelper
 
     protected function getConditionConsiderable(string $short): array
     {
-        $conditions =  [
+        $conditions = [
             [
                 [
                     'column' => 'fn',

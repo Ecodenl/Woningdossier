@@ -2,24 +2,23 @@
 
 namespace App\Responses;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Helpers\RoleHelper;
 use App\Helpers\Str;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 
 class LoginResponse implements \Laravel\Fortify\Contracts\LoginResponse
 {
     /**
      * Create an HTTP response that represents the object.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function toResponse($request)
+    public function toResponse($request): Response
     {
         // the guard()->user() will return the auth model, in our case this is the Account model
         // but we want the user from the account, so that's why we do ->user()->user();
         $user = Auth::guard()->user()->user();
+        /** @var Role $role */
         $role = Role::findByName($user->roles()->first()->name);
 
         $redirect = 1 == $user->roles->count() ? RoleHelper::getUrlByRole($role) : '/admin';
@@ -31,8 +30,6 @@ class LoginResponse implements \Laravel\Fortify\Contracts\LoginResponse
             $redirect = $intended;
         }
 
-        return $request->wantsJson()
-            ? response()->json(['two_factor' => false])
-            : redirect()->to($redirect);
+        return $request->wantsJson() ? response()->json(['two_factor' => false]) : redirect()->to($redirect);
     }
 }

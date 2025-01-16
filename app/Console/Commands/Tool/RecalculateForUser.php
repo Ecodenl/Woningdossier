@@ -36,21 +36,9 @@ class RecalculateForUser extends Command
     protected $description = 'Command to calculate / recalculate advices for a user or cooperation';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $userIds = $this->option('user');
         $inputSourceShorts = $this->option('input-source');
@@ -126,5 +114,7 @@ class RecalculateForUser extends Command
         $bar->finish();
 
         $this->output->newLine();
+
+        return self::SUCCESS;
     }
 }

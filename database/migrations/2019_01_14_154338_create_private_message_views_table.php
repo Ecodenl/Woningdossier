@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePrivateMessageViewsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('private_message_views', function (Blueprint $table) {
             $table->increments('id');
@@ -22,10 +20,13 @@ class CreatePrivateMessageViewsTable extends Migration
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->integer('cooperation_id')->unsigned()->nullable();
-            $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
+            $table->unsignedInteger('input_source_id')->nullable();
+            $table->foreign('input_source_id')->references('id')->on('input_sources');
 
-            $table->dateTime('read_at')->nullable()->default(null);
+            $table->integer('to_cooperation_id')->unsigned()->nullable();
+            $table->foreign('to_cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
+
+            $table->dateTime('read_at')->nullable();
 
             $table->timestamps();
         });
@@ -33,11 +34,9 @@ class CreatePrivateMessageViewsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('private_message_views');
     }
-}
+};

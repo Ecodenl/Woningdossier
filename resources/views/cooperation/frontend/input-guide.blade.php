@@ -99,7 +99,7 @@
                 @endslot
                 @component('cooperation.frontend.layouts.components.alpine-select')
                     <select id="dropdown" class="form-input" name="alpine[dropdown]">
-                        <option selected disabled>Dropdown</option>
+                        <option value="" selected disabled>Dropdown</option>
                     </select>
                 @endcomponent
             @endcomponent
@@ -146,7 +146,7 @@
                 @slot('sourceSlot')
                     {!! $html !!}
                 @endslot
-                <input id="input-group-error" type="text" class="form-input with-append" placeholder="Error met waarde">
+                <input id="input-group-error" type="text" class="form-input" placeholder="Error met waarde">
                 <div class="input-group-append">
                     m<sup>2</sup>
                 </div>
@@ -210,15 +210,23 @@
                         textarea.form-input
                         <br>
                         <span class="text-red">
-                            Note: The textarea should be wrapped by the tiny textarea component:
+                            Note: The textarea should be wrapped by the tiptap textarea component:
                             <br>
-                            @@component('cooperation.frontend.layouts.components.wysiwyg')
+                            @@component('cooperation.layouts.components.tiptap')
+                            <br><br>
+                            A parent element (usually a wrapping div) should initiate the editor script: x-data="tiptapEditor(@@js($content))"
+                            <br>
+                            For Livewire, use `tiptapEditor($wire.entangle('prop'))` instead.
+                            <br>
+                            The textarea should be given an `x-ref`: x-ref="editor"
                         </span>
                     </p>
                 @endslot
-                @component('cooperation.frontend.layouts.components.wysiwyg')
-                    <textarea id="tiny-text-area" class="form-input" placeholder="Text area"></textarea>
-                @endcomponent
+                <div class="w-full" x-data="tiptapEditor()">
+                    @component('cooperation.layouts.components.tiptap')
+                        <textarea id="wysiwyg-text-area" class="form-input" placeholder="Wysiwyg editor" x-ref="editor"></textarea>
+                    @endcomponent
+                </div>
             @endcomponent
         </div>
     </div>
@@ -232,13 +240,9 @@
                 @slot('modalBodySlot')
                     <p class="font-bold">
                         input.form-input ~ div.input-group-append
-                        <br>
-                        When applying an input-group-append, it is suggested to add styling to the input:
-                        .with-append
-                        This will make the append feel more natural
                     </p>
                 @endslot
-                <input type="text" class="form-input with-append" placeholder="Placeholder">
+                <input type="text" class="form-input" placeholder="Placeholder">
                 <div class="input-group-append">
                     m<sup>2</sup>
                 </div>
@@ -256,7 +260,7 @@
                 @endslot
                 @component('cooperation.frontend.layouts.components.alpine-select', ['icon' => 'icon-detached-house'])
                     <select id="dropdown-icon" class="form-input" name="alpine[dropdown_icon]">
-                        <option selected disabled>Placeholder icon</option>
+                        <option value="" selected disabled>Placeholder icon</option>
                     </select>
                 @endcomponent
             @endcomponent
@@ -266,7 +270,7 @@
                 @slot('sourceSlot')
                     {!! $html !!}
                 @endslot
-                <input type="text" class="form-input with-append" placeholder="Placeholder">
+                <input type="text" class="form-input" placeholder="Placeholder">
                 <div class="input-group-append">
                     kWh
                 </div>
@@ -313,6 +317,36 @@
                 </div>
             @endcomponent
         </div>
+    </div>
+
+    <div class="w-full">
+        @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Rating slider'])
+            @slot('sourceSlot')
+                <li class="change-input-value source-select-option source-resident" x-on:click="changeOption($el)"
+                    data-input-value="{&quot;comfort&quot;:5,&quot;renewable&quot;:3}" data-input-source-short="resident">
+                    Bewoner: Comfort: 5, Duurzaamheid: 3
+                </li>
+            @endslot
+
+            <div class="w-full grid grid-rows-3 grid-cols-2 grid-flow-row justify-items-center gap-x-32 lg:gap-x-64 gap-y-8">
+                @include('cooperation.frontend.layouts.parts.rating-slider', [
+                    'inputName' => 'comfort',
+                    'inputShort' => 'comfort',
+                    'min' => 1,
+                    'max' => 5,
+                    'disabled' => false,
+                    'label' => 'Comfort',
+                ])
+                @include('cooperation.frontend.layouts.parts.rating-slider', [
+                    'inputName' => 'renewable',
+                    'inputShort' => 'renewable',
+                    'min' => 1,
+                    'max' => 5,
+                    'disabled' => false,
+                    'label' => 'Duurzaamheid',
+                ])
+            </div>
+        @endcomponent
     </div>
 
     <div class="w-full">

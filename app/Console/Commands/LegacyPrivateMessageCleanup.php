@@ -22,33 +22,23 @@ class LegacyPrivateMessageCleanup extends Command
     protected $description = 'Remove private messages for buildings that have already been deleted';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $buildings = Building::withTrashed()->whereNotNull('deleted_at')->get();
-        $this->line('Got '.$buildings->count().' buildings that have been deleted');
+        $this->line('Got ' . $buildings->count() . ' buildings that have been deleted');
         foreach ($buildings as $building) {
             $privateMessages = $building->privateMessages;
             if ($privateMessages->count() > 0) {
-                $this->line('There is/are '.$privateMessages->count().' private message(s) for building '.$building->id);
+                $this->line('There is/are ' . $privateMessages->count() . ' private message(s) for building ' . $building->id);
                 foreach ($privateMessages as $privateMessage) {
-                    $this->info('Deleting private message '.$privateMessage->id.' for building '.$building->id);
+                    $this->info('Deleting private message ' . $privateMessage->id . ' for building ' . $building->id);
                     $privateMessage->delete();
                 }
             }
         }
+
+        return self::SUCCESS;
     }
 }

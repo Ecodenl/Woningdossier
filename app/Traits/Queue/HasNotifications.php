@@ -10,17 +10,17 @@ trait HasNotifications
     public string $uuid;
     public bool $caresForInputSource = true;
 
-    protected function setUuid()
+    protected function setUuid(): void
     {
         $this->uuid = Str::uuid();
     }
 
-    protected function ignoreNotificationInputSource()
+    protected function ignoreNotificationInputSource(): void
     {
         $this->caresForInputSource = false;
     }
 
-    protected function deactivateNotification()
+    protected function deactivateNotification(): void
     {
         NotificationService::init()
             ->forBuilding($this->building ?? $this->user->building)

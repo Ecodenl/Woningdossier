@@ -9,10 +9,8 @@ class FileTypesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $fileTypeCategory = DB::table('file_type_categories')->where('short', 'report')->first();
 

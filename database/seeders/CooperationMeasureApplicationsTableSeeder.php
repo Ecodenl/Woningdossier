@@ -146,10 +146,8 @@ class CooperationMeasureApplicationsTableSeeder extends Seeder
 
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $cooperations = \App\Models\Cooperation::cursor();
         foreach ($cooperations as $cooperation) {

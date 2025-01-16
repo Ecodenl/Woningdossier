@@ -23,10 +23,8 @@ class CsvService
 {
     /**
      * Return the base headers for a csv.
-     *
-     * @param $anonymize
      */
-    public static function getBaseHeaders($anonymize): array
+    public static function getBaseHeaders(bool $anonymize): array
     {
         if ($anonymize) {
             return [
@@ -65,8 +63,6 @@ class CsvService
 
     /**
      * Method to dump the results of a given questionnaire.
-     *
-     * @param Cooperation $cooperation
      */
     public static function dumpForQuestionnaire(Questionnaire $questionnaire, bool $anonymize): array
     {
@@ -100,19 +96,16 @@ class CsvService
 //                    $inputSource = $coachInputSource;
 //                }
 
-                /** @var Collection $conversationRequestsForBuilding */
-                $createdAt = optional($user->created_at)->format('Y-m-d');
+                $createdAt = $user->created_at?->format('Y-m-d');
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
                 $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
 
-                $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
-                $connectedCoachNames = [];
-                // get the names from the coaches and add them to a array
-                foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
-                    array_push($connectedCoachNames, User::forMyCooperation($cooperation->id)->find($coachId)->getFullName());
-                }
-                // implode it.
-                $connectedCoachNames = implode(', ', $connectedCoachNames);
+                $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($building);
+                $connectedCoachNames = User::forMyCooperation($cooperation->id)
+                    ->whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
+                    ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
+                    ->pluck('full_name')
+                    ->implode(', ');
 
                 $firstName = $user->first_name;
                 $lastName = $user->last_name;
@@ -152,18 +145,19 @@ class CsvService
                 $questionAnswerForBuilding = [];
                 // note the order, this is important.
                 // otherwise the data will be retrieved in a different order each time and that will result in mixed data in the rows
-                $questionAnswersForCurrentQuestionnaire =
-                    DB::table('questionnaires')
-                        ->where('questionnaires.id', $questionnaire->id)
-                        ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
+                $questionAnswersForCurrentQuestionnaire = DB::table('questionnaires')
+                    ->where('questionnaires.id', $questionnaire->id)
+                    ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
                         // this may cause weird results, but meh
-                        ->whereNull('questions.deleted_at')
-                        ->leftJoin('questions_answers',
-                            function ($leftJoin) use ($building, $inputSource) {
-                                $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
-                                    ->where('questions_answers.input_source_id', $inputSource->id)
-                                    ->where('questions_answers.building_id', '=', $building->id);
-                            })
+                    ->whereNull('questions.deleted_at')
+                    ->leftJoin(
+                        'questions_answers',
+                        function ($leftJoin) use ($building, $inputSource) {
+                            $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
+                                ->where('questions_answers.input_source_id', $inputSource->id)
+                                ->where('questions_answers.building_id', '=', $building->id);
+                        }
+                    )
                         ->select('questions_answers.answer', 'questions.id as question_id', 'questions.name as question_name', 'questions.deleted_at')
                         ->orderBy('questions.order')
                         ->get()->pullTranslationFromJson('question_name');
@@ -176,7 +170,7 @@ class CsvService
                     if ($currentQuestion instanceof Question) {
                         // when the question has options, the answer is imploded.
                         if ($currentQuestion->hasQuestionOptions()) {
-                            if (!empty($answer)) {
+                            if (! empty($answer)) {
                                 // this will contain the question option ids
                                 // and filter out the empty answers.
                                 $answers = array_filter(explode('|', $answer));
@@ -204,92 +198,5 @@ class CsvService
         array_unshift($rows, $headers);
 
         return $rows;
-    }
-
-
-
-    protected static function formatFieldOutput($column, $value, $maybe1, $maybe2)
-    {
-        $decimals = 0;
-        $shouldRound = false;
-
-        if (self::isYear($column) || self::isYear($maybe1, $maybe2)) {
-            return $value;
-        }
-
-        if (!is_numeric($value)) {
-            return $value;
-        }
-
-        if (in_array($column, ['interest_comparable'])) {
-            $decimals = 1;
-        }
-        if ('specs' == $column && 'size_collector' == $maybe1) {
-            $decimals = 1;
-        }
-        if ('paintwork' == $column && 'costs' == $maybe1) {
-            /// round the cost for paintwork
-            $shouldRound = true;
-        }
-
-        return self::formatOutput($column, $value, $decimals, $shouldRound);
-    }
-
-    /**
-     * Format the output of the given column and value.
-     *
-     * @param string $column
-     * @param mixed $value
-     * @param int $decimals
-     * @param bool $shouldRound
-     *
-     * @return float|int|string
-     */
-    protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false)
-    {
-        if (in_array($column, ['percentage_consumption']) ||
-            false !== stristr($column, 'savings_') ||
-            stristr($column, 'cost')) {
-            $value = NumberFormatter::round($value);
-        }
-        if ($shouldRound) {
-            $value = NumberFormatter::round($value);
-        }
-        // We should let Excel do the separation of thousands
-        return number_format($value, $decimals, ',', '');
-        //return NumberFormatter::format($value, $decimals, $shouldRound);
-    }
-
-    protected static function translateExtraValueIfNeeded($value)
-    {
-        if (in_array($value, ['yes', 'no', 'unknown'])) {
-            $key = 'general.options.%s.title';
-
-            return Translation::translate(sprintf($key, $value));
-        }
-    }
-
-    /**
-     * Returns whether or not two (optional!) columns contain a year or not.
-     *
-     * @param string $column
-     * @param string $extraValue
-     *
-     * @return bool
-     */
-    protected static function isYear($column, $extraValue = '')
-    {
-        if (!is_null($column)) {
-            if (false !== stristr($column, 'year')) {
-                return true;
-            }
-            if ('extra' == $column) {
-                return in_array($extraValue, [
-                    'year',
-                ]);
-            }
-        }
-
-        return false;
     }
 }

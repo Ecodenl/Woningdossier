@@ -3,15 +3,15 @@
 use App\Models\LanguageLine;
 use Illuminate\Database\Migrations\Migration;
 
-class AddWallInsulationMeasureNameToLanguageLines extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
+        // TODO: This obviously doesn't work on a migrate:fresh (also stepId? On a language_line?)
+
         $stepId = null;
         if (DB::table('steps')->where('slug', 'wall-insulation')->first() instanceof \stdClass) {
             $stepId = DB::table('steps')->where('slug', 'wall-insulation')->first()->id;
@@ -41,10 +41,8 @@ class AddWallInsulationMeasureNameToLanguageLines extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

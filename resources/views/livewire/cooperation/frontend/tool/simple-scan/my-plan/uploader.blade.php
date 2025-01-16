@@ -15,9 +15,9 @@
     // When the temporary upload from Livewire fails, an error is thrown for the upload input. When the input is
     // multiple, one gets thrown for EVERY uploaded file. The error bag is shared with the view but not with
     // the component for whatever reason. We need this to be able to set the correct error message.
-    if($errors->any()) {
+    if ($errors->any()) {
         foreach($errors->getBag('default')->getMessages() as $key => $error) {
-            if(Str::startsWith($key, 'documents')) {
+            if (Str::startsWith($key, 'documents')) {
                 $errorToReport = __('validation.custom.uploader.wrong-files');
 
                 if (is_array($error)) {
@@ -50,10 +50,10 @@
                'id' => 'file-uploader',
                'inputName' => 'documents'
             ])
-                <input wire:model="documents" wire:loading.attr="disabled"
+                <input wire:model.live="documents" wire:loading.attr="disabled"
                        class="form-input" id="uploader" type="file" multiple autocomplete="off"
                        {{-- This is a Livewire event we can capture --}}
-                       x-on:livewire-upload-finish="livewire.emit('uploadDone')">
+                       x-on:livewire-upload-finish="$wire.dispatchSelf('uploadDone')">
             @endcomponent
             <div class="flex w-2/3 justify-end pt-4">
                 <p>
@@ -156,7 +156,7 @@
                                'withInputSource' => false,
                                'label' => __('cooperation/frontend/tool.my-plan.uploader.form.title.label'),
                             ])
-                                <input class="form-input" wire:model.debounce.500ms="fileData.{{$file->id}}.title"
+                                <input class="form-input" wire:model.live.debounce.500ms="fileData.{{$file->id}}.title"
                                        id="edit-file-title-{{$file->id}}" @if(! $canUpdate) disabled @endif
                                        placeholder="@lang('cooperation/frontend/tool.my-plan.uploader.form.title.label')"
                                 >
@@ -168,7 +168,7 @@
                                'withInputSource' => false,
                                'label' => __('cooperation/frontend/tool.my-plan.uploader.form.description.label'),
                             ])
-                                <textarea class="form-input" wire:model.debounce.500ms="fileData.{{$file->id}}.description"
+                                <textarea class="form-input" wire:model.live.debounce.500ms="fileData.{{$file->id}}.description"
                                           id="edit-file-description-{{$file->id}}" @if(! $canUpdate) disabled @endif
                                           placeholder="@lang('cooperation/frontend/tool.my-plan.uploader.form.description.label')"
                                 ></textarea>
@@ -183,7 +183,7 @@
                                 ])
                                     <div class="checkbox-wrapper">
                                         <input id="edit-file-share-with-cooperation-{{$file->id}}" type="checkbox"
-                                               wire:model="fileData.{{$file->id}}.share_with_cooperation"
+                                               wire:model.live="fileData.{{$file->id}}.share_with_cooperation"
                                                value="1">
                                         <label for="edit-file-share-with-cooperation-{{$file->id}}">
                                             <span class="checkmark"></span>
@@ -205,7 +205,7 @@
                                 ])
                                     @component('cooperation.frontend.layouts.components.alpine-select')
                                         <select id="edit-file-tag-{{$file->id}}" class="form-input hidden"
-                                                wire:model="fileData.{{$file->id}}.tag">
+                                                wire:model.live="fileData.{{$file->id}}.tag">
                                             @foreach(MediaHelper::getFillableTagsForClass(\App\Models\Building::class) as $tag)
                                                 <option value="{{ $tag }}">
                                                     @lang("models/media.tags.{$tag}")

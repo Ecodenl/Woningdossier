@@ -8,17 +8,15 @@ class QuestionFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'type' => 'text',
             'name' => [
                 'nl' => $this->faker->text(80),
             ],
-            'required' => $this->faker->boolean,
+            'required' => $this->faker->boolean(),
             'validation' => [],
         ];
     }

@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link rel="stylesheet" href="{{ mix('css/frontend/app.css') }}">
+    @vite('resources/css/frontend/app.css')
     <title>Hoomdossier styleguide</title>
 </head>
 <body id="app-body">
@@ -292,154 +292,162 @@
                 .icon-xs.icon-arrow-left <br>
                 .w-2.h-2.icon-arrow-right <br>
             </p>
-            <div class="flex items-center w-full space-x-7">
-                <i class="icon-xs icon-arrow-left"></i>
-                <i class="icon-xs icon-arrow-right"></i>
-                <i class="icon-sm icon-mail"></i>
-                <i class="icon-sm icon-show"></i>
-                <i class="icon-sm icon-hide"></i>
-                <i class="icon-sm icon-house"></i>
-                <i class="icon-sm icon-check-circle"></i>
-                <i class="icon-sm icon-close-circle"></i>
-                <i class="icon-sm icon-moneybag"></i>
-                <i class="icon-sm icon-piggybank"></i>
-                <i class="icon-sm icon-savings"></i>
-                <i class="icon-sm icon-arrow-left-right"></i>
-                <i class="w-3 h-3 icon-arrow-left-bold"></i>
-                <i class="w-3 h-3 icon-arrow-right-bold"></i>
-                <i class="icon-md icon-arrow-left-circle"></i>
-                <i class="icon-md icon-arrow-right-circle"></i>
-                <i class="icon-md icon-info"></i>
-                <i class="icon-md icon-chat"></i>
-                <i class="icon-md icon-account-circle"></i>
-            </div>
-            <div class="flex items-center w-full space-x-10">
-                <i class="icon-lg icon-label-g"></i>
-                <i class="icon-lg icon-label-f"></i>
-                <i class="icon-lg icon-label-e"></i>
-                <i class="icon-lg icon-label-d"></i>
-                <i class="icon-lg icon-label-c"></i>
-                <i class="icon-lg icon-label-b"></i>
-                <i class="icon-lg icon-label-a"></i>
-                <i class="icon-lg icon-label-unknown"></i>
-            </div>
-            <div class="flex items-center w-full space-x-10">
-                <i class="icon-xl icon-floor-insulation-none"></i>
-                <div></div>
-                <i class="icon-xl icon-floor-insulation-moderate"></i>
-                <div></div>
-                <i class="icon-xl icon-floor-insulation-good"></i>
-                <div></div>
-                <i class="icon-xl icon-floor-insulation-excellent"></i>
-                <i class="icon-xl icon-wall-insulation-none"></i>
-                <i class="icon-xl icon-wall-insulation-moderate"></i>
-                <i class="icon-xl icon-wall-insulation-good"></i>
-                <i class="icon-xl icon-wall-insulation-excellent"></i>
-            </div>
-            <div class="flex items-center w-full space-x-14">
-                <i class="icon-xl icon-gas"></i>
-                <i class="icon-xl icon-electric"></i>
-                <i class="icon-xl icon-induction"></i>
-                <i class="icon-xxxl icon-roof-insulation-none"></i>
-                <i class="icon-xxxl icon-roof-insulation-moderate"></i>
-                <i class="icon-xxxl icon-roof-insulation-good"></i>
-                <i class="icon-xxxl icon-roof-insulation-excellent"></i>
-            </div>
-            <div class="flex items-center w-full space-x-6">
-                <i class="icon-xxl icon-detached-house"></i>
-                <i class="icon-xxl icon-two-under-one-roof"></i>
-                <i class="icon-xxl icon-end-of-terrace-house"></i>
-                <i class="icon-xxl icon-mid-terrace-house"></i>
-                <i class="icon-xxl icon-upstairs-apartment-corner"></i>
-                <i class="icon-xxl icon-upstairs-apartment-between"></i>
-                <i class="icon-xxl icon-apartment-ground-floor-between"></i>
-                <i class="icon-xxl icon-apartment-mid-floor-between"></i>
-            </div>
-            <div class="flex items-center w-full space-x-6">
-                <i class="icon-xxl icon-apartment-mid-floor-corner"></i>
-                <i class="icon-xxl icon-apartment-upper-floor-between"></i>
-                <i class="icon-xxl icon-apartment-upper-floor-corner"></i>
-                <i class="icon-xxl icon-apartment-ground-floor-corner"></i>
-                <i class="icon-xxl icon-other"></i>
-                <i class="icon-xxl icon-pointed-roof"></i>
-                <i class="icon-xxl icon-pitched-roof"></i>
-                <i class="icon-xxl icon-flat-roof"></i>
-            </div>
-            <div class="flex items-center w-full space-x-6">
-                <i class="icon-xxl icon-kitchen"></i>
-                <i class="icon-xxl icon-bathroom"></i>
-                <i class="icon-xxl icon-dormer"></i>
-                <i class="icon-xxl icon-window-frame"></i>
-                <i class="icon-xxl icon-sunroom"></i>
-                <i class="icon-xxl icon-attic-room"></i>
-                <i class="icon-xxl icon-rounded-roof"></i>
-                <i class="icon-xxl icon-flat-pitched-roof"></i>
-            </div>
-            <div class="flex items-center w-full space-x-6">
-                <i class="icon-xl icon-paint-job"></i>
-                <i class="icon-xl icon-air-conditioning"></i>
-                <i class="icon-xl icon-air-conditioning-hot"></i>
-                <i class="icon-xl icon-tools"></i>
-                <i class="icon-xl icon-central-heater-gas"></i>
-                <i class="icon-xl icon-central-heater-electric"></i>
-                <i class="icon-xl icon-central-heater"></i>
-                <i class="icon-xl icon-heat-pump"></i>
-                <i class="icon-xl icon-infrared-heater"></i>
-                <i class="icon-xl icon-district-heating"></i>
-            </div>
-            <div class="flex items-center w-full space-x-8">
-                <i class="icon-xl icon-radiant-floor-heating"></i>
-                <i class="icon-xl icon-radiant-wall-heating"></i>
-                <i class="icon-xxl icon-radiator"></i>
-                <i class="icon-xxl icon-radiator-low-temp"></i>
-                <i class="icon-xxl icon-sun-boiler-hot-water"></i>
-                <i class="icon-xxl icon-sun-boiler-heating"></i>
-                <i class="icon-xxl icon-sun-boiler-both"></i>
-                <i class="icon-xxl icon-sun-boiler"></i>
-            </div>
-            <div class="flex items-center w-full space-x-14">
-                <i class="icon-xl icon-solar-panels"></i>
-                <i class="icon-xl icon-sustainability"></i>
-                <i class="icon-xl icon-plug"></i>
-                <i class="icon-xl icon-washing-machine"></i>
-                <i class="icon-xl icon-dryer"></i>
-                <i class="icon-xl icon-dishwasher"></i>
-                <i class="icon-xl icon-co2"></i>
-                <i class="icon-xl icon-ventilation"></i>
-            </div>
-            <div class="flex items-center w-full space-x-10">
-                <i class="icon-xl icon-radiator-foil"></i>
-                <i class="icon-xl icon-curtains"></i>
-                <i class="icon-xl icon-cracks-seams"></i>
-                <i class="icon-xl icon-thermostat"></i>
-                <i class="icon-xl icon-temperature"></i>
-                <i class="icon-xl icon-hydronic-balance-temperature"></i>
-                <i class="icon-xl icon-pipes"></i>
-                <i class="icon-xl icon-switch"></i>
-                <i class="icon-xl icon-building-heat"></i>
-            </div>
-            <div class="flex items-center w-full space-x-6">
-                <i class="icon-xl icon-shower-head"></i>
-                <i class="icon-xl icon-timer"></i>
-                <i class="icon-xl icon-illumination-shine"></i>
-                <i class="icon-xl icon-illumination"></i>
-                <i class="icon-xl icon-glass-single"></i>
-                <i class="icon-xl icon-glass-double"></i>
-                <i class="icon-xl icon-glass-hr"></i>
-                <i class="icon-xl icon-glass-hr-p"></i>
-                <i class="icon-xl icon-glass-hr-dp"></i>
-                <i class="icon-xl icon-glass-hr-tp"></i>
-            </div>
-            <div class="flex items-center w-full space-x-6">
-                <i class="icon-xl icon-persons-one"></i>
-                <i class="icon-xxl icon-persons-two"></i>
-                <i class="icon-xxl icon-persons-three"></i>
-                <i class="icon-xxl icon-persons-four"></i>
-                <i class="icon-xxl icon-persons-five"></i>
-                <i class="icon-xxl icon-persons-six"></i>
-                <i class="icon-xxl icon-persons-seven"></i>
-                <i class="icon-xxl icon-persons-more-than-seven"></i>
-            </div>
+            @if(app()->isLocal())
+                <div class="flex flex-wrap items-center w-full space-x-4 space-y-4 bg-gray bg-opacity-25">
+                    @foreach(File::files(public_path('icons')) as $file)
+                        <img class="w-8 h-8 inline-flex" src="/icons/{{ $file->getRelativePathname() }}" title="{{ $file->getFilenameWithoutExtension() }}">
+                    @endforeach
+                </div>
+            @else
+                <div class="flex items-center w-full space-x-7">
+                    <i class="icon-xs icon-arrow-left"></i>
+                    <i class="icon-xs icon-arrow-right"></i>
+                    <i class="icon-sm icon-mail"></i>
+                    <i class="icon-sm icon-show"></i>
+                    <i class="icon-sm icon-hide"></i>
+                    <i class="icon-sm icon-house"></i>
+                    <i class="icon-sm icon-check-circle"></i>
+                    <i class="icon-sm icon-close-circle"></i>
+                    <i class="icon-sm icon-moneybag"></i>
+                    <i class="icon-sm icon-piggybank"></i>
+                    <i class="icon-sm icon-savings"></i>
+                    <i class="icon-sm icon-arrow-left-right"></i>
+                    <i class="w-3 h-3 icon-arrow-left-bold"></i>
+                    <i class="w-3 h-3 icon-arrow-right-bold"></i>
+                    <i class="icon-md icon-arrow-left-circle"></i>
+                    <i class="icon-md icon-arrow-right-circle"></i>
+                    <i class="icon-md icon-info"></i>
+                    <i class="icon-md icon-chat"></i>
+                    <i class="icon-md icon-account-circle"></i>
+                </div>
+                <div class="flex items-center w-full space-x-10">
+                    <i class="icon-lg icon-label-g"></i>
+                    <i class="icon-lg icon-label-f"></i>
+                    <i class="icon-lg icon-label-e"></i>
+                    <i class="icon-lg icon-label-d"></i>
+                    <i class="icon-lg icon-label-c"></i>
+                    <i class="icon-lg icon-label-b"></i>
+                    <i class="icon-lg icon-label-a"></i>
+                    <i class="icon-lg icon-label-unknown"></i>
+                </div>
+                <div class="flex items-center w-full space-x-10">
+                    <i class="icon-xl icon-floor-insulation-none"></i>
+                    <div></div>
+                    <i class="icon-xl icon-floor-insulation-moderate"></i>
+                    <div></div>
+                    <i class="icon-xl icon-floor-insulation-good"></i>
+                    <div></div>
+                    <i class="icon-xl icon-floor-insulation-excellent"></i>
+                    <i class="icon-xl icon-wall-insulation-none"></i>
+                    <i class="icon-xl icon-wall-insulation-moderate"></i>
+                    <i class="icon-xl icon-wall-insulation-good"></i>
+                    <i class="icon-xl icon-wall-insulation-excellent"></i>
+                </div>
+                <div class="flex items-center w-full space-x-14">
+                    <i class="icon-xl icon-gas"></i>
+                    <i class="icon-xl icon-electric"></i>
+                    <i class="icon-xl icon-induction"></i>
+                    <i class="icon-xxxl icon-roof-insulation-none"></i>
+                    <i class="icon-xxxl icon-roof-insulation-moderate"></i>
+                    <i class="icon-xxxl icon-roof-insulation-good"></i>
+                    <i class="icon-xxxl icon-roof-insulation-excellent"></i>
+                </div>
+                <div class="flex items-center w-full space-x-6">
+                    <i class="icon-xxl icon-detached-house"></i>
+                    <i class="icon-xxl icon-two-under-one-roof"></i>
+                    <i class="icon-xxl icon-end-of-terrace-house"></i>
+                    <i class="icon-xxl icon-mid-terrace-house"></i>
+                    <i class="icon-xxl icon-upstairs-apartment-corner"></i>
+                    <i class="icon-xxl icon-upstairs-apartment-between"></i>
+                    <i class="icon-xxl icon-apartment-ground-floor-between"></i>
+                    <i class="icon-xxl icon-apartment-mid-floor-between"></i>
+                </div>
+                <div class="flex items-center w-full space-x-6">
+                    <i class="icon-xxl icon-apartment-mid-floor-corner"></i>
+                    <i class="icon-xxl icon-apartment-upper-floor-between"></i>
+                    <i class="icon-xxl icon-apartment-upper-floor-corner"></i>
+                    <i class="icon-xxl icon-apartment-ground-floor-corner"></i>
+                    <i class="icon-xxl icon-other"></i>
+                    <i class="icon-xxl icon-pointed-roof"></i>
+                    <i class="icon-xxl icon-pitched-roof"></i>
+                    <i class="icon-xxl icon-flat-roof"></i>
+                </div>
+                <div class="flex items-center w-full space-x-6">
+                    <i class="icon-xxl icon-kitchen"></i>
+                    <i class="icon-xxl icon-bathroom"></i>
+                    <i class="icon-xxl icon-dormer"></i>
+                    <i class="icon-xxl icon-window-frame"></i>
+                    <i class="icon-xxl icon-sunroom"></i>
+                    <i class="icon-xxl icon-attic-room"></i>
+                    <i class="icon-xxl icon-rounded-roof"></i>
+                    <i class="icon-xxl icon-flat-pitched-roof"></i>
+                </div>
+                <div class="flex items-center w-full space-x-6">
+                    <i class="icon-xl icon-paint-job"></i>
+                    <i class="icon-xl icon-air-conditioning"></i>
+                    <i class="icon-xl icon-air-conditioning-hot"></i>
+                    <i class="icon-xl icon-tools"></i>
+                    <i class="icon-xl icon-central-heater-gas"></i>
+                    <i class="icon-xl icon-central-heater-electric"></i>
+                    <i class="icon-xl icon-central-heater"></i>
+                    <i class="icon-xl icon-heat-pump"></i>
+                    <i class="icon-xl icon-infrared-heater"></i>
+                    <i class="icon-xl icon-district-heating"></i>
+                </div>
+                <div class="flex items-center w-full space-x-8">
+                    <i class="icon-xl icon-radiant-floor-heating"></i>
+                    <i class="icon-xl icon-radiant-wall-heating"></i>
+                    <i class="icon-xxl icon-radiator"></i>
+                    <i class="icon-xxl icon-radiator-low-temp"></i>
+                    <i class="icon-xxl icon-sun-boiler-hot-water"></i>
+                    <i class="icon-xxl icon-sun-boiler-heating"></i>
+                    <i class="icon-xxl icon-sun-boiler-both"></i>
+                    <i class="icon-xxl icon-sun-boiler"></i>
+                </div>
+                <div class="flex items-center w-full space-x-14">
+                    <i class="icon-xl icon-solar-panels"></i>
+                    <i class="icon-xl icon-sustainability"></i>
+                    <i class="icon-xl icon-plug"></i>
+                    <i class="icon-xl icon-washing-machine"></i>
+                    <i class="icon-xl icon-dryer"></i>
+                    <i class="icon-xl icon-dishwasher"></i>
+                    <i class="icon-xl icon-co2"></i>
+                    <i class="icon-xl icon-ventilation"></i>
+                </div>
+                <div class="flex items-center w-full space-x-10">
+                    <i class="icon-xl icon-radiator-foil"></i>
+                    <i class="icon-xl icon-curtains"></i>
+                    <i class="icon-xl icon-cracks-seams"></i>
+                    <i class="icon-xl icon-thermostat"></i>
+                    <i class="icon-xl icon-temperature"></i>
+                    <i class="icon-xl icon-hydronic-balance-temperature"></i>
+                    <i class="icon-xl icon-pipes"></i>
+                    <i class="icon-xl icon-switch"></i>
+                    <i class="icon-xl icon-building-heat"></i>
+                </div>
+                <div class="flex items-center w-full space-x-6">
+                    <i class="icon-xl icon-shower-head"></i>
+                    <i class="icon-xl icon-timer"></i>
+                    <i class="icon-xl icon-illumination-shine"></i>
+                    <i class="icon-xl icon-illumination"></i>
+                    <i class="icon-xl icon-glass-single"></i>
+                    <i class="icon-xl icon-glass-double"></i>
+                    <i class="icon-xl icon-glass-hr"></i>
+                    <i class="icon-xl icon-glass-hr-p"></i>
+                    <i class="icon-xl icon-glass-hr-dp"></i>
+                    <i class="icon-xl icon-glass-hr-tp"></i>
+                </div>
+                <div class="flex items-center w-full space-x-6">
+                    <i class="icon-xl icon-person"></i>
+                    <i class="icon-xxl icon-persons-two"></i>
+                    <i class="icon-xxl icon-persons-three"></i>
+                    <i class="icon-xxl icon-persons-four"></i>
+                    <i class="icon-xxl icon-persons-five"></i>
+                    <i class="icon-xxl icon-persons-six"></i>
+                    <i class="icon-xxl icon-persons-seven"></i>
+                    <i class="icon-xxl icon-persons-more-than-seven"></i>
+                </div>
+            @endif
         </div>
     </div>
     {{-- White space --}}

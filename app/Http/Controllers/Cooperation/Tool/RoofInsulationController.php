@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
@@ -27,12 +30,7 @@ use Illuminate\Support\Collection;
 
 class RoofInsulationController extends ToolController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * return \Illuminate\Http\Response
-     */
-    public function index(LegacyService $legacyService)
+    public function index(LegacyService $legacyService): View
     {
         $typeIds = [5];
 
@@ -66,14 +64,14 @@ class RoofInsulationController extends ToolController
             /** var BuildingRoofType $currentRoofType */
             foreach ($currentRoofTypes as $currentRoofType) {
                 $cat = RoofInsulation::getRoofTypeCategory($currentRoofType->roofType);
-                if (!empty($cat)) {
+                if (! empty($cat)) {
                     $currentCategorizedRoofTypes[$cat] = $currentRoofType->toArray();
                 }
             }
 
             foreach ($currentRoofTypesForMe as $currentRoofTypeForMe) {
                 $cat = RoofInsulation::getRoofTypeCategory($currentRoofTypeForMe->roofType);
-                if (!empty($cat)) {
+                if (! empty($cat)) {
                     // we do not want this to be an array, otherwise we would have to add additional functionality to the input group component.
                     $currentCategorizedRoofTypesForMe[$cat][] = $currentRoofTypeForMe;
                 }
@@ -93,30 +91,38 @@ class RoofInsulationController extends ToolController
         }
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'building', 'primaryRoofTypes', 'secondaryRoofTypes', 'typeIds',
-            'buildingFeaturesForMe', 'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
-            'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe',
+            'building',
+            'primaryRoofTypes',
+            'secondaryRoofTypes',
+            'typeIds',
+            'buildingFeaturesForMe',
+            'currentRoofTypes',
+            'roofTileStatuses',
+            'roofInsulation',
+            'currentRoofTypesForMe',
+            'heatings',
+            'measureApplications',
+            'currentCategorizedRoofTypes',
+            'currentCategorizedRoofTypesForMe',
             'measureRelatedAnswersCategorized'
         ));
     }
 
-    public function calculate(Request $request)
+    public function calculate(Request $request): JsonResponse
     {
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
-        $result = \App\Calculations\RoofInsulation::calculate($building,
-            $this->masterInputSource, $building->user->energyHabit()->forInputSource($this->masterInputSource)->first(), $request->all());
+        $result = \App\Calculations\RoofInsulation::calculate(
+            $building,
+            $this->masterInputSource,
+            $request->all()
+        );
 
         return response()->json($result);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function store(RoofInsulationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
+    public function store(RoofInsulationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -147,7 +153,7 @@ class RoofInsulationController extends ToolController
         }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
-        if (!empty($dirtyAttributes)) {
+        if (! empty($dirtyAttributes)) {
             UserToolDataChanged::dispatch($user);
         }
         $dirtyNames = array_keys($dirtyAttributes);
@@ -183,8 +189,13 @@ class RoofInsulationController extends ToolController
             }
         }
 
-        $values = $request->only('considerables', 'building_roof_type_ids', 'building_features',
-            'building_roof_types', 'step_comments');
+        $values = $request->only(
+            'considerables',
+            'building_roof_type_ids',
+            'building_features',
+            'building_roof_types',
+            'step_comments'
+        );
         $values['updated_measure_ids'] = $updatedMeasureIds;
 
         // Usually we let the completeStore function handle the completion, but we NEED the step to be completed

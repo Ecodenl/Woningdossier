@@ -87,10 +87,8 @@ class QuestionValue
 
             foreach ($questionValues as $index => $questionValue) {
                 if (! empty($questionValue['conditions'])) {
-                    $passed = $evaluator->evaluateCollection(
-                        $questionValue['conditions'],
-                        $answersForQuestionValues,
-                    );
+                    $passed = $evaluator->setAnswers($answersForQuestionValues)
+                        ->evaluate($questionValue['conditions']);
 
                     if (! $passed) {
                         $questionValues->forget($index);

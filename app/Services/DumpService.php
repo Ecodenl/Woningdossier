@@ -40,8 +40,8 @@ use Illuminate\Support\Str;
 
 class DumpService
 {
-    const MODE_CSV = 'csv';
-    const MODE_PDF = 'pdf';
+    const string MODE_CSV = 'csv';
+    const string MODE_PDF = 'pdf';
 
     use FluentCaller;
 
@@ -59,11 +59,6 @@ class DumpService
         $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
     }
 
-    /**
-     * @param  User  $user
-     *
-     * @return $this
-     */
     public function user(User $user): self
     {
         $this->user = $user;
@@ -71,11 +66,6 @@ class DumpService
         return $this;
     }
 
-    /**
-     * @param  InputSource  $inputSource
-     *
-     * @return $this
-     */
     public function inputSource(InputSource $inputSource): self
     {
         $this->inputSource = $inputSource;
@@ -84,10 +74,6 @@ class DumpService
 
     /**
      * Anonymize the dump.
-     *
-     * @param  bool  $anonymize
-     *
-     * @return $this
      */
     public function anonymize(bool $anonymize = true): self
     {
@@ -97,8 +83,6 @@ class DumpService
 
     /**
      * Set dump mode, which impacts how the dump is formed.
-     *
-     * @return $this
      */
     public function setMode(string $mode): self
     {
@@ -108,10 +92,6 @@ class DumpService
 
     /**
      * Set a header structure to re-use.
-     *
-     * @param  array  $headerStructure
-     *
-     * @return $this
      */
     public function setHeaderStructure(array $headerStructure): self
     {
@@ -121,8 +101,6 @@ class DumpService
 
     /**
      * Create the header structure.
-     *
-     * @return $this
      */
     public function createHeaderStructure(string $short): self
     {
@@ -166,7 +144,7 @@ class DumpService
 
                 if ($step instanceof Step) {
                     foreach (Arr::dot($content) as $dottedKey => $header) {
-                        Arr::set($structure[$stepShort], $dottedKey, "{$step->name}: {$header}");
+                        Arr::set($structure[$stepShort], $dottedKey, "{$step->getTranslation('name', 'nl')}: {$header}");
                     }
                 }
             }
@@ -181,8 +159,6 @@ class DumpService
      *
      * @param bool $withConditionalLogic If we should follow conditional logic. Answers won't be shown if conditions
      *     don't match
-     *
-     * @return array
      */
     public function generateDump(bool $withConditionalLogic = true): array
     {
@@ -190,7 +166,7 @@ class DumpService
         $building = $this->building;
         $inputSource = $this->inputSource;
 
-        $createdAt = optional($user->created_at)->format('Y-m-d');
+        $createdAt = $user->created_at?->format('Y-m-d');
         $updatedAt = $this->user->userActionPlanAdvices()
             ->forInputSource($inputSource)
             ->orderByDesc('updated_at')
@@ -215,12 +191,11 @@ class DumpService
             ];
         } else {
             $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
-            $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
-            $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
-                ->map(function ($user) {
-                    return $user->getFullName();
-                })->implode(', ');
-
+            $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($building);
+            $connectedCoachNames = User::whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
+                ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
+                ->pluck('full_name')
+                ->implode(', ');
 
             $firstName = $user->first_name;
             $lastName = $user->last_name;
@@ -231,7 +206,7 @@ class DumpService
             $number = $building->number;
             $extension = $building->extension ?? '';
 
-            $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
+            $appointmentDate = $mostRecentStatus->appointment_date?->format('Y-m-d');
 
             $data = [
                 $createdAt, $updatedAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
@@ -352,21 +327,33 @@ class DumpService
         ];
 
         foreach ($calculate as $short => $calculator) {
+            /**
+             * @var \App\Calculations\Calculator $calculator
+             * @phpstan-ignore varTag.nativeType
+             */
             $calculations[$short] = $calculator::calculate($building, $inputSource);
         }
 
-        $calculations['wall-insulation'] = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['wall-insulation'] = WallInsulation::calculate(
+            $building,
+            $inputSource,
+            $userEnergyHabit,
             (new WallInsulationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
         );
 
-        $calculations['insulated-glazing'] = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['insulated-glazing'] = InsulatedGlazing::calculate(
+            $building,
+            $inputSource,
             (new InsulatedGlazingHelper($user, $inputSource))
                 ->createValues()
-                ->getValues());
+                ->getValues()
+        );
 
-        $calculations['floor-insulation'] = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['floor-insulation'] = FloorInsulation::calculate(
+            $building,
+            $inputSource,
             (new FloorInsulationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -375,7 +362,6 @@ class DumpService
         $calculations['roof-insulation'] = RoofInsulation::calculate(
             $building,
             $inputSource,
-            $userEnergyHabit,
             (new RoofInsulationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -388,7 +374,9 @@ class DumpService
                 ->getValues()
         );
 
-        $calculations['ventilation'] = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['ventilation'] = Ventilation::calculate(
+            $building,
+            $inputSource,
             (new VentilationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -411,7 +399,7 @@ class DumpService
         }
 
         if (Str::contains($key, 'percentage_consumption') || Str::contains($key, 'savings_')
-            || (Str::contains($key, 'cost') && ! Str::contains( $key, 'roof-insulation'))) {
+            || (Str::contains($key, 'cost') && ! Str::contains($key, 'roof-insulation'))) {
             $shouldRound = true;
         }
 
@@ -421,12 +409,7 @@ class DumpService
     /**
      * Format the output of the given column and value.
      *
-     * @param string $column
      * @param mixed $value
-     * @param int $decimals
-     * @param bool $shouldRound
-     *
-     * @return string
      */
     protected function formatOutput(string $column, $value, int $decimals = 0, bool $shouldRound = false): string
     {

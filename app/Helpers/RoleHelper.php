@@ -8,12 +8,20 @@ use Spatie\Permission\Models\Role;
 
 class RoleHelper
 {
-    const ROLE_SUPERUSER = 'superuser';
-    const ROLE_SUPER_ADMIN = 'super-admin';
-    const ROLE_COOPERATION_ADMIN = 'cooperation-admin';
-    const ROLE_COACH = 'coach';
-    const ROLE_RESIDENT = 'resident';
-    const ROLE_COORDINATOR = 'coordinator';
+    const string ROLE_SUPERUSER = 'superuser';
+    const string ROLE_SUPER_ADMIN = 'super-admin';
+    const string ROLE_COOPERATION_ADMIN = 'cooperation-admin';
+    const string ROLE_COACH = 'coach';
+    const string ROLE_RESIDENT = 'resident';
+    const string ROLE_COORDINATOR = 'coordinator';
+
+    const array ADMIN_ROLES = [
+        self::ROLE_COORDINATOR,
+        self::ROLE_SUPERUSER,
+        self::ROLE_SUPER_ADMIN,
+        self::ROLE_COACH, // TODO: Check if we should keep this one here, not really an admin role
+        self::ROLE_COOPERATION_ADMIN
+    ];
 
     /**
      * Get the right route / url by a role name.
@@ -22,7 +30,7 @@ class RoleHelper
      *
      * @return string The target url
      */
-    public static function getUrlByRoleName(string $roleName, $checkUser = true)
+    public static function getUrlByRoleName(string $roleName, bool $checkUser = true): string
     {
         $redirectMap = [
             'cooperation-admin' => 'cooperation.admin.cooperation.cooperation-admin.index',
@@ -56,11 +64,9 @@ class RoleHelper
     /**
      * Get the right route / url by a role.
      *
-     * @param bool Whether or not to check the user's role against the role name. Defaults to true.
-     *
-     * @return string
+     * @param bool $checkUser Whether or not to check the user's role against the role name. Defaults to true.
      */
-    public static function getUrlByRole(Role $role, $checkUser = true)
+    public static function getUrlByRole(Role $role, bool $checkUser = true): string
     {
         return self::getUrlByRoleName($role->name, $checkUser);
     }

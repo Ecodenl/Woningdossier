@@ -12,9 +12,7 @@ trait HasMedia
      * Get the URL of the first media.
      *
      * @param $tags
-     * @param bool $matchAll
      *
-     * @return string|null
      * @throws \Plank\Mediable\Exceptions\MediaUrlException
      */
     public function firstMediaUrl($tags, bool $matchAll = false): ?string

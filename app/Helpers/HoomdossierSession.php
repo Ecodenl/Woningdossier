@@ -14,7 +14,7 @@ class HoomdossierSession extends Session
     /**
      * Set all the required values.
      */
-    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role)
+    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role): void
     {
         self::setBuilding($building);
         self::setInputSource($inputSource);
@@ -56,18 +56,16 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * @param bool $object Set to true if you want to get an object back
-     *
-     * @return int|Cooperation|null
+     * @param bool $object Set to true if you want to get the hydrated cooperation model
      */
-    public static function getCooperation($object = false)
+    public static function getCooperation(bool $object = false): int|Cooperation|null
     {
         $cooperation = self::get('cooperation');
 
         // if there is no cooperation set and the application is not running in the console, we have a serious issue.
         if (! is_int($cooperation) && ! app()->runningInConsole()) {
-            \Log::error('Cooperation was not an integer!! ');
-            \Log::error($cooperation);
+            Log::error('Cooperation was not an integer!!');
+            Log::error($cooperation);
         }
 
         if ($object) {
@@ -79,26 +77,18 @@ class HoomdossierSession extends Session
 
     /**
      * Function to set Hoomdossier sessions.
-     *
-     * @param $key
-     * @param $value
      */
-    public static function setHoomdossierSession($key, $value)
+    public static function setHoomdossierSession(string $key, mixed $value): void
     {
-        self::put('hoomdossier_session.'.$key, $value);
+        self::put('hoomdossier_session.' . $key, $value);
     }
 
     /**
      * Get a value from the Hoomdossier session.
-     *
-     * @param $key
-     * @param $default
-     *
-     * @return mixed
      */
-    public static function getHoomdossierSession($key, $default = null)
+    public static function getHoomdossierSession(string $key, mixed $default = null): mixed
     {
-        return self::get('hoomdossier_session.'.$key, $default);
+        return self::get('hoomdossier_session.' . $key, $default);
     }
 
     /**
@@ -112,7 +102,7 @@ class HoomdossierSession extends Session
     /**
      * Set the role.
      */
-    public static function setRole(Role $role)
+    public static function setRole(Role $role): void
     {
         self::setHoomdossierSession('role_id', $role->id);
     }
@@ -122,7 +112,7 @@ class HoomdossierSession extends Session
      *
      * @NOTE key meant to determine if a user is observing someones tool / building.
      */
-    public static function setIsObserving(bool $observing = false)
+    public static function setIsObserving(bool $observing = false): void
     {
         self::setHoomdossierSession('is_observing', $observing);
     }
@@ -140,7 +130,7 @@ class HoomdossierSession extends Session
      *
      * @NOTE: this is not the same as the input source, this input source will be used to get the right values for the form.
      */
-    public static function setInputSourceValue(InputSource $inputSource)
+    public static function setInputSourceValue(InputSource $inputSource): void
     {
         self::setHoomdossierSession('input_source_value_id', $inputSource->id);
     }
@@ -148,7 +138,7 @@ class HoomdossierSession extends Session
     /**
      * Set the input source id.
      */
-    public static function setInputSource(InputSource $inputSource)
+    public static function setInputSource(InputSource $inputSource): void
     {
         self::setHoomdossierSession('input_source_id', $inputSource->id);
     }
@@ -156,7 +146,7 @@ class HoomdossierSession extends Session
     /**
      * Set the bool, this determines if the logged in user is comparing input sources.
      */
-    public static function setIsUserComparingInputSources(bool $isUserComparing)
+    public static function setIsUserComparingInputSources(bool $isUserComparing): void
     {
         self::setHoomdossierSession('is_user_comparing_input_sources', $isUserComparing);
     }
@@ -164,16 +154,17 @@ class HoomdossierSession extends Session
     /**
      * Set the compare input source short, this is used to retrieve the right compare value from the dom.
      */
-    public static function setCompareInputSourceShort(string $inputSourceShort)
+    public static function setCompareInputSourceShort(string $inputSourceShort): void
     {
         self::setHoomdossierSession('compare_input_source_short', $inputSourceShort);
     }
 
     /**
      * Stop / Reset the sessions for comparing the input sources
-     * We set the compareInputSourceShort back to the auth user his own input source short and the isUserComparingInputSource back to false.
+     * We set the compareInputSourceShort back to the auth user his own
+     * input source short and the isUserComparingInputSource back to false.
      */
-    public static function stopUserComparingInputSources()
+    public static function stopUserComparingInputSources(): void
     {
         self::setIsUserComparingInputSources(false);
         self::setCompareInputSourceShort(InputSource::find(self::getInputSource())->short);
@@ -190,7 +181,7 @@ class HoomdossierSession extends Session
     /**
      * Set the building id.
      */
-    public static function setBuilding(Building $building)
+    public static function setBuilding(Building $building): void
     {
         self::setHoomdossierSession('building_id', $building->id);
     }
@@ -198,11 +189,9 @@ class HoomdossierSession extends Session
     /**
      * Returns the role or role_id.
      *
-     * @param bool $object Set to true if you want an object returned
-     *
-     * @return int|Role|null
+     * @param bool $object Set to true if you want to the role model returned
      */
-    public static function getRole($object = false)
+    public static function getRole(bool $object = false): int|Role|null
     {
         $id = self::getHoomdossierSession('role_id');
         if (! $object) {
@@ -212,20 +201,15 @@ class HoomdossierSession extends Session
         return \App\Helpers\Cache\Role::find($id);
     }
 
-    public static function currentRole($column = 'name'): string
+    public static function currentRoleIs($role): bool
     {
-        $roleId = self::getRole();
-        if (! empty($roleId)) {
-            $role = Role::find($roleId);
-            if ($role instanceof Role) {
-                $result = $role->getAttribute($column);
-                if (! empty($result)) {
-                    return $result;
-                }
-            }
+        if (! (\App\Helpers\Cache\Role::findByName($role) instanceof Role)) {
+            return false;
         }
 
-        return '';
+        $currentRole = self::getRole(true)?->name;
+
+        return $currentRole == $role;
     }
 
     /**
@@ -235,7 +219,7 @@ class HoomdossierSession extends Session
      *
      * @return int|InputSource|null
      */
-    public static function getInputSource($object = false)
+    public static function getInputSource(bool $object = false): int|InputSource|null
     {
         $id = self::getHoomdossierSession('input_source_id');
         if (! $object) {
@@ -263,16 +247,12 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Get the building id.
-     *
-     * @param bool $object Set to true if you want to get an object back
-     *
-     * @return int|Building|null
+     * Get the current building ID (or building model if hydrated).
      */
-    public static function getBuilding($object = false)
+    public static function getBuilding(bool $hydrate = false): null|int|Building
     {
         $building = self::getHoomdossierSession('building_id');
-        if ($object) {
+        if ($hydrate && ! empty($building)) {
             $building = \App\Helpers\Cache\Building::find($building);
         }
 
@@ -319,9 +299,9 @@ class HoomdossierSession extends Session
         return (array) self::get('hoomdossier_session');
     }
 
-    public static function switchRole(Building $building, Role $role)
+    public static function switchRole(Building $building, Role $role): void
     {
-        Log::debug('Switching roles from '.static::getRole().' to '.$role->id);
+        Log::debug('Switching roles from ' . static::getRole() . ' to ' . $role->id);
 
         // set the new sessions!
         static::setRole($role);

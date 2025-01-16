@@ -56,6 +56,7 @@ return [
             ],
         ],
         'enable_logging' => env('SERVICES_ENABLE_LOGGING', false),
+        'enable_calculation_logging' => env('SERVICES_ENABLE_CALCULATION_LOGGING', false),
     ],
 
     'webhooks' => [

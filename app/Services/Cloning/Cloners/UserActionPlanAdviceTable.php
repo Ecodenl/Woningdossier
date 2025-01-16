@@ -17,7 +17,7 @@ class UserActionPlanAdviceTable extends Cloner implements DataTransformer
         $this->data = CloneDataService::transformCloneableData($this->data, $this->inputSource);
 
         // and now do the extra
-        foreach($this->data as $index => $data) {
+        foreach ($this->data as $index => $data) {
             // this just sets the input source
             if ($data['user_action_plan_advisable_type'] === CustomMeasureApplication::class) {
                 $this->data[$index] = $this->transform($data);

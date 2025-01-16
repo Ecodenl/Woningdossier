@@ -17,7 +17,7 @@ class LayoutComposer
         $this->request = $request;
     }
 
-    public function create(View $view)
+    public function create(View $view): void
     {
         $currentStep = $this->request->route('step');
 

@@ -24,16 +24,6 @@ class ExportToolQuestionTranslations extends Command
     protected $description = 'Export the tool questions with its translations';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(Excel $excel): int

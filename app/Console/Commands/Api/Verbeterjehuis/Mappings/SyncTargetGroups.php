@@ -27,16 +27,6 @@ class SyncTargetGroups extends Command
     protected $description = 'This command will map our ToolQuestionCustomValues to the correct target groups.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(MappingService $mappingService): int
@@ -63,7 +53,7 @@ class SyncTargetGroups extends Command
 
             $this->info("Measures mapped to building-contract-type question custom values.");
             Log::debug("Measures mapped to building-contract-type question custom values.");
-        }, function ($exception) {
+        }, function () {
             $this->error('Something is going on with VerbeterJeHuis!');
         });
 

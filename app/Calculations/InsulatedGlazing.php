@@ -22,7 +22,7 @@ class InsulatedGlazing
     /**
      * Return the calculate results for the insulated glazings.
      */
-    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
+    public static function calculate(Building $building, InputSource $inputSource, $calculateData): array
     {
         $result = [
             'savings_gas' => 0,
@@ -83,7 +83,7 @@ class InsulatedGlazing
         // note: first no instanceof was used
         // now calculate the net gas savings (based on the sum of all measure applications)
         // + calculate and add savings_co2 and savings_money to the result structure
-        $result['savings_gas'] = InsulatedGlazingCalculator::calculateNetGasSavings($rawTotalSavingsGas, $building, $inputSource, $energyHabit);
+        $result['savings_gas'] = InsulatedGlazingCalculator::calculateNetGasSavings($rawTotalSavingsGas, $building, $inputSource);
 
         // \Log::debug(__METHOD__.' Net total gas savings: '.$result['savings_gas']);
 

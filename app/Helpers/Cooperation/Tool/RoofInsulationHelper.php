@@ -27,8 +27,7 @@ class RoofInsulationHelper extends ToolHelper
     {
         $updatedMeasureIds = $this->getValues('updated_measure_ids');
 
-        $energyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
-        $results = RoofInsulationCalculate::calculate($this->building, $this->masterInputSource, $energyHabit, $this->getValues());
+        $results = RoofInsulationCalculate::calculate($this->building, $this->masterInputSource, $this->getValues());
 
         $result = [];
 

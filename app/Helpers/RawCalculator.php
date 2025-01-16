@@ -44,9 +44,9 @@ class RawCalculator
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(
                 $surface * $kengetalEnergySaving,
-                self::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
+                self::maxGasSavings($building, $inputSource, $element->element)
             );
-            self::debug(__METHOD__ . ' ' . $result . ' = min(' . $surface . ' * ' . $kengetalEnergySaving . ', ' . self::maxGasSavings($building, $inputSource, $energyHabit, $element->element) . ')');
+            self::debug(__METHOD__ . ' ' . $result . ' = min(' . $surface . ' * ' . $kengetalEnergySaving . ', ' . self::maxGasSavings($building, $inputSource, $element->element) . ')');
         }
 
         return $result;
@@ -152,7 +152,7 @@ class RawCalculator
      *
      * @return float|int
      */
-    public static function maxGasSavings(Building $building, InputSource $inputSource, ?UserEnergyHabit $energyHabit, Element $element)
+    public static function maxGasSavings(Building $building, InputSource $inputSource, Element $element)
     {
         $result = 0;
 

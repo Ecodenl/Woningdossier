@@ -23,16 +23,6 @@ class CorrectHasSolarPanelsToolQuestionAnswer extends Command
     protected $description = 'If someone has a positive count on the solar-panel-count tool question, we will set the has-solar-panels question to yes';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): void

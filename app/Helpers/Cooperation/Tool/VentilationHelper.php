@@ -35,9 +35,7 @@ class VentilationHelper extends ToolHelper
 
         $step = Step::findByShort('ventilation');
 
-        $energyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
-
-        $results = Ventilation::calculate($this->building, $this->masterInputSource, $energyHabit, $this->getValues());
+        $results = Ventilation::calculate($this->building, $this->masterInputSource, $this->getValues());
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 

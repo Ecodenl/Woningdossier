@@ -22,16 +22,6 @@ class LegacyPrivateMessageCleanup extends Command
     protected $description = 'Remove private messages for buildings that have already been deleted';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): int

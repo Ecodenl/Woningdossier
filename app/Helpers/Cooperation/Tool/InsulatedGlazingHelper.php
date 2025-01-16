@@ -8,7 +8,6 @@ use App\Models\BuildingFeature;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\BuildingPaintworkStatus;
 use App\Models\Element;
-use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
@@ -105,8 +104,7 @@ class InsulatedGlazingHelper extends ToolHelper
 
         $step = Step::findByShort('insulated-glazing');
 
-        $energyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
-        $results = InsulatedGlazing::calculate($this->building, $this->masterInputSource, $energyHabit, $this->getValues());
+        $results = InsulatedGlazing::calculate($this->building, $this->masterInputSource, $this->getValues());
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 

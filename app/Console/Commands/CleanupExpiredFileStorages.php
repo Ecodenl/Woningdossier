@@ -23,16 +23,6 @@ class CleanupExpiredFileStorages extends Command
     protected $description = 'This will delete all file storages with its files that are considered to be expired.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): int

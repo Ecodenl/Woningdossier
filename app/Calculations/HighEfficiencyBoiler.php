@@ -7,9 +7,7 @@ use App\Helpers\RawCalculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
-use App\Models\UserEnergyHabit;
 use App\Services\CalculatorService;
-use App\Services\Kengetallen\KengetallenService;
 
 class HighEfficiencyBoiler extends Calculator
 {

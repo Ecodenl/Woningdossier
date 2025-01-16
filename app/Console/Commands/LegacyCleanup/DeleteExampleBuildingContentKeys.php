@@ -23,16 +23,6 @@ class DeleteExampleBuildingContentKeys extends Command
     protected $description = 'Command to remove old keys from the existing example building content';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): void

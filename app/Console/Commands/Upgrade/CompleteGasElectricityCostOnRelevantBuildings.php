@@ -27,16 +27,6 @@ class CompleteGasElectricityCostOnRelevantBuildings extends Command
     protected $description = 'Completes the gas-electricity substep for eligible buildings and its relevant input sources.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): void

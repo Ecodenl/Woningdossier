@@ -21,7 +21,7 @@ use Carbon\Carbon;
 
 class RoofInsulation
 {
-    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData)
+    public static function calculate(Building $building, InputSource $inputSource, $calculateData)
     {
         // \Log::debug(__METHOD__);
         $result = [];
@@ -111,9 +111,7 @@ class RoofInsulation
                 $roofInsulationValue = ElementValue::where('element_id', $roofInsulation->id)->where('id', $roofTypes[$cat]['element_value_id'])->first();
 
                 if ($roofInsulationValue instanceof ElementValue && $heating instanceof BuildingHeating && isset($advice)) {
-                    if ($energyHabit instanceof UserEnergyHabit) {
-                        $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $inputSource, $roofInsulationValue, $energyHabit, $heating, $surface, $totalSurface, $advice);
-                    }
+                    $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $inputSource, $roofInsulationValue, $heating, $surface, $totalSurface, $advice);
                     $catData['savings_co2'] = RawCalculator::calculateCo2Savings($catData['savings_gas']);
 
                     $catData['savings_money'] = round(app(CalculatorService::class)

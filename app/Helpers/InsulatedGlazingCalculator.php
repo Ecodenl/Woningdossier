@@ -61,16 +61,14 @@ class InsulatedGlazingCalculator
         return $saving;
     }
 
-    public static function calculateNetGasSavings($saving, Building $building, InputSource $inputSource, $energyHabit)
+    public static function calculateNetGasSavings($saving, Building $building, InputSource $inputSource)
     {
         $maxGasSavings = 0;
         /** @NeedsReview There is no element for insulated-glazing. Only the "general-data" variants of living-room-windows and sleeping-rooms-windows.. both having the same % */
         /** @var Element $element */
         $element = Element::where('short', '=', 'living-rooms-windows')->first();
 
-        if ($energyHabit instanceof UserEnergyHabit) {
-            $maxGasSavings = RawCalculator::maxGasSavings($building, $inputSource, $energyHabit, $element);
-        }
+        $maxGasSavings = RawCalculator::maxGasSavings($building, $inputSource, $element);
         $result = min($saving, $maxGasSavings);
 
         self::debug(__METHOD__ . ' ' . $result . ' = min(' . $saving . ', ' . $maxGasSavings . ')');

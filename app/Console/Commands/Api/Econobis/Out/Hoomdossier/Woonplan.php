@@ -27,16 +27,6 @@ class Woonplan extends Command
     protected $description = 'Send the "woonplan" (user action plan advices) to Econobis, will take all users that have changed their tool in the last 12 hours.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(IntegrationProcessService $integrationProcessService): int

@@ -36,16 +36,6 @@ class RecalculateForUser extends Command
     protected $description = 'Command to calculate / recalculate advices for a user or cooperation';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): int

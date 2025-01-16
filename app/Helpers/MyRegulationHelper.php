@@ -67,8 +67,11 @@ class MyRegulationHelper
                 ->clone()
                 ->selectRaw($selectRaw)
                 ->join('mappings as end_mapping', function (JoinClause $join) {
-                    $join->on('end_mapping.from_model_id', '=',
-                        'user_action_plan_advices.user_action_plan_advisable_id')
+                    $join->on(
+                        'end_mapping.from_model_id',
+                        '=',
+                        'user_action_plan_advices.user_action_plan_advisable_id'
+                    )
                         ->where('end_mapping.from_model_type', MeasureApplication::class);
                 })
                 ->where('user_action_plan_advices.user_action_plan_advisable_type', MeasureApplication::class)

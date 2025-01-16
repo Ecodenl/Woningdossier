@@ -27,16 +27,6 @@ class SyncMeasures extends Command
     protected $description = 'This command will map our MeasureApplications to the correct target groups.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(MappingService $mappingService): int

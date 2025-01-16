@@ -24,16 +24,6 @@ class CleanupAudits extends Command
     protected $description = 'Cleanup the old audits';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(DiscordNotifier $discordNotifier): int

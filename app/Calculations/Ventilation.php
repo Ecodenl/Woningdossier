@@ -14,7 +14,6 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
-use App\Models\UserEnergyHabit;
 use App\Services\CalculatorService;
 use Illuminate\Support\Arr;
 
@@ -41,7 +40,6 @@ class Ventilation
     public static function calculate(
         Building $building,
         InputSource $inputSource,
-        ?UserEnergyHabit $energyHabit,
         array $calculateData
     ): array
     {
@@ -180,11 +178,8 @@ class Ventilation
 
                 // (we know that calculate_value is > 1, but for historic logic reasons..
                 if ($currentCrackSealing instanceof BuildingElement && $currentCrackSealingCalculateValue > 1) {
-                    $gas = 0;
-                    if ($energyHabit instanceof UserEnergyHabit) {
-                        $usages = HighEfficiencyBoilerCalculator::init($building, $inputSource)->calculateGasUsage();
-                        $gas = $usages['heating']['bruto'];
-                    }
+                    $usages = HighEfficiencyBoilerCalculator::init($building, $inputSource)->calculateGasUsage();
+                    $gas = $usages['heating']['bruto'];
 
                     if (2 == $currentCrackSealingCalculateValue) {
                         $gasSaving = (Kengetallen::PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING / 100) * $gas;

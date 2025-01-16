@@ -26,16 +26,6 @@ class MonitorQueue extends Command
     protected $description = 'Creates a queue log for the size of every queue at this moment.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): int

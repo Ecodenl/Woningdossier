@@ -23,16 +23,6 @@ class CleanupPasswordResets extends Command
     protected $description = 'Cleanup the old password resets';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): int

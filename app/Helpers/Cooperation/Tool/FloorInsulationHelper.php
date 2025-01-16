@@ -121,8 +121,7 @@ class FloorInsulationHelper extends ToolHelper
 
             // don't save if not applicable
             if ($floorInsulationValue instanceof ElementValue) {
-                $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
-                $results = FloorInsulation::calculate($this->building, $this->masterInputSource, $userEnergyHabit, $this->getValues());
+                $results = FloorInsulation::calculate($this->building, $this->masterInputSource, $this->getValues());
 
                 if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
                     $measureApplication = MeasureApplication::where('measure_name->nl', $results['insulation_advice'])

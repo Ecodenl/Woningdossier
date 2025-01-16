@@ -24,16 +24,6 @@ class Gebruik extends Command
     protected $description = 'Send the "gebruik" (filled in answers) to Econobis, will take all users that have changed their tool in the last 12 hours.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): int

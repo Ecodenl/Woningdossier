@@ -327,6 +327,10 @@ class DumpService
         ];
 
         foreach ($calculate as $short => $calculator) {
+            /**
+             * @var \App\Calculations\Calculator $calculator
+             * @phpstan-ignore varTag.nativeType
+             */
             $calculations[$short] = $calculator::calculate($building, $inputSource);
         }
 
@@ -342,7 +346,6 @@ class DumpService
         $calculations['insulated-glazing'] = InsulatedGlazing::calculate(
             $building,
             $inputSource,
-            $userEnergyHabit,
             (new InsulatedGlazingHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -351,7 +354,6 @@ class DumpService
         $calculations['floor-insulation'] = FloorInsulation::calculate(
             $building,
             $inputSource,
-            $userEnergyHabit,
             (new FloorInsulationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -360,7 +362,6 @@ class DumpService
         $calculations['roof-insulation'] = RoofInsulation::calculate(
             $building,
             $inputSource,
-            $userEnergyHabit,
             (new RoofInsulationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -376,7 +377,6 @@ class DumpService
         $calculations['ventilation'] = Ventilation::calculate(
             $building,
             $inputSource,
-            $userEnergyHabit,
             (new VentilationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()

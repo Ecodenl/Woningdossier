@@ -113,12 +113,12 @@ class InsulatedGlazingController extends ToolController
 
     public function calculate(Request $request): JsonResponse
     {
+        /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
         $result = InsulatedGlazing::calculate(
             $building,
             $this->masterInputSource,
-            $building->user->energyHabit()->forInputSource($this->masterInputSource)->first(),
             $request->all()
         );
 

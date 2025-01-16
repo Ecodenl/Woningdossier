@@ -27,16 +27,6 @@ class ImportToolQuestionTranslations extends Command
     protected $description = 'This command will update the tool question translations, based on the csv.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(Excel $excel): int

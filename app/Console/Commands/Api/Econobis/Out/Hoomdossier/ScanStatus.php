@@ -29,16 +29,6 @@ class ScanStatus extends Command
     protected $description = 'Send the current status of the building.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(EconobisService $econobisService, EconobisApi $econobis): int

@@ -113,11 +113,10 @@ class VentilationController extends ToolController
 
     public function calculate(Request $request): JsonResponse
     {
+        /** @var \App\Models\Building $building */
         $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
-        $userEnergyHabit = $user->energyHabit()->forInputSource($this->masterInputSource)->first();
 
-        $result = Ventilation::calculate($building, $this->masterInputSource, $userEnergyHabit, $request->all());
+        $result = Ventilation::calculate($building, $this->masterInputSource, $request->all());
 
         return response()->json($result);
     }

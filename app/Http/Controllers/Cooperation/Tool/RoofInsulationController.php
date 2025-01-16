@@ -116,7 +116,6 @@ class RoofInsulationController extends ToolController
         $result = \App\Calculations\RoofInsulation::calculate(
             $building,
             $this->masterInputSource,
-            $building->user->energyHabit()->forInputSource($this->masterInputSource)->first(),
             $request->all()
         );
 

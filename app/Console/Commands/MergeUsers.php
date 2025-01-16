@@ -25,16 +25,6 @@ class MergeUsers extends Command
     protected $description = 'Merge two users within the same cooperation. The first user has the \'truth\' whenever in doubt';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): int

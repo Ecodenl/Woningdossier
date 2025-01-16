@@ -76,16 +76,12 @@ class FloorInsulationController extends ToolController
 
     public function calculate(FloorInsulationFormRequest $request): JsonResponse
     {
-        /**
-         * @var Building
-         */
+        /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
 
         $result = FloorInsulation::calculate(
             $building,
             $this->masterInputSource,
-            $user->energyHabit()->forInputSource($this->masterInputSource)->first(),
             $request->all()
         );
 

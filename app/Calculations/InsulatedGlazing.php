@@ -145,7 +145,7 @@ class InsulatedGlazing
 
             $measureApplication = MeasureApplication::where('short', 'paint-wood-elements')->first();
 
-            $number = InsulatedGlazingCalculator::calculatePaintworkSurface($frameElementValue, $woodElementValues, NumberFormatter::reverseFormat($windowSurface));
+            $number = InsulatedGlazingCalculator::calculatePaintworkSurface($frameElementValue, $woodElementValues, $windowSurface);
 
             $buildingPaintworkStatuses = $calculateData['building_paintwork_statuses'] ?? [];
             $paintworkStatus = null;

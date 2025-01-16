@@ -28,7 +28,7 @@ class SetOldEmailListener implements ShouldQueue
 
         // set the data
         $account->old_email = $oldEmail;
-        $account->old_email_token = hash_hmac('sha256', Str::random(40), 10);
+        $account->old_email_token = hash_hmac('sha256', Str::random(40), '10');
         $account->save();
 
         Mail::to($oldEmail)->send(new UserChangedHisEmail($user, $account, $newMail, $oldEmail));

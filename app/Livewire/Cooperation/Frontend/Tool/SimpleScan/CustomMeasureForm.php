@@ -82,14 +82,14 @@ abstract class CustomMeasureForm extends Component
             // We must validate on index base, so we replace the wild card with the current index
             $customRules = [];
             foreach ($this->rules() as $key => $rule) {
-                $key = str_replace('*', $index, $key);
-                $rule = str_replace('*', $index, $rule);
+                $key = str_replace('*', (string) $index, $key);
+                $rule = str_replace('*', (string) $index, $rule);
 
                 $customRules[$key] = $rule;
             }
             $customAttributes = [];
             foreach ($this->attributeTranslations as $key => $translation) {
-                $key = str_replace('*', $index, $key);
+                $key = str_replace('*', (string) $index, $key);
 
                 $customAttributes[$key] = $translation;
             }

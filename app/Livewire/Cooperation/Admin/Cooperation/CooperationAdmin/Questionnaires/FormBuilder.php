@@ -108,6 +108,7 @@ class FormBuilder extends Component
 
     public function mount(Questionnaire $questionnaire): void
     {
+        /** @phpstan-ignore argument.type */
         $this->questions = $questionnaire->questions()->with('questionOptions')->get()->map(function (Question $question) {
             // Deconstruct (legacy) validation syntax.
             $validation = $question->validation;
@@ -344,6 +345,7 @@ class FormBuilder extends Component
 
         $ids = array_filter(Arr::pluck($this->questions, 'id'));
         // Delete removed questions. They are soft delete, so no need to worry about question options.
+        /** @phpstan-ignore argument.type */
         $this->questionnaire->questions()->whereNotIn('id', $ids)->eachById(fn (Question $question) => $question->delete());
 
         foreach ($this->questions as $order => $questionData) {

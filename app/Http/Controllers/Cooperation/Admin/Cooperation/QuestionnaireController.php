@@ -102,7 +102,7 @@ class QuestionnaireController extends Controller
         // TODO: Maybe we want to fix questionnaire_step order?
         $questionnaire->delete();
 
-        return response(200);
+        return response(null, 200);
     }
 
     /**

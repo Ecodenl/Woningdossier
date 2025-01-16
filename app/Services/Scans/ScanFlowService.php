@@ -314,20 +314,19 @@ class ScanFlowService
                 ->orderByDesc('completed_sub_steps.created_at')
                 ->first();
 
-            // get all the completed steps
-            $mostRecentCompletedStep = optional(
-                $scan
-                    ->completedSteps()
-                    ->forInputSource($masterInputSource)
-                    ->forBuilding($building)
-                    ->orderByDesc('created_at')
-                    ->first()
-            )->step;
+            /** @var null|Step $mostRecentCompletedStep */
+            $mostRecentCompletedStep = $scan->completedSteps()
+                ->forInputSource($masterInputSource)
+                ->forBuilding($building)
+                ->orderByDesc('created_at')
+                ->first()?->step;
 
             // it could be that there is no completed step yet, in that case we just pick the first one.
             if (! $mostRecentCompletedStep instanceof Step) {
+                /** @var Step $mostRecentCompletedStep */
                 $mostRecentCompletedStep = $scan->steps()->orderBy('order')->first();
             }
+
             if ($mostRecentCompletedSubStep instanceof SubStep) {
                 $url = ScanFlowService::init($scan, $building, $masterInputSource)
                     ->forStep($mostRecentCompletedStep)

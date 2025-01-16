@@ -34,6 +34,7 @@ abstract class ToolController extends Controller
      */
     public function completeStore(Step $step, Building $building, InputSource $inputSource): RedirectResponse
     {
+        /** @var \App\Models\SubStep $subStep */
         $subStep = $step->subSteps()->first();
 
         StepHelper::complete($step, $building, $inputSource);

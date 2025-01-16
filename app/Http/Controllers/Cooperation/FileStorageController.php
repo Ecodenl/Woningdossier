@@ -22,6 +22,7 @@ use App\Models\User;
 use App\Services\FileStorageService;
 use App\Services\FileTypeService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -127,7 +128,7 @@ class FileStorageController extends Controller
             case 'custom-questionnaire-report':
             case 'custom-questionnaire-report-anonymized':
                 $date = Carbon::now()->format('y-m-d');
-                $questionnaireName = Str::slug($questionnaire->name);
+                $questionnaireName = Str::slug($questionnaire->getTranslation('name', App::getLocale()));
 
                 $filePart = $anonymized ? 'zonder' : 'met';
 

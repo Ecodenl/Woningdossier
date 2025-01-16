@@ -276,6 +276,7 @@ class Heating extends Calculator
                 );
             }
 
+            /** @var null|ToolQuestionCustomValue $heatingTemperature */
             $heatingTemperature = ToolQuestion::findByShort(
                 'new-boiler-setting-comfort-heat'
             )
@@ -286,7 +287,6 @@ class Heating extends Calculator
                     )
                 )
                 ->first();
-
 
             if (in_array('hr-boiler', $heatSources)) {
                 //Log::debug(__METHOD__.' - Hybrid heat pump');
@@ -637,6 +637,7 @@ class Heating extends Calculator
                 );
             }
 
+            /** @var null|ToolQuestionCustomValue $heatingTemperature */
             $heatingTemperature = ToolQuestion::findByShort(
                 'new-boiler-setting-comfort-heat'
             )

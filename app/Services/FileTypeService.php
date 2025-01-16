@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\FileType;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 
 class FileTypeService
@@ -24,6 +25,6 @@ class FileTypeService
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         // Because if there are multiple jobs in the queue, only the job thats being processed would show up as "generating"
         // remove the / to prevent unwanted directories
-        return str_replace('/', '', $hash . Str::slug($this->fileType->name) . '.csv');
+        return str_replace('/', '', $hash . Str::slug($this->fileType->getTranslation('name', App::getLocale())) . '.csv');
     }
 }

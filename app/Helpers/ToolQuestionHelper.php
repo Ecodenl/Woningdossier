@@ -8,6 +8,7 @@ use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Schema;
 
 class ToolQuestionHelper
@@ -350,9 +351,13 @@ class ToolQuestionHelper
     /**
      * Handle potential replaceables in a tool question name.
      */
-    public static function handleToolQuestionReplaceables(Building $building, InputSource $inputSource, ToolQuestion $toolQuestion): ToolQuestion
+    public static function handleToolQuestionReplaceables(
+        Building $building,
+        InputSource $inputSource,
+        ToolQuestion $toolQuestion
+    ): ToolQuestion
     {
-        if (\App\Helpers\Str::hasReplaceables($toolQuestion->name)) {
+        if (\App\Helpers\Str::hasReplaceables($toolQuestion->getTranslation('name', App::getLocale()))) {
             $data = self::TOOL_QUESTION_ANSWER_REPLACEABLES[$toolQuestion->short];
             $toolQuestionForAnswer = ToolQuestion::findByShort($data['short']);
 
@@ -362,7 +367,7 @@ class ToolQuestionHelper
                 $toolQuestionForAnswer
             );
 
-            $toolQuestion->name = __($toolQuestion->name, [$data['replaceable'] => $humanReadableAnswer]);
+            $toolQuestion->name = __($toolQuestion->getTranslation('name', App::getLocale()), [$data['replaceable'] => $humanReadableAnswer]);
         }
 
         return $toolQuestion;

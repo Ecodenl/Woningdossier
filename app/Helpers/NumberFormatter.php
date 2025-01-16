@@ -52,7 +52,8 @@ class NumberFormatter
 
         $result = round($number / $bucket) * $bucket;
 
-        if (str_starts_with($result, '-') && $result == 0) {
+        // If result is loosely 0, it means it could also be negative (e.g. -0.0). We force 0.
+        if ($result == 0) {
             return 0;
         }
 
@@ -92,7 +93,7 @@ class NumberFormatter
         $number = str_replace(',', '.', $number);
 
         if (is_numeric($number)) {
-            $number = number_format($number, $decimals, '.', '');
+            $number = number_format((float) $number, $decimals, '.', '');
         }
 
         return $number;

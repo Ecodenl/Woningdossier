@@ -76,9 +76,9 @@ class KeyFiguresController extends Controller
         foreach ($keyFigureTemperatures as $keyFigureTemperature) {
             $k = sprintf(
                 '%s (%s) %s',
-                $keyFigureTemperature->measureApplication->measure_name,
-                $keyFigureTemperature->insulatingGlazing->name,
-                $keyFigureTemperature->buildingHeating->name
+                $keyFigureTemperature->measureApplication->getTranslation('measure_name', App::getLocale()),
+                $keyFigureTemperature->insulatingGlazing->getTranslation('name', App::getLocale()),
+                $keyFigureTemperature->buildingHeating->getTranslation('name', App::getLocale()),
             );
             $figures[$k] = $keyFigureTemperature->key_figure;
         }
@@ -97,8 +97,8 @@ class KeyFiguresController extends Controller
             $k = sprintf(
                 '%s %s - %s',
                 __('key-figures.max-savings.prefix'),
-                $maxSaving->buildingType->name,
-                $maxSaving->element->name
+                $maxSaving->buildingType->getTranslation('name', App::getLocale()),
+                $maxSaving->element->getTranslation('name', App::getLocale()),
             );
             $figures[$k] = $maxSaving->max_saving . '%';
         }

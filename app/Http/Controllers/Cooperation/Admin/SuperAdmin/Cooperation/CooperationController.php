@@ -44,6 +44,7 @@ class CooperationController extends Controller
         $cooperationToDestroy->exampleBuildings()->delete();
 
         $users = $cooperationToDestroy->users()->withoutGlobalScopes()->get();
+        /** @var \App\Models\User $user */
         foreach ($users as $user) {
             UserService::deleteUser($user, true);
         }

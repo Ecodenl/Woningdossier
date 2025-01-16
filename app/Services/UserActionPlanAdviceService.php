@@ -58,6 +58,7 @@ class UserActionPlanAdviceService
 
         $jobs = [];
 
+        /** @var UserActionPlanAdvice $userActionPlanAdvice */
         foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
             $jobs[] = new RefreshRegulationsForUserActionPlanAdvice($userActionPlanAdvice);
         }

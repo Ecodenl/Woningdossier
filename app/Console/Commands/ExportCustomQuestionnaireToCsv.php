@@ -45,7 +45,7 @@ class ExportCustomQuestionnaireToCsv extends Command
             }
             $this->alert("Starting export {$questionnaire->getTranslation('name', App::getLocale())} {$debugTxt}");
 
-            $rows = CsvService::dumpForQuestionnaire($questionnaire, $this->argument('anonymize'));
+            $rows = CsvService::dumpForQuestionnaire($questionnaire, (bool) $this->argument('anonymize'));
 
             $date = Carbon::now()->format('y-m-d');
 

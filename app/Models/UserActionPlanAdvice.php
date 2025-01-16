@@ -33,9 +33,9 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property bool $loan_available
  * @property int $order
  * @property array<array-key, mixed>|null $costs
- * @property string|null $savings_gas
- * @property string|null $savings_electricity
- * @property string|null $savings_money
+ * @property numeric|null $savings_gas
+ * @property numeric|null $savings_electricity
+ * @property numeric|null $savings_money
  * @property int|null $year
  * @property bool $planned
  * @property int|null $planned_year
@@ -135,6 +135,9 @@ class UserActionPlanAdvice extends Model implements Auditable
             'subsidy_available' => 'boolean',
             'loan_available' => 'boolean',
             'costs' => 'array',
+            'savings_gas' => 'decimal:2',
+            'savings_electricity' => 'decimal:2',
+            'savings_money' => 'decimal:2',
         ];
     }
 

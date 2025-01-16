@@ -14,6 +14,7 @@ use App\Models\Scan;
 use App\Services\Models\BuildingStatusService;
 use App\Services\PrivateMessageService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\App;
 use Illuminate\View\View;
 
 class ConversationRequestController extends Controller
@@ -34,7 +35,7 @@ class ConversationRequestController extends Controller
         if (! is_null($measureApplicationShort)) {
             $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->firstOrFail();
             // set the measure application name if there is a measure application
-            $measureApplicationName = $measureApplication->measure_name;
+            $measureApplicationName = $measureApplication->getTranslation('measure_name', App::getLocale());
             $title = __('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName]);
         }
 

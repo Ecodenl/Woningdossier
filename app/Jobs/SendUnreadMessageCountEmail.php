@@ -60,8 +60,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
                 ->send(new UnreadMessagesEmail($this->user, $this->cooperation, $this->unreadMessageCount));
 
             // after that has been done, update the last_notified_at to the current date
-            $this->notificationSetting->last_notified_at = Carbon::now();
-            $this->notificationSetting->save();
+            $this->notificationSetting->update(['last_notified_at' => Carbon::now()]);
         } else {
             Log::debug('it seems like user id ' . $this->user->id . ' has no building!');
         }

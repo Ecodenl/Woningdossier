@@ -29,50 +29,6 @@ class Str extends \Illuminate\Support\Str
     }
 
     /**
-     * Check if a given string is a valid UUID.
-     *
-     * @param string $uuid The string to check
-     */
-    public static function isValidUuid(string $uuid): bool
-    {
-        if (! is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if a given string is a valid GUID.
-     *
-     * https://stackoverflow.com/questions/1253373/php-check-for-valid-guid/#answer-1515456
-     *
-     * @param $guid
-     */
-    public static function isValidGuid($guid): bool
-    {
-        if (preg_match('/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i', $guid)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if a string contains a pipe.
-     *
-     * @param $string
-     */
-    public static function isPiped($string): bool
-    {
-        if (count(explode('|', $string)) > 1) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Returns a random UUID. Only used as a fallback in case all other methods
      * don't work.
      */

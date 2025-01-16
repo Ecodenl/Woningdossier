@@ -20,11 +20,23 @@ use Illuminate\Support\Arr;
 
 class Ventilation
 {
+    const string NATURAL = 'natural';
+    const string MECHANICAL = 'mechanical';
+    const string BALANCED = 'balanced';
+    const string DECENTRAL = 'decentral';
+
+    public static function getTypes(): array
+    {
+        return [
+            1 => self::NATURAL,
+            2 => self::MECHANICAL,
+            3 => self::BALANCED,
+            4 => self::DECENTRAL,
+        ];
+    }
+
     /**
      * Calculate the wall insulation costs and savings etc.
-     *
-     *
-     * @return array;
      */
     public static function calculate(
         Building $building,
@@ -35,11 +47,10 @@ class Ventilation
     {
         $step = Step::findByShort('ventilation');
 
-        /** @var BuildingService $buildingVentilationService */
+        /** @var BuildingService|null $buildingVentilationService */
         $buildingVentilationService = $building->getBuildingService('house-ventilation', $inputSource);
 
         $improvement = '';
-        $advices = null;
         $remark = '';
         $considerables = [];
         $result = [
@@ -62,7 +73,7 @@ class Ventilation
             $currentlyDemandDriven = $buildingVentilationService->extra['demand_driven'] ?? false;
             $currentlyHeatRecovery = $buildingVentilationService->extra['heat_recovery'] ?? false;
 
-            $ventilationTypes = \App\Models\Ventilation::getTypes();
+            $ventilationTypes = self::getTypes();
 
             $ventilationType = $ventilationTypes[$buildingVentilation->calculate_value];
 
@@ -75,9 +86,16 @@ class Ventilation
             ];
             $measures = array_flip($measures);
 
+            // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
+            // Crack sealing measure should be added.
+            // As it's added on beforehand, it should be removed if:
+            // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
+            // because: either there is no crack sealing or it's all okay
+            $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
+
             // now check al the conditions for the measures.
             switch ($ventilationType) {
-                case \App\Models\Ventilation::NATURAL:
+                case self::NATURAL:
                     // "different" type which returns early
                     unset($measures['crack-sealing']);
 
@@ -85,18 +103,11 @@ class Ventilation
                     $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
-                case \App\Models\Ventilation::MECHANICAL:
+                case self::MECHANICAL:
                     if ($currentlyDemandDriven) {
                         // if the ventilation is already demand driven, remove that advice
                         unset($measures['ventilation-demand-driven']);
                     }
-
-                    // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
-                    // Crack sealing measure should be added.
-                    // As it's added on beforehand, it should be removed if:
-                    // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
-                    // because: either there is no crack sealing or it's all okay
-                    $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
                     if (in_array('none', Arr::get(
                         $calculateData,
@@ -109,7 +120,7 @@ class Ventilation
                     $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
-                case \App\Models\Ventilation::BALANCED:
+                case self::BALANCED:
                     // always unset
                     unset($measures['ventilation-decentral-wtw']);
 
@@ -123,13 +134,6 @@ class Ventilation
                         unset($measures['ventilation-demand-driven']);
                     }
 
-                    // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
-                    // Crack sealing measure should be added.
-                    // As it's added on beforehand, it should be removed if:
-                    // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
-                    // because: either there is no crack sealing or it's all okay
-                    $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
-
                     if (in_array('none', Arr::get(
                         $calculateData,
                         'building_ventilations.how'
@@ -141,7 +145,7 @@ class Ventilation
                     $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
-                case \App\Models\Ventilation::DECENTRAL:
+                case self::DECENTRAL:
                     // always unset
                     unset($measures['ventilation-balanced-wtw']);
 
@@ -154,13 +158,6 @@ class Ventilation
                     if ($currentlyDemandDriven) {
                         unset($measures['ventilation-demand-driven']);
                     }
-
-                    // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
-                    // Crack sealing measure should be added.
-                    // As it's added on beforehand, it should be removed if:
-                    // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
-                    // because: either there is no crack sealing or it's all okay
-                    $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
                     if (in_array('none', Arr::get(
                         $calculateData,

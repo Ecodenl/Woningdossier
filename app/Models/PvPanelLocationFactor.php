@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $pc2
  * @property string $location
- * @property string $factor
+ * @property numeric $factor
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelLocationFactor newModelQuery()
@@ -26,4 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PvPanelLocationFactor extends Model
 {
+    protected $casts = [
+        'factor' => 'decimal:2',
+    ];
 }

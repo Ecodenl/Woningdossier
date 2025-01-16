@@ -56,7 +56,7 @@ class NumberFormatter
             return 0;
         }
 
-        return $result;
+        return (int) $result;
     }
 
     /**

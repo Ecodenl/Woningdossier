@@ -121,8 +121,7 @@ class SendNotifications extends Command
                         }
                     } else {
                         // the user has never been notified, so we set subtract one year from the current one.
-                        $notificationSetting->last_notified_at = Carbon::now()->subYear(1);
-                        $notificationSetting->save();
+                        $notificationSetting->update(['last_notified_at' => Carbon::now()->subYear()]);
                     }
                 }
             }

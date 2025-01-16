@@ -78,10 +78,7 @@ class Heater extends Calculator
 
             $systemSpecs = KeyFigures::getSystemSpecifications($result['consumption']['water'], $helpFactor);
 
-            if (is_array($systemSpecs) && array_key_exists('boiler', $systemSpecs) && array_key_exists(
-                'collector',
-                $systemSpecs
-            )) {
+            if (array_key_exists('boiler', $systemSpecs) && array_key_exists('collector', $systemSpecs)) {
                 $result['specs'] = [
                     'size_boiler' => $systemSpecs['boiler'],
                     'size_collector' => $systemSpecs['collector'],

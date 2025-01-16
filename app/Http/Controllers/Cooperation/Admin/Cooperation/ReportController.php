@@ -10,9 +10,6 @@ use App\Models\FileTypeCategory;
 
 class ReportController extends Controller
 {
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function index(Cooperation $cooperation): View
     {
         $reportFileTypeCategory = FileTypeCategory::short('report')

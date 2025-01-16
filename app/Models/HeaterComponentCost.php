@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $component
- * @property string $size
- * @property string $cost
+ * @property numeric $size
+ * @property numeric $cost
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterComponentCost newModelQuery()
@@ -26,4 +26,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class HeaterComponentCost extends Model
 {
+    protected $casts = [
+        'size' => 'decimal:2',
+        'cost' => 'decimal:2',
+    ];
 }

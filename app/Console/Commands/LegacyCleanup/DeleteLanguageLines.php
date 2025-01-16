@@ -30,37 +30,27 @@ class DeleteLanguageLines extends Command
     ];
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): void
     {
         //$degenMode = false;
         //if ($this->confirm("Do you want to remove all translations without confirmation each translation ?")) {
-            $degenMode = true;
+        //    $degenMode = true;
         //}
         foreach ($this->translationKeys as $translationKey) {
             $groupAndKey = explode('.', $translationKey);
             $group = array_shift($groupAndKey);
             $key = implode('.', $groupAndKey);
-            if ($degenMode === false && $this->confirm("Do you want to remove the following translation \r\n $translationKey \r\n" . __($translationKey) . "\r\n")) {
+            //if (! $degenMode && $this->confirm("Do you want to remove the following translation \r\n $translationKey \r\n" . __($translationKey) . "\r\n")) {
+            //    LanguageLine::where(compact('group', 'key'))->delete();
+            //    $this->info("Deleted");
+            //} elseif ($degenMode) {
                 LanguageLine::where(compact('group', 'key'))->delete();
                 $this->info("Deleted");
-            } elseif ($degenMode === true) {
-                LanguageLine::where(compact('group', 'key'))->delete();
-                $this->info("Deleted");
-            } else {
-                $this->info("Skipped");
-            }
+            //} else {
+            //    $this->info("Skipped");
+            //}
         }
 
         $this->call('cache:clear');

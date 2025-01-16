@@ -10,8 +10,6 @@ class CoordinatorController extends Controller
 {
     /**
      * Show the coordinators of the cooperation that the user is managing.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage): View
     {

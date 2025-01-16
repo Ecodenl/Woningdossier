@@ -39,25 +39,15 @@ class RoofInsulation
             }
         }
 
-        // \Log::debug(json_encode($result));
-
         $roofInsulation = Element::where('short', 'roof-insulation')->first();
         $adviceMap = RoofInsulationHelper::getMeasureApplicationsAdviceMap();
         $totalSurface = 0;
 
         $roofTypes = $calculateData['building_roof_types'];
 
-        //dump("Roof types: ");
-        //dump($roofTypes);
-
         foreach (array_keys($result) as $cat) {
-            $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
-            $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
-
-            //dump($totalSurface . " += " . $insulationRoofSurface);
-            $totalSurface += $insulationRoofSurface;
+            $totalSurface += NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
         }
-        //dump("Total surface: " . $totalSurface);
 
         foreach (array_keys($result) as $cat) {
             // defaults
@@ -73,10 +63,7 @@ class RoofInsulation
                 ],
             ];
 
-            $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
-            $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
-
-            $surface = $insulationRoofSurface ?? 0;
+            $surface = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
             $heating = null;
             // should take the bitumen field
 

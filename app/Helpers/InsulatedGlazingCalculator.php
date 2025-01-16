@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 
 class InsulatedGlazingCalculator
 {
-    public static function calculateCosts(MeasureApplication $measureApplication, $m2, $windows)
+    public static function calculateCosts(MeasureApplication $measureApplication, int $m2, int $windows): int|float
     {
         if ($windows <= 0) {
             return 0;
@@ -39,12 +39,13 @@ class InsulatedGlazingCalculator
      * Returns the RAW calculated savings for the given $m2 of $measureApplication.
      * For insulated glazing, all should be added. Therefore the max cap will
      * be done later (via the calculateNetGasSavings).
-     *
-     * @param $m2
-     *
-     * @return float|int
      */
-    public static function calculateRawGasSavings($m2, MeasureApplication $measureApplication, BuildingHeating $heating, InsulatingGlazing $glazing = null)
+    public static function calculateRawGasSavings(
+        float $m2,
+        MeasureApplication $measureApplication,
+        BuildingHeating $heating,
+        InsulatingGlazing $glazing = null
+    ): float
     {
         $query = KeyFigureTemperature::where('measure_application_id', $measureApplication->id)
                 ->where('building_heating_id', $heating->id);
@@ -77,7 +78,11 @@ class InsulatedGlazingCalculator
         return $result;
     }
 
-    public static function calculatePaintworkSurface(ElementValue $frame, array $woodElements, $windowSurface)
+    public static function calculatePaintworkSurface(
+        ElementValue $frame,
+        array $woodElements,
+        float $windowSurface
+    ): float
     {
         $number = $frame->calculate_value * $windowSurface;
         self::debug(__METHOD__ . ' ' . $number . ' = ' . $frame->calculate_value . ' * ' . $windowSurface);
@@ -90,7 +95,12 @@ class InsulatedGlazingCalculator
         return $number;
     }
 
-    public static function determineApplicationYear(MeasureApplication $measureApplication, PaintworkStatus $paintworkStatus, WoodRotStatus $woodRotStatus, $lastPaintedYear)
+    public static function determineApplicationYear(
+        MeasureApplication $measureApplication,
+        PaintworkStatus $paintworkStatus,
+        WoodRotStatus $woodRotStatus,
+        $lastPaintedYear
+    )
     {
         self::debug(__METHOD__);
 

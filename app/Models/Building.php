@@ -276,10 +276,7 @@ class Building extends Model implements MediableInterface
         return $answers;
     }
 
-    /**
-     * @return array|mixed
-     */
-    public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
+    public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion): mixed
     {
         if (! is_null($toolQuestion->for_specific_input_source_id)) {
             // If a tool question has a specific input source, it won't be saved to master.

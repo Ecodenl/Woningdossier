@@ -21,9 +21,6 @@ class InsulatedGlazing
 {
     /**
      * Return the calculate results for the insulated glazings.
-     *
-     * @param $energyHabit
-     * @param $calculateData
      */
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {
@@ -49,15 +46,12 @@ class InsulatedGlazing
 
                 if ($measureApplication instanceof MeasureApplication && $buildingHeating instanceof BuildingHeating) {
                     $m2 = NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']);
-                    $gasSavings = 0;
-                    if (is_numeric($m2)) {
-                        $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
-                            $m2,
-                            $measureApplication,
-                            $buildingHeating,
-                            $insulatedGlazing
-                        );
-                    }
+                    $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
+                        $m2,
+                        $measureApplication,
+                        $buildingHeating,
+                        $insulatedGlazing
+                    );
 
                     $result['measure'][$measureApplication->id] = [
                         'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, (int) $buildingInsulatedGlazingsData['m2'], (int) $buildingInsulatedGlazingsData['windows']),
@@ -132,12 +126,8 @@ class InsulatedGlazing
 
         // only applies for wooden frames
         if ($frameElementValue instanceof ElementValue && 'frames' == $frameElementValue->element->short) {
-            $windowSurface = 0;
+            $windowSurface = NumberFormatter::reverseFormat($calculateData['building_features']['window_surface'] ?? 0);
 
-            $windowSurfaceFormatted = NumberFormatter::reverseFormat($calculateData['building_features']['window_surface'] ?? 0);
-            if (is_numeric($windowSurfaceFormatted)) {
-                $windowSurface = $windowSurfaceFormatted;
-            }
             // frame type use used as ratio (e.g. wood + some others -> use 70% of surface)
             $woodElementValues = [];
 

@@ -254,12 +254,10 @@ class User extends Model implements AuthorizableContract
         $notificationType = NotificationType::where('short', $notificationTypeShort)->first();
         $notInterestedInterval = NotificationInterval::where('short', 'no-interest')->first();
 
-        $doesUserRetrievesNotifications = $this->notificationSettings()
+        return $this->notificationSettings()
             ->where('type_id', $notificationType->id)
             ->where('interval_id', '!=', $notInterestedInterval->id)
             ->exists();
-
-        return $doesUserRetrievesNotifications;
     }
 
     public function energyHabit(): HasOne

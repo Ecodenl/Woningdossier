@@ -10,7 +10,6 @@ namespace App\Http\Controllers\Api\V1\Resources\Schemas;
 
 class RegisterStored
 {
-
     /**
      * @OA\Property(
      *      title="User id",

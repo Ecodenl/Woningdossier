@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\View\View;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Kengetallen;
@@ -50,7 +51,7 @@ class KeyFiguresController extends Controller
     }
 
     // todo refactor
-    protected function keyFiguresInsulatedGlazing()
+    protected function keyFiguresInsulatedGlazing(): array
     {
         $figures = [];
 
@@ -86,7 +87,7 @@ class KeyFiguresController extends Controller
     }
 
     // todo refactor
-    protected function maxSavings()
+    protected function maxSavings(): array
     {
         $figures = [];
 
@@ -106,14 +107,14 @@ class KeyFiguresController extends Controller
     }
 
     // todo refactor
-    protected function priceIndexes()
+    protected function priceIndexes(): array
     {
         $indexes = PriceIndexing::all();
 
         return $indexes->pluck('percentage', 'short')->toArray();
     }
 
-    protected function keyFiguresBoiler()
+    protected function keyFiguresBoiler(): array
     {
         $figures = [];
         $hrBoiler = Service::where('short', '=', 'boiler')->first();
@@ -121,7 +122,7 @@ class KeyFiguresController extends Controller
             foreach ($hrBoiler->values as $boiler) {
                 $efficiency = $boiler->keyFigureBoilerEfficiency;
                 foreach (['heating', 'wtw'] as $for) {
-                    $figures[$boiler->value . ' ' . __('key-figures.boiler.' . $for)] = $efficiency->$for . '%';
+                    $figures[$boiler->getTranslation('value', App::getLocale()) . ' ' . __('key-figures.boiler.' . $for)] = $efficiency->$for . '%';
                 }
             }
         }

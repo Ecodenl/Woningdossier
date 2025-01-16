@@ -22,13 +22,15 @@ class RawCalculator
     /**
      * Calculate the gas savings for the given building when applying the
      * given Element.
-     *
-     * @param $surface
-     * @param $measureAdvice
-     *
-     * @return int|mixed
      */
-    public static function calculateGasSavings(Building $building, InputSource $inputSource, ElementValue $element, UserEnergyHabit $energyHabit, $surface, $measureAdvice)
+    public static function calculateGasSavings(
+        Building $building,
+        InputSource $inputSource,
+        ElementValue $element,
+        UserEnergyHabit $energyHabit,
+        $surface,
+        $measureAdvice
+    )
     {
         $result = 0;
         $building->getBuildingType($inputSource);
@@ -95,15 +97,19 @@ class RawCalculator
      * Return the costs of applying a particular measure in a particular year.
      * This takes yearly cost indexing into account.
      *
-     * @param MeasureApplication $measure         The measure to apply
-     * @param mixed              $number          The amount of measures. (might be m2, pieces, etc.)
-     * @param bool               $applyIndexing   Whether or not to apply indexing
-     *
-     * @return float|int
+     * @param MeasureApplication $measure The measure to apply
+     * @param null|int|float $number The amount of measures. (might be m2, pieces, etc.)
+     * @param null|int $applicationYear The year the measure was executed
+     * @param bool $applyIndexing Whether or not to apply indexing
      */
-    public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, ?int $applicationYear = null, bool $applyIndexing = true): float|int
+    public static function calculateMeasureApplicationCosts(
+        MeasureApplication $measure,
+        null|int|float $number,
+        ?int $applicationYear = null,
+        bool $applyIndexing = true
+    ): float|int
     {
-        self::debug(__METHOD__ . ' for measure ' . $measure->measure_name);
+        self::debug(__METHOD__ . ' for measure ' . $measure->getTranslation('measure_name', 'nl'));
         if (! is_numeric($number) || $number <= 0) {
             return 0;
         }
@@ -136,55 +142,6 @@ class RawCalculator
         self::debug(__METHOD__ . ' Indexed costs: ' . $totalIndexed . ' = ' . $total . ' * ' . (1 + ($costIndex / 100)) . '^' . $yearFactor);
 
         return $totalIndexed;
-    }
-
-    /**
-     * @param float|int                    $costs    Amount indexed on $fromYear
-     * @param int                          $fromYear Previous year used for indexing
-     * @param int                          $toYear   New year to index
-     * @param int|float|PriceIndexing|null $index    Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
-     *
-     * @return float|int
-     */
-    public static function reindexCosts($costs, int $fromYear, int $toYear, $index = null)
-    {
-        if (is_null($fromYear)) {
-            $fromYear = Carbon::now()->year;
-        }
-        if (is_null($toYear)) {
-            $toYear = Carbon::now()->year;
-        }
-        $yearFactor = $toYear - $fromYear;
-
-        if (is_null($index)) {
-            //$index = PriceIndexing::where('short', 'common')->first();
-            $index = \App\Helpers\Cache\Calculator::getPriceIndex('common');
-        }
-        // default = 2%
-        $costIndex = 2;
-        if ($index instanceof PriceIndexing) {
-            $costIndex = $index->percentage;
-        } elseif (! is_null($index) && $index >= 0 && $index <= 100) {
-            $costIndex = $index;
-        }
-
-        $costsIndexed = $costs * pow((1 + ($costIndex / 100)), $yearFactor);
-        self::debug(__METHOD__ . ' Re-indexed costs: ' . $costsIndexed . ' = ' . $costs . ' * ' . (1 + ($costIndex / 100)) . '^' . $yearFactor);
-
-        return $costsIndexed;
-    }
-
-    /**
-     * Index costs. Basically this is 'reindexing' where the costs were indexed
-     * for this year.
-     *
-     * @param float|int $costs
-     *
-     * @return float|int
-     */
-    public static function indexCosts($costs, int $toYear)
-    {
-        return self::reindexCosts($costs, null, $toYear);
     }
 
     /**

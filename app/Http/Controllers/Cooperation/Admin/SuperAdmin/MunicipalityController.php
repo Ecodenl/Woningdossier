@@ -131,7 +131,7 @@ class MunicipalityController extends Controller
             if (! empty($data['vbjehuis_municipality'])) {
                 // If not empty, then the request has validated it and we know it's available.
                 $parts = explode('-', $data['vbjehuis_municipality'], 2);
-                $id = $parts[0] ?? '';
+                $id = $parts[0];
                 $name = $parts[1] ?? '';
 
                 $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] == $id && $a['Name'] == $name));

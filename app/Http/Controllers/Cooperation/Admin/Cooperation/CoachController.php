@@ -14,8 +14,6 @@ class CoachController extends Controller
 {
     /**
      * Show all the coaches and coordinators.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Cooperation $cooperation): View
     {
@@ -30,10 +28,6 @@ class CoachController extends Controller
 
     /**
      * Show a list of a coach its connected buildings.
-     *
-     * @param $userId
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show(Cooperation $cooperation, User $user): View
     {

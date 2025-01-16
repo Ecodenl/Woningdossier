@@ -15,15 +15,15 @@ return new class extends Migration
             $table->increments('id');
 
             $table->unsignedInteger('building_id');
-            $table->foreign('building_id')->references('id')->on('buildings')->onDelete(null);
+            $table->foreign('building_id')->references('id')->on('buildings');
 
             $table->unsignedInteger('input_source_id');
-            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete(null);
+            $table->foreign('input_source_id')->references('id')->on('input_sources');
 
             $table->string('short')->nullable();
 
             $table->unsignedInteger('step_id');
-            $table->foreign('step_id')->references('id')->on('steps')->onDelete(null);
+            $table->foreign('step_id')->references('id')->on('steps');
 
             $table->longText('comment')->nullable();
 

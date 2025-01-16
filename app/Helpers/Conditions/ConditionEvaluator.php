@@ -144,7 +144,7 @@ class ConditionEvaluator
         $result = true;
 
         if ($this->explain) {
-            Log::debug("evaluateAnd EXPLAIN Before: Result is " . ($result ? "true" : "false"));
+            Log::debug("evaluateAnd EXPLAIN Before: Result is true (per default)");
         }
 
         foreach ($clauses as $clause) {
@@ -173,7 +173,7 @@ class ConditionEvaluator
     protected function evaluateClause(array $clause, Collection $collection): bool
     {
         //extract($clause);
-        /** @var string $column */
+        /** @var string|array $column */
         $column = $clause['column'];
         /** @var string $operator */
         $operator = $clause['operator'] ?? '';
@@ -186,18 +186,16 @@ class ConditionEvaluator
                 $v = json_encode($v);
             }
 
-            if ($this->explain) {
-                Log::debug(
-                    "evaluateClause EXPLAIN: " . sprintf(
-                        '%s %s %s',
-                        is_string($column) ? $column : json_encode($column),
-                        $operator,
-                        $v
-                    )
-                );
-                Log::debug("evaluateClause EXPLAIN against");
-                Log::debug($collection);
-            }
+            Log::debug(
+                "evaluateClause EXPLAIN: " . sprintf(
+                    '%s %s %s',
+                    is_string($column) ? $column : json_encode($column),
+                    $operator,
+                    $v
+                )
+            );
+            Log::debug("evaluateClause EXPLAIN against");
+            Log::debug($collection);
         }
 
         // first check if its a custom evaluator
@@ -255,21 +253,14 @@ class ConditionEvaluator
         }
 
         // values will *probably* (should...) be containing a single value
-        switch ($operator) {
-            case Clause::GT:
-                return $values > $value;
-            case Clause::GTE:
-                return $values >= $value;
-            case Clause::LT:
-                return $values < $value;
-            case Clause::LTE:
-                return $values <= $value;
-            case Clause::NEQ:
-                return $values != $value;
-            case Clause::EQ:
-            default:
-                return $values == $value;
-        }
+        return match ($operator) {
+            Clause::GT => $values > $value,
+            Clause::GTE => $values >= $value,
+            Clause::LT => $values < $value,
+            Clause::LTE => $values <= $value,
+            Clause::NEQ => $values != $value,
+            default => $values == $value,
+        };
     }
 
     protected function handleCustomEvaluator(string $customEvaluatorClass, $value, Collection $collection): bool
@@ -277,7 +268,10 @@ class ConditionEvaluator
         $operator = class_basename($customEvaluatorClass);
 
         $override = $this->customResults[$operator] ?? [];
-        /** @var \App\Helpers\Conditions\Evaluators\ShouldEvaluate $customEvaluatorClass */
+        /**
+         * @var \App\Helpers\Conditions\Evaluators\ShouldEvaluate $customEvaluatorClass
+         * @phpstan-ignore varTag.nativeType
+         */
         $evaluation = $customEvaluatorClass::init($this->building, $this->inputSource, $collection)
             ->override($override)
             ->evaluate($value);

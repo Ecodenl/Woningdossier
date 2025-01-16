@@ -15,11 +15,6 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 class ExampleBuildingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response|\Illuminate\View\View
-     */
     public function index(Cooperation $cooperation): View
     {
         $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id')
@@ -34,12 +29,6 @@ class ExampleBuildingController extends Controller
         return view('cooperation.admin.example-buildings.index', compact('exampleBuildings', 'cooperation'));
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function create(Cooperation $cooperation): View
     {
         return view('cooperation.admin.example-buildings.create');
@@ -56,13 +45,6 @@ class ExampleBuildingController extends Controller
         return view('cooperation.admin.example-buildings.edit', compact('exampleBuilding'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
     public function destroy(Cooperation $cooperation, ExampleBuilding $exampleBuilding): RedirectResponse
     {
         $exampleBuilding->delete();
@@ -71,11 +53,6 @@ class ExampleBuildingController extends Controller
             ->with('success', __('cooperation/admin/example-buildings.destroy.success'));
     }
 
-    /**
-     * Copies over a specific example building configuration (content / structure).
-     *
-     * @param int $id
-     */
     public function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding): RedirectResponse
     {
         /** @var ExampleBuilding $exampleBuilding */

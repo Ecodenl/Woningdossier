@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->unsignedInteger('input_source_id')->nullable();
-            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete(null);
+            $table->foreign('input_source_id')->references('id')->on('input_sources');
 
             $table->integer('to_cooperation_id')->unsigned()->nullable();
             $table->foreign('to_cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');

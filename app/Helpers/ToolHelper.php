@@ -8,16 +8,17 @@ use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
 use App\Services\DumpService;
 use App\Services\RelatedModelService;
+use Illuminate\Support\Facades\App;
 
 class ToolHelper
 {
-    const STRUCT_TOTAL = 'struct-total';
-    const STRUCT_LITE = 'struct-lite';
-    const STRUCT_SMALL_MEASURES_LITE = 'struct-small-measures-lite';
-    const STRUCT_PDF_QUICK = 'struct-pdf-quick';
-    const STRUCT_PDF_LITE = 'struct-pdf-lite';
+    const string STRUCT_TOTAL = 'struct-total';
+    const string STRUCT_LITE = 'struct-lite';
+    const string STRUCT_SMALL_MEASURES_LITE = 'struct-small-measures-lite';
+    const string STRUCT_PDF_QUICK = 'struct-pdf-quick';
+    const string STRUCT_PDF_LITE = 'struct-pdf-lite';
 
-    const STEP_STRUCTURE = [
+    const array STEP_STRUCTURE = [
         self::STRUCT_TOTAL => [
             // Quick Scan
             'building-data', 'usage-quick-scan', 'living-requirements', 'residential-status',
@@ -50,7 +51,7 @@ class ToolHelper
         self::STRUCT_PDF_LITE => self::STRUCT_LITE,
     ];
 
-    const SUPPORTED_RELATED_MODELS = [
+    const array SUPPORTED_RELATED_MODELS = [
         MeasureApplication::class,
     ];
 
@@ -61,7 +62,7 @@ class ToolHelper
      */
     public static function getContentStructure(string $short, string $mode): array
     {
-        $stepOrder = static::getStepOrder($short);
+        $stepOrder = self::getStepOrder($short);
         $relatedModelService = RelatedModelService::init();
 
         $structure = [];
@@ -133,7 +134,7 @@ class ToolHelper
                                 // by the step short hidden in the result short
                                 $labelShort = explode('.', $model->short)[0];
                                 $label = ToolLabel::findByShort($labelShort);
-                                $modelName .= " ({$label->name})";
+                                $modelName .= " ({$label->getTranslation('name', App::getLocale())})";
                             } else {
                                 $query = $relatedModelService->from($model)
                                     ->resolveTargetRaw()

@@ -25,7 +25,7 @@ class HighEfficiencyBoiler extends Calculator
             'interest_comparable' => 0,
         ];
 
-        /** @var ServiceValue $boilerType */
+        /** @var ServiceValue|null $boilerType */
         $boilerType = ServiceValue::find($this->getAnswer('boiler-type'));
 
         if ($boilerType instanceof ServiceValue) {

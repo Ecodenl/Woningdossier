@@ -6,20 +6,20 @@ use App\Helpers\KeyFigures\KeyFiguresInterface;
 
 class Temperature implements KeyFiguresInterface
 {
-    const WALL_INSULATION_JOINTS = 'cavity-wall-insulation';
-    const WALL_INSULATION_FACADE = 'facade-wall-insulation';
-    const WALL_INSULATION_RESEARCH = 'wall-insulation-research';
+    const string WALL_INSULATION_JOINTS = 'cavity-wall-insulation';
+    const string WALL_INSULATION_FACADE = 'facade-wall-insulation';
+    const string WALL_INSULATION_RESEARCH = 'wall-insulation-research';
 
     // Gemiddelde temperatuur normberekening
-    const AVERAGE_TEMPERATURE_NORM = 13.5; // degrees
+    const float AVERAGE_TEMPERATURE_NORM = 13.5; // degrees
 
-    const CAVITY_WALL_ADVICE = [
+    const array CAVITY_WALL_ADVICE = [
         1 => self::WALL_INSULATION_JOINTS,
         2 => self::WALL_INSULATION_FACADE,
         0 => self::WALL_INSULATION_RESEARCH,
     ];
 
-    protected static $calculationValues = [
+    protected static array $calculationValues = [
         self::WALL_INSULATION_JOINTS => [
             'default' => 6.46,
             'correction' => 0.83,

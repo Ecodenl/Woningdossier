@@ -19,7 +19,7 @@ class MyRegulationHelper
     public static function getRelevantRegulations($building, $inputSource): array
     {
         $relevantRegulations = [];
-        $payload = Wrapper::wrapCall(fn() => RegulationService::init()
+        $payload = Wrapper::wrapCall(fn () => RegulationService::init()
             ->forBuilding($building)
             ->getSearch());
 
@@ -30,7 +30,6 @@ class MyRegulationHelper
 
         // First we have to get all available mappings for the user its action plan advices.
         // First get all user action plan advices that have an advisable mapping.
-        /** @var Collection $advicesWithAdvisableMapping */
         if ($payload instanceof Search) {
             $selectColumns = [
                 'user_action_plan_advices.id',
@@ -38,7 +37,7 @@ class MyRegulationHelper
                 'user_action_plan_advices.user_action_plan_advisable_id',
                 'user_action_plan_advices.user_action_plan_advisable_type',
                 'user_action_plan_advices.loan_available',
-                'user_action_plan_advices.subsidy_available'
+                'user_action_plan_advices.subsidy_available',
             ];
 
             $baseQuery = $building
@@ -53,7 +52,7 @@ class MyRegulationHelper
                 ->with([
                     'userActionPlanAdvisable' => function ($query) {
                         $query->withoutGlobalScope(GetValueScope::class);
-                    }
+                    },
                 ])
                 ->whereIn('user_action_plan_advices.category', [
                     UserActionPlanAdviceService::CATEGORY_TO_DO,
@@ -68,14 +67,16 @@ class MyRegulationHelper
                 ->clone()
                 ->selectRaw($selectRaw)
                 ->join('mappings as end_mapping', function (JoinClause $join) {
-                    $join->on('end_mapping.from_model_id', '=', 'user_action_plan_advices.user_action_plan_advisable_id')
+                    $join->on('end_mapping.from_model_id', '=',
+                        'user_action_plan_advices.user_action_plan_advisable_id')
                         ->where('end_mapping.from_model_type', MeasureApplication::class);
                 })
                 ->where('user_action_plan_advices.user_action_plan_advisable_type', MeasureApplication::class)
                 ->get();
 
-            // now we will do the same, except for the custom and cooperation measure applications
-            // these differ, as they are connected to a measureCategory. THat measureCategory is mapped to the actual vbjehuis measure.
+            // Now we will do the same, except for the custom and cooperation measure applications.
+            // These differ, as they are connected to a measureCategory. That measureCategory is mapped to
+            // the actual vbjehuis measure.
             $selectRaw = implode(',', array_merge($selectColumns, [
                 'json_unquote(end_mapping.target_data->"$.Value") as target_data_value',
             ]));
@@ -90,10 +91,15 @@ class MyRegulationHelper
                     $join->on('mappings.target_model_id', '=', 'end_mapping.from_model_id')
                         ->where('end_mapping.from_model_type', MeasureCategory::class);
                 })
-                ->whereIn('user_action_plan_advices.user_action_plan_advisable_type', [CustomMeasureApplication::class, CooperationMeasureApplication::class])
+                ->whereIn(
+                    'user_action_plan_advices.user_action_plan_advisable_type',
+                    [CustomMeasureApplication::class, CooperationMeasureApplication::class]
+                )
                 ->get();
 
-            $advicesWithAdvisableMapping = $advicesWithAdvisableMappingForMeasureCategoryRelated->merge($advicesWithAdvisableMappingForMeasureApplications);
+            /** @var Collection $advicesWithAdvisableMapping */
+            $advicesWithAdvisableMapping = $advicesWithAdvisableMappingForMeasureCategoryRelated
+                ->merge($advicesWithAdvisableMappingForMeasureApplications);
 
             $transformedPayload = $payload->forBuildingContractType($building, $inputSource)->all();
 
@@ -107,7 +113,8 @@ class MyRegulationHelper
                 $relatedAdvices = $advicesWithAdvisableMapping;
 
                 foreach ($tagsForRegulation as $tagForRegulation) {
-                    // all advices from the $advicesWithAdvisableMapping are relevant, as long as they match the "tags" with measures.
+                    // All advices from the $advicesWithAdvisableMapping are relevant, as long
+                    // as they match the "tags" with measures.
                     if ($regulationType == RegulationService::OTHER) {
                         $relatedAdvices = $advicesWithAdvisableMapping;
                     }

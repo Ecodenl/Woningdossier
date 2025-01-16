@@ -21,8 +21,6 @@ class SolarPanel
 {
     /**
      * Calculate the savings for the solar panel.
-     *
-     * @param User $user
      */
     public static function calculate(Building $building, array $calculateData): array
     {

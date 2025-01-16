@@ -35,10 +35,6 @@ class BaseCache
         return $prefix . sprintf($string, ...$parameters);
     }
 
-    /**
-     * @template T of Model
-     * @return T|null
-     */
     public static function cacheModel(string $cacheKey, Builder $query): ?Model
     {
         $result = Cache::remember(

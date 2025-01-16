@@ -14,18 +14,11 @@ use App\Models\Scan;
 use App\Services\Models\BuildingStatusService;
 use App\Services\PrivateMessageService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class ConversationRequestController extends Controller
 {
-    /**
-     * Show the form.
-     *
-     * @param string|null $requestType             Default: null
-     * @param string|null $measureApplicationShort Default: null
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
-     */
-    public function index(Cooperation $cooperation, ?string $requestType, ?string $measureApplicationShort = null)
+    public function index(Cooperation $cooperation, ?string $requestType, ?string $measureApplicationShort = null): View|RedirectResponse
     {
         DeprecationLogger::alert(__CLASS__ . ' used!');
         $scan = $cooperation->scans()->where('scans.short', '!=', Scan::EXPERT)->first();

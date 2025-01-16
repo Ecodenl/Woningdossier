@@ -49,9 +49,13 @@ class HeatPump extends Calculator
     public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         parent::__construct($building, $inputSource, $answers);
+
         $this->kengetallenService = app(KengetallenService::class);
+        /** @phpstan-ignore assign.propertyType */
         $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
-            ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
+            ->toolQuestionCustomValues()
+            ->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))
+            ->first();
     }
 
     public function performCalculations(): array
@@ -357,7 +361,7 @@ class HeatPump extends Calculator
             /** @var ElementValue $elementValue */
             $elementValue = ElementValue::find($this->getAnswer($toolQuestion));
 
-            $factor = $elementValue?->insulation_factor ?? 1;
+            $factor = $elementValue->insulation_factor ?? 1;
             if ($factor <= 1) {
                 // If the state of this element is bad we want to advise the user to fix this first
                 $this->advices[$toolQuestion] = $toolQuestion;

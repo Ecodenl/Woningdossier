@@ -50,7 +50,7 @@ class RoofInsulationCalculator
 
     public static function determineApplicationYear(MeasureApplication $measureApplication, $last, $factor)
     {
-        self::debug(__METHOD__ . ' (' . $measureApplication->measure_name . ', ' . $last . ', ' . $factor . ')');
+        self::debug(__METHOD__ . ' (' . $measureApplication->getTranslation('measure_name', 'nl') . ', ' . $last . ', ' . $factor . ')');
 
         $correctedMaintenanceInterval = ceil($factor * $measureApplication->maintenance_interval);
 

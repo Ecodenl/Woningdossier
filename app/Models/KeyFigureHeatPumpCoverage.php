@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\KeyFigureHeatPumpCoverage
  *
  * @property int $id
- * @property string $betafactor
+ * @property numeric $betafactor
  * @property int $tool_question_custom_value_id
  * @property int $percentage
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -30,6 +30,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureHeatPumpCoverage extends Model
 {
+    protected $casts = [
+        'betafactor' => 'decimal:2',
+    ];
+
     public function scopeForHeatingTemperature(
         Builder $query,
         ToolQuestionCustomValue $heatingTemperature

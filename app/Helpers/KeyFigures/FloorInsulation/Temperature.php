@@ -6,11 +6,11 @@ use App\Helpers\KeyFigures\KeyFiguresInterface;
 
 class Temperature implements KeyFiguresInterface
 {
-    const FLOOR_INSULATION_FLOOR = 'floor-insulation';
-    const FLOOR_INSULATION_BOTTOM = 'bottom-insulation';
-    const FLOOR_INSULATION_RESEARCH = 'floor-insulation-research';
+    const string FLOOR_INSULATION_FLOOR = 'floor-insulation';
+    const string FLOOR_INSULATION_BOTTOM = 'bottom-insulation';
+    const string FLOOR_INSULATION_RESEARCH = 'floor-insulation-research';
 
-    protected static $calculationValues = [
+    protected static array $calculationValues = [
         self::FLOOR_INSULATION_FLOOR => 4.04, // D27
         self::FLOOR_INSULATION_BOTTOM => 3.51, // D28
         self::FLOOR_INSULATION_RESEARCH => 3.51, // D29 = D28

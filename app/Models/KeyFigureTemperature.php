@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $measure_application_id
  * @property int|null $insulating_glazing_id
  * @property int $building_heating_id
- * @property string $key_figure
+ * @property numeric $key_figure
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\BuildingHeating $buildingHeating
@@ -32,6 +32,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureTemperature extends Model
 {
+    protected $casts = [
+        'key_figure' => 'decimal:2',
+    ];
+
     public function measureApplication(): BelongsTo
     {
         return $this->belongsTo(MeasureApplication::class);

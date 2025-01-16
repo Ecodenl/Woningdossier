@@ -504,7 +504,7 @@ class Heating extends Calculator
         ];
         $comfortLevelId = $comfortLevelSomething;
         if (array_key_exists($comfortLevelSomething, $map)) {
-            $comfortLevelId = $map[$comfortLevelSomething] ?? 0;
+            $comfortLevelId = $map[$comfortLevelSomething];
         }
         $comfortLevelTapWater = ComfortLevelTapWater::find($comfortLevelId);
 

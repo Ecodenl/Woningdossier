@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\KeyFigureInsulationFactor
  *
  * @property int $id
- * @property string $insulation_grade
- * @property string $insulation_factor
+ * @property numeric $insulation_grade
+ * @property numeric $insulation_factor
  * @property int $energy_consumption_per_m2
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -28,6 +28,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureInsulationFactor extends Model
 {
+    protected $casts = [
+        'insulation_grade' => 'decimal:2',
+        'insulation_factor' => 'decimal:2',
+    ];
+
     public function scopeForInsulationFactor(Builder $query, $factor): Builder
     {
         $factor = number_format($factor, 2, '.', '');

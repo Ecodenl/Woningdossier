@@ -228,8 +228,8 @@ class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
         // For now we use a simple shell variant
 
         //extract($clause);
-        /** @var string $column */
-        $column = $clause['column'];
+        ///** @var string|null $result */
+        //$result = $clause['result'];
         /** @var string $operator */
         $operator = $clause['operator'] ?? '';
         /** @var mixed $value */

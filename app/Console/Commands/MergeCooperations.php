@@ -74,11 +74,11 @@ class MergeCooperations extends Command
         if (count($cooperations) === 1) {
             /** @var Cooperation $cooperation */
             $cooperation = Arr::first($cooperations);
-            if ($force || $this->confirm("Do you want to rename {$cooperation->name} to {$target}?")) {
+            if ($force || $this->confirm("Do you want to rename '{$cooperation->name}' to '{$target}'?")) {
                 // Make redirect.
                 CooperationRedirect::create([
                     'from_slug' => $cooperation->slug,
-                    'cooperation_id', $cooperation->id,
+                    'cooperation_id' => $cooperation->id,
                 ]);
 
                 // Update the cooperation.
@@ -86,7 +86,6 @@ class MergeCooperations extends Command
                     'name' => $target,
                     'slug' => $targetSlug,
                 ]);
-
             } else {
                 $this->info('Not renaming cooperation.');
             }
@@ -96,7 +95,7 @@ class MergeCooperations extends Command
 
         // More than one cooperation to merge, so we will create a new source and merge the users, private messages,
         // questionnaires and example buildings to this new cooperation.
-        if ($force || $this->confirm("Do you want to merge " . implode(', ', $cooperationSlugs) . " to {$target}?")) {
+        if ($force || $this->confirm("Do you want to merge '" . implode(', ', $cooperationSlugs) . "' to '{$target}'?")) {
             /** @var Cooperation $newCooperation */
             $newCooperation = Cooperation::create([
                 'name' => $target,
@@ -226,7 +225,7 @@ class MergeCooperations extends Command
                 // Make redirects.
                 CooperationRedirect::create([
                     'from_slug' => $cooperation->slug,
-                    'cooperation_id', $newCooperation->id,
+                    'cooperation_id' => $newCooperation->id,
                 ]);
 
                 // Delete cooperation.

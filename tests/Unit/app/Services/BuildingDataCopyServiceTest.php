@@ -5,19 +5,10 @@ namespace Tests\Unit\app\Services;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Services\BuildingDataCopyService;
-use Tests\CreatesApplication;
 use Tests\TestCase;
 
 class BuildingDataCopyServiceTest extends TestCase
 {
-    use CreatesApplication;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
-
     public function makeTargetsValuesProvider()
     {
         return [
@@ -140,6 +131,4 @@ class BuildingDataCopyServiceTest extends TestCase
 
         $this->assertEquals($expected, $possibleTargetValues->values()->toArray());
     }
-
-
 }

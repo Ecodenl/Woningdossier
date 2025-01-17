@@ -7,6 +7,7 @@ use App\Helpers\Models\CooperationHelper;
 use App\Helpers\Str;
 use App\Models\Cooperation;
 use App\Models\CooperationRedirect;
+use App\Models\CooperationScan;
 use App\Models\PrivateMessage;
 use App\Models\Questionnaire;
 use App\Models\User;
@@ -82,8 +83,18 @@ class MergeCooperations extends Command
                 'name' => $target,
                 'slug' => $targetSlug,
             ]);
+
             $cooperations = collect($cooperations);
             $cooperationIds = $cooperations->pluck('id')->all();
+
+            // Attach the available scans to the new cooperation.
+            $newCooperation->scans()->sync(
+                CooperationScan::select('scan_id')
+                    ->distinct()
+                    ->whereIn('cooperation_id', $cooperationIds)
+                    ->pluck('scan_id')
+                    ->all()
+            );
 
             // First we will do the simple cases: simply moving users between the cooperations. To do this, all we need
             // to do is query on the accounts that have a single user.
@@ -138,8 +149,6 @@ class MergeCooperations extends Command
                     'from_slug' => $cooperation->slug,
                     'cooperation_id', $newCooperation->id,
                 ]);
-
-                // TODO: Merge scans
 
                 // Update example buildings.
                 $cooperation->exampleBuildings()->update(['cooperation_id' => $newCooperation->id]);

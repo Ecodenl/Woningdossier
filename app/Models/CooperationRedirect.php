@@ -27,6 +27,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CooperationRedirect extends Model
 {
+    protected $fillable = [
+        'from_slug', 'cooperation_id',
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

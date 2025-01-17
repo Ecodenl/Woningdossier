@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Cooperation;
 use App\Models\CooperationPreset;
+use App\Models\Scan;
 use App\Services\CooperationScanService;
 use App\Services\Models\CooperationPresetService;
 
@@ -12,7 +13,7 @@ class CooperationObserver
     public function created(Cooperation $cooperation)
     {
         // Give the cooperation the default quick-scan upon register.
-        CooperationScanService::init($cooperation)->syncScan('quick-scan');
+        CooperationScanService::init($cooperation)->syncScan(Scan::QUICK);
 
         $preset = CooperationPreset::findByShort(CooperationPresetService::COOPERATION_MEASURE_APPLICATIONS);
         if ($preset instanceof CooperationPreset) {

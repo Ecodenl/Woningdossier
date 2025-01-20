@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\HoomdossierSession;
@@ -26,6 +27,7 @@ use Illuminate\Support\Collection;
  * @property-read int|null $contents_count
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read mixed $translations
+ * @method static \Database\Factories\ExampleBuildingFactory factory($count = null, $state = [])
  * @method static Builder<static>|ExampleBuilding forAnyOrMyCooperation()
  * @method static Builder<static>|ExampleBuilding forMyCooperation()
  * @method static Builder<static>|ExampleBuilding generic()
@@ -48,7 +50,8 @@ use Illuminate\Support\Collection;
  */
 class ExampleBuilding extends Model
 {
-    use HasTranslations;
+    use HasFactory,
+        HasTranslations;
 
     protected $translatable = [
         'name',

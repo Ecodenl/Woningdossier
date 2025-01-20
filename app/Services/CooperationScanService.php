@@ -23,8 +23,8 @@ class CooperationScanService
     public static function translationMap(): array
     {
         return [
-            'quick-scan' => 'Uitgebreide variant',
-            'lite-scan' => 'Eenvoudige variant',
+            Scan::QUICK => 'Uitgebreide variant',
+            Scan::LITE => 'Eenvoudige variant',
             'both-scans' => 'Beide varianten'
         ];
     }
@@ -40,20 +40,20 @@ class CooperationScanService
         }
 
         // when the current types have no diff, the collection is empty and we can safely assume its a quick-scan
-        if ($types->diff(['quick-scan', 'expert-scan'])->isEmpty()) {
-            return  'quick-scan';
+        if ($types->diff([Scan::QUICK, Scan::EXPERT])->isEmpty()) {
+            return Scan::QUICK;
         }
 
         // no other option m8.
-        return  'lite-scan';
+        return Scan::LITE;
     }
 
     public function syncScan(string $type): void
     {
         $scansToSync = [
-            'quick-scan' => ['quick-scan', 'expert-scan'],
-            'lite-scan' => ['lite-scan'],
-            'both-scans' => ['quick-scan', 'lite-scan', 'expert-scan'],
+            Scan::QUICK => [Scan::QUICK, Scan::EXPERT],
+            Scan::LITE => [Scan::LITE],
+            'both-scans' => [Scan::LITE, Scan::QUICK, Scan::EXPERT],
         ];
 
         $scans = Scan::whereIn('short', $scansToSync[$type])->get();

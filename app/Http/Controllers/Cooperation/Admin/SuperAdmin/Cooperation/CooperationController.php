@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use App\Helpers\Models\CooperationHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
-use App\Services\UserService;
 
 class CooperationController extends Controller
 {
@@ -35,21 +35,7 @@ class CooperationController extends Controller
     {
         $this->authorize('delete', $cooperationToDestroy);
 
-        $exampleBuildings = $cooperationToDestroy->exampleBuildings;
-
-        foreach ($exampleBuildings as $exampleBuilding) {
-            $exampleBuilding->contents()->delete();
-        }
-
-        $cooperationToDestroy->exampleBuildings()->delete();
-
-        $users = $cooperationToDestroy->users()->withoutGlobalScopes()->get();
-        /** @var \App\Models\User $user */
-        foreach ($users as $user) {
-            UserService::deleteUser($user, true);
-        }
-
-        $cooperationToDestroy->delete();
+        CooperationHelper::destroyCooperation($cooperationToDestroy);
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
             ->with('success', __('cooperation/admin/super-admin/cooperations.destroy.success'));

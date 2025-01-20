@@ -4,6 +4,7 @@ namespace Tests\Unit\app\Console\Commands;
 
 use App\Helpers\Arr;
 use App\Helpers\RoleHelper;
+use App\Models\CooperationScan;
 use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -148,8 +149,8 @@ final class MergeCooperationsTest extends TestCase
         $defaultUserCount = DB::table('users')->count();
 
         $roles = [];
-        foreach ([RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COOPERATION_ADMIN] as $roleName) {
-            $roles[] = Role::findByName($roleName)->id;
+        foreach ([RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COACH, RoleHelper::ROLE_COOPERATION_ADMIN] as $roleName) {
+            $roles[] = Role::findByName($roleName);
         }
 
         // First, we must make some "valid" cooperations > can't properly test if they don't have some data.
@@ -215,22 +216,39 @@ final class MergeCooperationsTest extends TestCase
 
         $cooperations = [$cooperationB, $cooperationC, $cooperationD];
         $cooperationSlugs = [$cooperationB->slug, $cooperationC->slug, $cooperationD->slug];
+        $cooperationIds = [$cooperationB->id, $cooperationC->id, $cooperationD->id];
 
         foreach ($cooperations as $cooperation) {
             $this->assertDatabaseHas('questionnaires', [
                 'cooperation_id' => $cooperation->id,
             ]);
-        }
-        foreach ($cooperations as $cooperation) {
             $this->assertDatabaseHas('example_buildings', [
                 'cooperation_id' => $cooperation->id,
             ]);
+            $this->assertDatabaseHas('private_messages', [
+                'to_cooperation_id' => $cooperation->id,
+            ]);
         }
+
+        // Before we move on, get some data so we can compare with the after situation.
+        $totalQuestionnaires = DB::table('questionnaires')->whereIn('cooperation_id', $cooperationIds)->count();
+        $totalEBs = DB::table('example_buildings')->whereIn('cooperation_id', $cooperationIds)->count();
+        $totalPMs = DB::table('private_messages')->where(
+            fn ($q) => $q->whereIn('to_cooperation_id', $cooperationIds)
+                ->orWhereIn('from_cooperation_id', $cooperationIds)
+        )->count();
+        $scans = CooperationScan::whereIn('cooperation_id', $cooperationIds)
+            ->select('scan_id')
+            ->distinct()
+            ->orderBy('scan_id')
+            ->pluck('scan_id')
+            ->all();
 
         $loop = 0;
         $userData = [];
+        $roleData = [];
         // Finally, we will move a couple users to another cooperation.
-        $cooperationB->users()->inRandomOrder()->eachById(function (User $user) use ($cooperationC, &$loop, &$userData) {
+        $cooperationB->users()->inRandomOrder()->eachById(function (User $user) use ($cooperationC, &$loop, &$userData, &$roleData, $roles, &$totalPMs) {
             $dupe = $user->replicate();
             $dupe->cooperation_id = $cooperationC->id;
             $dupe->save();
@@ -250,6 +268,12 @@ final class MergeCooperationsTest extends TestCase
                 // and therefore is more relevant.
                 $user->update(['tool_last_changed_at' => Carbon::now()]);
                 $userIdToKeep = $user->id;
+
+                // We can safely fetch from the role array by index due to the foreach order.
+                // Only resident role.
+                $user->roles()->sync($roles[0]);
+                $dupe->roles()->sync($roles[0]);
+                $roleData[$userIdToKeep] = [$roles[0]->id];
             } elseif ($loop > 6 && $loop < 13) {
                 // Only one of the users can access the action plan (by having complete steps).
                 foreach (Step::all() as $step) {
@@ -259,6 +283,11 @@ final class MergeCooperationsTest extends TestCase
                     ]);
                 }
                 $userIdToKeep = $user->id;
+
+                // Both resident and coach role
+                $user->roles()->sync($roles[0]);
+                $dupe->roles()->sync($roles[1]);
+                $roleData[$userIdToKeep] = [$roles[0]->id, $roles[1]->id];
             } elseif ($loop > 15 && $loop < 20) {
                 // Finally, we will give both access to the action plan, and provide a user action plan advice
                 // to be the differentiating factor.
@@ -287,6 +316,19 @@ final class MergeCooperationsTest extends TestCase
                 ]);
 
                 $userIdToKeep = $user->id;
+
+                // All roles.
+                $user->roles()->sync([$roles[0], $roles[1], $roles[2]]);
+                $dupe->roles()->sync([$roles[0], $roles[1]]);
+                $roleData[$userIdToKeep] = [$roles[0]->id, $roles[1]->id, $roles[2]->id];
+            }
+
+            // We MUST bring down the total PMs since these factoried users have attached PMs and will influence the
+            // final count.
+            if ($userIdToKeep === $dupe->id) {
+                // We can safely query on building ID since building is attached to user which is attached
+                // to a cooperation.
+                $totalPMs -= PrivateMessage::where('building_id', $user->building->id)->count();
             }
 
             $userData[$user->account_id] = $userIdToKeep;
@@ -347,17 +389,77 @@ final class MergeCooperationsTest extends TestCase
                 'cooperation_id' => $cooperation->id,
             ]);
         }
+        // Since we merged 3 cooperations with 50 users each, there should be 150 users for the new cooperation.
+        $this->assertSame(150, DB::table('users')->where('cooperation_id', $newCooperation->id)->count());
 
-        // Same for example buildings and questionnaires
+        // Assert each of these still exist as chosen user.
+        foreach ($userData as $accountId => $userId) {
+            $this->assertDatabaseHas('users', [
+                'id' => $userId,
+                'account_id' => $accountId,
+                'cooperation_id' => $newCooperation->id,
+            ]);
+        }
+
+        // Assert merged roles
+        foreach ($roleData as $userId => $roleIds) {
+            $roleIds = array_values($roleIds);
+            sort($roleIds);
+            $this->assertSame(
+                count($roleIds),
+                DB::table('model_has_roles')
+                    ->where('model_id', $userId)
+                    ->where('model_type', User::class)
+                    ->count()
+            );
+
+            $this->assertSame(
+                $roleIds,
+                DB::table('model_has_roles')
+                    ->where('model_id', $userId)
+                    ->where('model_type', User::class)
+                    ->orderBy('role_id')
+                    ->pluck('role_id')
+                    ->all()
+            );
+        }
+
+        // Same for example buildings and questionnaires, assert missing for the old cooperation and exists for the new
         foreach ($cooperations as $cooperation) {
             $this->assertDatabaseMissing('questionnaires', [
                 'cooperation_id' => $cooperation->id,
             ]);
-        }
-        foreach ($cooperations as $cooperation) {
             $this->assertDatabaseMissing('example_buildings', [
                 'cooperation_id' => $cooperation->id,
             ]);
+            $this->assertDatabaseMissing('private_messages', [
+                'to_cooperation_id' => $cooperation->id,
+            ]);
+            $this->assertDatabaseMissing('private_messages', [
+                'from_cooperation_id' => $cooperation->id,
+            ]);
         }
+
+        // Assert all properly moved
+        $this->assertSame(
+            $totalQuestionnaires,
+            DB::table('questionnaires')->where('cooperation_id', $newCooperation->id)->count()
+        );
+        $this->assertSame(
+            $totalEBs,
+            DB::table('example_buildings')->where('cooperation_id', $newCooperation->id)->count()
+        );
+        $this->assertSame(
+            $totalPMs,
+            DB::table('private_messages')->where(
+                fn ($q) => $q->where('to_cooperation_id', $newCooperation->id)
+                    ->orWhere('from_cooperation_id', $newCooperation->id)
+            )->count()
+        );
+
+        // Assert scans properly merged
+        $newScans = $newCooperation->scans()->orderBy('scans.id')->pluck('scans.id')->all();
+        $this->assertSame(count($scans), count($newScans));
+        $this->assertSame($scans, $newScans);
     }
 }

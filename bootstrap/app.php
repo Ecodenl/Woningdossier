@@ -58,10 +58,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'tool/heater/calculate',
         ]);
 
-        $middleware->web([
-            \App\Http\Middleware\CheckForCooperationRedirect::class,
+        $middleware->web(append: [
             \App\Http\Middleware\UserLanguage::class,
             \App\Http\Middleware\SentryContext::class,
+        ], prepend: [
+            // Prepend to ensure it is executed before model binding
+            \App\Http\Middleware\CheckForCooperationRedirect::class,
         ]);
 
         $middleware->statefulApi();

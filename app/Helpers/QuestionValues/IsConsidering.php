@@ -11,7 +11,7 @@ class IsConsidering extends QuestionValuable
     {
         $values = collect();
 
-        foreach(ConsiderableHelper::getConsiderableValues() as $value => $name) {
+        foreach (ConsiderableHelper::getConsiderableValues() as $value => $name) {
             $values->push(compact('value', 'name'));
         }
 

@@ -16,7 +16,7 @@ class WallFacadePlasteredPainted extends QuestionValuable
     {
         $values = collect();
 
-        foreach(WallInsulationHelper::getFacadePlasteredPaintedValues() as $value => $name) {
+        foreach (WallInsulationHelper::getFacadePlasteredPaintedValues() as $value => $name) {
             $values->push(compact('value', 'name'));
         }
 

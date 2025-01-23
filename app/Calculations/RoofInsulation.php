@@ -21,7 +21,7 @@ use Carbon\Carbon;
 
 class RoofInsulation
 {
-    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData)
+    public static function calculate(Building $building, InputSource $inputSource, $calculateData)
     {
         // \Log::debug(__METHOD__);
         $result = [];
@@ -39,25 +39,15 @@ class RoofInsulation
             }
         }
 
-        // \Log::debug(json_encode($result));
-
         $roofInsulation = Element::where('short', 'roof-insulation')->first();
         $adviceMap = RoofInsulationHelper::getMeasureApplicationsAdviceMap();
         $totalSurface = 0;
 
         $roofTypes = $calculateData['building_roof_types'];
 
-        //dump("Roof types: ");
-        //dump($roofTypes);
-
         foreach (array_keys($result) as $cat) {
-            $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
-            $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
-
-            //dump($totalSurface . " += " . $insulationRoofSurface);
-            $totalSurface += $insulationRoofSurface;
+            $totalSurface += NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
         }
-        //dump("Total surface: " . $totalSurface);
 
         foreach (array_keys($result) as $cat) {
             // defaults
@@ -73,10 +63,7 @@ class RoofInsulation
                 ],
             ];
 
-            $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
-            $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
-
-            $surface = $insulationRoofSurface ?? 0;
+            $surface = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
             $heating = null;
             // should take the bitumen field
 
@@ -124,9 +111,7 @@ class RoofInsulation
                 $roofInsulationValue = ElementValue::where('element_id', $roofInsulation->id)->where('id', $roofTypes[$cat]['element_value_id'])->first();
 
                 if ($roofInsulationValue instanceof ElementValue && $heating instanceof BuildingHeating && isset($advice)) {
-                    if ($energyHabit instanceof UserEnergyHabit) {
-                        $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $inputSource, $roofInsulationValue, $energyHabit, $heating, $surface, $totalSurface, $advice);
-                    }
+                    $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $inputSource, $roofInsulationValue, $heating, $surface, $totalSurface, $advice);
                     $catData['savings_co2'] = RawCalculator::calculateCo2Savings($catData['savings_gas']);
 
                     $catData['savings_money'] = round(app(CalculatorService::class)

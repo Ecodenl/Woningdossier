@@ -2,28 +2,16 @@
 
 namespace App\Listeners;
 
+use App\Events\ParticipantRevokedEvent;
 use App\Helpers\HoomdossierSession;
 use App\Models\PrivateMessage;
 
 class ParticipantRevokedListener
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(ParticipantRevokedEvent $event): void
     {
         $participantFullName = $event->revokedParticipant->getFullName();
         $message = __('woningdossier.cooperation.chat.messages.participant-removed', ['participant' => $participantFullName]);

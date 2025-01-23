@@ -1,13 +1,13 @@
 <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$this->subSteppables->count() > 1 ? 10 : 5}} ">
 
     @php
-        // some necessary crap to display the toolQuestions in the right manor
+        // Required setup to display toolQuestions in the correct manner.
         $topPivot = $this->subSteppables->where('order', 0)->first();
-        $top = optional($topPivot)->subSteppable;
+        $top = $topPivot?->subSteppable;
         $bottomLeftPivot = $this->subSteppables->where('order', 1)->first();
-        $bottomLeft = optional($bottomLeftPivot)->subSteppable;
+        $bottomLeft = $bottomLeftPivot?->subSteppable;
         $bottomRightPivot = $this->subSteppables->where('order', 2)->first();
-        $bottomRight = optional($bottomRightPivot)->subSteppable;
+        $bottomRight = $bottomRightPivot?->subSteppable;
     @endphp
     <div class="w-full">
         @component('cooperation.frontend.layouts.components.form-group', [

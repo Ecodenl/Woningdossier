@@ -20,7 +20,6 @@ trait HasDynamicAnswers
     /**
      * Get the answer, either dynamic if set, otherwise from the given building.
      *
-     * @param string $toolQuestionShort
      * @param bool $withEvaluation Because sometimes, but ONLY sometimes we don't want validation
      *
      * @return array|mixed

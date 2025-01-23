@@ -20,6 +20,6 @@ class ToolQuestionPolicy
             return false;
         }
 
-        return is_null($toolQuestion->forSpecificInputSource) || $currentInputSource->short === $toolQuestion->forSpecificInputSource->short;
+        return is_null($toolQuestion->forSpecificInputSource) || $currentInputSource?->short === $toolQuestion->forSpecificInputSource->short;
     }
 }

@@ -10,10 +10,8 @@ class KeyFigureHeatPumpCoveragesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $temperatureQuestion = DB::table('tool_questions')
             ->where('short', 'new-boiler-setting-comfort-heat')

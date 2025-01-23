@@ -20,35 +20,36 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $type
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static Builder|HeatPumpCharacteristic forHeatPumpConfigurable(\Illuminate\Database\Eloquent\Model $configurable)
- * @method static Builder|HeatPumpCharacteristic forHeatingTemperature(\App\Models\ToolQuestionCustomValue $heatingTemperature)
- * @method static Builder|HeatPumpCharacteristic forToolQuestionCustomValue(\App\Models\ToolQuestionCustomValue $toolQuestionCustomValue)
- * @method static Builder|HeatPumpCharacteristic newModelQuery()
- * @method static Builder|HeatPumpCharacteristic newQuery()
- * @method static Builder|HeatPumpCharacteristic query()
- * @method static Builder|HeatPumpCharacteristic whereCosts($value)
- * @method static Builder|HeatPumpCharacteristic whereCreatedAt($value)
- * @method static Builder|HeatPumpCharacteristic whereHeatPumpConfigurableId($value)
- * @method static Builder|HeatPumpCharacteristic whereHeatPumpConfigurableType($value)
- * @method static Builder|HeatPumpCharacteristic whereId($value)
- * @method static Builder|HeatPumpCharacteristic whereScop($value)
- * @method static Builder|HeatPumpCharacteristic whereScopTapWater($value)
- * @method static Builder|HeatPumpCharacteristic whereSharePercentageTapWater($value)
- * @method static Builder|HeatPumpCharacteristic whereStandardPowerKw($value)
- * @method static Builder|HeatPumpCharacteristic whereToolQuestionCustomValueId($value)
- * @method static Builder|HeatPumpCharacteristic whereType($value)
- * @method static Builder|HeatPumpCharacteristic whereUpdatedAt($value)
+ * @method static Builder<static>|HeatPumpCharacteristic forHeatPumpConfigurable(\Illuminate\Database\Eloquent\Model $configurable)
+ * @method static Builder<static>|HeatPumpCharacteristic forHeatingTemperature(\App\Models\ToolQuestionCustomValue $heatingTemperature)
+ * @method static Builder<static>|HeatPumpCharacteristic forToolQuestionCustomValue(\App\Models\ToolQuestionCustomValue $toolQuestionCustomValue)
+ * @method static Builder<static>|HeatPumpCharacteristic newModelQuery()
+ * @method static Builder<static>|HeatPumpCharacteristic newQuery()
+ * @method static Builder<static>|HeatPumpCharacteristic query()
+ * @method static Builder<static>|HeatPumpCharacteristic whereCosts($value)
+ * @method static Builder<static>|HeatPumpCharacteristic whereCreatedAt($value)
+ * @method static Builder<static>|HeatPumpCharacteristic whereHeatPumpConfigurableId($value)
+ * @method static Builder<static>|HeatPumpCharacteristic whereHeatPumpConfigurableType($value)
+ * @method static Builder<static>|HeatPumpCharacteristic whereId($value)
+ * @method static Builder<static>|HeatPumpCharacteristic whereScop($value)
+ * @method static Builder<static>|HeatPumpCharacteristic whereScopTapWater($value)
+ * @method static Builder<static>|HeatPumpCharacteristic whereSharePercentageTapWater($value)
+ * @method static Builder<static>|HeatPumpCharacteristic whereStandardPowerKw($value)
+ * @method static Builder<static>|HeatPumpCharacteristic whereToolQuestionCustomValueId($value)
+ * @method static Builder<static>|HeatPumpCharacteristic whereType($value)
+ * @method static Builder<static>|HeatPumpCharacteristic whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class HeatPumpCharacteristic extends Model
 {
-    const TYPE_HYBRID = 'hybrid';
-    const TYPE_FULL = 'full';
+    const string TYPE_HYBRID = 'hybrid';
+    const string TYPE_FULL = 'full';
 
     public function scopeForHeatingTemperature(
         Builder $query,
         ToolQuestionCustomValue $heatingTemperature
-    ) {
+    ): Builder
+    {
         return $this->scopeForToolQuestionCustomValue(
             $query,
             $heatingTemperature
@@ -58,7 +59,8 @@ class HeatPumpCharacteristic extends Model
     public function scopeForToolQuestionCustomValue(
         Builder $query,
         ToolQuestionCustomValue $toolQuestionCustomValue
-    ) {
+    ): Builder
+    {
         return $query->where(
             'tool_question_custom_value_id',
             '=',
@@ -69,16 +71,17 @@ class HeatPumpCharacteristic extends Model
     public function scopeForHeatPumpConfigurable(
         Builder $query,
         Model $configurable
-    ) {
+    ): Builder
+    {
         return $query->where(
             'heat_pump_configurable_type',
             '=',
             get_class($configurable)
         )
-                     ->where(
-                         'heat_pump_configurable_id',
-                         '=',
-                         $configurable->id
-                     );
+            ->where(
+                'heat_pump_configurable_id',
+                '=',
+                $configurable->id
+            );
     }
 }

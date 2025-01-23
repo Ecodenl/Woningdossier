@@ -2,12 +2,14 @@
 
 namespace App\Resolvers\Audit;
 
-class UserAgentResolver implements \OwenIt\Auditing\Contracts\UserAgentResolver
+use OwenIt\Auditing\Contracts\Auditable;
+
+class UserAgentResolver implements \OwenIt\Auditing\Contracts\Resolver
 {
     /**
      * {@inheritdoc}
      */
-    public static function resolve()
+    public static function resolve(Auditable $auditable)
     {
         // Default to "N/A" if the User Agent isn't available
         return null;

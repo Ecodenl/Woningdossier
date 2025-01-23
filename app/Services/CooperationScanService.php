@@ -19,8 +19,6 @@ class CooperationScanService
 
     /**
      * A mapping from user translation to our scans.
-     *
-     * @return array
      */
     public static function translationMap(): array
     {
@@ -54,7 +52,7 @@ class CooperationScanService
     {
         $scansToSync = [
             'quick-scan' => ['quick-scan', 'expert-scan'],
-            'lite-scan' =>  ['lite-scan'],
+            'lite-scan' => ['lite-scan'],
             'both-scans' => ['quick-scan', 'lite-scan', 'expert-scan'],
         ];
 

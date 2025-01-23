@@ -23,26 +23,14 @@ class CorrectHasSolarPanelsToolQuestionAnswer extends Command
     protected $description = 'If someone has a positive count on the solar-panel-count tool question, we will set the has-solar-panels question to yes';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
 
         $toolQuestionAnswersToUpdate = DB::table('building_services')
             ->select(['tool_question_answers.id', 'building_services.building_id', 'building_services.input_source_id'])
-            ->leftJoin('tool_question_answers', function(JoinClause $join) {
+            ->leftJoin('tool_question_answers', function (JoinClause $join) {
                 $join
                     ->on('building_services.building_id', '=', 'tool_question_answers.building_id')
                     ->whereRaw('building_services.input_source_id = tool_question_answers.input_source_id');
@@ -59,7 +47,4 @@ class CorrectHasSolarPanelsToolQuestionAnswer extends Command
 
         $this->info("Total tool question answers corrected: {$updatedCount}");
     }
-    
-    
-    
 }

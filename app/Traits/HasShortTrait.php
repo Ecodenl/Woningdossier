@@ -10,38 +10,30 @@ trait HasShortTrait
 {
     /**
      * Find a record by its short.
-     *
-     * @param $short
-     *
-     * @return static|null
      */
-    public static function findByShort($short): ?Model
+    public static function findByShort(string $short): ?static
     {
         $cacheKey = 'HasShortTrait_find_by_short_%s_%s';
-        $className = get_class(self::getModel());
+        $className = get_class(static::getModel());
 
         return BaseCache::cacheModel(
             BaseCache::getCacheKey($cacheKey, $className, $short),
-            self::whereShort($short)
+            static::whereShort($short)
         );
     }
 
     /**
      * Find multiple records by a set of shorts
-     *
-     * @param array  $shorts
-     *
-     * @return \Illuminate\Support\Collection
      */
     public static function findByShorts(array $shorts): Collection
     {
-        return self::whereIn('short', $shorts)->get();
+        return static::whereIn('short', $shorts)->get();
     }
 
-    public static function clearShortCache(string $short)
+    public static function clearShortCache(string $short): void
     {
         $cacheKey = 'HasShortTrait_find_by_short_%s_%s';
-        $className = get_class(self::getModel());
+        $className = get_class(static::getModel());
 
         BaseCache::clear(BaseCache::getCacheKey($cacheKey, $className, $short));
     }

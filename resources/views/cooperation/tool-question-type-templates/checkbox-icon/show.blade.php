@@ -12,7 +12,7 @@
             $uuid = Str::uuid();
         @endphp
         <div class="checkbox-wrapper media-wrapper">
-            <input id="{{$uuid}}" type="checkbox" wire:model="filledInAnswers.{{$toolQuestion['short']}}"
+            <input id="{{$uuid}}" type="checkbox" wire:model.live="filledInAnswers.{{$toolQuestion->short}}"
                    value="{{$toolQuestionValue['value']}}" @if($disabled) disabled="disabled" @endif>
             <label for="{{$uuid}}">
                 <span class="media-icon-wrapper">

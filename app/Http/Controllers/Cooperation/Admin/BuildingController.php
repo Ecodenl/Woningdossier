@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
@@ -23,27 +25,15 @@ class BuildingController extends Controller
 {
     /**
      * Handles the data for the show user for a coach, coordinator and cooperation-admin.
-     *
-     * @param $buildingId
-     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
-    public function show(UserRoleService $userRoleService, Cooperation $cooperation, $buildingId)
+    public function show(UserRoleService $userRoleService, Cooperation $cooperation, Building $building): View|RedirectResponse
     {
-        // retrieve the user from the building within the current cooperation;
-        $user = $cooperation->users()->whereHas('building', function ($query) use ($buildingId) {
-            $query->where('id', $buildingId);
-        })->first();
+        $user = $building->user;
 
-        if (! $user instanceof User) {
-            \Illuminate\Support\Facades\Log::debug('An admin tried to show a building that does not seem to exists with id: '.$buildingId);
-
-            return redirect(route('cooperation.admin.index'));
+        if ($building->trashed() || ! $user instanceof User) {
+            return redirect()->route('cooperation.admin.index');
         }
-
-        $building = $user->building;
 
         $this->authorize('show', [$building]);
 
@@ -55,7 +45,7 @@ class BuildingController extends Controller
 
         $statuses = Status::ordered()->get();
 
-        $coachesWithActiveBuildingCoachStatus = BuildingCoachStatusService::getConnectedCoachesByBuildingId($buildingId);
+        $coachesWithActiveBuildingCoachStatus = BuildingCoachStatusService::getConnectedCoachesByBuilding($building);
 
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
 
@@ -72,15 +62,25 @@ class BuildingController extends Controller
         $userCurrentRole = HoomdossierSession::getRole(true);
 
         return view('cooperation.admin.buildings.show', compact(
-            'userRoleService', 'userCurrentRole',
-                'user', 'building', 'roles', 'coaches', 'scans',
-                'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
-                'publicMessages', 'buildingNotes', 'statuses', 'logs', 'scan',
-            )
-        );
+            'userRoleService',
+            'userCurrentRole',
+            'user',
+            'building',
+            'roles',
+            'coaches',
+            'scans',
+            'coachesWithActiveBuildingCoachStatus',
+            'mostRecentStatus',
+            'privateMessages',
+            'publicMessages',
+            'buildingNotes',
+            'statuses',
+            'logs',
+            'scan',
+        ));
     }
 
-    public function edit(Cooperation $cooperation, Building $building)
+    public function edit(Cooperation $cooperation, Building $building): View
     {
         $user = $building->user()->with('account')->first();
         $account = $user->account;
@@ -88,7 +88,7 @@ class BuildingController extends Controller
         return view('cooperation.admin.buildings.edit', compact('building', 'user', 'account'));
     }
 
-    public function update(BuildingFormRequest $request, Cooperation $cooperation, Building $building)
+    public function update(BuildingFormRequest $request, Cooperation $cooperation, Building $building): RedirectResponse
     {
         $validatedData = $request->validated();
         if (! is_null($validatedData['users']['extra']['contact_id'] ?? null)) {
@@ -104,7 +104,7 @@ class BuildingController extends Controller
             ->orderByDesc('updated_at')
             ->first();
 
-        $inputSource = optional($buildingFeature)->inputSource ?? InputSource::resident();
+        $inputSource = $buildingFeature->inputSource ?? InputSource::resident();
 
         CheckBuildingAddress::dispatchSync($building, $inputSource);
         if (! $building->municipality()->first() instanceof Municipality) {

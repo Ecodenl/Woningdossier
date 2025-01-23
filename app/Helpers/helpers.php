@@ -12,8 +12,6 @@ if (! function_exists('pdfAsset')) {
     {
         $path = substr($path, 0, 1) !== '/' ? "/{$path}" : $path;
 
-        return app()->isLocal()
-            ? $_SERVER['DOCUMENT_ROOT'] . $path
-            : asset($path);
+        return app()->isLocal() ? $_SERVER['DOCUMENT_ROOT'] . $path : asset($path);
     }
 }

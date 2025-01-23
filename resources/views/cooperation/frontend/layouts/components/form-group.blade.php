@@ -1,3 +1,4 @@
+{{-- TODO: Move to cooperation/layouts --}}
 <div class="form-group {{ $class ?? '' }}" @if(! empty($attr)) {!! $attr !!} @endif>
     <div class="form-header">
         @if(! empty($route))
@@ -35,5 +36,4 @@
         </p>
         @enderror
     </div>
-
 </div>

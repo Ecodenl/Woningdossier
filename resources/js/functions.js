@@ -29,7 +29,6 @@ window.hoomdossierNumberFormat = function (value, locale, decimals) {
 /**
  * Trigger a default event
  *
- * @param element
  * @param eventName
  */
 window.triggerEvent = function (eventName) {
@@ -42,7 +41,6 @@ window.triggerEvent = function (eventName) {
 /**
  * Trigger a custom event, with potential parameters.
  *
- * @param element
  * @param eventName
  * @param params
  */

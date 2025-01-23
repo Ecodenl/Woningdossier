@@ -75,7 +75,6 @@ window.fetchRequest = function (url, method = 'GET', body = {}) {
     if (Object.keys(body).length > 0 && method !== 'GET') {
         config['body'] = JSON.stringify(body);
     }
-    console.log(config)
 
     return fetch(url, config);
 }

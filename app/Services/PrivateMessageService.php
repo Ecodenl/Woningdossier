@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\Building;
 use App\Models\PrivateMessage;
 use App\Models\User;
@@ -47,7 +48,7 @@ class PrivateMessageService
             ];
 
             // users that have the role coordinator and cooperation admin dont talk fom them self but from a cooperation
-            if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+            if (Hoomdossier::user()->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN])) {
                 $privateMessageData['from_cooperation_id'] = $cooperation->id;
                 $privateMessageData['from_user'] = $cooperation->name;
             }

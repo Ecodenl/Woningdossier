@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -16,6 +17,7 @@ use Illuminate\Support\Arr;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ExampleBuilding $exampleBuilding
+ * @method static \Database\Factories\ExampleBuildingContentFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent query()
@@ -29,6 +31,8 @@ use Illuminate\Support\Arr;
  */
 class ExampleBuildingContent extends Model
 {
+    use HasFactory;
+
     public $fillable = [
         'build_year', 'content',
     ];

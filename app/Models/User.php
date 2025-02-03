@@ -112,7 +112,7 @@ class User extends Model implements AuthorizableContract
     protected $fillable = [
         'tool_last_changed_at', 'extra', 'first_name', 'last_name', 'phone_number',
         'account_id', 'allow_access', 'regulations_refreshed_at',
-        'last_visited_url',
+        'last_visited_url', 'cooperation_id',
     ];
 
     protected function casts(): array

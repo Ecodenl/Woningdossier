@@ -282,9 +282,6 @@ class UserService
 
     /**
      * Method to delete a user and its user info.
-     *
-     *
-     * @throws \Exception
      */
     public static function deleteUser(User $user, bool $shouldForceDeleteBuilding = false)
     {

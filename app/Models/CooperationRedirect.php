@@ -28,6 +28,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CooperationRedirect extends Model
 {
+    protected $fillable = [
+        'from_slug', 'cooperation_id',
+    ];
+
     public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class);

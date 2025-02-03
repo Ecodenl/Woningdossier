@@ -116,16 +116,21 @@ class MergeCooperations extends Command
 
             // First we will do the simple cases: simply moving users between the cooperations. To do this, all we need
             // to do is query on the accounts that have a single user (for the given cooperations).
+            // Sadly, MySQL does NOT support update statements with a single sub query, so we will
+            // fetch the account IDs first.
+            $accountIds = User::forAllCooperations()
+                ->select("account_id")
+                ->from("users")
+                ->whereIn("cooperation_id", $cooperationIds)
+                ->groupBy("account_id")
+                ->havingRaw("COUNT(*) = 1")
+                ->pluck('account_id')
+                ->all();
+
             User::forAllCooperations()
                 ->whereIn("cooperation_id", $cooperationIds)
-                ->whereIn("account_id", function ($query) use ($cooperationIds) {
-                    $query
-                        ->select("account_id")
-                        ->from("users")
-                        ->whereIn("cooperation_id", $cooperationIds)
-                        ->groupBy("account_id")
-                        ->havingRaw("COUNT(*) = 1");
-                })->update(['cooperation_id' => $newCooperation->id]);
+                ->whereIn("account_id", $accountIds)
+                ->update(['cooperation_id' => $newCooperation->id]);
 
             // Now we need to update the users that have more than one user spread over the cooperations we're merging.
             User::forAllCooperations()
@@ -133,8 +138,9 @@ class MergeCooperations extends Command
                 ->whereIn("cooperation_id", $cooperationIds)
                 ->groupBy("account_id")
                 ->havingRaw("COUNT(*) > 1")
-                ->eachById(function (User $user) use ($newCooperation, $cooperations) {
+                ->eachById(function (User $user) use ($cooperationIds, $newCooperation, $cooperations) {
                     $usersForAccount = User::forAllCooperations()->where('account_id', $user->account_id)
+                        ->whereIn('cooperation_id', $cooperationIds)
                         ->withWhereHas('building')
                         ->get()
                         ->keyBy('id');
@@ -187,7 +193,7 @@ class MergeCooperations extends Command
                         // Both users can access the action plan, so we decide based on which user has the most recent
                         // activity on the action plan.
                         $mostRecentAdvice = UserActionPlanAdvice::allInputSources()
-                            ->whereIn('id', $usersForAccount->keys()->all())
+                            ->whereIn('user_id', $usersForAccount->keys()->all())
                             ->orderByDesc('updated_at')
                             ->first();
 

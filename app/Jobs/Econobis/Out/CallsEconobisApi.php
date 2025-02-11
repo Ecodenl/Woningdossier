@@ -75,13 +75,15 @@ trait CallsEconobisApi
 
         $shouldNotifyDiscord = false;
 
-        if ($buildingId === 'No building id!') {
-            $shouldNotifyDiscord = true;
-        }
+        if (config('hoomdossier.services.econobis.warn')) {
+            if ($buildingId === 'No building id!') {
+                $shouldNotifyDiscord = true;
+            }
 
-        // Check whether this building ID has failed before, if not we want to notify ourselves.
-        if (! in_array($buildingId, Cache::get('failed_econobis_building_ids', []))) {
-            $shouldNotifyDiscord = true;
+            // Check whether this building ID has failed before, if not we want to notify ourselves.
+            if (! in_array($buildingId, Cache::get('failed_econobis_building_ids', []))) {
+                $shouldNotifyDiscord = true;
+            }
         }
 
         // Now save the building id to prevent a discord spam
@@ -97,8 +99,7 @@ trait CallsEconobisApi
             // TODO: In PHP 8, just use the nullsafe operator (?->)
             if (!isset($this->building)) {
                 $cooperationId = 'No building for building ID ' . $buildingId . ' so no cooperation either';
-            }
-            else {
+            } else {
                 $cooperationId = optional(optional(optional($this->building)->user)->cooperation)->id ?? 'No cooperation ID';
             }
             DiscordNotifier::init()->notify(get_class($exception)." Failed to send [{$environment}] '{$class}' building_id: {$buildingId} cooperation_id: {$cooperationId}");

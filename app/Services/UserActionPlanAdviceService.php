@@ -96,12 +96,14 @@ class UserActionPlanAdviceService
                 ->withoutGlobalScope(GetValueScope::class)
                 ->first();
 
-            $regulations = $payload
-                ->forMeasure($advisable)
-                ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
+            if (!empty($advisable)) {
+                $regulations = $payload
+                    ->forMeasure($advisable)
+                    ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
 
-            $loanAvailable = $regulations->getLoans()->isNotEmpty();
-            $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
+                $loanAvailable = $regulations->getLoans()->isNotEmpty();
+                $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
+            }
         }
         // This method is triggered by the observer, so to avoid a infinite loop we call it without events.
         UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([

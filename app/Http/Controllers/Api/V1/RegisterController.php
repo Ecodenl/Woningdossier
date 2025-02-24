@@ -66,6 +66,8 @@ class RegisterController extends Controller
      */
     public function store(RegisterFormRequest $request, Cooperation $cooperation, ToolQuestionService $toolQuestionService)
     {
+        Log::debug(__METHOD__, $request->all());
+
         $requestData = $request->all();
         if (! is_null($requestData['extra']['contact_id'] ?? null)) {
             // Force as INT
@@ -153,7 +155,7 @@ class RegisterController extends Controller
         ];
 
         if (! app()->runningUnitTests()) {
-            // the access token in mocked in a broken way.
+            // The access token is mocked in a broken way.
             $logContext['personal_access_token'] = Arr::only($client->currentAccessToken()->attributesToArray(), ['id', 'name']);
         }
         Log::channel('api')->info('User registered', $logContext);

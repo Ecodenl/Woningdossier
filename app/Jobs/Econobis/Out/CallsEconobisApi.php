@@ -75,13 +75,15 @@ trait CallsEconobisApi
 
         $shouldNotifyDiscord = false;
 
-        if ($buildingId === 'No building id!') {
-            $shouldNotifyDiscord = true;
-        }
+        if (config('hoomdossier.services.econobis.warn')) {
+            if ($buildingId === 'No building id!') {
+                $shouldNotifyDiscord = true;
+            }
 
-        // Check whether this building ID has failed before, if not we want to notify ourselves.
-        if (! in_array($buildingId, Cache::get('failed_econobis_building_ids', []))) {
-            $shouldNotifyDiscord = true;
+            // Check whether this building ID has failed before, if not we want to notify ourselves.
+            if (! in_array($buildingId, Cache::get('failed_econobis_building_ids', []))) {
+                $shouldNotifyDiscord = true;
+            }
         }
 
         // Now save the building id to prevent a discord spam

@@ -10,18 +10,17 @@ use Carbon\Carbon;
 
 class UserObserver
 {
-    public function saving(User $user)
+    public function saving(User $user): void
     {
         // Not allowed as null
         $user->phone_number ??= '';
     }
 
-    public function created(User $user)
+    public function created(User $user): void
     {
         // we create for every notification type a setting with daily interval and set the last_notified_at to now
         $notificationTypes = NotificationType::all();
-        $interval = NotificationInterval::where('short',
-            'daily')->first();
+        $interval = NotificationInterval::where('short', 'daily')->first();
 
         foreach ($notificationTypes as $notificationType) {
             $user->notificationSettings()->create([
@@ -32,12 +31,12 @@ class UserObserver
         }
     }
 
-    public function updated(User $user)
+    public function updated(User $user): void
     {
         \App\Helpers\Cache\Account::wipe($user->account->id);
     }
 
-    public function deleted(User $user)
+    public function deleted(User $user): void
     {
         if ($user->account instanceof Account) {
             \App\Helpers\Cache\Account::wipe($user->account->id);

@@ -1,0 +1,70 @@
+.table {
+    @apply w-full;
+}
+
+/* Extra utility to add dividing borders between columns */
+.table.table-divided thead tr th:not(:first-child) {
+    @apply border-l border-blue/25;
+}
+
+.table.table-divided tbody tr td:not(:first-child) {
+    @apply border-l border-blue/25;
+}
+
+/* Simple table with row dividers */
+.table.simple-table {
+    @apply table-fixed;
+}
+
+.table.simple-table thead {
+    @apply border-b border-blue/50;
+}
+
+.table.simple-table thead tr th {
+    @apply px-6 py-3 text-left text-sm font-semibold text-blue-500 tracking-wide;
+}
+
+.table.simple-table tbody {
+    @apply divide-y divide-blue-500 divide-opacity-50;
+}
+
+.table.simple-table tbody tr td {
+    @apply px-6 py-4 text-blue-500 font-light text-sm;
+}
+
+/* Fancy table with alternating backgrounds */
+.table.fancy-table {
+    @apply table-fixed border border-blue-500/50;
+    /* Can't add rounded corners (rounded-lg), border is staying square, TODO */
+}
+
+.table.fancy-table thead {
+    @apply border-b border-blue/50;
+}
+
+.table.fancy-table thead tr th {
+    @apply px-6 py-3 bg-blue-500 bg-opacity-25 text-left text-sm font-semibold text-blue-500 tracking-wide;
+}
+
+.table.fancy-table tbody {
+    @apply divide-y divide-blue-500 divide-opacity-50;
+}
+
+.table.fancy-table tbody tr:nth-of-type(even) {
+    @apply bg-gray bg-opacity-50;
+}
+
+.table.fancy-table tbody tr td {
+    @apply px-6 py-4 text-blue-500 font-light text-sm;
+}
+
+/* Data tables have more rows with smaller text count. We reduce vertical padding to compact the table */
+.data-table .table.fancy-table thead tr th {
+    @apply py-2;
+}
+.data-table .table.fancy-table tbody tr td {
+    @apply py-2;
+}
+
+
+

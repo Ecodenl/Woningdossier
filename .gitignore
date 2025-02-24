@@ -1,6 +1,7 @@
 /scratches
 /node_modules
 /public/hot
+/public/build
 /public/storage
 /storage/*.key
 /vendor
@@ -11,7 +12,6 @@ npm-debug.log
 yarn-error.log
 .env
 .env.testing
-phpunit.xml
 
 # JS Output
 app.js.LICENSE.txt
@@ -53,5 +53,6 @@ _ide_helper_models.php
 _ide_helper.php
 .php_cs.cache
 /storage/app/exports/
-/.phpunit.result.cache
+/.phpunit.cache
+.phpunit.result.cache
 /mysql

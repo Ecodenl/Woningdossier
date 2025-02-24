@@ -11,20 +11,16 @@ class BuildingCoachStatusFormRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'building_coach_statuses.coach_contact_id' => ['required', 'numeric', 'integer', 'gt:0'],
@@ -49,24 +45,46 @@ class BuildingCoachStatusFormRequest extends ApiRequest
                 $resident = User::byContact($residentContactId)->first();
 
                 if (! $coach instanceof User) {
-                    $validator->errors()->add('building_coach_statuses.coach_contact_id', __('validation.custom.contact-id.not-found', ['attribute' => $coachAttr]));
-                } elseif($coach->hasNotRole(RoleHelper::ROLE_COACH)) {
-                    $validator->errors()->add('building_coach_statuses.coach_contact_id', __('validation.custom.users.incorrect-role', ['attribute' => $coachAttr, 'role' => RoleHelper::ROLE_COACH]));
+                    $validator->errors()
+                        ->add(
+                            'building_coach_statuses.coach_contact_id',
+                            __('validation.custom.contact-id.not-found', ['attribute' => $coachAttr])
+                        );
+                } elseif ($coach->hasNotRole(RoleHelper::ROLE_COACH)) {
+                    $validator->errors()
+                        ->add(
+                            'building_coach_statuses.coach_contact_id',
+                            __('validation.custom.users.incorrect-role', [
+                                'attribute' => $coachAttr, 'role' => RoleHelper::ROLE_COACH
+                            ])
+                        );
                 } elseif ($resident instanceof User) {
-                    $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($resident->building->id);
+                    $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($resident->building);
                     $foundCoach = $connectedCoaches->first(function ($connectedCoach) use ($coach) {
-                        return $connectedCoach->coach_id == $coach->id;
+                        return $connectedCoach->coach_id === $coach->id;
                     });
 
                     if (! is_null($foundCoach)) {
-                        $validator->errors()->add('building_coach_statuses.coach_contact_id', __('validation.custom.building-coach-statuses.already-linked'));
+                        $validator->errors()
+                            ->add(
+                                'building_coach_statuses.coach_contact_id',
+                                __('validation.custom.building-coach-statuses.already-linked')
+                            );
                     }
                 }
 
                 if (! $resident instanceof User) {
-                    $validator->errors()->add('building_coach_statuses.resident_contact_id', __('validation.custom.contact-id.not-found', ['attribute' => $residentAttr]));
+                    $validator->errors()
+                        ->add(
+                            'building_coach_statuses.resident_contact_id',
+                            __('validation.custom.contact-id.not-found', ['attribute' => $residentAttr])
+                        );
                 } elseif (! $resident->allowedAccess()) {
-                    $validator->errors()->add('building_coach_statuses.resident_contact_id', __('validation.custom.building-coach-statuses.no-access'));
+                    $validator->errors()
+                        ->add(
+                            'building_coach_statuses.resident_contact_id',
+                            __('validation.custom.building-coach-statuses.no-access')
+                        );
                 }
             }
         });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingCoachStatusRequest;
 use App\Models\Building;
@@ -35,26 +36,13 @@ class BuildingStatusController extends Controller
     /**
      * Set an appointment date for a building.
      */
-    public function setAppointmentDate(Cooperation $cooperation, Request $request)
+    public function setAppointmentDate(Cooperation $cooperation, Request $request): void
     {
         $buildingId = $request->input('building_id');
         $appointmentDate = $request->input('appointment_date');
 
         if (! is_null($appointmentDate)) {
-            try {
-                $appointmentDate = Carbon::parse($appointmentDate);
-            } catch (InvalidFormatException $e) {
-                // Invalid date given; we will try the format that has basically thrown all exceptions:
-                try {
-                    $appointmentDate = Carbon::createFromFormat('d-m-Y H', $appointmentDate);
-                } catch (InvalidFormatException $e) {
-                    // Now we could keep trying different formats, but if this happens it's basically because the end
-                    // user hasn't properly used the datepicker, so we will just redirect back and tell them to
-                    // use the datepicker.
-
-                    return response()->json("Invalid format", 422);
-                }
-            }
+            $appointmentDate = Carbon::parse($appointmentDate);
         }
 
         /** @var Building $building */

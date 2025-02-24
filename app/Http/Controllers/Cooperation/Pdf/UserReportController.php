@@ -162,7 +162,6 @@ class UserReportController extends Controller
                             if ($userActionPlanAdvice->userActionPlanAdvisable->step_id === $smallMeasureAdvicestep->id) {
                                 $smallMeasureAdvices['small-measures'][] = $userActionPlanAdvice;
                             }
-
                         } else {
                             if ($userActionPlanAdvice->userActionPlanAdvisable instanceof CooperationMeasureApplication) {
                                 $smallMeasureAdvices['cooperation-measures'][] = $userActionPlanAdvice;
@@ -218,7 +217,7 @@ class UserReportController extends Controller
             ->where('comment', '!=', '')
             ->get();
 
-        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($building);
         $connectedCoachNames = User::whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
             ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
             ->pluck('full_name')
@@ -239,23 +238,25 @@ class UserReportController extends Controller
             ->forBuilding($building);
         // https://github.com/mccarlosen/laravel-mpdf
         // To style container margins of the PDF, see config/pdf.php
-//        return  view('cooperation.pdf.user-report.index', compact(
-//            'scanShort',
-//            'userCooperation',
-//            'building',
-//            'user',
-//            'inputSource',
-//            'connectedCoachNames',
-//            // 'headers',
-//            'simpleDump',
-//            'expertDump',
-//            'coachHelp',
-//            'categorizedAdvices',
-//            'measureSteps',
-//            'smallMeasureAdvices',
-//            'adviceComments',
-//            'alerts',
-//            'subsidyRegulations'));
+        //return view('cooperation.pdf.user-report.index', compact(
+        //    'scanShort',
+        //    'userCooperation',
+        //    'building',
+        //    'user',
+        //    'inputSource',
+        //    'connectedCoachNames',
+        //    'headers',
+        //    'simpleDump',
+        //    'expertDump',
+        //    'coachHelp',
+        //    'categorizedAdvices',
+        //    'measureSteps',
+        //    'smallMeasureAdvices',
+        //    'adviceComments',
+        //    'alerts',
+        //    'subsidyRegulations',
+        //    'kengetallenService'
+        //));
 
         return LaravelMpdf::loadView('cooperation.pdf.user-report.index', compact(
             'scanShort',

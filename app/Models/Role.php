@@ -17,23 +17,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int $level
  * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Account[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Account> $users
  * @property-read int|null $users_count
- * @method static Builder|Role byName(string $name)
- * @method static Builder|Role newModelQuery()
- * @method static Builder|Role newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Role permission($permissions)
- * @method static Builder|Role query()
- * @method static Builder|Role whereCreatedAt($value)
- * @method static Builder|Role whereGuardName($value)
- * @method static Builder|Role whereHumanReadableName($value)
- * @method static Builder|Role whereId($value)
- * @method static Builder|Role whereInputSourceId($value)
- * @method static Builder|Role whereLevel($value)
- * @method static Builder|Role whereName($value)
- * @method static Builder|Role whereUpdatedAt($value)
+ * @method static Builder<static>|Role byName(string $name)
+ * @method static Builder<static>|Role newModelQuery()
+ * @method static Builder<static>|Role newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role permission($permissions, $without = false)
+ * @method static Builder<static>|Role query()
+ * @method static Builder<static>|Role whereCreatedAt($value)
+ * @method static Builder<static>|Role whereGuardName($value)
+ * @method static Builder<static>|Role whereHumanReadableName($value)
+ * @method static Builder<static>|Role whereId($value)
+ * @method static Builder<static>|Role whereInputSourceId($value)
+ * @method static Builder<static>|Role whereLevel($value)
+ * @method static Builder<static>|Role whereName($value)
+ * @method static Builder<static>|Role whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role withoutPermission($permissions)
  * @mixin \Eloquent
  */
 class Role extends \Spatie\Permission\Models\Role

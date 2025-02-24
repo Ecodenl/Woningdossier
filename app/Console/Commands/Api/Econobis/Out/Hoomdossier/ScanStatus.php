@@ -29,21 +29,9 @@ class ScanStatus extends Command
     protected $description = 'Send the current status of the building.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle(EconobisService $econobisService, EconobisApi $econobis)
+    public function handle(EconobisService $econobisService, EconobisApi $econobis): int
     {
         $building = Building::findOrFail($this->argument('building'));
 
@@ -54,6 +42,6 @@ class ScanStatus extends Command
 
         Log::debug('Response', $response);
 
-        return 0;
+        return self::SUCCESS;
     }
 }

@@ -14,32 +14,41 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
-use App\Models\UserEnergyHabit;
 use App\Services\CalculatorService;
 use Illuminate\Support\Arr;
 
 class Ventilation
 {
+    const string NATURAL = 'natural';
+    const string MECHANICAL = 'mechanical';
+    const string BALANCED = 'balanced';
+    const string DECENTRAL = 'decentral';
+
+    public static function getTypes(): array
+    {
+        return [
+            1 => self::NATURAL,
+            2 => self::MECHANICAL,
+            3 => self::BALANCED,
+            4 => self::DECENTRAL,
+        ];
+    }
+
     /**
      * Calculate the wall insulation costs and savings etc.
-     *
-     * @param  UserEnergyHabit|null  $energyHabit
-     *
-     * @return array;
      */
     public static function calculate(
         Building $building,
         InputSource $inputSource,
-        $energyHabit,
         array $calculateData
-    ): array {
+    ): array
+    {
         $step = Step::findByShort('ventilation');
 
-        /** @var BuildingService $buildingVentilationService */
+        /** @var BuildingService|null $buildingVentilationService */
         $buildingVentilationService = $building->getBuildingService('house-ventilation', $inputSource);
 
         $improvement = '';
-        $advices = null;
         $remark = '';
         $considerables = [];
         $result = [
@@ -62,7 +71,7 @@ class Ventilation
             $currentlyDemandDriven = $buildingVentilationService->extra['demand_driven'] ?? false;
             $currentlyHeatRecovery = $buildingVentilationService->extra['heat_recovery'] ?? false;
 
-            $ventilationTypes = \App\Models\Ventilation::getTypes();
+            $ventilationTypes = self::getTypes();
 
             $ventilationType = $ventilationTypes[$buildingVentilation->calculate_value];
 
@@ -75,9 +84,16 @@ class Ventilation
             ];
             $measures = array_flip($measures);
 
+            // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
+            // Crack sealing measure should be added.
+            // As it's added on beforehand, it should be removed if:
+            // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
+            // because: either there is no crack sealing or it's all okay
+            $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
+
             // now check al the conditions for the measures.
             switch ($ventilationType) {
-                case \App\Models\Ventilation::NATURAL;
+                case self::NATURAL:
                     // "different" type which returns early
                     unset($measures['crack-sealing']);
 
@@ -85,21 +101,16 @@ class Ventilation
                     $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
-                case \App\Models\Ventilation::MECHANICAL;
+                case self::MECHANICAL:
                     if ($currentlyDemandDriven) {
                         // if the ventilation is already demand driven, remove that advice
                         unset($measures['ventilation-demand-driven']);
                     }
 
-                    // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
-                    // Crack sealing measure should be added.
-                    // As it's added on beforehand, it should be removed if:
-                    // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
-                    // because: either there is no crack sealing or it's all okay
-                    $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
-
-                    if (in_array('none', Arr::get($calculateData,
-                                'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                    if (in_array('none', Arr::get(
+                        $calculateData,
+                        'building_ventilations.how'
+                    ) ?? []) || $currentCrackSealingCalculateValue < 2) {
                         unset($measures['crack-sealing']);
                     }
 
@@ -107,7 +118,7 @@ class Ventilation
                     $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
-                case \App\Models\Ventilation::BALANCED;
+                case self::BALANCED:
                     // always unset
                     unset($measures['ventilation-decentral-wtw']);
 
@@ -121,15 +132,10 @@ class Ventilation
                         unset($measures['ventilation-demand-driven']);
                     }
 
-                    // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
-                    // Crack sealing measure should be added.
-                    // As it's added on beforehand, it should be removed if:
-                    // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
-                    // because: either there is no crack sealing or it's all okay
-                    $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
-
-                    if (in_array('none', Arr::get($calculateData,
-                                'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                    if (in_array('none', Arr::get(
+                        $calculateData,
+                        'building_ventilations.how'
+                    ) ?? []) || $currentCrackSealingCalculateValue < 2) {
                         unset($measures['crack-sealing']);
                     }
 
@@ -137,7 +143,7 @@ class Ventilation
                     $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
-                case \App\Models\Ventilation::DECENTRAL;
+                case self::DECENTRAL:
                     // always unset
                     unset($measures['ventilation-balanced-wtw']);
 
@@ -151,22 +157,16 @@ class Ventilation
                         unset($measures['ventilation-demand-driven']);
                     }
 
-                    // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
-                    // Crack sealing measure should be added.
-                    // As it's added on beforehand, it should be removed if:
-                    // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
-                    // because: either there is no crack sealing or it's all okay
-                    $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
-
-                    if (in_array('none', Arr::get($calculateData,
-                                'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                    if (in_array('none', Arr::get(
+                        $calculateData,
+                        'building_ventilations.how'
+                    ) ?? []) || $currentCrackSealingCalculateValue < 2) {
                         unset($measures['crack-sealing']);
                     }
 
                     $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
                     $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
-
             }
 
             if (array_key_exists('crack-sealing', $measures)) {
@@ -178,11 +178,8 @@ class Ventilation
 
                 // (we know that calculate_value is > 1, but for historic logic reasons..
                 if ($currentCrackSealing instanceof BuildingElement && $currentCrackSealingCalculateValue > 1) {
-                    $gas = 0;
-                    if ($energyHabit instanceof UserEnergyHabit) {
-                        $usages = HighEfficiencyBoilerCalculator::init($building, $inputSource)->calculateGasUsage();
-                        $gas = $usages['heating']['bruto'];
-                    }
+                    $usages = HighEfficiencyBoilerCalculator::init($building, $inputSource)->calculateGasUsage();
+                    $gas = $usages['heating']['bruto'];
 
                     if (2 == $currentCrackSealingCalculateValue) {
                         $gasSaving = (Kengetallen::PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING / 100) * $gas;
@@ -194,19 +191,27 @@ class Ventilation
                     $result['crack_sealing']['savings_gas'] = Number::isNegative($gasSaving) ? 0 : $gasSaving;
 
                     /** @var MeasureApplication $measureApplication */
-                    $measureApplication = MeasureApplication::where('short',
-                        'crack-sealing')->first();
+                    $measureApplication = MeasureApplication::where(
+                        'short',
+                        'crack-sealing'
+                    )->first();
 
-                    $result['crack_sealing']['cost_indication'] = RawCalculator::calculateMeasureApplicationCosts($measureApplication,
-                        1, null, false);
+                    $result['crack_sealing']['cost_indication'] = RawCalculator::calculateMeasureApplicationCosts(
+                        $measureApplication,
+                        1,
+                        null,
+                        false
+                    );
                     $result['crack_sealing']['savings_co2'] = RawCalculator::calculateCo2Savings($result['crack_sealing']['savings_gas']);
 
                     $result['crack_sealing']['savings_money'] = app(CalculatorService::class)
                         ->forBuilding($building)
                         ->calculateMoneySavings($result['crack_sealing']['savings_gas']);
 
-                    $result['crack_sealing']['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['crack_sealing']['cost_indication'],
-                        $result['crack_sealing']['savings_money']), 1);
+                    $result['crack_sealing']['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest(
+                        $result['crack_sealing']['cost_indication'],
+                        $result['crack_sealing']['savings_money']
+                    ), 1);
                 }
             }
             // al conditions have been checked, we can safely get the measures

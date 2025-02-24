@@ -33,22 +33,19 @@ class ExampleBuildingService
     /**
      * Apply an example building on the given building.
      *
-     * @param ExampleBuilding $exampleBuilding
      * @param int $buildYear Build year for selecting the appropriate example building content
      * @param Building $building Target building to apply to
-     *
-     * @return void
      */
-    public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $building, InputSource $inputSource)
+    public static function apply(ExampleBuilding $exampleBuilding, int $buildYear, Building $building, InputSource $inputSource): void
     {
         // used to check if there is a answer available.
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         // Clear the current example building data
-        self::log('Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ") building id {$building->id}");
+        self::log('Lookup ' . $exampleBuilding->getTranslation('name', 'nl') . ' for ' . $buildYear . " (" . $inputSource->name . ") building id {$building->id}");
         $contents = $exampleBuilding->getContentForYear($buildYear);
 
-        if (!$contents instanceof ExampleBuildingContent) {
+        if (! $contents instanceof ExampleBuildingContent) {
             // There's nothing to apply
             self::log('No data to apply');
 
@@ -69,7 +66,7 @@ class ExampleBuildingService
 
             // Some building types do not have a generic example building
             if ($genericExampleBuilding instanceof ExampleBuilding) {
-                self::log("Example building is specific. Generic counterpart is " . $genericExampleBuilding->name);
+                self::log("Example building is specific. Generic counterpart is " . $genericExampleBuilding->getTranslation('name', 'nl'));
 
                 $genericContent = $genericExampleBuilding->getContentForYear($buildYear);
 
@@ -82,7 +79,7 @@ class ExampleBuildingService
 
 
         self::log(
-            'Applying Example Building ' . $exampleBuilding->name . ' (' . $exampleBuilding->id . ', ' . $contents->build_year . ') for input source ' . $inputSource->name
+            'Applying Example Building ' . $exampleBuilding->getTranslation('name', 'nl') . ' (' . $exampleBuilding->id . ', ' . $contents->build_year . ') for input source ' . $inputSource->name
         );
 
 
@@ -164,8 +161,6 @@ class ExampleBuildingService
         $building->heater()->forInputSource($inputSource)->delete();
         $building->toolQuestionAnswers()->forInputSource($inputSource)->delete();
         if ($building->user instanceof User) {
-            // remove interests
-            $building->user->userInterests()->forInputSource($inputSource)->delete();
             // remove energy habits
             $building->user->energyHabit()->forInputSource($inputSource)->delete();
         }

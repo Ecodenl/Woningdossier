@@ -1,4 +1,4 @@
-@extends('cooperation.frontend.layouts.app')
+@extends('cooperation.layouts.app')
 
 @section('main')
     <div class="w-full min-h-screen flex justify-center items-center flex-col py-20">
@@ -8,7 +8,7 @@
                 @lang('auth.reset.form.header')
             </h1>
             @if(session('token_invalid'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'red'])
+                @component('cooperation.layouts.components.alert', ['color' => 'red'])
                     {!! session('token_invalid') !!}
                 @endcomponent
             @else

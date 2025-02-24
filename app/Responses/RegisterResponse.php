@@ -2,6 +2,8 @@
 
 namespace App\Responses;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -9,11 +11,8 @@ class RegisterResponse implements \Laravel\Fortify\Contracts\RegisterResponse
 {
     /**
      * Create an HTTP response that represents the object.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function toResponse($request)
+    public function toResponse($request): Response
     {
         if ($request->wantsJson()) {
             return new JsonResponse('', 201);

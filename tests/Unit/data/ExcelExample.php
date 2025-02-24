@@ -25,7 +25,7 @@ class ExcelExample
 
         $u = self::user();
 
-        // 'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active'
+        // 'street', 'number', 'city', 'postal_code', 'bag_addressid', 'extension',
         $b = new \App\Models\Building([
             'street'      => 'Straat', 'number' => 1, 'city' => 'Nowhere',
             'postal_code' => '2013 BC', 'bag_addressid' => '01234',
@@ -65,20 +65,14 @@ class ExcelExample
         return $b;
     }
 
-    /**
-     * @return User
-     */
-    public static function user()
+    public static function user(): User
     {
         $u = User::firstOrCreate(['first_name' => 'Foo', 'last_name' => 'Bar'], ['phone_number' => '1111111111']);
         /* @var User $u */
         return $u;
     }
 
-    /**
-     * @return UserEnergyHabit
-     */
-    public static function userEnergyHabits()
+    public static function userEnergyHabits(): UserEnergyHabit
     {
         // 'user_id','input_source_id','resident_count',
         // 'thermostat_high','thermostat_low','hours_high',

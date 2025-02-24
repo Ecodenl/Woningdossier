@@ -17,8 +17,9 @@ class BuildingTypeCategory implements ShouldApply
         if ($buildingTypes->count() <= 1) {
             $buildingTypeCategory = \App\Models\BuildingTypeCategory::find($answer);
 
+            /** @var BuildingType $buildingType */
             $buildingType = $buildingTypes->first();
-            Log::debug("Only 1 building type found for category {$buildingTypeCategory->name}, lets set the $buildingType->name as building type.");
+            Log::debug("Only 1 building type found for category {$buildingTypeCategory->getTranslation('name', 'nl')}, lets set the {$buildingType->getTranslation('name', 'nl')} as building type.");
             return ['building_type_id' => $buildingType->id];
         }
 

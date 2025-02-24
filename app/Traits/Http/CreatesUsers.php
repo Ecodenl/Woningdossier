@@ -7,6 +7,7 @@ use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\Hoomdossier;
 use App\Helpers\Str;
+use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
@@ -16,13 +17,11 @@ use App\Services\BuildingPermissionService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Spatie\Permission\Models\Role;
 
 trait CreatesUsers
 {
-    public function createUser(Request $request, Cooperation $cooperation)
+    public function createUser(UserFormRequest $request, Cooperation $cooperation): void
     {
         // give the user his role
         $roleIds = $request->input('roles', '');
@@ -59,7 +58,7 @@ trait CreatesUsers
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {
             // find the coach to give permissions
-            $coach = User::find($request->input('coach_id'));
+            $coach = User::forAllCooperations()->find($request->input('coach_id'));
 
             // now give the selected coach access with permission to the new created building
             BuildingPermissionService::givePermission($coach, $building);
@@ -82,10 +81,8 @@ trait CreatesUsers
 
     /**
      * Send the mail to the created user.
-     *
-     * @param Request $request
      */
-    public function sendAccountConfirmationMail(Cooperation $cooperation, Account $account, User $user)
+    public function sendAccountConfirmationMail(Cooperation $cooperation, Account $account, User $user): void
     {
         $token = app('auth.password.broker')->createToken($account);
 

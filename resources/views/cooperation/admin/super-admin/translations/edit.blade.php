@@ -1,205 +1,186 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => '<strong>' . __('cooperation/admin/super-admin/translations.edit.header', ['step_name' =>  $group]) . '</strong>'
+])
 
 @section('content')
+    @component('cooperation.frontend.layouts.components.form-group', [
+       'withInputSource' => false,
+       'id' => "search",
+       'class' => 'w-full -mt-5',
+       'inputName' => "search",
+    ])
+        <input type="text" class="form-input" id="search" autocomplete="off"
+               placeholder="@lang('cooperation/admin/super-admin/translations.edit.search.placeholder')">
+    @endcomponent
 
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="form-group">
-                <input type="text" class="form-control" id="search"
-                       placeholder="@lang('woningdossier.cooperation.admin.super-admin.translations.edit.search.placeholder')">
-            </div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            {{--            @lang('woningdossier.cooperation.admin.super-admin.translations.edit.header', ['step_name' =>  \App\Models\Step::where('short', $group)->first() instanceOf \App\Models\Step ? \App\Models\Step::where('group', $group)->first()->name : $stepSlug])--}}
-            @lang('woningdossier.cooperation.admin.super-admin.translations.edit.header', ['step_name' =>  $group])
-        </div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.super-admin.translations.update', ['group' => str_replace('/', '_', $group)])}}"
-                          method="post" autocomplete="off">
-                        <div class="form-group">
-                            <a href="{{route('cooperation.admin.super-admin.translations.index')}}"
-                               class="btn btn-default"><i
-                                        class="glyphicon glyphicon-chevron-left"></i> @lang('woningdossier.cooperation.tool.back-to-overview')
-                            </a>
-                            <button type="submit"
-                                    class="btn btn-primary pull-right">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.save')</button>
-                        </div>
-                        @csrf
-                        @method('PUT')
-                        @foreach($translations as $translation)
-                            <?php // since we don't want the helptexts to show right here. ?>
-                            @if($translation->isNotHelpText())
-                                <div class="translations panel panel-default">
-                                    <div class="panel-body">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                @php
-                                                    $groupsToTreatAllTextsAsHelpText = [
-                                                        'home',
-                                                        'heat-pump',
-                                                        'pdf/user-report',
-                                                        'cooperation/mail/account-associated-with-cooperation',
-                                                        'cooperation/mail/account-created',
-                                                        'cooperation/mail/changed-email',
-                                                        'cooperation/mail/confirm-account',
-                                                        'cooperation/mail/reset-password',
-                                                        'cooperation/mail/unread-message-count',
-                                                    ];
-                                                    $keysToTreatAsHelpText = [
-                                                        'index.indication-for-costs-other.text',
-                                                        'index.intro.decentrale-mechanische-ventilatie',
-                                                        'index.intro.gebalanceerde-ventilatie',
-                                                        'index.intro.mechanische-ventilatie',
-                                                        'index.intro.natuurlijke-ventilatie',
-                                                        'my-plan.calculations.description',
-                                                    ];
-                                                @endphp
+    <hr class="w-full mb-0">
 
-                                                @foreach($translation->text as $locale => $text)
-                                                    <div class="form-group">
-                                                        <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.question', ['locale' => $locale])</label>
-                                                        @if(in_array($translation->key, $keysToTreatAsHelpText) || in_array($translation->group, $groupsToTreatAllTextsAsHelpText))
-                                                            <textarea class="form-control question-input"
-                                                                      name="language_lines[{{$locale}}][question][{{$translation->id}}]">{{$text}}</textarea>
-                                                        @else
-                                                            <input class="form-control question-input"
-                                                                   name="language_lines[{{$locale}}][question][{{$translation->id}}]"
-                                                                   value="{{$text}}">
-                                                        @endif
-                                                        <label for="">
-                                                             {{"key: {$translation->group}.{$translation->key}"}}
-                                                        </label>
-                                                    </div>
-                                                @endforeach
-                                                @if($translation->helpText instanceof \Spatie\TranslationLoader\LanguageLine)
-                                                    @foreach($translation->helpText->text as $locale => $text)
-                                                        <div class="form-group">
-                                                            <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.help', ['locale' => $locale])</label>
-                                                            <textarea class="form-control"
-                                                                      name="language_lines[{{$locale}}][help][{{$translation->helpText->id}}]">{{$text}}</textarea>
-                                                            <label for="">key: {{$translation->helpText->group}}
-                                                                .{{$translation->helpText->key}}</label>
-                                                            <input type="hidden" class="original-help-text"
-                                                                   disabled="disabled" value="{{$text}}">
-                                                        </div>
-                                                    @endforeach
-                                                @endif
-                                            </div>
-                                        </div>
-                                        @if($translation->subQuestions->isNotEmpty())
-                                            <a data-toggle="collapse" data-target="#sub-questions-{{$translation->id}}"
-                                               class="btn btn-primary">
-                                                @lang('woningdossier.cooperation.admin.super-admin.translations.edit.sub-question')
-                                            </a>
-                                        @endif
-                                    </div>
-                                    <div class="panel-footer collapse" id="sub-questions-{{$translation->id}}">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                @foreach($translation->subQuestions as $subQuestion)
-                                                    <br>
-                                                    <a data-toggle="modal"
-                                                       data-target="#sub-question-modal-{{$subQuestion->id}}"
-                                                       class="label label-success">
-                                                        {{$subQuestion->text['nl']}}
-                                                    </a>
-                                                    @include('cooperation.admin.super-admin.translations.sub-question-modal', [
-                                                        'id' => 'sub-question-modal-'.$subQuestion->id,
-                                                        'subQuestion' => $subQuestion
-                                                    ])
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+    <form class="w-full flex flex-wrap space-y-5"
+          action="{{route('cooperation.admin.super-admin.translations.update', ['group' => str_replace('/', '_', $group)])}}"
+          method="POST" autocomplete="off">
+        @csrf
+        @method('PUT')
+
+        <div class="w-full mt-5">
+            <button type="submit" class="btn btn-green float-right">
+                @lang('cooperation/admin/super-admin/translations.edit.save')
+            </button>
+        </div>
+
+        @foreach($translations as $translation)
+            {{-- Since we don't want the helptexts to show right here. --}}
+            @if($translation->isNotHelpText())
+                @php
+                    $noWysiwyg = Str::contains($group, 'mail');
+
+                    $groupsToTreatAllTextsAsHelpText = [
+                        'home',
+                        'heat-pump',
+                        'pdf/user-report',
+                        'cooperation/mail/account-associated-with-cooperation',
+                        'cooperation/mail/account-created',
+                        'cooperation/mail/changed-email',
+                        'cooperation/mail/confirm-account',
+                        'cooperation/mail/reset-password',
+                        'cooperation/mail/unread-message-count',
+                    ];
+                    $keysToTreatAsHelpText = [
+                        'index.indication-for-costs-other.text',
+                        'index.intro.decentrale-mechanische-ventilatie',
+                        'index.intro.gebalanceerde-ventilatie',
+                        'index.intro.mechanische-ventilatie',
+                        'index.intro.natuurlijke-ventilatie',
+                        'my-plan.calculations.description',
+                    ];
+                @endphp
+
+                @foreach($translation->text as $locale => $text)
+                    <div class="w-full rounded-lg border border-blue/50 p-4">
+                        @component('cooperation.frontend.layouts.components.form-group', [
+                           'withInputSource' => false,
+                           'label' => __('cooperation/admin/super-admin/translations.edit.question', compact('locale')),
+                           'id' => "translation-{$translation->id}",
+                           'class' => 'w-full -mt-5',
+                           'inputName' => "language_lines.{$locale}.question.{$translation->id}",
+                        ])
+                            @if(in_array($translation->key, $keysToTreatAsHelpText) || in_array($translation->group, $groupsToTreatAllTextsAsHelpText))
+                                @include('cooperation.admin.super-admin.translations.parts.textarea', [
+                                    'id' => "translation-{$translation->id}",
+                                    'noWysiwyg' => $noWysiwyg,
+                                    'content' => $text,
+                                    'htmlName' => "language_lines[{$locale}][question][{$translation->id}]",
+                                ])
+                            @else
+                                <input id="{{ "translation-{$translation->id}" }}" class="form-input question-input mb-0"
+                                       name="language_lines[{{$locale}}][question][{{$translation->id}}]"
+                                       value="{{$text}}">
                             @endif
-                        @endforeach
-                        <div class="form-group">
-                            <a href="{{route('cooperation.admin.super-admin.translations.index')}}"
-                               class="btn btn-default"><i
-                                        class="glyphicon glyphicon-chevron-left"></i> @lang('woningdossier.cooperation.tool.back-to-overview')
-                            </a>
-                            <button type="submit"
-                                    class="btn btn-primary pull-right">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.save')</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                            <label class="w-full text-blue-500 text-sm font-bold key-label">
+                                {{"Key: {$translation->group}.{$translation->key}"}}
+                            </label>
+                        @endcomponent
+
+                        @if($translation->helpText instanceof \Spatie\TranslationLoader\LanguageLine)
+                            @foreach($translation->helpText->text as $helpTextLocale => $helpText)
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                   'withInputSource' => false,
+                                   'label' => __('cooperation/admin/super-admin/translations.edit.help', ['locale' => $helpTextLocale]),
+                                   'id' => "help-text-translation-{$translation->helpText->id}",
+                                   'class' => 'w-full',
+                                   'inputName' => "language_lines.{$helpTextLocale}.help.{$translation->helpText->id}",
+                                ])
+                                    @include('cooperation.admin.super-admin.translations.parts.textarea', [
+                                        'id' => "help-text-translation-{$translation->helpText->id}",
+                                        'noWysiwyg' => $noWysiwyg,
+                                        'content' => $helpText,
+                                        'htmlName' => "language_lines[{$helpTextLocale}][help][{$translation->helpText->id}]",
+                                    ])
+                                    <label class="w-full text-blue-500 text-sm font-bold key-label">
+                                        {{"Key: {$translation->helpText->group}.{$translation->helpText->key}"}}
+                                    </label>
+                                @endcomponent
+                            @endforeach
+                        @endif
+
+                        @if($translation->subQuestions->isNotEmpty())
+                            <div class="w-full rounded-lg border border-blue-500/50 mt-5 bg-gray/25 p-4">
+                                <h5 class="w-full heading-5">
+                                    @lang('cooperation/admin/super-admin/translations.edit.sub-questions')
+                                </h5>
+                                @foreach($translation->subQuestions as $subQuestion)
+                                    @foreach($subQuestion->text as $locale => $text)
+                                        @component('cooperation.frontend.layouts.components.form-group', [
+                                           'withInputSource' => false,
+                                           'label' => __('cooperation/admin/super-admin/translations.edit.question', compact('locale')),
+                                           'id' => "sub-question-translation-{$subQuestion->id}",
+                                           'class' => 'w-full',
+                                           'inputName' => "language_lines.{$locale}.question.{$subQuestion->id}",
+                                        ])
+                                            <input id="{{ "sub-question-translation-{$subQuestion->id}" }}"
+                                                   class="form-input question-input mb-0"
+                                                   name="language_lines[{{$locale}}][question][{{$subQuestion->id}}]"
+                                                   value="{{$text}}">
+                                            <label class="w-full text-blue-500 text-sm font-bold key-label">
+                                                {{"Key: {$subQuestion->group}.{$subQuestion->key}"}}
+                                            </label>
+                                        @endcomponent
+                                    @endforeach
+
+                                    @if($subQuestion->helpText instanceof \Spatie\TranslationLoader\LanguageLine)
+                                        @foreach($subQuestion->helpText->text as $locale => $text)
+                                            @component('cooperation.frontend.layouts.components.form-group', [
+                                               'withInputSource' => false,
+                                               'label' => __('cooperation/admin/super-admin/translations.edit.help', compact('locale')),
+                                               'id' => "sub-question-help-text-translation-{$subQuestion->helpText->id}",
+                                               'class' => 'w-full',
+                                               'inputName' => "language_lines.{$locale}.help.{$subQuestion->helpText->id}",
+                                            ])
+                                                @include('cooperation.admin.super-admin.translations.parts.textarea', [
+                                                    'id' => "sub-question-help-text-translation-{$subQuestion->helpText->id}",
+                                                    'noWysiwyg' => $noWysiwyg,
+                                                    'content' => $text,
+                                                    'htmlName' => "language_lines[{$locale}][help][{$subQuestion->helpText->id}]",
+                                                ])
+                                                <label class="w-full text-blue-500 text-sm font-bold key-label">
+                                                    {{"Key: {$subQuestion->helpText->group}.{$subQuestion->helpText->key}"}}
+                                                </label>
+                                            @endcomponent
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            @endif
+        @endforeach
+
+        <div class="w-full mt-5">
+            <button type="submit" class="btn btn-green float-right">
+                @lang('cooperation/admin/super-admin/translations.edit.save')
+            </button>
         </div>
-    </div>
+    </form>
 @endsection
 
 @push('js')
-    <script>
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('search').addEventListener('input', function () {
+                const search = this.value;
 
-        {{--
-         https://www.tiny.cloud/docs/configure/content-filtering/#forced_root_block
-         --}}
+                document.querySelectorAll('.question-input').forEach((input) => {
+                    const formGroup = input.closest('.form-group');
 
+                    if (! search?.trim()) {
+                        formGroup.style.display = null;
+                    } else {
+                        const visible = searchValue(input.value, search)
+                            || searchValue(formGroup.querySelector('label.form-label').textContent, search)
+                            || searchValue(formGroup.querySelector('label.key-label').textContent, search);
 
-        {{-- html mails are to sensitive to styling generated by the wysiwyg editor, so we restrict it when its mail. --}}
-        @if(!\Illuminate\Support\Str::contains($group, 'mail'))
-        tinymce.init({
-            selector: 'textarea',
-            @if($group == 'pdf/user-report')
-            forced_root_block: "",
-            @endif
-            menubar: 'edit format',
-            plugins: 'code link',
-            toolbar: 'code link unlink bold italic underline strikethrough cut copy paste undo redo restoreOriginalText',
-            promotion: false,
-            language: 'nl',
-            // Elements that should stay in the HTML upon submit
-            extended_valid_elements: '#i[class|style]',
-            skin: 'tinymce-5',
-            height: 200,
-            setup: function (editor) {
-                editor.ui.registry.addButton('restoreOriginalText', {
-                    text: 'Herstel tekst',
-                    onAction: function (buttonApi) {
-                        if (confirm('Orginele helptext herstellen? Dit verwijderd de huidige helptext en vervangt deze met de orginele.')) {
-                            var originalHelpText = $(editor.targetElm).parent().find('.original-help-text').val();
-                            editor.setContent(originalHelpText);
-                        }
+                        formGroup.style.display = visible ? null : 'none';
                     }
-                });
-            }
-        });
-
-        $(document).on('focusin', function (e) {
-            var target = $(e.target);
-            if (target.closest(".mce-window").length || target.closest(".tox-dialog").length) {
-                e.stopImmediatePropagation();
-                target = null;
-            }
-        });
-        @endif
-
-        /**
-         * Remove the ï ê etc from a string.
-         *
-         * @param str
-         * @returns {string|void|never}
-         */
-        function removeDiacritics(str) {
-            return str.replace(/[^\u0000-\u007E]/g, function (string) {
-                return diacriticsMap[string] || string;
-            });
-        }
-
-        $(document).ready(function () {
-            $('#search').on("keyup", function () {
-                var value = removeDiacritics($(this).val()).toLowerCase();
-                $('.question-input').filter(function () {
-
-                    var translationsPanel = $(this).parent().parent().parent().parent().parent();
-                    var cleanTranslation = removeDiacritics($(this).val());
-
-                    translationsPanel.toggle(cleanTranslation.toLowerCase().indexOf(value) > -1)
                 });
             });
         });

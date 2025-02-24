@@ -10,7 +10,7 @@ class BuildingStatusService
 {
     use HasBuilding;
 
-    private function resolveStatusModel($status)
+    private function resolveStatusModel(string|Status $status): Status
     {
         $statusModel = null;
 
@@ -29,10 +29,8 @@ class BuildingStatusService
      * convenient way of setting a status on a building.
      *
      * @param  string|Status  $status
-     *
-     * @return void
      */
-    public function setStatus($status)
+    public function setStatus(string|Status $status): void
     {
         $statusModel = $this->resolveStatusModel($status);
 

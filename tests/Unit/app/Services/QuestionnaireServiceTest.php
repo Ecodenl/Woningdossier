@@ -18,7 +18,7 @@ final class QuestionnaireServiceTest extends TestCase
     public function testCopyQuestionnaireToCooperation(): void
     {
         // first we need to create a questionnaire with a question
-        $questionnaire = Questionnaire::factory()->create();
+        $questionnaire = Questionnaire::factory()->withCooperation()->create();
         for ($i = 0; $i < 10; ++$i) {
             $questionnaire->questions()->save(
                 Question::factory()->make(['order' => $i])

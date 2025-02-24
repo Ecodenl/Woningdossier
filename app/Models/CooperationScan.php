@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
@@ -26,4 +27,14 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class CooperationScan extends Pivot
 {
     use HasFactory;
+
+    public function cooperation(): BelongsTo
+    {
+        return $this->belongsTo(Cooperation::class);
+    }
+
+    public function scan(): BelongsTo
+    {
+        return $this->belongsTo(Scan::class);
+    }
 }

@@ -45,7 +45,7 @@ return [
             'secret' => env('BAG_API_KEY', ''),
         ],
         'econobis' => [
-            'enabled' => env('ECONOBIS_ENABLED', true),
+            'enabled' => env('ECONOBIS_ENABLED', false),
             'wildcard' => env('ECONOBIS_WILDCARD', 'test'),
             'debug' => env('ECONOBIS_DEBUG', false),
             'api-key' => env('ECONOBIS_KEY', ''),

@@ -96,7 +96,7 @@ class UserActionPlanAdviceService
                 ->withoutGlobalScope(GetValueScope::class)
                 ->first();
 
-            if (!empty($advisable)) {
+            if (! empty($advisable)) {
                 $regulations = $payload
                     ->forMeasure($advisable)
                     ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);

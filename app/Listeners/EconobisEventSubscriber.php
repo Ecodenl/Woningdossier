@@ -12,6 +12,7 @@ use App\Jobs\Econobis\Out\SendBuildingFilledInAnswersToEconobis;
 use App\Jobs\Econobis\Out\SendBuildingStatusToEconobis;
 use App\Jobs\Econobis\Out\SendScanStatusToEconobis;
 use App\Jobs\Econobis\Out\SendUserDeletedToEconobis;
+use App\Models\Status;
 use App\Services\BuildingCoachStatusService;
 use App\Services\UserService;
 use Illuminate\Events\Dispatcher;
@@ -39,9 +40,11 @@ class EconobisEventSubscriber
 
     public function sendBuildingStatusToEconobis(BuildingStatusUpdated $event)
     {
+        // Econobis only wants the status if it's `executed` ("uitgevoerd")
+        $econobisWantsStatus = ($status = optional($event->building->getMostRecentBuildingStatus())->status) instanceof Status && $status->short === 'executed';
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
         $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->building->id)->isNotEmpty();
-        if ($canSendUserInformationToEconobis && $userHasConnectedCoaches) {
+        if ($canSendUserInformationToEconobis && $userHasConnectedCoaches && $econobisWantsStatus) {
             SendBuildingStatusToEconobis::dispatch($event->building);
         }
     }

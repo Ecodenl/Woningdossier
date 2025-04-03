@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
@@ -29,7 +30,7 @@ class UserPolicy
      */
     public function accessAdmin(User $user): bool
     {
-        return $user->hasAnyRole(['coordinator', 'superuser', 'super-admin', 'coach', 'cooperation-admin']);
+        return $user->hasAnyRole(RoleHelper::ADMIN_ROLES);
     }
 
     public function sendUserInformationToEconobis(Account $account, User $user)
@@ -48,7 +49,9 @@ class UserPolicy
             return false;
         }
 
-        if ($user->hasRoleAndIsCurrentRole(['super-admin', 'cooperation-admin']) && $userToDelete->id != $user->id) {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_SUPER_ADMIN, RoleHelper::ROLE_COOPERATION_ADMIN])
+            && $userToDelete->id != $user->id
+        ) {
             return true;
         }
 
@@ -57,55 +60,32 @@ class UserPolicy
 
     /**
      * Determine if a user is authorize to delete his own account.
-     *
-     * @return bool
      */
-    public function deleteOwnAccount(Account $account)
+    public function deleteOwnAccount(Account $account): bool
     {
-        return ! $account->user()->hasRole(['cooperation-admin']);
+        return ! $account->user()->hasRole([RoleHelper::ROLE_COOPERATION_ADMIN]);
     }
 
     /**
      * Check if a user is authorized to destroy a user.
-     *
-     * @return bool
      */
-    public function destroy(Account $account, User $userToDestroy)
+    public function destroy(Account $account, User $userToDestroy): bool
     {
         // check if the user can delete a user, and if the user to be destroyed is a member of the user his cooperation
         // remove the cooperations stuff
-        return $this->deleteUser($account, $userToDestroy) && $userToDestroy->cooperation->id == HoomdossierSession::getCooperation();
-    }
-
-    /**
-     * Check if a user is allowed to participate in a group chat or not.
-     *
-     * @param $buildingId
-     */
-    public function participateInGroupChat(Account $account, $buildingId): bool
-    {
-        $user = $account->user();
-        // if the user is a coach and has a active building coach status, return true
-        if ($user->hasRole('coach') && $user->isNotRemovedFromBuildingCoachStatus($buildingId)) {
-            return true;
-        } elseif ($user->hasRole('resident') && HoomdossierSession::getBuilding() == $buildingId) {
-            return true;
-        }
-
-        return false;
+        return $this->deleteUser($account, $userToDestroy)
+            && $userToDestroy->cooperation->id === HoomdossierSession::getCooperation();
     }
 
     /**
      * Check if a user can remove a participant from the group chat.
-     *
-     * @param User $user             | Auth user
-     * @param User $groupParticipant | Participant from the group chat
      */
     public function removeParticipantFromChat(Account $account, User $groupParticipant): bool
     {
-        // a coordinator and resident can remove a coach from a conversation
-        // also check if the current building id is from the $groupParticipant, cause ifso we cant remove him because he is the building owner
-        return $account->user()->hasRoleAndIsCurrentRole(['resident', 'coordinator', 'cooperation-admin']) && $groupParticipant->hasRole(['coach']);
+        // A coordinator and resident can remove a coach from a conversation.
+        // Also check if the current building ID is from the $groupParticipant, cause if so we can't remove him because he is the building owner
+        return $account->user()->hasRoleAndIsCurrentRole([RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COACH, RoleHelper::ROLE_COOPERATION_ADMIN])
+               && $groupParticipant->hasRole([RoleHelper::ROLE_COACH]) && $groupParticipant->building->id !== HoomdossierSession::getBuilding(false);
     }
 
     /**
@@ -113,20 +93,18 @@ class UserPolicy
      * allowed to assign roles).
      *
      * @param Role $role The role which is to be assigned
-     *
-     * @return bool
      */
-    public function assignRole(Account $account, Role $role)
+    public function assignRole(Account $account, Role $role): bool
     {
         $user = $account->user();
-        if ($user->hasRoleAndIsCurrentRole('super-admin')) {
-            return in_array($role->name, ['cooperation-admin', 'coordinator', 'coach', 'resident']);
+        if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_SUPER_ADMIN)) {
+            return in_array($role->name, [RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT]);
         }
-        if ($user->hasRoleAndIsCurrentRole('cooperation-admin')) {
-            return in_array($role->name, ['coordinator', 'coach', 'resident']);
+        if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN)) {
+            return in_array($role->name, [RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT]);
         }
-        if ($user->hasRoleAndIsCurrentRole('coordinator')) {
-            return in_array($role->name, ['coordinator', 'coach', 'resident']);
+        if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COORDINATOR)) {
+            return in_array($role->name, [RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT]);
         }
 
         return false;

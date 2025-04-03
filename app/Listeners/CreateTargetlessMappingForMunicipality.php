@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\NoMappingFoundForBagMunicipality;
 use App\Helpers\MappingHelper;
 use App\Helpers\Queue;
 use App\Mail\Admin\MissingBagMunicipalityMappingEmail;
@@ -11,7 +12,6 @@ use Illuminate\Support\Facades\Mail;
 
 class CreateTargetlessMappingForMunicipality implements ShouldQueue
 {
-
     public $queue = Queue::APP_EXTERNAL;
 
     public MappingService $mappingService;
@@ -27,19 +27,18 @@ class CreateTargetlessMappingForMunicipality implements ShouldQueue
 
     /**
      * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
      */
-    public function handle($event)
+    public function handle(NoMappingFoundForBagMunicipality $event): void
     {
         $this->mappingService
             ->from($event->municipalityName)
             ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
 
-        $recipients = explode(',', config('hoomdossier.contact.email.admin'));
-        foreach ($recipients as $recipient) {
-            Mail::to($recipient)->send(new MissingBagMunicipalityMappingEmail($event->municipalityName));
+        $recipients = array_filter(explode(',', config('hoomdossier.contact.email.admin')));
+        if (! empty($recipients)) {
+            foreach ($recipients as $recipient) {
+                Mail::to($recipient)->send(new MissingBagMunicipalityMappingEmail($event->municipalityName));
+            }
         }
     }
 }

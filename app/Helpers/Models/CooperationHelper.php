@@ -18,6 +18,7 @@ class CooperationHelper
         $cooperation->exampleBuildings()->delete();
 
         $users = $cooperation->users()->withoutGlobalScopes()->get();
+        /** @var \App\Models\User $user */
         foreach ($users as $user) {
             UserService::deleteUser($user, true);
         }

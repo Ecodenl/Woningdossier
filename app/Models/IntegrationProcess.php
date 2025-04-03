@@ -16,16 +16,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $synced_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|IntegrationProcess newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IntegrationProcess newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IntegrationProcess query()
- * @method static \Illuminate\Database\Eloquent\Builder|IntegrationProcess whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IntegrationProcess whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IntegrationProcess whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IntegrationProcess whereIntegrationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IntegrationProcess whereProcess($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IntegrationProcess whereSyncedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IntegrationProcess whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess whereIntegrationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess whereProcess($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess whereSyncedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class IntegrationProcess extends Model
@@ -38,7 +38,11 @@ class IntegrationProcess extends Model
         'process',
         'synced_at',
     ];
-    public $casts = [
-        'synced_at' => 'datetime:Y-m-d H:i:s'
-    ];
+
+    protected function casts(): array
+    {
+        return [
+            'synced_at' => 'datetime:Y-m-d H:i:s'
+        ];
+    }
 }

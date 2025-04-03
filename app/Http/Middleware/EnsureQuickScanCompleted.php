@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -16,12 +18,8 @@ class EnsureQuickScanCompleted
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         $building = HoomdossierSession::getBuilding(true);
 
@@ -43,7 +41,6 @@ class EnsureQuickScanCompleted
                     $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, $masterInputSource);
 
                     if ($firstIncompleteSubStep instanceof SubStep) {
-
                         return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
                             // so this may need some rework to check from a scan standpoint.
                             'scan' => $scan,

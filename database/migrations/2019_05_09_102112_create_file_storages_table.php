@@ -4,20 +4,18 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFileStoragesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('file_storages', function (Blueprint $table) {
 
             $table->increments('id');
 
-            $table->unsignedInteger('cooperation_id')->nullable()->default(null);
+            $table->unsignedInteger('cooperation_id')->nullable();
             $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
 
             $table->unsignedInteger('building_id')->nullable();
@@ -34,7 +32,7 @@ class CreateFileStoragesTable extends Migration
             
             $table->string('filename');
 
-            $table->dateTime('available_until')->nullable()->default(null);
+            $table->dateTime('available_until')->nullable();
 
             $table->boolean('is_being_processed')->default('1');
             
@@ -44,11 +42,9 @@ class CreateFileStoragesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('file_storages');
     }
-}
+};

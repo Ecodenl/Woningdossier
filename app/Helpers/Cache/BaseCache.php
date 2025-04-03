@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Cache;
 
+use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -10,28 +11,18 @@ class BaseCache
 {
     /**
      * Returns the cache key for a particular format and parameters.
-     *
-     * @param $string
-     * @param mixed ...$parameters
-     *
-     * @return string
      */
-    public static function getCacheKey($string, ...$parameters): string
+    public static function getCacheKey(string $string, ...$parameters): string
     {
         $prefix = config('hoomdossier.cache.prefix', '');
 
-        return $prefix.sprintf($string, ...$parameters);
+        return $prefix . sprintf($string, ...$parameters);
     }
 
     /**
      * Returns the cache key for a particular format and parameters, prefixed with the current cooperation.
-     *
-     * @param $string
-     * @param mixed ...$parameters
-     *
-     * @return string
      */
-    public static function getCooperationCacheKey($string, ...$parameters): string
+    public static function getCooperationCacheKey(string $string, ...$parameters): string
     {
         $prefix = config('hoomdossier.cache.prefix', '');
 
@@ -41,7 +32,7 @@ class BaseCache
             $prefix .= "{$cooperation->slug}_";
         }
 
-        return $prefix.sprintf($string, ...$parameters);
+        return $prefix . sprintf($string, ...$parameters);
     }
 
     public static function cacheModel(string $cacheKey, Builder $query): ?Model
@@ -59,7 +50,7 @@ class BaseCache
         return $result instanceof Model ? $result : null;
     }
 
-    public static function clear(string $key)
+    public static function clear(string $key): void
     {
         Cache::forget($key);
     }

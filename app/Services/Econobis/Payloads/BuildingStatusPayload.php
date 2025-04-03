@@ -22,10 +22,10 @@ class BuildingStatusPayload extends EconobisPayload
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
         $payload = ['status' => $mostRecentStatus->status->only('id', 'short', 'name')];
 
-        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($building, true);
 
         foreach ($connectedCoaches as $connectedCoach) {
-            $coachUser = User::find($connectedCoach->coach_id);
+            $coachUser = $connectedCoach->coach;
             if ($this->userService->forUser($coachUser)->isRelatedWithEconobis()) {
                 $payload['coaches'][] = [
                     'contact_id' => $coachUser->extra['contact_id'],

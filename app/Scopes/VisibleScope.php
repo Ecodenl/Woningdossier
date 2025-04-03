@@ -10,10 +10,8 @@ class VisibleScope implements Scope
 {
     /**
      * Apply the scope to a given Eloquent query builder.
-     *
-     * @return void
      */
-    public function apply(Builder $builder, Model $model)
+    public function apply(Builder $builder, Model $model): void
     {
         $builder->where('visible', true);
     }

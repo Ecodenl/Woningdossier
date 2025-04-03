@@ -28,10 +28,8 @@ class AttachEnergyLabel extends NonHandleableJobAfterReset
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle(EnergyLabelService $energyLabelService)
+    public function handle(EnergyLabelService $energyLabelService): void
     {
         $building = $this->building;
 

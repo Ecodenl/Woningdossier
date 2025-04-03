@@ -23,10 +23,8 @@ class CheckLastResetAt
      * Process the job.
      *
      * @param  mixed  $job
-     * @param  callable  $next
-     * @return mixed
      */
-    public function handle($job, $next)
+    public function handle($job, callable $next): void
     {
         // no logic should be applied when dispatched on sync
         if ($job->connection === "sync") {
@@ -42,7 +40,7 @@ class CheckLastResetAt
                 $displayName = get_class($job->job);
             }
 
-            Log::debug("{$displayName} Checking for reset queued time: ".$job->queuedAt()->format('Y-m-d H:i:s'));
+            Log::debug("{$displayName} Checking for reset queued time: " . $job->queuedAt()->format('Y-m-d H:i:s'));
 
 
             $resetIsDoneAfterThisJobHasBeenQueued = $this->resetIsDoneAfterThisJobHasBeenQueued(

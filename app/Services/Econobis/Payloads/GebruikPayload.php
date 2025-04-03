@@ -136,16 +136,16 @@ class GebruikPayload extends EconobisPayload
                             $answers[] = Arr::only($buildingAnswerRelatedData, ['value', 'name', 'short']);
                         }
                     } else {
-                        if ( ! is_null($buildingAnswers)) {
+                        if (! is_null($buildingAnswers)) {
                             $buildingAnswerRelatedData = $values->where('value', $buildingAnswers)->first();
                             $answers = Arr::only($buildingAnswerRelatedData, ['value', 'name', 'short']);
-                            if ( ! isset($answers['short'])) {
+                            if (! isset($answers['short'])) {
                                 $answers['short'] = null;
                             }
                         }
                     }
                 } else {
-                    if ( ! is_null($buildingAnswers)) {
+                    if (! is_null($buildingAnswers)) {
                         $answers = [
                             'value' => $buildingAnswers,
                             'short' => null,

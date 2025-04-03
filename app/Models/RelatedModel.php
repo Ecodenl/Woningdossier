@@ -16,18 +16,18 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int|null $target_model_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read Model|\Eloquent $resolvable
- * @property-read Model|\Eloquent $targetable
- * @method static \Illuminate\Database\Eloquent\Builder|RelatedModel newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|RelatedModel newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|RelatedModel query()
- * @method static \Illuminate\Database\Eloquent\Builder|RelatedModel whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RelatedModel whereFromModelId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RelatedModel whereFromModelType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RelatedModel whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RelatedModel whereTargetModelId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RelatedModel whereTargetModelType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RelatedModel whereUpdatedAt($value)
+ * @property-read Model|\Eloquent|null $resolvable
+ * @property-read Model|\Eloquent|null $targetable
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RelatedModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RelatedModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RelatedModel query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RelatedModel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RelatedModel whereFromModelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RelatedModel whereFromModelType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RelatedModel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RelatedModel whereTargetModelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RelatedModel whereTargetModelType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RelatedModel whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class RelatedModel extends Model

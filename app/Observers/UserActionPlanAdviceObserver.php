@@ -15,14 +15,13 @@ use App\Services\ConditionService;
 use App\Services\Models\UserCostService;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceObserver
 {
     /**
      * Listen to the creating event, will set the planned year based on interest.
      */
-    public function creating(UserActionPlanAdvice $userActionPlanAdvice)
+    public function creating(UserActionPlanAdvice $userActionPlanAdvice): void
     {
         // previously custom logic decided if the advice should be planned or not.
         // since the "quick scan" we ask the user if he considers the measure, when he considers it an advice will be created
@@ -83,7 +82,7 @@ class UserActionPlanAdviceObserver
         }
     }
 
-    public function created(UserActionPlanAdvice $userActionPlanAdvice)
+    public function created(UserActionPlanAdvice $userActionPlanAdvice): void
     {
         // Triggered from frontend (Woonplan or step), you need it directly. There is no choice to queue it here.
         // Or its triggered from a recalculation, which means the code is already running on a queue.

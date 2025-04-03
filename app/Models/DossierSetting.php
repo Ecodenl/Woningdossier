@@ -18,22 +18,22 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $inputSource
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting forBuilding($building)
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting forMe(?\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting forUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting query()
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting whereDoneAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DossierSetting whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting forBuilding(\App\Models\Building|int $building)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting forUser(\App\Models\User|int $user)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting whereDoneAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class DossierSetting extends Model

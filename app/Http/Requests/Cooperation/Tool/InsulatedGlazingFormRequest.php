@@ -4,13 +4,11 @@ namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Helpers\ConsiderableHelper;
 use App\Http\Requests\DecimalReplacementTrait;
-use App\Models\Interest;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Services\LegacyService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -22,15 +20,13 @@ class InsulatedGlazingFormRequest extends FormRequest
 
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::check();
     }
 
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
         $this->decimals([
             'building_insulated_glazings' => 'm2',
@@ -38,10 +34,9 @@ class InsulatedGlazingFormRequest extends FormRequest
         ]);
     }
 
-    public function rules(LegacyService $legacyService)
+    public function rules(LegacyService $legacyService): array
     {
         $max = Carbon::now()->year;
-        /** @var Collection $noInterests */
 
         $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('insulated-glazing'));
 
@@ -53,7 +48,7 @@ class InsulatedGlazingFormRequest extends FormRequest
             'building_features.window_surface' => 'nullable|numeric|min:1',
             'building_paintwork_statuses.wood_rot_status_id' => 'required|exists:wood_rot_statuses,id',
             'building_paintwork_statuses.paintwork_status_id' => 'required|exists:paintwork_statuses,id',
-            'building_paintwork_statuses.last_painted_year' => 'nullable|numeric|between:1990,'.$max,
+            'building_paintwork_statuses.last_painted_year' => 'nullable|numeric|between:1990,' . $max,
         ];
 
         foreach ($measureRelatedShorts as $tqShorts) {
@@ -71,17 +66,16 @@ class InsulatedGlazingFormRequest extends FormRequest
         $big = 'building_insulated_glazings.';
 
         foreach ($this->get('considerables') as $considerableId => $considerData) {
-
             // if the user considers the measure we will add the rules, else we wont.
             if ($considerData['is_considering']) {
                 $validator->addRules([
-                    $big.$considerableId.'.m2' => 'required|numeric|min:1',
-                    $big.$considerableId.'.windows' => 'required|numeric|min:1',
+                    $big . $considerableId . '.m2' => 'required|numeric|min:1',
+                    $big . $considerableId . '.windows' => 'required|numeric|min:1',
                 ]);
             } else {
                 $validator->addRules([
-                    $big.$considerableId.'.m2' => 'nullable|numeric|min:1',
-                    $big.$considerableId.'.windows' => 'nullable|numeric|min:1',
+                    $big . $considerableId . '.m2' => 'nullable|numeric|min:1',
+                    $big . $considerableId . '.windows' => 'nullable|numeric|min:1',
                 ]);
             }
         }

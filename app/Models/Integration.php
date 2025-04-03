@@ -14,14 +14,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|Integration newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Integration newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Integration query()
- * @method static \Illuminate\Database\Eloquent\Builder|Integration whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Integration whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Integration whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Integration whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Integration whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Integration newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Integration newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Integration query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Integration whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Integration whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Integration whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Integration whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Integration whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Integration extends Model

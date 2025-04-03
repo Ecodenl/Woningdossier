@@ -144,6 +144,7 @@ class RegisterController extends Controller
             }
         }
 
+        /** @var \App\Models\Client $client */
         $client = $request->user();
 
         $logContext = [

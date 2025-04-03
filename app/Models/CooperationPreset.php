@@ -14,16 +14,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CooperationPresetContent[] $cooperationPresetContents
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CooperationPresetContent> $cooperationPresetContents
  * @property-read int|null $cooperation_preset_contents_count
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPreset newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPreset newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPreset query()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPreset whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPreset whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPreset whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPreset whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPreset whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPreset newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPreset newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPreset query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPreset whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPreset whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPreset whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPreset whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPreset whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CooperationPreset extends Model

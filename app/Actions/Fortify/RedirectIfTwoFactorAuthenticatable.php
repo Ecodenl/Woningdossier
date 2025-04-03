@@ -15,8 +15,6 @@ class RedirectIfTwoFactorAuthenticatable extends \Laravel\Fortify\Actions\Redire
 
         TwoFactorAuthenticationChallenged::dispatch($user);
 
-        return $request->wantsJson()
-            ? response()->json(['two_factor' => true])
-            : redirect()->route('cooperation.auth.two-factor.login');
+        return $request->wantsJson() ? response()->json(['two_factor' => true]) : redirect()->route('cooperation.auth.two-factor.login');
     }
 }

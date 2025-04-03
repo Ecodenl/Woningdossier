@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateToolQuestionAnswersTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('tool_question_answers', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -26,7 +24,7 @@ class CreateToolQuestionAnswersTable extends Migration
             $table->foreign('tool_question_id')->references('id')->on('tool_questions')->onDelete('cascade');
 
 
-            $table->unsignedBigInteger('tool_question_custom_value_id')->nullable()->default(null);
+            $table->unsignedBigInteger('tool_question_custom_value_id')->nullable();
             $table->foreign('tool_question_custom_value_id')->references('id')->on('tool_question_custom_values')->onDelete('cascade');
 
             $table->text('answer');
@@ -37,11 +35,9 @@ class CreateToolQuestionAnswersTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('tool_question_answers');
     }
-}
+};

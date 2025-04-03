@@ -14,13 +14,12 @@
                 </div>
             </div>
 
-
             <div class="flex flex-row flex-wrap w-full border border-solid border-blue-500 border-opacity-50 rounded-lg">
                 <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 h-11 rounded-t-lg border-b border-solid border-blue-500 border-opacity-50">
                     @lang('my-account.2fa.index.title')
                 </div>
 
-                @if (session('status') !== 'two-factor-authentication-enabled')
+                @if(session('status') !== 'two-factor-authentication-enabled')
                     @php
                         $state = 'inactive';
                         if ($account->hasEnabledTwoFactorAuthentication()) {
@@ -58,20 +57,22 @@
                             </div>
                             <div class="flex flex-col space-y-2">
                                 @if($account->hasEnabledTwoFactorAuthentication())
-                                    <form action="{{route('cooperation.auth.two-factor.disable')}}" method="post">
-                                        @method('delete')
-                                        @csrf
-                                        <button class="btn btn-purple" type="submit">
-                                            @lang("my-account.2fa.index.alert.active.button")
-                                        </button>
-                                    </form>
+                                    @can('disableTwoFactor', $building->user->account)
+                                        <form action="{{route('cooperation.auth.two-factor.disable')}}" method="POST">
+                                            @method('DELETE')
+                                            @csrf
+                                            <button class="btn btn-purple" type="submit">
+                                                @lang("my-account.2fa.index.alert.active.button")
+                                            </button>
+                                        </form>
+                                    @endcan
                                     <button x-text="showRecoveryCodes ? '@lang("my-account.2fa.index.recovery-codes.hide")' : '@lang("my-account.2fa.index.recovery-codes.show")'"
                                             x-on:click="showRecoveryCodes = !showRecoveryCodes" class="btn btn-purple"
-                                            type="submit">
+                                            type="button">
 
                                     </button>
                                 @else
-                                    <form action="{{route('cooperation.auth.two-factor.enable')}}" method="post">
+                                    <form action="{{route('cooperation.auth.two-factor.enable')}}" method="POST">
                                         @csrf
                                         <button class="btn btn-purple" type="submit">
                                             @lang("my-account.2fa.index.alert.inactive.button")

@@ -48,6 +48,7 @@ return [
             'enabled' => env('ECONOBIS_ENABLED', true),
             'wildcard' => env('ECONOBIS_WILDCARD', 'test'),
             'debug' => env('ECONOBIS_DEBUG', false),
+            'warn' => env('ECONOBIS_WARN', false),
             'api-key' => env('ECONOBIS_KEY', ''),
             // after how many minutes may the woonplan be sent to econobis?
             'send_woonplan_after_change' => env('ECONOBIS_SEND_WOONPLAN_AFTER_CHANGE', 30),

@@ -722,10 +722,8 @@ class Building extends Model
 
     /**
      * Get the most recent BuildingStatus.
-     *
-     * @return BuildingStatus|null
      */
-    public function getMostRecentBuildingStatus()
+    public function getMostRecentBuildingStatus(): ?BuildingStatus
     {
         return $this->buildingStatuses()->with('status')->mostRecent()->first();
     }

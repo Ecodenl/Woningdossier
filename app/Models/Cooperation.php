@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Country;
 use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasMedia;
@@ -77,13 +78,18 @@ class Cooperation extends Model
         'econobis_api_key',
     ];
 
-
     public function getRouteKeyName()
     {
         return 'slug';
     }
 
     // Model methods
+    public function getCountry(): Country
+    {
+        //return Country::from($this->country);
+        return new Country($this->country);
+    }
+
     /**
      * Return the coaches from the current cooperation.
      *

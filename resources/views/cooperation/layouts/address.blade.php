@@ -2,10 +2,12 @@
     $withLabels ??= false;
     // Any object that has the correct columns
     $defaults ??= new stdClass();
+
+    $supportsLvBag = $cooperation->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG);
 @endphp
 
 <div class="{{ $class ?? 'flex flex-wrap w-full' }}" @if(! empty($attr)) {!! $attr !!} @endif
-     x-data="checkAddress({'correct_address': '{{ route('api.get-address-data') }}'})">
+     @if($supportsLvBag) x-data="checkAddress({'correct_address': '{{ route('api.get-address-data') }}'})" @endif>
 
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
@@ -40,26 +42,28 @@
         'inputName' => 'address.house_number_extension',
         'id' => 'extension',
     ])
-        <input class="form-input" type="text" name="address[extension]" style="display: none;"
+        <input class="form-input" type="text" name="address[extension]" @if($supportsLvBag) style="display: none;" @endif
                value="{{ old('address.extension', $defaults->extension ?? '') }}"
                placeholder="@lang('auth.register.form.house-number-extension')"
                x-bind="houseNumberExtensionField">
-        {{-- We are not using a custom select here. Because it defines its own x-data, it makes the x-ref invisible for the parent x-data --}}
-        <select class="form-input" name="address[extension]" style="display: none;" id="extension"
-                x-bind="houseNumberExtensionSelect">
-            {{-- Values will be bound from JS --}}
-            <option value="">
-                @lang('auth.register.form.no-extension')
-            </option>
-            @if(old('address.extension', $defaults->extension ?? ''))
-                <option value="{{ old('address.extension', $defaults->extension ?? '') }}" selected class="old">
-                    {{ old('address.extension', $defaults->extension ?? '') }}
+        @if($supportsLvBag)
+            {{-- We are not using a custom select here. Because it defines its own x-data, it makes the x-ref invisible for the parent x-data --}}
+            <select class="form-input" name="address[extension]" style="display: none;" id="extension"
+                    x-bind="houseNumberExtensionSelect">
+                {{-- Values will be bound from JS --}}
+                <option value="">
+                    @lang('auth.register.form.no-extension')
                 </option>
-            @endif
-            <template x-for="extension in availableExtensions">
-                <option x-bind:value="extension" x-text="extension"></option>
-            </template>
-        </select>
+                @if(old('address.extension', $defaults->extension ?? ''))
+                    <option value="{{ old('address.extension', $defaults->extension ?? '') }}" selected class="old">
+                        {{ old('address.extension', $defaults->extension ?? '') }}
+                    </option>
+                @endif
+                <template x-for="extension in availableExtensions">
+                    <option x-bind:value="extension" x-text="extension"></option>
+                </template>
+            </select>
+        @endif
     @endcomponent
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,

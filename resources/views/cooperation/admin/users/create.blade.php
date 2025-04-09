@@ -1,16 +1,27 @@
 @extends('cooperation.admin.layouts.app')
 
 @section('content')
+    @php
+        $cooperationToCheck = isset($cooperationToManage) && $cooperationToManage instanceof \App\Models\Cooperation
+            ? $cooperationToManage : $cooperation;
+        $country = strtolower($cooperationToCheck->country);
+        $supportsLvBag = $cooperationToCheck->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG);
+    @endphp
     <div class="panel panel-default">
         <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-user')</div>
 
-        <div class="panel-body" x-data>
+        <div class="panel-body" x-data="{duplicateData: []}">
             @component('cooperation.tool.components.alert', [
                 'alertType' => 'info',
                 'dismissible' => false,
-                'attr' => 'style="display: none;" x-on:duplicates-checked.window="$el.style.display = $event.detail.showDuplicateError ? \'\' : \'none\'"',
+                'attr' => 'style="display: none;" x-on:duplicates-checked.window="$el.style.display = $event.detail.showDuplicateError ? \'\' : \'none\'; ' . ($supportsLvBag ? '"' : 'duplicateData = $event.detail.addresses;"'),
             ])
-                @lang('auth.register.form.duplicate-address')
+                @lang("auth.register.form.duplicate-address.{$country}")
+                <ul x-show="duplicateData.length > 0">
+                    <template x-for="data in duplicateData">
+                        <li x-text="data"></li>
+                    </template>
+                </ul>
             @endcomponent
             <div class="row"
                  x-data="register('{{route('cooperation.check-existing-email', ['cooperation' => $cooperation, 'forCooperation' => $cooperationToManage ?? $cooperation])}}')">

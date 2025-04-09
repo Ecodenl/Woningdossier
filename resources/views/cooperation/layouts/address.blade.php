@@ -7,7 +7,9 @@
 @endphp
 
 <div class="{{ $class ?? 'flex flex-wrap w-full' }}" @if(! empty($attr)) {!! $attr !!} @endif
-     @if($supportsLvBag) x-data="checkAddress({'correct_address': '{{ route('api.get-address-data') }}'})" @endif>
+     x-data="checkAddress({
+        @if($supportsLvBag) 'correct_address': '{{ route('api.get-address-data', ['country' => $cooperation->country]) }}' @endif
+     }, @js($supportsLvBag))">
 
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
@@ -46,24 +48,22 @@
                value="{{ old('address.extension', $defaults->extension ?? '') }}"
                placeholder="@lang('auth.register.form.house-number-extension')"
                x-bind="houseNumberExtensionField">
-        @if($supportsLvBag)
-            {{-- We are not using a custom select here. Because it defines its own x-data, it makes the x-ref invisible for the parent x-data --}}
-            <select class="form-input" name="address[extension]" style="display: none;" id="extension"
-                    x-bind="houseNumberExtensionSelect">
-                {{-- Values will be bound from JS --}}
-                <option value="">
-                    @lang('auth.register.form.no-extension')
+        {{-- We are not using a custom select here. Because it defines its own x-data, it makes the x-ref invisible for the parent x-data --}}
+        <select class="form-input" name="address[extension]" style="display: none;" id="extension"
+                x-bind="houseNumberExtensionSelect">
+            {{-- Values will be bound from JS --}}
+            <option value="">
+                @lang('auth.register.form.no-extension')
+            </option>
+            @if(old('address.extension', $defaults->extension ?? ''))
+                <option value="{{ old('address.extension', $defaults->extension ?? '') }}" selected class="old">
+                    {{ old('address.extension', $defaults->extension ?? '') }}
                 </option>
-                @if(old('address.extension', $defaults->extension ?? ''))
-                    <option value="{{ old('address.extension', $defaults->extension ?? '') }}" selected class="old">
-                        {{ old('address.extension', $defaults->extension ?? '') }}
-                    </option>
-                @endif
-                <template x-for="extension in availableExtensions">
-                    <option x-bind:value="extension" x-text="extension"></option>
-                </template>
-            </select>
-        @endif
+            @endif
+            <template x-for="extension in availableExtensions">
+                <option x-bind:value="extension" x-text="extension"></option>
+            </template>
+        </select>
     @endcomponent
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,

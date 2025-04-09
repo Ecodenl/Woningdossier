@@ -10,6 +10,7 @@ class PhoneNumberTest extends TestCase
     public static function phoneNumberProvider()
     {
         return [
+            ['nl', '+31611223344', true],
             ['nl', '+31612345678', true],
             ['nl', '+31(0)612345678', true],
             ['nl', '(+31)(0)612345678', true],
@@ -64,6 +65,7 @@ class PhoneNumberTest extends TestCase
             ['be', '0490123456', true],
             ['be', '031234567', false], // No support for non-mobile numbers (for now?)
             ['be', '+3231234567', false], // No support for non-mobile numbers (for now?)
+            ['be', '+32460123456', true],
             // Non-BE numbers / Gibberish
             ['be', '+31612345678', false],
             ['be', '+31(0)612345678', false],

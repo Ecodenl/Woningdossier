@@ -14,7 +14,7 @@
             @component('cooperation.tool.components.alert', [
                 'alertType' => 'info',
                 'dismissible' => false,
-                'attr' => 'style="display: none;" x-on:duplicates-checked.window="$el.style.display = $event.detail.showDuplicateError ? \'\' : \'none\'; ' . ($supportsLvBag ? '"' : 'duplicateData = $event.detail.addresses;"'),
+                'attr' => 'style="display: none;" x-on:duplicates-checked.window="$el.style.display = $event.detail.showDuplicateError ? \'\' : \'none\'; ' . ($supportsLvBag ? '"' : 'duplicateData = $event.detail.addresses || [];"'),
             ])
                 @lang("auth.register.form.duplicate-address.{$country}")
                 <ul x-show="duplicateData.length > 0">

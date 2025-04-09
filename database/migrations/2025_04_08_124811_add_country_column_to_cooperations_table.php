@@ -6,12 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class AddCountryColumnToCooperationsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    public function up(): void
     {
         //Schema::whenTableDoesntHaveColumn('cooperations', 'country', function (BluePrint $table) {
         //    $table->string('country')->default(\App\Enums\Country::COUNTRY_NL)->after('slug');
@@ -23,12 +18,7 @@ class AddCountryColumnToCooperationsTable extends Migration
         }
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
         //Schema::whenTableHasColumn('cooperations', 'country', function (BluePrint $table) {
         //    $table->dropColumn('country');

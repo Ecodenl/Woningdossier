@@ -37,7 +37,7 @@
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
         'label' => $withLabels ? __('auth.register.form.house-number-extension') : '',
-        'labelAttr' => 'style="display: none;"',
+        'labelAttr' => $supportsLvBag ? 'style="display: none;"' : '',
         'class' => 'w-full -mt-5 lg:w-1/4 lg:pl-3',
         'inputName' => 'address.house_number_extension',
         'id' => 'extension',

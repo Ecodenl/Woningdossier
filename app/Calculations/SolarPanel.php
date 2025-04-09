@@ -49,12 +49,15 @@ class SolarPanel
 
         $orientation = PvPanelOrientation::find($orientationId);
 
-        $locationFactor = KeyFigures::getLocationFactor($building->postal_code);
-        $helpFactor = 0;
+        $locationFactor = KeyFigures::getLocationFactor($building->postal_code, $building->user->cooperation->country);
+        $helpFactor = 1;
+        // TODO: Belgium has no location factors (yet?). For now we return the yield
         if ($orientation instanceof PvPanelOrientation && $angle > 0) {
             $yield = KeyFigures::getYield($orientation, $angle);
-            if ($yield instanceof PvPanelYield && $locationFactor instanceof PvPanelLocationFactor) {
-                $helpFactor = $yield->yield * $locationFactor->factor;
+            if ($yield instanceof PvPanelYield) {
+                $helpFactor = $locationFactor instanceof PvPanelLocationFactor
+                    ? $yield->yield * $locationFactor->factor
+                    : $yield->yield;
             }
         }
 

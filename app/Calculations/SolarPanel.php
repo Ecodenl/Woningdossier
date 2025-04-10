@@ -49,12 +49,14 @@ class SolarPanel
 
         $orientation = PvPanelOrientation::find($orientationId);
 
-        $locationFactor = KeyFigures::getLocationFactor($building->postal_code, $building->user->cooperation->country);
         $helpFactor = 1;
-        // TODO: Belgium has no location factors (yet?). For now we return the yield
         if ($orientation instanceof PvPanelOrientation && $angle > 0) {
             $yield = KeyFigures::getYield($orientation, $angle);
             if ($yield instanceof PvPanelYield) {
+                //TODO: Belgium has no location factors (yet?). For now we return the yield, as most coast regions
+                // have a location factor of 1, which is alike the average solar yield in Belgium
+                $locationFactor = KeyFigures::getLocationFactor($building->postal_code, $building->user->cooperation->country);
+
                 $helpFactor = $locationFactor instanceof PvPanelLocationFactor
                     ? $yield->yield * $locationFactor->factor
                     : $yield->yield;

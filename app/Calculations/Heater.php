@@ -64,14 +64,15 @@ class Heater extends Calculator
             $orientationId = $this->getAnswer('heater-pv-panel-orientation') ?? 0;
             $orientation = PvPanelOrientation::find($orientationId);
 
-            $locationFactor = KeyFigures::getLocationFactor($this->building->postal_code, $this->building->user->cooperation->country);
             $helpFactor = 1;
-            // TODO: Belgium has no location factors (yet?). For now we return the yield
             if ($orientation instanceof PvPanelOrientation && $angle > 0) {
                 $yield = KeyFigures::getYield($orientation, $angle);
                 // \Log::debug('Heater: Yield for '.$orientation->name.' at '.$angle.' degrees = '.$yield->yield);
                 if ($yield instanceof PvPanelYield) {
-                    // \Log::debug('Heater: Location factor for '.$this->building->postal_code.' is '.$locationFactor->factor);
+                    //TODO: Belgium has no location factors (yet?). For now we return the yield, as most coast regions
+                    // have a location factor of 1, which is alike the average solar yield in Belgium
+                    $locationFactor = KeyFigures::getLocationFactor($this->building->postal_code, $this->building->user->cooperation->country);
+                    // \Log::debug('Heater: Location factor for '.$this->building->postal_code.' is '.$locationFactor?->factor);
                     $helpFactor = $locationFactor instanceof PvPanelLocationFactor
                         ? $yield->yield * $locationFactor->factor
                         : $yield->yield;

@@ -2,8 +2,10 @@
 
 namespace App\Policies;
 
+use App\Enums\ApiImplementation;
 use App\Helpers\RoleHelper;
 use App\Models\Account;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AccountPolicy
@@ -18,5 +20,12 @@ class AccountPolicy
             RoleHelper::ROLE_COORDINATOR,
             RoleHelper::ROLE_COOPERATION_ADMIN,
         ])) && $target->user()->hasRole(RoleHelper::ROLE_RESIDENT));
+    }
+
+    public function refreshRegulations(Account $account): bool
+    {
+        $user = $account->user();
+
+        return $user instanceof User && $user->cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG);
     }
 }

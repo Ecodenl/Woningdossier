@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Admin\SuperAdmin\Cooperations;
 
+use App\Enums\Country;
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -30,12 +31,18 @@ class Form extends Component
                 'cooperationToEditFormData' => $cooperationToEdit->only([
                     'name',
                     'slug',
+                    'country',
                     'website_url',
                     'cooperation_email',
                     'econobis_wildcard'
                 ])
             ]);
             $this->hasApiKey = ! is_null($cooperationToEdit->econobis_api_key);
+        }
+
+        // Ensure set with default
+        if (empty($this->cooperationToEditFormData['country'])) {
+            $this->cooperationToEditFormData['country'] = Country::COUNTRY_NL;
         }
     }
 
@@ -69,6 +76,7 @@ class Form extends Component
         return [
             'cooperationToEditFormData.name' => 'required',
             'cooperationToEditFormData.slug' => ['required', $slugUnique],
+            'cooperationToEditFormData.country' => ['required', Rule::in(Country::cases())],
             'cooperationToEditFormData.cooperation_email' => ['nullable', 'email'],
             'cooperationToEditFormData.website_url' => ['nullable', 'url'],
             'cooperationToEditFormData.econobis_wildcard' => 'nullable',
@@ -79,6 +87,12 @@ class Form extends Component
     public function save()
     {
         $validatedData = $this->validate();
+
+        // We don't want this to be overridden since it could seriously damage the application.
+        if ($this->cooperationToEdit->exists) {
+            $validatedData['cooperationToEditFormData']['country'] = $this->cooperationToEdit->country ?? Country::COUNTRY_NL;
+        }
+
         // just to be sure.
         $validatedData['cooperationToEditFormData']['slug'] = Str::slug($validatedData['cooperationToEditFormData']['slug']);
         $cooperationToEditFormData = $validatedData['cooperationToEditFormData'];
@@ -96,7 +110,6 @@ class Form extends Component
                 unset($cooperationToEditFormData['econobis_api_key']);
             }
         }
-
 
         if ($this->cooperationToEdit->exists) {
             $this->cooperationToEdit->update($cooperationToEditFormData);

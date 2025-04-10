@@ -30,7 +30,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))
     });
 
 // Non-cooperation internal API
-Route::get('address-data', [Api\GeoController::class, 'getAddressData'])->name('get-address-data');
+Route::get('address-data/{country}', [Api\GeoController::class, 'getAddressData'])->name('get-address-data');
 // Not cooperation route because it shares with the super admin in which a cooperation domain doesn't work.
 Route::get('check-address-duplicates/{cooperation}', [Api\AddressController::class, 'checkDuplicates'])
     ->name('check-address-duplicates');

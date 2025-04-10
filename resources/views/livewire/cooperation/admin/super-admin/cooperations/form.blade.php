@@ -29,6 +29,24 @@
         @endif
     </div>
 
+    <div class="form-group {{ $errors->has('cooperationToEditFormData.country') ? ' has-error' : '' }}">
+        <label for="country">@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.country')</label>
+        <select id="country" class="form-control" wire:model="cooperationToEditFormData.country" required
+                @if($cooperationToEdit->exists) disabled @endif>
+            @foreach(\App\Enums\Country::cases() as $country)
+                <option value="{{ $country }}">
+                    {{ \App\Enums\Country::getTranslation($country) }}
+                </option>
+            @endforeach
+        </select>
+
+        @if($errors->has('cooperationToEditFormData.country'))
+        <span class="help-block">
+            <strong>{{ $errors->first('cooperationToEditFormData.country') }}</strong>
+        </span>
+        @endif
+    </div>
+
     <div class="form-group {{ $errors->has('cooperationToEditFormData.cooperation_email') ? ' has-error' : '' }}">
         <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.cooperation_email')</label>
         <input wire:model="cooperationToEditFormData.cooperation_email"  type="text" class="form-control"

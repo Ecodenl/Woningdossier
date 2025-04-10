@@ -1,5 +1,5 @@
-export default (checks, tailwind = true) => ({
-    bagAvailable: true,
+export default (checks, bagAvailable = true, tailwind = true) => ({
+    bagAvailable: bagAvailable,
     showPostalCodeError: false,
     showDuplicateError: false,
     checks: checks,
@@ -178,7 +178,10 @@ export default (checks, tailwind = true) => ({
             'url': url,
             'done': function (request) {
                 context.showDuplicateError = request.response.count > 0;
-                context.$dispatch('duplicates-checked', {'showDuplicateError': context.showDuplicateError});
+                context.$dispatch('duplicates-checked', {
+                    'showDuplicateError': context.showDuplicateError,
+                    'addresses': request.response.addresses
+                });
             }
         });
     },

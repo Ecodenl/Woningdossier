@@ -19,6 +19,7 @@ class LocaleBasedRule
     public function __construct($countryIso3166alpha2 = null)
     {
         if (is_null($countryIso3166alpha2)) {
+            // TODO: This does not work if we ever add locales such as EN since the ISO is actually GB...
             $countryIso3166alpha2 = app()->getLocale();
         }
         $this->country = strtolower($countryIso3166alpha2);

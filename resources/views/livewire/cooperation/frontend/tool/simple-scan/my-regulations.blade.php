@@ -9,23 +9,36 @@
                     </a>
                 @endforeach
             </nav>
-            <div class="flex items-center gap-x-2" @if($isRefreshing) wire:poll="checkIfIsRefreshed" @endif>
-                <button class="btn btn-purple" type="button" @if($isRefreshing) disabled="disabled" @endif wire:click="refreshRegulations">
-                    <span class="w-full mx-1 flex justify-between items-center">
-                        @if($isRefreshing)
-                            <i class="icon-md icon-ventilation-fan animate-spin-slow"></i>
-                            @lang('cooperation/frontend/tool.my-regulations.refreshed.busy')
-                        @else
+            @can('refreshRegulations')
+                <div class="flex items-center gap-x-2" @if($isRefreshing) wire:poll="checkIfIsRefreshed" @endif>
+                    <button class="btn btn-purple" type="button" @if($isRefreshing) disabled="disabled" @endif wire:click="refreshRegulations">
+                        <span class="w-full mx-1 flex justify-between items-center">
+                            @if($isRefreshing)
+                                <i class="icon-md icon-ventilation-fan animate-spin-slow"></i>
+                                @lang('cooperation/frontend/tool.my-regulations.refreshed.busy')
+                            @else
+                                @lang('cooperation/frontend/tool.my-regulations.refreshed.ready')
+                            @endif
+                        </span>
+                    </button>
+                    @if($building->user->regulations_refreshed_at instanceof DateTime)
+                        <h6 class="heading-6 text-purple">@lang('cooperation/frontend/tool.my-regulations.refreshed.last', ['date' => $building->user->regulations_refreshed_at->format('Y-m-d H:i')])</h6>
+                    @else
+                        <h6 class="heading-6 text-purple">@lang('cooperation/frontend/tool.my-regulations.refreshed.not')</h6>
+                    @endif
+                </div>
+            @else
+                <div class="flex items-center gap-x-2">
+                    <button class="btn btn-purple" type="button" disabled>
+                        <span class="w-full mx-1 flex justify-between items-center">
                             @lang('cooperation/frontend/tool.my-regulations.refreshed.ready')
-                        @endif
-                    </span>
-                </button>
-                @if($building->user->regulations_refreshed_at instanceof DateTime)
-                    <h6 class="heading-6 text-purple">@lang('cooperation/frontend/tool.my-regulations.refreshed.last', ['date' => $building->user->regulations_refreshed_at->format('Y-m-d H:i')])</h6>
-                @else
-                    <h6 class="heading-6 text-purple">@lang('cooperation/frontend/tool.my-regulations.refreshed.not')</h6>
-                @endif
-            </div>
+                        </span>
+                    </button>
+                    <h6 class="heading-6 text-red">
+                        @lang('cooperation/frontend/tool.my-regulations.refreshed.not-available')
+                    </h6>
+                </div>
+            @endcan
 
             <div class="w-full border border-blue-500 rounded-r rounded-bl p-4">
                 @foreach($relevantRegulations as $regulationType => $relevantRegulationsForType)

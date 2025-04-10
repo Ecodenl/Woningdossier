@@ -55,4 +55,10 @@ return [
         'nl' => 'Nederlands',
         'en' => 'Engels',
     ],
+
+    'countries' => [
+        'nl' => 'Nederland',
+        'be' => 'België',
+        'gb' => 'Groot-Brittannië',
+    ],
 ];

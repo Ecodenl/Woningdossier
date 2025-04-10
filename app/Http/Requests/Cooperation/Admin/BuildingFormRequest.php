@@ -40,7 +40,7 @@ class BuildingFormRequest extends FormRequest
             'users.last_name' => 'required|string|max:255',
             'users.phone_number' => ['nullable', new PhoneNumber('nl')],
             'users.extra.contact_id' => ['nullable', 'numeric', 'integer', 'gt:0'],
-        ], (new AddressFormRequest())->rules());
+        ], (new AddressFormRequest())->setCountry($this->cooperation->country)->rules());
     }
 
     public function withValidator(Validator $validator)

@@ -27,14 +27,9 @@ class KeyFigures implements KeyFiguresInterface
         90 => 90,
     ];
 
-    /**
-     * @param $zipcode
-     *
-     * @return PvPanelLocationFactor|null
-     */
-    public static function getLocationFactor($zipcode)
+    public static function getLocationFactor(string $zipcode, string $country): ?PvPanelLocationFactor
     {
-        return \App\Helpers\KeyFigures\PvPanels\KeyFigures::getLocationFactor($zipcode);
+        return \App\Helpers\KeyFigures\PvPanels\KeyFigures::getLocationFactor($zipcode, $country);
     }
 
     /**

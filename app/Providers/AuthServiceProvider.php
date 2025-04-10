@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Policies\AccountPolicy;
 use App\Policies\BuildingPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\UserPolicy;
@@ -46,5 +47,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('send-user-information-to-econobis', [UserPolicy::class, 'sendUserInformationToEconobis']);
 
         Gate::define('editAny', [RolePolicy::class, 'editAny']);
+
+        Gate::define('refreshRegulations', [AccountPolicy::class, 'refreshRegulations']);
     }
 }

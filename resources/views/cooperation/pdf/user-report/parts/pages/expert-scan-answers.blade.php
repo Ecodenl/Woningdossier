@@ -3,7 +3,7 @@
 {{--        @lang('pdf/user-report.pages.expert-scan-answers.title')--}}
 {{--    </h1>--}}
     <p>
-        @lang('pdf/user-report.pages.expert-scan-answers.text')
+        @lang('pdf/user-report.pages.expert-scan-answers.text.' . strtolower($userCooperation->country))
     </p>
 
     <div class="group">

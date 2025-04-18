@@ -59,7 +59,10 @@ return [
         ],
         'expert-scan-answers' => [
             'title' => 'Jouw uitgebreide Woonplan',
-            'text' => 'Op de volgende bladzijden zie je voor de maatregelen die in jouw Woonplan staan een samenvatting van de ingevoerde gegevens en de gedetailleerde uitkomst van de berekeningen. Meer informatie over de maatregelen kun je ook vinden op de website van Milieucentraal <a href="www.milieucentraal.nl" target="_blank" rel="nofollow">www.milieucentraal.nl</a>.',
+            'text' => [
+                'nl' => 'Op de volgende bladzijden zie je voor de maatregelen die in jouw Woonplan staan een samenvatting van de ingevoerde gegevens en de gedetailleerde uitkomst van de berekeningen. Meer informatie over de maatregelen kun je ook vinden op de website van Milieucentraal <a href="www.milieucentraal.nl" target="_blank" rel="nofollow">www.milieucentraal.nl</a>.',
+                'be' => 'Op de volgende bladzijden zie je voor de maatregelen die in jouw Woonplan staan een samenvatting van de ingevoerde gegevens en de gedetailleerde uitkomst van de berekeningen.',
+            ],
             'action-plan' => 'In deze bijlage vind je de gegevens van de volgende maatregelen',
         ],
         'small-measures' => [

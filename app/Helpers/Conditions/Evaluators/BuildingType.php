@@ -13,6 +13,9 @@ class BuildingType extends ShouldEvaluate
         $inputSource = $this->inputSource;
         $answers = $this->answers;
 
+        // This evaluator checks if the building's building type category has multiple building types.
+        // Value is unused. TODO: Convert $value to an int to make this reusable for the comparison if needed
+
         $key = md5(json_encode([null]));
 
         if (array_key_exists($key, $this->override)) {

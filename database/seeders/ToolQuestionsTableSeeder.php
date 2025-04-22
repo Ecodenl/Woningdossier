@@ -298,7 +298,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.build_year',
                 'short' => 'build-year',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year',
-                'options' => ['min' => 1000, 'max' => date('Y'), 'value' => 1930, 'step' => 1],
+                'options' => ['min' => 1000, 'max' => date('Y'), 'step' => 1],
             ],
             [
                 'data_type' => Caster::INT,

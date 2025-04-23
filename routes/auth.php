@@ -16,6 +16,13 @@ use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Cooperation\Auth\TwoFactorAuthenticatedSessionController;
 
+if (App::isLocal()) {
+    // When something goes wrong, it's best to just logout. We don't need this on any other environment.
+    Route::get('logout', function () {
+        \Illuminate\Support\Facades\Auth::logout();
+    });
+}
+
 // Fortify auth routes start
 Route::get('/register', [RegisteredUserController::class, 'index'])
     ->middleware(['guest:'.config('fortify.guard')])

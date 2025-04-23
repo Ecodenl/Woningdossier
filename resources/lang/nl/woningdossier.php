@@ -175,6 +175,7 @@ return [
                         'form' => [
                             'name' => 'Naam van de coöperatie *',
                             'slug' => 'Slug / subdomein *',
+                            'country' => "Land",
                             'cooperation_email' => 'Coöperatie contact e-mailadres',
                             'website_url' => 'Website URL',
                             'create' => 'Aanmaken',

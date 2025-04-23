@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\ApiImplementation;
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
 use App\Models\Cooperation;
@@ -109,7 +110,9 @@ class SuccessFullLoginListener
             ]),
         ]);
 
-        $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
+        if ($user->cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
+            $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
+        }
     }
 
     /**

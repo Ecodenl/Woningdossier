@@ -15,6 +15,7 @@ use App\Models\ToolCalculationResult;
 use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionType;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -5628,7 +5629,7 @@ class SubSteppablesTableSeeder extends Seeder
         return $this->getSubsidyQuestionConditions($conditions, $question, $value, $advisable);
     }
 
-    private function getSubsidyQuestionConditions(array $conditions, ?string $question, ?string $value, $advisable = null): array
+    private function getSubsidyQuestionConditions(array $conditions, ?string $question, ?string $value, ?Model $advisable = null): array
     {
         // This was designed so we can be lazy. There's currently no case where we have an OR case condition AND a
         // question/value lazy condition. If that DOES happen, this might require revisiting.
@@ -5642,17 +5643,27 @@ class SubSteppablesTableSeeder extends Seeder
 
         if (! is_null($advisable)) {
             $subsidyConditions = [
-                'column' => 'fn',
-                'operator' => 'MeasureHasSubsidy',
-                'value' => [
-                    'advisable_type' => get_class($advisable),
-                    'advisable_id' => $advisable->id,
+                // Some countries do not support the API, and thus will never have subsidies. However, if it's not
+                // supported, we STILL want people to be able to fill it in.
+                [
+                    'column' => 'fn',
+                    'operator' => 'SupportsLvBag',
+                    'value' => false,
+                ],
+                [
+                    'column' => 'fn',
+                    'operator' => 'MeasureHasSubsidy',
+                    'value' => [
+                        'advisable_type' => get_class($advisable),
+                        'advisable_id' => $advisable->id,
+                    ],
                 ],
             ];
 
             if (empty($conditions)) {
                 $conditions[0][] = $subsidyConditions;
             } else {
+                // Multiple OR statements; add conditions to each
                 foreach ($conditions as $index => $subConditions) {
                     $subConditions[] = $subsidyConditions;
                     $conditions[$index] = $subConditions;

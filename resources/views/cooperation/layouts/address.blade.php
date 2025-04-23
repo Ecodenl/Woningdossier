@@ -2,10 +2,14 @@
     $withLabels ??= false;
     // Any object that has the correct columns
     $defaults ??= new stdClass();
+
+    $supportsLvBag = $cooperation->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG);
 @endphp
 
 <div class="{{ $class ?? 'flex flex-wrap w-full' }}" @if(! empty($attr)) {!! $attr !!} @endif
-     x-data="checkAddress({'correct_address': '{{ route('api.get-address-data') }}'})">
+     x-data="checkAddress({
+        @if($supportsLvBag) 'correct_address': '{{ route('api.get-address-data', ['country' => $cooperation->country]) }}' @endif
+     }, @js($supportsLvBag))">
 
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
@@ -35,12 +39,12 @@
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
         'label' => $withLabels ? __('auth.register.form.house-number-extension') : '',
-        'labelAttr' => 'style="display: none;"',
+        'labelAttr' => $supportsLvBag ? 'style="display: none;"' : '',
         'class' => 'w-full -mt-5 lg:w-1/4 lg:pl-3',
         'inputName' => 'address.house_number_extension',
         'id' => 'extension',
     ])
-        <input class="form-input" type="text" name="address[extension]" style="display: none;"
+        <input class="form-input" type="text" name="address[extension]" @if($supportsLvBag) style="display: none;" @endif
                value="{{ old('address.extension', $defaults->extension ?? '') }}"
                placeholder="@lang('auth.register.form.house-number-extension')"
                x-bind="houseNumberExtensionField">

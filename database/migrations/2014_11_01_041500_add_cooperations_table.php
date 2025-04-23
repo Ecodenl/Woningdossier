@@ -17,6 +17,7 @@ class AddCooperationsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('slug');
+            $table->string('country')->default(\App\Enums\Country::COUNTRY_NL);
             $table->string('cooperation_email')->nullable();
             $table->string('website_url')->nullable();
             $table->string('econobis_wildcard')->nullable();

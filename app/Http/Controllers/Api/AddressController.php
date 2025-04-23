@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FillAddressRequest;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Services\AddressService;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,13 +22,19 @@ class AddressController extends Controller
         $postalCodeNormalized = strtolower($addressService->normalizeZipcode($postalCode, true));
         $postalCodeNoSpace = strtolower($addressService->normalizeZipcode($postalCode, false));
 
-        $count = $cooperation->buildings()->where(function (Builder $query) use ($postalCodeNormalized, $postalCodeNoSpace) {
+        $result = $cooperation->buildings()->where(function (Builder $query) use ($postalCodeNormalized, $postalCodeNoSpace) {
             $query->whereRaw('LOWER(postal_code) = ?', [$postalCodeNormalized])
                 ->orWhereRaw('LOWER(postal_code) = ?', [$postalCodeNoSpace]);
         })->where('number', $number)
             ->where('extension', $houseNumberExtension)
-            ->count();
+            ->select(['street', 'city'])
+            ->get();
 
-        return response()->json(compact('count'));
+        return response()->json([
+            'count' => $result->count(),
+            'addresses' => $result->map(function (Building $building) {
+                return "{$building->street}, {$building->city}";
+            })
+        ]);
     }
 }

@@ -292,7 +292,7 @@ class PdfReport extends NonHandleableJobAfterReset
         // save the pdf report
         Storage::disk('downloads')->put($this->fileStorage->filename, $pdf);
 
-        $this->fileStorage->isProcessed();
+        $this->fileStorage->finishProcess();
     }
 
     public function failed(Throwable $exception)

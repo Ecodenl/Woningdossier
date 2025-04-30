@@ -104,7 +104,7 @@
 
         <div class="w-full"></div>
 
-        <div x-data="{ icon: $wire.entangle('content.extra.icon') }" class="flex w-full flex-wrap">
+        <div class="flex w-full flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', [
                 'withInputSource' => false,
                 'label' => __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.icon.label'),
@@ -112,22 +112,20 @@
                 'class' => 'w-full lg:w-1/2 lg:pr-3',
                 'inputName' => "content.extra.icon",
             ])
-                @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
+                @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true, 'icon' => 'icon-detached-house'])
                     <select class="form-input hidden" wire:model.live="content.extra.icon"
-                            id="icon" x-model="icon">
+                            id="icon">
                         @foreach(File::allFiles(public_path('icons')) as $file)
                             @php
                                 $iconName = "icon-" . str_replace(".{$file->getExtension()}", '', $file->getBasename());
                             @endphp
-                            <option value="{{ $iconName }}">
+                            <option value="{{ $iconName }}" data-icon="{{ $iconName }}">
                                 {{ $iconName }}
                             </option>
                         @endforeach
                     </select>
                 @endcomponent
             @endcomponent
-
-            <i id="icon-preview" class="icon-lg lg:mt-10 lg:ml-3" x-bind:class="icon"></i>
         </div>
 
         @component('cooperation.frontend.layouts.components.form-group', [

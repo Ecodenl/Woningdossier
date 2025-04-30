@@ -160,7 +160,7 @@ class FileStorage extends Model
     /**
      * Method that's used when the file is done processing.
      */
-    public function isProcessed()
+    public function finishProcess(): void
     {
         $availableUntil = $this->created_at->addDays($this->fileType->duration ?? 7);
         $this->available_until = $availableUntil;

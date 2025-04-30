@@ -131,10 +131,23 @@ export default (initiallyOpen = false, withSearch = false) => ({
                 // Clear any options there might be left
                 optionDropdown.children.remove();
                 const options = this.select.options;
+                let hasIcons = false;
                 // Loop options to build
                 // Note: we cannot use forEach, as options is a HTML collection, which is not an array
                 for (let i = 0; i < options.length; i++) {
+                    if (! hasIcons && options[i].hasAttribute('data-icon')) {
+                        hasIcons = true;
+                    }
                     this.buildOption(optionDropdown, options[i]);
+                }
+
+                const defaultIcon = this.$refs['select-icon'].dataset.icon;
+                // Data either all has icons or none. If we have chosen a default icon, that's fine too, but otherwise
+                // remove the select-icon. If it's multiple, the icons remain in the options.
+                if ((! hasIcons && ! defaultIcon) || this.multiple) {
+                    this.$refs['select-icon'].remove();
+                } else if (defaultIcon) {
+                    this.$refs['select-icon'].setAttribute('class', 'select-icon ' + defaultIcon);
                 }
 
                 // Hide the original select
@@ -316,7 +329,16 @@ export default (initiallyOpen = false, withSearch = false) => ({
             } else {
                 // Timeout, otherwise setting search to `null` conflicts and the input becomes empty.
                 setTimeout(() => {
-                    this.$refs['select-input'].value = this.findOptionByValue(this.values)?.textContent ?? this.values;
+                    const option = this.findOptionByValue(this.values);
+
+                    const text = option?.textContent ?? this.values;
+
+                    if (option && option.hasAttribute("data-icon")) {
+                        // Just set attribute, easier than keeping track of classes
+                        this.$refs['select-icon'].setAttribute('class', 'select-icon ' + option.getAttribute('data-icon'));
+                    }
+
+                    this.$refs['select-input'].value = text;
                 });
             }
         }
@@ -342,6 +364,12 @@ export default (initiallyOpen = false, withSearch = false) => ({
 
         // Build a new alpine option
         let newOption = document.createElement('span');
+        // Add icon to element if existing
+        if (option.hasAttribute('data-icon')) {
+            const icon = document.createElement('i');
+            icon.classList.add('icon-sm', option.dataset.icon, 'mr-2', 'static');
+            newOption.appendChild(icon);
+        }
         newOption.appendChild(document.createTextNode(text));
         newOption.setAttribute("data-value", value);
 

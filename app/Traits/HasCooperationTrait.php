@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\Cooperation;
 use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\App;
@@ -20,8 +21,10 @@ trait HasCooperationTrait
         }
     }
 
-    public function scopeForMyCooperation(Builder $builder, $cooperationId): Builder
+    public function scopeForMyCooperation(Builder $builder, Cooperation|int $cooperation): Builder
     {
+        $cooperationId = $cooperation instanceof Cooperation ? $cooperation->id : $cooperation;
+
         return $builder
             ->withoutGlobalScope(CooperationScope::class)
             ->where('cooperation_id', $cooperationId);

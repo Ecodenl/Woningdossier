@@ -93,7 +93,7 @@
         @php
             $old = old('measure_applications.configurations.icon', $measureApplication->configurations['icon'] ?? 'icon-account-circle');
         @endphp
-        <div x-data="{ icon: @js($old) }" class="flex w-full flex-wrap">
+        <div class="flex w-full flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', [
                 'withInputSource' => false,
                 'label' => __('cooperation/admin/super-admin/measure-applications.form.icon.label'),
@@ -103,7 +103,7 @@
             ])
                 @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
                     <select class="form-input hidden" name="measure_applications[configurations][icon]"
-                            id="icon" x-model="icon">
+                            id="icon">
                         @foreach(File::allFiles(public_path('icons')) as $file)
                             @php
                                 $iconName = "icon-" . str_replace(".{$file->getExtension()}", '', $file->getBasename());
@@ -115,8 +115,6 @@
                     </select>
                 @endcomponent
             @endcomponent
-
-            <i id="icon-preview" class="icon-lg lg:mt-10 lg:ml-3" x-bind:class="icon"></i>
         </div>
 
         <div class="w-full mt-5">

@@ -82,7 +82,7 @@ class GenerateExampleBuildingCsv implements ShouldQueue
 
         Excel::store(new CsvExport($rows), $this->fileStorage->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);
 
-        $this->fileStorage->isProcessed();
+        $this->fileStorage->finishProcess();
     }
 
     public function failed(Throwable $exception)

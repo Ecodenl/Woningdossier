@@ -149,7 +149,7 @@ class GenerateToolReport implements ShouldQueue
                 $rows = [];
             });
 
-        $this->fileStorage->isProcessed();
+        $this->fileStorage->finishProcess();
     }
 
     public function failed(Throwable $exception)

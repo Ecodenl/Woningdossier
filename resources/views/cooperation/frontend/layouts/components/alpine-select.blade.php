@@ -11,9 +11,7 @@
                 {!! $prepend !!}
             </div>
         @endif
-        @if(! empty(($icon ?? null)))
-            <i class="select-icon {{$icon}}"></i>
-        @endif
+        <i class="select-icon" data-icon="{{$icon ?? ''}}" x-ref="select-icon"></i>
         <input class="form-input @if(! empty(($append ?? null))) with-append @endif" x-ref="select-input"
                x-model="search" x-on:click="toggle()" x-bind:readonly="! withSearch" x-on:input="open = true">
         @if(! empty(($append ?? null)))

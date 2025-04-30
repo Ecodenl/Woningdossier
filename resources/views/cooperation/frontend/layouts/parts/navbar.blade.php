@@ -48,6 +48,7 @@
                     'label' => __('cooperation/frontend/layouts.navbar.input-source'),
                     'class' => 'in-text',
                 ])
+                    {{-- TODO: Is this still relevant / useful? --}}
                     @foreach($inputSources as $inputSource)
                         @if(\App\Models\BuildingFeature::withoutGlobalScope(\App\Scopes\GetValueScope::class)->where('input_source_id', $inputSource->id)->first() instanceof \App\Models\BuildingFeature)
                             <li>

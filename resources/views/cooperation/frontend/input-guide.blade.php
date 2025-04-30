@@ -252,15 +252,18 @@
                     {!! $html !!}
                 @endslot
                 @slot('modalBodySlot')
-                    <p class="font-bold text-red">
-                        Append .icon to component:
+                    <p class="font-bold">
+                        Placeholder icon: append icon to component:
                         <br>
-                        @@component('cooperation.frontend.layouts.components.alpine-select', ['icon' => 'icon-detached-house'])
+                        <span class="text-red">@@component('cooperation.frontend.layouts.components.alpine-select', ['icon' => 'icon-detached-house'])</span>
+                        <br>
+                        For dynamic icons, give each option a `data-icon` attribute
                     </p>
                 @endslot
                 @component('cooperation.frontend.layouts.components.alpine-select', ['icon' => 'icon-detached-house'])
                     <select id="dropdown-icon" class="form-input" name="alpine[dropdown_icon]">
                         <option value="" selected disabled>Placeholder icon</option>
+                        <option data-icon="icon-heat-pump">Heat pump</option>
                     </select>
                 @endcomponent
             @endcomponent

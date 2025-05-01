@@ -30,23 +30,25 @@
                placeholder="@lang('cooperation/admin/super-admin/cooperations.form.slug.placeholder')">
     @endcomponent
 
-    <div class="form-group {{ $errors->has('cooperationToEditFormData.country') ? ' has-error' : '' }}">
-        <label for="country">@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.country')</label>
-        <select id="country" class="form-control" wire:model="cooperationToEditFormData.country" required
-                @if($cooperationToEdit->exists) disabled @endif>
-            @foreach(\App\Enums\Country::cases() as $country)
-                <option value="{{ $country->value }}">
-                    {{ $country->getTranslation() }}
-                </option>
-            @endforeach
-        </select>
-
-        @if($errors->has('cooperationToEditFormData.country'))
-            <span class="help-block">
-                <strong>{{ $errors->first('cooperationToEditFormData.country') }}</strong>
-            </span>
-        @endif
-    </div>
+    @component('cooperation.frontend.layouts.components.form-group', [
+        'withInputSource' => false,
+        'label' => __('cooperation/admin/super-admin/cooperations.form.country.label'),
+        'id' => "country",
+        'class' => 'w-full required',
+        'inputName' => "cooperationToEditFormData.country",
+        'inputGroupClass' => 'lg:w-1/2'
+    ])
+        @component('cooperation.frontend.layouts.components.alpine-select')
+            <select id="country" class="form-control" wire:model="cooperationToEditFormData.country" required
+                    @if($cooperationToEdit->exists) disabled @endif>
+                @foreach(\App\Enums\Country::cases() as $country)
+                    <option value="{{ $country->value }}">
+                        {{ $country->getTranslation() }}
+                    </option>
+                @endforeach
+            </select>
+        @endcomponent
+    @endcomponent
 
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
@@ -101,9 +103,9 @@
                 $placeholder = __('cooperation/admin/super-admin/cooperations.form.econobis-api-key.label-replace');
             }
         @endphp
-        <input  id="econobis-api-key" wire:model="cooperationToEditFormData.econobis_api_key"
-                type="text" class="form-input" @if($clearApiKey) disabled @endif
-                placeholder="{{$placeholder}}">
+        <input id="econobis-api-key" wire:model="cooperationToEditFormData.econobis_api_key"
+               type="text" class="form-input" @if($clearApiKey) disabled @endif
+               placeholder="{{$placeholder}}">
     @endcomponent
 
     @if($hasApiKey)

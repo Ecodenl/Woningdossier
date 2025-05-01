@@ -40,6 +40,9 @@ return [
             'label' => 'Slug / subdomein',
             'placeholder' => 'Slug / subdomein',
         ],
+        'country' => [
+            'label' => 'Land',
+        ],
         'cooperation-email' => [
             'label' => 'Coöperatie contact e-mailadres',
             'placeholder' => 'Coöperatie contact e-mailadres',

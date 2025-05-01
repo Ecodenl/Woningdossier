@@ -6,6 +6,7 @@ use App\Listeners\EconobisEventSubscriber;
 use App\Listeners\QueueEventSubscriber;
 use App\Listeners\UserEventSubscriber;
 use App\Models\Cooperation;
+use App\Policies\AccountPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
@@ -134,6 +135,8 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::define('send-user-information-to-econobis', [UserPolicy::class, 'sendUserInformationToEconobis']);
         Gate::define('editAny', [RolePolicy::class, 'editAny']);
+
+        Gate::define('refreshRegulations', [AccountPolicy::class, 'refreshRegulations']);
     }
 
     public function attachSubscribers(): void

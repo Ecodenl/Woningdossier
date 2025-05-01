@@ -8,14 +8,14 @@ trait EnumConcern
 {
     public static function values(): Collection
     {
-        return collect(self::cases())->pluck('value','name');
+        return collect(self::cases())->pluck('value', 'name');
     }
 
     public static function fill(iterable $values): array
     {
         $result = [];
 
-        foreach(self::cases() as $case) {
+        foreach (self::cases() as $case) {
             $result[$case->value] = $values[$case->value] ?? [];
         }
 

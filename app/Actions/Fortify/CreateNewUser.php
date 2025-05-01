@@ -46,6 +46,7 @@ class CreateNewUser implements CreatesNewUsers
 
     private function rules(): array
     {
+        /** @var \App\Models\Cooperation $cooperation */
         $cooperation = $this->request->route('cooperation');
 
         $rules = array_merge([
@@ -62,9 +63,6 @@ class CreateNewUser implements CreatesNewUsers
             'phone_number' => ['nullable', new PhoneNumber($cooperation->country)],
             'allow_access' => 'required|accepted',
         ], (new AddressFormRequest())->setCountry($cooperation->country)->rules());
-
-        /** @var \App\Models\Cooperation $cooperation */
-        $cooperation = $this->request->route('cooperation');
 
         // Try to get the account from the given email.
         $account = Account::where('email', $this->get('email'))->first();

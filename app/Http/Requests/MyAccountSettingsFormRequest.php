@@ -21,10 +21,13 @@ class MyAccountSettingsFormRequest extends FormRequest
      */
     public function rules(): array
     {
+        /** @var \App\Models\Cooperation $cooperation */
+        $cooperation = $this->route('cooperation');
+
         return array_merge([
             'user.first_name' => 'required|string|max:255',
             'user.last_name' => 'required|string|max:255',
             'user.phone_number' => ['nullable', new PhoneNumber()],
-        ], (new AddressFormRequest())->setCountry($this->route('cooperation')->country)->rules());
+        ], (new AddressFormRequest())->setCountry($cooperation->country)->rules());
     }
 }

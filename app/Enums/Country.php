@@ -13,11 +13,7 @@ enum Country: string
 
     public function supportsApi(ApiImplementation $api): bool
     {
-        if ($api === ApiImplementation::LV_BAG || $api === ApiImplementation::EP_ONLINE) {
-            return $this === self::NL;
-        }
-
-        return false;
+        return in_array($this, $api->getSupport());
     }
 
     public function getTranslation(): string

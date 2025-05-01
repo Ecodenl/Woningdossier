@@ -50,14 +50,13 @@ class KeyFigures implements KeyFiguresInterface
         450 => 450,
     ];
 
-    /**
-     * @param $zipcode
-     */
-    public static function getLocationFactor($zipcode): ?PvPanelLocationFactor
+    public static function getLocationFactor(string $zipcode, string $country): ?PvPanelLocationFactor
     {
         $pc2 = substr($zipcode, 0, 2);
 
-        return PvPanelLocationFactor::where('pc2', $pc2)->first();
+        return PvPanelLocationFactor::where('pc2', $pc2)
+            ->where('country', $country)
+            ->first();
     }
 
     /**

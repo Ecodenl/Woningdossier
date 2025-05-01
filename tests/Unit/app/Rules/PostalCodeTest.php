@@ -17,6 +17,14 @@ final class PostalCodeTest extends TestCase
             ['nl', '1000', false],
             ['nl', '1000 A', false],
             ['nl', '100 AA', false],
+            ['be', '1000 AA', false],
+            ['be', '1000AA', false],
+            ['be', 'AA 1000', false],
+            ['be', '1000', true],
+            ['be', '9000', true],
+            ['be', '0000', false],
+            ['be', '1000 A', false],
+            ['be', '100 AA', false],
         ];
     }
 

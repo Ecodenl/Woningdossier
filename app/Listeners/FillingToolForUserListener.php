@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\ApiImplementation;
 use App\Events\FillingToolForUserEvent;
 use App\Helpers\HoomdossierSession;
 use App\Models\BuildingFeature;
@@ -50,6 +51,8 @@ class FillingToolForUserListener
         HoomdossierSession::setBuilding($building);
         HoomdossierSession::setInputSourceValue($inputSourceValue);
 
-        $this->buildingService->forBuilding($building)->forInputSource($inputSourceValue)->performMunicipalityCheck();
+        if ($building->user->cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
+            $this->buildingService->forBuilding($building)->forInputSource($inputSourceValue)->performMunicipalityCheck();
+        }
     }
 }

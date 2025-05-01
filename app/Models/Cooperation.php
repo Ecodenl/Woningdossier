@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Country;
 use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasMedia;
@@ -72,13 +73,12 @@ class Cooperation extends Model implements MediableInterface
         HasMedia;
 
     protected $fillable = [
-        'name', 'slug', 'cooperation_email', 'website_url', 'econobis_wildcard', 'econobis_api_key',
+        'name', 'slug', 'country', 'cooperation_email', 'website_url', 'econobis_wildcard', 'econobis_api_key',
     ];
 
     protected $hidden = [
         'econobis_api_key',
     ];
-
 
     public function getRouteKeyName()
     {
@@ -86,6 +86,12 @@ class Cooperation extends Model implements MediableInterface
     }
 
     // Model methods
+    public function getCountry(): Country
+    {
+        //return Country::from($this->country);
+        return new Country($this->country);
+    }
+
     /**
      * Return the coaches from the current cooperation.
      */

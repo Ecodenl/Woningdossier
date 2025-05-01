@@ -36,7 +36,7 @@ class UserFormRequest extends FormRequest
             'users.extra.contact_id' => ['nullable', 'numeric', 'integer', 'gt:0'],
             'roles' => 'required|exists:roles,id', // TODO: This doesn't evaluate if the user may assign the role.
             'coach_id' => ['nullable', Rule::exists('users', 'id')],
-        ], (new AddressFormRequest())->rules());
+        ], (new AddressFormRequest())->setCountry($cooperationToCheckFor->country)->rules());
 
         // try to get the account
         $account = Account::where('email', $this->input('accounts.email'))->first();

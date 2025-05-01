@@ -46,16 +46,19 @@ class RegisterFormRequest extends ApiRequest
      */
     public function rules(): array
     {
+        $country = $this->cooperation->country;
+
         $rules = [
             'email' => 'required|string|email|max:255|unique:accounts',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'postal_code' => ['required', new PostalCode('nl')],
-            'number' => ['required', 'integer', new HouseNumber('nl')],
-            'house_number_extension' => [new HouseNumberExtension('nl')],
+            'postal_code' => ['required', new PostalCode($country)],
+            'number' => ['required', 'integer', new HouseNumber($country)],
+            // TODO: API behaviour is apparently different from the main application....
+            'house_number_extension' => ['nullable', 'string', new HouseNumberExtension($country)],
             'street' => 'required|string|max:255',
             'city' => 'required|string|max:255',
-            'phone_number' => ['nullable', new PhoneNumber('nl')],
+            'phone_number' => ['nullable', new PhoneNumber($country)],
             'extra.contact_id' => ['nullable', 'numeric', 'integer', 'gt:0'],
 
             'roles' => ['nullable', 'array'],

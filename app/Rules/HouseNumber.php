@@ -9,6 +9,7 @@ class HouseNumber extends LocaleBasedRule implements ValidationRule
 {
     protected $countryRegexes = [
         'nl' => '/^([1-9]{1}((\s?-\s?[A-Za-z0-9]+)|[A-Za-z0-9 ]*))$/',
+        'be' => '/^([1-9]{1}((\s?-\s?[A-Za-z0-9]+)|[A-Za-z0-9 ]*))$/',
     ];
 
     /**

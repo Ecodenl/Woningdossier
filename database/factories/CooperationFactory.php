@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CooperationFactory extends Factory
@@ -15,6 +16,7 @@ class CooperationFactory extends Factory
         return [
             'name' => $name,
             'slug' => \Illuminate\Support\Str::slug($name),
+            'country' => Country::COUNTRY_NL,
             'website_url' => $this->faker->url(),
             'cooperation_email' => $this->faker->email(),
         ];

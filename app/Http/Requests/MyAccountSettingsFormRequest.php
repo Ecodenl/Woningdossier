@@ -25,6 +25,6 @@ class MyAccountSettingsFormRequest extends FormRequest
             'user.first_name' => 'required|string|max:255',
             'user.last_name' => 'required|string|max:255',
             'user.phone_number' => ['nullable', new PhoneNumber()],
-        ], (new AddressFormRequest())->rules());
+        ], (new AddressFormRequest())->setCountry($this->route('cooperation')->country)->rules());
     }
 }

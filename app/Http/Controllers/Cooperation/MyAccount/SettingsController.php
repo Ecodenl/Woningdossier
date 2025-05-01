@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
-use Illuminate\Http\RedirectResponse;
+use App\Enums\ApiImplementation;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -15,6 +15,7 @@ use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Services\DossierSettingsService;
 use App\Services\UserService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -26,6 +27,7 @@ class SettingsController extends Controller
     public function update(MyAccountSettingsFormRequest $request): RedirectResponse
     {
         $user = Hoomdossier::user();
+        $cooperation = $user->cooperation;
         $building = HoomdossierSession::getBuilding(true);
 
         $data = $request->validated();
@@ -38,9 +40,11 @@ class SettingsController extends Controller
 
         $currentInputSource = HoomdossierSession::getInputSource(true);
 
-        CheckBuildingAddress::dispatchSync($building, $currentInputSource);
-        if (! $building->municipality()->first() instanceof Municipality) {
-            CheckBuildingAddress::dispatch($building, $currentInputSource);
+        if ($cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
+            CheckBuildingAddress::dispatchSync($building, $currentInputSource);
+            if (! $building->municipality()->first() instanceof Municipality) {
+                CheckBuildingAddress::dispatch($building, $currentInputSource);
+            }
         }
 
         return redirect()->route('cooperation.my-account.index')

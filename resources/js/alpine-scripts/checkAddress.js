@@ -1,5 +1,5 @@
-export default (checks) => ({
-    bagAvailable: true,
+export default (checks, bagAvailable = true) => ({
+    bagAvailable: bagAvailable,
     showPostalCodeError: false,
     showDuplicateError: false,
     checks: checks,
@@ -189,7 +189,10 @@ export default (checks) => ({
         if (url instanceof URL) {
             fetchRequest(url).then((response) => response.json()).then((response) => {
                 this.showDuplicateError = response.count > 0;
-                this.$dispatch('duplicates-checked', {'showDuplicateError': this.showDuplicateError});
+                this.$dispatch('duplicates-checked', {
+                    'showDuplicateError': this.showDuplicateError,
+                    'addresses': request.response.addresses
+                });
             });
         }
     },

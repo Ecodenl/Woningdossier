@@ -13,6 +13,8 @@ final class HouseNumberTest extends TestCase
         return [
             ['nl', '1', true],
             ['nl', '-1', false],
+            ['be', '1', true],
+            ['be', '-1', false],
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\ApiImplementation;
 use App\Events\ObservingToolForUserEvent;
 use App\Helpers\HoomdossierSession;
 use App\Services\Models\BuildingService;
@@ -40,6 +41,8 @@ class ObservingToolForUserListener
         // so the user isn't able to save anything
         HoomdossierSession::setIsObserving(true);
 
-        $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
+        if ($building->user->cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
+            $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
+        }
     }
 }

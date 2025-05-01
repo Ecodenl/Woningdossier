@@ -3,14 +3,27 @@
 ])
 
 @section('content')
-    @component('cooperation.layouts.components.alert', [
-        'color' => 'blue-900',
-        'dismissible' => false,
-        'display' => false,
-        'attr' => 'style="display: none;" x-on:duplicates-checked.window="$el.style.display = $event.detail.showDuplicateError ? \'\' : \'none\'"',
-    ])
-        @lang('auth.register.form.duplicate-address')
-    @endcomponent
+    @php
+        $cooperationToCheck = isset($cooperationToManage) && $cooperationToManage instanceof \App\Models\Cooperation
+            ? $cooperationToManage : $cooperation;
+        $country = strtolower($cooperationToCheck->country);
+        $supportsLvBag = $cooperationToCheck->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG);
+    @endphp
+    <div x-data="{duplicateData: []}">
+        @component('cooperation.layouts.components.alert', [
+            'color' => 'blue-900',
+            'dismissible' => false,
+            'display' => false,
+            'attr' => 'style="display: none;" x-on:duplicates-checked.window="$el.style.display = $event.detail.showDuplicateError ? \'\' : \'none\'; ' . ($supportsLvBag ? '"' : 'duplicateData = $event.detail.addresses || [];"'),
+        ])
+            @lang("auth.register.form.duplicate-address.{$country}")
+            <ul x-show="duplicateData.length > 0">
+                <template x-for="data in duplicateData">
+                    <li x-text="data"></li>
+                </template>
+            </ul>
+        @endcomponent
+    </div>
 
     <div class="flex w-full xl:w-2/3"
          x-data="register('{{route('cooperation.check-existing-email', ['cooperation' => $cooperation, 'forCooperation' => $cooperationToManage ?? $cooperation])}}')">

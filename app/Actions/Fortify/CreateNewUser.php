@@ -46,6 +46,8 @@ class CreateNewUser implements CreatesNewUsers
 
     private function rules(): array
     {
+        $cooperation = $this->request->route('cooperation');
+
         $rules = array_merge([
             'email' => [
                 'required',
@@ -57,9 +59,9 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'phone_number' => ['nullable', new PhoneNumber('nl')],
+            'phone_number' => ['nullable', new PhoneNumber($cooperation->country)],
             'allow_access' => 'required|accepted',
-        ], (new AddressFormRequest())->rules());
+        ], (new AddressFormRequest())->setCountry($cooperation->country)->rules());
 
         /** @var \App\Models\Cooperation $cooperation */
         $cooperation = $this->request->route('cooperation');

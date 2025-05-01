@@ -10,6 +10,7 @@ class HouseNumberExtension extends LocaleBasedRule implements ValidationRule
     protected $countryRegexes = [
         // This regex supports alphanumeric keys up to 5 characters (including spaces and forward slashes), and the word "beneden"
         'nl' => '/^([a-zA-Z0-9 \/]{0,5}|beneden)$/',
+        'be' => '/^([a-zA-Z0-9 \/]{0,5}|beneden)$/', // TODO: Duplicate for now...
     ];
 
     /**

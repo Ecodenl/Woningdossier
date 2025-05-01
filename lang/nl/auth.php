@@ -57,7 +57,10 @@ return [
 
             'possible-wrong-email' => 'Het lijkt er op dat er een fout in het e-mailadres zit, weet je zeker dat het opgegeven e-mailadres juist is ?',
             'possible-wrong-postal-code' => 'Het opgegeven adres hebben wij niet herkend. Controleer uw postcode en huisnummer. Bij twijfel kunt u contact opnemen met uw cooperatie.',
-            'duplicate-address' => 'Er bestaat al een gebruiker met dit adres (voor deze cooperatie). Weet u zeker dat u een nieuwe gebruiker wilt aanmaken?'
+            'duplicate-address' => [
+                'nl' => 'Er bestaat al een gebruiker met dit adres (voor deze cooperatie). Weet u zeker dat u een nieuwe gebruiker wilt aanmaken?',
+                'be' => 'Er bestaan al een of meerdere gebruikers met deze postcode en huisnummer (voor deze cooperatie).  Weet u zeker dat u een nieuwe gebruiker wilt aanmaken? Controleer de straat en stad:',
+            ],
         ],
         'validation' => [
             'allow_access' => 'U moet toestemming geven om het Hoomdossier te gebruiken.',

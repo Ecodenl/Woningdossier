@@ -2,8 +2,7 @@
 
 namespace App\Listeners;
 
-use Illuminate\Auth\Events\Login;
-use Illuminate\Http\RedirectResponse;
+use App\Enums\ApiImplementation;
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
 use App\Models\InputSource;
@@ -11,6 +10,8 @@ use App\Models\Log;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Models\BuildingService;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Http\RedirectResponse;
 
 class SuccessFullLoginListener
 {
@@ -71,7 +72,9 @@ class SuccessFullLoginListener
             ]),
         ]);
 
-        $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
+        if ($user->cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
+            $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
+        }
         return null;
     }
 }

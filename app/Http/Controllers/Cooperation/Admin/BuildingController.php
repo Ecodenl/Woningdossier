@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Admin;
 
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use App\Enums\ApiImplementation;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
@@ -106,9 +107,11 @@ class BuildingController extends Controller
 
         $inputSource = $buildingFeature->inputSource ?? InputSource::resident();
 
-        CheckBuildingAddress::dispatchSync($building, $inputSource);
-        if (! $building->municipality()->first() instanceof Municipality) {
-            CheckBuildingAddress::dispatch($building, $inputSource);
+        if ($cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
+            CheckBuildingAddress::dispatchSync($building, $inputSource);
+            if (! $building->municipality()->first() instanceof Municipality) {
+                CheckBuildingAddress::dispatch($building, $inputSource);
+            }
         }
 
         $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';

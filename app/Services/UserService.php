@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\ApiImplementation;
 use App\Events\UserDeleted;
 use App\Events\UserResetHisBuilding;
 use App\Jobs\AttachEnergyLabel;
@@ -115,6 +116,7 @@ class UserService
         Log::debug(__METHOD__ . " " . $this->user->id . " for input source " . $inputSource->short);
         // only remove the example building id from the building
         $user = $this->user;
+        $cooperation = $user->cooperation;
         $building = $this->user->building;
         $building->buildingFeatures()->forInputSource($inputSource)->update([
             'example_building_id' => null,
@@ -168,29 +170,33 @@ class UserService
         CompletedQuestionnaire::forMe($user)->forInputSource($inputSource)->delete();
 
         if (! in_array($inputSource->short, [InputSource::MASTER_SHORT])) {
-            // re-query the bag
-            $addressData = app(BagService::class)->addressExpanded(
-                $building->postal_code,
-                $building->number,
-                $building->extension
-            )->prepareForBuilding();
+            if ($cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
+                // re-query the bag
+                $addressData = app(BagService::class)->addressExpanded(
+                    $building->postal_code,
+                    $building->number,
+                    $building->extension
+                )->prepareForBuilding();
 
-            if (! empty(($addressData['bag_addressid'] ?? null))) {
-                $building->update(['bag_addressid' => $addressData['bag_addressid']]);
+                if (! empty(($addressData['bag_addressid'] ?? null))) {
+                    $building->update(['bag_addressid' => $addressData['bag_addressid']]);
+                }
+
+                $features = new BuildingFeature([
+                    'surface' => $addressData['surface'] ?? null,
+                    'build_year' => $addressData['build_year'] ?? null,
+                    'input_source_id' => $inputSource->id,
+                ]);
+                $features->building()->associate(
+                    $building
+                )->save();
             }
-
-            $features = new BuildingFeature([
-                'surface' => $addressData['surface'] ?? null,
-                'build_year' => $addressData['build_year'] ?? null,
-                'input_source_id' => $inputSource->id,
-            ]);
-            $features->building()->associate(
-                $building
-            )->save();
 
             app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
 
-            AttachEnergyLabel::dispatch($building);
+            if ($cooperation->getCountry()->supportsApi(ApiImplementation::EP_ONLINE)) {
+                AttachEnergyLabel::dispatch($building);
+            }
         }
         UserResetHisBuilding::dispatch($building);
     }
@@ -255,13 +261,17 @@ class UserService
         // Fallback to resident in case of illogical situation.
         $inputSource = $rolesWithSources->isNotEmpty() ? $rolesWithSources->first()->inputSource : InputSource::resident();
 
-        CheckBuildingAddress::dispatchSync($building, $inputSource);
-        // check if the connection was successful, if not dispatch it on the regular queue so it retries.
-        if (! $building->municipality()->first() instanceof Municipality) {
-            CheckBuildingAddress::dispatch($building, $inputSource);
+        if ($cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
+            CheckBuildingAddress::dispatchSync($building, $inputSource);
+            // check if the connection was successful, if not dispatch it on the regular queue so it retries.
+            if (! $building->municipality()->first() instanceof Municipality) {
+                CheckBuildingAddress::dispatch($building, $inputSource);
+            }
         }
 
-        AttachEnergyLabel::dispatch($building);
+        if ($cooperation->getCountry()->supportsApi(ApiImplementation::EP_ONLINE)) {
+            AttachEnergyLabel::dispatch($building);
+        }
 
         app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
         // Attach cooperation.

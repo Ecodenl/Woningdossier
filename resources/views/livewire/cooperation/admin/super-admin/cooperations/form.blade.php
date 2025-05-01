@@ -35,8 +35,8 @@
         <select id="country" class="form-control" wire:model="cooperationToEditFormData.country" required
                 @if($cooperationToEdit->exists) disabled @endif>
             @foreach(\App\Enums\Country::cases() as $country)
-                <option value="{{ $country }}">
-                    {{ \App\Enums\Country::getTranslation($country) }}
+                <option value="{{ $country->value }}">
+                    {{ $country->getTranslation() }}
                 </option>
             @endforeach
         </select>

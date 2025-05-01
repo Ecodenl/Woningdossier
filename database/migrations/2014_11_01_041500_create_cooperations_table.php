@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Necessary due to renaming! If deployed, remove wrapper again
+        // Necessary due to renaming! After deployment, remove wrapper again
         if (! Schema::hasTable('cooperations')) {
             Schema::create('cooperations', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');
                 $table->string('slug');
+                $table->string('country')->default(\App\Enums\Country::NL->value);
                 $table->string('cooperation_email')->nullable();
                 $table->string('website_url')->nullable();
                 $table->string('econobis_wildcard')->nullable();

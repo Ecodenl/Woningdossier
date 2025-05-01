@@ -2,10 +2,13 @@
 
 namespace App\Enums;
 
-// TODO: Convert to ENUM
-class ApiImplementation
+use App\Traits\Enums\EnumConcern;
+
+enum ApiImplementation: string
 {
+    use EnumConcern;
+
     // Cased to match services namespace
-    const LV_BAG = 'Lvbag';
-    const EP_ONLINE = 'EpOnline';
+    case LV_BAG = 'Lvbag';
+    case EP_ONLINE = 'EpOnline';
 }

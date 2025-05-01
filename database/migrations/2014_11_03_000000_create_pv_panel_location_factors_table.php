@@ -15,7 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('pc2')->unsigned();
             $table->string('location');
-            $table->string('country')->default(\App\Enums\Country::COUNTRY_NL);
+            $table->string('country')->default(\App\Enums\Country::NL->value);
             $table->decimal('factor', 3, 2);
             $table->timestamps();
         });

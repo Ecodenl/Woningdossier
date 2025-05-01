@@ -32,7 +32,7 @@ final class RegisterControllerTest extends TestCase
         parent::setUp();
 
         $this->formData = [
-            Country::COUNTRY_NL => [
+            Country::NL->value => [
                 "email" => $this->faker->email(),
                 "first_name" => "Demo",
                 "last_name" => "Example",
@@ -46,7 +46,7 @@ final class RegisterControllerTest extends TestCase
                 "city" => "Zerocity",
                 "phone_number" => '+31611223344',
             ],
-            Country::COUNTRY_BE => [
+            Country::BE->value => [
                 "email" => $this->faker->email(),
                 "first_name" => "Demo",
                 "last_name" => "Example",
@@ -62,7 +62,7 @@ final class RegisterControllerTest extends TestCase
             ],
         ];
         // Only create mock for NL, since BE doesn't support it and will only trigger on NL data.
-        $this->mockLvbagClientAdresUitgebreid($this->formData[Country::COUNTRY_NL])->createLvbagMock();
+        $this->mockLvbagClientAdresUitgebreid($this->formData[Country::NL->value])->createLvbagMock();
     }
 
     public function test_valid_data_registers_new_account(): void

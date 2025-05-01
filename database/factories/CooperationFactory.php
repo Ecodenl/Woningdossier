@@ -16,7 +16,7 @@ class CooperationFactory extends Factory
         return [
             'name' => $name,
             'slug' => \Illuminate\Support\Str::slug($name),
-            'country' => Country::COUNTRY_NL,
+            'country' => Country::NL,
             'website_url' => $this->faker->url(),
             'cooperation_email' => $this->faker->email(),
         ];

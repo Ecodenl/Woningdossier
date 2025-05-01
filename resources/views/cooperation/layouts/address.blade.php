@@ -5,6 +5,7 @@
     $checks ??= [
         'correct_address',
     ];
+    /** @var \App\Models\Cooperation $cooperation */
     $supportsLvBag = $cooperation->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG);
 @endphp
 

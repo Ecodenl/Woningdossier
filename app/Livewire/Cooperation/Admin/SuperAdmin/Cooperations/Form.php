@@ -81,7 +81,7 @@ class Form extends Component
 
         // Ensure set with default
         if (empty($this->cooperationToEditFormData['country'])) {
-            $this->cooperationToEditFormData['country'] = Country::NL;
+            $this->cooperationToEditFormData['country'] = Country::NL->value;
         }
     }
 
@@ -119,7 +119,7 @@ class Form extends Component
 
         // We don't want this to be overridden since it could seriously damage the application.
         if ($this->cooperationToEdit->exists) {
-            $validatedData['cooperationToEditFormData']['country'] = $this->cooperationToEdit->country ?? Country::NL;
+            $validatedData['cooperationToEditFormData']['country'] = $this->cooperationToEdit->country ?? Country::NL->value;
         }
 
         // just to be sure.

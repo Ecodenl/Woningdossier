@@ -34,12 +34,12 @@
         'withInputSource' => false,
         'label' => __('cooperation/admin/super-admin/cooperations.form.country.label'),
         'id' => "country",
-        'class' => 'w-full required',
+        'class' => 'w-full lg:w-1/2 required',
         'inputName' => "cooperationToEditFormData.country",
-        'inputGroupClass' => 'lg:w-1/2'
+        //'inputGroupClass' => 'lg:w-1/2'
     ])
         @component('cooperation.frontend.layouts.components.alpine-select')
-            <select id="country" class="form-control" wire:model="cooperationToEditFormData.country" required
+            <select id="country" class="form-control hidden" wire:model="cooperationToEditFormData.country" required
                     @if($cooperationToEdit->exists) disabled @endif>
                 @foreach(\App\Enums\Country::cases() as $country)
                     <option value="{{ $country->value }}">

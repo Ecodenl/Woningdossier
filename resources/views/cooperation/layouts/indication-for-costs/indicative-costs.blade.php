@@ -1,10 +1,6 @@
-<?php
-if (isset($id)) {
-    $infoAlertId = $id . 'indicative-costs-info';
-} else {
-    $infoAlertId = 'indicative-costs-info';
-}
-?>
+@php
+    $infoAlertId = ($id ?? '') . 'indicative-costs-info';
+@endphp
 @component('cooperation.tool.components.step-question', [
     'id' => $infoAlertId, 'translation' => $translation, 'withInputSource' => false,
 ])

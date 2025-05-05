@@ -385,7 +385,7 @@
         @include('cooperation.tool.includes.measure-related-questions', [
             'withHeader' => true,
             'measureRelatedAnswers' => $measureRelatedAnswers
-         ])
+        ])
 
         <div id="taking-into-account">
             <hr>

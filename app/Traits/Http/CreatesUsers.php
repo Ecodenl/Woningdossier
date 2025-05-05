@@ -15,7 +15,7 @@ use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\UserService;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -39,8 +39,10 @@ trait CreatesUsers
             ]
         );
 
-        // add a random password to the data
-        $input['password'] = Hash::make(Str::randomPassword());
+        // Add a random password to the data (when not local) so the user must first do a password reset.
+        $input['password'] = Hash::make(
+            App::isLocal() ? 'password' : Str::randomPassword()
+        );
 
         foreach ($roleIds as $roleId) {
             $role = \App\Models\Role::findOrFail($roleId);

@@ -191,7 +191,7 @@ export default (checks, bagAvailable = true) => ({
                 this.showDuplicateError = response.count > 0;
                 this.$dispatch('duplicates-checked', {
                     'showDuplicateError': this.showDuplicateError,
-                    'addresses': request.response.addresses
+                    'addresses': response.addresses
                 });
             });
         }

@@ -151,6 +151,7 @@
                     'checks' => [
                         'correct_address', 'duplicates',
                     ],
+                    'supportsLvBag' => $supportsLvBag,
                 ])
             </div>
 

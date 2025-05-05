@@ -6,7 +6,7 @@
         'correct_address',
     ];
     /** @var \App\Models\Cooperation $cooperation */
-    $supportsLvBag = $cooperation->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG);
+    $supportsLvBag ??= $cooperation->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG);
 @endphp
 
 <div class="{{ $class ?? 'flex flex-wrap w-full' }}" @if(! empty($attr)) {!! $attr !!} @endif

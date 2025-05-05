@@ -18,7 +18,10 @@ return [
             'label' => 'Woning als coach bewerken',
         ],
 
-        'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :municipality, :email, :phone-number',
+        'header' => [
+            \App\Enums\Country::NL->value => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :municipality, :email, :phone-number',
+            \App\Enums\Country::BE->value => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :email, :phone-number',
+        ] ,
 
         'observe-building' => [
             'label' => 'Woning bekijken',

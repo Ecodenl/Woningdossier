@@ -1,5 +1,5 @@
 @extends('cooperation.admin.layouts.app', [
-    'panelTitle' => __('cooperation/admin/buildings.show.header', [
+    'panelTitle' => __("cooperation/admin/buildings.show.header.{$cooperation->getCountry()->value}", [
         'name' => $user->getFullName(),
         'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
         'zipcode-and-city' => $building->postal_code.' '.$building->city,

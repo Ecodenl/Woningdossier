@@ -40,7 +40,7 @@
     }
 @endphp
 
-<div class="flex flex-wrap w-full flex pb-5" x-data>
+<div class="flex flex-wrap w-full pb-5" x-data>
     @can('create', [\App\Models\Media::class, $currentInputSource, $building])
         <div class="flex flex-wrap w-full">
             @component('cooperation.frontend.layouts.components.form-group', [
@@ -71,6 +71,8 @@
                 @php
                     $canUpdate = Auth::user()->can('update', [$file, $currentInputSource, $building]);
                     $shareVal = data_get($fileData, "{$file->id}.share_with_cooperation") ? 'show' : 'hide';
+
+                    /** @var \App\Models\Media $file */
                 @endphp
 
                 <div class="flex flex-wrap w-1/4 justify-center mb-4" x-data="modal()" wire:key="{{$file->id}}">

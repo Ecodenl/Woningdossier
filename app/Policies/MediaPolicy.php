@@ -15,10 +15,12 @@ class MediaPolicy
 {
     use HandlesAuthorization;
 
-    public function before(Account $user, $ability, $media, InputSource $inputSource, Building $building)
+    public function before(Account $user, string $ability, string|Media $media, InputSource $inputSource, Building $building)
     {
-        // If user owns the building he can do everything.
-        if ($building->id === $user->user()->building?->id) {
+        // If user owns the media he can do everything. Beforehand we only checked on the building relation.
+        // While technically we only ever pass the building the media belongs to, it's best to ensure the media
+        // is owned by the auth user.
+        if ($building->id === $user->user()->building?->id && (is_string($media) || $media instanceof Media && in_array($building->id, $media->buildings()->pluck('id')->toArray()))) {
             return true;
         } elseif ($inputSource->short === InputSource::COACH_SHORT) {
             // A coach is not allowed to do anything if he isn't coupled.

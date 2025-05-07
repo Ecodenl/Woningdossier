@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Request;
 
 /**
@@ -64,7 +65,7 @@ class Media extends \Plank\Mediable\Media
         'custom_properties' => 'array',
     ];
 
-    # Model methods
+    // Model methods
     public function getUrl(): string
     {
         $url = parent::getUrl();
@@ -85,9 +86,14 @@ class Media extends \Plank\Mediable\Media
         return parse_url($this->getUrl())['path'] ?? '';
     }
 
-    # Relations
+    // Relations
     public function inputSource(): BelongsTo
     {
         return $this->belongsTo(InputSource::class);
+    }
+
+    public function buildings(): MorphToMany
+    {
+        return $this->morphedByMany(Building::class, 'mediable');
     }
 }

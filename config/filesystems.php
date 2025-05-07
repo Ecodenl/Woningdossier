@@ -1,18 +1,21 @@
 <?php
 
 return [
-
     'disks' => [
         'downloads' => [
             'driver' => 'local',
             'root' => storage_path('app/downloads'),
             'visibility' => 'private',
+            'serve' => true,
+            'throw' => false,
         ],
 
         'uploads' => [
             'driver' => 'local',
             'root' => storage_path('app/public/uploads'),
             'url' => env('APP_URL') . '/storage/uploads',
+            'serve' => true,
+            'throw' => false,
             'visibility' => 'private',
         ],
 
@@ -20,7 +23,8 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/exports'),
             'visibility' => 'private',
+            'serve' => true,
+            'throw' => false,
         ],
     ],
-
 ];

@@ -69,7 +69,7 @@
                                         ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                 @endphp
                                 <li>
-                                    <a class="in-text" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
+                                    <a class="in-text" href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
                                         @lang($transShort, ['scan' => $scan->name])
                                     </a>
                                 </li>

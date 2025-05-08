@@ -1,49 +1,29 @@
 @extends('cooperation.admin.layouts.app')
 
 @section('content')
-    <section class="section">
-        <div class="container">
-            <form action="{{ route('cooperation.admin.super-admin.municipalities.update', compact('municipality')) }}"
-                  method="POST">
-                @csrf
-                @method('PUT')
-                <div class="row">
-                    <div class="col-sm-6">
-                        <a id="leave-creation-tool" class="btn btn-warning"
-                           href="{{route('cooperation.admin.super-admin.municipalities.index')}}">
-                            @lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool')
-                        </a>
-                    </div>
-                    <div class="col-sm-6">
-                        <button type="submit" class="btn btn-primary pull-right">
-                            @lang('default.buttons.save')
-                        </button>
-                    </div>
-                </div>
-                <div class="row alert-top-space">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        @component('layouts.parts.components.form-group', [
-                                            'input_name' => 'municipalities.name'
-                                        ])
-                                            <label for="name">
-                                                @lang('cooperation/admin/super-admin/municipalities.form.name.label')
-                                            </label>
-                                            <input type="text" class="form-control" id="name"
-                                                   name="municipalities[name]"
-                                                   value="{{ old('municipalities.name', $municipality->name) }}"
-                                                   placeholder="@lang('cooperation/admin/super-admin/municipalities.form.name.placeholder')">
-                                        @endcomponent
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+    <form class="w-full flex flex-wrap"
+          action="{{ route('cooperation.admin.super-admin.municipalities.update', compact('municipality')) }}"
+          method="POST">
+        @csrf
+        @method('PUT')
+
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'withInputSource' => false,
+            'label' => __('cooperation/admin/super-admin/municipalities.form.name.label'),
+            'id' => "name",
+            'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
+            'inputName' => "municipalities.name",
+        ])
+            <input id="name" name="municipalities[name]"
+                   class="form-input"
+                   value="{{ old("municipalities.name", $municipality->name) }}"
+                   placeholder="@lang('cooperation/admin/super-admin/municipalities.form.name.placeholder')">
+        @endcomponent
+
+        <div class="w-full mt-5">
+            <button class="btn btn-green">
+                @lang('default.buttons.save')
+            </button>
         </div>
-    </section>
+    </form>
 @endsection

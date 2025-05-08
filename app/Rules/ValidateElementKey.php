@@ -5,9 +5,10 @@ namespace App\Rules;
 use App\Helpers\HoomdossierSession;
 use App\Models\Element;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Log;
 
-class ValidateElementKey implements Rule
+class ValidateElementKey implements ValidationRule
 {
     protected $elementShort;
 
@@ -24,12 +25,9 @@ class ValidateElementKey implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
      * @param mixed  $value
-     *
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         $element = Element::findByShort($this->elementShort);
 
@@ -37,7 +35,7 @@ class ValidateElementKey implements Rule
         if (! array_key_exists($element->id, $value)) {
             $building = HoomdossierSession::getBuilding(true);
             $inputSource = HoomdossierSession::getInputSource(true);
-            Log::debug(__METHOD__."user is messing around. user_id {$building->user_id} input_source_id: {$inputSource->id}");
+            Log::debug(__METHOD__ . "user is messing around. user_id {$building->user_id} input_source_id: {$inputSource->id}");
 
             return false;
         }
@@ -47,11 +45,16 @@ class ValidateElementKey implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'Er is iets fout gegaan, probeer het opnieuw';
+    }
+
+    public function validate(string $attribute, mixed $value, \Closure $fail): void
+    {
+        if (! $this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 }

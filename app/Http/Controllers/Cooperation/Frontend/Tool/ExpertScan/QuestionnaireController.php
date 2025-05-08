@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Frontend\Tool\ExpertScan;
 
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Questionnaire;
@@ -10,7 +11,7 @@ use App\Models\Step;
 
 class QuestionnaireController extends Controller
 {
-    public function index(Cooperation $cooperation, Scan $scan, Step $step, Questionnaire $questionnaire)
+    public function index(Cooperation $cooperation, Scan $scan, Step $step, Questionnaire $questionnaire): View
     {
         // Ensure it's a valid questionnaire
         abort_if($questionnaire->isNotActive() || $questionnaire->steps()->where('steps.id', $step->id)->doesntExist(), 404);

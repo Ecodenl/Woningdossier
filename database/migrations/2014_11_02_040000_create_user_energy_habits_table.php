@@ -4,20 +4,21 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserEnergyHabitsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('user_energy_habits', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+
+            $table->integer('input_source_id')->unsigned()->nullable()->default(1);
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('set null');
 
             $table->integer('resident_count')->nullable();
             $table->decimal('thermostat_high')->nullable();
@@ -33,8 +34,8 @@ class CreateUserEnergyHabitsTable extends Migration
             $table->bigInteger('amount_electricity')->nullable();
             $table->bigInteger('amount_gas')->nullable();
             $table->bigInteger('amount_water')->nullable();
-            $table->longText('living_situation_extra')->nullable();
-            $table->longText('motivation_extra')->nullable();
+            $table->smallInteger('renovation_plans')->nullable();
+            $table->longText('building_complaints')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();
@@ -43,11 +44,9 @@ class CreateUserEnergyHabitsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('user_energy_habits');
     }
-}
+};

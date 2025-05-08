@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Enums\ApiImplementation;
+use App\Events\FillingToolForUserEvent;
 use App\Helpers\HoomdossierSession;
 use App\Models\BuildingFeature;
 use App\Models\InputSource;
@@ -24,12 +25,8 @@ class FillingToolForUserListener
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(FillingToolForUserEvent $event): void
     {
         // The building the user wants to fill.
         $building = $event->building;
@@ -43,7 +40,7 @@ class FillingToolForUserListener
         $currentSourceFeature = $building->buildingFeatures()->forInputSource($inputSourceValue)->first();
 
         if (! $currentSourceFeature instanceof BuildingFeature) {
-            $masterFeature =  $building->buildingFeatures()->forInputSource(InputSource::master())->first();
+            $masterFeature = $building->buildingFeatures()->forInputSource(InputSource::master())->first();
             if ($masterFeature instanceof BuildingFeature) {
                 $replica = $masterFeature->replicate();
                 $replica->input_source_id = $inputSourceValue->id;

@@ -37,10 +37,10 @@ class PrivateMessageReceiverEvent
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn()
+    public function broadcastOn(): array
     {
-//        return new PrivateChannel('channel-name');
+        return [new PrivateChannel('channel-name')];
     }
 }

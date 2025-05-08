@@ -3,44 +3,30 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\Cooperation;
-use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CooperationPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Determine whether the user can view the cooperation.
-     */
-    public function edit(Account $account, Cooperation $cooperation): bool
+    public function create(Account $account): bool
     {
-        return 'super-admin' == (bool) HoomdossierSession::currentRole();
+        return HoomdossierSession::currentRoleIs(RoleHelper::ROLE_SUPER_ADMIN);
     }
 
-    /**
-     * Determine whether the user can create cooperations.
-     *
-     * @return mixed
-     */
-    public function updateOrCreate(Account $account)
+    public function update(Account $account, Cooperation $cooperation): bool
     {
-        return 'super-admin' == (bool) HoomdossierSession::currentRole();
+        return HoomdossierSession::currentRoleIs(RoleHelper::ROLE_SUPER_ADMIN);
     }
 
-
-    /**
-     * Determine whether the user can delete the cooperation.
-     *
-     * @return mixed
-     */
-    public function delete(Account $account, Cooperation $cooperation)
+    public function delete(Account $account, Cooperation $cooperation): bool
     {
-        // hoom mag niet.
+        // Not allowed to delete Hoom
         if ('hoom' !== $cooperation->slug) {
-            return 'super-admin' == (bool) HoomdossierSession::currentRole();
+            return HoomdossierSession::currentRoleIs(RoleHelper::ROLE_SUPER_ADMIN);
         }
 
         return false;

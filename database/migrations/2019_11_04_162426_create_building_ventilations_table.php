@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBuildingVentilationsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('building_ventilations', function (Blueprint $table) {
             $table->increments('id');
@@ -43,10 +41,8 @@ class CreateBuildingVentilationsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('building_ventilations');
         $step = DB::table('steps')->where('slug', '=', 'ventilation')->first();
@@ -56,4 +52,4 @@ class CreateBuildingVentilationsTable extends Migration
             // There's no revert option needed for the down method
         }
     }
-}
+};

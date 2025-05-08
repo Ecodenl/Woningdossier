@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Cooperation;
 
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use Illuminate\Http\Request;
 
 class UserLanguageController extends Controller
 {
-    public function switchLanguage(Request $request, Cooperation $cooperation, $locale)
+    public function switchLanguage(Request $request, Cooperation $cooperation, $locale): RedirectResponse
     {
         if (in_array($locale, config('hoomdossier.supported_locales'))) {
             \Session::put('locale', $locale);

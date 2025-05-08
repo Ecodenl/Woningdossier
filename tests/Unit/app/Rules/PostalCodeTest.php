@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\app\Rules;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Rules\PostalCode;
 use Tests\TestCase;
 
-class PostalCodeTest extends TestCase
+final class PostalCodeTest extends TestCase
 {
-    public static function postalCodeProvider()
+    public static function postalCodeProvider(): array
     {
         return [
             ['nl', '1000 AA', true],
@@ -27,10 +28,8 @@ class PostalCodeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider postalCodeProvider
-     */
-    public function testPasses($country, $postalCode, $shouldPass)
+    #[DataProvider('postalCodeProvider')]
+    public function testPasses($country, $postalCode, $shouldPass): void
     {
         $postalCodeRule = new PostalCode($country);
         $this->assertEquals($shouldPass, $postalCodeRule->passes('postal_code', $postalCode));

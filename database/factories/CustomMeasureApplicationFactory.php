@@ -9,15 +9,13 @@ class CustomMeasureApplicationFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => ['nl' => $this->faker->randomElement(['Vloertje', 'Bakstel', 'Nieuwe lampen'])],
             'info' => ['nl' => $this->faker->randomElement(['Vloertje', 'Bakstel', 'Nieuwe lampen'])],
-            'hash' => $this->faker->uuid,
+            'hash' => $this->faker->uuid(),
         ];
     }
 }

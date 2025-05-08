@@ -16,19 +16,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingFeature[] $buildingFeatures
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingFeature> $buildingFeatures
  * @property-read int|null $building_features_count
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel ordered(string $direction = 'asc')
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel query()
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel whereCalculateValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel whereCountryCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EnergyLabel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EnergyLabel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EnergyLabel ordered(string $direction = 'asc')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EnergyLabel query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EnergyLabel whereCalculateValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EnergyLabel whereCountryCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EnergyLabel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EnergyLabel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EnergyLabel whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EnergyLabel whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EnergyLabel whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class EnergyLabel extends Model

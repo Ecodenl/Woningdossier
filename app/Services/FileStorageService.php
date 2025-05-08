@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use Illuminate\Http\RedirectResponse;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileStorageService
 {
@@ -18,21 +21,17 @@ class FileStorageService
     public static function delete(FileStorage $fileStorage)
     {
         $fileStorage->delete();
-        \Storage::disk('downloads')->delete($fileStorage->filename);
+        Storage::disk('downloads')->delete($fileStorage->filename);
     }
 
     /**
      * Method to download a given file.
-     *
-     * @param $fileStorage
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public static function download($fileStorage)
+    public static function download(FileStorage $fileStorage): StreamedResponse|RedirectResponse
     {
         // when exist return the download
-        if (\Storage::disk('downloads')->exists($fileStorage->filename)) {
-            return \Storage::disk('downloads')->download($fileStorage->filename, $fileStorage->filename, [
+        if (Storage::disk('downloads')->exists($fileStorage->filename)) {
+            return Storage::disk('downloads')->download($fileStorage->filename, $fileStorage->filename, [
                 'Content-type'  => $fileStorage->fileType->content_type,
                 'Pragma'        => 'no-cache',
                 'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',

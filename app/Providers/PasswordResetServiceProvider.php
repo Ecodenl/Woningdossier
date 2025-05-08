@@ -15,20 +15,16 @@ class PasswordResetServiceProvider extends \Illuminate\Auth\Passwords\PasswordRe
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->registerPasswordBroker();
     }
 
     /**
      * Register the password broker instance.
-     *
-     * @return void
      */
-    protected function registerPasswordBroker()
+    protected function registerPasswordBroker(): void
     {
         $this->app->singleton('auth.password', function ($app) {
             return new PasswordBrokerManager($app);
@@ -41,10 +37,8 @@ class PasswordResetServiceProvider extends \Illuminate\Auth\Passwords\PasswordRe
 
     /**
      * Get the services provided by the provider.
-     *
-     * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return ['auth.password', 'auth.password.broker'];
     }

@@ -2,28 +2,16 @@
 
 namespace App\Listeners;
 
+use App\Events\UserAllowedAccessToHisBuilding;
 use App\Models\Log;
 use App\Models\User;
 
 class LogAllowedAccessToBuilding
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Handle the event.
-     *
-     * @param  object  $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(UserAllowedAccessToHisBuilding $event): void
     {
         /** @var User $user */
         $user = $event->user;

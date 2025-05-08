@@ -1,56 +1,54 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/questionnaires.edit.header')
+])
 
 @section('content')
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/super-admin/questionnaires.edit.header')
-        </div>
+    <form class="w-full flex flex-wrap"
+          action="{{route('cooperation.admin.super-admin.questionnaire.copy')}}"
+          method="POST">
+        @csrf
 
-        <div class="panel-body">
-            <form action="{{route('cooperation.admin.super-admin.questionnaire.copy')}}" method="post">
-                {{csrf_field()}}
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="questionnaires">@lang('cooperation/admin/super-admin/questionnaires.edit.form.questionnaire')</label>
-                            <select name="questionnaires[id]" id="questionnaires" class="form-control">
-                                @foreach($questionnaires as $questionnaire)
-                                    <option @if($selectedQuestionnaire->id == $questionnaire->id) selected="selected" @endif value="{{$questionnaire->id}}">
-                                        {{$questionnaire->name}}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="cooperations">@lang('cooperation/admin/super-admin/questionnaires.edit.form.cooperations')</label>
-                            <select name="cooperations[id][]" id="cooperations" class="form-control" multiple="multiple">
-                                @foreach($cooperations as $cooperation)
-                                    <option value="{{$cooperation->id}}">
-                                        {{$cooperation->name}}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <button class="btn btn-primary">@lang('cooperation/admin/super-admin/questionnaires.edit.form.submit')</button>
-                    </div>
-                </div>
-            </form>
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'withInputSource' => false,
+            'label' => __('cooperation/admin/super-admin/questionnaires.edit.form.questionnaire'),
+            'id' => "questionnaires",
+            'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
+            'inputName' => "questionnaires.id",
+        ])
+            @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
+                <select id="questionnaires" name="questionnaires[id]" class="form-input hidden">
+                    @foreach($questionnaires as $questionnaire)
+                        <option value="{{$questionnaire->id}}"
+                                @if($selectedQuestionnaire->id == $questionnaire->id) selected @endif>
+                            {{$questionnaire->name}}
+                        </option>
+                    @endforeach
+                </select>
+            @endcomponent
+        @endcomponent
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'withInputSource' => false,
+            'label' => __('cooperation/admin/super-admin/questionnaires.edit.form.cooperations'),
+            'id' => "cooperations",
+            'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
+            'inputName' => "cooperations.id",
+        ])
+            @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
+                <select id="cooperations" name="cooperations[id][]" class="form-input hidden" multiple>
+                    @foreach($cooperations as $cooperation)
+                        <option value="{{$cooperation->id}}">
+                            {{$cooperation->name}}
+                        </option>
+                    @endforeach
+                </select>
+            @endcomponent
+        @endcomponent
+
+        <div class="w-full mt-5">
+            <button class="btn btn-green">
+                @lang('cooperation/admin/super-admin/questionnaires.edit.form.submit')
+            </button>
         </div>
-    </div>
+    </form>
 @endsection
-
-@push('js')
-    <script>
-        $(document).ready(function () {
-            $('#questionnaires').select2();
-            $('#cooperations').select2();
-        })
-    </script>
-@endpush
 

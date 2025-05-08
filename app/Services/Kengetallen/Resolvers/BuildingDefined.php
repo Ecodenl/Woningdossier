@@ -18,5 +18,7 @@ class BuildingDefined extends KengetallenDefiner
         if ($kengetallenCode === 'EURO_SAVINGS_ELECTRICITY') {
             return $building->getAnswer($inputSource, ToolQuestion::findByShort('electricity-price-euro'));
         }
+
+        return null;
     }
 }

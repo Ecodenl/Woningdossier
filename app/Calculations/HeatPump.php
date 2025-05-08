@@ -46,17 +46,16 @@ class HeatPump extends Calculator
 
     private KengetallenService $kengetallenService;
 
-    /**
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \Illuminate\Support\Collection|null  $answers
-     */
     public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         parent::__construct($building, $inputSource, $answers);
+
         $this->kengetallenService = app(KengetallenService::class);
+        /** @phpstan-ignore assign.propertyType */
         $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
-            ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
+            ->toolQuestionCustomValues()
+            ->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))
+            ->first();
     }
 
     public function performCalculations(): array
@@ -135,7 +134,7 @@ class HeatPump extends Calculator
 
         // use netto
         $electricalReheating = 0;
-        if (optional($characteristics)->type === HeatPumpCharacteristic::TYPE_FULL) {
+        if ($characteristics?->type === HeatPumpCharacteristic::TYPE_FULL) {
             $electricalReheating = $newNettoGasUsageHeating * KeyFigures::M3_GAS_TO_KWH;
             $newNettoGasUsageHeating = 0;
         }
@@ -182,7 +181,7 @@ class HeatPump extends Calculator
         // if volledige warmtepomp: D2
         // else: D2 - (C68+C69+C70)
 //        $savingsGas = $amountGas;
-//        if (optional($characteristics)->type !== HeatPumpCharacteristic::TYPE_FULL) {
+//        if ($characteristics?->type !== HeatPumpCharacteristic::TYPE_FULL) {
 //            Log::debug("C76: not full heatpump: savingsGas = " . $amountGas . ' - (' . $gasUsageHeating . ' + ' . $newNettoGasUsageTapWater . ' + ' . $newNettoGasUsageCooking . ')');
 //            $savingsGas = $amountGas - ($gasUsageHeating + $newNettoGasUsageTapWater + $newNettoGasUsageCooking);
 //        }
@@ -196,11 +195,15 @@ class HeatPump extends Calculator
         //$savingsGas = $amountGas - data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage, 'cooking.gas.electricity', 0);
         //Log::debug('C76 (gasbesparing): = ' . "$amountGas - ($newNettoGasUsageHeating + $newNettoGasUsageTapWater + $newNettoGasUsageCooking) = $savingsGas");
 
-        $savingsGas = (data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage,
-                    'heating.current.gas.bruto', 0)) +
-            (data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage,
-                    'tap_water.current.gas.bruto', 0)) +
-            (data_get($energyUsage, 'cooking.new.gas', 0) - data_get($energyUsage, 'cooking.current.gas', 0));
+        $savingsGas = (data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get(
+            $energyUsage,
+            'heating.current.gas.bruto',
+            0
+        )) + (data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get(
+            $energyUsage,
+            'tap_water.current.gas.bruto',
+            0
+        )) + (data_get($energyUsage, 'cooking.new.gas', 0) - data_get($energyUsage, 'cooking.current.gas', 0));
         // New gas usage will probably (ideally) be less than new. Savings is the difference, but * -1!
         $savingsGas = $savingsGas * -1;
 
@@ -220,16 +223,10 @@ class HeatPump extends Calculator
 //                                       (data_get($energyUsage, 'cooking.new.electricity', 0) - data_get($energyUsage, 'cooking.current.electricity', 0));
 
         //Log::debug("C77 (meerverbruik elektra): (newNettoElectricityUsageHeating + newNettoElectricityUsageTapWater + newNettoElectricityUsageCooking) - (currentNettoElectricityUsageHeating - currentNettoElectricityUsageTapWater - currentNettoElectricityUsageCooking)");
-        $extraConsumptionElectricity = ($newNettoElectricityUsageHeating +
-                $newNettoElectricityUsageTapWater +
-                $newNettoElectricityUsageCooking) -
-            $currentNettoElectricityUsageHeating -
-            $currentNettoElectricityUsageTapWater -
-            $currentNettoElectricityUsageCooking;
+        $extraConsumptionElectricity = ($newNettoElectricityUsageHeating + $newNettoElectricityUsageTapWater + $newNettoElectricityUsageCooking) - $currentNettoElectricityUsageHeating - $currentNettoElectricityUsageTapWater - $currentNettoElectricityUsageCooking;
         //Log::debug("C77 (meerverbruik elektra): (" . $newNettoElectricityUsageHeating . ' + ' . $newNettoElectricityUsageTapWater  . ' + ' . $newNettoElectricityUsageCooking . ') - ' . $currentNettoElectricityUsageHeating . ' - ' . $currentNettoElectricityUsageTapWater . ' - ' . $currentNettoElectricityUsageCooking . ' = ' . $extraConsumptionElectricity);
 
-        $savingsCo2 = RawCalculator::calculateCo2Savings($savingsGas) -
-            ($extraConsumptionElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
+        $savingsCo2 = RawCalculator::calculateCo2Savings($savingsGas) - ($extraConsumptionElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
         //Log::debug("C78: " . $savingsCo2 . " (CO2 besparing)");
 
         $calculatedMoneySavings = app(CalculatorService::class)
@@ -304,8 +301,11 @@ class HeatPump extends Calculator
 
     public function lookupHeatPumpCharacteristics(): ?HeatPumpCharacteristic
     {
-        $heatPumpConfigurable = ToolHelper::getServiceValueByCustomValue('heat-pump', 'new-heat-pump-type',
-            $this->getAnswer('new-heat-pump-type'));
+        $heatPumpConfigurable = ToolHelper::getServiceValueByCustomValue(
+            'heat-pump',
+            'new-heat-pump-type',
+            $this->getAnswer('new-heat-pump-type')
+        );
 
         if ($heatPumpConfigurable instanceof Model && $this->heatingTemperature instanceof ToolQuestionCustomValue) {
             return HeatPumpCharacteristic::forHeatPumpConfigurable($heatPumpConfigurable)
@@ -361,7 +361,7 @@ class HeatPump extends Calculator
             /** @var ElementValue $elementValue */
             $elementValue = ElementValue::find($this->getAnswer($toolQuestion));
 
-            $factor = optional($elementValue)->insulation_factor ?? 1;
+            $factor = $elementValue->insulation_factor ?? 1;
             if ($factor <= 1) {
                 // If the state of this element is bad we want to advise the user to fix this first
                 $this->advices[$toolQuestion] = $toolQuestion;
@@ -382,11 +382,8 @@ class HeatPump extends Calculator
      * math.
      *
      * @param $number
-     * @param  int  $decimals
-     *
-     * @return string
      */
-    private function format($number, int $decimals = 2)
+    private function format($number, int $decimals = 2): string
     {
         return number_format($number, $decimals, '.', '');
     }

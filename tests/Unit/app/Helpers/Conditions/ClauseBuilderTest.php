@@ -5,13 +5,10 @@ namespace Tests\Unit\app\Helpers\Conditions;
 use App\Helpers\Conditions\ClauseBuilder;
 use PHPUnit\Framework\TestCase;
 
-class ClauseBuilderTest extends TestCase
+final class ClauseBuilderTest extends TestCase
 {
 
-    /**
-     * @return void
-     */
-    public function testFromArrayInitResultsInSameStructure()
+    public function testFromArrayInitResultsInSameStructure(): void
     {
         $arrayForms = [
             ClauseData::arraySimpleSingleClause(),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller as BaseController;
 use App\Models\Cooperation;
 use Illuminate\Http\Request;
@@ -77,8 +78,8 @@ class Controller extends BaseController
      *      )
      * )
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
-        return response([],200);
+        return response([], 200);
     }
 }

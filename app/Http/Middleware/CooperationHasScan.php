@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -9,14 +10,12 @@ class CooperationHasScan
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
+        /** @var \App\Models\Cooperation $cooperation */
         $cooperation = $request->route('cooperation');
+        /** @var \App\Models\Scan $scan */
         $scan = $request->route('scan');
 
         if ($cooperation->scans()->where('scans.id', $scan->id)->doesntExist()) {

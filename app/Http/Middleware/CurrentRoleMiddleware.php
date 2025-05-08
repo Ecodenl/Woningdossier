@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use App\Exceptions\RoleInSessionHasNoAssociationWithUser;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -15,22 +17,18 @@ class CurrentRoleMiddleware
 {
     /**
      * Handle an incoming request.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return mixed
      */
-    public function handle($request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, $role): Response
     {
         $roles = is_array($role) ? $role : explode('|', $role);
 
         // if no role is set, logout and invalidate the session.
         if (empty(HoomdossierSession::getRole())) {
-            Log::debug('Account id: '.Hoomdossier::account()->id.' is logged in but has no role in his session');
+            Log::debug('Account id: ' . Hoomdossier::account()->id . ' is logged in but has no role in his session.');
             Auth::logout();
             session()->invalidate();
 
-            return abort(401);
+            abort(401);
         }
 
         $authorizedRole = Role::findById(HoomdossierSession::getRole());

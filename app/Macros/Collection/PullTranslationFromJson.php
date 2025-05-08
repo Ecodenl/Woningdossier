@@ -26,17 +26,17 @@ class PullTranslationFromJson
 {
     public function __invoke()
     {
-        return function(string $field, string $renameKey = '', string $locale = '', $fallback = null) : Collection {
-            if (empty($locale)){
+        return function (string $field, string $renameKey = '', string $locale = '', $fallback = null) : Collection {
+            if (empty($locale)) {
                 $locale = app()->getLocale();
             }
-            return $this->each(function($item) use ($renameKey, $field, $locale, $fallback) {
+            return $this->each(function ($item) use ($renameKey, $field, $locale, $fallback) {
                 $property = $field;
-                if (!empty($renameKey)){
+                if (!empty($renameKey)) {
                     $property = $renameKey;
                 }
                 $item->$property = json_decode($item->$field)->$locale ?? $fallback;
-                if (!empty($renameKey)){
+                if (!empty($renameKey)) {
                     unset($item->$field);
                 }
             });

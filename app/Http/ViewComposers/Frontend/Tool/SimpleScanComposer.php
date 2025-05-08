@@ -20,12 +20,17 @@ class SimpleScanComposer
         $this->request = $request;
     }
 
-    public function create(View $view)
+    public function create(View $view): void
     {
+        /** @var \App\Models\Scan $scan */
         $scan = $this->request->route('scan');
+        /** @var \App\Models\Step|null $step */
         $step = $this->request->route('step');
+        /** @var \App\Models\SubStep|null $subStep */
         $subStep = $this->request->route('subStep');
+        /** @var \App\Models\Questionnaire|null $questionnaire */
         $questionnaire = $this->request->route('questionnaire');
+        /** @var \App\Models\Cooperation $cooperation */
         $cooperation = $this->request->route('cooperation');
 
         if (is_null($subStep)) {
@@ -75,7 +80,9 @@ class SimpleScanComposer
         // now with a max order.
         $summedOrder = (int) DB::table(
             $questionnaireCountQuery->clone()->where('s.order', '<', $step->order)
-                ->union($subStepCountQuery->clone()->where('s.order', '<', $step->order)), 'x')
+                ->union($subStepCountQuery->clone()->where('s.order', '<', $step->order)),
+            'x'
+        )
             ->selectRaw('SUM(x.total) AS sum')
             ->first()
             ->sum;

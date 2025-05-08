@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -13,31 +14,31 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int|null $input_source_id
  * @property int $building_id
- * @property array|null $how
- * @property array|null $living_situation
- * @property array|null $usage
+ * @property array<array-key, mixed>|null $how
+ * @property array<array-key, mixed>|null $living_situation
+ * @property array<array-key, mixed>|null $usage
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building $building
  * @property-read \App\Models\InputSource|null $inputSource
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation allInputSources()
- * @method static \Database\Factories\BuildingVentilationFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forBuilding($building)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forMe(?\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation query()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation whereHow($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation whereLivingSituation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation whereUsage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation allInputSources()
+ * @method static \Database\Factories\BuildingVentilationFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation forBuilding(\App\Models\Building|int $building)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation forUser(\App\Models\User|int $user)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation whereHow($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation whereLivingSituation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation whereUsage($value)
  * @mixin \Eloquent
  */
 class BuildingVentilation extends Model
@@ -47,20 +48,20 @@ class BuildingVentilation extends Model
     use GetMyValuesTrait;
     use GetValueTrait;
 
-    protected $casts = [
-        'how'              => 'array',
-        'living_situation' => 'array',
-        'usage'            => 'array',
-    ];
-
     protected $fillable = [
         'building_id', 'input_source_id', 'how', 'living_situation', 'usage',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function building()
+    protected function casts(): array
+    {
+        return [
+            'how'              => 'array',
+            'living_situation' => 'array',
+            'usage'            => 'array',
+        ];
+    }
+
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }

@@ -25,7 +25,7 @@ class RolePolicy
         $this->userRoleService = $userRoleService;
     }
 
-    public function view(Account $account, Role $role, User $user, Role $currentUserRole)
+    public function view(Account $account, Role $role, User $user, Role $currentUserRole): bool
     {
         return $this->userRoleService->forCurrentRole($currentUserRole)->canView($role);
     }
@@ -40,7 +40,6 @@ class RolePolicy
 
 
     /**
-     * @param  Account  $account
      * @param  Role  $role  the role that should be checked.
      * @param  User  $user  the authenticated user
      * @param  Role  $currentUserRole  the current role of the authenticated user.
@@ -48,7 +47,7 @@ class RolePolicy
      */
     public function store(Account $account, Role $role, User $user, Role $currentUserRole, User $userToGiveRole)
     {
-        if($this->userRoleService->forCurrentRole($currentUserRole)->canManage($role)) {
+        if ($this->userRoleService->forCurrentRole($currentUserRole)->canManage($role)) {
             // the cooperation-admin is the only one who can give himself other roles.
             if ($user->id === $userToGiveRole->id && $currentUserRole->name === RoleHelper::ROLE_COOPERATION_ADMIN) {
                 return true;
@@ -67,22 +66,21 @@ class RolePolicy
 //        if ($user->hasRoleAndIsCurrentRole('coordinator')) {
 //            return in_array($role->name, ['coordinator', 'coach', 'resident']);
 //        }
-
     }
 
-    public function delete(Account $account, Role $role, User $user, Role $currentUserRole, User $userToRemoveRoleFrom)
+    public function delete(Account $account, Role $role, User $user, Role $currentUserRole, User $userToRemoveRoleFrom): bool
     {
-        // its not possible to delete the user its only available role
-        if ($userToRemoveRoleFrom->hasNotMultipleRoles() && $role->id === $userToRemoveRoleFrom->roles->first()->id) {
+        // It's not possible to delete the user its only available role
+        if ($userToRemoveRoleFrom->hasNotMultipleRoles() && $role->id === $userToRemoveRoleFrom->roles->first()?->id) {
             return false;
         }
-        if ($this->userRoleService->forCurrentRole($currentUserRole)->canManage($role)) {
-            // a cooperation admin is not allowed to remove his own cooperation admin role.
-            if ($user->id === $userToRemoveRoleFrom->id && $role->name === RoleHelper::ROLE_COOPERATION_ADMIN) {
-                return false;
-            }
-            return true;
+
+        // Ensure a user doesn't delete their own current role.
+        // A user can also not remove their own cooperation admin role.
+        if ($user->id === $userToRemoveRoleFrom->id && ($role->id === $currentUserRole->id || $role->name === RoleHelper::ROLE_COOPERATION_ADMIN)) {
+            return false;
         }
-        return false;
+
+        return $this->userRoleService->forCurrentRole($currentUserRole)->canManage($role);
     }
 }

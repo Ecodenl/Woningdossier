@@ -4,7 +4,7 @@ return [
     'disks' => [
         'downloads' => [
             'driver' => 'local',
-            'root' => storage_path('app/downloads'),
+            'root' => storage_path('app/private/downloads'),
             'visibility' => 'private',
             'serve' => true,
             'throw' => false,
@@ -12,8 +12,8 @@ return [
 
         'uploads' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/uploads'),
-            'url' => env('APP_URL') . '/storage/uploads',
+            'root' => storage_path('app/private/uploads'),
+            //'url' => env('APP_URL') . '/storage/uploads',
             'serve' => true,
             'throw' => false,
             'visibility' => 'private',
@@ -21,7 +21,7 @@ return [
 
         'exports' => [
             'driver' => 'local',
-            'root' => storage_path('app/exports'),
+            'root' => storage_path('app/private/exports'),
             'visibility' => 'private',
             'serve' => true,
             'throw' => false,

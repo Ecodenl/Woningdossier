@@ -81,9 +81,17 @@ class Media extends \Plank\Mediable\Media
         return $url;
     }
 
+    // TODO: Check this, is this favourable over "getDiskPath"? Why use this anyway?
     public function getPath(): string
     {
         return parse_url($this->getUrl())['path'] ?? '';
+    }
+
+    public function ownedBy(User $user): bool
+    {
+        return $this->buildings()->whereHas('user', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->exists();
     }
 
     // Relations
@@ -95,5 +103,10 @@ class Media extends \Plank\Mediable\Media
     public function buildings(): MorphToMany
     {
         return $this->morphedByMany(Building::class, 'mediable');
+    }
+
+    public function cooperations(): MorphToMany
+    {
+        return $this->morphedByMany(Cooperation::class, 'mediable');
     }
 }

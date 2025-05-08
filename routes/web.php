@@ -27,6 +27,11 @@ Route::domain('www.' . config('hoomdossier.domain'))->group(function () {
 
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
     Route::middleware('cooperation')->name('cooperation.')->group(function () {
+        Route::prefix('media')->as('media.')->group(function () {
+            Route::get('{media}', [Cooperation\MediaController::class, 'serve'])->name('serve');
+            Route::get('{media}/download', [Cooperation\MediaController::class, 'download'])->name('download');
+        });
+
         if ('local' == app()->environment()) {
             Route::get('mail', function () {
                 //return new \App\Mail\UserCreatedEmail(\App\Models\Cooperation::find(1), \App\Models\User::find(1), 'sdfkhasgdfuiasdgfyu');

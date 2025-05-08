@@ -19,7 +19,9 @@ app.js.LICENSE.txt
 # translation file
 resources/lang/*/uuid.php
 
-storage/app/downloads
+storage/app/private/downloads
+storage/app/private/uploads
+storage/app/private/exports
 storage/api-docs/
 
 # IntelliJ project files

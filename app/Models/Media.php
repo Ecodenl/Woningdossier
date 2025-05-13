@@ -87,12 +87,6 @@ class Media extends \Plank\Mediable\Media
         return $url;
     }
 
-    // TODO: Check this, is this favourable over "getDiskPath"? Why use this anyway?
-    public function getPath(): string
-    {
-        return parse_url($this->getUrl())['path'] ?? '';
-    }
-
     public function ownedBy(User $user): bool
     {
         return $this->buildings()->whereHas('user', function ($query) use ($user) {

@@ -17,16 +17,17 @@ class MediaPolicy
 {
     use HandlesAuthorization;
 
-    public function before(Account $user, string $ability, string|Media $media, InputSource $inputSource, null|Building|Cooperation $mediable = null, ?string $tag = null)
+    public function before(?Account $user, string $ability, string|Media $media, ?InputSource $inputSource, null|Building|Cooperation $mediable = null, ?string $tag = null)
     {
-        // We know media and input source are consistently the first 2 parameters.
-        // The other 2 parameters are not guaranteed to be given.
+        // Order of given parameters is consistent. Mediable and tag might not be provided. Inputsource can be nullable
+        // in the case of not being logged in (e.g. login page, register page). In that case, the account is also
+        // null.
 
         if ($media instanceof Media) {
             // If user owns the media he can do everything.
-            if ($media->ownedBy($user->user())) {
+            if ($user instanceof Account && $media->ownedBy($user->user())) {
                 return true;
-            } elseif ($inputSource->short === InputSource::COACH_SHORT && $mediable instanceof Building) {
+            } elseif ($inputSource?->short === InputSource::COACH_SHORT && $mediable instanceof Building) {
                 // A coach is not allowed to do anything if he isn't coupled.
                 // Get the buildings the user is connected to.
                 $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user->user());
@@ -44,7 +45,7 @@ class MediaPolicy
             // The cooperation media is publicly viewable.
             // A super admin can manage cooperations and can upload media. Otherwise, only cooperation admins
             // belonging to the cooperation can manage.
-            return $ability === 'viewAny' || $this->canManageCooperationMedia($user, $mediable);
+            return $ability === 'viewAny' || ($user instanceof Account && $this->canManageCooperationMedia($user, $mediable));
         }
     }
 

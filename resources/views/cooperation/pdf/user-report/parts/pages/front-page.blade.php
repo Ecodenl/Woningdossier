@@ -5,11 +5,11 @@
         $buildingBackground = $building->firstMedia(\App\Helpers\MediaHelper::BUILDING_IMAGE);
 
         $backgroundUrl = $buildingBackground instanceof \App\Models\Media
-            ? pdfAsset($buildingBackground->getPath())
+            ? route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $buildingBackground])
             : (
                 ($pdfBackground = $userCooperation->firstMedia(MediaHelper::PDF_BACKGROUND)) instanceof \App\Models\Media
-                ? pdfAsset($pdfBackground->getPath())
-                : pdfAsset('images/background.jpg')
+                ? route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $pdfBackground])
+                : asset('images/background.jpg')
             );
     @endphp
     <div class="w-100">
@@ -76,7 +76,7 @@
         </div>
         <div class="float-right">
             @if($logo instanceof \App\Models\Media)
-                <img class="float-right" src="{{ pdfAsset($logo->getPath()) }}" alt="{{ $userCooperation->name }}"
+                <img class="float-right" src="{{ route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $logo]) }}" alt="{{ $userCooperation->name }}"
                      style="max-height: 250px;">
             @else
                 <h3>

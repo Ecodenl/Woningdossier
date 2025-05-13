@@ -55,7 +55,10 @@
             @yield('header')
         @endif
         @php
-            $background = optional($cooperation?->firstMedia(MediaHelper::BACKGROUND))->getUrl() ?: asset('images/background.jpg');
+            /** @var \App\Models\Cooperation $cooperation */
+            $background = ($cooperationBackground = $cooperation->firstMedia(MediaHelper::BACKGROUND)) instanceof \App\Models\Media
+                ? route('cooperation.media.serve', ['cooperation' => $cooperation, 'media' => $cooperationBackground])
+                : asset('images/background.jpg');
         @endphp
         <main class="bg-cover bg-center bg-no-repeat bg-white"
               style="@yield('main_style', "background-image: url('{$background}');")">

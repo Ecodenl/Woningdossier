@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Request;
 
@@ -66,7 +67,6 @@ class Media extends \Plank\Mediable\Media
     ];
 
     // Model methods
-
     /**
      * NOTE: The provided URL may be 403 forbidden due to disk visibility.
      *
@@ -100,13 +100,20 @@ class Media extends \Plank\Mediable\Media
         return $this->belongsTo(InputSource::class);
     }
 
+    public function mediable(): HasOne
+    {
+        return $this->hasOne(Mediable::class);
+    }
+
     public function buildings(): MorphToMany
     {
-        return $this->morphedByMany(Building::class, 'mediable');
+        return $this->morphedByMany(Building::class, 'mediable')
+            ->withPivot(['tag', 'order']);
     }
 
     public function cooperations(): MorphToMany
     {
-        return $this->morphedByMany(Cooperation::class, 'mediable');
+        return $this->morphedByMany(Cooperation::class, 'mediable')
+            ->withPivot(['tag', 'order']);
     }
 }

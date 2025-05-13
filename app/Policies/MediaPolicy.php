@@ -36,9 +36,10 @@ class MediaPolicy
                 if (! $connectedBuildingsForUser->contains('building_id', $mediable->id)) {
                     return false;
                 }
-            } elseif ($ability === 'view' && ($media->cooperations()->exists() || $media->tag === MediaHelper::BUILDING_IMAGE)) {
+            } elseif ($ability === 'view' && ($media->cooperations()->exists() || $media->mediable->tag === MediaHelper::BUILDING_IMAGE)) {
                 // The cooperation media is publicly viewable. Since media is only coupled to one model, we don't
-                // need to check further. If it's a building image, we will make it publicly viewable so the PDF can access it.
+                // need to check further.
+                // If it's building image, we will make it publicly viewable so the PDF can access it.
                 return true;
             }
         } elseif ($mediable instanceof Cooperation) {
@@ -145,8 +146,8 @@ class MediaPolicy
             return ! HoomdossierSession::isUserObserving()
                 && data_get($media->custom_properties, 'share_with_cooperation')
                 && (
-                    ($media->tag === MediaHelper::BUILDING_IMAGE && $inputSource->short === InputSource::COACH_SHORT) ||
-                    ($media->tag !== MediaHelper::BUILDING_IMAGE && $this->isCooperationSource($inputSource))
+                    ($media->mediable->tag === MediaHelper::BUILDING_IMAGE && $inputSource->short === InputSource::COACH_SHORT) ||
+                    ($media->mediable->tag !== MediaHelper::BUILDING_IMAGE && $this->isCooperationSource($inputSource))
                 );
         }
     }

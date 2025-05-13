@@ -27,6 +27,10 @@ class MediaController extends Controller
 
         $this->authorize('view', [$media, $currentInputSource]);
 
+        if (! Storage::disk($media->disk)->exists($media->getDiskPath())) {
+            abort(404);
+        }
+
         return response()->{$method}(
             Storage::disk($media->disk)->path($media->getDiskPath())
         );

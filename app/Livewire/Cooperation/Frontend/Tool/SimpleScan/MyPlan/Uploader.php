@@ -122,7 +122,7 @@ class Uploader extends Component
 
         $file = $this->files->where('id', $fileId)->first();
 
-        $this->authorize('update', [$file, $this->currentInputSource, $this->building]);
+        $this->authorize('update', [$file, $this->currentInputSource]);
 
         $fileData = $this->fileData[$fileId];
 
@@ -137,7 +137,7 @@ class Uploader extends Component
 
             $customProperties['title'] = data_get($fileData, 'title', '');
             $customProperties['description'] = data_get($fileData, 'description', '');
-            if (Auth::user()->can('shareWithCooperation', [$file, $this->currentInputSource, $this->building])) {
+            if (Auth::user()->can('shareWithCooperation', [$file, $this->currentInputSource])) {
                 // Ensure we don't edit this if we're not allowed to
                 $customProperties['share_with_cooperation'] = (bool) data_get($fileData, 'share_with_cooperation');
             }
@@ -152,7 +152,7 @@ class Uploader extends Component
     {
         $file = $this->files->where('id', $fileId)->first();
 
-        $this->authorize('delete', [$file, $this->currentInputSource, $this->building]);
+        $this->authorize('delete', [$file, $this->currentInputSource]);
 
         if ($file instanceof Media) {
             $file->delete();

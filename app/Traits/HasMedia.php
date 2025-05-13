@@ -9,14 +9,13 @@ trait HasMedia
     use Mediable;
 
     /**
+     * NOTE: The provided URL may be 403 forbidden due to disk visibility.
      * Get the URL of the first media.
-     *
-     * @param $tags
      *
      * @throws \Plank\Mediable\Exceptions\MediaUrlException
      */
-    public function firstMediaUrl($tags, bool $matchAll = false): ?string
+    public function firstMediaUrl(string|array $tags, bool $matchAll = false): ?string
     {
-        return optional($this->firstMedia($tags, $matchAll))->getUrl();
+        return $this->firstMedia($tags, $matchAll)?->getUrl();
     }
 }

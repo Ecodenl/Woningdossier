@@ -66,6 +66,12 @@ class Media extends \Plank\Mediable\Media
     ];
 
     // Model methods
+
+    /**
+     * NOTE: The provided URL may be 403 forbidden due to disk visibility.
+     *
+     * @throws \Plank\Mediable\Exceptions\MediaUrlException
+     */
     public function getUrl(): string
     {
         $url = parent::getUrl();

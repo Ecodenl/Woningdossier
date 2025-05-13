@@ -67,12 +67,16 @@
 
     <div class="flex flex-wrap w-full media-container">
         @foreach($files as $file)
-            @can('view', [$file, $currentInputSource, $building])
+            @can('view', [$file, $currentInputSource])
                 @php
-                    $canUpdate = Auth::user()->can('update', [$file, $currentInputSource, $building]);
+                    $canUpdate = Auth::user()->can('update', [$file, $currentInputSource]);
                     $shareVal = data_get($fileData, "{$file->id}.share_with_cooperation") ? 'show' : 'hide';
 
                     /** @var \App\Models\Media $file */
+                    $fileParameters = [
+                        'cooperation' => $cooperation,
+                        'media' => $file,
+                    ];
                 @endphp
 
                 <div class="flex flex-wrap w-1/4 justify-center mb-4" x-data="modal()" wire:key="{{$file->id}}">
@@ -81,7 +85,7 @@
                             <div class="flex items-center justify-center h-60 w-full overflow-hidden rounded-lg">
                                 @if(in_array($file->extension, MediaHelper::getImageMimes(true)))
                                     {{-- Image --}}
-                                    <img src="{{ $file->getUrl() }}" class="object-cover">
+                                    <img src="{{ route('cooperation.media.serve', $fileParameters) }}" class="object-cover">
                                 @else
                                     {{-- Document --}}
                                     <i class="icon-xxxl icon-other"></i>
@@ -93,7 +97,7 @@
                                         {{ "{$file->filename}.{$file->extension}" }}
                                     </h2>
                                 </div>
-                                @can('shareWithCooperation', [$file, $currentInputSource, $building])
+                                @can('shareWithCooperation', [$file, $currentInputSource])
                                     <i class="icon-md {{ "icon-{$shareVal}" }}"></i>
                                 @endif
                             </div>
@@ -175,7 +179,7 @@
                                           placeholder="@lang('cooperation/frontend/tool.my-plan.uploader.form.description.label')"
                                 ></textarea>
                             @endcomponent
-                            @can('shareWithCooperation', [$file, $currentInputSource, $building])
+                            @can('shareWithCooperation', [$file, $currentInputSource])
                                 @component('cooperation.frontend.layouts.components.form-group', [
                                    'inputName' => "fileData.{$file->id}.share_with_cooperation",
                                    'class' => 'w-full',
@@ -220,12 +224,12 @@
                         </div>
                         <div class="w-full border border-gray fixed left-0"></div>
                         <div class="flex flex-wrap justify-between mt-10">
-                            <a href="{{ $file->getUrl() }}" target="_blank"
+                            <a href="{{ route('cooperation.media.download', $fileParameters) }}" download
                                class="flex px-4 btn btn-purple items-center">
                                 @lang('cooperation/frontend/tool.my-plan.uploader.form.download.title')
                                 <i class="ml-2 icon-sm icon-arrow-down"></i>
                             </a>
-                            @can('delete', [$file, $currentInputSource, $building])
+                            @can('delete', [$file, $currentInputSource])
                                 <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {$wire.call('delete', {{$file->id}}); close(); $el.closest('{{"[wire\\\\:key=\"{$file->id}\"]"}}').fadeOut(250);}"
                                         class="flex px-4 btn btn-outline-red items-center">
                                     @lang('cooperation/frontend/tool.my-plan.uploader.form.delete.title')

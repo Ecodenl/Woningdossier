@@ -18,30 +18,34 @@
         @csrf
 
         @foreach(MediaHelper::getFillableTagsForClass(\App\Models\Cooperation::class) as $tag)
-            @component('cooperation.frontend.layouts.components.form-group', [
-                'withInputSource' => false,
-                'label' => __("cooperation/admin/cooperation/cooperation-admin/settings.index.{$tag}"),
-                'class' => 'w-full -mt-5 lg:w-1/3 lg:pr-6 flex-wrap',
-                'id' => "file-{$tag}",
-                'inputName' => "medias.{$tag}",
-            ])
-                <input name="medias[{{ $tag }}]" id="file-{{ $tag }}" type="file" class="form-input"/>
+            @can('create', [\App\Models\Media::class, HoomdossierSession::getInputSource(true), $cooperationToUse, $tag])
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'withInputSource' => false,
+                    'label' => __("cooperation/admin/cooperation/cooperation-admin/settings.index.{$tag}"),
+                    'class' => 'w-full -mt-5 lg:w-1/3 lg:pr-6 flex-wrap',
+                    'id' => "file-{$tag}",
+                    'inputName' => "medias.{$tag}",
+                ])
+                    <input name="medias[{{ $tag }}]" id="file-{{ $tag }}" type="file" class="form-input"/>
 
-                @if(($image = $cooperationToUse->firstMedia($tag)) instanceof \App\Models\Media)
-                    <input type="hidden" name="medias[{{ $tag }}_current]" value="{{ $image->id }}"
-                           id="current-{{ $tag }}">
-                    <div class="flex w-full items-center">
-                        <span class="whitespace-nowrap text-center rounded font-bold bg-green text-white p-1 py-2 text-xs overflow-hidden">
-                            @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
-                            {{$image->filename}}
-                        </span>
-                        <span class="text-red cursor-pointer font-bold ml-2"
-                              onclick="let currentImage = document.getElementById('current-{{ $tag }}'); currentImage.value = null; currentImage.nextElementSibling.style.display = 'none';">
-                            X
-                        </span>
-                    </div>
-                @endif
-            @endcomponent
+                    @if(($image = $cooperationToUse->firstMedia($tag)) instanceof \App\Models\Media)
+                        <input type="hidden" name="medias[{{ $tag }}_current]" value="{{ $image->id }}"
+                               id="current-{{ $tag }}">
+                        <div class="flex w-full items-center">
+                            <span class="whitespace-nowrap text-center rounded font-bold bg-green text-white p-1 py-2 text-xs overflow-hidden">
+                                @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
+                                {{$image->filename}}
+                            </span>
+                            @can('delete', [$image, HoomdossierSession::getInputSource(true)])
+                                <span class="text-red cursor-pointer font-bold ml-2"
+                                      onclick="let currentImage = document.getElementById('current-{{ $tag }}'); currentImage.value = null; currentImage.nextElementSibling.style.display = 'none';">
+                                    X
+                                </span>
+                            @endcan
+                        </div>
+                    @endif
+                @endcomponent
+            @endcan
         @endforeach
 
         @foreach(CooperationSettingHelper::getAvailableSettings() as $short => $type)

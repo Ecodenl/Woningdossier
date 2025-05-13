@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class MediaController extends Controller
 {
-    public function serve(Cooperation $cooperation, Media $media)
+    public function serve(Cooperation $cooperation, Media $media): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $currentInputSource = HoomdossierSession::getInputSource(true);
 
@@ -21,7 +21,7 @@ class MediaController extends Controller
         );
     }
 
-    public function download(Cooperation $cooperation, Media $media)
+    public function download(Cooperation $cooperation, Media $media): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $currentInputSource = HoomdossierSession::getInputSource(true);
 

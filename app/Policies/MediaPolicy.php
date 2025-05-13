@@ -36,9 +36,9 @@ class MediaPolicy
                 if (! $connectedBuildingsForUser->contains('building_id', $mediable->id)) {
                     return false;
                 }
-            } elseif ($ability === 'view' && $media->cooperations()->exists()) {
+            } elseif ($ability === 'view' && ($media->cooperations()->exists() || $media->tag === MediaHelper::BUILDING_IMAGE)) {
                 // The cooperation media is publicly viewable. Since media is only coupled to one model, we don't
-                // need to check further.
+                // need to check further. If it's a building image, we will make it publicly viewable so the PDF can access it.
                 return true;
             }
         } elseif ($mediable instanceof Cooperation) {

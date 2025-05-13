@@ -2,15 +2,14 @@
     @php
         $logo = $userCooperation->firstMedia(MediaHelper::LOGO);
 
-        $buildingBackground = $building->firstMedia(\App\Helpers\MediaHelper::BUILDING_IMAGE);
-
-        $backgroundUrl = $buildingBackground instanceof \App\Models\Media
+        $backgroundUrl = ($buildingBackground = $building->firstMedia(\App\Helpers\MediaHelper::BUILDING_IMAGE)) instanceof \App\Models\Media
             ? route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $buildingBackground])
             : (
                 ($pdfBackground = $userCooperation->firstMedia(MediaHelper::PDF_BACKGROUND)) instanceof \App\Models\Media
                 ? route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $pdfBackground])
                 : asset('images/background.jpg')
             );
+        \Log::debug($backgroundUrl)
     @endphp
     <div class="w-100">
         <div class="float-left" style="width: 50%">

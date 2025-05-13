@@ -1,16 +1,4 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'front-page', 'withPageBreak' => false])
-    @php
-        $logo = $userCooperation->firstMedia(MediaHelper::LOGO);
-
-        $backgroundUrl = ($buildingBackground = $building->firstMedia(\App\Helpers\MediaHelper::BUILDING_IMAGE)) instanceof \App\Models\Media
-            ? route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $buildingBackground])
-            : (
-                ($pdfBackground = $userCooperation->firstMedia(MediaHelper::PDF_BACKGROUND)) instanceof \App\Models\Media
-                ? route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $pdfBackground])
-                : asset('images/background.jpg')
-            );
-        \Log::debug($backgroundUrl)
-    @endphp
     <div class="w-100">
         <div class="float-left" style="width: 50%">
             <h1 class="p-0 m-0">
@@ -74,7 +62,7 @@
             </div>
         </div>
         <div class="float-right">
-            @if($logo instanceof \App\Models\Media)
+            @if(($logo = $userCooperation->firstMedia(MediaHelper::LOGO)) instanceof \App\Models\Media)
                 <img class="float-right" src="{{ route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $logo]) }}" alt="{{ $userCooperation->name }}"
                      style="max-height: 250px;">
             @else
@@ -86,7 +74,13 @@
     </div>
 
     <div class="text-center mt-10" style="height: 500px;">
-        <img src="{{ $backgroundUrl }}" alt="{{$userCooperation->name}}" style="max-height: 500px; width: auto;">
+        @if(($buildingBackground = $building->firstMedia(\App\Helpers\MediaHelper::BUILDING_IMAGE)) instanceof \App\Models\Media)
+            <img src="{{ route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $buildingBackground]) }}" alt="{{$userCooperation->name}}" style="max-height: 500px; width: auto;">
+        @elseif(($pdfBackground = $userCooperation->firstMedia(MediaHelper::PDF_BACKGROUND)) instanceof \App\Models\Media)
+            <img src="{{ route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $pdfBackground]) }}" alt="{{$userCooperation->name}}" style="max-height: 500px; width: auto;">
+        @else
+            <img src="{{ asset('images/background.jpg') }}" alt="{{$userCooperation->name}}" style="max-height: 500px; width: auto;">
+        @endif
     </div>
     <div class="w-100 my-2">
     </div>

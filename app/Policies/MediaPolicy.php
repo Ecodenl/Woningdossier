@@ -112,6 +112,7 @@ class MediaPolicy
 
             // A super admin can manage cooperations and can upload media. Otherwise, only cooperation admins
             // belonging to the cooperation can manage.
+            /** @var Cooperation $cooperation */
             $cooperation = $media->cooperations()->first();
             return $this->canManageCooperationMedia($user, $cooperation);
         } else {
@@ -136,6 +137,7 @@ class MediaPolicy
 
             // A super admin can manage cooperations and can upload media. Otherwise, only cooperation admins
             // belonging to the cooperation can manage.
+            /** @var Cooperation $cooperation */
             $cooperation = $media->cooperations()->first();
             return $this->canManageCooperationMedia($user, $cooperation);
         } else {

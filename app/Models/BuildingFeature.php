@@ -50,6 +50,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\FacadeDamagedPaintwork|null $damagedPaintwork
  * @property-read \App\Models\EnergyLabel|null $energyLabel
  * @property-read \App\Models\ExampleBuilding|null $exampleBuilding
+ * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\FacadePlasteredSurface|null $plasteredSurface
  * @property-read \App\Models\RoofType|null $roofType

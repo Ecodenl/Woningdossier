@@ -26,9 +26,14 @@ use Illuminate\Support\Facades\Request;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $alt
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Building> $buildings
+ * @property-read int|null $buildings_count
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Cooperation> $cooperations
+ * @property-read int|null $cooperations_count
  * @property-read string $basename
  * @property-read string $url
  * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\Mediable|null $mediable
  * @property-read Media|null $originalMedia
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Media> $variants
  * @property-read int|null $variants_count

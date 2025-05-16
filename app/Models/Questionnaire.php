@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cooperation $cooperation
+ * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionnaireStep> $questionnaireSteps
  * @property-read int|null $questionnaire_steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Question> $questions
@@ -33,7 +34,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire active()
  * @method static \Database\Factories\QuestionnaireFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire forAllCooperations()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire forMyCooperation($cooperationId)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire forMyCooperation(\App\Models\Cooperation|int $cooperation)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire query()

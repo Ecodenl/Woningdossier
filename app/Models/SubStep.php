@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\App;
  * @property-read Model|\Eloquent $commentable
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompletedSubStep> $completedSubSteps
  * @property-read int|null $completed_sub_steps_count
+ * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\Step $step
  * @property-read \App\Models\SubStepTemplate|null $subStepTemplate
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables

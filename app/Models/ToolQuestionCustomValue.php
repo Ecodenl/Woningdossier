@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array<array-key, mixed>|null $conditions
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\ToolQuestion $toolQuestion
  * @property-read mixed $translations
  * @method static \Database\Factories\ToolQuestionCustomValueFactory factory($count = null, $state = [])

@@ -36,7 +36,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder<static>|FileStorage forBuilding(\App\Models\Building|int $building)
  * @method static Builder<static>|FileStorage forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder<static>|FileStorage forMe(?\App\Models\User $user = null)
- * @method static Builder<static>|FileStorage forMyCooperation($cooperationId)
+ * @method static Builder<static>|FileStorage forMyCooperation(\App\Models\Cooperation|int $cooperation)
  * @method static Builder<static>|FileStorage forUser(\App\Models\User|int $user)
  * @method static Builder<static>|FileStorage leaveOutPersonalFiles()
  * @method static Builder<static>|FileStorage mostRecent(?\App\Models\Questionnaire $questionnaire = null)

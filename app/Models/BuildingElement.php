@@ -26,6 +26,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\Element $element
  * @property-read \App\Models\ElementValue|null $elementValue
+ * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingElement allInputSources()
  * @method static \Database\Factories\BuildingElementFactory factory($count = null, $state = [])

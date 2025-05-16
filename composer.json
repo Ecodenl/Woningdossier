@@ -19,9 +19,10 @@
         "ecodenl/lvbag-php-wrapper": "^2.0",
         "guzzlehttp/guzzle": "^7.8",
         "laravel/fortify": "^1.20",
-        "laravel/framework": "^11.31",
+        "laravel/framework": "^11.44.1",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "livewire/livewire": "^3.3",
         "maatwebsite/excel": "^3.1.8",
         "mpdf/mpdf": "^8.1",
@@ -32,8 +33,9 @@
         "spatie/laravel-permission": "^6.2",
         "spatie/laravel-translatable": "^6.6",
         "spatie/laravel-translation-loader": "^2.8",
-        "wedesignit/laravel-translations-import": "^1.1",
-        "league/flysystem-aws-s3-v3": "^3.0"
+        "symfony/http-client": "^7.2",
+        "symfony/mailgun-mailer": "^7.2",
+        "wedesignit/laravel-translations-import": "^1.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.10",

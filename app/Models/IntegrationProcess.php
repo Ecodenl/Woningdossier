@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $synced_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\TFactory|null $use_factory
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess query()

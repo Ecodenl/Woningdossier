@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $size
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\TFactory|null $use_factory
  * @method static Builder<static>|QueueLog forQueue(string $queueName)
  * @method static Builder<static>|QueueLog newModelQuery()
  * @method static Builder<static>|QueueLog newQuery()

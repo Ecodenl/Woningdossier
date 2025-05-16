@@ -20,6 +20,7 @@ use Plank\Mediable\MediableInterface;
  * @property int $id
  * @property string $name
  * @property string $slug
+ * @property string $country
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $website_url
@@ -34,6 +35,7 @@ use Plank\Mediable\MediableInterface;
  * @property-read int|null $cooperation_settings_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExampleBuilding> $exampleBuildings
  * @property-read int|null $example_buildings_count
+ * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $questionnaires
@@ -50,6 +52,7 @@ use Plank\Mediable\MediableInterface;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereCooperationEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereCountry($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereEconobisApiKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereEconobisWildcard($value)

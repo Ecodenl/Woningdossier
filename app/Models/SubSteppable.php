@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string|null $size
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\SubStep $subStep
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subSteppable
  * @property-read \App\Models\ToolQuestionType|null $toolQuestionType

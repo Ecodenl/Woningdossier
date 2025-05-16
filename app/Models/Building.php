@@ -63,6 +63,7 @@ use Plank\Mediable\MediableInterface;
  * @property-read \App\Models\BuildingPaintworkStatus|null $currentPaintworkStatus
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CustomMeasureApplication> $customMeasureApplications
  * @property-read int|null $custom_measure_applications_count
+ * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\BuildingHeater|null $heater
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count

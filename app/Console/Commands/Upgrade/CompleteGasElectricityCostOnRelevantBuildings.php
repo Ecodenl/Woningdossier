@@ -27,21 +27,9 @@ class CompleteGasElectricityCostOnRelevantBuildings extends Command
     protected $description = 'Completes the gas-electricity substep for eligible buildings and its relevant input sources.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $usageQuickScan = Step::where('short', 'usage-quick-scan')->first();
         $subStepToComplete = $usageQuickScan->subSteps()->where('slug->nl', 'gas-en-elektra-kosten')->first();
@@ -72,8 +60,7 @@ class CompleteGasElectricityCostOnRelevantBuildings extends Command
                     $incompleteGasElectricityForBuildingInputSourcesCombinations = DB::table('steps')
                         ->selectRaw('steps.id as step_id,
                                             completed_steps.building_id as building_id, 
-                                            completed_steps.input_source_id'
-                        )
+                                            completed_steps.input_source_id')
                         ->leftJoin('completed_steps', 'steps.id', 'completed_steps.step_id')
                         ->leftJoin('completed_sub_steps', function (JoinClause $leftJoin) use ($subStepToComplete) {
                             $leftJoin->on('completed_steps.building_id', 'completed_sub_steps.building_id')

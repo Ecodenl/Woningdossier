@@ -30,10 +30,8 @@ class UnreadMessagesEmail extends Mailable
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('cooperation.mail.user.unread-message-count.view')
             ->text('cooperation.mail.user.unread-message-count.text')

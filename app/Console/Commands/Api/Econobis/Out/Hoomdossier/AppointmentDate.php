@@ -27,26 +27,14 @@ class AppointmentDate extends Command
     protected $description = 'Send the current appointment date of the building.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         SendAppointmentDateToEconobis::dispatch(
             Building::findOrFail($this->argument('building'))
         );
 
-        return 0;
+        return self::SUCCESS;
     }
 }

@@ -16,7 +16,7 @@ class SpecificExampleBuilding extends QuestionValuable
         // end up with an input source that might not have answered this question yet. Since we only want
         // example buildings for the given type anyway, we don't have to do anything if the ID is null
         if (! is_null($buildingTypeId)) {
-            // There should only ever be one building. If there's more, well, then they fucked it up themselves
+            // There should only ever be one building. If there's more, well, then they messed it up themselves
             $genericBuilding = ExampleBuilding::where('building_type_id', $buildingTypeId)
                 ->whereNull('cooperation_id')
                 ->first();
@@ -45,7 +45,7 @@ class SpecificExampleBuilding extends QuestionValuable
                     'extra' => [
                         'icon' => 'icon-not-relevant',
                     ],
-                    'name' => optional($genericBuilding)->id === $exampleBuilding->id ? __('cooperation/frontend/tool/simple-scan/question-values.specific-example-building.no-option') : $exampleBuilding->name,
+                    'name' => $genericBuilding?->id === $exampleBuilding->id ? __('cooperation/frontend/tool/simple-scan/question-values.specific-example-building.no-option') : $exampleBuilding->name,
                     'value' => $exampleBuilding->id,
                 ];
             });

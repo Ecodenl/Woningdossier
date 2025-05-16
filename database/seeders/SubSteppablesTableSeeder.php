@@ -24,10 +24,8 @@ class SubSteppablesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         // Templates
         $templateDefault = SubStepTemplate::findByShort('template-default');

@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\app\Helpers\KeyFigures\WallInsulation;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use Tests\TestCase;
 
-class TemperatureTest extends TestCase
+final class TemperatureTest extends TestCase
 {
-    public static function dataProvider()
+    public static function dataProvider(): array
     {
         return [
             [
@@ -22,10 +23,8 @@ class TemperatureTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
-    public function testEnergySavingFigureWallInsulation($expected, $measure, $averageHouseTemp)
+    #[DataProvider('dataProvider')]
+    public function testEnergySavingFigureWallInsulation($expected, $measure, $averageHouseTemp): void
     {
         $this->assertEquals($expected, Temperature::energySavingFigureWallInsulation($measure, $averageHouseTemp));
     }

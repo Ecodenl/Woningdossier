@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 
@@ -9,10 +10,8 @@ class CooperationAdminController extends Controller
 {
     /**
      * Show the cooperation admins of the cooperation that the user is managing.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage)
+    public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage): View
     {
         $users = $cooperationToManage->users()->withoutGlobalScopes()->role('cooperation-admin')->get();
 

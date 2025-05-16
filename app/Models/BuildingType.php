@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,23 +12,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $id
  * @property int|null $building_type_category_id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property int $calculate_value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingFeature[] $buildingFeatures
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingFeature> $buildingFeatures
  * @property-read int|null $building_features_count
  * @property-read \App\Models\BuildingTypeCategory|null $buildingTypeCategory
- * @property-read array $translations
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType query()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereBuildingTypeCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereCalculateValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingType whereUpdatedAt($value)
+ * @property-read mixed $translations
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereBuildingTypeCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereCalculateValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class BuildingType extends Model
@@ -38,7 +43,7 @@ class BuildingType extends Model
         'name',
     ];
 
-    public function buildingFeatures()
+    public function buildingFeatures(): HasMany
     {
         return $this->hasMany(BuildingFeature::class);
     }

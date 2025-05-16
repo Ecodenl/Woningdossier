@@ -9,7 +9,7 @@ class RouteLogic
 {
     public static function inSimpleScan($route): bool
     {
-        $routeName = static::getRouteName($route);
+        $routeName = self::getRouteName($route);
 
         return Str::startsWith($routeName, 'cooperation.frontend.tool.simple-scan');
     }
@@ -22,28 +22,28 @@ class RouteLogic
 
     public static function inMyPlan($route): bool
     {
-        $routeName = static::getRouteName($route);
+        $routeName = self::getRouteName($route);
 
         return Str::contains($routeName, 'my-plan.');
     }
 
     public static function inMyRegulations($route): bool
     {
-        $routeName = static::getRouteName($route);
+        $routeName = self::getRouteName($route);
 
         return Str::contains($routeName, 'my-regulations.index');
     }
 
     public static function inQuestionnaire($route): bool
     {
-        $routeName = static::getRouteName($route);
+        $routeName = self::getRouteName($route);
 
         return Str::contains($routeName, 'questionnaires.index');
     }
 
     public static function inExpertTool($route): bool
     {
-        $routeName = static::getRouteName($route);
+        $routeName = self::getRouteName($route);
 
         return Str::startsWith($routeName, 'cooperation.tool') || Str::startsWith($routeName, 'cooperation.frontend.tool.expert-scan');
     }

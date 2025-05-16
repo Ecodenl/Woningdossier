@@ -15,7 +15,7 @@ use App\Services\UserActionPlanAdviceService;
 
 class HeatPumpHelper extends ToolHelper
 {
-    const MEASURE_SERVICE_LINK = [
+    const array MEASURE_SERVICE_LINK = [
         'hybrid-heat-pump-outside-air' => 1,
         'hybrid-heat-pump-ventilation-air' => 2,
         'hybrid-heat-pump-pvt-panels' => 3,
@@ -24,13 +24,13 @@ class HeatPumpHelper extends ToolHelper
         'full-heat-pump-pvt-panels' => 6,
     ];
 
-    public function saveValues(): ToolHelper
+    public function saveValues(): static
     {
         // Format isn't applicable for this helper, but it is required due to abstraction
         return $this;
     }
 
-    public function createValues(): ToolHelper
+    public function createValues(): static
     {
         // Technically not correct but it makes it easier to reuse considerable for the heat pump boiler
         $heatPump = Step::findByShort('heat-pump');
@@ -56,7 +56,7 @@ class HeatPumpHelper extends ToolHelper
         return $this;
     }
 
-    public function createAdvices(): ToolHelper
+    public function createAdvices(): static
     {
         $updatedMeasureIds = $this->getValues('updated_measure_ids');
 
@@ -108,8 +108,7 @@ class HeatPumpHelper extends ToolHelper
                         // If they use low temp, we suggest a full heat pump. Otherwise we always suggest hybrid.
                         // In the case the user is unsure about their temp usage, as mentioned above, we assume the
                         // worst case and thus also suggest hybrid
-                        $heatPumpToCalculate = $heatingTemp === 'temp-low' ? 'full-heat-pump-outside-air'
-                            : 'hybrid-heat-pump-outside-air';
+                        $heatPumpToCalculate = $heatingTemp === 'temp-low' ? 'full-heat-pump-outside-air' : 'hybrid-heat-pump-outside-air';
                     }
                 }
             }
@@ -140,8 +139,11 @@ class HeatPumpHelper extends ToolHelper
 
                     // We only want to check old advices if the updated attributes are not relevant to this measure
                     if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
-                            $oldAdvices);
+                        UserActionPlanAdviceService::checkOldAdvices(
+                            $actionPlanAdvice,
+                            $measureApplication,
+                            $oldAdvices
+                        );
                     }
 
                     $actionPlanAdvice->save();
@@ -162,8 +164,11 @@ class HeatPumpHelper extends ToolHelper
 
                 // We only want to check old advices if the updated attributes are not relevant to this measure
                 if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
-                        $oldAdvices);
+                    UserActionPlanAdviceService::checkOldAdvices(
+                        $actionPlanAdvice,
+                        $measureApplication,
+                        $oldAdvices
+                    );
                 }
 
                 $actionPlanAdvice->save();

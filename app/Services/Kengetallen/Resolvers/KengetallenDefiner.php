@@ -6,7 +6,7 @@ abstract class KengetallenDefiner
 {
     public array $context;
 
-    public abstract function get(string $kengetallenCode);
+    abstract public function get(string $kengetallenCode);
 
     public function context(array $context): self
     {

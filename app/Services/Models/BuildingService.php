@@ -19,6 +19,7 @@ use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
 use App\Traits\Services\HasBuilding;
 use App\Traits\Services\HasInputSources;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -35,13 +36,9 @@ class BuildingService
     }
 
     /**
-     * convenient way of setting a appointment date on a building.
-     *
-     * @param  string
-     *
-     * @return void
+     * Convenient way of setting a appointment date on a building.
      */
-    public function setAppointmentDate($appointmentDate): void
+    public function setAppointmentDate(?Carbon $appointmentDate): void
     {
         $this->building->buildingStatuses()->create([
             'status_id' => $this->building->getMostRecentBuildingStatus()->status_id,
@@ -55,8 +52,6 @@ class BuildingService
 
     /**
      * This method will set the BuildingDefined kengetallen to the "default" (RvoDefined) kengetallen
-     *
-     * @return void
      */
     public function setBuildingDefinedKengetallen(): void
     {
@@ -80,25 +75,23 @@ class BuildingService
         if ($scan->isQuickScan()) {
             $quickScan = Scan::findByShort(Scan::QUICK);
             $woonplanService = WoonplanService::init($this->building)->scan($quickScan);
-            // iknow, the variable is not needed.
-            // just got it here as a description since this same statement is found in different context.
-            $canRecalculate = $woonplanService->buildingCompletedFirstFourSteps() || $woonplanService->buildingHasMeasureApplications();
-            return $canRecalculate;
+            return $woonplanService->buildingCompletedFirstFourSteps()
+                || $woonplanService->buildingHasMeasureApplications();
         }
 
         if ($scan->isLiteScan()) {
             return $this->building->hasCompletedScan($scan, InputSource::findByShort(InputSource::MASTER_SHORT));
         }
+
+        // Apparently not a simple scan. Since this code is only used in the simple scan form, it shouldn't
+        // be any other scan.
+        return false;
     }
 
     /**
      * Get the answer for a set of questions including the input source that made that answer.
      * The example building will be prioritized if available.
      * Note that this method does not perform evaluation!
-     *
-     * @param  \Illuminate\Support\Collection  $toolQuestions
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getSourcedAnswers(Collection $toolQuestions): Collection
     {
@@ -158,7 +151,7 @@ class BuildingService
                 ->havingRaw('nma.input_source_id = latest_source_id')
                 ->get()
                 ->groupBy('tool_question_id')
-                ->map(fn($val) => $val->map(fn($subVal) => (array)$subVal)->toArray());
+                ->map(fn($val) => $val->map(fn($subVal) => (array) $subVal)->toArray());
         }
 
         $ids = $toolQuestions->whereNotNull('save_in')->pluck('id')->toArray();
@@ -231,7 +224,7 @@ class BuildingService
                     ->leftJoin('input_sources AS is', 'nma.input_source_id', '=', 'is.id')
                     ->havingRaw('nma.input_source_id = latest_source_id')
                     ->get()
-                    ->map(fn($val) => (array)$val)
+                    ->map(fn($val) => (array) $val)
                     ->toArray();
 
                 $answersForSaveIn->put($toolQuestionId, $answersForResolved);
@@ -252,7 +245,8 @@ class BuildingService
         $newMunicipality = $building->municipality_id;
 
         // Check if a municipality was attached. If not, dispatch it on the regular queue so it retries.
-        // If the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated will be fired from the attachMunicipality method.
+        // If the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated
+        // will be fired from the attachMunicipality method.
         // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job.
         // If the municipality hasn't changed, however, we will manually dispatch a refresh.
         if (is_null($newMunicipality)) {
@@ -274,12 +268,11 @@ class BuildingService
         // to cascade on delete, but mappings are a morph relation without foreign key constraints, so we must
         // delete them ourselves.
         DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
-            ->whereIn('from_model_id',
-                $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray())
+            ->whereIn(
+                'from_model_id',
+                $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray()
+            )
             ->delete();
-
-        // table will be removed anyways.
-        DB::table('building_appliances')->whereBuildingId($building->id)->delete();
 
         $building->forceDelete();
     }

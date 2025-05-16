@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Frontend\Tool\SimpleScan;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Jobs\RecalculateStepForUser;
@@ -18,16 +20,16 @@ use Illuminate\Http\Request;
 
 class MyPlanController extends Controller
 {
-    public function index(Cooperation $cooperation, Scan $scan)
+    public function index(Cooperation $cooperation, Scan $scan): View|RedirectResponse
     {
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $masterInputSource = InputSource::master();
 
         $woonplanService = WoonplanService::init($building)
             ->scan($scan);
 
-        if(HoomdossierSession::isUserObserving()) {
+        if (HoomdossierSession::isUserObserving()) {
             $woonplanService = $woonplanService->userIsObserving();
         }
 
@@ -60,7 +62,7 @@ class MyPlanController extends Controller
         return view('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan', 'building', 'inputSource', 'activeNotification'));
     }
 
-    public function media(Request $request, Cooperation $cooperation, Scan $scan, ?Building $building = null)
+    public function media(Request $request, Cooperation $cooperation, Scan $scan, ?Building $building = null): View
     {
         $currentBuilding = HoomdossierSession::getBuilding(true);
 

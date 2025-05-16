@@ -2,10 +2,12 @@
 
 namespace App\Rules;
 
+use Closure;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Hash;
 
-class HashCheck implements Rule
+class HashCheck implements ValidationRule
 {
     /**
      * The hashed string that will be matched against the given value.
@@ -27,23 +29,25 @@ class HashCheck implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
      * @param mixed  $value
-     *
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         return Hash::check($value, $this->hashToCheck);
     }
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
-    public function message()
+    public function message(): string
     {
         return __('validation.hash_check');
+    }
+
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (! $this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 }

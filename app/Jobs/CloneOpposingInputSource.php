@@ -31,10 +31,8 @@ class CloneOpposingInputSource extends NonHandleableJobAfterReset
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         CloneDataService::init($this->building, $this->inputSource, $this->cloneableInputSource)
             ->clone();

@@ -98,8 +98,6 @@ class WallInsulationHelper extends ToolHelper
 
     /**
      * Save the advices for the wall insulation page.
-     *
-     * @return \App\Helpers\Cooperation\Tool\ToolHelper
      */
     public function createAdvices(): ToolHelper
     {
@@ -125,8 +123,11 @@ class WallInsulationHelper extends ToolHelper
 
                     // We only want to check old advices if the updated attributes are not relevant to this measure
                     if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
-                            $oldAdvices);
+                        UserActionPlanAdviceService::checkOldAdvices(
+                            $actionPlanAdvice,
+                            $measureApplication,
+                            $oldAdvices
+                        );
                     }
 
                     $actionPlanAdvice->save();

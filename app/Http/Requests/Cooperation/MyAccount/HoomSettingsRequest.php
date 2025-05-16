@@ -11,25 +11,21 @@ class HoomSettingsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::check();
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'account.email' => ['required', 'email', Rule::unique('accounts', 'email')->ignore(Hoomdossier::account()->id)],
             'account.current_password' => ['nullable', new HashCheck(Hoomdossier::account()->password)],
-            'account.password' => 'required_with:account.current_password|nullable|string|confirmed|min:'.Hoomdossier::PASSWORD_LENGTH,
+            'account.password' => 'required_with:account.current_password|nullable|string|confirmed|min:' . Hoomdossier::PASSWORD_LENGTH,
             'account.password_confirmation' => 'required_with:account.password',
         ];
     }

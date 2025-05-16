@@ -3,8 +3,9 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class PostalCode extends LocaleBasedRule implements Rule
+class PostalCode extends LocaleBasedRule implements ValidationRule
 {
     protected $countryRegexes = [
         'nl' => '/^[1-9][0-9]{3} ?(?!sa|sd|ss)[a-z]{2}$/i',
@@ -14,12 +15,9 @@ class PostalCode extends LocaleBasedRule implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
      * @param mixed  $value
-     *
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         if (empty($this->country)) {
             return false;
@@ -33,11 +31,16 @@ class PostalCode extends LocaleBasedRule implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
-    public function message()
+    public function message(): string
     {
         return trans('validation.postal_code');
+    }
+
+    public function validate(string $attribute, mixed $value, \Closure $fail): void
+    {
+        if (! $this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 }

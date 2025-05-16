@@ -24,14 +24,14 @@ class NotificationIntervalsTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Wekelijks',
+                    'nl' => 'Per week',
                     'en' => 'Weekly',
                 ],
                 'short' => 'weekly',
             ],
             [
                 'name' => [
-                    'nl' => 'Geen interesse',
+                    'nl' => 'Geen mails ontvangen',
                     'en' => 'No interest',
                 ],
                 'short' => 'no-interest',

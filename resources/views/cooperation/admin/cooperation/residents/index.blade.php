@@ -52,7 +52,7 @@
                         </td>
                         <td>
                             @can('verifyEmail', $user->account)
-                                <a class="btn btn-success"
+                                <a class="btn btn-green btn-sm"
                                    href="{{ route('cooperation.admin.actions.verify-email', ['account' => $user->account]) }}">
                                     @lang('default.verify')
                                 </a>

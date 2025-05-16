@@ -65,19 +65,27 @@ export default (checks, bagAvailable = true) => ({
         setTimeout(() => {
             this.switchAvailability();
 
-            // After a form request, data might be filled from old values, so we will perform a check.
-            this.performChecks();
+            // After a form request, defaults may be set. We will ensure these are filled.
+            this.oldValues = {
+                'postcode': this.$refs['postcode'].value,
+                'houseNumber': this.$refs['houseNumber'].value,
+                'houseNumberExtension': this.$refs['houseNumberExtensionSelect'].value,
+            }
+
+            // After a form request, data might be filled from old values, so we will perform a check, with
+            // force, since data might be set.
+            this.performChecks(true);
         });
     },
-    performChecks() {
+    performChecks(force = false) {
         if (Object.hasOwn(this.checks, 'correct_address')) {
-            this.getAddressData(this.checks['correct_address']);
+            this.getAddressData(this.checks['correct_address'], force);
         }
         if (Object.hasOwn(this.checks, 'duplicates')) {
             this.checkDuplicates(this.checks['duplicates']);
         }
     },
-    getAddressData(apiUrl) {
+    getAddressData(apiUrl, force) {
         // Get inputs from refs
         let postcode = this.$refs['postcode'];
         let houseNumber = this.$refs['houseNumber'];
@@ -93,12 +101,17 @@ export default (checks, bagAvailable = true) => ({
             if (url instanceof URL) {
                 // We also only want to make requests if there's actually something that's changed.
                 let makeRequest = false;
-                if (this.isDirty('postcode', postcode.value) || this.isDirty('houseNumber', houseNumber.value)) {
+                if (force) {
                     makeRequest = true;
                     url.searchParams.append('fetch_extensions', '1');
-                    url.searchParams.delete('extension');
-                } else if (this.isDirty('houseNumberExtension', houseNumberExtensionSelect.value)) {
-                    makeRequest = true;
+                } else {
+                    if (this.isDirty('postcode', postcode.value) || this.isDirty('houseNumber', houseNumber.value)) {
+                        makeRequest = true;
+                        url.searchParams.append('fetch_extensions', '1');
+                        url.searchParams.delete('extension');
+                    } else if (this.isDirty('houseNumberExtension', houseNumberExtensionSelect.value)) {
+                        makeRequest = true;
+                    }
                 }
 
                 if (makeRequest) {
@@ -133,7 +146,13 @@ export default (checks, bagAvailable = true) => ({
                     }).then((response) => {
                         // Show postal code error if address is wrongly validated.
                         this.showPostalCodeError = faultyData;
-                        this.availableExtensions = response.available_extensions || [];
+                        if (url.searchParams.get('fetch_extensions')) {
+                            this.availableExtensions = response.available_extensions || [];
+                            if (this.availableExtensions.length === 0) {
+                                // No longer any extensions available, reset old values.
+                                this.oldValues['houseNumberExtension'] = null;
+                            }
+                        }
 
                         // So, if no BAG address ID was returned, there was a BAG endpoint failure.
                         // We will consider the BAG available on form request errors also.

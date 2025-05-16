@@ -52,7 +52,7 @@ class GiveCoachesBuildingPermission
                     'from_cooperation_id' => $cooperation->id,
                     'to_cooperation_id' => $cooperation->id,
                     'from_user' => $cooperation->name,
-                    'message' => 'Welkom bij het Hoomdossier, hier kunt u chatten met de coöperatie.',
+                    'message' => 'Welkom in het Hoomdossier, hier kun je chatten met jouw energiecoach.',
                     'building_id' => $building->id,
                 ]);
             });

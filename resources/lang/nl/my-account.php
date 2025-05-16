@@ -2,14 +2,14 @@
 
 return [
     'side-nav' => [
-        'home'          => 'Home',
+        'home' => 'Home',
         'notification-settings' => 'Notificatie instellingen',
-        'label'       => 'Mijn account',
-        'import'      => 'Import centrum',
+        'label' => 'Mijn account',
+        'import' => 'Import centrum',
         'report' => 'Rapporten',
-        'settings'    => 'Instellingen',
+        'settings' => 'Instellingen',
         'hoom-settings' => 'Hoomdossier instellingen',
-        'access'      => 'Gebruikers met toegang tot uw woning',
+        'access' => 'Gebruikers met toegang tot uw woning',
         'my-messages' => 'Mijn berichten',
         'my-requests' => 'Mijn aanvragen',
     ],
@@ -21,49 +21,49 @@ return [
                 'scan' => 'Scan deze QR code met de uw 2FA app',
             ],
             'confirmed' => [
-                'enabled' => '2 Factor authenticatie is bevestigd en ingeschakeld!'
+                'enabled' => '2 Factor authenticatie is bevestigd en ingeschakeld!',
             ],
             'recovery-codes' => [
                 'label' => 'Herstel codes',
                 'show' => 'Herstelcodes weergeven',
-                'hide' => 'Herstelcodes verbergen'
+                'hide' => 'Herstelcodes verbergen',
             ],
 
             'alert' => [
                 'inactive' => [
                     'title' => 'Beveilig je account',
                     'text' => 'Twee factor authenticatie voegt een extra laag beveiliging toe aan je account, om in te loggen zal je een extra code nodig hebben.',
-                    'button' => 'Inschakelen'
+                    'button' => 'Inschakelen',
                 ],
                 'active' => [
                     'title' => 'Twee factor authenticatie ingeschakeld',
                     'text' => 'Twee factor authenticatie voegt een extra laag beveiliging toe aan je account, om in te loggen zal je een extra code nodig hebben.',
-                    'button' => 'Uitschakelen'
+                    'button' => 'Uitschakelen',
                 ],
             ],
         ],
     ],
 
-    'index'         => [
+    'index' => [
         'header' => 'Instellingen',
-        'text'   => 'U kunt vanaf hier naar uw instellingen gaan om uw account te wijzigen, voortgang te resetten of om het account te verwijderen. Of u kunt naar uw berichten gaan om deze te zien.',
+        'text' => 'U kunt vanaf hier naar uw instellingen gaan om uw account te wijzigen, voortgang te resetten of om het account te verwijderen. Of u kunt naar uw berichten gaan om deze te zien.',
 
         'settings' => 'Instellingen <span class="glyphicon glyphicon-cog">',
         'messages' => 'Berichten <span class="glyphicon glyphicon-envelope">',
     ],
     'import-center' => [
         'index' => [
-            'header'           => 'Import centrum',
-            'text'             => 'Welkom bij het import centrum.',
-            'copy-data'        => 'Neem :input_source_name antwoorden over',
-            'other-source'     => 'Er zijn gegevens van een :input_source_name aanwezig',
+            'header' => 'Import centrum',
+            'text' => 'Welkom bij het import centrum.',
+            'copy-data' => 'Neem :input_source_name antwoorden over',
+            'other-source' => 'Er zijn gegevens van een :input_source_name aanwezig',
             'other-source-new' => 'Er zijn <strong>nieuwe</strong> gegevens van een :input_source_name aanwezig',
             'show-differences' => 'Toon de verschillen met mijn data',
         ],
     ],
     'notification-settings' => [
         'index' => [
-            'header' => 'Uw notificatie instellingen',
+            'header' => 'Notificatie instellingen',
             'text' => 'U kunt deze hier inzien, en zo nodig wijzigen',
             'table' => [
                 'columns' => [
@@ -100,12 +100,12 @@ return [
                 'allow_access' => 'Ik geef toestemming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
             ],
             'header' => 'Aan mijn gekoppelde energiecoaches',
-            'text-allow-access'   => 'De gegevens worden uitsluitend door de coöperatie gebruikt om u in uw bewonersreis te ondersteunen. Uw persoonlijke gegevens worden niet doorgegeven aan derden. Meer informatie over de verwerking van uw data en wat we ermee doen kunt u vinden in ons privacy statement.',
-            'text'   => 'Hier ziet uw de gebruikers (Coaches en Coördinatoren), die toegang hebben tot uw woning. Deze gebruikers hebben de toegang om uw Hoomdossier in te vullen.',
+            'text-allow-access' => 'De gegevens worden uitsluitend door de coöperatie gebruikt om je in jouw bewonersreis te ondersteunen. Jouw persoonlijke gegevens worden niet doorgegeven aan derden. Meer informatie over de verwerking van jouw data en wat we ermee doen kun je vinden in ons privacy statement.',
+            'text' => 'Hier ziet uw de gebruikers (Coaches en Coördinatoren), die toegang hebben tot uw woning. Deze gebruikers hebben de toegang om uw Hoomdossier in te vullen.',
             'table' => [
                 'columns' => [
-                    'coach'   => 'Naam energiecoach',
-                    'actions' => 'Actie ondernemen',
+                    'coach' => 'Naam energiecoach',
+                    'actions' => 'Verbinding met energiecoach verbreken',
                 ],
             ],
         ],
@@ -113,26 +113,26 @@ return [
 
     'messages' => [
         'navigation' => [
-            'inbox'    => 'Inbox',
+            'inbox' => 'Inbox',
             'requests' => 'Uw aanvragen',
 
             'conversation-requests' => [
-                'request'        => 'Coachgesprek aanvragen',
+                'request' => 'Coachgesprek aanvragen',
                 'update-request' => 'Coachgesprek aanvraag bijwerken',
-                'disabled'       => 'Niet beschikbaar',
+                'disabled' => 'Niet beschikbaar',
             ],
         ],
-        'index'      => [
+        'index' => [
             'header' => 'Mijn berichten',
 
             'chat' => [
                 'conversation-requests-consideration' => [
                     'title' => 'Uw aanvraag is in behandeling',
-                    'text'  => 'Uw aanvraag is in behandeling, er word op het moment voor u een coach uitgekozen die het best bij uw situatie past.',
+                    'text' => 'Uw aanvraag is in behandeling, er word op het moment voor u een coach uitgekozen die het best bij uw situatie past.',
                 ],
-                'no-messages'                         => [
+                'no-messages' => [
                     'title' => 'Geen berichten',
-                    'text'  => 'Er zijn nog geen berichten. Deze zullen hier verschijnen nadat u antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
+                    'text' => 'Er zijn nog geen berichten. Deze zullen hier verschijnen nadat u antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
                 ],
             ],
         ],
@@ -141,39 +141,39 @@ return [
             'header' => 'Berichten',
 
             'chat' => [
-                'input'  => 'Type uw antwoord hier...',
+                'input' => 'Type uw antwoord hier...',
                 'button' => 'Verstuur',
             ],
         ],
 
         'requests' => [
-            'index'  => [
+            'index' => [
                 'header' => 'Mijn aanvragen',
 
                 'chat' => [
                     'conversation-requests-consideration' => [
                         'title' => 'Uw aanvraag is in behandeling',
-                        'text'  => 'Uw aanvraag is in behandeling, er wordt een coach voor u uitgekozen die het best bij uw situatie past.',
+                        'text' => 'Uw aanvraag is in behandeling, er wordt een coach voor u uitgekozen die het best bij uw situatie past.',
                     ],
-                    'no-messages'                         => [
+                    'no-messages' => [
                         'title' => 'Geen berichten',
-                        'text'  => 'Er zijn nog geen berichten. Deze zullen hier verschijnen nadat u antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
+                        'text' => 'Er zijn nog geen berichten. Deze zullen hier verschijnen nadat u antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
                     ],
                 ],
             ],
             'update' => [
                 'success' => 'Uw aanvraag is bijgewerkt. u kunt <strong><a href=":url">hier uw berichten bekijken</a> </strong> ',
             ],
-            'edit'   => [
+            'edit' => [
                 'is-connected-to-coach' => 'Deze aanvraag is al gekoppeld aan een coach, u kunt deze dus niet meer bijwerken.',
             ],
         ],
     ],
 
-    'settings'     => [
+    'settings' => [
         'index' => [
             'header' => 'Gebruikergegevens',
-            'text' => 'Hier kunt u uw gebruikers gegevens aanpassen, deze zijn per coöperatie aanpasbaar. Wat u dus hier aanpast heeft geen invloed op de andere coöperaties waar u bij bent aangesloten.',
+            'text' => 'Hier kun je jouw gebruikers gegevens aanpassen.',
             'header-building' => 'Adres',
             'form' => [
                 'submit' => 'Update gegevens',
@@ -185,63 +185,63 @@ return [
                     'city' => 'Stad',
                 ],
                 'user' => [
-                    'first-name'            => 'Voornaam',
-                    'last-name'             => 'Achternaam',
-                    'phone_number'          => 'Telefoonnummer',
+                    'first-name' => 'Voornaam',
+                    'last-name' => 'Achternaam',
+                    'phone_number' => 'Telefoonnummer',
                 ],
             ],
         ],
-        'store'      => [
+        'store' => [
             'success' => 'Gegevens succesvol gewijzigd',
         ],
         'reset-file' => [
-            'header'       => 'Dossier resetten',
-            'description'  => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
+            'header' => 'Dossier resetten',
+            'description' => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
             'modal' => [
                 'title' => 'Dossier resetten',
                 'text' => 'Dit verwijdert alle gegevens die zijn ingevuld bij verschillende stappen, u kunt er ook voor kiezen om de gegevens van uw coach te verwijderen.',
                 'reset-resident' => 'Reset alleen mijn gegevens',
                 'reset-both' => 'Reset mijn gegevens <b>en</b> deze van de coach.',
             ],
-            'label'        => 'Reset mijn dossier',
-            'submit'       => 'Reset',
+            'label' => 'Reset mijn dossier',
+            'submit' => 'Reset',
             'are-you-sure' => 'Let op: dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen. Weet u zeker dat u wilt doorgaan?',
-            'success'      => 'Uw gegevens zijn succesvol verwijderd van uw account',
+            'success' => 'Uw gegevens zijn succesvol verwijderd van uw account',
         ],
-        'destroy'    => [
-            'header'       => 'Account verwijderen',
+        'destroy' => [
+            'header' => 'Account verwijderen',
             'are-you-sure' => [
                 'complete-delete' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
                 'delete-from-cooperation' => 'Let op: u bent bij meerdere cooperaties aangesloten, dit verwijdert uw account alleen bij de huidige coöperatie. Om uw account volledig te verwijderen dient u deze stap bij elke coöperatie uit te voeren.',
             ],
 
-            'label'        => 'Mijn account verwijderen',
-            'submit'       => 'Verwijderen',
-            'success'      => [
+            'label' => 'Mijn account verwijderen',
+            'submit' => 'Verwijderen',
+            'success' => [
                 'cooperation' => 'Uw account is succesvol verwijderd voor deze coöperatie',
                 'full' => 'Uw account is volledig verwijderd',
             ],
         ],
     ],
-    'hoom-settings'     => [
+    'hoom-settings' => [
         'index' => [
             'header' => 'Accountgegevens',
             'header-password' => 'Wachtwoord aanpassen',
-            'text' => 'Hier kunt u uw account gegevens aanpassen, deze hebben effect op het gehele Hoomdossier. Als u hier uw e-mail of / en wachtwoord aanpast, dan geld dit voor elke coöperatie waar u bij bent aangesloten.',
+            'text' => 'Hier kun je jouw accountgegevens aanpassen. Let op: als je accounts op meerdere omgevingen van Hoomdossier hebt, dan gelden de nieuwe accountgegevens voor elke omgeving.',
             'form' => [
                 'submit' => 'Update gegevens',
 
                 'account' => [
-                    'e-mail'                => 'E-mailadres',
-                    'password'              => 'Wachtwoord',
+                    'e-mail' => 'E-mailadres',
+                    'password' => 'Wachtwoord',
                     'password-confirmation' => 'Wachtwoord (bevestigen)',
-                    'new-password'          => 'Nieuw wachtwoord',
+                    'new-password' => 'Nieuw wachtwoord',
                     'new-password-confirmation' => 'Nieuw wachtwoord (bevestigen)',
-                    'current-password'      => 'Huidig wachtwoord',
+                    'current-password' => 'Huidig wachtwoord',
                 ],
             ],
         ],
-        'store'      => [
+        'store' => [
             'success' => 'Gegevens succesvol gewijzigd',
         ],
     ],

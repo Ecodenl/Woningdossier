@@ -41,7 +41,7 @@ class RoofType extends Model
     use HasShortTrait,
         HasTranslations;
 
-    const PRIMARY_TO_SECONDARY_MAP = [
+    const array PRIMARY_TO_SECONDARY_MAP = [
         'pitched' => 'pitched',
         'flat' => 'flat',
         'none' => 'none',
@@ -50,11 +50,11 @@ class RoofType extends Model
         'straw-roof' => 'pitched',
     ];
 
-    const SECONDARY_ROOF_TYPE_SHORTS = [
+    const array SECONDARY_ROOF_TYPE_SHORTS = [
         'pitched', 'flat', 'none',
     ];
 
-    const MEASURE_MAP = [
+    const array MEASURE_MAP = [
         'pitched' => [
             'roof-insulation-flat-current' => 'roof-insulation-pitched-inside',
             'roof-insulation-flat-replace-current' => 'roof-insulation-pitched-replace-tiles',

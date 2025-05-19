@@ -46,8 +46,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $building_notes_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingPermission> $buildingPermissions
  * @property-read int|null $building_permissions_count
- * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Building> $buildings
- * @property-read int|null $buildings_count
  * @property-read \App\Models\CompletedQuestionnaire|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $completedQuestionnaires
  * @property-read int|null $completed_questionnaires_count
@@ -217,14 +215,6 @@ class User extends Model implements AuthorizableContract
         }
 
         return null;
-    }
-
-    // ------ End User -> Account table / model migration stuff -------
-    public function buildings(): HasMany
-    {
-        // TODO: No user has more than one building.
-        DeprecationLogger::log(__METHOD__ . ' really shouldn\'t be used anymore...');
-        return $this->hasMany(Building::class);
     }
 
     public function building(): HasOne

@@ -29,7 +29,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\BuildingHeating|null $heating
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\ElementValue|null $insulation
- * @property-read \App\Models\MeasureApplication|null $measureApplication
  * @property-read \App\Models\RoofType $roofType
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType forBuilding(\App\Models\Building|int $building)
@@ -110,12 +109,5 @@ class BuildingRoofType extends Model
     public function buildingHeating(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class);
-    }
-
-    public function measureApplication(): BelongsTo
-    {
-        \Log::critical(__METHOD__ . ': Dit werkt niet!!');
-
-        return $this->belongsTo(MeasureApplication::class);
     }
 }

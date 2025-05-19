@@ -75,7 +75,7 @@ class EnergyLabelService
         $this->log('Final result', [$this->building->id, $result]);
 
         // Result is array wrapped but always only one result...
-        return $result[0]['labelLetter'] ?? null;
+        return $result[0]['Energieklasse'] ?? null;
     }
 
     public function syncEnergyLabel(): void
@@ -144,7 +144,7 @@ class EnergyLabelService
                 $throw = true;
 
                 if ($exception instanceof ClientException) {
-                    // If no key given, 401 is thrown. If address isn't found, 404 is thrown.
+                    // If no key given, 401 is thrown. If address (or endpoint...) isn't found, 404 is thrown.
                     if ($exception->getResponse()->getStatusCode() == 400) {
                         Log::error('Bad request', json_decode($exception->getResponse()->getBody()->getContents(), true));
                     }

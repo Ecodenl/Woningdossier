@@ -54,16 +54,21 @@
                         <td data-sort="{{$userCreatedAtStrotime ?? '-'}}">
                             {{$userCreatedAtFormatted ?? '-'}}
                         </td>
-                        <td>
-                            @can('verifyEmail', $user->account)
+                        @can('verifyEmail', $user->account)
+                            <td data-order="0">
                                 <a class="btn btn-green btn-sm"
                                    href="{{ route('cooperation.admin.actions.verify-email', ['account' => $user->account]) }}">
                                     @lang('default.verify')
                                 </a>
-                            @else
-                                {{ (empty($user->account) || is_null($user->account->email_verified_at)) ? __('default.no') : $user->account->email_verified_at->format('d-m-Y') }}
-                            @endcan
-                        </td>
+                            </td>
+                        @else
+                            @php
+                                $isNotVerified = (empty($user->account) || is_null($user->account->email_verified_at));
+                            @endphp
+                            <td data-order="{{ $isNotVerified ? 0 : $user->account->email_verified_at->unix() }}">
+                                {{ $isNotVerified ? __('default.no') : $user->account->email_verified_at->format('d-m-Y') }}
+                            </td>
+                        @endcan
                     </tr>
                 @endforeach
             </tbody>

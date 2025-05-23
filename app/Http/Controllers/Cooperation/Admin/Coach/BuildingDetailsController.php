@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Models\BuildingNotes;
@@ -9,7 +10,7 @@ use Illuminate\Http\Request;
 
 class BuildingDetailsController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $note = strip_tags($request->get('note'));
         $buildingId = $request->get('building_id');

@@ -17,7 +17,7 @@
 
     <ul x-cloak x-ref="source-select-options" class="source-select-dropdown" x-show="open && !disabled">
         @if(! empty($sourceSlot))
-            {!! $sourceSlot ?? '' !!}
+            {{ $sourceSlot }}
         @endif
     </ul>
 </div>

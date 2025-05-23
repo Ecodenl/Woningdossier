@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Log;
 
 class DuplicateDataForBuilding
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);

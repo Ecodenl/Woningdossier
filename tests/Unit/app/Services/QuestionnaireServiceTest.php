@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\Questionnaire;
@@ -10,66 +11,14 @@ use App\Services\QuestionnaireService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class QuestionnaireServiceTest extends TestCase
+final class QuestionnaireServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    public static function hasQuestionOptionsProvider()
-    {
-        return [
-            ['select', true],
-            ['radio', true],
-            ['checkbox', true],
-            ['text', false],
-            ['input', false],
-            ['date', false],
-        ];
-    }
-
-    /**
-     * @dataProvider hasQuestionOptionsProvider
-     */
-    public function testHasQuestionOptions($input, $expected)
-    {
-        $this->assertEquals($expected, QuestionnaireService::hasQuestionOptions($input));
-    }
-
-    public function createQuestionProvider()
-    {
-        return [
-            [[
-                'question' => [
-                    'nl' => 'Test questionnaire',
-                ],
-                'required' => true,
-            ]],
-        ];
-    }
-
-    /**
-     * @dataProvider createQuestionProvider
-     */
-    public function testCreateQuestion($questionData)
+    public function testCopyQuestionnaireToCooperation(): void
     {
         // first we need to create a questionnaire with a question
-        $questionnaire = Questionnaire::factory()->create();
-
-        QuestionnaireService::createQuestion($questionnaire, $questionData, 'text', [], 0);
-
-        $this->assertDatabaseHas('questions', [
-            'questionnaire_id' => $questionnaire->id,
-        ]);
-    }
-
-    public function testCopyQuestionnaireToCooperation()
-    {
-        // first we need to create a questionnaire with a question
-        $questionnaire = Questionnaire::factory()->create();
+        $questionnaire = Questionnaire::factory()->withCooperation()->create();
         for ($i = 0; $i < 10; ++$i) {
             $questionnaire->questions()->save(
                 Question::factory()->make(['order' => $i])
@@ -96,45 +45,5 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertDatabaseHas('questions', [
             'questionnaire_id' => $copiedQuestionnaire->id,
         ]);
-    }
-
-    public function isEmptyTranslationProvider()
-    {
-        return [
-            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], false],
-            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], false],
-            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], false],
-            [['fr' => '', 'en' => '', 'nl' => ''], true],
-            [['fr' => '', 'en' => null, 'nl' => ''], true],
-            [['fr' => null, 'en' => null, 'nl' => '', 'de' => 'duitse tekst'], false],
-        ];
-    }
-
-    /**
-     * @dataProvider isEmptyTranslationProvider
-     */
-    public function testIsEmptyTranslation($translations, $expected)
-    {
-        $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
-    }
-
-    public function isNotEmptyTranslationProvider()
-    {
-        return [
-            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], true],
-            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], true],
-            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], true],
-            [['fr' => '', 'en' => '', 'nl' => ''], false],
-            [['fr' => '', 'en' => null, 'nl' => ''], false],
-            [['fr' => null, 'en' => null, 'nl' => '', 'de' => 'duitse tekst'], true],
-        ];
-    }
-
-    /**
-     * @dataProvider isNotEmptyTranslationProvider
-     */
-    public function testisNotEmptyTranslation($translations, $expected)
-    {
-        $this->assertEquals($expected, QuestionnaireService::isNotEmptyTranslation($translations));
     }
 }

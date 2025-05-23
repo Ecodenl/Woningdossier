@@ -46,7 +46,7 @@ class ContentStructureService
 
         // Secondly, flatten it and remove unnecessary prefix
         $finalStructure = [];
-        foreach($contentStructure as $step => $fields) {
+        foreach ($contentStructure as $step => $fields) {
             foreach ($fields as $short => $lang) {
                 $finalStructure[str_replace('question_', '', $short)] = $lang;
             }

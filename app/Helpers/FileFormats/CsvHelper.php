@@ -7,16 +7,13 @@ class CsvHelper
     /**
      * Convert a csv to a associative array with the header / first row of the csv as array keys.
      * when $csvHeaderAsArrayKeys is set to false it will use normal array indexes.
-     *
-     * @param string $file
-     * @param string $delimiter
-     * @param bool   $csvHeaderAsArrayKeys
      */
     public static function toArray(
-        $file,
-        $delimiter = ',',
-        $csvHeaderAsArrayKeys = true
-    ): array {
+        string $file,
+        string $delimiter = ',',
+        bool $csvHeaderAsArrayKeys = true
+    ): array
+    {
         $header = null;
         $updatedHeader = null;
         $data = [];
@@ -51,7 +48,7 @@ class CsvHelper
     public static function escapeLeadingZero($string)
     {
         if ('0' == substr($string, 0, 1)) {
-            $string = "'".$string;
+            $string = "'" . $string;
         }
 
         return $string;

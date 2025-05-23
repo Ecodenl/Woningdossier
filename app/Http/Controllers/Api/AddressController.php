@@ -22,6 +22,7 @@ class AddressController extends Controller
         $postalCodeNormalized = strtolower($addressService->normalizeZipcode($postalCode, true));
         $postalCodeNoSpace = strtolower($addressService->normalizeZipcode($postalCode, false));
 
+        /** @var \Illuminate\Database\Eloquent\Collection<int,Building> $result */
         $result = $cooperation->buildings()->where(function (Builder $query) use ($postalCodeNormalized, $postalCodeNoSpace) {
             $query->whereRaw('LOWER(postal_code) = ?', [$postalCodeNormalized])
                 ->orWhereRaw('LOWER(postal_code) = ?', [$postalCodeNoSpace]);

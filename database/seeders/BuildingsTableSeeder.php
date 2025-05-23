@@ -9,10 +9,8 @@ class BuildingsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         DB::table('buildings')->insert([
             'user_id' => 1,

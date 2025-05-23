@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\ParticipantAddedEvent;
 use App\Models\Account;
 use App\Models\Client;
 use App\Models\Log;
@@ -14,12 +15,8 @@ class ParticipantAddedListener
 {
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(ParticipantAddedEvent $event): void
     {
         $participantFullName = $event->addedParticipant->getFullName();
         $message = __('woningdossier.cooperation.chat.messages.participant-added', ['participant' => $participantFullName]);

@@ -10,10 +10,8 @@ class StepsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
 
         $expertScan = DB::table('scans')->where('short', 'expert-scan')->first();

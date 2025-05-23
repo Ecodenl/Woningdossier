@@ -35,9 +35,7 @@ class VentilationHelper extends ToolHelper
 
         $step = Step::findByShort('ventilation');
 
-        $energyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
-
-        $results = Ventilation::calculate($this->building, $this->masterInputSource, $energyHabit, $this->getValues());
+        $results = Ventilation::calculate($this->building, $this->masterInputSource, $this->getValues());
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
@@ -48,10 +46,13 @@ class VentilationHelper extends ToolHelper
             if ($this->considers($measureApplication) && $measureApplication instanceof MeasureApplication) {
                 if ('crack-sealing' == $measureApplication->short) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
-                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['result']['crack_sealing']['cost_indication'] ?? null);
+                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts(
+                        $results['result']['crack_sealing']['cost_indication'] ?? null
+                    );
                 } else {
                     $actionPlanAdvice = new UserActionPlanAdvice();
-                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts(null); // To force an array format
+                    // To force an array format
+                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts(null);
                 }
 
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
@@ -74,7 +75,7 @@ class VentilationHelper extends ToolHelper
 
     public function createValues(): ToolHelper
     {
-        /** @var BuildingVentilation $buildingVentilation */
+        /** @var BuildingVentilation|null $buildingVentilation */
         $buildingVentilation = $this
             ->building
             ->buildingVentilations()
@@ -96,7 +97,7 @@ class VentilationHelper extends ToolHelper
 
         foreach ($measureApplications as $measureApplication) {
             $considerables[$measureApplication->id] = [
-                'is_considering'=> $this->user->considers($measureApplication, $this->masterInputSource),
+                'is_considering' => $this->user->considers($measureApplication, $this->masterInputSource),
                 'name' => $measureApplication->measure_name
             ];
         }
@@ -104,9 +105,9 @@ class VentilationHelper extends ToolHelper
         $this->setValues([
             'considerables' => $considerables,
             'building_ventilations' => [
-                'how' => optional($buildingVentilation)->how,
-                'living_situation' => optional($buildingVentilation)->living_situation,
-                'usage' => optional($buildingVentilation)->usage,
+                'how' => $buildingVentilation?->how,
+                'living_situation' => $buildingVentilation?->living_situation,
+                'usage' => $buildingVentilation?->usage,
             ],
             'updated_measure_ids' => [],
         ]);
@@ -157,10 +158,8 @@ class VentilationHelper extends ToolHelper
 
     /**
      * Method to return the warnings for the selected usages.
-     *
-     * @return array
      */
-    public static function getUsageWarnings()
+    public static function getUsageWarnings(): array
     {
         return [
             'sometimes-off' => 'Laat de ventilatie unit altijd aan staan, anders wordt er helemaal niet geventileerd en hoopt vocht en vieze lucht zich op. Trek alleen bij onderhoud of in geval van een ramp (als de overheid adviseert ramen en deuren te sluiten) de stekker van de ventilatie-unit uit het stopcontact.',
@@ -172,10 +171,8 @@ class VentilationHelper extends ToolHelper
 
     /**
      * Method to return the warnings for the selected hows.
-     *
-     * @return array
      */
-    public static function getHowWarnings()
+    public static function getHowWarnings(): array
     {
         return [
             'none' => 'Er is op dit moment mogelijkerwijs onvoldoende ventilatie, het kan zinvol zijn om dit door een specialist te laten beoordelen.',
@@ -206,9 +203,14 @@ class VentilationHelper extends ToolHelper
     {
         $allWarnings = [];
 
-        $allWarnings = array_merge($allWarnings, self::getHowWarnings(), self::getUsageWarnings(), self::getLivingSituationWarnings());
+        $allWarnings = array_merge(
+            $allWarnings,
+            self::getHowWarnings(),
+            self::getUsageWarnings(),
+            self::getLivingSituationWarnings()
+        );
 
-        if (!is_null($value)) {
+        if (! is_null($value)) {
             return $allWarnings[$value];
         }
 

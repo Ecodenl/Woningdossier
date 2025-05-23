@@ -1,0 +1,69 @@
+.container {
+    @apply w-full;
+}
+
+.container .icon-container {
+    @apply text-center p-0 m-0 w-[50px] h-[50px];
+}
+
+.container .group {
+    @apply py-2 px-0;
+}
+
+.container .row {
+    /* mPDF does not support display: inline-block; however using float we can fake it */
+    @apply w-full float-left;
+}
+
+.container .row .col-1 {
+    @apply float-left w-[7%];
+}
+
+.container .row .col-2 {
+    @apply float-left w-[15%];
+}
+
+.container .row .col-3 {
+    @apply float-left w-[24%];
+}
+
+.container .row .col-4 {
+    @apply float-left w-[32%];
+}
+
+.container .row .col-5 {
+    @apply float-left w-[40%];
+}
+
+.container .row .col-6 {
+    @apply float-left w-[49%];
+}
+
+.container .row .col-7 {
+    @apply float-left w-[57%];
+}
+
+.container .row .col-8 {
+    @apply float-left w-[65%];
+}
+
+.container .row .col-9 {
+    @apply float-left w-[74%];
+}
+
+.container .row .col-10 {
+    @apply float-left w-[82%];
+}
+
+.container .row .col-11 {
+    @apply float-left w-[90%];
+}
+
+.container .row .col-12 {
+    @apply float-left w-[99%];
+}
+
+.container table {
+    @apply w-full;
+    page-break-inside: auto;
+}

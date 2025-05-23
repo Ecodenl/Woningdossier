@@ -29,7 +29,7 @@ class SupportsLvBag extends ShouldEvaluate
         }
 
         $supportsApi = $building->user->cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG);
-\Log::debug("SUPPORTS API?", [$supportsApi]);
+
         return [
             'results' => $supportsApi,
             'bool' => $supportsApi === $value,

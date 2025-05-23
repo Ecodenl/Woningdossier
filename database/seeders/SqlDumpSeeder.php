@@ -8,11 +8,10 @@ class SqlDumpSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
+        // TODO: Deprecate this!
         $db = config('database.connections.'.config('database.default'));
 
         $sqlFiles = [

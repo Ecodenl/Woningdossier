@@ -1,12 +1,12 @@
 @component('cooperation.mail.components.message')
 
-    <?php
+    @php
         $hoomdossier_url = route('cooperation.home', ['cooperation' => $userCooperation]);
 
         $confirmUrl = route('cooperation.auth.password.reset', ['token' => $token, 'cooperation' => $userCooperation]);
 
         $cooperationHref = is_null($userCooperation->cooperation_email) ? $userCooperation->website_url : "mailto:".$userCooperation->cooperation_email;
-    ?>
+    @endphp
 
     @component('cooperation.mail.components.text')
         @lang('cooperation/mail/account-created.salutation', [

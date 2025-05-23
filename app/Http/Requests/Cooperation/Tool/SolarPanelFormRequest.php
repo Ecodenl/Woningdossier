@@ -15,20 +15,16 @@ class SolarPanelFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::check();
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules(LegacyService $legacyService)
+    public function rules(LegacyService $legacyService): array
     {
         $hasSolarPanelsToolQuestion = ToolQuestion::findByShort('has-solar-panels');
         $question = "filledInAnswers.{$hasSolarPanelsToolQuestion['id']}";
@@ -37,8 +33,15 @@ class SolarPanelFormRequest extends FormRequest
 
         $rules = [
             $question => $hasSolarPanelsToolQuestion->validation,
-            'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
-            'building_pv_panels.peak_power' => ['required', 'numeric', Rule::in(KeyFigures::getPeakPowers())],
+            'considerables.*.is_considering' => [
+                'required',
+                Rule::in(array_keys(ConsiderableHelper::getConsiderableValues())),
+            ],
+            'building_pv_panels.peak_power' => [
+                'required',
+                'numeric',
+                Rule::in(KeyFigures::getPeakPowers()),
+            ],
             'building_pv_panels.number' => 'required|numeric|min:0',
             'building_services.*.extra.value' => [
                 'nullable',

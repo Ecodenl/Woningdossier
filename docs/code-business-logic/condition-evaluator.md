@@ -24,13 +24,14 @@ ConditionEvaluator::init()
 ```
 
 Sometimes, answers can be dynamic. We use Livewire, in which the answers are changed but not updated in the
-database. There we offer `evaluateCollection`:
+database. There we offer `setAnswers`:
 
 ```php 
 ConditionEvaluator::init()
     ->building($building)
     ->inputSource($masterInputSource)
-    ->evaluateCollection($toolQuestion->conditions, $evaluatableAnswers)
+    ->setAnswers($evaluatableAnswers)
+    ->evaluate($toolQuestion->conditions)
 ```
 
 This evaluates in the same manner, but you'll need to provide the answers yourself. In the case you have some 
@@ -43,7 +44,7 @@ $evaluator = ConditionEvaluator::init()
   
 $answers = $evaluator->getToolAnswersForConditions($toolQuestion->conditions)->merge(collect($answers));
 
-$evaluation = $evaluator->evaluateCollection($toolQuestion->conditions, $answers);
+$evaluation = $evaluator->setAnswers($answers)->evaluate($toolQuestion->conditions);
 ```
 
 ## Constructing conditions
@@ -77,6 +78,7 @@ Example:
     ],
     [
         [
+            // Nested OR groups
             [
                 'column' => 'new-heat-source',
                 'operator' => Clause::CONTAINS,

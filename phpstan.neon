@@ -28,8 +28,5 @@ parameters:
             identifier: property.unused
             path: app/Http/Controllers/Api/*
 
-        # This is a surpression of an error we cannot fix from here and must be fixed in the wrapper
-        - '#.*Ecodenl\\LvbagPhpWrapper.*#'
-
 #    tips:
 #        treatPhpDocTypesAsCertain: false

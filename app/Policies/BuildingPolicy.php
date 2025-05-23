@@ -15,7 +15,7 @@ class BuildingPolicy
 {
     use HandlesAuthorization;
 
-    public function edit(Account $account, Building $building)
+    public function edit(Account $account, Building $building): bool
     {
         $user = $account->user();
         // While a user is allowed to see his own stuff, he is not allowed to do anything in it.
@@ -74,6 +74,12 @@ class BuildingPolicy
 
         // While a user is allowed to see his own stuff, he is not allowed to do anything in it.
         if ($user->id === $building->user_id) {
+            return false;
+        }
+
+        // If the building has no user, either the dossier has been deleted, or the cooperation scope
+        // is applied and so we're not in the right cooperation
+        if (! $building->user instanceof User) {
             return false;
         }
 

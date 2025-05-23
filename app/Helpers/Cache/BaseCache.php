@@ -2,7 +2,8 @@
 
 namespace App\Helpers\Cache;
 
-use App\Traits\HasShortTrait;
+use App\Helpers\HoomdossierSession;
+use App\Services\DiscordNotifier;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -26,9 +27,11 @@ class BaseCache
     {
         $prefix = config('hoomdossier.cache.prefix', '');
 
-        $cooperation = request()->route('cooperation');
+        $cooperation = HoomdossierSession::getCooperation(true);
 
-        if ($cooperation instanceof \App\Models\Cooperation) {
+        if (! $cooperation instanceof \App\Models\Cooperation) {
+            (new DiscordNotifier())->notify('No cooperation for cooperation cache key?');
+        } else {
             $prefix .= "{$cooperation->slug}_";
         }
 

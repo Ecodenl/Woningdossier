@@ -100,9 +100,8 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Model implements AuthorizableContract
 {
-    use HasFactory;
-
-    use HasRoles,
+    use HasFactory,
+        HasRoles,
         HasCooperationTrait,
         Authorizable;
 

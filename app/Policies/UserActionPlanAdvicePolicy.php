@@ -33,6 +33,7 @@ class UserActionPlanAdvicePolicy
                 return true;
             }
 
+            // TODO: With the commit where this todo is included, this should NO LONGER be happening.
             $userId = Hoomdossier::user()->id;
             (new DiscordNotifier())->notify("Account id {$user->id} with **current** user id {$userId} tried to access (denied) `{$userActionPlanAdvice->toJson()}`");
         }

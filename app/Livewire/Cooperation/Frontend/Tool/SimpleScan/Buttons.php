@@ -12,6 +12,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Services\Models\QuestionnaireService;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class Buttons extends Component
@@ -32,7 +33,7 @@ class Buttons extends Component
 
     public string $previousUrl = '';
 
-    public function mount(Request $request, Scan $scan, Step $step, $subStepOrQuestionnaire)
+    public function mount(Request $request, Scan $scan, Step $step, $subStepOrQuestionnaire): void
     {
         $this->account = $request->user();
         $this->building = $this->account->user()->building;
@@ -57,12 +58,12 @@ class Buttons extends Component
         $this->setUrl();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.cooperation.frontend.tool.simple-scan.buttons');
     }
 
-    public function setUrl()
+    public function setUrl(): void
     {
         // TODO: See if we can integrate this with the ScanFlowService
         $scan = $this->scan;
@@ -85,7 +86,7 @@ class Buttons extends Component
         $this->previousUrl = $previousUrl ?? '';
     }
 
-    private function setPreviousStep()
+    private function setPreviousStep(): void
     {
         $questionnaireService = QuestionnaireService::init()
             ->cooperation($this->cooperation)
@@ -104,13 +105,14 @@ class Buttons extends Component
             if ($firstSubStepForStep->id === $this->subStep->id) {
                 $this->previousStep = $this->step->previousStepForScan();
 
-                // the first one can't have a previous one
+                // The first step cannot have a previous one
                 if ($this->previousStep instanceof Step) {
-                    if ($questionnaireService->hasActiveQuestionnaires()) {
-                        // There are questionnaires we need to look at
+                    // We just altered the previous step, so properly set it in the questionnaire service.
+                    if ($questionnaireService->step($this->previousStep)->hasActiveQuestionnaires()) {
+                        // There are questionnaires we need to look at.
                         $this->previousQuestionnaire = $questionnaireService->resolveQuestionnaire(false);
                     } else {
-                        // the previous step is a different one, so we should get the last sub step of the previous step
+                        // The previous step is a different one, so we should get the last sub step of the previous step.
                         /** @phpstan-ignore assign.propertyType */
                         $this->previousSubStep = $this->previousStep->subSteps()->orderByDesc('order')->first();
                     }
@@ -118,8 +120,8 @@ class Buttons extends Component
             }
 
             if (isset($this->previousStep) && $this->account->cannot('show', [$this->previousSubStep, $this->building])) {
-                // so the user is not allowed to see this sub step
-                // now we also have to set the subStep so this won't do an infinite loop
+                // So the user is not allowed to see this sub step.
+                // Now we also have to set the subStep so this won't do an infinite loop.
                 /** @phpstan-ignore assign.propertyType */
                 $this->subStep = $this->previousSubStep;
                 $this->setPreviousStep();

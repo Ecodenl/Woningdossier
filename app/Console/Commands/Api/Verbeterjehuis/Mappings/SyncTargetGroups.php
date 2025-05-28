@@ -47,7 +47,7 @@ class SyncTargetGroups extends Command
             $map = [
                 'bought' => 'Woningeigenaar',
                 'rented' => 'Huurder',
-                'rented-private' => 'Huurder'
+                'rented-private' => 'Particuliere woningverhuurder'
             ];
 
             $targetGroups = collect(

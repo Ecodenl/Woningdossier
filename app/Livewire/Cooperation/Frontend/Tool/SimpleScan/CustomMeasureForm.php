@@ -4,7 +4,7 @@ namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
@@ -193,9 +193,9 @@ abstract class CustomMeasureForm extends Component
                 $from = $customMeasureApplication->getSibling($this->masterInputSource);
                 $measureCategory = MeasureCategory::find($measureData['measure_category'] ?? null);
                 $service = MappingService::init()
-                    //->type(MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
+                    //->type(MappingType::CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY->value)
                     ->from($from);
-                $measureCategory instanceof MeasureCategory ? $service->sync([$measureCategory], MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY) : $service->detach();
+                $measureCategory instanceof MeasureCategory ? $service->sync([$measureCategory], MappingType::CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY->value) : $service->detach();
 
                 // Update the user action plan advice linked to this custom measure
                 $customMeasureApplication
@@ -259,7 +259,7 @@ abstract class CustomMeasureForm extends Component
 
             // As of now, a custom measure can only hold ONE mapping
             $mapping = MappingService::init()->from($customMeasureApplication)
-                //->type(MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
+                //->type(MappingType::CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY->value)
                 ->resolveMapping()
                 ->first();
             if ($mapping instanceof Mapping) {

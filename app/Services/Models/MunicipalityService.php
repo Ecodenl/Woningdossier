@@ -2,11 +2,10 @@
 
 namespace App\Services\Models;
 
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Models\Mapping;
 use App\Models\Municipality;
 use App\Services\MappingService;
-use App\Services\Verbeterjehuis\RegulationService;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Collection;
 
@@ -33,7 +32,7 @@ class MunicipalityService
                     $query->where('target_model_type', Municipality::class)
                         ->where('target_model_id', $this->municipality->id);
                 });
-        })->where('type', MappingHelper::TYPE_BAG_MUNICIPALITY)
+        })->where('type', MappingType::BAG_MUNICIPALITY->value)
             ->get();
     }
 
@@ -44,7 +43,7 @@ class MunicipalityService
     {
         return MappingService::init()
             ->target($this->municipality)
-            ->type(MappingHelper::TYPE_BAG_MUNICIPALITY)
+            ->type(MappingType::BAG_MUNICIPALITY->value)
             ->retrieveResolvable();
     }
 
@@ -55,7 +54,7 @@ class MunicipalityService
     {
         return MappingService::init()
             ->from($this->municipality)
-            ->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)
+            ->type(MappingType::MUNICIPALITY_VBJEHUIS->value)
             ->resolveMapping()
             ->first();
     }

@@ -2,18 +2,15 @@
 
 namespace Tests\Unit\app\Services;
 
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Models\Building;
-use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Mapping;
-use App\Models\MeasureApplication;
 use App\Models\Municipality;
 use App\Services\MappingService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -28,11 +25,11 @@ final class MappingServiceTest extends TestCase
     {
         MappingService::init()
             ->from("Hellevoetsluis")
-            ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+            ->sync([], MappingType::BAG_MUNICIPALITY->value);
 
         $this->assertDatabaseHas('mappings', [
             'from_value' => 'Hellevoetsluis',
-            'type' => MappingHelper::TYPE_BAG_MUNICIPALITY
+            'type' => MappingType::BAG_MUNICIPALITY->value
         ]);
     }
 
@@ -173,11 +170,11 @@ final class MappingServiceTest extends TestCase
 
         foreach (['Hellevoetsluis', 'Voorne aan Zee', 'Westvoorne'] as $bagMunicipality) {
             $service->from($bagMunicipality)
-                ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                ->sync([$municipality], MappingType::BAG_MUNICIPALITY->value);
         }
 
         $service->from($municipality)
-            ->sync([['Name' => 'Voorne aan Zee', 'Id' => '3148']], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
+            ->sync([['Name' => 'Voorne aan Zee', 'Id' => '3148']], MappingType::MUNICIPALITY_VBJEHUIS->value);
 
         $service->from('Irrelevant')->sync([['Data' => 'Something']]);
 
@@ -186,26 +183,26 @@ final class MappingServiceTest extends TestCase
 
         // We should have 1 vbjehuis
         $vbjeHuis = $service->from($municipality)
-            ->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)
+            ->type(MappingType::MUNICIPALITY_VBJEHUIS->value)
             ->resolveTarget();
 
         $this->assertCount(1, $vbjeHuis);
 
         // We should have 3 BAG. NOTE WE ARE GOING THE OTHER WAY HERE!
         $bag = $service->target($municipality)
-            ->type(MappingHelper::TYPE_BAG_MUNICIPALITY)
+            ->type(MappingType::BAG_MUNICIPALITY->value)
             ->retrieveResolvable();
 
         $this->assertCount(3, $bag);
 
         // Add another bag mapping without target
         $service->from("Rotterdam")
-            ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+            ->sync([], MappingType::BAG_MUNICIPALITY->value);
 
         $this->assertDatabaseCount('mappings', 6);
 
         // We reset the target! We want to get ALL of type, disregarding the mappings.
-        $allBags = $service->target(null)->type(MappingHelper::TYPE_BAG_MUNICIPALITY)->retrieveResolvable();
+        $allBags = $service->target(null)->type(MappingType::BAG_MUNICIPALITY->value)->retrieveResolvable();
 
         // 3 with from, 1 added, should be 4
         $this->assertCount(4, $allBags);

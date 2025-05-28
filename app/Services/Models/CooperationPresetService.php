@@ -2,7 +2,7 @@
 
 namespace App\Services\Models;
 
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Models\CooperationPreset;
 use App\Models\MeasureCategory;
 use App\Services\MappingService;
@@ -43,7 +43,7 @@ class CooperationPresetService
                     $measureCategory = MeasureCategory::find($values['measure_category'] ?? null);
                     if ($measureCategory instanceof MeasureCategory) {
                         MappingService::init()->from($this->model)
-                            ->sync([$measureCategory], MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY);
+                            ->sync([$measureCategory], MappingType::COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY->value);
                     }
                     break;
 

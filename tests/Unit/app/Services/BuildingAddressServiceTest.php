@@ -3,7 +3,7 @@
 namespace Tests\Unit\app\Services;
 
 use App\Events\BuildingAddressUpdated;
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\InputSource;
@@ -55,7 +55,7 @@ final class BuildingAddressServiceTest extends TestCase
         $this->mockLvbagClientWoonplaats($fromMunicipalityName)->createLvbagMock();
         MappingService::init()
             ->from($fromMunicipalityName)
-            ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+            ->sync([$municipality], MappingType::BAG_MUNICIPALITY->value);
 
         app(BuildingAddressService::class)->forBuilding($building)->attachMunicipality();
 
@@ -110,7 +110,7 @@ final class BuildingAddressServiceTest extends TestCase
         $this->mockLvbagClientWoonplaats($fromMunicipalityName)->createLvbagMock();
         MappingService::init()
             ->from($fromMunicipalityName)
-            ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+            ->sync([$municipality], MappingType::BAG_MUNICIPALITY->value);
 
         Event::fake();
         app(BuildingAddressService::class)->forBuilding($building)->attachMunicipality();
@@ -141,7 +141,7 @@ final class BuildingAddressServiceTest extends TestCase
 
         MappingService::init()
             ->from($fromMunicipalityName)
-            ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+            ->sync([$municipality], MappingType::BAG_MUNICIPALITY->value);
 
         Event::fake();
 

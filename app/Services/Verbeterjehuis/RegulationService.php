@@ -3,7 +3,7 @@
 namespace App\Services\Verbeterjehuis;
 
 use App\Helpers\Cache\BaseCache;
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Models\Municipality;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Payloads\Search;
@@ -52,7 +52,7 @@ class RegulationService
         if ($municipality instanceof Municipality) {
             $target = MappingService::init()
                 ->from($municipality)
-                ->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)
+                ->type(MappingType::MUNICIPALITY_VBJEHUIS->value)
                 ->resolveTarget()
                 ->first();
 

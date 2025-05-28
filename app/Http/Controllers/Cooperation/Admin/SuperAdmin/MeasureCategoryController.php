@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Helpers\Wrapper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\MeasureCategoryRequest;
@@ -43,7 +43,7 @@ class MeasureCategoryController extends Controller
             if (! empty($measure)) {
                 // If not empty, then the request has validated it and we know it's available.
                 $targetData = Arr::first(Arr::where($measures, fn ($a) => $a['Value'] == $measure));
-                $mappingService->from($measureCategory)->sync([$targetData], MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS);
+                $mappingService->from($measureCategory)->sync([$targetData], MappingType::MEASURE_CATEGORY_VBJEHUIS->value);
             }
         }
 
@@ -55,7 +55,7 @@ class MeasureCategoryController extends Controller
     {
         $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
         $currentMapping = $mappingService
-            //->type(MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS)
+            //->type(MappingType::MEASURE_CATEGORY_VBJEHUIS->value)
             ->from($measureCategory)
             ->resolveMapping()
             ->first();
@@ -74,13 +74,13 @@ class MeasureCategoryController extends Controller
         $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']);
         if (! empty($measures)) {
             $mappingService
-                //->type(MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS)
+                //->type(MappingType::MEASURE_CATEGORY_VBJEHUIS->value)
                 ->from($measureCategory);
 
             if (! empty($measure)) {
                 // If not empty, then the request has validated it and we know it's available.
                 $targetData = Arr::first(Arr::where($measures, fn ($a) => $a['Value'] == $measure));
-                $mappingService->sync([$targetData], MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS);
+                $mappingService->sync([$targetData], MappingType::MEASURE_CATEGORY_VBJEHUIS->value);
             } else {
                 $mappingService->detach();
             }

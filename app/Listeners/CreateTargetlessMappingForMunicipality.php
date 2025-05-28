@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\NoMappingFoundForBagMunicipality;
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Helpers\Queue;
 use App\Mail\Admin\MissingBagMunicipalityMappingEmail;
 use App\Services\MappingService;
@@ -32,7 +32,7 @@ class CreateTargetlessMappingForMunicipality implements ShouldQueue
     {
         $this->mappingService
             ->from($event->municipalityName)
-            ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+            ->sync([], MappingType::BAG_MUNICIPALITY->value);
 
         $recipients = array_filter(explode(',', config('hoomdossier.contact.email.admin')));
         if (! empty($recipients)) {

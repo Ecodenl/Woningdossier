@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Helpers\Str;
 use App\Models\Mapping;
 use App\Models\MeasureCategory;
@@ -85,8 +85,8 @@ class UpdateMeasureCategories extends Command
 
                     $mappingService
                         ->from($existingMeasure)
-                        ->type(MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS)
-                        ->sync($syncData, MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS);
+                        ->type(MappingType::MEASURE_CATEGORY_VBJEHUIS->value)
+                        ->sync($syncData, MappingType::MEASURE_CATEGORY_VBJEHUIS->value);
                 } else {
                     // Shame, it already exists. We will be removing the existing measure, but must change some mappings.
                     Mapping::where('target_model_type', MeasureCategory::class)

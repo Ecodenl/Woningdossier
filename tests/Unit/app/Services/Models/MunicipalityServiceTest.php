@@ -2,13 +2,11 @@
 
 namespace Tests\Unit\app\Services\Models;
 
-use App\Helpers\Arr;
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Models\Mapping;
 use App\Models\Municipality;
 use App\Services\MappingService;
 use App\Services\Models\MunicipalityService;
-use App\Services\Verbeterjehuis\RegulationService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -44,7 +42,7 @@ final class MunicipalityServiceTest extends TestCase
 
         foreach (['Hellevoetsluis', 'Voorne aan Zee', 'Westvoorne', 'Rotterdam', 'Goeree-Overflakkee'] as $bagMunicipality) {
             $mappingService->from($bagMunicipality)
-                ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                ->sync([], MappingType::BAG_MUNICIPALITY->value);
         }
 
         $this->assertDatabaseCount('mappings', 5);
@@ -58,7 +56,7 @@ final class MunicipalityServiceTest extends TestCase
         // Sync to first municipality
         foreach (['Hellevoetsluis', 'Voorne aan Zee', 'Westvoorne'] as $bagMunicipality) {
             $mappingService->from($bagMunicipality)
-                ->sync([$municipality1], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                ->sync([$municipality1], MappingType::BAG_MUNICIPALITY->value);
         }
 
         // Linked to this one, but nothing else yet so all 5 should be available.
@@ -88,12 +86,12 @@ final class MunicipalityServiceTest extends TestCase
 
         foreach (['Hellevoetsluis', 'Voorne aan Zee', 'Westvoorne', 'Rotterdam', 'Goeree-Overflakkee'] as $bagMunicipality) {
             $mappingService->from($bagMunicipality)
-                ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                ->sync([], MappingType::BAG_MUNICIPALITY->value);
         }
 
         foreach (['Hellevoetsluis', 'Voorne aan Zee', 'Westvoorne'] as $bagMunicipality) {
             $mappingService->from($bagMunicipality)
-                ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                ->sync([$municipality], MappingType::BAG_MUNICIPALITY->value);
         }
 
         $municipalityService = MunicipalityService::init()->forMunicipality($municipality);
@@ -116,7 +114,7 @@ final class MunicipalityServiceTest extends TestCase
         // Link 1 to municipality, one not.
         $mappingService = MappingService::init();
         $mappingService->from($municipality)
-            ->sync([['Name' => 'Voorne aan Zee', 'Id' => '3148']], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
+            ->sync([['Name' => 'Voorne aan Zee', 'Id' => '3148']], MappingType::MUNICIPALITY_VBJEHUIS->value);
 
         $municipalityService = MunicipalityService::init()->forMunicipality($municipality);
         $vbjeHuisMunicipality = $municipalityService->retrieveVbjehuisMuncipality();

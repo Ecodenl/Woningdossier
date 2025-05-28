@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Events\FillingToolForUserEvent;
 use App\Events\ObservingToolForUserEvent;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Helpers\RoleHelper;
 use App\Jobs\CheckBuildingAddress;
 use App\Jobs\RefreshRegulationsForBuildingUser;
@@ -148,7 +148,7 @@ final class ToolControllerTest extends TestCase
     
         MappingService::init()
             ->from($fromMunicipalityName)
-            ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+            ->sync([$municipality], MappingType::BAG_MUNICIPALITY->value);
     
         $this->assertDatabaseMissing('buildings', [
             'id' => $building->id,
@@ -219,7 +219,7 @@ final class ToolControllerTest extends TestCase
 
         MappingService::init()
             ->from($fromMunicipalityName)
-            ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+            ->sync([$municipality], MappingType::BAG_MUNICIPALITY->value);
 
         $building = $resident->building;
         $building->update([

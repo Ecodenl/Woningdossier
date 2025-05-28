@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Events\CooperationMeasureApplicationUpdated;
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationFormRequest;
@@ -50,7 +50,7 @@ class CooperationMeasureApplicationController extends Controller
         $measureCategory = MeasureCategory::find($measureCategory);
         if ($measureCategory instanceof MeasureCategory) {
             $mappingService->from($cooperationMeasureApplication)
-                ->sync([$measureCategory], MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY);
+                ->sync([$measureCategory], MappingType::COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY->value);
         }
 
         CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
@@ -87,7 +87,7 @@ class CooperationMeasureApplicationController extends Controller
         $measureCategory = MeasureCategory::find($measureCategory);
         $mappingService
             ->from($cooperationMeasureApplication);
-        $measureCategory instanceof MeasureCategory ? $mappingService->sync([$measureCategory], MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY) : $mappingService->detach();
+        $measureCategory instanceof MeasureCategory ? $mappingService->sync([$measureCategory], MappingType::COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY->value) : $mappingService->detach();
 
         CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 

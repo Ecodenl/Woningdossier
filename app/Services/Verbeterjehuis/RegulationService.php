@@ -17,9 +17,9 @@ class RegulationService
     use FluentCaller,
         HasBuilding;
 
-    const SUBSIDY = 'subsidy';
-    const LOAN = 'loan';
-    const OTHER = 'other';
+    const string SUBSIDY = 'subsidy';
+    const string LOAN = 'loan';
+    const string OTHER = 'other';
 
     public array $context = [];
 

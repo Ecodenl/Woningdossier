@@ -4,7 +4,6 @@ namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
 use App\Helpers\Wrapper;
 use App\Models\ToolQuestion;
-use App\Services\DiscordNotifier;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Console\Command;
@@ -35,7 +34,7 @@ class SyncTargetGroups extends Command
             $map = [
                 'bought' => 'Woningeigenaar',
                 'rented' => 'Huurder',
-                'rented-private' => 'Huurder'
+                'rented-private' => 'Particuliere woningverhuurder'
             ];
 
             $targetGroups = collect(

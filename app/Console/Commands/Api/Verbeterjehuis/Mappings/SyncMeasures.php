@@ -4,7 +4,6 @@ namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
 use App\Helpers\Wrapper;
 use App\Models\MeasureApplication;
-use App\Services\DiscordNotifier;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Console\Command;
@@ -31,36 +30,36 @@ class SyncMeasures extends Command
      */
     public function handle(MappingService $mappingService): int
     {
-        // Only energy saving measure applications. The maintenace ones don't have subsidy.
+        // Only energy saving measure applications. The maintenance applications don't have subsidy.
         $map = [
-            'floor-insulation' => [1503, 1555], // Woningisolatie / Vloer
-            'bottom-insulation' => [1503, 1555], // Woningisolatie / Vloer
-            'floor-insulation-research' => [1503, 1555], // Woningisolatie / Vloer
-            'cavity-wall-insulation' => [1503, 1519], // Woningisolatie / Muur
-            'facade-wall-insulation' => [1503, 1519], // Woningisolatie / Muur
-            'wall-insulation-research' => [1503, 1519], // Woningisolatie / Muur
-            'glass-in-lead' => [1503, 1545], // Woningisolatie / Glas
-            'hrpp-glass-only' => [1503, 1545], // Woningisolatie / Glas
-            'hrpp-glass-frames' => [1503, 1545], // Woningisolatie / Glas
-            'hr3p-frames' => [1503, 1545], // Woningisolatie / Glas
+            'floor-insulation' => [1503], // Isolatie en glas
+            'bottom-insulation' => [1503], // Isolatie en glas
+            'floor-insulation-research' => [1503], // Isolatie en glas
+            'cavity-wall-insulation' => [1503], // Isolatie en glas
+            'facade-wall-insulation' => [1503], // Isolatie en glas
+            'wall-insulation-research' => [1503], // Isolatie en glas
+            'glass-in-lead' => [1503], // Isolatie en glas
+            'hrpp-glass-only' => [1503], // Isolatie en glas
+            'hrpp-glass-frames' => [1503], // Isolatie en glas
+            'hr3p-frames' => [1503], // Isolatie en glas
             'crack-sealing' => [],
-            'roof-insulation-pitched-inside' => [1503, 1532], // Woningisolatie / Dak
-            'roof-insulation-pitched-replace-tiles' => [1503, 1532], // Woningisolatie / Dak
-            'roof-insulation-flat-current' => [1503, 1532], // Woningisolatie / Dak
-            'roof-insulation-flat-replace-current' => [1503, 1532], // Woningisolatie / Dak
+            'roof-insulation-pitched-inside' => [1503], // Isolatie en glas
+            'roof-insulation-pitched-replace-tiles' => [1503], // Isolatie en glas
+            'roof-insulation-flat-current' => [1503], // Isolatie en glas
+            'roof-insulation-flat-replace-current' => [1503], // Isolatie en glas
             'high-efficiency-boiler-replace' => [],
             'heater-place-replace' => [1584], // Zonneboiler
             'solar-panels-place-replace' => [1571], // Zonnepanelen
-            'ventilation-balanced-wtw' => [1581, 1600], // Ventilatie / Warmte-teruglevering uit ventilatielucht
-            'ventilation-decentral-wtw' => [1581, 1600], // Ventilatie / Warmte-teruglevering uit ventilatielucht
+            'ventilation-balanced-wtw' => [1581], // Ventilatie
+            'ventilation-decentral-wtw' => [1581], // Ventilatie
             'ventilation-demand-driven' => [1581], // Ventilatie
             'hybrid-heat-pump-outside-air' => [1564], // Warmtepomp
-            'hybrid-heat-pump-ventilation-air' => [1564, 1600], // Warmtepomp / Warmte-teruglevering uit ventilatielucht
+            'hybrid-heat-pump-ventilation-air' => [1564, 1581], // Warmtepomp / Ventilatie
             'hybrid-heat-pump-pvt-panels' => [1564, 1571], // Warmtepomp / Zonnepanelen
             'full-heat-pump-outside-air' => [1564], // Warmtepomp
             'full-heat-pump-ground-heat' => [1564], // Warmtepomp
             'full-heat-pump-pvt-panels' => [1564, 1571], // Warmtepomp / Zonnepanelen
-            'heat-pump-boiler-place-replace' => [1564, 1600], // Warmtepomp / Warmte-teruglevering uit ventilatielucht
+            'heat-pump-boiler-place-replace' => [1564, 1581], // Warmtepomp / Ventilatie
             'save-energy-with-light' => [1603], // Kleine energiebesparende maatregelen
             'energy-efficient-equipment' => [1603], // Kleine energiebesparende maatregelen
             'energy-efficient-installations' => [1603], // Kleine energiebesparende maatregelen

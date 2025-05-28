@@ -1,47 +1,25 @@
-@extends('cooperation.admin.layouts.app', ['menu' => false])
+@extends('cooperation.admin.layouts.app', [
+    'menu' => false,
+    'panelTitle' => __('woningdossier.cooperation.admin.choose-roles.header')
+])
 
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">@lang('woningdossier.cooperation.admin.choose-roles.header')</div>
+    <div class="w-full">
+        <p>@lang('woningdossier.cooperation.admin.choose-roles.text')</p>
+    </div>
+    <br>
+    <div class="w-full grid grid-rows-1 grid-cols-4 grid-flow-row gap-4">
+        @foreach($user->roles as $i => $role)
+            <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}"
+               class="no-underline hover:shadow-center-green">
+                <div class="rounded-lg border border-blue border-solid flex flex-wrap justify-center items-center p-8 text-center">
+                    <i class="icon-lg icon-account-circle w-full"></i>
 
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <h4>@lang('woningdossier.cooperation.admin.choose-roles.text')</h4>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            @php
-                                // todo make this better maintainable (especially the col classes)
-                                $totalUserRoles = \App\Helpers\Hoomdossier::user()->roles()->count();
-
-                            @endphp
-                            @foreach($user->roles as $i => $role)
-                                <div class="@if($totalUserRoles == 2) col-sm-6 @elseif($totalUserRoles == 3) col-sm-4 @else col-sm-3 @endif">
-                                    <form action="">
-                                        <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}">
-                                            <div class="choose-roles-panel panel panel-default">
-                                                <div class="panel-body">
-                                                    <h2 class="text-center">
-                                                        <span class="glyphicon glyphicon-user"></span>
-                                                    </h2>
-                                                    <h3 class="text-center">
-                                                        {{ $role->human_readable_name }}
-                                                    </h3>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </form>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
+                    <h3 class="heading-4 mt-2">
+                        {{ $role->human_readable_name }}
+                    </h3>
                 </div>
-            </div>
-        </div>
+            </a>
+        @endforeach
     </div>
 @endsection

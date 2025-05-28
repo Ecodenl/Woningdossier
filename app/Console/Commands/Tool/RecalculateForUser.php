@@ -36,21 +36,9 @@ class RecalculateForUser extends Command
     protected $description = 'Command to calculate / recalculate advices for a user or cooperation';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $userIds = $this->option('user');
         $inputSourceShorts = $this->option('input-source');
@@ -64,22 +52,22 @@ class RecalculateForUser extends Command
             $cooperation = Cooperation::find($cooperationId);
             if (! $cooperation instanceof Cooperation) {
                 $this->error("No cooperation found for ID {$cooperationId}");
-                return 0;
+                return self::SUCCESS;
             } else {
                 $this->info("Calculating each user for cooperation {$cooperation->name}...");
             }
-            $users = User::forMyCooperation($cooperationId)->with('building')->get();
+            $users = User::forMyCooperation($cooperation)->with('building')->get();
         } else {
             if (empty($userIds)) {
                 $this->error("No user id's or cooperation id has been given..");
-                return 0;
+                return self::SUCCESS;
             }
             $users = User::findMany($userIds)->load('building');
         }
 
         if ($users->isEmpty()) {
             $this->error("No users found...");
-            return 0;
+            return self::SUCCESS;
         }
 
         $bar = $this->output->createProgressBar($users->count());
@@ -126,5 +114,7 @@ class RecalculateForUser extends Command
         $bar->finish();
 
         $this->output->newLine();
+
+        return self::SUCCESS;
     }
 }

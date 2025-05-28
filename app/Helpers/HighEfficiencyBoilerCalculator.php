@@ -15,17 +15,13 @@ use App\Traits\FluentCaller;
 use App\Traits\HasDynamicAnswers;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class HighEfficiencyBoilerCalculator
 {
     use FluentCaller,
         HasDynamicAnswers;
 
-    /**
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \Illuminate\Support\Collection|null  $answers
-     */
     public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         $this->building = $building;
@@ -33,10 +29,7 @@ class HighEfficiencyBoilerCalculator
         $this->answers = $answers;
     }
 
-    /**
-     * @return mixed
-     */
-    public function calculateGasSavings()
+    public function calculateGasSavings(): float
     {
         // It is possible the user does not have a boiler currently!
         $current = $this->calculateGasUsage();
@@ -66,15 +59,12 @@ class HighEfficiencyBoilerCalculator
         // yes, array_sum is a method, but this is easier to compare to the theory
         $result = $amountGas - $usageNew;
 
-        $this->debug('Gas usage ( '.$usageNew.' ) with new boiler: '.json_encode($usage));
-        $this->debug('Results in saving of '.$result.' = '.$amountGas.' - '.$usageNew);
+        $this->debug('Gas usage ( ' . $usageNew . ' ) with new boiler: ' . json_encode($usage));
+        $this->debug('Results in saving of ' . $result . ' = ' . $amountGas . ' - ' . $usageNew);
 
         return $result;
     }
 
-    /**
-     * @return array
-     */
     public function calculateGasUsage(): array
     {
         $result = [
@@ -96,7 +86,7 @@ class HighEfficiencyBoilerCalculator
         }
         $boilerEfficiency = $boiler->keyFigureBoilerEfficiency;
 
-        $this->debug(__METHOD__.' boiler efficiencies of boiler: '.$boilerEfficiency->heating.'% (heating) and '.$boilerEfficiency->wtw.'% (tap water)');
+        $this->debug(__METHOD__ . ' boiler efficiencies of boiler: ' . $boilerEfficiency->heating . '% (heating) and ' . $boilerEfficiency->wtw . '% (tap water)');
 
         $cookType = $this->getAnswer('cook-type');
 
@@ -123,18 +113,12 @@ class HighEfficiencyBoilerCalculator
         $result['heating']['bruto'] = $amountGas - $result['tap_water']['bruto'] - $result['cooking'];
         $result['heating']['netto'] = $result['heating']['bruto'] * ($boilerEfficiency->heating / 100);
 
-        $this->debug(__METHOD__.' Gas usage: '.json_encode($result));
+        $this->debug(__METHOD__ . ' Gas usage: ' . json_encode($result));
 
         return $result;
     }
 
-    /**
-     * @param \App\Models\MeasureApplication $measureApplication
-     * @param $last
-     *
-     * @return float|int|string
-     */
-    public function determineApplicationYear(MeasureApplication $measureApplication, $last)
+    public function determineApplicationYear(MeasureApplication $measureApplication, ?int $last): int
     {
         $this->debug(__METHOD__);
 
@@ -143,7 +127,7 @@ class HighEfficiencyBoilerCalculator
         }
 
         if ($last + $measureApplication->maintenance_interval <= Carbon::now()->year) {
-            $this->debug('Last replace is longer than '.$measureApplication->maintenance_interval.' years ago.');
+            $this->debug('Last replace is longer than ' . $measureApplication->maintenance_interval . ' years ago.');
             $year = Carbon::now()->year;
         } else {
             $year = $last + $measureApplication->maintenance_interval;
@@ -152,8 +136,10 @@ class HighEfficiencyBoilerCalculator
         return $year;
     }
 
-    protected function debug($line)
+    protected function debug(string $line): void
     {
-        // \Log::debug($line);
+        if (config('hoomdossier.services.enable_calculation_logging')) {
+            Log::channel('calculations')->debug($line);
+        }
     }
 }

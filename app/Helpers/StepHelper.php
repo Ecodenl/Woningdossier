@@ -14,7 +14,7 @@ use App\Models\User;
 
 class StepHelper
 {
-    const ELEMENT_TO_SHORT = [
+    const array ELEMENT_TO_SHORT = [
         'sleeping-rooms-windows' => 'insulated-glazing',
         'living-rooms-windows' => 'insulated-glazing',
         'crack-sealing' => 'insulated-glazing',
@@ -24,7 +24,7 @@ class StepHelper
     ];
 
     // TODO: Unused?
-    const SERVICE_TO_SHORT = [
+    const array SERVICE_TO_SHORT = [
         'hr-boiler' => 'high-efficiency-boiler',
         'boiler' => 'high-efficiency-boiler',
         'total-sun-panels' => 'solar-panels',
@@ -32,7 +32,7 @@ class StepHelper
         'house-ventilation' => 'ventilation',
     ];
 
-    const STEP_COMPLETION_MAP = [
+    const array STEP_COMPLETION_MAP = [
         'heating' => [
             'high-efficiency-boiler', 'heat-pump', 'heater',
         ],
@@ -41,10 +41,7 @@ class StepHelper
     /**
      * Get all the comments categorized under step and input source.
      *
-     * @param  \App\Models\Building  $building
      * @param $specificInputSource
-     *
-     * @return array
      */
     public static function getAllCommentsByStep(Building $building, $specificInputSource = null): array
     {
@@ -58,9 +55,10 @@ class StepHelper
         }
 
         foreach ($stepComments as $stepComment) {
-            // General data is now hidden, so we must check if the step is set
+            // General data is now hidden, so we must check if the step is set.
             // If everything is mapped correctly, it will be set under the quick scan steps, but just in case...
-            if (! is_null($stepComment->step)) {
+            /** @phpstan-ignore instanceof.alwaysTrue */
+            if ($stepComment->step instanceof Step) {
                 $commentsByStep[$stepComment->step->short][$stepComment->short ?? '-'][$stepComment->inputSource->name] = $stepComment->comment;
             }
         }
@@ -70,14 +68,8 @@ class StepHelper
 
     /**
      * Complete a step for a building.
-     *
-     * @param  \App\Models\Step  $step
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     *
-     * @return void
      */
-    public static function complete(Step $step, Building $building, InputSource $inputSource)
+    public static function complete(Step $step, Building $building, InputSource $inputSource): void
     {
         CompletedStep::allInputSources()->firstOrCreate([
             'step_id' => $step->id,
@@ -102,14 +94,10 @@ class StepHelper
     /**
      * Incomplete a step for a building.
      *
-     * @param  \App\Models\Step  $step
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
      *
-     * @return void
      * @throws \Exception
      */
-    public static function incomplete(Step $step, Building $building, InputSource $inputSource)
+    public static function incomplete(Step $step, Building $building, InputSource $inputSource): void
     {
         optional(CompletedStep::allInputSources()->where([
             'step_id' => $step->id,
@@ -119,10 +107,6 @@ class StepHelper
     }
 
     /**
-     * @param \App\Models\Step $step
-     * @param \App\Models\Building $building
-     * @param \App\Models\InputSource $inputSource
-     * @param \App\Models\User $authUser
      *
      * @return bool True if the step can be completed, false if it can't be completed.
      */

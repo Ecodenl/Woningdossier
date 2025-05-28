@@ -16,27 +16,27 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $order
  * @property int $tool_question_valuable_id
  * @property string $tool_question_valuable_type
- * @property array|null $extra
- * @property array|null $conditions
+ * @property array<array-key, mixed>|null $extra
+ * @property array<array-key, mixed>|null $conditions
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ToolQuestion $toolQuestion
  * @property-read Model|\Eloquent $toolQuestionValuables
- * @method static Builder|ToolQuestionValuable newModelQuery()
- * @method static Builder|ToolQuestionValuable newQuery()
- * @method static Builder|ToolQuestionValuable ordered()
- * @method static Builder|ToolQuestionValuable query()
- * @method static Builder|ToolQuestionValuable visible()
- * @method static Builder|ToolQuestionValuable whereConditions($value)
- * @method static Builder|ToolQuestionValuable whereCreatedAt($value)
- * @method static Builder|ToolQuestionValuable whereExtra($value)
- * @method static Builder|ToolQuestionValuable whereId($value)
- * @method static Builder|ToolQuestionValuable whereOrder($value)
- * @method static Builder|ToolQuestionValuable whereShow($value)
- * @method static Builder|ToolQuestionValuable whereToolQuestionId($value)
- * @method static Builder|ToolQuestionValuable whereToolQuestionValuableId($value)
- * @method static Builder|ToolQuestionValuable whereToolQuestionValuableType($value)
- * @method static Builder|ToolQuestionValuable whereUpdatedAt($value)
+ * @method static Builder<static>|ToolQuestionValuable newModelQuery()
+ * @method static Builder<static>|ToolQuestionValuable newQuery()
+ * @method static Builder<static>|ToolQuestionValuable ordered()
+ * @method static Builder<static>|ToolQuestionValuable query()
+ * @method static Builder<static>|ToolQuestionValuable visible()
+ * @method static Builder<static>|ToolQuestionValuable whereConditions($value)
+ * @method static Builder<static>|ToolQuestionValuable whereCreatedAt($value)
+ * @method static Builder<static>|ToolQuestionValuable whereExtra($value)
+ * @method static Builder<static>|ToolQuestionValuable whereId($value)
+ * @method static Builder<static>|ToolQuestionValuable whereOrder($value)
+ * @method static Builder<static>|ToolQuestionValuable whereShow($value)
+ * @method static Builder<static>|ToolQuestionValuable whereToolQuestionId($value)
+ * @method static Builder<static>|ToolQuestionValuable whereToolQuestionValuableId($value)
+ * @method static Builder<static>|ToolQuestionValuable whereToolQuestionValuableType($value)
+ * @method static Builder<static>|ToolQuestionValuable whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ToolQuestionValuable extends Model
@@ -50,11 +50,14 @@ class ToolQuestionValuable extends Model
         'extra',
     ];
 
-    protected $casts = [
-        'show' => 'boolean',
-        'extra' => 'array',
-        'conditions' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'show' => 'boolean',
+            'extra' => 'array',
+            'conditions' => 'array',
+        ];
+    }
 
     # Scopes
     public function scopeVisible(Builder $query): Builder
@@ -75,8 +78,6 @@ class ToolQuestionValuable extends Model
 
     /**
      * Method retrieves the morphed models.
-     *
-     * @return MorphTo
      */
     public function toolQuestionValuables(): MorphTo
     {

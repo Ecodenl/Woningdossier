@@ -107,6 +107,7 @@ class MappingService
             $attributes = $this->whereFrom();
             $attributes['type'] = $type;
         } else {
+            $attributes = [];
             foreach ($syncableData as $index => $target) {
                 $attributes[$index] = $this->whereFrom();
                 $attributes[$index]['type'] = $type;
@@ -128,7 +129,7 @@ class MappingService
             ->insert($attributes);
     }
 
-    public function detach()
+    public function detach(): void
     {
         Mapping::where($this->whereFrom())->delete();
     }

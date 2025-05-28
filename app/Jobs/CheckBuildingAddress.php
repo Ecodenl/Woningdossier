@@ -35,10 +35,8 @@ class CheckBuildingAddress extends NonHandleableJobAfterReset
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle(BuildingAddressService $buildingAddressService)
+    public function handle(BuildingAddressService $buildingAddressService): void
     {
         $building = $this->building;
         try {

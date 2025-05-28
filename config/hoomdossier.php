@@ -45,7 +45,7 @@ return [
             'secret' => env('BAG_API_KEY', ''),
         ],
         'econobis' => [
-            'enabled' => env('ECONOBIS_ENABLED', true),
+            'enabled' => env('ECONOBIS_ENABLED', false),
             'wildcard' => env('ECONOBIS_WILDCARD', 'test'),
             'debug' => env('ECONOBIS_DEBUG', false),
             'warn' => env('ECONOBIS_WARN', false),
@@ -57,6 +57,7 @@ return [
             ],
         ],
         'enable_logging' => env('SERVICES_ENABLE_LOGGING', false),
+        'enable_calculation_logging' => env('SERVICES_ENABLE_CALCULATION_LOGGING', false),
     ],
 
     'webhooks' => [

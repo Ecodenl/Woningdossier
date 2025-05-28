@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Events\BuildingAddressUpdated;
 use App\Events\NoMappingFoundForBagMunicipality;
 use App\Events\NoMappingFoundForVbjehuisMunicipality;
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Models\BuildingFeature;
 use App\Models\Municipality;
 use App\Models\ToolQuestion;
@@ -122,7 +122,7 @@ class BuildingAddressService
         if (! is_null($municipalityName)) {
             $municipality = $this->mappingService
                 ->from($municipalityName)
-                ->type(MappingHelper::TYPE_BAG_MUNICIPALITY)
+                ->type(MappingType::BAG_MUNICIPALITY->value)
                 ->resolveTarget()
                 ->first();
 
@@ -131,13 +131,13 @@ class BuildingAddressService
                     $buildingAddressUpdated = true;
                 }
                 $this->building->municipality()->associate($municipality)->save();
-                if ($this->mappingService->from($municipality)->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->mappingDoesntExist()) {
+                if ($this->mappingService->from($municipality)->type(MappingType::MUNICIPALITY_VBJEHUIS->value)->mappingDoesntExist()) {
                     NoMappingFoundForVbjehuisMunicipality::dispatch($municipality);
                 }
             } else {
                 // so the target is not resolved, that's "fine". We will check if a empty mapping exists
                 // if not we will create it
-                if ($this->mappingService->from($municipalityName)->type(MappingHelper::TYPE_BAG_MUNICIPALITY)->mappingDoesntExist()) {
+                if ($this->mappingService->from($municipalityName)->type(MappingType::BAG_MUNICIPALITY->value)->mappingDoesntExist()) {
                     NoMappingFoundForBagMunicipality::dispatch($municipalityName);
                 }
                 // The disassociate only matters when the field was filled before

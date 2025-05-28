@@ -24,10 +24,7 @@ class Arr extends \Illuminate\Support\Arr
     /**
      * Check if one or many values are all in an array.
      * TODO: Tests
-     * @param  array  $haystack
      * @param $needles
-     *
-     * @return bool
      */
     public static function inArray(array $haystack, $needles): bool
     {
@@ -45,10 +42,7 @@ class Arr extends \Illuminate\Support\Arr
     /**
      * Check if one or one of many values are in an array.
      * TODO: Tests
-     * @param  array  $haystack
      * @param $needles
-     *
-     * @return bool
      */
     public static function inArrayAny(array $haystack, $needles): bool
     {

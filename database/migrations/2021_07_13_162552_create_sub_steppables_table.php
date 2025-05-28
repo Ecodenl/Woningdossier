@@ -4,16 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSubSteppablesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
-        if ( ! Schema::hasTable('sub_steppables')) {
+        if (! Schema::hasTable('sub_steppables')) {
             Schema::create('sub_steppables', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->integer('order');
@@ -28,8 +26,8 @@ class CreateSubSteppablesTable extends Migration
                 $table->unsignedBigInteger('tool_question_type_id')->nullable();
                 $table->foreign('tool_question_type_id')->references('id')->on('tool_question_types')->onDelete('cascade');
 
-                $table->json('conditions')->nullable()->default(null);
-                $table->string('size')->nullable()->default(null);
+                $table->json('conditions')->nullable();
+                $table->string('size')->nullable();
 
                 $table->timestamps();
             });
@@ -38,11 +36,9 @@ class CreateSubSteppablesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('sub_step_tool_questions');
     }
-}
+};

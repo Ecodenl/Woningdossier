@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\MediaHelper;
 use App\Helpers\Models\CooperationSettingHelper;
 use App\Http\Controllers\Controller;
@@ -13,14 +15,14 @@ use App\Models\Media;
 
 class SettingsController extends Controller
 {
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         $cooperationSettings = $cooperation->cooperationSettings;
 
         return view('cooperation.admin.cooperation.cooperation-admin.settings.index', compact('cooperationSettings'));
     }
 
-    public function store(SettingsFormRequest $request, Cooperation $cooperation)
+    public function store(SettingsFormRequest $request, Cooperation $cooperation): RedirectResponse
     {
         $cooperationSettings = $request->validated()['cooperation_settings'];
         CooperationSettingHelper::syncSettings($cooperation, $cooperationSettings);

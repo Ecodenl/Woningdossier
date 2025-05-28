@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\app\Rules;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Rules\PhoneNumber;
 use Tests\TestCase;
 
-class PhoneNumberTest extends TestCase
+final class PhoneNumberTest extends TestCase
 {
-    public static function phoneNumberProvider()
+    public static function phoneNumberProvider(): array
     {
         return [
             ['nl', '+31611223344', true],
@@ -86,10 +87,8 @@ class PhoneNumberTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider phoneNumberProvider
-     */
-    public function testPasses($country, $phoneNumber, $shouldPass)
+    #[DataProvider('phoneNumberProvider')]
+    public function testPasses($country, $phoneNumber, $shouldPass): void
     {
         $phoneNumberRule = new PhoneNumber($country);
         $this->assertEquals($shouldPass, $phoneNumberRule->passes('phone_number', $phoneNumber));

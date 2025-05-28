@@ -13,25 +13,10 @@ class UserAssociatedWithOtherCooperation
     use SerializesModels;
 
     /**
-     * The authenticated user.
-     *
-     * @var \Illuminate\Contracts\Auth\Authenticatable
-     */
-    public $user;
-
-    /**
-     * The current cooperation.
-     *
-     * @var Cooperation
-     */
-    public $cooperation;
-
-    /**
      * Registered constructor.
      */
-    public function __construct(Cooperation $cooperation, User $user)
+    public function __construct(public Cooperation $cooperation, public User $user)
     {
-        $this->cooperation = $cooperation;
-        $this->user = $user;
+        //
     }
 }

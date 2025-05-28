@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class CooperationPresetContentSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $contentByShort = [
             CooperationPresetService::COOPERATION_MEASURE_APPLICATIONS => CooperationMeasureApplicationsTableSeeder::MEASURES,

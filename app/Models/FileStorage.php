@@ -6,6 +6,7 @@ use App\Scopes\AvailableScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\HasCooperationTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,32 +29,33 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \App\Models\FileType $fileType
  * @property-read \App\Models\InputSource|null $inputSource
- * @method static Builder|FileStorage allInputSources()
- * @method static Builder|FileStorage beingProcessed()
- * @method static Builder|FileStorage forAllCooperations()
- * @method static Builder|FileStorage forBuilding($building)
- * @method static Builder|FileStorage forInputSource(\App\Models\InputSource $inputSource)
- * @method static Builder|FileStorage forMe(?\App\Models\User $user = null)
- * @method static Builder|FileStorage forMyCooperation($cooperationId)
- * @method static Builder|FileStorage forUser($user)
- * @method static Builder|FileStorage leaveOutPersonalFiles()
- * @method static Builder|FileStorage mostRecent(?\App\Models\Questionnaire $questionnaire = null)
- * @method static Builder|FileStorage newModelQuery()
- * @method static Builder|FileStorage newQuery()
- * @method static Builder|FileStorage query()
- * @method static Builder|FileStorage residentInput()
- * @method static Builder|FileStorage whereAvailableUntil($value)
- * @method static Builder|FileStorage whereBuildingId($value)
- * @method static Builder|FileStorage whereCooperationId($value)
- * @method static Builder|FileStorage whereCreatedAt($value)
- * @method static Builder|FileStorage whereFileTypeId($value)
- * @method static Builder|FileStorage whereFilename($value)
- * @method static Builder|FileStorage whereId($value)
- * @method static Builder|FileStorage whereInputSourceId($value)
- * @method static Builder|FileStorage whereIsBeingProcessed($value)
- * @method static Builder|FileStorage whereQuestionnaireId($value)
- * @method static Builder|FileStorage whereUpdatedAt($value)
- * @method static Builder|FileStorage withExpired()
+ * @method static Builder<static>|FileStorage allInputSources()
+ * @method static Builder<static>|FileStorage beingProcessed()
+ * @method static Builder<static>|FileStorage expired()
+ * @method static Builder<static>|FileStorage forAllCooperations()
+ * @method static Builder<static>|FileStorage forBuilding(\App\Models\Building|int $building)
+ * @method static Builder<static>|FileStorage forInputSource(\App\Models\InputSource $inputSource)
+ * @method static Builder<static>|FileStorage forMe(?\App\Models\User $user = null)
+ * @method static Builder<static>|FileStorage forMyCooperation(\App\Models\Cooperation|int $cooperation)
+ * @method static Builder<static>|FileStorage forUser(\App\Models\User|int $user)
+ * @method static Builder<static>|FileStorage leaveOutPersonalFiles()
+ * @method static Builder<static>|FileStorage mostRecent(?\App\Models\Questionnaire $questionnaire = null)
+ * @method static Builder<static>|FileStorage newModelQuery()
+ * @method static Builder<static>|FileStorage newQuery()
+ * @method static Builder<static>|FileStorage query()
+ * @method static Builder<static>|FileStorage residentInput()
+ * @method static Builder<static>|FileStorage whereAvailableUntil($value)
+ * @method static Builder<static>|FileStorage whereBuildingId($value)
+ * @method static Builder<static>|FileStorage whereCooperationId($value)
+ * @method static Builder<static>|FileStorage whereCreatedAt($value)
+ * @method static Builder<static>|FileStorage whereFileTypeId($value)
+ * @method static Builder<static>|FileStorage whereFilename($value)
+ * @method static Builder<static>|FileStorage whereId($value)
+ * @method static Builder<static>|FileStorage whereInputSourceId($value)
+ * @method static Builder<static>|FileStorage whereIsBeingProcessed($value)
+ * @method static Builder<static>|FileStorage whereQuestionnaireId($value)
+ * @method static Builder<static>|FileStorage whereUpdatedAt($value)
+ * @method static Builder<static>|FileStorage withExpired()
  * @mixin \Eloquent
  */
 class FileStorage extends Model
@@ -73,51 +75,54 @@ class FileStorage extends Model
     ];
 
     /**
-     * Attributes that should be casted to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'is_being_processed' => 'bool',
-        'available_until' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_being_processed' => 'bool',
+            'available_until' => 'datetime',
+        ];
+    }
 
     /**
-     * Query to scope the expired files.
-     *
-     * @return Builder
+     * Scope to query without the available scope, meaning all file storages will be returned.
      */
-    public function scopeWithExpired(Builder $query)
+    public function scopeWithExpired(Builder $query): Builder
     {
         return $query->withoutGlobalScope(new AvailableScope());
     }
 
     /**
-     * Query to leave out the personal files.
-     *
-     * @return Builder
+     * Scope to query only the expired files.
      */
-    public function scopeLeaveOutPersonalFiles(Builder $query)
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query->withExpired()->where('available_until', '<', Carbon::now());
+    }
+
+    /**
+     * Query to leave out the personal files.
+     */
+    public function scopeLeaveOutPersonalFiles(Builder $query): Builder
     {
         return $query->whereNull('building_id');
     }
 
     /**
      * Query to scope the file's that are being processed.
-     *
-     * @return Builder
      */
-    public function scopeBeingProcessed(Builder $query)
+    public function scopeBeingProcessed(Builder $query): Builder
     {
         return $query->where('is_being_processed', true);
     }
 
     /**
      * Query to scope the most recent report.
-     *
-     * @return Builder
      */
-    public function scopeMostRecent(Builder $query, Questionnaire $questionnaire = null)
+    public function scopeMostRecent(Builder $query, Questionnaire $questionnaire = null): Builder
     {
         if ($questionnaire instanceof Questionnaire) {
             return $query->orderByDesc('created_at')->where('questionnaire_id', $questionnaire->id);
@@ -134,7 +139,7 @@ class FileStorage extends Model
         return $this->belongsTo(Cooperation::class);
     }
 
-    public function fileType()
+    public function fileType(): BelongsTo
     {
         return $this->belongsTo(FileType::class, 'file_type_id');
     }
@@ -155,7 +160,7 @@ class FileStorage extends Model
     /**
      * Method that's used when the file is done processing.
      */
-    public function isProcessed()
+    public function finishProcess(): void
     {
         $availableUntil = $this->created_at->addDays($this->fileType->duration ?? 7);
         $this->available_until = $availableUntil;

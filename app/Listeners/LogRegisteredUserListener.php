@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\Registered;
 use App\Models\Log;
 use App\Models\User;
 use Carbon\Carbon;
@@ -9,22 +10,9 @@ use Carbon\Carbon;
 class LogRegisteredUserListener
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(Registered $event): void
     {
         Log::create([
             'loggable_type' => User::class,

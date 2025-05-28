@@ -30,10 +30,8 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      * Get the notification's channels.
      *
      * @param mixed $notifiable
-     *
-     * @return array|string
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['mail'];
     }
@@ -42,14 +40,17 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      * Get the verification URL for the given notifiable.
      *
      * @param mixed $notifiable
-     *
-     * @return string
      */
-    protected function verificationUrl($notifiable)
+    protected function verificationUrl($notifiable): string
     {
+        $expiry = (int) config('auth.passwords.users.expire');
+        if ($expiry === 0) {
+            $expiry = 43200;
+        }
+
         return URL::temporarySignedRoute(
             'cooperation.auth.verification.verify',
-            Carbon::now()->addMinutes(config('auth.passwords.users.expire')),
+            Carbon::now()->addMinutes($expiry),
             [
                 'cooperation' => $this->user->cooperation,
                 'id' => $notifiable->getKey(),
@@ -62,10 +63,8 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      * Build the mail representation of the notification.
      *
      * @param $notifiable
-     *
-     * @return RequestAccountConfirmationEmail
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): RequestAccountConfirmationEmail
     {
         $verifyUrl = $this->verificationUrl($notifiable);
         return new RequestAccountConfirmationEmail($this->user, $verifyUrl);

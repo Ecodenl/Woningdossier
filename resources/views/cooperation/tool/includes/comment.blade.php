@@ -51,17 +51,20 @@
                         'label' => '<span>' . ($currentInputSource->name != $inputSourceName ? "({$inputSourceName})" : '') . '</span>',
                     ])
                         @if($inputSourceName === $currentInputSource->name)
-                            @component('cooperation.frontend.layouts.components.wysiwyg', [
-                                //'disabled' => true,
-                            ])
-                                <textarea name="{{$columnName}}" class="form-input">{{old($oldValueKey, $comment)}}</textarea>
-                            @endcomponent
+                            <div class="w-full" x-data="tiptapEditor(@js(old($oldValueKey, $comment)))">
+                                @component('cooperation.layouts.components.tiptap')
+                                    <textarea name="{{ $columnName }}" class="form-input" x-ref="editor"
+                                    >{{old($oldValueKey, $comment)}}</textarea>
+                                @endcomponent
+                            </div>
                         @else
-                            @component('cooperation.frontend.layouts.components.wysiwyg', [
-                                'disabled' => true,
-                            ])
-                                <textarea disabled="disabled" class="disabled form-input">{{$comment}}</textarea>
-                            @endcomponent
+                            <div class="w-full" x-data="tiptapEditor(@js($comment))">
+                                @component('cooperation.layouts.components.tiptap')
+                                    <textarea name="{{ $columnName }}" class="disabled form-input" x-ref="editor"
+                                              disabled
+                                    >{{$comment}}</textarea>
+                                @endcomponent
+                            </div>
                         @endif
                     @endcomponent
 
@@ -78,12 +81,12 @@
                 'translationReplace' => ['item' => $currentStep->name],
                 'withInputSource' => false,
             ])
-                @component('cooperation.frontend.layouts.components.wysiwyg', [
-                    //'disabled' => $disabled ?? false,
-                    //'withScript' => false,
-                ])
-                    <textarea name="{{$columnName}}" class="form-input">{{old($oldValueKey)}}</textarea>
-                @endcomponent
+                <div class="w-full" x-data="tiptapEditor(@js(old($oldValueKey)))">
+                    @component('cooperation.layouts.components.tiptap')
+                        <textarea name="{{ $columnName }}" class="form-input" x-ref="editor"
+                        >{{old($oldValueKey)}}</textarea>
+                    @endcomponent
+                </div>
             @endcomponent
         </div>
     </div>

@@ -63,7 +63,7 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                                     );
                                 } else {
                                     // Dispatch the dropped position
-                                    window.triggerCustomEvent(this.$el, 'draggable-dragged', {
+                                    this.$el.triggerCustomEvent('draggable-dragged', {
                                         from: parentElement,
                                         to: target,
                                         id: this.dragged.id,
@@ -233,7 +233,7 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                         this.$wire.cardTrashed(parentElement.getAttribute('data-category'), this.dragged.id);
                     } else {
                         // Dispatch the item was removed position
-                        window.triggerCustomEvent(this.$el, 'draggable-trashed', {
+                        this.$el.triggerCustomEvent('draggable-trashed', {
                             from: parentElement,
                             id: this.dragged.id,
                         });

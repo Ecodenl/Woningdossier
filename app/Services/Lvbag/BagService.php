@@ -35,7 +35,7 @@ class BagService
         do {
             ++$page;
             $list = $this->wrapCall(
-                fn () => $this->lvbag->adresUitgebreid()->page($page)->pageSize(100)->list($attributes) ?? []
+                fn () => $this->lvbag->adresUitgebreid()->page($page)->pageSize(100)->list($attributes)
             );
             $filtered = array_filter(array_unique(array_map(function ($address) {
                 return trim(($address['huisletter'] ?? '') . ($address['huisnummertoevoeging'] ?? ''));
@@ -116,7 +116,7 @@ class BagService
         return new AddressExpanded($this->wrapCall(function () use ($attributes) {
             $list = $this->lvbag
                 ->adresUitgebreid()
-                ->list($attributes) ?? [];
+                ->list($attributes);
             return array_shift($list);
         }));
     }

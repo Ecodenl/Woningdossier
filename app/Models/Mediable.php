@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphPivot;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * 
+ * App\Models\Mediable
  *
  * @property int $media_id
  * @property string $mediable_type

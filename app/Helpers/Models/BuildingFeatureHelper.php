@@ -96,7 +96,6 @@ class BuildingFeatureHelper
                                             $extra['measure_application_id'] = $measureApplication->id;
                                         }
                                     }
-
                                 }
 
                                 $exampleBuildingRoofType->replicate()

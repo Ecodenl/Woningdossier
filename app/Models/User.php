@@ -299,15 +299,6 @@ class User extends Model implements AuthorizableContract
         return $this->hasMany(BuildingPermission::class);
     }
 
-    public function isBuildingOwner(Building $building)
-    {
-        if ($this->buildings()->find($building->id) instanceof Building) {
-            return true;
-        }
-
-        return false;
-    }
-
     /**
      * Check if a user is removed from the building coach status table.
      */

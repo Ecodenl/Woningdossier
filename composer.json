@@ -16,7 +16,7 @@
         "darkaonline/l5-swagger": "^8.0",
         "doctrine/dbal": "^3.5",
         "ecodenl/ep-online-php-wrapper": "^5.0",
-        "ecodenl/lvbag-php-wrapper": "^2.1.1",
+        "ecodenl/lvbag-php-wrapper": "^2.1.2",
         "guzzlehttp/guzzle": "^7.8",
         "laravel/fortify": "^1.20",
         "laravel/framework": "^11.44.1",

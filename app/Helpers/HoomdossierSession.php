@@ -68,7 +68,9 @@ class HoomdossierSession extends Session
             Log::error($cooperation);
         }
 
-        if ($object) {
+        // So, if we want to hydrate the object, it cannot be null. Generally, it's only null in testing,
+        // but in case of really weird session stuff, we don't want to trigger an exception just for caching.
+        if ($object && ! is_null($cooperation)) {
             $cooperation = \App\Helpers\Cache\Cooperation::find($cooperation);
         }
 

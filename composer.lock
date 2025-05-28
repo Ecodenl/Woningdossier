@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d715d4eb6216aa2597172a6c24d1d310",
+    "content-hash": "fa487bea8b42c1d7e20b8376ce073c23",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1471,16 +1471,16 @@
         },
         {
             "name": "ecodenl/lvbag-php-wrapper",
-            "version": "v2.1.1",
+            "version": "v2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ecodenl/lvbag-php-wrapper.git",
-                "reference": "46e68c9d545bcc41539a2febb97c21e6cc79ab33"
+                "reference": "042320b298002725935d0e053237e16834ec7b5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ecodenl/lvbag-php-wrapper/zipball/46e68c9d545bcc41539a2febb97c21e6cc79ab33",
-                "reference": "46e68c9d545bcc41539a2febb97c21e6cc79ab33",
+                "url": "https://api.github.com/repos/Ecodenl/lvbag-php-wrapper/zipball/042320b298002725935d0e053237e16834ec7b5d",
+                "reference": "042320b298002725935d0e053237e16834ec7b5d",
                 "shasum": ""
             },
             "require": {
@@ -1518,9 +1518,9 @@
             "description": "PHP Wrapper for the LVBAG API ",
             "support": {
                 "issues": "https://github.com/Ecodenl/lvbag-php-wrapper/issues",
-                "source": "https://github.com/Ecodenl/lvbag-php-wrapper/tree/v2.1.1"
+                "source": "https://github.com/Ecodenl/lvbag-php-wrapper/tree/v2.1.2"
             },
-            "time": "2025-05-19T12:11:42+00:00"
+            "time": "2025-05-28T09:53:46+00:00"
         },
         {
             "name": "egulias/email-validator",

@@ -21,6 +21,8 @@ parameters:
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\(.*)::.*#'
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder(.*)::.*#'
         - '#Method .*::findByShort\(\) should return .* but returns Illuminate\\Database\\Eloquent\\Model(.*)#'
+        # This error is caused by the getUseFactoryAttribute in the HasFactory trait, which defines a return type of a template factory that doesn't exist
+        - '#PHPDoc tag @property-read for property App\\Models\\(.*?)::\$use_factory contains unknown class App\\Models\\TFactory.#'
 
         # These errors are ignored because we are 100% certain it's not actually an issue
         - '#Unsafe usage of new static(.*)#'

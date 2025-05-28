@@ -3,7 +3,6 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\Artisan;
 use Spatie\Permission\PermissionRegistrar;
 
 abstract class TestCase extends BaseTestCase
@@ -19,7 +18,7 @@ abstract class TestCase extends BaseTestCase
     {
         // This is important, as the cache created during testing might conflict with the app, which can cause
         // weird behaviour.
-        Artisan::call('cache:clear');
+        $this->artisan('cache:clear');
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         parent::tearDown();
     }

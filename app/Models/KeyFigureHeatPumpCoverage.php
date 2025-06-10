@@ -31,9 +31,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureHeatPumpCoverage extends Model
 {
-    protected $casts = [
-        'betafactor' => 'decimal:2',
-    ];
+
+    protected function casts(): array
+    {
+        return [
+            'betafactor' => 'decimal:2',
+        ];
+    }
 
     #[Scope]
     protected function forHeatingTemperature(

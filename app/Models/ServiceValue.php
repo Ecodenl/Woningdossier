@@ -51,10 +51,13 @@ class ServiceValue extends Model
         'value',
     ];
 
-    protected $casts = [
-        'is_default' => 'boolean',
-        'configurations' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_default' => 'boolean',
+            'configurations' => 'array',
+        ];
+    }
 
     # Scopes
     #[Scope]

@@ -29,10 +29,14 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureInsulationFactor extends Model
 {
-    protected $casts = [
-        'insulation_grade' => 'decimal:2',
-        'insulation_factor' => 'decimal:2',
-    ];
+
+    protected function casts(): array
+    {
+        return [
+            'insulation_grade' => 'decimal:2',
+            'insulation_factor' => 'decimal:2',
+        ];
+    }
 
     #[Scope]
     protected function forInsulationFactor(Builder $query, $factor): Builder

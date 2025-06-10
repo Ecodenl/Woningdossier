@@ -50,9 +50,12 @@ class ElementValue extends Model
         'value',
     ];
 
-    protected $casts = [
-        'configurations' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'configurations' => 'array',
+        ];
+    }
 
     # Attributes
     public function getInsulationFactorAttribute(): int

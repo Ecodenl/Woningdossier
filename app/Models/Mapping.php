@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -68,7 +69,8 @@ class Mapping extends Model
     }
 
     # Scopes
-    public function scopeForType(Builder $query, string $type): Builder
+    #[Scope]
+    protected function forType(Builder $query, string $type): Builder
     {
         return $query->where('type', $type);
     }

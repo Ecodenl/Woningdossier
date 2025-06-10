@@ -41,7 +41,7 @@ class EconobisEventSubscriber
     public function sendBuildingStatusToEconobis(BuildingStatusUpdated $event)
     {
         // Econobis only wants the status if it's `executed` ("uitgevoerd")
-        $econobisWantsStatus = ($status = optional($event->building->getMostRecentBuildingStatus())->status) instanceof Status && $status->short === 'executed';
+        $econobisWantsStatus = ($status = $event->building->getMostRecentBuildingStatus()?->status) instanceof Status && $status->short === 'executed';
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
         $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($event->building)->isNotEmpty();
         if ($canSendUserInformationToEconobis && $userHasConnectedCoaches && $econobisWantsStatus) {

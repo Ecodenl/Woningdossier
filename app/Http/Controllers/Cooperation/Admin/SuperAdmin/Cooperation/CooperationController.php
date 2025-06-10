@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Helpers\Models\CooperationHelper;
@@ -19,21 +20,21 @@ class CooperationController extends Controller
 
     public function create(): View
     {
-        $this->authorize('create', Cooperation::class);
+        Gate::authorize('create', Cooperation::class);
 
         return view('cooperation.admin.super-admin.cooperations.create');
     }
 
     public function edit(Cooperation $cooperation, Cooperation $cooperationToEdit): View
     {
-        $this->authorize('update', $cooperationToEdit);
+        Gate::authorize('update', $cooperationToEdit);
 
         return view('cooperation.admin.super-admin.cooperations.edit', compact('cooperationToEdit'));
     }
 
     public function destroy(Cooperation $cooperation, Cooperation $cooperationToDestroy): RedirectResponse
     {
-        $this->authorize('delete', $cooperationToDestroy);
+        Gate::authorize('delete', $cooperationToDestroy);
 
         CooperationHelper::destroyCooperation($cooperationToDestroy);
 

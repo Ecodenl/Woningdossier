@@ -8,7 +8,6 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Media;
 use App\Rules\MaxFilenameLength;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -16,8 +15,7 @@ use Plank\Mediable\Facades\MediaUploader;
 
 class Uploader extends Component
 {
-    use WithFileUploads,
-        AuthorizesRequests;
+    use WithFileUploads;
 
     public Building $building;
     public string $tag;

@@ -28,7 +28,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PvPanelLocationFactor extends Model
 {
-    protected $casts = [
-        'factor' => 'decimal:2',
-    ];
+
+    protected function casts(): array
+    {
+        return [
+            'factor' => 'decimal:2',
+        ];
+    }
 }

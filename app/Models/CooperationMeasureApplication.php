@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\CooperationMeasureApplicationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
@@ -60,6 +63,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder<static>|CooperationMeasureApplication withoutTrashed()
  * @mixin \Eloquent
  */
+#[ObservedBy([CooperationMeasureApplicationObserver::class])]
 class CooperationMeasureApplication extends Model
 {
     use HasFactory,
@@ -90,12 +94,14 @@ class CooperationMeasureApplication extends Model
     }
 
     # Scopes
-    public function scopeExtensiveMeasures(Builder $query): Builder
+    #[Scope]
+    protected function extensiveMeasures(Builder $query): Builder
     {
         return $query->where('is_extensive_measure', true);
     }
 
-    public function scopeSmallMeasures(Builder $query): Builder
+    #[Scope]
+    protected function smallMeasures(Builder $query): Builder
     {
         return $query->where('is_extensive_measure', false);
     }

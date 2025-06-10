@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use Illuminate\Support\Facades\Gate;
 use App\Deprecation\DeprecationLogger;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -44,7 +45,7 @@ class MessagesController extends Controller
             return redirect()->route('cooperation.conversation-requests.index', ['requestType' => PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION]);
         }
 
-        $this->authorize('update', $privateMessages->first());
+        Gate::authorize('update', $privateMessages->first());
 
         $groupParticipants = PrivateMessage::getGroupParticipants($building);
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -51,12 +52,14 @@ class Notification extends Model
     ];
 
     # Scopes
-    public function scopeForType(Builder $query, string $type): Builder
+    #[Scope]
+    protected function forType(Builder $query, string $type): Builder
     {
         return $query->where('type', $type);
     }
 
-    public function scopeForUuid(Builder $query, string $uuid): Builder
+    #[Scope]
+    protected function forUuid(Builder $query, string $uuid): Builder
     {
         return $query->where('uuid', $uuid);
     }

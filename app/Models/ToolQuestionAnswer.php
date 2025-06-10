@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\ToolQuestionAnswerObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -44,6 +46,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestionAnswer whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([ToolQuestionAnswerObserver::class])]
 class ToolQuestionAnswer extends Model implements Auditable
 {
     use GetValueTrait,

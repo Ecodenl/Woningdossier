@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Helpers\HoomdossierSession;
@@ -64,7 +65,7 @@ class UserController extends Controller
 
         $user = User::find($userId);
 
-        $this->authorize('destroy', $user);
+        Gate::authorize('destroy', $user);
 
         if ($user instanceof User) {
             UserService::deleteUser($user);

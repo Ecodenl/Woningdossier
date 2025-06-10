@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use App\Helpers\Hoomdossier;
@@ -37,7 +38,7 @@ class FileStorageController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         // because of the global scope on the file storage its impossible to retrieve a file from another cooperation
         // but we will still do some additional checks
-        $this->authorize('download', [$fileStorage, $building]);
+        Gate::authorize('download', [$fileStorage, $building]);
 
         return FileStorageService::download($fileStorage);
     }
@@ -98,7 +99,7 @@ class FileStorageController extends Controller
             'filename' => $fileName,
         ]);
 
-        $this->authorize('store', [$fileStorage, $fileType]);
+        Gate::authorize('store', [$fileStorage, $fileType]);
 
         // this is only needed when its not the cooperation generating a file.
         if (InputSource::COOPERATION_SHORT != $inputSource->short) {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,11 +31,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureHeatPumpCoverage extends Model
 {
-    protected $casts = [
-        'betafactor' => 'decimal:2',
-    ];
 
-    public function scopeForHeatingTemperature(
+    protected function casts(): array
+    {
+        return [
+            'betafactor' => 'decimal:2',
+        ];
+    }
+
+    #[Scope]
+    protected function forHeatingTemperature(
         Builder $query,
         ToolQuestionCustomValue $heatingTemperature
     ): Builder
@@ -45,7 +51,8 @@ class KeyFigureHeatPumpCoverage extends Model
         );
     }
 
-    public function scopeForToolQuestionCustomValue(
+    #[Scope]
+    protected function forToolQuestionCustomValue(
         Builder $query,
         ToolQuestionCustomValue $toolQuestionCustomValue
     ): Builder
@@ -57,7 +64,8 @@ class KeyFigureHeatPumpCoverage extends Model
         );
     }
 
-    public function scopeForBetaFactor(Builder $query, $betafactor): Builder
+    #[Scope]
+    protected function forBetaFactor(Builder $query, $betafactor): Builder
     {
         $round = floor($betafactor * 10) / 10;
 

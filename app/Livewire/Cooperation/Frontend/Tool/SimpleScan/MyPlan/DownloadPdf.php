@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
+use Illuminate\Support\Facades\Gate;
 use App\Helpers\HoomdossierSession;
 use App\Jobs\PdfReport;
 use App\Models\FileStorage;
@@ -10,14 +11,12 @@ use App\Models\InputSource;
 use App\Models\Scan;
 use App\Models\User;
 use App\Services\FileStorageService;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
 // someday this will probably be refactored to a file storage download component.
 class DownloadPdf extends Component
 {
-    use AuthorizesRequests;
 
     public FileType $fileType;
     public User $user;
@@ -42,7 +41,7 @@ class DownloadPdf extends Component
         // as this checks for file processing, there's a chance it isn't picked up by the queue,
         // so we check if it actually exists
         if ($this->fileStorage instanceof FileStorage) {
-            $this->authorize('download', [$this->fileStorage, $user->building]);
+            Gate::authorize('download', [$this->fileStorage, $user->building]);
         }
     }
 
@@ -85,7 +84,7 @@ class DownloadPdf extends Component
             ),
         ]);
 
-        $this->authorize('store', [$fileStorage, $this->fileType]);
+        Gate::authorize('store', [$fileStorage, $this->fileType]);
 
         $fileStorage->save();
 

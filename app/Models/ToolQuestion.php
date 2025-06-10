@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Services\DiscordNotifier;
 use App\Traits\HasShortTrait;
@@ -185,7 +186,8 @@ class ToolQuestion extends Model
             ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
     }
 
-    public function scopeFindByShortsOrdered($builder, $shorts)
+    #[Scope]
+    protected function findByShortsOrdered($builder, $shorts)
     {
         $questionMarks = substr(str_repeat('?, ', count($shorts)), 0, -2);
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -37,7 +38,8 @@ class QueueLog extends Model
     public $incrementing = false;
 
     // Scopes
-    public function scopeForQueue(Builder $queue, string $queueName): Builder
+    #[Scope]
+    protected function forQueue(Builder $queue, string $queueName): Builder
     {
         return $queue->where('queue', $queueName);
     }

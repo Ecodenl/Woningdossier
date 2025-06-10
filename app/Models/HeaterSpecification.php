@@ -28,7 +28,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class HeaterSpecification extends Model
 {
-    protected $casts = [
-        'collector' => 'decimal:1',
-    ];
+
+    protected function casts(): array
+    {
+        return [
+            'collector' => 'decimal:1',
+        ];
+    }
 }

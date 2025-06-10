@@ -28,9 +28,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PvPanelYield extends Model
 {
-    protected $casts = [
-        'yield' => 'decimal:2',
-    ];
+
+    protected function casts(): array
+    {
+        return [
+            'yield' => 'decimal:2',
+        ];
+    }
 
     public function orientation(): BelongsTo
     {

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\AccountObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
@@ -54,6 +56,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([AccountObserver::class])]
 class Account extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, TwoFactorAuthenticatable;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 use Illuminate\Http\Response;
@@ -27,7 +28,7 @@ class QuestionnaireController extends Controller
 
     public function create(): View
     {
-        $this->authorize('create', Questionnaire::class);
+        Gate::authorize('create', Questionnaire::class);
 
         $scans = Scan::with(['steps' => function ($query) {
             $query->whereNotIn('short', ['high-efficiency-boiler', 'heat-pump', 'heater']);
@@ -41,7 +42,7 @@ class QuestionnaireController extends Controller
      */
     public function store(Cooperation $cooperation, QuestionnaireRequest $request): RedirectResponse
     {
-        $this->authorize('create', Questionnaire::class);
+        Gate::authorize('create', Questionnaire::class);
 
         $questionnaireData = $request->validated()['questionnaires'];
 
@@ -60,7 +61,7 @@ class QuestionnaireController extends Controller
 
     public function edit(Cooperation $cooperation, Questionnaire $questionnaire): View
     {
-        $this->authorize('update', $questionnaire);
+        Gate::authorize('update', $questionnaire);
 
         $scans = Scan::with(['steps' => function ($query) {
             $query->whereNotIn('short', ['high-efficiency-boiler', 'heat-pump', 'heater']);
@@ -78,7 +79,7 @@ class QuestionnaireController extends Controller
      */
     public function update(QuestionnaireRequest $request, Cooperation $cooperation, Questionnaire $questionnaire): RedirectResponse
     {
-        $this->authorize('update', $questionnaire);
+        Gate::authorize('update', $questionnaire);
 
         $data = $request->validated();
         $questionnaireData = $data['questionnaires'];
@@ -114,7 +115,7 @@ class QuestionnaireController extends Controller
         $active = $request->input('questionnaire_active');
         $questionnaire = Questionnaire::find($questionnaireId);
 
-        $this->authorize('setActiveStatus', $questionnaire);
+        Gate::authorize('setActiveStatus', $questionnaire);
 
         $active = 'true' == $active;
 

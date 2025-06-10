@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -31,7 +32,7 @@ class RoleController extends Controller
             $user = User::find($userId);
         }
 
-        $this->authorize('view', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true)]);
+        Gate::authorize('view', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true)]);
 
 
         $user->assignRole($role);
@@ -55,7 +56,7 @@ class RoleController extends Controller
             $user = User::find($userId);
         }
 
-        $this->authorize('delete', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
+        Gate::authorize('delete', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
 
         // we cant delete a role if the user only has 1 role.
         if ($user->hasMultipleRoles()) {

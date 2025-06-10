@@ -5,7 +5,6 @@ namespace App\Livewire\Cooperation\Admin\SuperAdmin\Cooperations;
 use App\Enums\Country;
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Crypt;
@@ -16,7 +15,6 @@ use Livewire\Component;
 
 class Form extends Component
 {
-    use AuthorizesRequests;
 
     public ?Cooperation $cooperationToEdit;
     public bool $clearApiKey = false;

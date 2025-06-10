@@ -2,13 +2,13 @@
 
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
+use Illuminate\Support\Facades\Gate;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MediaHelper;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Media;
 use App\Rules\MaxFilenameLength;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -20,8 +20,7 @@ use Plank\Mediable\Facades\MediaUploader;
 
 class Uploader extends Component
 {
-    use WithFileUploads,
-        AuthorizesRequests;
+    use WithFileUploads;
 
     public Building $building;
     public InputSource $currentInputSource;
@@ -122,7 +121,7 @@ class Uploader extends Component
 
         $file = $this->files->where('id', $fileId)->first();
 
-        $this->authorize('update', [$file, $this->currentInputSource]);
+        Gate::authorize('update', [$file, $this->currentInputSource]);
 
         $fileData = $this->fileData[$fileId];
 
@@ -152,7 +151,7 @@ class Uploader extends Component
     {
         $file = $this->files->where('id', $fileId)->first();
 
-        $this->authorize('delete', [$file, $this->currentInputSource]);
+        Gate::authorize('delete', [$file, $this->currentInputSource]);
 
         if ($file instanceof Media) {
             $file->delete();

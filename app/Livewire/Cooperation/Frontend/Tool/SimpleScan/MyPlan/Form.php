@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
+use Illuminate\Support\Facades\Gate;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
@@ -22,13 +23,11 @@ use App\Services\Models\UserCostService;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Collection;
 use App\Helpers\Arr;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class Form extends CustomMeasureForm
 {
-    use AuthorizesRequests;
 
     public array $cards = [
         UserActionPlanAdviceService::CATEGORY_COMPLETE => [],
@@ -350,7 +349,7 @@ class Form extends CustomMeasureForm
             ->withoutGlobalScope(VisibleScope::class)
             ->find($id);
 
-        $this->authorize('view', $advice);
+        Gate::authorize('view', $advice);
 
         // If it's a custom measure, we need to get the sibling because the custom measure also has an input source
         if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {

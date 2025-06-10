@@ -22,7 +22,7 @@ class ExampleBuildingFactory extends Factory
             'building_type_id' => null,
             'cooperation_id' => null,
             'order' => $this->faker->randomDigitNotZero(),
-            'is_default' => $this->faker->boolean,
+            'is_default' => $this->faker->boolean(),
         ];
     }
 

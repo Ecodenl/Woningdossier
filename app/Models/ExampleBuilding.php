@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -135,7 +136,8 @@ class ExampleBuilding extends Model
     /**
      * Scope a query to only include buildings for my cooperation.
      */
-    public function scopeForMyCooperation(Builder $query): Builder
+    #[Scope]
+    protected function forMyCooperation(Builder $query): Builder
     {
         $cooperationId = ! empty(HoomdossierSession::getCooperation()) ? HoomdossierSession::getCooperation() : 0;
 
@@ -145,7 +147,8 @@ class ExampleBuilding extends Model
     /**
      * Scope a query to only include buildings for my cooperation.
      */
-    public function scopeForAnyOrMyCooperation(Builder $query): Builder
+    #[Scope]
+    protected function forAnyOrMyCooperation(Builder $query): Builder
     {
         $cooperationId = \Session::get('cooperation', 0);
 
@@ -155,7 +158,8 @@ class ExampleBuilding extends Model
     /**
      * Scope on only generic example buildings.
      */
-    public function scopeGeneric(Builder $query): Builder
+    #[Scope]
+    protected function generic(Builder $query): Builder
     {
         return $query->whereNull('cooperation_id');
     }

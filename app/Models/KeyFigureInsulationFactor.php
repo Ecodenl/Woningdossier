@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -33,7 +34,8 @@ class KeyFigureInsulationFactor extends Model
         'insulation_factor' => 'decimal:2',
     ];
 
-    public function scopeForInsulationFactor(Builder $query, $factor): Builder
+    #[Scope]
+    protected function forInsulationFactor(Builder $query, $factor): Builder
     {
         $factor = number_format($factor, 2, '.', '');
 

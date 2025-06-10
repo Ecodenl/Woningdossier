@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\Models\HasTranslations;
@@ -56,7 +57,8 @@ class ServiceValue extends Model
     ];
 
     # Scopes
-    public function scopeByValue(Builder $query, string $name, string $locale = 'nl'): Builder
+    #[Scope]
+    protected function byValue(Builder $query, string $name, string $locale = 'nl'): Builder
     {
         return $query->where("value->{$locale}", $name);
     }

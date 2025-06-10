@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,7 +55,8 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
         });
     }
 
-    public function scopeForGroup(Builder $query, $group)
+    #[Scope]
+    protected function forGroup(Builder $query, $group)
     {
         return $query->where('group', $group);
     }
@@ -66,7 +68,8 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
      *
      * @return mixed
      */
-    public function scopeMainQuestions($query)
+    #[Scope]
+    protected function mainQuestions($query)
     {
         return $query->whereNull('main_language_line_id');
     }

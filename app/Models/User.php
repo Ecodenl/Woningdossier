@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\UserObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -98,6 +101,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder<static>|User withoutRole($roles, $guard = null)
  * @mixin \Eloquent
  */
+#[ObservedBy([UserObserver::class])]
 class User extends Model implements AuthorizableContract
 {
     use HasFactory,
@@ -129,14 +133,16 @@ class User extends Model implements AuthorizableContract
     //];
 
     # Scopes
-    public function scopeByContact(Builder $query, $contact): Builder
+    #[Scope]
+    protected function byContact(Builder $query, $contact): Builder
     {
         // We assume $contact is an ID. Maybe in the future this won't be the case but this way it can be easily
         // expanded
         return $query->where('extra->contact_id', $contact);
     }
 
-    public function scopeEconobisContacts(Builder $query): Builder
+    #[Scope]
+    protected function econobisContacts(Builder $query): Builder
     {
         return $query->whereNotNull('extra->contact_id');
     }

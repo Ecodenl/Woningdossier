@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -59,7 +60,8 @@ class CooperationSetting extends Model implements Auditable, MediableInterface
     //
 
     # Scopes
-    public function scopeForShort(Builder $query, string $short): Builder
+    #[Scope]
+    protected function forShort(Builder $query, string $short): Builder
     {
         return $query->where('short', $short);
     }

@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\UserActionPlanAdviceObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Helpers\Hoomdossier;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
@@ -88,6 +91,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder<static>|UserActionPlanAdvice withInvisible()
  * @mixin \Eloquent
  */
+#[ObservedBy([UserActionPlanAdviceObserver::class])]
 #[ScopedBy(VisibleScope::class)]
 class UserActionPlanAdvice extends Model implements Auditable
 {
@@ -143,7 +147,8 @@ class UserActionPlanAdvice extends Model implements Auditable
     }
 
     // Scopes
-    public function scopeGetCategorized(Builder $query): Collection
+    #[Scope]
+    protected function getCategorized(Builder $query): Collection
     {
         $categories = array_values(UserActionPlanAdviceService::getCategories());
         return $query->orderBy('order')->get()->groupBy('category')->sortKeysUsing(function ($a, $b) use ($categories) {
@@ -155,7 +160,8 @@ class UserActionPlanAdvice extends Model implements Auditable
     /**
      * Method to scope the advices without its deleted cooperation measure applications and for given type.
      */
-    public function scopeCooperationMeasureForType(Builder $query, string $type, InputSource $inputSource): Builder
+    #[Scope]
+    protected function cooperationMeasureForType(Builder $query, string $type, InputSource $inputSource): Builder
     {
         $isExtensive = $type === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
 
@@ -173,12 +179,14 @@ class UserActionPlanAdvice extends Model implements Auditable
         );
     }
 
-    public function scopeWithInvisible(Builder $query)
+    #[Scope]
+    protected function withInvisible(Builder $query)
     {
         return $query->withoutGlobalScope(VisibleScope::class);
     }
 
-    public function scopeForAdvisable(Builder $query, Model $advisable): Builder
+    #[Scope]
+    protected function forAdvisable(Builder $query, Model $advisable): Builder
     {
         return $query->where('user_action_plan_advisable_type', get_class($advisable))
             ->where('user_action_plan_advisable_id', $advisable->id);
@@ -187,7 +195,8 @@ class UserActionPlanAdvice extends Model implements Auditable
     /**
      * Method to only scope the invisible rows
      */
-    public function scopeInvisible(Builder $query): Builder
+    #[Scope]
+    protected function invisible(Builder $query): Builder
     {
         return $query->withInvisible()->where('visible', false);
     }
@@ -195,12 +204,14 @@ class UserActionPlanAdvice extends Model implements Auditable
     /**
      * Scope a query to only include results for the particular step.
      */
-    public function scopeForStep(Builder $query, Step $step): Builder
+    #[Scope]
+    protected function forStep(Builder $query, Step $step): Builder
     {
         return $query->where('step_id', $step->id);
     }
 
-    public function scopeCategory(Builder $query, string $category)
+    #[Scope]
+    protected function category(Builder $query, string $category)
     {
         return $query->where('category', $category);
     }

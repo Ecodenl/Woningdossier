@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\BuildingFeatureObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -95,6 +97,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingFeature whereWindowSurface($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([BuildingFeatureObserver::class])]
 class BuildingFeature extends Model implements Auditable
 {
     use GetValueTrait,

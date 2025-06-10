@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\BuildingElementObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
@@ -48,6 +50,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingElement whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([BuildingElementObserver::class])]
 class BuildingElement extends Model implements Auditable
 {
     use HasFactory;

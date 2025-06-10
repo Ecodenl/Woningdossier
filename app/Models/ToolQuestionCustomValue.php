@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasOrder;
 use App\Traits\Models\HasTranslations;
@@ -80,7 +81,8 @@ class ToolQuestionCustomValue extends Model
     }
 
     # Scopes
-    public function scopeVisible(Builder $query): Builder
+    #[Scope]
+    protected function visible(Builder $query): Builder
     {
         return $query->where('show', true);
     }

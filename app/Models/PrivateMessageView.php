@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\PrivateMessageViewObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Traits\GetMyValuesTrait;
@@ -40,6 +43,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder<static>|PrivateMessageView whereUserId($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([PrivateMessageViewObserver::class])]
 class PrivateMessageView extends Model
 {
     use GetMyValuesTrait;
@@ -96,7 +100,8 @@ class PrivateMessageView extends Model
      * BUT: the input_source_id will sometimes be empty (coordinator and cooperation-admin), so we
      * can't use the global scope.
      */
-    public function scopeForCurrentInputSource(Builder $query): Builder
+    #[Scope]
+    protected function forCurrentInputSource(Builder $query): Builder
     {
         return $query->where('input_source_id', HoomdossierSession::getInputSourceValue());
     }

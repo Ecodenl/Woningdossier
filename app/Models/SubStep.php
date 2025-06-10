@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -95,18 +96,21 @@ class SubStep extends Model
     }
 
     // Scopes
-    public function scopeOrdered(Builder $query)
+    #[Scope]
+    protected function ordered(Builder $query)
     {
         return $query->orderBy('order');
     }
 
     // TODO: Slug trait?
-    public function scopeBySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
+    #[Scope]
+    protected function bySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
     {
         return $query->where("slug->{$locale}", $slug);
     }
 
-    public function scopeForScan(Builder $query, Scan $scan): Builder
+    #[Scope]
+    protected function forScan(Builder $query, Scan $scan): Builder
     {
         return $query->whereHas('step', function ($query) use ($scan) {
             $query->where('scan_id', $scan->id);

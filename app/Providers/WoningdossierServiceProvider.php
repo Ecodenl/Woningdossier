@@ -41,20 +41,20 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Cooperation::observe(CooperationObserver::class);
-        PrivateMessage::observe(PrivateMessageObserver::class);
-        UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
-        PrivateMessageView::observe(PrivateMessageViewObserver::class);
-        Building::observe(BuildingObserver::class);
-        BuildingFeature::observe(BuildingFeatureObserver::class);
-        BuildingElement::observe(BuildingElementObserver::class);
-        User::observe(UserObserver::class);
-        Account::observe(AccountObserver::class);
-        CompletedSubStep::observe(CompletedSubStepObserver::class);
-        ToolQuestionAnswer::observe(ToolQuestionAnswerObserver::class);
-        MeasureApplication::observe(MeasureApplicationObserver::class);
-        CustomMeasureApplication::observe(CustomMeasureApplicationObserver::class);
-        CooperationMeasureApplication::observe(CooperationMeasureApplicationObserver::class);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         SessionGuard::macro('account', function () {
             return auth()->user();

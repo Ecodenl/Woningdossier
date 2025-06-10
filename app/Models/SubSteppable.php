@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -62,7 +63,8 @@ class SubSteppable extends MorphPivot
     }
 
     # Scopes
-    public function scopeForScan(Builder $query, Scan $scan): Builder
+    #[Scope]
+    protected function forScan(Builder $query, Scan $scan): Builder
     {
         return $query->whereHas('subStep', function ($query) use ($scan) {
             $query->forScan($scan);

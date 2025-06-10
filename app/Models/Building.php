@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\BuildingObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Helpers\Conditions\ConditionEvaluator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -114,6 +117,7 @@ use Plank\Mediable\MediableInterface;
  * @method static Builder<static>|Building withoutTrashed()
  * @mixin \Eloquent
  */
+#[ObservedBy([BuildingObserver::class])]
 class Building extends Model implements MediableInterface
 {
     use HasFactory,
@@ -355,7 +359,8 @@ class Building extends Model implements MediableInterface
     /**
      * Scope to return the buildings with most recent information from the building status.
      */
-    public function scopeWithRecentBuildingStatusInformation(Builder $query): Builder
+    #[Scope]
+    protected function withRecentBuildingStatusInformation(Builder $query): Builder
     {
         $recentBuildingStatuses = DB::table('building_statuses')
             ->selectRaw(

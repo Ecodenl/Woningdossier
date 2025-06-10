@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\CustomMeasureApplicationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Traits\Models\HasMappings;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -52,6 +54,7 @@ use Spatie\Translatable\HasTranslations;
  * @method static Builder<static>|CustomMeasureApplication whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([CustomMeasureApplicationObserver::class])]
 class CustomMeasureApplication extends Model
 {
     use HasFactory;

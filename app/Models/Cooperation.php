@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\CooperationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Enums\Country;
 use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -69,6 +71,7 @@ use Plank\Mediable\MediableInterface;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @mixin \Eloquent
  */
+#[ObservedBy([CooperationObserver::class])]
 class Cooperation extends Model implements MediableInterface
 {
     use HasFactory,

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\CompletedSubStepObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -39,6 +41,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompletedSubStep whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([CompletedSubStepObserver::class])]
 class CompletedSubStep extends Model implements Auditable
 {
     use GetMyValuesTrait,

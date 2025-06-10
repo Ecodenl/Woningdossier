@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -46,7 +47,8 @@ class FileTypeCategory extends Model
      *
      * @param $short
      */
-    public function scopeShort(Builder $query, $short): Builder
+    #[Scope]
+    protected function short(Builder $query, $short): Builder
     {
         return $query->where('short', $short);
     }

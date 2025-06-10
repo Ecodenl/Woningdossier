@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -59,7 +60,8 @@ class UserCost extends Model implements Auditable
     ];
 
     # Scopes
-    public function scopeForAdvisable(Builder $query, Model $advisable): Builder
+    #[Scope]
+    protected function forAdvisable(Builder $query, Model $advisable): Builder
     {
         return $query->where('advisable_type', get_class($advisable))
             ->where('advisable_id', $advisable->id);

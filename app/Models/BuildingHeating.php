@@ -40,7 +40,10 @@ class BuildingHeating extends Model
         'name',
     ];
 
-    protected $casts = [
-        'is_default' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_default' => 'boolean',
+        ];
+    }
 }

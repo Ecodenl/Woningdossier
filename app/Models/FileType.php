@@ -48,9 +48,12 @@ class FileType extends Model
         'name',
     ];
 
-    protected $casts = [
-        'duration' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'duration' => 'datetime',
+        ];
+    }
 
     public function getRouteKeyName()
     {

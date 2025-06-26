@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -45,7 +46,8 @@ class HeatPumpCharacteristic extends Model
     const string TYPE_HYBRID = 'hybrid';
     const string TYPE_FULL = 'full';
 
-    public function scopeForHeatingTemperature(
+    #[Scope]
+    protected function forHeatingTemperature(
         Builder $query,
         ToolQuestionCustomValue $heatingTemperature
     ): Builder
@@ -56,7 +58,8 @@ class HeatPumpCharacteristic extends Model
         );
     }
 
-    public function scopeForToolQuestionCustomValue(
+    #[Scope]
+    protected function forToolQuestionCustomValue(
         Builder $query,
         ToolQuestionCustomValue $toolQuestionCustomValue
     ): Builder
@@ -68,7 +71,8 @@ class HeatPumpCharacteristic extends Model
         );
     }
 
-    public function scopeForHeatPumpConfigurable(
+    #[Scope]
+    protected function forHeatPumpConfigurable(
         Builder $query,
         Model $configurable
     ): Builder

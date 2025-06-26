@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -45,7 +46,8 @@ class Log extends Model
      *
      * @return mixed
      */
-    public function scopeForBuildingId($query, $buildingId)
+    #[Scope]
+    protected function forBuildingId($query, $buildingId)
     {
         return $query->where('building_id', $buildingId);
     }

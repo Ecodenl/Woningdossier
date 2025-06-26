@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Events\CooperationMeasureApplicationUpdated;
@@ -97,7 +98,7 @@ class CooperationMeasureApplicationController extends Controller
 
     public function destroy(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication): RedirectResponse
     {
-        $this->authorize('delete', $cooperationMeasureApplication);
+        Gate::authorize('delete', $cooperationMeasureApplication);
 
         // First we soft delete it, this makes it impossible for users to add it.
         $cooperationMeasureApplication->delete();

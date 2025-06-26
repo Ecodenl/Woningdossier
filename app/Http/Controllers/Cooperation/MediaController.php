@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation;
 
+use Illuminate\Support\Facades\Gate;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
@@ -25,7 +26,7 @@ class MediaController extends Controller
     {
         $currentInputSource = Auth::check() ? HoomdossierSession::getInputSource(true) : null;
 
-        $this->authorize('view', [$media, $currentInputSource]);
+        Gate::authorize('view', [$media, $currentInputSource]);
 
         if (! Storage::disk($media->disk)->exists($media->getDiskPath())) {
             abort(404);

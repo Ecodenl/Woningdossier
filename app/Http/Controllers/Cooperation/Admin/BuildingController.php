@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Enums\ApiImplementation;
@@ -36,7 +37,7 @@ class BuildingController extends Controller
             return redirect()->route('cooperation.admin.index');
         }
 
-        $this->authorize('show', [$building]);
+        Gate::authorize('show', [$building]);
 
         $buildingId = $building->id;
 

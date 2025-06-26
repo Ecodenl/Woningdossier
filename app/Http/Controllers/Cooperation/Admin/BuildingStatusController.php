@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingCoachStatusRequest;
@@ -28,7 +29,7 @@ class BuildingStatusController extends Controller
         /** @var Building $building */
         $building = Building::withTrashed()->findOrFail($buildingId);
 
-        $this->authorize('set-status', $building);
+        Gate::authorize('set-status', $building);
 
         $buildingStatusService->forBuilding($building)->setStatus($status);
     }
@@ -48,7 +49,7 @@ class BuildingStatusController extends Controller
         /** @var Building $building */
         $building = Building::withTrashed()->findOrFail($buildingId);
 
-        $this->authorize('set-appointment', $building);
+        Gate::authorize('set-appointment', $building);
 
         app(BuildingService::class, compact('building'))
             ->setAppointmentDate($appointmentDate);

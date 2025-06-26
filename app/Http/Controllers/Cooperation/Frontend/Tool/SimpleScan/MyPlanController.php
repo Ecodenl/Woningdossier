@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Frontend\Tool\SimpleScan;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use App\Helpers\HoomdossierSession;
@@ -66,7 +67,7 @@ class MyPlanController extends Controller
     {
         $currentBuilding = HoomdossierSession::getBuilding(true);
 
-        $this->authorize('viewAny', [Media::class, HoomdossierSession::getInputSource(true), $currentBuilding]);
+        Gate::authorize('viewAny', [Media::class, HoomdossierSession::getInputSource(true), $currentBuilding]);
 
         if (! $building instanceof Building) {
             $building = $currentBuilding;

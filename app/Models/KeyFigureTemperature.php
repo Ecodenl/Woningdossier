@@ -32,9 +32,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureTemperature extends Model
 {
-    protected $casts = [
-        'key_figure' => 'decimal:2',
-    ];
+
+    protected function casts(): array
+    {
+        return [
+            'key_figure' => 'decimal:2',
+        ];
+    }
 
     public function measureApplication(): BelongsTo
     {

@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\MeasureApplicationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature as FloorInsulationTemperature;
 use App\Helpers\KeyFigures\WallInsulation\Temperature as WallInsulationTemperature;
 use App\Scopes\VisibleScope;
@@ -69,6 +72,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @method static Builder<static>|MeasureApplication whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([MeasureApplicationObserver::class])]
 class MeasureApplication extends Model
 {
     use HasTranslations,
@@ -130,7 +134,8 @@ class MeasureApplication extends Model
     }
 
     # Scopes
-    public function scopeMeasureType(Builder $query, string $measureType): Builder
+    #[Scope]
+    protected function measureType(Builder $query, string $measureType): Builder
     {
         return $query->where('measure_type', $measureType);
     }

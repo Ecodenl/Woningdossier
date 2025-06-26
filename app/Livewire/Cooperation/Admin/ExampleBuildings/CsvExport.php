@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cooperation\Admin\ExampleBuildings;
 
+use Illuminate\Support\Facades\Gate;
 use App\Helpers\HoomdossierSession;
 use App\Jobs\GenerateExampleBuildingCsv;
 use App\Models\Cooperation;
@@ -9,12 +10,10 @@ use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
 use App\Services\FileTypeService;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
 class CsvExport extends Component
 {
-    use AuthorizesRequests;
 
     public Cooperation $cooperation;
     public FileType $fileType;
@@ -45,7 +44,7 @@ class CsvExport extends Component
             'is_being_processed' => true,
         ]);
 
-        $this->authorize('store', [$this->fileStorage, $this->fileType]);
+        Gate::authorize('store', [$this->fileStorage, $this->fileType]);
         $this->fileStorage->save();
         GenerateExampleBuildingCsv::dispatch($this->cooperation, $this->fileType, $this->fileStorage);
     }

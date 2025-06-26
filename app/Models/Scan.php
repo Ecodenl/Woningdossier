@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
@@ -122,18 +123,21 @@ class Scan extends Model
     }
 
     // Scopes
-    public function scopeSimpleScans(Builder $query)
+    #[Scope]
+    protected function simpleScans(Builder $query)
     {
         return $query->whereIn('short', [static::LITE, static::QUICK]);
     }
 
-    public function scopeExpertScans(Builder $query)
+    #[Scope]
+    protected function expertScans(Builder $query)
     {
         return $query->whereIn('short', [static::EXPERT]);
     }
 
     // TODO: Slug trait?
-    public function scopeBySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
+    #[Scope]
+    protected function bySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
     {
         return $query->where("slug->{$locale}", $slug);
     }

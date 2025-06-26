@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
@@ -54,7 +55,7 @@ class ClientController extends Controller
 
     public function destroy(Cooperation $cooperation, Client $client): RedirectResponse
     {
-        $this->authorize('delete', $client);
+        Gate::authorize('delete', $client);
 
         $client->delete();
 

@@ -211,6 +211,7 @@ return [
 
         'api' => [
             'incorrect-vbjehuis-value' => ':Attribute is geen geldige VerbeterJeHuis waarde!',
+            'contact-id-unique' => 'De :attribute is al geregistreerd. Zoek in het Hoomdossier dit contact op en vul in in Econobis het Hoomaccount ID in. Vul eventueel het Econobis contact ID (wat in de URL staat) in het Hoomdossier in.',
         ],
     ],
 

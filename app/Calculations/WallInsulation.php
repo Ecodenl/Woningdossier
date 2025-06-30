@@ -20,12 +20,13 @@ class WallInsulation
 {
     /**
      * Calculate the wall insulation costs and savings etc.
-     *
-     * @param UserEnergyHabit|null $energyHabit
-     *
-     * @return array;
      */
-    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, array $calculateData): array
+    public static function calculate(
+        Building $building,
+        InputSource $inputSource,
+        ?UserEnergyHabit $energyHabit,
+        array $calculateData
+    ): array
     {
         $buildingFeatureData = $calculateData['building_features'];
         $cavityWall = $buildingFeatureData['cavity_wall'] ?? -1;
@@ -57,7 +58,7 @@ class WallInsulation
             $advice = "alerts.description.title";
             //$result['measure'] = null;
         }
-        $result['insulation_advice'] = __('wall-insulation.'.$advice);
+        $result['insulation_advice'] = __('wall-insulation.' . $advice);
 
         $calculator = app(CalculatorService::class)->forBuilding($building);
         $elementValueId = array_shift($elements);
@@ -125,9 +126,12 @@ class WallInsulation
                 //$year = Carbon::now()->year + $facadePlasteredSurface->term_years;
                 $year = Carbon::now()->year + $facadeDamagedPaintwork->term_years;
             }
-            $costs = RawCalculator::calculateMeasureApplicationCosts($measureApplication,
+            $costs = RawCalculator::calculateMeasureApplicationCosts(
+                $measureApplication,
                 $number,
-                $year, false);
+                $year,
+                false
+            );
             $result['paint_wall'] = compact('costs', 'year');
         }
 

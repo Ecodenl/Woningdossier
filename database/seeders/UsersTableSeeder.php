@@ -10,10 +10,8 @@ class UsersTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $accounts = [
             [
@@ -31,8 +29,7 @@ class UsersTableSeeder extends Seeder
         ];
 
         /** @var \stdClass $cooperation */
-        $cooperation = DB::table('cooperations')->where('slug',
-            'hoom')->first();
+        $cooperation = DB::table('cooperations')->where('slug', 'hoom')->first();
 
         foreach ($accounts as $account) {
             $users = $account['users'];

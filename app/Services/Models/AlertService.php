@@ -13,7 +13,7 @@ class AlertService
 {
     use FluentCaller;
 
-    const TYPE_MAP = [
+    const array TYPE_MAP = [
         Alert::TYPE_INFO => 'text-blue-900',
         Alert::TYPE_SUCCESS => 'text-green',
         Alert::TYPE_WARNING => 'text-orange',

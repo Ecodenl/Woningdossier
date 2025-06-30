@@ -33,10 +33,8 @@ class CompleteRelatedSubStep extends NonHandleableJobAfterReset
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $subStep = $this->subStep;
         $building = $this->building;
@@ -89,6 +87,5 @@ class CompleteRelatedSubStep extends NonHandleableJobAfterReset
             ScanFlowService::init($subStep->step->scan, $building, $inputSource)
                 ->evaluateSubSteps($subStepsToCheck, $evaluator);
         }
-
     }
 }

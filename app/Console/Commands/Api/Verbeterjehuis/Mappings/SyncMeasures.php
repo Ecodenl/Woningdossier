@@ -4,7 +4,6 @@ namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
 use App\Helpers\Wrapper;
 use App\Models\MeasureApplication;
-use App\Services\DiscordNotifier;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Console\Command;
@@ -27,23 +26,11 @@ class SyncMeasures extends Command
     protected $description = 'This command will map our MeasureApplications to the correct target groups.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle(MappingService $mappingService)
+    public function handle(MappingService $mappingService): int
     {
-        // Only energy saving measure applications. The maintenace ones don't have subsidy.
+        // Only energy saving measure applications. The maintenance applications don't have subsidy.
         $map = [
             'floor-insulation' => [1503], // Isolatie en glas
             'bottom-insulation' => [1503], // Isolatie en glas
@@ -91,10 +78,9 @@ class SyncMeasures extends Command
             foreach ($map as $measureApplicationShort => $targetMeasureValues) {
                 $syncData = [];
                 foreach ($targetMeasureValues as $targetMeasureValue) {
-                    if($targetGroups->has($targetMeasureValue)) {
+                    if ($targetGroups->has($targetMeasureValue)) {
                         $syncData[] = $targetGroups[$targetMeasureValue];
-                    }
-                    else {
+                    } else {
                         Log::error("SyncMeasures: Target group key $targetMeasureValue not found for $measureApplicationShort. Will not be synced.");
                     }
                 }
@@ -109,6 +95,6 @@ class SyncMeasures extends Command
             $this->error('Something is going on with VerbeterJeHuis!');
         });
 
-        return 0;
+        return self::SUCCESS;
     }
 }

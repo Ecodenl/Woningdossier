@@ -2,51 +2,41 @@
 
 namespace App\Policies;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\PrivateMessage;
-use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PrivateMessagePolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function viewAny(Account $account): bool
     {
+        return ! Hoomdossier::user()->isFillingToolForOtherBuilding() && ! Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin','superuser']);
     }
 
-    /**
-     * Determine if the given message can be edited by the user.
-     *
-     * @return bool
-     */
-    public function edit(Account $account, PrivateMessage $message)
+    public function update(Account $account, PrivateMessage $message): bool
     {
         $user = $account->user();
-        // get the building id from the message
-        $buildingId = $message->building_id;
 
         // note the order
-        if ($user->hasRoleAndIsCurrentRole(['coordinator', 'coordinator-admin'])) {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_SUPER_ADMIN])) {
             return true;
         }
 
-        if ($user->hasRoleAndIsCurrentRole(['coach'])) {
-            return $user->isNotRemovedFromBuildingCoachStatus($buildingId);
-        }
+        // get the building id from the message
+        $buildingId = $message->building_id;
 
-        if ($user->hasRoleAndIsCurrentRole(['resident'])) {
-            if (in_array(HoomdossierSession::getBuilding(), compact('buildingId'))) {
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH])) {
+            return $user->isNotRemovedFromBuildingCoachStatus($buildingId);
+        } elseif ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_RESIDENT])) {
+            if (HoomdossierSession::getBuilding(false) === $buildingId) {
                 return true;
             }
         }
-
         return false;
     }
 }

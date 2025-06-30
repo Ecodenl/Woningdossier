@@ -2,41 +2,38 @@
 
 namespace Tests\Unit\app\Services;
 
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Models\Building;
-use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Mapping;
-use App\Models\MeasureApplication;
 use App\Models\Municipality;
 use App\Services\MappingService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class MappingServiceTest extends TestCase
+final class MappingServiceTest extends TestCase
 {
     use RefreshDatabase;
 
     public $seed = false;
     public $seeder = DatabaseSeeder::class;
 
-    public function test_sync_maps_correct_from_value_to_targetless()
+    public function test_sync_maps_correct_from_value_to_targetless(): void
     {
         MappingService::init()
             ->from("Hellevoetsluis")
-            ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+            ->sync([], MappingType::BAG_MUNICIPALITY->value);
 
         $this->assertDatabaseHas('mappings', [
             'from_value' => 'Hellevoetsluis',
-            'type' => MappingHelper::TYPE_BAG_MUNICIPALITY
+            'type' => MappingType::BAG_MUNICIPALITY->value
         ]);
     }
 
-    public function test_sync_maps_correct_from_value_to_morph()
+    public function test_sync_maps_correct_from_value_to_morph(): void
     {
         $target1 = Municipality::factory()->create();
 
@@ -53,7 +50,7 @@ class MappingServiceTest extends TestCase
         ]);
     }
 
-    public function test_sync_maps_correct_from_morph_to_target_data()
+    public function test_sync_maps_correct_from_morph_to_target_data(): void
     {
         $from = CustomMeasureApplication::factory()->create([
             'building_id' => Building::factory()->create(),
@@ -74,7 +71,7 @@ class MappingServiceTest extends TestCase
         ]);
     }
 
-    public function test_resolve_target_returns_target_morph()
+    public function test_resolve_target_returns_target_morph(): void
     {
         $target = Municipality::factory()->create();
         Mapping::factory()->create([
@@ -91,7 +88,7 @@ class MappingServiceTest extends TestCase
         $this->assertEquals($target->attributesToArray(), $resolvedTarget->attributesToArray());
     }
 
-    public function test_resolve_target_returns_target_model()
+    public function test_resolve_target_returns_target_model(): void
     {
         $from = Municipality::factory()->create();
         $target = Municipality::factory()->create();
@@ -112,7 +109,7 @@ class MappingServiceTest extends TestCase
         $this->assertInstanceOf(Municipality::class, $resolvedTarget);
     }
 
-    public function test_resolve_target_returns_target_data()
+    public function test_resolve_target_returns_target_data(): void
     {
         $from = Municipality::factory()->create();
         $target = ["Label" => "Muur", "Value" => "2933", "Highlight" => false];
@@ -130,7 +127,7 @@ class MappingServiceTest extends TestCase
         $this->assertEquals($target, $resolvedTarget);
     }
 
-    public function test_resolve_target_returns_nothing_when_from_is_empty()
+    public function test_resolve_target_returns_nothing_when_from_is_empty(): void
     {
         // DB seeding also seeds mappings. We clear them since we're asserting a count.
         DB::table('mappings')->delete();
@@ -158,10 +155,8 @@ class MappingServiceTest extends TestCase
     /**
      * This test checks that the correct mapping rows are returned based on the given type, whether that would be
      * in combination with or without a from or target.
-     *
-     * @return void
      */
-    public function test_using_type_with_or_without_from_or_target_resolves_the_correct_related_mappings()
+    public function test_using_type_with_or_without_from_or_target_resolves_the_correct_related_mappings(): void
     {
         // DB seeding also seeds mappings. We clear them since we're asserting a count.
         DB::table('mappings')->delete();
@@ -175,11 +170,11 @@ class MappingServiceTest extends TestCase
 
         foreach (['Hellevoetsluis', 'Voorne aan Zee', 'Westvoorne'] as $bagMunicipality) {
             $service->from($bagMunicipality)
-                ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                ->sync([$municipality], MappingType::BAG_MUNICIPALITY->value);
         }
 
         $service->from($municipality)
-            ->sync([['Name' => 'Voorne aan Zee', 'Id' => '3148']], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
+            ->sync([['Name' => 'Voorne aan Zee', 'Id' => '3148']], MappingType::MUNICIPALITY_VBJEHUIS->value);
 
         $service->from('Irrelevant')->sync([['Data' => 'Something']]);
 
@@ -188,26 +183,26 @@ class MappingServiceTest extends TestCase
 
         // We should have 1 vbjehuis
         $vbjeHuis = $service->from($municipality)
-            ->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)
+            ->type(MappingType::MUNICIPALITY_VBJEHUIS->value)
             ->resolveTarget();
 
         $this->assertCount(1, $vbjeHuis);
 
         // We should have 3 BAG. NOTE WE ARE GOING THE OTHER WAY HERE!
         $bag = $service->target($municipality)
-            ->type(MappingHelper::TYPE_BAG_MUNICIPALITY)
+            ->type(MappingType::BAG_MUNICIPALITY->value)
             ->retrieveResolvable();
 
         $this->assertCount(3, $bag);
 
         // Add another bag mapping without target
         $service->from("Rotterdam")
-            ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+            ->sync([], MappingType::BAG_MUNICIPALITY->value);
 
         $this->assertDatabaseCount('mappings', 6);
 
         // We reset the target! We want to get ALL of type, disregarding the mappings.
-        $allBags = $service->target(null)->type(MappingHelper::TYPE_BAG_MUNICIPALITY)->retrieveResolvable();
+        $allBags = $service->target(null)->type(MappingType::BAG_MUNICIPALITY->value)->retrieveResolvable();
 
         // 3 with from, 1 added, should be 4
         $this->assertCount(4, $allBags);

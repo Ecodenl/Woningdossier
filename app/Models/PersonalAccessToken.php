@@ -12,23 +12,25 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $tokenable_id
  * @property string $name
  * @property string $token
- * @property array|null $abilities
+ * @property array<array-key, mixed>|null $abilities
  * @property \Illuminate\Support\Carbon|null $last_used_at
+ * @property \Illuminate\Support\Carbon|null $expires_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Model|\Eloquent $tokenable
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken query()
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereAbilities($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereLastUsedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereTokenableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereTokenableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken whereAbilities($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken whereLastUsedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken whereToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken whereTokenableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken whereTokenableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PersonalAccessToken whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class PersonalAccessToken extends \Laravel\Sanctum\PersonalAccessToken

@@ -17,7 +17,7 @@ class ToolQuestionsImport implements ToCollection, WithCustomCsvSettings, WithHe
     {
         foreach ($rows as $row) {
             $short = $row['short'];
-            if ( ! empty($short)) {
+            if (! empty($short)) {
                 $toolQuestionTable = (new ToolQuestion())->getTable();
 
                 if (DB::table($toolQuestionTable)->where('short', $short)->exists()) {
@@ -29,7 +29,7 @@ class ToolQuestionsImport implements ToCollection, WithCustomCsvSettings, WithHe
                             'help_text' => $row['help_text'],
                         ]);
                 } else {
-                    Log::debug(__CLASS__."{$short} does not exist in the tool questions!");
+                    Log::debug(__CLASS__ . "{$short} does not exist in the tool questions!");
                 }
             }
         }

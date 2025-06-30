@@ -13,7 +13,6 @@ use App\Models\ToolQuestionValuable;
 use App\Traits\FluentCaller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class ConditionService
 {
@@ -86,13 +85,14 @@ class ConditionService
             // So it isn't a simple case. We will have to iterate. In this case it's a ToolQuestion or
             // ToolCalculationResult. We fetch all SubSteps and SubSteppables to check their conditions.
             $subSteps = $this->model->subSteps()
-                ->where('sub_steps.conditions', '!=', null)
-                ->where('sub_steps.conditions', '!=', DB::raw("cast('[]' as json)"))
+                ->whereNotNull('sub_steps.conditions')
+                ->whereRaw("sub_steps.conditions != CAST('[]' AS JSON)")
                 ->get();
 
             $subSteppables = $this->model->subSteps()
-                ->wherePivot('conditions', '!=', null)
-                ->wherePivot('conditions', '!=', DB::raw("cast('[]' as json)"))
+                ->wherePivotNotNull('conditions')
+                // wherePivotRaw === whereRaw + pivot_table.column
+                ->whereRaw("sub_steppables.conditions != CAST('[]' AS JSON)")
                 ->get();
 
             // First fetch all conditions, so we can retrieve any required related answers in one go

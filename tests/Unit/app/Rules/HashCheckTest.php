@@ -2,13 +2,14 @@
 
 namespace Tests\Unit\app\Rules;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Rules\HashCheck;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class HashCheckTest extends TestCase
+final class HashCheckTest extends TestCase
 {
-    public static function HashCheckProvider()
+    public static function HashCheckProvider(): array
     {
         return [
             ['secret', 'secret', true],
@@ -19,10 +20,8 @@ class HashCheckTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider HashCheckProvider
-     */
-    public function testPasses($valueToCheck, $unhashedValue, $shouldPass)
+    #[DataProvider('HashCheckProvider')]
+    public function testPasses($valueToCheck, $unhashedValue, $shouldPass): void
     {
         $postalCodeRule = new HashCheck(Hash::make($valueToCheck));
         $this->assertEquals($shouldPass, $postalCodeRule->passes('password', $unhashedValue));

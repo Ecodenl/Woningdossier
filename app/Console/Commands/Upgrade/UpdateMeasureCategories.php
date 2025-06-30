@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Helpers\Str;
 use App\Models\Mapping;
 use App\Models\MeasureCategory;
@@ -85,8 +85,8 @@ class UpdateMeasureCategories extends Command
 
                     $mappingService
                         ->from($existingMeasure)
-                        ->type(MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS)
-                        ->sync($syncData, MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS);
+                        ->type(MappingType::MEASURE_CATEGORY_VBJEHUIS->value)
+                        ->sync($syncData, MappingType::MEASURE_CATEGORY_VBJEHUIS->value);
                 } else {
                     // Shame, it already exists. We will be removing the existing measure, but must change some mappings.
                     Mapping::where('target_model_type', MeasureCategory::class)
@@ -126,10 +126,10 @@ class UpdateMeasureCategories extends Command
             $existingMeasure = MeasureCategory::where('short', $short)->first();
             if ($existingMeasure instanceof MeasureCategory) {
                 $this->info("Deleting all mappings related to {$existingMeasure->toJson()}.");
-                $total = Mapping::where(function($query) use ($existingMeasure) {
+                $total = Mapping::where(function ($query) use ($existingMeasure) {
                     $query->where('target_model_type', MeasureCategory::class)
                         ->where('target_model_id', $existingMeasure->id);
-                })->orWhere(function($query) use ($existingMeasure) {
+                })->orWhere(function ($query) use ($existingMeasure) {
                     $query->where('from_model_type', MeasureCategory::class)
                         ->where('from_model_id', $existingMeasure->id);
                 })->delete();

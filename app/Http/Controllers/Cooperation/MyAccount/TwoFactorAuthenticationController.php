@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use Illuminate\View\View;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
@@ -12,7 +13,7 @@ use App\Models\NotificationInterval;
 class TwoFactorAuthenticationController extends Controller
 {
 
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         // for the account / user settings
         $user = Hoomdossier::user();
@@ -20,8 +21,9 @@ class TwoFactorAuthenticationController extends Controller
         $building = HoomdossierSession::getBuilding(true);
 
         return view('cooperation.my-account.two-factor-authentication.index', compact(
-            'user', 'account', 'building',
+            'user',
+            'account',
+            'building',
         ));
     }
-
 }

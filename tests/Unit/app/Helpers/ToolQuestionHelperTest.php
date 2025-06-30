@@ -21,7 +21,7 @@ use Tests\TestCase;
  * its almost impossible to test the getMostCredibleValueFrom collection, this does not return a input source
  * there are ways to check, but that would be pure guess work. Besides that, if credible value passes, so does the collection.
  */
-class ToolQuestionHelperTest extends TestCase
+final class ToolQuestionHelperTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -33,7 +33,7 @@ class ToolQuestionHelperTest extends TestCase
         $this->seed(InputSourcesTableSeeder::class);
     }
 
-    public function testResolveSaveIn()
+    public function testResolveSaveIn(): void
     {
         $cooperation = Cooperation::factory()->create();
 

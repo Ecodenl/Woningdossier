@@ -4,23 +4,21 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExampleBuildingsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('example_buildings', function (Blueprint $table) {
             $table->increments('id');
             $table->json('name');
 
-            $table->integer('building_type_id')->unsigned()->nullable()->default(null);
+            $table->integer('building_type_id')->unsigned()->nullable();
             $table->foreign('building_type_id')->references('id')->on('building_types')->onDelete('restrict');
 
-            $table->integer('cooperation_id')->unsigned()->nullable()->default(null);
+            $table->integer('cooperation_id')->unsigned()->nullable();
             $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('restrict');
 
             $table->integer('order')->nullable();
@@ -32,11 +30,9 @@ class CreateExampleBuildingsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('example_buildings');
     }
-}
+};

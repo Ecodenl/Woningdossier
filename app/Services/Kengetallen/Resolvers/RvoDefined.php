@@ -6,6 +6,6 @@ class RvoDefined extends KengetallenDefiner
 {
     public function get(string $kengetallenCode): float
     {
-        return constant('Kengetallen::'.$kengetallenCode);
+        return constant('Kengetallen::' . $kengetallenCode);
     }
 }

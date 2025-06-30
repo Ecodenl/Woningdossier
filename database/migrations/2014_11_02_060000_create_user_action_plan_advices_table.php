@@ -4,17 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserActionPlanAdvicesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('user_action_plan_advices', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
 
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
@@ -28,6 +26,8 @@ class CreateUserActionPlanAdvicesTable extends Migration
             $table->index('user_action_plan_advisable_type', 'user_action_plan_advisable_type_index');
 
             $table->string('category')->nullable();
+            $table->integer('order')->default(0);
+
             $table->boolean('visible')->default(false);
 
             $table->boolean('subsidy_available')->default(0);
@@ -41,9 +41,9 @@ class CreateUserActionPlanAdvicesTable extends Migration
 
             $table->integer('year')->nullable();
             $table->boolean('planned')->default(true);
-            $table->integer('planned_year')->nullable()->default(null);
+            $table->integer('planned_year')->nullable();
 
-            $table->unsignedInteger('step_id')->nullable()->default(null);
+            $table->unsignedInteger('step_id')->nullable();
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('cascade');
 
             $table->timestamps();
@@ -52,11 +52,9 @@ class CreateUserActionPlanAdvicesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('user_action_plan_advices');
     }
-}
+};

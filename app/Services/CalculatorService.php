@@ -19,7 +19,7 @@ class CalculatorService
         $this->kengetallenService = $kengetallenService;
     }
 
-    private function resolveKengetal(string $kengetalCode)
+    private function resolveKengetal(string $kengetalCode): float
     {
         return $this
             ->kengetallenService
@@ -28,7 +28,7 @@ class CalculatorService
             ->resolve($kengetalCode);
     }
 
-    public function calculateMoneySavings($gasSavings)
+    public function calculateMoneySavings($gasSavings): float
     {
         return RawCalculator::calculateMoneySavings(
             $gasSavings,
@@ -36,4 +36,3 @@ class CalculatorService
         );
     }
 }
-

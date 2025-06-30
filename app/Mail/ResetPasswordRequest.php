@@ -35,10 +35,8 @@ class ResetPasswordRequest extends Mailable implements ShouldQueue
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this
             ->to($this->account->email, sprintf('%s %s', $this->user->first_name, $this->user->last_name))

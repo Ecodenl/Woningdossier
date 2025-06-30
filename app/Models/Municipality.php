@@ -16,15 +16,16 @@ use Illuminate\Support\Str;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Database\Factories\MunicipalityFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Municipality newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Municipality newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Municipality query()
- * @method static \Illuminate\Database\Eloquent\Builder|Municipality whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Municipality whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Municipality whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Municipality whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Municipality whereUpdatedAt($value)
+ * @property-read \App\Models\TFactory|null $use_factory
+ * @method static \Database\Factories\MunicipalityFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Municipality newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Municipality newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Municipality query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Municipality whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Municipality whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Municipality whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Municipality whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Municipality whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Municipality extends Model

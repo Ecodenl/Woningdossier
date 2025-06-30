@@ -9,7 +9,7 @@ trait MocksLvbag
 {
     private array $mockedApiData = [];
 
-    private function mockLvbagClientWoonplaats(string $municipalityName): self
+    private function mockLvbagClientWoonplaats(string $municipalityName): static
     {
         $this->mockedApiData['_embedded']['bronhouders'] = [
             [
@@ -19,7 +19,7 @@ trait MocksLvbag
         return $this;
     }
 
-    private function mockLvbagClientAdresUitgebreid(array $fallbackData): self
+    private function mockLvbagClientAdresUitgebreid(array $fallbackData): static
     {
         $this->mockedApiData['_embedded']['adressen'] = [
             [
@@ -40,7 +40,7 @@ trait MocksLvbag
         return $this;
     }
 
-    private function createLvbagMock()
+    private function createLvbagMock(): void
     {
         $this->partialMock(
             Client::class,

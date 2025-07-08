@@ -33,13 +33,22 @@ class UserObserver
 
     public function updated(User $user): void
     {
-        \App\Helpers\Cache\Account::wipe($user->account->id);
+        // Wiping the account for these trivial columns? No thanks.
+        $ignore = [
+            'regulations_refreshed_at',
+            'last_visited_url',
+            'updated_at',
+        ];
+
+        if (! empty(array_diff(array_keys($user->getDirty()), $ignore))) {
+            \App\Helpers\Cache\Account::wipe($user->account);
+        }
     }
 
     public function deleted(User $user): void
     {
         if ($user->account instanceof Account) {
-            \App\Helpers\Cache\Account::wipe($user->account->id);
+            \App\Helpers\Cache\Account::wipe($user->account);
         }
     }
 }

@@ -296,6 +296,10 @@ class UserService
     {
         $accountId = $user->account_id;
         $building = $user->building;
+        // Load the user onto the building with the correct cooperation. When managing, the session cooperation
+        // might not be the right one.
+        $building->load(['user' => fn ($q) => $q->forMyCooperation($user->cooperation_id)]);
+
         $cooperation = $user->cooperation;
         $accountRelated = app(EconobisService::class)->forBuilding($building)->resolveAccountRelated();
 

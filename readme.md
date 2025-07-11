@@ -7,7 +7,7 @@
 
 
 To contribute to this project you must assign copyright of your contribution to Cooperatie Econobis U.A. 
-To do this, include the following filled-in copyright assignment form in your patch: [Individual contributor assignment agreement](https://alfresco.econobis.nl/share/page/site/projectgroep-econobis/document-details?nodeRef=workspace://SpacesStore/beaaae10-302a-4f8e-aceb-1040360ba4b7)
+To do this, include the following filled-in copyright assignment form in your patch: [Individual contributor assignment agreement](https://alfresco.econobis.nl/share/s/vPzg80L8SiaKwUJXFRhKtA)
 
 More information can be viewed on [www.econobis.nl](https://www.econobis.nl/).
 

@@ -6,10 +6,10 @@
 
 
 
-To contribute to this project you must assign copyright of your contribution to Econobis B.V. 
+To contribute to this project you must assign copyright of your contribution to Cooperatie Econobis U.A. 
 To do this, include the following filled-in copyright assignment form in your patch: [Individual contributor assignment agreement](https://alfresco.econobis.nl/share/page/site/projectgroep-econobis/document-details?nodeRef=workspace://SpacesStore/beaaae10-302a-4f8e-aceb-1040360ba4b7)
 
-Econobis B.V. is 100% daughter of Coöperatieve Vereniging Energie Coöperaties op Orde UA. More information can be viewed on [www.econobis.nl](https://www.econobis.nl/).
+More information can be viewed on [www.econobis.nl](https://www.econobis.nl/).
 
 ## Why all this legal stuff ? 
 We want clean renewable energy. We want a digital energy market which is democratic controlled, fair and accessible for all people at all times. 

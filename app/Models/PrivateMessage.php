@@ -30,13 +30,8 @@ use Illuminate\Support\Collection;
  * @property-read \App\Models\Building|null $building
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PrivateMessageView> $privateMessageViews
  * @property-read int|null $private_message_views_count
- * @method static Builder<static>|PrivateMessage conversation(int $buildingId)
- * @method static Builder<static>|PrivateMessage forMyCooperation()
- * @method static Builder<static>|PrivateMessage myPrivateMessages()
  * @method static Builder<static>|PrivateMessage newModelQuery()
  * @method static Builder<static>|PrivateMessage newQuery()
- * @method static Builder<static>|PrivateMessage private()
- * @method static Builder<static>|PrivateMessage public()
  * @method static Builder<static>|PrivateMessage query()
  * @method static Builder<static>|PrivateMessage whereBuildingId($value)
  * @method static Builder<static>|PrivateMessage whereCreatedAt($value)

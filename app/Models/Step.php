@@ -27,7 +27,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $scan_id
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeasureApplication> $measureApplications
  * @property-read int|null $measure_applications_count
  * @property-read Step|null $parentStep
@@ -38,16 +37,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
  * @property-read mixed $translations
- * @method static Builder<static>|Step childrenForStep(\App\Models\Step $step)
- * @method static Builder<static>|Step expert()
  * @method static \Database\Factories\StepFactory factory($count = null, $state = [])
- * @method static Builder<static>|Step forScan(\App\Models\Scan $scan)
  * @method static Builder<static>|Step newModelQuery()
  * @method static Builder<static>|Step newQuery()
- * @method static Builder<static>|Step ordered()
  * @method static Builder<static>|Step query()
- * @method static Builder<static>|Step quickScan()
- * @method static Builder<static>|Step recalculable()
  * @method static Builder<static>|Step whereCreatedAt($value)
  * @method static Builder<static>|Step whereId($value)
  * @method static Builder<static>|Step whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
@@ -61,8 +54,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder<static>|Step whereShort($value)
  * @method static Builder<static>|Step whereSlug($value)
  * @method static Builder<static>|Step whereUpdatedAt($value)
- * @method static Builder<static>|Step withGeneralData()
- * @method static Builder<static>|Step withoutChildren()
  * @mixin \Eloquent
  */
 #[ScopedBy([NoGeneralDataScope::class])]

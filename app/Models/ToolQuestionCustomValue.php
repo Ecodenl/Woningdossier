@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array<array-key, mixed>|null $conditions
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\ToolQuestion $toolQuestion
  * @property-read mixed $translations
  * @method static \Database\Factories\ToolQuestionCustomValueFactory factory($count = null, $state = [])
@@ -32,7 +31,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder<static>|ToolQuestionCustomValue newQuery()
  * @method static Builder<static>|ToolQuestionCustomValue ordered(string $direction = 'asc')
  * @method static Builder<static>|ToolQuestionCustomValue query()
- * @method static Builder<static>|ToolQuestionCustomValue visible()
  * @method static Builder<static>|ToolQuestionCustomValue whereConditions($value)
  * @method static Builder<static>|ToolQuestionCustomValue whereCreatedAt($value)
  * @method static Builder<static>|ToolQuestionCustomValue whereExtra($value)

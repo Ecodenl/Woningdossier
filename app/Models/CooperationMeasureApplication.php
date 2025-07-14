@@ -32,17 +32,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Cooperation $cooperation
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
- * @method static Builder<static>|CooperationMeasureApplication extensiveMeasures()
  * @method static \Database\Factories\CooperationMeasureApplicationFactory factory($count = null, $state = [])
  * @method static Builder<static>|CooperationMeasureApplication newModelQuery()
  * @method static Builder<static>|CooperationMeasureApplication newQuery()
  * @method static Builder<static>|CooperationMeasureApplication onlyTrashed()
  * @method static Builder<static>|CooperationMeasureApplication query()
- * @method static Builder<static>|CooperationMeasureApplication smallMeasures()
  * @method static Builder<static>|CooperationMeasureApplication whereCooperationId($value)
  * @method static Builder<static>|CooperationMeasureApplication whereCosts($value)
  * @method static Builder<static>|CooperationMeasureApplication whereCreatedAt($value)

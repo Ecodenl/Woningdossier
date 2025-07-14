@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Status $status
- * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus mostRecent()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus query()

@@ -29,7 +29,6 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\InputSource $inputSource
  * @property-read \App\Models\User $user
  * @method static Builder<static>|UserCost allInputSources()
- * @method static Builder<static>|UserCost forAdvisable(\Illuminate\Database\Eloquent\Model $advisable)
  * @method static Builder<static>|UserCost forBuilding(\App\Models\Building|int $building)
  * @method static Builder<static>|UserCost forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder<static>|UserCost forMe(?\App\Models\User $user = null)

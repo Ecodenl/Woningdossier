@@ -58,7 +58,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read mixed $is_admin
  * @property-read mixed $old_email_token
  * @property-read mixed $oldemail
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Log> $logs
  * @property-read int|null $logs_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationSetting> $notificationSettings
@@ -73,8 +72,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $user_action_plan_advices_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserCost> $userCosts
  * @property-read int|null $user_costs_count
- * @method static Builder<static>|User byContact($contact)
- * @method static Builder<static>|User econobisContacts()
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static Builder<static>|User forAllCooperations()
  * @method static Builder<static>|User forMyCooperation(\App\Models\Cooperation|int $cooperation)

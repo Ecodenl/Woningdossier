@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $energy_consumption_per_m2
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static Builder<static>|KeyFigureInsulationFactor forInsulationFactor($factor)
  * @method static Builder<static>|KeyFigureInsulationFactor newModelQuery()
  * @method static Builder<static>|KeyFigureInsulationFactor newQuery()
  * @method static Builder<static>|KeyFigureInsulationFactor query()

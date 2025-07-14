@@ -44,7 +44,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
- * @method static Builder<static>|MeasureApplication measureType(string $measureType)
  * @method static Builder<static>|MeasureApplication newModelQuery()
  * @method static Builder<static>|MeasureApplication newQuery()
  * @method static Builder<static>|MeasureApplication query()

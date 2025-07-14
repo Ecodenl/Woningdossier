@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int|null $target_model_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read Model|\Eloquent|null $resolvable
  * @property-read Model|\Eloquent|null $targetable
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RelatedModel newModelQuery()

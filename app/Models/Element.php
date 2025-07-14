@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ElementValue> $elementValues
  * @property-read int|null $element_values_count
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\ServiceType $serviceType
  * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ElementValue> $values

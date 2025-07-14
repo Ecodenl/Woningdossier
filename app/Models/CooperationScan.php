@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cooperation $cooperation
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\Scan $scan
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationScan newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationScan newQuery()

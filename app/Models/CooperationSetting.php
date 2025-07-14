@@ -25,7 +25,6 @@ use Plank\Mediable\MediableInterface;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
  * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
- * @method static Builder<static>|CooperationSetting forShort(string $short)
  * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
  * @method static Builder<static>|CooperationSetting newModelQuery()
  * @method static Builder<static>|CooperationSetting newQuery()

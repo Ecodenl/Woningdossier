@@ -7,6 +7,8 @@ return [
 
     'domain' => env('APP_DOMAIN', 'hoomdossier.nl'),
 
+    'timezone' => 'Europe/Amsterdam',
+
     'aliases' => Facade::defaultAliases()->merge([
         'Str' => \App\Helpers\Str::class,
         'Arr' => \App\Helpers\Arr::class,

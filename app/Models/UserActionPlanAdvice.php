@@ -47,23 +47,16 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\Step|null $step
  * @property-read \App\Models\User $user
  * @property-read Model|\Eloquent $userActionPlanAdvisable
  * @method static Builder<static>|UserActionPlanAdvice allInputSources()
- * @method static Builder<static>|UserActionPlanAdvice category(string $category)
- * @method static Builder<static>|UserActionPlanAdvice cooperationMeasureForType(string $type, \App\Models\InputSource $inputSource)
  * @method static \Database\Factories\UserActionPlanAdviceFactory factory($count = null, $state = [])
- * @method static Builder<static>|UserActionPlanAdvice forAdvisable(\Illuminate\Database\Eloquent\Model $advisable)
  * @method static Builder<static>|UserActionPlanAdvice forBuilding(\App\Models\Building|int $building)
  * @method static Builder<static>|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder<static>|UserActionPlanAdvice forMe(?\App\Models\User $user = null)
- * @method static Builder<static>|UserActionPlanAdvice forStep(\App\Models\Step $step)
  * @method static Builder<static>|UserActionPlanAdvice forUser(\App\Models\User|int $user)
- * @method static Builder<static>|UserActionPlanAdvice getCategorized()
- * @method static Builder<static>|UserActionPlanAdvice invisible()
  * @method static Builder<static>|UserActionPlanAdvice newModelQuery()
  * @method static Builder<static>|UserActionPlanAdvice newQuery()
  * @method static Builder<static>|UserActionPlanAdvice query()
@@ -88,7 +81,6 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder<static>|UserActionPlanAdvice whereUserId($value)
  * @method static Builder<static>|UserActionPlanAdvice whereVisible($value)
  * @method static Builder<static>|UserActionPlanAdvice whereYear($value)
- * @method static Builder<static>|UserActionPlanAdvice withInvisible()
  * @mixin \Eloquent
  */
 #[ObservedBy([UserActionPlanAdviceObserver::class])]

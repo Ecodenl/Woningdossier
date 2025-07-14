@@ -32,16 +32,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\FileType $fileType
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static Builder<static>|FileStorage allInputSources()
- * @method static Builder<static>|FileStorage beingProcessed()
- * @method static Builder<static>|FileStorage expired()
  * @method static Builder<static>|FileStorage forAllCooperations()
  * @method static Builder<static>|FileStorage forBuilding(\App\Models\Building|int $building)
  * @method static Builder<static>|FileStorage forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder<static>|FileStorage forMe(?\App\Models\User $user = null)
  * @method static Builder<static>|FileStorage forMyCooperation(\App\Models\Cooperation|int $cooperation)
  * @method static Builder<static>|FileStorage forUser(\App\Models\User|int $user)
- * @method static Builder<static>|FileStorage leaveOutPersonalFiles()
- * @method static Builder<static>|FileStorage mostRecent(?\App\Models\Questionnaire $questionnaire = null)
  * @method static Builder<static>|FileStorage newModelQuery()
  * @method static Builder<static>|FileStorage newQuery()
  * @method static Builder<static>|FileStorage query()
@@ -57,7 +53,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder<static>|FileStorage whereIsBeingProcessed($value)
  * @method static Builder<static>|FileStorage whereQuestionnaireId($value)
  * @method static Builder<static>|FileStorage whereUpdatedAt($value)
- * @method static Builder<static>|FileStorage withExpired()
  * @mixin \Eloquent
  */
 #[ScopedBy([AvailableScope::class])]

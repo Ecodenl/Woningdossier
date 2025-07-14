@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\TFactory|null $use_factory
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Integration newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Integration newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Integration query()

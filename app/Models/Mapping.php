@@ -23,11 +23,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property array<array-key, mixed>|null $target_data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read Model|\Eloquent|null $mappable
  * @property-read Model|\Eloquent|null $resolvable
  * @method static \Database\Factories\MappingFactory factory($count = null, $state = [])
- * @method static Builder<static>|Mapping forType(string $type)
  * @method static Builder<static>|Mapping newModelQuery()
  * @method static Builder<static>|Mapping newQuery()
  * @method static Builder<static>|Mapping query()

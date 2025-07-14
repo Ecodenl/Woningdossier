@@ -22,8 +22,6 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read LanguageLine|null $helpText
  * @property-read \Illuminate\Database\Eloquent\Collection<int, LanguageLine> $subQuestions
  * @property-read int|null $sub_questions_count
- * @method static Builder<static>|LanguageLine forGroup($group)
- * @method static Builder<static>|LanguageLine mainQuestions()
  * @method static Builder<static>|LanguageLine newModelQuery()
  * @method static Builder<static>|LanguageLine newQuery()
  * @method static Builder<static>|LanguageLine query()
@@ -44,7 +42,7 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
         'group', 'key', 'text', 'step_id', 'main_language_line_id', 'help_language_line_id',
     ];
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 

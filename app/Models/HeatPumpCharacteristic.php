@@ -21,9 +21,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $type
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static Builder<static>|HeatPumpCharacteristic forHeatPumpConfigurable(\Illuminate\Database\Eloquent\Model $configurable)
- * @method static Builder<static>|HeatPumpCharacteristic forHeatingTemperature(\App\Models\ToolQuestionCustomValue $heatingTemperature)
- * @method static Builder<static>|HeatPumpCharacteristic forToolQuestionCustomValue(\App\Models\ToolQuestionCustomValue $toolQuestionCustomValue)
  * @method static Builder<static>|HeatPumpCharacteristic newModelQuery()
  * @method static Builder<static>|HeatPumpCharacteristic newQuery()
  * @method static Builder<static>|HeatPumpCharacteristic query()

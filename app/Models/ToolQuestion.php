@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Services\DiscordNotifier;
 use App\Traits\HasShortTrait;
@@ -33,7 +34,6 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $forSpecificInputSource
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
  * @property-read \App\Models\SubSteppable|null $pivot
@@ -47,7 +47,6 @@ use Illuminate\Support\Collection;
  * @property-read int|null $tool_question_valuables_count
  * @property-read mixed $translations
  * @method static \Database\Factories\ToolQuestionFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion findByShortsOrdered($shorts)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion query()
@@ -185,7 +184,8 @@ class ToolQuestion extends Model
             ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
     }
 
-    public function scopeFindByShortsOrdered($builder, $shorts)
+    #[Scope]
+    protected function findByShortsOrdered($builder, $shorts)
     {
         $questionMarks = substr(str_repeat('?, ', count($shorts)), 0, -2);
 

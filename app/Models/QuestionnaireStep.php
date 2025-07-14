@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\Questionnaire $questionnaire
  * @property-read \App\Models\Step $step
  * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionnaireStep newModelQuery()

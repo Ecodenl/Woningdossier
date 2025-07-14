@@ -246,7 +246,7 @@ final class StrTest extends TestCase
     }
 
     #[DataProvider('convertDotToHtmlProvider')]
-    public function test_convert_dot_to_html($dottedName, $asArray, $expected)
+    public function test_convert_dot_to_html($dottedName, $asArray, $expected): void
     {
         $this->assertEquals($expected, Str::convertDotToHtml($dottedName, $asArray));
     }

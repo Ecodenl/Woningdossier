@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cooperation $cooperation
- * @method static Builder<static>|CooperationRedirect from(string $slug)
  * @method static Builder<static>|CooperationRedirect newModelQuery()
  * @method static Builder<static>|CooperationRedirect newQuery()
  * @method static Builder<static>|CooperationRedirect query()
@@ -37,7 +37,8 @@ class CooperationRedirect extends Model
         return $this->belongsTo(Cooperation::class);
     }
 
-    public function scopeFrom(Builder $query, string $slug): Builder
+    #[Scope]
+    protected function from(Builder $query, string $slug): Builder
     {
         $slug = strtolower(strip_tags($slug));
 

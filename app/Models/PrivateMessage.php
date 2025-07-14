@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\PrivateMessageObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\Hoomdossier;
@@ -27,13 +30,8 @@ use Illuminate\Support\Collection;
  * @property-read \App\Models\Building|null $building
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PrivateMessageView> $privateMessageViews
  * @property-read int|null $private_message_views_count
- * @method static Builder<static>|PrivateMessage conversation(int $buildingId)
- * @method static Builder<static>|PrivateMessage forMyCooperation()
- * @method static Builder<static>|PrivateMessage myPrivateMessages()
  * @method static Builder<static>|PrivateMessage newModelQuery()
  * @method static Builder<static>|PrivateMessage newQuery()
- * @method static Builder<static>|PrivateMessage private()
- * @method static Builder<static>|PrivateMessage public()
  * @method static Builder<static>|PrivateMessage query()
  * @method static Builder<static>|PrivateMessage whereBuildingId($value)
  * @method static Builder<static>|PrivateMessage whereCreatedAt($value)
@@ -47,6 +45,7 @@ use Illuminate\Support\Collection;
  * @method static Builder<static>|PrivateMessage whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([PrivateMessageObserver::class])]
 class PrivateMessage extends Model
 {
     protected $fillable = [
@@ -66,7 +65,8 @@ class PrivateMessage extends Model
         ];
     }
 
-    public function scopeForMyCooperation(Builder $query): Builder
+    #[Scope]
+    protected function forMyCooperation(Builder $query): Builder
     {
         return $query->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
@@ -94,7 +94,8 @@ class PrivateMessage extends Model
     /**
      * Scope a query to return the messages that are sent to a user / coach.
      */
-    public function scopeMyPrivateMessages(Builder $query): Builder
+    #[Scope]
+    protected function myPrivateMessages(Builder $query): Builder
     {
         return $query->where('to_user_id', Hoomdossier::user()->id);
     }
@@ -102,7 +103,8 @@ class PrivateMessage extends Model
     /**
      * Scope a query to return the conversation ordered on created_at.
      */
-    public function scopeConversation(Builder $query, int $buildingId): Builder
+    #[Scope]
+    protected function conversation(Builder $query, int $buildingId): Builder
     {
         return $query->where('building_id', $buildingId)->orderBy('created_at');
     }
@@ -110,7 +112,8 @@ class PrivateMessage extends Model
     /**
      * Scope the public messages.
      */
-    public function scopePublic(Builder $query): Builder
+    #[Scope]
+    protected function public(Builder $query): Builder
     {
         return $query->where('is_public', true);
     }
@@ -118,7 +121,8 @@ class PrivateMessage extends Model
     /**
      * Scope the private messages.
      */
-    public function scopePrivate(Builder $query): Builder
+    #[Scope]
+    protected function private(Builder $query): Builder
     {
         return $query->where('is_public', false);
     }

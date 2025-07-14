@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,9 +25,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read Model|\Eloquent $toolQuestionValuables
  * @method static Builder<static>|ToolQuestionValuable newModelQuery()
  * @method static Builder<static>|ToolQuestionValuable newQuery()
- * @method static Builder<static>|ToolQuestionValuable ordered()
  * @method static Builder<static>|ToolQuestionValuable query()
- * @method static Builder<static>|ToolQuestionValuable visible()
  * @method static Builder<static>|ToolQuestionValuable whereConditions($value)
  * @method static Builder<static>|ToolQuestionValuable whereCreatedAt($value)
  * @method static Builder<static>|ToolQuestionValuable whereExtra($value)
@@ -60,12 +59,14 @@ class ToolQuestionValuable extends Model
     }
 
     # Scopes
-    public function scopeVisible(Builder $query): Builder
+    #[Scope]
+    protected function visible(Builder $query): Builder
     {
         return $query->where('show', true);
     }
 
-    public function scopeOrdered(Builder $query): Builder
+    #[Scope]
+    protected function ordered(Builder $query): Builder
     {
         return $query->orderBy('order');
     }

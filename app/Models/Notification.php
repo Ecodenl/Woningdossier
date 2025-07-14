@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,9 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder<static>|Notification forBuilding(\App\Models\Building|int $building)
  * @method static Builder<static>|Notification forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder<static>|Notification forMe(?\App\Models\User $user = null)
- * @method static Builder<static>|Notification forType(string $type)
  * @method static Builder<static>|Notification forUser(\App\Models\User|int $user)
- * @method static Builder<static>|Notification forUuid(string $uuid)
  * @method static Builder<static>|Notification newModelQuery()
  * @method static Builder<static>|Notification newQuery()
  * @method static Builder<static>|Notification query()
@@ -51,12 +50,14 @@ class Notification extends Model
     ];
 
     # Scopes
-    public function scopeForType(Builder $query, string $type): Builder
+    #[Scope]
+    protected function forType(Builder $query, string $type): Builder
     {
         return $query->where('type', $type);
     }
 
-    public function scopeForUuid(Builder $query, string $uuid): Builder
+    #[Scope]
+    protected function forUuid(Builder $query, string $uuid): Builder
     {
         return $query->where('uuid', $uuid);
     }

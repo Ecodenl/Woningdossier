@@ -26,8 +26,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class HeaterComponentCost extends Model
 {
-    protected $casts = [
-        'size' => 'decimal:2',
-        'cost' => 'decimal:2',
-    ];
+
+    protected function casts(): array
+    {
+        return [
+            'size' => 'decimal:2',
+            'cost' => 'decimal:2',
+        ];
+    }
 }

@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 final class RawCalculatorTest extends TestCase
 {
-    public function testMaxGasSavings()
+    public function testMaxGasSavings(): void
     {
         $this->markTestIncomplete();
         //RawCalculator::maxGasSavings();

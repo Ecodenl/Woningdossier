@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\BuildingObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Helpers\Conditions\ConditionEvaluator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -63,7 +66,6 @@ use Plank\Mediable\MediableInterface;
  * @property-read \App\Models\BuildingPaintworkStatus|null $currentPaintworkStatus
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CustomMeasureApplication> $customMeasureApplications
  * @property-read int|null $custom_measure_applications_count
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\BuildingHeater|null $heater
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
@@ -109,11 +111,11 @@ use Plank\Mediable\MediableInterface;
  * @method static Builder<static>|Building withMediaAndVariants($tags = [], bool $matchAll = false)
  * @method static Builder<static>|Building withMediaAndVariantsMatchAll($tags = [])
  * @method static Builder<static>|Building withMediaMatchAll(bool $tags = [], bool $withVariants = false)
- * @method static Builder<static>|Building withRecentBuildingStatusInformation()
  * @method static Builder<static>|Building withTrashed()
  * @method static Builder<static>|Building withoutTrashed()
  * @mixin \Eloquent
  */
+#[ObservedBy([BuildingObserver::class])]
 class Building extends Model implements MediableInterface
 {
     use HasFactory,
@@ -355,7 +357,8 @@ class Building extends Model implements MediableInterface
     /**
      * Scope to return the buildings with most recent information from the building status.
      */
-    public function scopeWithRecentBuildingStatusInformation(Builder $query): Builder
+    #[Scope]
+    protected function withRecentBuildingStatusInformation(Builder $query): Builder
     {
         $recentBuildingStatuses = DB::table('building_statuses')
             ->selectRaw(

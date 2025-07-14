@@ -17,7 +17,6 @@ use Illuminate\Support\Arr;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ExampleBuilding $exampleBuilding
- * @property-read \App\Models\TFactory|null $use_factory
  * @method static \Database\Factories\ExampleBuildingContentFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExampleBuildingContent newQuery()

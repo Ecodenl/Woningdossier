@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\CustomMeasureApplicationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Traits\Models\HasMappings;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,7 +25,6 @@ use Spatie\Translatable\HasTranslations;
  * @property int $input_source_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\InputSource $inputSource
  * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
@@ -52,6 +53,7 @@ use Spatie\Translatable\HasTranslations;
  * @method static Builder<static>|CustomMeasureApplication whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([CustomMeasureApplicationObserver::class])]
 class CustomMeasureApplication extends Model
 {
     use HasFactory;

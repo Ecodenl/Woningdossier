@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
 use App\Events\FillingToolForUserEvent;
 use App\Events\ObservingToolForUserEvent;
@@ -23,7 +24,7 @@ class ToolController extends Controller
     public function fillForUser(Cooperation $cooperation, Building $building, Scan $scan): RedirectResponse
     {
         $building->load('user');
-        $this->authorize('access-building', $building);
+        Gate::authorize('access-building', $building);
 
         FillingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
@@ -41,7 +42,7 @@ class ToolController extends Controller
     {
         $building->load('user');
 
-        $this->authorize('access-building', $building);
+        Gate::authorize('access-building', $building);
 
         ObservingToolForUserEvent::dispatch($building, Hoomdossier::user());
 

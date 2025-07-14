@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Cooperation;
 use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Builder;

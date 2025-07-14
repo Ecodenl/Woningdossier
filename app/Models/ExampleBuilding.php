@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,12 +27,8 @@ use Illuminate\Support\Collection;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExampleBuildingContent> $contents
  * @property-read int|null $contents_count
  * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read mixed $translations
  * @method static \Database\Factories\ExampleBuildingFactory factory($count = null, $state = [])
- * @method static Builder<static>|ExampleBuilding forAnyOrMyCooperation()
- * @method static Builder<static>|ExampleBuilding forMyCooperation()
- * @method static Builder<static>|ExampleBuilding generic()
  * @method static Builder<static>|ExampleBuilding newModelQuery()
  * @method static Builder<static>|ExampleBuilding newQuery()
  * @method static Builder<static>|ExampleBuilding query()
@@ -135,7 +132,8 @@ class ExampleBuilding extends Model
     /**
      * Scope a query to only include buildings for my cooperation.
      */
-    public function scopeForMyCooperation(Builder $query): Builder
+    #[Scope]
+    protected function forMyCooperation(Builder $query): Builder
     {
         $cooperationId = ! empty(HoomdossierSession::getCooperation()) ? HoomdossierSession::getCooperation() : 0;
 
@@ -145,7 +143,8 @@ class ExampleBuilding extends Model
     /**
      * Scope a query to only include buildings for my cooperation.
      */
-    public function scopeForAnyOrMyCooperation(Builder $query): Builder
+    #[Scope]
+    protected function forAnyOrMyCooperation(Builder $query): Builder
     {
         $cooperationId = \Session::get('cooperation', 0);
 
@@ -155,7 +154,8 @@ class ExampleBuilding extends Model
     /**
      * Scope on only generic example buildings.
      */
-    public function scopeGeneric(Builder $query): Builder
+    #[Scope]
+    protected function generic(Builder $query): Builder
     {
         return $query->whereNull('cooperation_id');
     }

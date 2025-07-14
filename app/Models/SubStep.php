@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -27,7 +28,6 @@ use Illuminate\Support\Facades\App;
  * @property-read Model|\Eloquent $commentable
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompletedSubStep> $completedSubSteps
  * @property-read int|null $completed_sub_steps_count
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\Step $step
  * @property-read \App\Models\SubStepTemplate|null $subStepTemplate
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
@@ -36,12 +36,9 @@ use Illuminate\Support\Facades\App;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestion> $toolQuestions
  * @property-read int|null $tool_questions_count
  * @property-read mixed $translations
- * @method static Builder<static>|SubStep bySlug(string $slug, string $locale = 'nl')
  * @method static \Database\Factories\SubStepFactory factory($count = null, $state = [])
- * @method static Builder<static>|SubStep forScan(\App\Models\Scan $scan)
  * @method static Builder<static>|SubStep newModelQuery()
  * @method static Builder<static>|SubStep newQuery()
- * @method static Builder<static>|SubStep ordered()
  * @method static Builder<static>|SubStep query()
  * @method static Builder<static>|SubStep whereConditions($value)
  * @method static Builder<static>|SubStep whereCreatedAt($value)
@@ -95,18 +92,21 @@ class SubStep extends Model
     }
 
     // Scopes
-    public function scopeOrdered(Builder $query)
+    #[Scope]
+    protected function ordered(Builder $query)
     {
         return $query->orderBy('order');
     }
 
     // TODO: Slug trait?
-    public function scopeBySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
+    #[Scope]
+    protected function bySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
     {
         return $query->where("slug->{$locale}", $slug);
     }
 
-    public function scopeForScan(Builder $query, Scan $scan): Builder
+    #[Scope]
+    protected function forScan(Builder $query, Scan $scan): Builder
     {
         return $query->whereHas('step', function ($query) use ($scan) {
             $query->where('scan_id', $scan->id);

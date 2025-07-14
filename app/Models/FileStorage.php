@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Scopes\AvailableScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -30,16 +32,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\FileType $fileType
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static Builder<static>|FileStorage allInputSources()
- * @method static Builder<static>|FileStorage beingProcessed()
- * @method static Builder<static>|FileStorage expired()
  * @method static Builder<static>|FileStorage forAllCooperations()
  * @method static Builder<static>|FileStorage forBuilding(\App\Models\Building|int $building)
  * @method static Builder<static>|FileStorage forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder<static>|FileStorage forMe(?\App\Models\User $user = null)
  * @method static Builder<static>|FileStorage forMyCooperation(\App\Models\Cooperation|int $cooperation)
  * @method static Builder<static>|FileStorage forUser(\App\Models\User|int $user)
- * @method static Builder<static>|FileStorage leaveOutPersonalFiles()
- * @method static Builder<static>|FileStorage mostRecent(?\App\Models\Questionnaire $questionnaire = null)
  * @method static Builder<static>|FileStorage newModelQuery()
  * @method static Builder<static>|FileStorage newQuery()
  * @method static Builder<static>|FileStorage query()
@@ -55,19 +53,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder<static>|FileStorage whereIsBeingProcessed($value)
  * @method static Builder<static>|FileStorage whereQuestionnaireId($value)
  * @method static Builder<static>|FileStorage whereUpdatedAt($value)
- * @method static Builder<static>|FileStorage withExpired()
  * @mixin \Eloquent
  */
+#[ScopedBy([AvailableScope::class])]
 class FileStorage extends Model
 {
     use GetValueTrait, GetMyValuesTrait, HasCooperationTrait;
 
-    public static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new AvailableScope());
-    }
 
     protected $fillable = [
         'cooperation_id', 'questionnaire_id', 'filename', 'building_id', 'input_source_id', 'file_type_id',
@@ -90,7 +82,8 @@ class FileStorage extends Model
     /**
      * Scope to query without the available scope, meaning all file storages will be returned.
      */
-    public function scopeWithExpired(Builder $query): Builder
+    #[Scope]
+    protected function withExpired(Builder $query): Builder
     {
         return $query->withoutGlobalScope(new AvailableScope());
     }
@@ -98,7 +91,8 @@ class FileStorage extends Model
     /**
      * Scope to query only the expired files.
      */
-    public function scopeExpired(Builder $query): Builder
+    #[Scope]
+    protected function expired(Builder $query): Builder
     {
         return $query->withExpired()->where('available_until', '<', Carbon::now());
     }
@@ -106,7 +100,8 @@ class FileStorage extends Model
     /**
      * Query to leave out the personal files.
      */
-    public function scopeLeaveOutPersonalFiles(Builder $query): Builder
+    #[Scope]
+    protected function leaveOutPersonalFiles(Builder $query): Builder
     {
         return $query->whereNull('building_id');
     }
@@ -114,7 +109,8 @@ class FileStorage extends Model
     /**
      * Query to scope the file's that are being processed.
      */
-    public function scopeBeingProcessed(Builder $query): Builder
+    #[Scope]
+    protected function beingProcessed(Builder $query): Builder
     {
         return $query->where('is_being_processed', true);
     }
@@ -122,7 +118,8 @@ class FileStorage extends Model
     /**
      * Query to scope the most recent report.
      */
-    public function scopeMostRecent(Builder $query, Questionnaire $questionnaire = null): Builder
+    #[Scope]
+    protected function mostRecent(Builder $query, Questionnaire $questionnaire = null): Builder
     {
         if ($questionnaire instanceof Questionnaire) {
             return $query->orderByDesc('created_at')->where('questionnaire_id', $questionnaire->id);

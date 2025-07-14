@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,12 +27,9 @@ use Illuminate\Support\Facades\App;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
  * @property-read mixed $translations
- * @method static Builder<static>|Scan bySlug(string $slug, string $locale = 'nl')
- * @method static Builder<static>|Scan expertScans()
  * @method static Builder<static>|Scan newModelQuery()
  * @method static Builder<static>|Scan newQuery()
  * @method static Builder<static>|Scan query()
- * @method static Builder<static>|Scan simpleScans()
  * @method static Builder<static>|Scan whereCreatedAt($value)
  * @method static Builder<static>|Scan whereId($value)
  * @method static Builder<static>|Scan whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
@@ -122,18 +120,21 @@ class Scan extends Model
     }
 
     // Scopes
-    public function scopeSimpleScans(Builder $query)
+    #[Scope]
+    protected function simpleScans(Builder $query)
     {
         return $query->whereIn('short', [static::LITE, static::QUICK]);
     }
 
-    public function scopeExpertScans(Builder $query)
+    #[Scope]
+    protected function expertScans(Builder $query)
     {
         return $query->whereIn('short', [static::EXPERT]);
     }
 
     // TODO: Slug trait?
-    public function scopeBySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
+    #[Scope]
+    protected function bySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
     {
         return $query->where("slug->{$locale}", $slug);
     }

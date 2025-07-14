@@ -16,13 +16,11 @@ use App\Services\ConditionService;
 use App\Services\Kengetallen\KengetallenService;
 use App\Services\Kengetallen\Resolvers\BuildingDefined;
 use App\Services\Models\BuildingService;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class CalculationsTable extends Component
 {
-    use AuthorizesRequests;
 
     public Collection $toolQuestions;
     public Collection $toolCalculationResults;

@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $done_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DossierSetting forBuilding(\App\Models\Building|int $building)

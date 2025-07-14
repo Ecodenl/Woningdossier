@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\CooperationMeasureApplicationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
@@ -29,17 +32,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Cooperation $cooperation
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
- * @method static Builder<static>|CooperationMeasureApplication extensiveMeasures()
  * @method static \Database\Factories\CooperationMeasureApplicationFactory factory($count = null, $state = [])
  * @method static Builder<static>|CooperationMeasureApplication newModelQuery()
  * @method static Builder<static>|CooperationMeasureApplication newQuery()
  * @method static Builder<static>|CooperationMeasureApplication onlyTrashed()
  * @method static Builder<static>|CooperationMeasureApplication query()
- * @method static Builder<static>|CooperationMeasureApplication smallMeasures()
  * @method static Builder<static>|CooperationMeasureApplication whereCooperationId($value)
  * @method static Builder<static>|CooperationMeasureApplication whereCosts($value)
  * @method static Builder<static>|CooperationMeasureApplication whereCreatedAt($value)
@@ -60,6 +60,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder<static>|CooperationMeasureApplication withoutTrashed()
  * @mixin \Eloquent
  */
+#[ObservedBy([CooperationMeasureApplicationObserver::class])]
 class CooperationMeasureApplication extends Model
 {
     use HasFactory,
@@ -90,12 +91,14 @@ class CooperationMeasureApplication extends Model
     }
 
     # Scopes
-    public function scopeExtensiveMeasures(Builder $query): Builder
+    #[Scope]
+    protected function extensiveMeasures(Builder $query): Builder
     {
         return $query->where('is_extensive_measure', true);
     }
 
-    public function scopeSmallMeasures(Builder $query): Builder
+    #[Scope]
+    protected function smallMeasures(Builder $query): Builder
     {
         return $query->where('is_extensive_measure', false);
     }

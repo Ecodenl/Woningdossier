@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +25,6 @@ use Plank\Mediable\MediableInterface;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
  * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
- * @method static Builder<static>|CooperationSetting forShort(string $short)
  * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
  * @method static Builder<static>|CooperationSetting newModelQuery()
  * @method static Builder<static>|CooperationSetting newQuery()
@@ -59,7 +59,8 @@ class CooperationSetting extends Model implements Auditable, MediableInterface
     //
 
     # Scopes
-    public function scopeForShort(Builder $query, string $short): Builder
+    #[Scope]
+    protected function forShort(Builder $query, string $short): Builder
     {
         return $query->where('short', $short);
     }

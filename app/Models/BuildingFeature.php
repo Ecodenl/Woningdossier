@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\BuildingFeatureObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -50,7 +52,6 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\FacadeDamagedPaintwork|null $damagedPaintwork
  * @property-read \App\Models\EnergyLabel|null $energyLabel
  * @property-read \App\Models\ExampleBuilding|null $exampleBuilding
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\FacadePlasteredSurface|null $plasteredSurface
  * @property-read \App\Models\RoofType|null $roofType
@@ -95,6 +96,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingFeature whereWindowSurface($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([BuildingFeatureObserver::class])]
 class BuildingFeature extends Model implements Auditable
 {
     use GetValueTrait,

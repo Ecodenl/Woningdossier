@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,7 +29,6 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\InputSource $inputSource
  * @property-read \App\Models\User $user
  * @method static Builder<static>|UserCost allInputSources()
- * @method static Builder<static>|UserCost forAdvisable(\Illuminate\Database\Eloquent\Model $advisable)
  * @method static Builder<static>|UserCost forBuilding(\App\Models\Building|int $building)
  * @method static Builder<static>|UserCost forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder<static>|UserCost forMe(?\App\Models\User $user = null)
@@ -59,7 +59,8 @@ class UserCost extends Model implements Auditable
     ];
 
     # Scopes
-    public function scopeForAdvisable(Builder $query, Model $advisable): Builder
+    #[Scope]
+    protected function forAdvisable(Builder $query, Model $advisable): Builder
     {
         return $query->where('advisable_type', get_class($advisable))
             ->where('advisable_id', $advisable->id);

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\CooperationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Enums\Country;
 use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,7 +37,6 @@ use Plank\Mediable\MediableInterface;
  * @property-read int|null $cooperation_settings_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExampleBuilding> $exampleBuildings
  * @property-read int|null $example_buildings_count
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $questionnaires
@@ -69,6 +70,7 @@ use Plank\Mediable\MediableInterface;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @mixin \Eloquent
  */
+#[ObservedBy([CooperationObserver::class])]
 class Cooperation extends Model implements MediableInterface
 {
     use HasFactory,

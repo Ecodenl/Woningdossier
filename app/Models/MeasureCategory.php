@@ -16,7 +16,6 @@ use Illuminate\Support\Str;
  * @property string|null $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read mixed $translations
  * @method static \Database\Factories\MeasureCategoryFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MeasureCategory newModelQuery()

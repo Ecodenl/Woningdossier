@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Status $status
- * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus mostRecent()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingStatus query()
@@ -44,7 +44,8 @@ class BuildingStatus extends Model
         ];
     }
 
-    public function scopeMostRecent($query)
+    #[Scope]
+    protected function mostRecent($query)
     {
         // the higher the id the newer it is, ideally we would want to order on the created_at
         // but we cant rely on that because of migration from another table.

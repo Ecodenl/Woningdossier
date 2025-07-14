@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\UserObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -55,7 +58,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read mixed $is_admin
  * @property-read mixed $old_email_token
  * @property-read mixed $oldemail
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Log> $logs
  * @property-read int|null $logs_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationSetting> $notificationSettings
@@ -70,8 +72,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $user_action_plan_advices_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserCost> $userCosts
  * @property-read int|null $user_costs_count
- * @method static Builder<static>|User byContact($contact)
- * @method static Builder<static>|User econobisContacts()
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static Builder<static>|User forAllCooperations()
  * @method static Builder<static>|User forMyCooperation(\App\Models\Cooperation|int $cooperation)
@@ -98,6 +98,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder<static>|User withoutRole($roles, $guard = null)
  * @mixin \Eloquent
  */
+#[ObservedBy([UserObserver::class])]
 class User extends Model implements AuthorizableContract
 {
     use HasFactory,
@@ -129,14 +130,16 @@ class User extends Model implements AuthorizableContract
     //];
 
     # Scopes
-    public function scopeByContact(Builder $query, $contact): Builder
+    #[Scope]
+    protected function byContact(Builder $query, $contact): Builder
     {
         // We assume $contact is an ID. Maybe in the future this won't be the case but this way it can be easily
         // expanded
         return $query->where('extra->contact_id', $contact);
     }
 
-    public function scopeEconobisContacts(Builder $query): Builder
+    #[Scope]
+    protected function econobisContacts(Builder $query): Builder
     {
         return $query->whereNotNull('extra->contact_id');
     }

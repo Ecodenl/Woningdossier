@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,9 +21,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $type
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static Builder<static>|HeatPumpCharacteristic forHeatPumpConfigurable(\Illuminate\Database\Eloquent\Model $configurable)
- * @method static Builder<static>|HeatPumpCharacteristic forHeatingTemperature(\App\Models\ToolQuestionCustomValue $heatingTemperature)
- * @method static Builder<static>|HeatPumpCharacteristic forToolQuestionCustomValue(\App\Models\ToolQuestionCustomValue $toolQuestionCustomValue)
  * @method static Builder<static>|HeatPumpCharacteristic newModelQuery()
  * @method static Builder<static>|HeatPumpCharacteristic newQuery()
  * @method static Builder<static>|HeatPumpCharacteristic query()
@@ -45,18 +43,20 @@ class HeatPumpCharacteristic extends Model
     const string TYPE_HYBRID = 'hybrid';
     const string TYPE_FULL = 'full';
 
-    public function scopeForHeatingTemperature(
+    #[Scope]
+    protected function forHeatingTemperature(
         Builder $query,
         ToolQuestionCustomValue $heatingTemperature
     ): Builder
     {
-        return $this->scopeForToolQuestionCustomValue(
+        return $this->forToolQuestionCustomValue(
             $query,
             $heatingTemperature
         );
     }
 
-    public function scopeForToolQuestionCustomValue(
+    #[Scope]
+    protected function forToolQuestionCustomValue(
         Builder $query,
         ToolQuestionCustomValue $toolQuestionCustomValue
     ): Builder
@@ -68,7 +68,8 @@ class HeatPumpCharacteristic extends Model
         );
     }
 
-    public function scopeForHeatPumpConfigurable(
+    #[Scope]
+    protected function forHeatPumpConfigurable(
         Builder $query,
         Model $configurable
     ): Builder

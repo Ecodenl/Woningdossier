@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder<static>|FileTypeCategory newModelQuery()
  * @method static Builder<static>|FileTypeCategory newQuery()
  * @method static Builder<static>|FileTypeCategory query()
- * @method static Builder<static>|FileTypeCategory short($short)
  * @method static Builder<static>|FileTypeCategory whereCreatedAt($value)
  * @method static Builder<static>|FileTypeCategory whereId($value)
  * @method static Builder<static>|FileTypeCategory whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
@@ -46,7 +46,8 @@ class FileTypeCategory extends Model
      *
      * @param $short
      */
-    public function scopeShort(Builder $query, $short): Builder
+    #[Scope]
+    protected function short(Builder $query, $short): Builder
     {
         return $query->where('short', $short);
     }

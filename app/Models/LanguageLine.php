@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,8 +22,6 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read LanguageLine|null $helpText
  * @property-read \Illuminate\Database\Eloquent\Collection<int, LanguageLine> $subQuestions
  * @property-read int|null $sub_questions_count
- * @method static Builder<static>|LanguageLine forGroup($group)
- * @method static Builder<static>|LanguageLine mainQuestions()
  * @method static Builder<static>|LanguageLine newModelQuery()
  * @method static Builder<static>|LanguageLine newQuery()
  * @method static Builder<static>|LanguageLine query()
@@ -43,7 +42,7 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
         'group', 'key', 'text', 'step_id', 'main_language_line_id', 'help_language_line_id',
     ];
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
@@ -54,7 +53,8 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
         });
     }
 
-    public function scopeForGroup(Builder $query, $group)
+    #[Scope]
+    protected function forGroup(Builder $query, $group)
     {
         return $query->where('group', $group);
     }
@@ -66,7 +66,8 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
      *
      * @return mixed
      */
-    public function scopeMainQuestions($query)
+    #[Scope]
+    protected function mainQuestions($query)
     {
         return $query->whereNull('main_language_line_id');
     }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\StepHelper;
@@ -25,7 +27,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $scan_id
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeasureApplication> $measureApplications
  * @property-read int|null $measure_applications_count
  * @property-read Step|null $parentStep
@@ -36,16 +37,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
  * @property-read mixed $translations
- * @method static Builder<static>|Step childrenForStep(\App\Models\Step $step)
- * @method static Builder<static>|Step expert()
  * @method static \Database\Factories\StepFactory factory($count = null, $state = [])
- * @method static Builder<static>|Step forScan(\App\Models\Scan $scan)
  * @method static Builder<static>|Step newModelQuery()
  * @method static Builder<static>|Step newQuery()
- * @method static Builder<static>|Step ordered()
  * @method static Builder<static>|Step query()
- * @method static Builder<static>|Step quickScan()
- * @method static Builder<static>|Step recalculable()
  * @method static Builder<static>|Step whereCreatedAt($value)
  * @method static Builder<static>|Step whereId($value)
  * @method static Builder<static>|Step whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
@@ -59,10 +54,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder<static>|Step whereShort($value)
  * @method static Builder<static>|Step whereSlug($value)
  * @method static Builder<static>|Step whereUpdatedAt($value)
- * @method static Builder<static>|Step withGeneralData()
- * @method static Builder<static>|Step withoutChildren()
  * @mixin \Eloquent
  */
+#[ScopedBy([NoGeneralDataScope::class])]
 class Step extends Model
 {
     use HasFactory,
@@ -75,12 +69,6 @@ class Step extends Model
         'name',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new NoGeneralDataScope());
-    }
 
     // Static calls
     public static function allSlugs(): array
@@ -133,7 +121,8 @@ class Step extends Model
         return in_array($this->short, ['heating']);
     }
 
-    public function scopeWithGeneralData(Builder $query): Builder
+    #[Scope]
+    protected function withGeneralData(Builder $query): Builder
     {
         return $query->withoutGlobalScope(NoGeneralDataScope::class);
     }
@@ -174,7 +163,8 @@ class Step extends Model
         return $this->belongsTo(Step::class, 'parent_id', 'id');
     }
 
-    public function scopeChildrenForStep(Builder $query, Step $step)
+    #[Scope]
+    protected function childrenForStep(Builder $query, Step $step)
     {
         return $query->where('parent_id', $step->id);
     }
@@ -182,7 +172,8 @@ class Step extends Model
     /**
      * Method to leave out the sub steps.
      */
-    public function scopeWithoutChildren(Builder $query): Builder
+    #[Scope]
+    protected function withoutChildren(Builder $query): Builder
     {
         return $query->where('parent_id', null);
     }
@@ -194,31 +185,36 @@ class Step extends Model
             ->withPivot('order');
     }
 
-    public function scopeOrdered(Builder $query): Builder
+    #[Scope]
+    protected function ordered(Builder $query): Builder
     {
         return $query->orderBy('order', 'asc');
     }
 
     /** @deprecated Use scopeForScan instead */
-    public function scopeQuickScan(Builder $query): Builder
+    #[Scope]
+    protected function quickScan(Builder $query): Builder
     {
         $quickScan = Scan::quick();
-        return $this->scopeForScan($query, $quickScan);
+        return $this->forScan($query, $quickScan);
     }
 
     /** @deprecated Use scopeForScan instead */
-    public function scopeExpert(Builder $query): Builder
+    #[Scope]
+    protected function expert(Builder $query): Builder
     {
         $expertScan = Scan::expert();
-        return $this->scopeForScan($query, $expertScan);
+        return $this->forScan($query, $expertScan);
     }
 
-    public function scopeForScan(Builder $query, Scan $scan): Builder
+    #[Scope]
+    protected function forScan(Builder $query, Scan $scan): Builder
     {
         return $query->where('scan_id', $scan->id);
     }
 
-    public function scopeRecalculable(Builder $query): Builder
+    #[Scope]
+    protected function recalculable(Builder $query): Builder
     {
         return $query->where(
             fn (Builder $q) => $q->expert()->orWhere('short', 'small-measures')

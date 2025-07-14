@@ -40,12 +40,15 @@ class Alert extends Model
         'text',
     ];
 
-    protected $casts = [
-        'conditions' => 'array'
-    ];
-
     const TYPE_INFO = 'info';
     const TYPE_SUCCESS = 'success';
     const TYPE_WARNING = 'warning';
     const TYPE_DANGER = 'danger';
+
+    protected function casts(): array
+    {
+        return [
+            'conditions' => 'array'
+        ];
+    }
 }

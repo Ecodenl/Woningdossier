@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building $building
- * @property-read \App\Models\TFactory|null $use_factory
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingVentilation allInputSources()
  * @method static \Database\Factories\BuildingVentilationFactory factory($count = null, $state = [])

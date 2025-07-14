@@ -4,6 +4,7 @@
 /public/build
 /public/storage
 /storage/*.key
+/storage/pail
 /vendor
 /.vagrant
 Homestead.json
@@ -57,4 +58,4 @@ _ide_helper.php
 /storage/app/exports/
 /.phpunit.cache
 .phpunit.result.cache
-/mysql
+/mysql/.nova

@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Scopes\GetValueScope;
 
 trait GetValueTrait

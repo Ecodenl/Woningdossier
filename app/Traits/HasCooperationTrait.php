@@ -8,7 +8,6 @@ use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\App;
 
-
 trait HasCooperationTrait
 {
     /**

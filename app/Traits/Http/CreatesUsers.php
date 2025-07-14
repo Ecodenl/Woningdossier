@@ -16,6 +16,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -46,7 +47,7 @@ trait CreatesUsers
 
         foreach ($roleIds as $roleId) {
             $role = \App\Models\Role::findOrFail($roleId);
-            $this->authorize('view', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true)]);
+            Gate::authorize('view', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true)]);
             $roles[] = $role->name;
         }
 

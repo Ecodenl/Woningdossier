@@ -122,7 +122,6 @@ class Buttons extends Component
             if (isset($this->previousStep) && $this->account->cannot('show', [$this->previousSubStep, $this->building])) {
                 // So the user is not allowed to see this sub step.
                 // Now we also have to set the subStep so this won't do an infinite loop.
-                /** @phpstan-ignore assign.propertyType */
                 $this->subStep = $this->previousSubStep;
                 $this->setPreviousStep();
             }
@@ -143,7 +142,6 @@ class Buttons extends Component
                 if ($this->account->cannot('show', [$this->previousSubStep, $this->building])) {
                     // so the user is not allowed to see this sub step
                     // now we also have to set the subStep so this won't do an infinite loop
-                    /** @phpstan-ignore assign.propertyType */
                     $this->subStep = $this->previousSubStep;
                     $this->setPreviousStep();
                 }

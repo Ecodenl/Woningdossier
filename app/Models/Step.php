@@ -196,7 +196,7 @@ class Step extends Model
     protected function quickScan(Builder $query): Builder
     {
         $quickScan = Scan::quick();
-        return $this->scopeForScan($query, $quickScan);
+        return $this->forScan($query, $quickScan);
     }
 
     /** @deprecated Use scopeForScan instead */
@@ -204,7 +204,7 @@ class Step extends Model
     protected function expert(Builder $query): Builder
     {
         $expertScan = Scan::expert();
-        return $this->scopeForScan($query, $expertScan);
+        return $this->forScan($query, $expertScan);
     }
 
     #[Scope]

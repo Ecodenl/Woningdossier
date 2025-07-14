@@ -274,6 +274,7 @@ final class ToolControllerTest extends TestCase
 
         $this->actingAs($coachAccount);
         HoomdossierSession::setHoomdossierSessions($coachBuilding, $inputSource, $inputSource, $role);
+        HoomdossierSession::setCooperation($cooperation);
 
         return [$resident, $coach];
     }

@@ -286,7 +286,8 @@ class User extends Model implements AuthorizableContract
      */
     public function cooperation(): BelongsTo
     {
-        return $this->belongsTo(Cooperation::class, 'cooperation_id', 'id');
+        return $this->belongsTo(Cooperation::class, 'cooperation_id', 'id')
+            ->withTrashed();
     }
 
     /**

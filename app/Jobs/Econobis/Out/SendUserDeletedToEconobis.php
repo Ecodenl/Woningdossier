@@ -5,8 +5,8 @@ namespace App\Jobs\Econobis\Out;
 use App\Helpers\Hoomdossier;
 use App\Helpers\Wrapper;
 use App\Jobs\Middleware\EnsureCooperationHasEconobisLink;
-use App\Models\Cooperation;
 use App\Helpers\Queue;
+use App\Models\Cooperation;
 use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\EconobisService;
 use Illuminate\Bus\Queueable;
@@ -21,19 +21,14 @@ class SendUserDeletedToEconobis implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CallsEconobisApi;
 
-    public array $accountRelated;
-    public Cooperation $cooperation;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Cooperation $cooperation, $accountRelated)
+    public function __construct(protected array $cooperation, protected array $accountRelated)
     {
-        $this->queue = Queue::APP_EXTERNAL;
-        $this->cooperation = $cooperation;
-        $this->accountRelated = $accountRelated;
+        $this->onQueue(Queue::APP_EXTERNAL);
     }
 
     /**
@@ -43,8 +38,7 @@ class SendUserDeletedToEconobis implements ShouldQueue
     {
         $this->wrapCall(function () use ($econobis, $econobisService) {
             $econobis
-                // this cant work right ?
-                ->forCooperation($this->cooperation)
+                ->forCooperation(new Cooperation($this->cooperation)) // Hydrate a new cooperation model for ease.
                 ->hoomdossier()
                 ->delete(
                     $econobisService
@@ -54,7 +48,7 @@ class SendUserDeletedToEconobis implements ShouldQueue
         });
     }
 
-    public function wrapCall(\Closure $function)
+    public function wrapCall(\Closure $function): void
     {
         if (Hoomdossier::hasEnabledEconobisCalls()) {
             Wrapper::wrapCall(
@@ -76,12 +70,10 @@ class SendUserDeletedToEconobis implements ShouldQueue
             $buildingId = $this->accountRelated['building_id'] ?? 'No building id!';
             Log::debug('Building ' . $buildingId . ' - Econobis calls are disabled, skipping call');
         }
-
-        return;
     }
 
     public function middleware(): array
     {
-        return [new EnsureCooperationHasEconobisLink($this->cooperation)];
+        return [new EnsureCooperationHasEconobisLink(new Cooperation($this->cooperation))];
     }
 }

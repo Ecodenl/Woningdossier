@@ -4,15 +4,17 @@ namespace App\Helpers;
 
 class Queue
 {
-    public const APP = 'app';
-    public const APP_HIGH = 'app_high';
-    public const APP_EXTERNAL = 'app_external';
-    public const LOGS = 'logs';
-    public const EXPORTS = 'exports';
+    // TODO: Make enum
+
+    public const string APP = 'app';
+    public const string APP_HIGH = 'app_high';
+    public const string APP_EXTERNAL = 'app_external';
+    public const string LOGS = 'logs';
+    public const string EXPORTS = 'exports';
     // ideally we would want to remove this, however this is used by laravel as a default
     // so if we forget to set the queue or a laravel internal changes
     // the job may not me picked up.
-    public const DEFAULT = 'default';
+    public const string DEFAULT = 'default';
 
     public static function getQueueNames(): array
     {

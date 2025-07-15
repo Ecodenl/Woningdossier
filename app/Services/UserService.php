@@ -273,11 +273,11 @@ class UserService
             AttachEnergyLabel::dispatch($building);
         }
 
-        app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
         // Attach cooperation.
         $user->cooperation()->associate(
             $cooperation
         )->save();
+        app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
 
         $user->assignRole($roles);
 

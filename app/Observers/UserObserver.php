@@ -33,8 +33,9 @@ class UserObserver
 
     public function updated(User $user): void
     {
-        // Wiping the account for these trivial columns? No thanks.
+        // Wiping the account cache for these trivial columns? No thanks.
         $ignore = [
+            'tool_last_changed_at',
             'regulations_refreshed_at',
             'last_visited_url',
             'updated_at',

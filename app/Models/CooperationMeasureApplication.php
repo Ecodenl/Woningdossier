@@ -84,13 +84,13 @@ class CooperationMeasureApplication extends Model
         ];
     }
 
-    # Model Methods
+    // Model Methods
     public function getType(): string
     {
         return $this->is_extensive_measure ? CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE : CooperationMeasureApplicationHelper::SMALL_MEASURE;
     }
 
-    # Scopes
+    // Scopes
     #[Scope]
     protected function extensiveMeasures(Builder $query): Builder
     {
@@ -103,7 +103,7 @@ class CooperationMeasureApplication extends Model
         return $query->where('is_extensive_measure', false);
     }
 
-    # Relations
+    // Relations
     public function userActionPlanAdvices(): MorphMany
     {
         // We need to retrieve this without the visible tag

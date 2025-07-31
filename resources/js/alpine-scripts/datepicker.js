@@ -92,7 +92,12 @@ export default (name, enableTime = false) => ({
         if (currentValue !== dateValue) {
             // Only change if actually changed
             this.$refs[this.name].value = dateValue;
-            this.$refs[this.name].triggerEvent('change');
+
+            if (this.$refs[this.name].hasAttribute('wire:model.lazy')) {
+                this.$wire.set(this.name, dateValue);
+            } else {
+                this.$refs[this.name].triggerEvent('change');
+            }
         }
 
         if (this.enableTime && this.$el?.classList?.contains('day-selector')) {

@@ -17,7 +17,7 @@
     <div x-data="datepicker('{{$name}}', @js($mode === 'datetime'))" x-cloak class="datepicker">
         <div class="relative">
             {{-- Input that holds the value --}}
-            <input type="hidden" x-ref="{{ $name }}" class="datepicker-value"
+            <input type="text" x-ref="{{ $name }}" class="datepicker-value hidden"
                    @if($livewire) wire:model.lazy="{{$name}}" @else value="{{ $date }}" name="{{ $htmlName }}" @endif>
 
             {{-- Visual input --}}

@@ -36,7 +36,12 @@ export default (name, enableTime = false) => ({
                     // to something sensible.
                     this.hours = 0;
                 } else {
-                    this.setDateValue(this.getCurrentDay());
+                    let day = this.getCurrentDay();
+                    if (! day) {
+                        day = (new Date()).getDate();
+                    }
+
+                    this.setDateValue(day);
                 }
             });
             this.$watch('minutes', (value, oldValue) => {
@@ -45,7 +50,12 @@ export default (name, enableTime = false) => ({
                     // to something sensible.
                     this.minutes = 0;
                 } else {
-                    this.setDateValue(this.getCurrentDay());
+                    let day = this.getCurrentDay();
+                    if (! day) {
+                        day = (new Date()).getDate();
+                    }
+
+                    this.setDateValue(day);
                 }
             });
         }

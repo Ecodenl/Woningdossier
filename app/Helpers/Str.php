@@ -165,34 +165,6 @@ class Str extends \Illuminate\Support\Str
     }
 
     /**
-     * Convert a dotted string to a valid HTML input name.
-     */
-    public static function dotToHtml(?string $dottedName, bool $asArray = false): ?string
-    {
-        // No use for an empty string
-        if (empty($dottedName)) {
-            return $dottedName;
-        }
-
-        $htmlName = \Illuminate\Support\Str::of($dottedName);
-
-        // Nothing to replace if no dots
-        if ($htmlName->contains('.')) {
-            $htmlName = $htmlName->replaceFirst('.', '[') // Replace first dot with opening bracket
-                ->replace('*', '') // Remove wildcards
-                ->replace('.', '][') // Replace other dots with separating brackets
-                ->append(']'); // Add final bracket
-        }
-
-        if ($asArray) {
-            // Append HTML array if requested
-            $htmlName = $htmlName->append('[]');
-        }
-
-        return $htmlName;
-    }
-
-    /**
      * Check if a string has replaceables.
      */
     public static function hasReplaceables(string $string): bool

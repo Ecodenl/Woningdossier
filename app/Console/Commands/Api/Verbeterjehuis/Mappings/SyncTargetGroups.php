@@ -4,6 +4,7 @@ namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
 use App\Helpers\Wrapper;
 use App\Models\ToolQuestion;
+use App\Services\DiscordNotifier;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Console\Command;
@@ -42,6 +43,13 @@ class SyncTargetGroups extends Command
             )->keyBy('Value');
 
             foreach ($map as $from => $target) {
+                if (! $targetGroups->has($target)) {
+                    DiscordNotifier::init()->notify("Sync target groups for {$target} not found!");
+                    Log::info('Target groups:');
+                    Log::info($targetGroups);
+                    continue;
+                }
+
                 $mappingService->from(
                     ToolQuestion::findByShort('building-contract-type')
                         ->toolQuestionCustomValues()

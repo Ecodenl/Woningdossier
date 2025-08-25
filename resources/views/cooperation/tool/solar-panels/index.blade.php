@@ -358,7 +358,7 @@
 @endsection
 
 @push('js')
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', function () {
             let data = {};
             $('input:not(.source-select-input), textarea, select:not(.source-select)').change(function () {

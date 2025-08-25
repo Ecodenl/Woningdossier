@@ -164,7 +164,7 @@
 @endsection
 
 @push('js')
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('search').addEventListener('input', function () {
                 const search = this.value;

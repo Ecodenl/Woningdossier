@@ -299,7 +299,7 @@
         </button>
     @endcomponent
 
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         document.getElementById('tiptap-modal-ok').addEventListener('click', () => {
             let id = document.getElementById('tiptap-id').value;
 

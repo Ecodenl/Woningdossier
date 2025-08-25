@@ -2,34 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\Account;
-use App\Models\Building;
-use App\Models\BuildingElement;
-use App\Models\BuildingFeature;
-use App\Models\CompletedSubStep;
-use App\Models\Cooperation;
-use App\Models\CooperationMeasureApplication;
-use App\Models\CustomMeasureApplication;
-use App\Models\MeasureApplication;
-use App\Models\PrivateMessage;
-use App\Models\PrivateMessageView;
-use App\Models\User;
-use App\Models\UserActionPlanAdvice;
-use App\Observers\AccountObserver;
-use App\Observers\BuildingFeatureObserver;
-use App\Observers\BuildingElementObserver;
-use App\Observers\BuildingObserver;
-use App\Observers\CompletedSubStepObserver;
-use App\Observers\CooperationMeasureApplicationObserver;
-use App\Observers\CooperationObserver;
-use App\Observers\CustomMeasureApplicationObserver;
-use App\Observers\MeasureApplicationObserver;
-use App\Observers\PrivateMessageObserver;
-use App\Observers\PrivateMessageViewObserver;
-use App\Observers\ToolQuestionAnswerObserver;
-use App\Observers\UserActionPlanAdviceObserver;
-use App\Observers\UserObserver;
-use App\Models\ToolQuestionAnswer;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
@@ -41,21 +13,6 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         SessionGuard::macro('account', function () {
             return auth()->user();
         });

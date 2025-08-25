@@ -90,7 +90,7 @@
 @endsection
 
 @push('js')
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', () => {
             let id = '{{ Str::kebab(Str::studly(CooperationSettingHelper::SHORT_VERIFICATION_EMAIL_TEXT)) }}';
 

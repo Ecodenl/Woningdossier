@@ -32,7 +32,7 @@
         </style>
         @stack('css')
 
-        <script type="module">
+        <script type="module" nonce="{{ $cspNonce }}">
             function agentHas(keyword) {
                 return navigator.userAgent.toLowerCase().search(keyword.toLowerCase()) > -1;
             }
@@ -60,6 +60,7 @@
                 ? route('cooperation.media.serve', ['cooperation' => $cooperation, 'media' => $cooperationBackground])
                 : asset('images/background.jpg');
         @endphp
+        <?php $background ??= asset('images/background.jpg'); ?>
         <main class="bg-cover bg-center bg-no-repeat bg-white"
               style="@yield('main_style', "background-image: url('{$background}');")">
             {{--    @include('cooperation.layouts.parts.messages')--}}
@@ -67,11 +68,11 @@
             @yield('main')
         </main>
 
-        @livewireScriptConfig
+        @livewireScriptConfig(['nonce' => $cspNonce])
         {{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
         @vite('resources/js/app.js')
 
-        <script type="module">
+        <script type="module" nonce="{{ $cspNonce }}">
             document.addEventListener('DOMContentLoaded', function () {
                 // Bind simple function to remove errors when clicked
                 let formErrors = document.getElementsByClassName('form-error');

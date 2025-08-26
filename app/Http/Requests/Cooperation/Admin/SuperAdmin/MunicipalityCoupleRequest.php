@@ -7,6 +7,7 @@ use App\Helpers\Wrapper;
 use App\Models\Mapping;
 use App\Models\Municipality;
 use App\Services\Verbeterjehuis\RegulationService;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MunicipalityCoupleRequest extends FormRequest
@@ -40,7 +41,7 @@ class MunicipalityCoupleRequest extends FormRequest
             ],
             'bag_municipalities.*' => [
                 // User input is always allowed. If existing mapping, it cannot be coupled already.
-                function ($attribute, $value, $fail) {
+                function (string $attribute, mixed $value, Closure $fail) {
                     $mapping = Mapping::find($value);
 
                     if ($mapping instanceof Mapping) {
@@ -52,8 +53,8 @@ class MunicipalityCoupleRequest extends FormRequest
             ],
             'vbjehuis_municipality' => [
                 'nullable',
-                function ($attribute, $value, $fail) {
-                    $parts = explode('-', $value, 2);
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $parts = explode('~', $value, 2);
                     $id = $parts[0];
                     $name = $parts[1] ?? '';
 

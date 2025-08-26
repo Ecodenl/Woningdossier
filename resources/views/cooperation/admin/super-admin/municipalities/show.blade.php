@@ -45,7 +45,7 @@
                 // Multiple municipalities can have the same ID. We check the name to show
                 // the "correct" value.
                 $currentMunicipality = $mappedVbjehuisMunicipality->target_data ?? [];
-                $currentValue = old('vbjehuis_municipality', ! empty($currentMunicipality) ? $currentMunicipality['Id'] . '-' . $currentMunicipality['Name'] : null);
+                $currentValue = old('vbjehuis_municipality', ! empty($currentMunicipality) ? $currentMunicipality['Id'] . '~' . $currentMunicipality['Name'] : null);
             @endphp
             @slot('label')
                 @lang('cooperation/admin/super-admin/municipalities.form.vbjehuis-municipality.label')
@@ -65,7 +65,7 @@
                         @lang('default.form.dropdown.none')
                     </option>
                     @foreach($vbjehuisMunicipalities as $vbjehuisMunicipality)
-                        @php $vbjehuisVal = $vbjehuisMunicipality['Id'] . '-' . $vbjehuisMunicipality['Name']; @endphp
+                        @php $vbjehuisVal = $vbjehuisMunicipality['Id'] . '~' . $vbjehuisMunicipality['Name']; @endphp
                         <option value="{{ $vbjehuisVal }}" @if($vbjehuisVal == $currentValue) selected @endif>
                             {{ $vbjehuisMunicipality['Name'] }}
                         </option>

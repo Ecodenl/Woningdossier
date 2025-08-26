@@ -60,7 +60,6 @@
                 ? route('cooperation.media.serve', ['cooperation' => $cooperation, 'media' => $cooperationBackground])
                 : asset('images/background.jpg');
         @endphp
-        <?php $background ??= asset('images/background.jpg'); ?>
         <main class="bg-cover bg-center bg-no-repeat bg-white"
               style="@yield('main_style', "background-image: url('{$background}');")">
             {{--    @include('cooperation.layouts.parts.messages')--}}

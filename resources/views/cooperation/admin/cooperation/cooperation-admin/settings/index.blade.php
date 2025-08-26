@@ -12,7 +12,7 @@
             ? $cooperationToManage : $cooperation;
     @endphp
 
-    <form class="w-full flex flex-wrap"
+    <form class="w-full flex flex-wrap" x-data
           action="{{ $action }}"
           enctype="multipart/form-data" method="POST">
         @csrf
@@ -38,7 +38,7 @@
                             </span>
                             @can('delete', [$image, HoomdossierSession::getInputSource(true)])
                                 <span class="text-red cursor-pointer font-bold ml-2"
-                                      onclick="let currentImage = document.getElementById('current-{{ $tag }}'); currentImage.value = null; currentImage.nextElementSibling.style.display = 'none';">
+                                      x-on:click="const currentImage = document.getElementById('current-{{ $tag }}'); currentImage.value = null; currentImage.nextElementSibling.style.display = 'none';">
                                     X
                                 </span>
                             @endcan

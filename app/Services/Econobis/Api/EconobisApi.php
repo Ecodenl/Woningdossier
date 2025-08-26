@@ -22,7 +22,7 @@ class EconobisApi
     {
         $wildcard = $cooperation->econobis_wildcard;
         $apiKey = null;
-        if (!empty($cooperation->econobis_api_key)) {
+        if (! empty($cooperation->econobis_api_key)) {
             $apiKey = Crypt::decrypt($cooperation->econobis_api_key);
         }
 

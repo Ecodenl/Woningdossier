@@ -17,7 +17,7 @@
 </div>
 
 @push('js')
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', function () {
             $('.group-member > span').click(function () {
                 if ($(this).hasClass('is-removable-user')) {

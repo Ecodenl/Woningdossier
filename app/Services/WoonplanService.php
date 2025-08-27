@@ -33,7 +33,7 @@ class WoonplanService
     public function canAccessWoonplan(): bool
     {
         // when a user is observing another building, he can always see the Woonplan
-        if ($this->isObserving) {
+        if ($this->isObserving || app()->isLocal()) {
             return true;
         }
         // if the user is on the quick scan some abnormal rules apply

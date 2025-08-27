@@ -14,4 +14,12 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        host: true,
+        port: 5173,
+        strictPort: true,
+        cors: true, // <-- laat alle origins toe (alleen dev)
+        hmr: { host: 'localhost', protocol: 'ws', port: 5173 },
+        origin: 'http://localhost:5173',
+    },
 });

@@ -13,7 +13,6 @@ use App\Helpers\DataTypes\Caster;
 use App\Helpers\Hoomdossier;
 use App\Helpers\ToolQuestionHelper;
 use App\Livewire\Cooperation\Frontend\Tool\Scannable;
-use App\Models\Cooperation;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
@@ -43,7 +42,7 @@ class Form extends Scannable
         'save',
     ];
 
-    public function mount(Step $step, Cooperation $cooperation): void
+    public function mount(Step $step): void
     {
         $this->subSteps = $step->subSteps()->with([
             'toolQuestions' => function ($query) {

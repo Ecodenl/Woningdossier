@@ -30,9 +30,9 @@
 <body>
 <div id="swagger-ui"></div>
 
-<script src="{{ l5_swagger_asset($documentation, 'swagger-ui-bundle.js') }}"></script>
-<script src="{{ l5_swagger_asset($documentation, 'swagger-ui-standalone-preset.js') }}"></script>
-<script type="module">
+<script src="{{ l5_swagger_asset($documentation, 'swagger-ui-bundle.js') }}" nonce="{{ $cspNonce }}"></script>
+<script src="{{ l5_swagger_asset($documentation, 'swagger-ui-standalone-preset.js') }}" nonce="{{ $cspNonce }}"></script>
+<script type="module" nonce="{{ $cspNonce }}">
     window.onload = function() {
         // Build a system
         const ui = SwaggerUIBundle({

@@ -19,7 +19,7 @@
 </div>
 
 @push('js')
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         window.setChatScroll = function () {
             document.querySelectorAll('.panel-chat-body').forEach(chat => {
                 chat.scrollTop = chat.scrollHeight - chat.clientHeight;

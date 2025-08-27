@@ -364,7 +364,7 @@
 @endsection
 
 @push('js')
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
         const originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('Y-m-d H:i')}}' @else '' @endif;
         const buildingOwnerId = @js($building->id);

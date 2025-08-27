@@ -381,11 +381,12 @@ export default (initiallyOpen = false, withSearch = false) => ({
             newOption.setAttribute("data-icon", option.getAttribute("data-icon"));
         }
 
+        const safeValue = value.replace(/"/g, '&quot;').replace(/'/g, "\\'");
         // Add alpine functions
         if (this.multiple) {
-            newOption.setAttribute("x-bind:class", `Array.isArray(values) && values.includes('${value}') ? 'selected' : ''`);
+            newOption.setAttribute("x-bind:class", `Array.isArray(values) && values.includes('${safeValue}') ? 'selected' : ''`);
         } else {
-            newOption.setAttribute("x-bind:class", `values == '${value}' ? 'selected' : ''`);
+            newOption.setAttribute("x-bind:class", `values == "${safeValue}" ? 'selected' : ''`);
         }
         newOption.setAttribute("x-on:click", "changeOption($el)");
         newOption.classList.add('select-option');

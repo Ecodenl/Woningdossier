@@ -63,6 +63,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\SentryContext::class,
         ], prepend: [
             // Prepend to ensure it is executed before model binding
+            \App\Http\Middleware\SecurityHeaders::class,
             \App\Http\Middleware\CheckForCooperationRedirect::class,
         ]);
 

@@ -21,6 +21,7 @@
                 'class' => 'form-group-heading w-full lg:w-1/2 lg:pr-3',
                 'label' => $topLeft->name,
                 'inputName' => "filledInAnswers.{$topLeft->short}",
+                'id' => $topLeft->short,
             ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
@@ -48,6 +49,7 @@
                     'class' => 'form-group-heading w-full',
                     'label' => $topRightFirst->name,
                     'inputName' => "filledInAnswers.{$topRightFirst->short}",
+                    'id' => $topRightFirst->short,
                 ])
                     @slot('sourceSlot')
                         @include('cooperation.sub-step-templates.parts.source-slot-values', [
@@ -73,6 +75,7 @@
                     'class' => 'form-group-heading w-full',
                     'label' => $topRightSecond->name,
                     'inputName' => "filledInAnswers.{$topRightSecond->short}",
+                    'id' => $topRightSecond->short,
                 ])
                     @slot('sourceSlot')
                         @include('cooperation.sub-step-templates.parts.source-slot-values', [
@@ -102,6 +105,7 @@
                 'label' => $bottomLeft->name,
                 'inputName' => "filledInAnswers.{$bottomLeft->short}",
                 'inputGroupClass' => 'w-1/2',
+                'id' => $bottomLeft->short,
             ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [

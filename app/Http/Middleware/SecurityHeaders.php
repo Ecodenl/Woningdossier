@@ -93,7 +93,12 @@ class SecurityHeaders
         // We prefer not to use 'unsafe-inline' whenever possible and to use nonce + 'strict-dynamic' (for modern browsers) or trusted domains
         // to narrow down the allowed sources.
         $scriptSrc = ["'self'", "'nonce-{$nonce}'", "https://cdn.ravenjs.com/", "'strict-dynamic'"];
-        $styleSrc = ["'self'", "'unsafe-inline'"];
+        // Use 'unsafe-eval' when you need eval() or new Function().
+        if (config('hoomdossier.security.allow_unsafe_eval_scripts', false)) {
+            $scriptSrc[] = "'unsafe-eval'";
+        }
+
+        $styleSrc = ["'self'",];
         // Use 'unsafe-inline' for inline <style> tags or style attributes of libraries.
         if (config('hoomdossier.security.allow_unsafe_inline_styles', false)) {
             $styleSrc[] = "'unsafe-inline'";

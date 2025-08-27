@@ -98,6 +98,8 @@ return [
         'permissions_policy' => env('PERMISSIONS_POLICY', "accelerometer=(), camera=(), microphone=(), geolocation=(self), fullscreen=(self), usb=(), payment=()"),
         // Applicable for production: Allow inline styles if really required (e.g. by a library).
         'allow_unsafe_inline_styles' => env('ALLOW_UNSAFE_INLINE_STYLES', false),
+        // Applicable for production: Allow the usage of eval() and new Function() if really required (e.g. by a library).
+        'allow_unsafe_eval_scripts' => env('ALLOW_UNSAFE_EVAL_SCRIPTS', false),
         // Dev only. Most of the time you will use the default or you have set this in the .env as the VITE_PORT is also changed in the docker-compose.
         'vite_host' => env('VITE_HOST', 'http://localhost:5173'),
     ],

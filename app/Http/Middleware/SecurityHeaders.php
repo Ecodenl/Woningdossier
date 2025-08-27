@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Vite;
 use Random\RandomException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,7 +20,7 @@ class SecurityHeaders
     public function handle(Request $request, Closure $next): Response
     {
         // Generate nonce per request for inline <script> tags
-        $nonce = base64_encode(random_bytes(16));
+        $nonce = Vite::useCspNonce();
         $request->attributes->set('cspNonce', $nonce);
         // Make it available in views via $csp-nonce
         view()->share('cspNonce', $nonce);

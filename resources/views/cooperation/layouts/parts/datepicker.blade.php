@@ -135,7 +135,7 @@
 </div>
 
 @pushonce('css')
-    <script>
+    <script type="module" nonce="{{ $cspNonce }}">
         window.days = @json(array_values(__('default.day-shorts')));
         window.months = @json(array_values(__('default.months')));
     </script>

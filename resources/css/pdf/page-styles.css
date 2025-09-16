@@ -1,0 +1,4 @@
+#front-page #cooperation-logo {
+    @apply text-center;
+    margin: 7.5rem 0; /* my-30 doesn't exist */
+}

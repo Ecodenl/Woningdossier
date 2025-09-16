@@ -1,4 +1,4 @@
-export default (checks, bagAvailable = true, tailwind = true) => ({
+export default (checks, bagAvailable = true) => ({
     bagAvailable: bagAvailable,
     showPostalCodeError: false,
     showDuplicateError: false,
@@ -65,19 +65,27 @@ export default (checks, bagAvailable = true, tailwind = true) => ({
         setTimeout(() => {
             this.switchAvailability();
 
-            // After a form request, data might be filled from old values, so we will perform a check.
-            this.performChecks();
+            // After a form request, defaults may be set. We will ensure these are filled.
+            this.oldValues = {
+                'postcode': this.$refs['postcode'].value,
+                'houseNumber': this.$refs['houseNumber'].value,
+                'houseNumberExtension': this.$refs['houseNumberExtensionSelect'].value,
+            }
+
+            // After a form request, data might be filled from old values, so we will perform a check, with
+            // force, since data might be set.
+            this.performChecks(true);
         });
     },
-    performChecks() {
+    performChecks(force = false) {
         if (Object.hasOwn(this.checks, 'correct_address')) {
-            this.getAddressData(this.checks['correct_address']);
+            this.getAddressData(this.checks['correct_address'], force);
         }
         if (Object.hasOwn(this.checks, 'duplicates')) {
             this.checkDuplicates(this.checks['duplicates']);
         }
     },
-    getAddressData(apiUrl) {
+    getAddressData(apiUrl, force) {
         // Get inputs from refs
         let postcode = this.$refs['postcode'];
         let houseNumber = this.$refs['houseNumber'];
@@ -90,49 +98,66 @@ export default (checks, bagAvailable = true, tailwind = true) => ({
             let url = this.getUrl(apiUrl);
             url = this.appendAddressData(url);
 
-            // We also only want to make requests if there's actually something that's changed.
-            let makeRequest = false;
-            if (this.isDirty('postcode', postcode.value) || this.isDirty('houseNumber', houseNumber.value)) {
-                makeRequest = true;
-                url.searchParams.append('fetch_extensions', '1');
-                url.searchParams.delete('extension');
-            } else if (this.isDirty('houseNumberExtension', houseNumberExtensionSelect.value)) {
-                makeRequest = true;
-            }
-
-            if (makeRequest) {
-                // Restore old value
-                let oldOption = houseNumberExtensionSelect.querySelector('option.old');
-                let oldValue = null;
-                if (oldOption) {
-                    oldValue = oldOption.value;
-                    // We want to pass the old value to the backend, as otherwise the initial address might be wrong.
-                    url.searchParams.set('extension', oldValue);
-                    oldOption.remove();
+            if (url instanceof URL) {
+                // We also only want to make requests if there's actually something that's changed.
+                let makeRequest = false;
+                if (force) {
+                    makeRequest = true;
+                    url.searchParams.append('fetch_extensions', '1');
+                } else {
+                    if (this.isDirty('postcode', postcode.value) || this.isDirty('houseNumber', houseNumber.value)) {
+                        makeRequest = true;
+                        url.searchParams.append('fetch_extensions', '1');
+                        url.searchParams.delete('extension');
+                    } else if (this.isDirty('houseNumberExtension', houseNumberExtensionSelect.value)) {
+                        makeRequest = true;
+                    }
                 }
-                let context = this;
-                performRequest({
-                    'url': url,
-                    'done': function (request) {
-                        context.removeError(postcode);
-                        context.removeError(houseNumber);
-                        context.removeError(city);
-                        context.removeError(street);
 
-                        let response = request.response;
-                        let faultyData = request.status === 422;
+                if (makeRequest) {
+                    // Restore old value
+                    let oldOption = houseNumberExtensionSelect.querySelector('option.old');
+                    let oldValue = null;
+                    if (oldOption) {
+                        oldValue = oldOption.value;
+                        // We want to pass the old value to the backend, as otherwise the initial address might be wrong.
+                        url.searchParams.set('extension', oldValue);
+                        oldOption.remove();
+                    }
 
+                    let faultyData = false
+                    let hasErrors = false;
+
+                    fetchRequest(url).then((request) => {
+                        faultyData = request.status === 422;
+                        hasErrors = ! request.ok;
+
+                        this.removeError(postcode);
+                        this.removeError(houseNumber);
+                        this.removeError(city);
+                        this.removeError(street);
+
+                        return request.json();
+
+                        // if (request.ok) {
+                        //     return request.json();
+                        // }
+                        // return Promise.reject(request);
+                    }).then((response) => {
                         // Show postal code error if address is wrongly validated.
-                        context.showPostalCodeError = faultyData;
-
-                        if (response.available_extensions || faultyData) {
-                            context.availableExtensions = response.available_extensions || [];
+                        this.showPostalCodeError = faultyData;
+                        if (url.searchParams.get('fetch_extensions')) {
+                            this.availableExtensions = response.available_extensions || [];
+                            if (this.availableExtensions.length === 0) {
+                                // No longer any extensions available, reset old values.
+                                this.oldValues['houseNumberExtension'] = null;
+                            }
                         }
 
                         // So, if no BAG address ID was returned, there was a BAG endpoint failure.
                         // We will consider the BAG available on form request errors also.
-                        context.bagAvailable = typeof response.bag_addressid !== 'undefined' || faultyData;
-                        context.switchAvailability();
+                        this.bagAvailable = typeof response.bag_addressid !== 'undefined' || faultyData;
+                        this.switchAvailability();
 
                         if (oldValue !== null) {
                             setTimeout(() => {
@@ -141,18 +166,22 @@ export default (checks, bagAvailable = true, tailwind = true) => ({
                         }
 
                         // If the request was successful, we fill the data in the field
-                        if (request.status === 200) {
+                        if (! hasErrors) {
                             // Show postal code error if BAG is available and no data was returned.
-                            context.showPostalCodeError = response.postal_code === '' && context.bagAvailable;
+                            this.showPostalCodeError = response.postal_code === '' && this.bagAvailable;
 
                             // Don't want to overwrite user data with nothing
-                            if (context.bagAvailable) {
+                            if (this.bagAvailable) {
                                 // If BAG is available we want to reset the street/city so the user
                                 // cannot spoof the validation (without being a hackerman).
                                 street.value =  response.street;
                                 city.value =  response.city;
                             }
                         } else {
+                            //TODO: Currently this doesn't work because the API name doesn't match the address.blade
+                            // naming. When "fixing" it, it looks very bad, and the generic error is probably more than
+                            // enough.
+
                             // Else we add errors
                             let errors = response.errors;
                             for (let error in errors) {
@@ -160,12 +189,15 @@ export default (checks, bagAvailable = true, tailwind = true) => ({
                                     let errorMessage = errors[error][0]; // Grab first message
 
                                     let input = document.querySelector(`input[name="${error}"]`);
-                                    context.appendError(input, errorMessage);
+                                    this.appendError(input, errorMessage);
                                 }
                             }
                         }
-                    }
-                });
+                    })
+                    // .catch((request) => request.json()).then((response) => {
+                    // Catch if promise rejected (due to error)
+                    // })
+                }
             }
         }
     },
@@ -173,32 +205,26 @@ export default (checks, bagAvailable = true, tailwind = true) => ({
         let url = this.getUrl(apiUrl);
         url = this.appendAddressData(url);
 
-        let context = this;
-        performRequest({
-            'url': url,
-            'done': function (request) {
-                context.showDuplicateError = request.response.count > 0;
-                context.$dispatch('duplicates-checked', {
-                    'showDuplicateError': context.showDuplicateError,
-                    'addresses': request.response.addresses
+        if (url instanceof URL) {
+            fetchRequest(url).then((response) => response.json()).then((response) => {
+                this.showDuplicateError = response.count > 0;
+                this.$dispatch('duplicates-checked', {
+                    'showDuplicateError': this.showDuplicateError,
+                    'addresses': response.addresses
                 });
-            }
-        });
+            });
+        }
     },
     appendError(input, text) {
         if (typeof input !== 'undefined' && input) {
-            // "Legacy" support
-            let tag = (tailwind ? 'p' : 'span');
-            let className = (tailwind ? 'form-error-label' : 'help-block');
-            let parentClassName = (tailwind ? 'form-error' : 'has-error');
             // Don't add double errors
             if (! input.parentElement.querySelector('.form-error-label')) {
-                let newError = document.createElement(tag);
+                let newError = document.createElement('p');
                 newError.appendChild(document.createTextNode(text));
-                newError.classList.add('address-error', className);
+                newError.classList.add('address-error', 'form-error-label');
 
                 input.parentElement.appendChild(newError);
-                input.parentElement.classList.add(parentClassName);
+                input.parentElement.classList.add('form-error');
             }
         }
     },
@@ -206,7 +232,7 @@ export default (checks, bagAvailable = true, tailwind = true) => ({
         if (typeof input !== 'undefined' && input) {
             let errors = input.parentElement.getElementsByClassName('address-error');
             if (errors.length > 0) {
-                input.parentElement.classList.remove((tailwind ? 'form-error' : 'has-error'));
+                input.parentElement.classList.remove('form-error');
 
                 for (let i = 0; i < errors.length; i++) {
                     errors[i].remove();

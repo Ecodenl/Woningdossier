@@ -33,16 +33,16 @@ trait GetMyValuesTrait
      * Boot this trait.
      * (https://www.archybold.com/blog/post/booting-eloquent-model-traits)
      */
-    public static function bootGetMyValuesTrait()
+    public static function bootGetMyValuesTrait(): void
     {
-        static::saved(function (Model $model) {
+        static::saved(function (self $model) {
             // might be handy to prevent getting into an infinite loop (-:>
             if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT, InputSource::EXTERNAL_SHORT])) {
                 $model->saveForMasterInputSource();
             }
         });
 
-        static::deleting(function (Model $model) {
+        static::deleting(function (self $model) {
             // might be handy to prevent getting into an infinite loop (-:>
             if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT, InputSource::EXTERNAL_SHORT])) {
                 $supportedClasses = [
@@ -64,20 +64,16 @@ trait GetMyValuesTrait
     }
 
     /**
-     * Returns if this model has a particular attribute.
+     * Returns if this model has a particular column.
      * This should be done on the database table as this is also used during
      * creation in which attributes may not be set.
-     *
-     * @param  string  $attribute
-     *
-     * @return bool
      */
-    public function hasAttribute(string $attribute): bool
+    public function hasColumn(string $attribute): bool
     {
         return \App\Helpers\Cache\Schema::hasColumn($this->getTable(), $attribute);
     }
 
-    protected function saveForMasterInputSource()
+    protected function saveForMasterInputSource(): void
     {
         $tablesToIgnore = [
             'user_action_plan_advice_comments', 'step_comments', 'private_message_views', 'file_storages'
@@ -101,7 +97,7 @@ trait GetMyValuesTrait
 
             $crucialRelationCombinationIds = [
                 'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id',
-                'service_id', 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
+                'service_id', 'hash', 'sub_step_id', 'short', 'step_id',
                 'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id', 'uuid', 'advisable_type',
                 'advisable_id',
             ];
@@ -129,7 +125,7 @@ trait GetMyValuesTrait
             }
 
             foreach ($crucialRelationCombinationIds as $crucialRelationCombinationId) {
-                if ($this->hasAttribute($crucialRelationCombinationId)) {
+                if ($this->hasColumn($crucialRelationCombinationId)) {
                     $shouldAdd = $crucialRelationCombinationId !== 'tool_question_custom_value_id';
 
                     if (! $shouldAdd) {
@@ -153,10 +149,9 @@ trait GetMyValuesTrait
                     $data,
                 );
         }
-
     }
 
-    protected function deleteForMasterInputSource()
+    protected function deleteForMasterInputSource(): void
     {
         $tablesToIgnore = [
             'user_action_plan_advice_comments', 'step_comments',
@@ -175,23 +170,25 @@ trait GetMyValuesTrait
 
             $crucialRelationCombinationIds = [
                 'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id',
-                'service_id', 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
+                'service_id', 'hash', 'sub_step_id', 'short', 'step_id',
                 'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id', 'uuid', 'advisable_type',
                 'advisable_id',
             ];
             $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
 
             foreach ($crucialRelationCombinationIds as $crucialRelationCombinationId) {
-                if ($this->hasAttribute($crucialRelationCombinationId)) {
+                if ($this->hasColumn($crucialRelationCombinationId)) {
                     $shouldAdd = $crucialRelationCombinationId !== 'tool_question_custom_value_id';
 
-                    if (! $shouldAdd) {
-                        // Conditional logic, tool_question_custom_value_id should only be evaluated if the
-                        // question is a checkbox
-                        if (! empty($data['tool_question_id']) && ($toolQuestion = ToolQuestion::find($data['tool_question_id'])) instanceof ToolQuestion) {
-                            $shouldAdd = $toolQuestion->data_type = Caster::ARRAY;
-                        }
-                    }
+                    //TODO: As of right now, array answers are ALWAYS cleared without model events before saving, so
+                    // this does NOT apply.
+                    //if (! $shouldAdd) {
+                    //    // Conditional logic, tool_question_custom_value_id should only be evaluated if the
+                    //    // question is a checkbox
+                    //    if (! empty($data['tool_question_id']) && ($toolQuestion = ToolQuestion::find($data['tool_question_id'])) instanceof ToolQuestion) {
+                    //        $shouldAdd = $toolQuestion->data_type = Caster::ARRAY;
+                    //    }
+                    //}
 
                     if ($shouldAdd) {
                         $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
@@ -212,66 +209,58 @@ trait GetMyValuesTrait
 
     /**
      * Scope all the available input for a user.
-     *
-     * @param $query
-     *
-     * @return mixed
      */
-    public function scopeForMe($query, User $user = null)
+    public function scopeForMe(Builder $query, User $user = null): Builder
     {
         $whereUserOrBuildingId = $this->determineWhereColumn($user);
 
-        return $query->withoutGlobalScope(GetValueScope::class)
+        return $query->allInputSources()
             ->where($whereUserOrBuildingId)
-            ->join('input_sources',
-                $this->getTable() . '.input_source_id', '=',
-                'input_sources.id')
+            ->join('input_sources', $this->getTable() . '.input_source_id', '=', 'input_sources.id')
             ->orderBy('input_sources.order', 'ASC')
             ->select([$this->getTable() . '.*']);
     }
 
 
-    public function scopeForBuilding(Builder $query, $building)
+    public function scopeForBuilding(Builder $query, int|Building $building): Builder
     {
         $id = $building instanceof Building ? $building->id : $building;
 
         return $query->where('building_id', $id);
     }
 
-    public function scopeForUser(Builder $query, $user)
+    public function scopeForUser(Builder $query, int|User $user): Builder
     {
         $id = $user instanceof User ? $user->id : $user;
 
         return $query->where('user_id', $id);
     }
 
-    public function scopeAllInputSources(Builder $query)
+    public function scopeAllInputSources(Builder $query): Builder
     {
         return $query->withoutGlobalScope(GetValueScope::class);
     }
 
     /**
      * Get the input source.
-     *
-     * @return BelongsTo
      */
-    public function inputSource()
+    public function inputSource(): BelongsTo
     {
         return $this->belongsTo(InputSource::class);
     }
 
     /**
      * Scope a query for a specific input source id.
-     *
-     * @return Builder
      */
     public function scopeForInputSource(
         Builder $query,
         InputSource $inputSource
-    )
+    ): Builder
     {
-        return $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id',
-            $inputSource->id);
+        return $query->withoutGlobalScope(GetValueScope::class)->where(
+            'input_source_id',
+            $inputSource->id
+        );
     }
 
     /**
@@ -279,8 +268,10 @@ trait GetMyValuesTrait
      */
     protected function determineWhereColumn(User $user = null): array
     {
-        // because recent changes in the application with jobs / commands running on the commandline we need to obtain data from objects as much as possible
-        // so for now, if the user is given we will get the building from that and otherwise from the session. In the future we should get rid of session usage in methods as much as we can.
+        // because recent changes in the application with jobs / commands running on the commandline we need to
+        // obtain data from objects as much as possible
+        // so for now, if the user is given we will get the building from that and otherwise from the session.
+        // In the future we should get rid of session usage in methods as much as we can.
         $building = $user->building ?? HoomdossierSession::getBuilding(true);
 
         // determine what table we are using
@@ -297,13 +288,9 @@ trait GetMyValuesTrait
     /**
      * Method to only scope the resident input source.
      *
-     * @param $query
-     *
-     * @return mixed
      * @deprecated
-     *
      */
-    public function scopeResidentInput($query)
+    public function scopeResidentInput(Builder $query): Builder
     {
         $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
@@ -340,40 +327,9 @@ trait GetMyValuesTrait
     }
 
     /**
-     * Get the coach input from a collection that comes from the forMe() scope.
-     *
-     * @return mixed
+     * Get an input source name.
      */
-    public static function getCoachInput(Collection $inputSourcesForMe)
-    {
-        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-        if (self::hasCoachInputSource($inputSourcesForMe)) {
-            return $inputSourcesForMe->where('input_source_id',
-                $coachInputSource->id)->first();
-        }
-    }
-
-    /**
-     * Get the resident input from a collection that comes from the forMe() scope.
-     *
-     * @return mixed
-     */
-    public static function getResidentInput(Collection $inputSourcesForMe)
-    {
-        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-
-        if (self::hasResidentInputSource($inputSourcesForMe)) {
-            return $inputSourcesForMe->where('input_source_id',
-                $residentInputSource->id)->first();
-        }
-    }
-
-    /**
-     * Get a input source name.
-     *
-     * @return string name
-     */
-    public function getInputSourceName()
+    public function getInputSourceName(): string
     {
         return $this->inputSource->name;
     }

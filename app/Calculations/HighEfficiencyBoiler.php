@@ -7,9 +7,7 @@ use App\Helpers\RawCalculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
-use App\Models\UserEnergyHabit;
 use App\Services\CalculatorService;
-use App\Services\Kengetallen\KengetallenService;
 
 class HighEfficiencyBoiler extends Calculator
 {
@@ -25,7 +23,7 @@ class HighEfficiencyBoiler extends Calculator
             'interest_comparable' => 0,
         ];
 
-        /** @var ServiceValue $boilerType */
+        /** @var ServiceValue|null $boilerType */
         $boilerType = ServiceValue::find($this->getAnswer('boiler-type'));
 
         if ($boilerType instanceof ServiceValue) {
@@ -50,10 +48,16 @@ class HighEfficiencyBoiler extends Calculator
 
         $year = $this->getAnswer('boiler-placed-date');
         $result['replace_year'] = $hrBoilerCalculator->determineApplicationYear($measure, $year);
-        $result['cost_indication'] = RawCalculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year'],
-            false);
-        $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'],
-            $result['savings_money']), 1, '.', '');
+        $result['cost_indication'] = RawCalculator::calculateMeasureApplicationCosts(
+            $measure,
+            1,
+            $result['replace_year'],
+            false
+        );
+        $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest(
+            $result['cost_indication'],
+            $result['savings_money']
+        ), 1, '.', '');
 
         return $result;
     }

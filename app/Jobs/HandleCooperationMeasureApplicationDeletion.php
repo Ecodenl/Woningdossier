@@ -21,25 +21,20 @@ class HandleCooperationMeasureApplicationDeletion implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
-    public $cooperationMeasureApplication;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(CooperationMeasureApplication $cooperationMeasureApplication)
+    public function __construct(protected CooperationMeasureApplication $cooperationMeasureApplication)
     {
-        $this->queue = Queue::APP;
-        $this->cooperationMeasureApplication = $cooperationMeasureApplication;
+        $this->onQueue(Queue::APP);
     }
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         // We can't delete the cooperation measure application straight away. We need to check
         // if it's used in any UserActionPlanAdvices.

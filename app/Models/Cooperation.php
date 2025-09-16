@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\CooperationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Enums\Country;
 use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,9 +12,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Plank\Mediable\MediableInterface;
 
 /**
  * App\Models\Cooperation
@@ -20,55 +22,59 @@ use Illuminate\Support\Facades\DB;
  * @property int $id
  * @property string $name
  * @property string $slug
+ * @property string $country
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $website_url
  * @property string|null $econobis_wildcard
  * @property string|null $econobis_api_key
  * @property string|null $cooperation_email
- * @property-read \Plank\Mediable\MediableCollection|\App\Models\Building[] $buildings
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Building> $buildings
  * @property-read int|null $buildings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CooperationMeasureApplication[] $cooperationMeasureApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CooperationMeasureApplication> $cooperationMeasureApplications
  * @property-read int|null $cooperation_measure_applications_count
- * @property-read \Plank\Mediable\MediableCollection|\App\Models\CooperationSetting[] $cooperationSettings
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\CooperationSetting> $cooperationSettings
  * @property-read int|null $cooperation_settings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuilding[] $exampleBuildings
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExampleBuilding> $exampleBuildings
  * @property-read int|null $example_buildings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $questionnaires
  * @property-read int|null $questionnaires_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Scan[] $scans
+ * @property-read \App\Models\CooperationScan|null $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Scan> $scans
  * @property-read int|null $scans_count
- * @property-read \App\Models\CooperationStyle|null $style
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
- * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
- * @method static \Database\Factories\CooperationFactory factory(...$parameters)
- * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation query()
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereCooperationEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereEconobisApiKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereEconobisWildcard($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereHasMedia($tags = [], bool $matchAll = false)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereHasMediaMatchAll(array $tags)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereWebsiteUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaAndVariants($tags = [], bool $matchAll = false)
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaAndVariantsMatchAll($tags = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaMatchAll(bool $tags = [], bool $withVariants = false)
+ * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
+ * @method static \Database\Factories\CooperationFactory factory($count = null, $state = [])
+ * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereCooperationEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereEconobisApiKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereEconobisWildcard($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereHasMedia($tags = [], bool $matchAll = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereHasMediaMatchAll($tags)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereWebsiteUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaAndVariants($tags = [], bool $matchAll = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaAndVariantsMatchAll($tags = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @mixin \Eloquent
  */
-class Cooperation extends Model
+#[ObservedBy([CooperationObserver::class])]
+class Cooperation extends Model implements MediableInterface
 {
-    use HasFactory, HasMedia;
+    use HasFactory,
+        HasMedia;
 
     protected $fillable = [
         'name', 'slug', 'country', 'cooperation_email', 'website_url', 'econobis_wildcard', 'econobis_api_key',
@@ -86,14 +92,11 @@ class Cooperation extends Model
     // Model methods
     public function getCountry(): Country
     {
-        //return Country::from($this->country);
-        return new Country($this->country);
+        return Country::from($this->country);
     }
 
     /**
      * Return the coaches from the current cooperation.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getCoaches(): Collection
     {
@@ -111,7 +114,7 @@ class Cooperation extends Model
             DB::table(config('permission.table_names.model_has_roles'))
                 ->where('cooperation_id', $this->id)
                 ->where('role_id', $role->id)
-                ->leftJoin('users', config('permission.table_names.model_has_roles').'.'.config('permission.column_names.model_morph_key'), '=', 'users.id')
+                ->leftJoin('users', config('permission.table_names.model_has_roles') . '.' . config('permission.column_names.model_morph_key'), '=', 'users.id')
                 ->get()->toArray()
         );
     }
@@ -138,11 +141,6 @@ class Cooperation extends Model
     public function cooperationMeasureApplications(): HasMany
     {
         return $this->hasMany(CooperationMeasureApplication::class);
-    }
-
-    public function style(): HasOne
-    {
-        return $this->hasOne(CooperationStyle::class);
     }
 
     public function questionnaires(): HasMany

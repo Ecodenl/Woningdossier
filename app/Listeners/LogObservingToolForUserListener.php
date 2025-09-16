@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\ObservingToolForUserEvent;
 use App\Helpers\Queue;
 use App\Models\Log;
 use App\Models\User;
@@ -11,23 +12,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class LogObservingToolForUserListener implements ShouldQueue
 {
     public $queue = Queue::LOGS;
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle($event)
+    public function handle(ObservingToolForUserEvent $event): void
     {
         $building = $event->building;
         $buildingOwner = $building->user;

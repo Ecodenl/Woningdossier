@@ -13,20 +13,16 @@ class FillAddressRequest extends FormRequest
      * Determine if the user is authorized to make this request.
      *
      * User may do the request if he is not authorized.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         // Used in multiple API endpoints. If cooperation is set > we use that. Else we use country
         $cooperation = $this->route('cooperation');

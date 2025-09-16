@@ -10,20 +10,29 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $pc2
  * @property string $location
- * @property string $factor
+ * @property string $country
+ * @property numeric $factor
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelLocationFactor newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelLocationFactor newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelLocationFactor query()
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelLocationFactor whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelLocationFactor whereFactor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelLocationFactor whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelLocationFactor whereLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelLocationFactor wherePc2($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelLocationFactor whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelLocationFactor newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelLocationFactor newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelLocationFactor query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelLocationFactor whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelLocationFactor whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelLocationFactor whereFactor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelLocationFactor whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelLocationFactor whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelLocationFactor wherePc2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PvPanelLocationFactor whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class PvPanelLocationFactor extends Model
 {
+
+    protected function casts(): array
+    {
+        return [
+            'factor' => 'decimal:2',
+        ];
+    }
 }

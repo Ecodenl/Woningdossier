@@ -1,0 +1,237 @@
+/* Horizontal divider between steps in the header bar */
+.step-divider-line {
+    @apply border border-blue-500 border-opacity-50 w-full;
+
+    max-width: 2.5%;
+}
+
+/* Modals */
+.modal-container {
+    @apply fixed top-0 left-0 z-150 w-screen h-screen flex items-center justify-center bg-blue bg-opacity-90 cursor-default;
+}
+
+.modal-container .modal {
+    @apply rounded-lg filter drop-shadow-xl bg-white max-w-1/2 min-w-4/20 h-auto p-2 max-h-19/20 overflow-auto;
+}
+
+.modal-container .modal .modal-header {
+    @apply relative h-10 flex items-center px-4 py-6;
+}
+
+.modal-container .modal .modal-header .modal-close {
+    @apply absolute top-0 right-0 cursor-pointer;
+}
+
+.modal-container .modal .modal-body {
+    @apply px-4 pb-6 break-words;
+}
+
+.modal-container:has(.modal.confirm-modal) {
+    @apply items-start;
+}
+
+.modal-container .modal.confirm-modal {
+    @apply w-9/10 md:w-3/4 xl:w-1/2 mt-16;
+}
+
+/* Drag and drop cards */
+.card-wrapper {
+    @apply rounded-lg bg-blue-100 p-1 lg:p-3 space-y-3;
+}
+
+.card-wrapper .card-placeholder,
+.card-wrapper .card {
+    @apply w-full border border-blue-500 border-opacity-50 rounded-lg h-28 p-2 lg:p-3 overflow-hidden;
+}
+
+.card-wrapper .card-placeholder {
+    @apply border-dashed bg-blue-500 bg-opacity-5;
+}
+
+.card-wrapper .card-placeholder > * {
+    @apply hidden;
+}
+
+.card-wrapper .card {
+    @apply border-solid bg-white flex flex-wrap justify-between items-center cursor-pointer relative;
+}
+
+.card-wrapper .card .icon-wrapper {
+    @apply w-0 lg:w-3/20 xl:w-1/4 h-full lg:pr-1;
+}
+
+.card-wrapper .card .icon-wrapper i {
+    @apply w-full h-full;
+}
+
+.card-wrapper .card .info {
+    @apply w-full lg:w-17/20 xl:w-3/4 h-full flex flex-col justify-center;
+}
+
+/* Dropdowns */
+.dropdown-wrapper {
+    @apply relative;
+}
+
+.dropdown-wrapper .dropdown-toggle {
+    @apply cursor-pointer select-none flex items-center;
+}
+
+.dropdown-wrapper .dropdown {
+    @apply mt-1 absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-100 top-full filter drop-shadow-xl divide-y divide-blue-500 py-2 list-none pl-0;
+    min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
+    min-width: 12rem; /* w-48, was the fixed width, but sometimes slightly larger looks better */
+    max-width: 15rem;
+}
+
+.dropdown-wrapper .dropdown > * {
+    @apply py-1 px-3
+}
+
+/* Regulation cards */
+.regulation-card-wrapper {
+    @apply w-full my-4;
+}
+
+.regulation-card-wrapper .regulation-card {
+    @apply border border-blue-500 rounded-lg p-4 bg-blue-800 bg-opacity-10;
+    width: 42rem;
+    min-height: 16rem;
+}
+
+.regulation-card-wrapper .regulation-card .bubble {
+    @apply rounded-full py-1 px-4 font-medium bg-white m-1;
+}
+
+.regulation-card-wrapper .detail-wrapper {
+    @apply my-4;
+}
+
+.regulation-card-wrapper .detail-wrapper p {
+    @apply pb-5;
+}
+
+.regulation-card-wrapper .detail-wrapper h4 {
+    @apply font-semibold text-blue text-md; /* .heading-4 */
+}
+
+.regulation-card-wrapper .detail-wrapper ul {
+    @apply mb-5;
+}
+
+.regulation-card-wrapper .detail-wrapper ul li {
+    @apply mt-2;
+}
+
+.regulation-card-wrapper .detail-wrapper ul li:first-of-type {
+    @apply mt-0;
+}
+
+/* Popover */
+.popover {
+    @apply w-max py-4 px-5 -top-2 z-100 text-center shadow-lg absolute block no-underline break-words bg-white border border-blue border-opacity-50 rounded-lg;
+    max-width: 10rem;
+}
+
+.popover .arrow {
+    @apply absolute block w-4 h-2 m-0;
+}
+
+.popover .arrow::before,
+.popover .arrow::after {
+    @apply absolute block w-4 h-2 m-0 border-transparent;
+    content: "";
+}
+
+.popover .popover-body {
+    @apply p-0 w-full;
+}
+
+/* Popover positional styling */
+/* TOP */
+.popover.popover-top {
+    @apply mb-2;
+}
+
+.popover.popover-top > .arrow {
+    @apply left-1/2 transform -translate-x-1/2 translate-y-0;
+    bottom: calc((0.5rem + 1px) * -1);
+}
+
+.popover.popover-top > .arrow::before {
+    @apply bottom-0;
+    border-top-color: rgba(65,76,87,0.5); /* This is the `border-blue` RGB, Tailwind V2 does not have border-{pos}-color separate */
+    border-width: 0.5rem 0.5rem 0;
+}
+
+.popover.popover-top > .arrow::after {
+    @apply bottom-px;
+    border-top-color: #fff;
+    border-width: 0.5rem 0.5rem 0;
+}
+
+/* RIGHT */
+.popover.popover-right {
+    @apply ml-2;
+}
+
+.popover.popover-right > .arrow {
+    @apply top-1/2 transform translate-x-0 -translate-y-1/2 w-2 h-4 my-2;
+    left: calc((1rem + 1px) * -1);
+}
+
+.popover.popover-right > .arrow::before {
+    @apply left-0;
+    border-right-color: rgba(65,76,87,0.5);
+    border-width: 0.5rem 0.5rem 0.5rem 0;
+}
+
+.popover.popover-right > .arrow::after {
+    @apply left-px;
+    border-right-color: #fff;
+    border-width: 0.5rem 0.5rem 0.5rem 0;
+}
+
+/* BOTTOM */
+.popover.popover-bottom {
+    @apply mt-2;
+}
+
+.popover.popover-bottom > .arrow {
+    @apply left-1/2 transform -translate-x-1/2 translate-y-0;
+    top: calc((0.5rem + 1px) * -1);
+}
+
+.popover.popover-bottom > .arrow::before {
+    @apply top-0;
+    border-bottom-color: rgba(65,76,87,0.5);
+    border-width: 0 0.5rem 0.5rem 0.5rem;
+}
+
+.popover.popover-bottom > .arrow::after {
+   @apply top-px;
+    border-bottom-color: #fff;
+    border-width: 0 0.5rem 0.5rem 0.5rem;
+}
+
+/* LEFT */
+.popover.popover-left {
+    @apply mr-2;
+}
+
+.popover.popover-left > .arrow {
+    @apply top-1/2 transform translate-x-0 -translate-y-1/2 w-2 h-4 my-2;
+    right: calc((1rem + 1px) * -1);
+}
+
+.popover.popover-left > .arrow::before {
+    @apply right-0;
+    border-left-color: rgba(65,76,87,0.5);
+    border-width: 0.5rem 0 0.5rem 0.5rem;
+}
+
+.popover.popover-left > .arrow::after {
+    @apply right-px;
+    border-left-color: #fff;
+    border-width: 0.5rem 0 0.5rem 0.5rem;
+}

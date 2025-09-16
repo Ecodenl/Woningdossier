@@ -18,13 +18,14 @@ class AppointmentDatePayload extends EconobisPayload
     public function buildPayload(): array
     {
         $building = $this->building;
-        $mostRecentStatus = $building->getMostRecentBuildingStatus();
-        $payload = ['appointment_date' => optional($mostRecentStatus->appointment_date)->toDateTimeString()];
 
-        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+        $mostRecentStatus = $building->getMostRecentBuildingStatus();
+        $payload = ['appointment_date' => $mostRecentStatus->appointment_date?->toDateTimeString()];
+
+        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($building, true);
 
         foreach ($connectedCoaches as $connectedCoach) {
-            $coachUser = User::find($connectedCoach->coach_id);
+            $coachUser = $connectedCoach->coach;
             if ($this->userService->forUser($coachUser)->isRelatedWithEconobis()) {
                 $payload['coaches'][] = [
                     'contact_id' => $coachUser->extra['contact_id'],

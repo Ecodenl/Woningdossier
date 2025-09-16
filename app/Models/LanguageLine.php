@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -10,29 +13,27 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $id
  * @property string $group
  * @property string $key
- * @property array $text
+ * @property array<array-key, mixed> $text
  * @property int|null $step_id
  * @property int|null $main_language_line_id
  * @property int|null $help_language_line_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read LanguageLine|null $helpText
- * @property-read \Illuminate\Database\Eloquent\Collection|LanguageLine[] $subQuestions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, LanguageLine> $subQuestions
  * @property-read int|null $sub_questions_count
- * @method static Builder|LanguageLine forGroup($group)
- * @method static Builder|LanguageLine mainQuestions()
- * @method static Builder|LanguageLine newModelQuery()
- * @method static Builder|LanguageLine newQuery()
- * @method static Builder|LanguageLine query()
- * @method static Builder|LanguageLine whereCreatedAt($value)
- * @method static Builder|LanguageLine whereGroup($value)
- * @method static Builder|LanguageLine whereHelpLanguageLineId($value)
- * @method static Builder|LanguageLine whereId($value)
- * @method static Builder|LanguageLine whereKey($value)
- * @method static Builder|LanguageLine whereMainLanguageLineId($value)
- * @method static Builder|LanguageLine whereStepId($value)
- * @method static Builder|LanguageLine whereText($value)
- * @method static Builder|LanguageLine whereUpdatedAt($value)
+ * @method static Builder<static>|LanguageLine newModelQuery()
+ * @method static Builder<static>|LanguageLine newQuery()
+ * @method static Builder<static>|LanguageLine query()
+ * @method static Builder<static>|LanguageLine whereCreatedAt($value)
+ * @method static Builder<static>|LanguageLine whereGroup($value)
+ * @method static Builder<static>|LanguageLine whereHelpLanguageLineId($value)
+ * @method static Builder<static>|LanguageLine whereId($value)
+ * @method static Builder<static>|LanguageLine whereKey($value)
+ * @method static Builder<static>|LanguageLine whereMainLanguageLineId($value)
+ * @method static Builder<static>|LanguageLine whereStepId($value)
+ * @method static Builder<static>|LanguageLine whereText($value)
+ * @method static Builder<static>|LanguageLine whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
@@ -41,18 +42,19 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
         'group', 'key', 'text', 'step_id', 'main_language_line_id', 'help_language_line_id',
     ];
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
         static::creating(function ($model) {
             if (static::where('group', $model->group)->where('key', $model->key)->first() instanceof LanguageLine) {
-                \Log::debug('duplicate key: '.$model->key);
+                \Log::debug('duplicate key: ' . $model->key);
             }
         });
     }
 
-    public function scopeForGroup(Builder $query, $group)
+    #[Scope]
+    protected function forGroup(Builder $query, $group)
     {
         return $query->where('group', $group);
     }
@@ -64,7 +66,8 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
      *
      * @return mixed
      */
-    public function scopeMainQuestions($query)
+    #[Scope]
+    protected function mainQuestions($query)
     {
         return $query->whereNull('main_language_line_id');
     }
@@ -98,15 +101,13 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
 
     /**
      * Get the sub questions.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function subQuestions()
+    public function subQuestions(): HasMany
     {
         return $this->hasMany(self::class, 'main_language_line_id', 'id');
     }
 
-    public function helpText()
+    public function helpText(): HasOne
     {
         return $this->hasOne(self::class, 'id', 'help_language_line_id');
     }

@@ -44,10 +44,8 @@ class CopyQuestionnaireToCooperation implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         QuestionnaireService::copyQuestionnaireToCooperation($this->cooperation, $this->questionnaire);
     }

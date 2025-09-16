@@ -1,4 +1,5 @@
 *.sql
+!private/
 livewire-tmp
 mpdf
 plaatsnamen.csv

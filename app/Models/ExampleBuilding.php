@@ -2,6 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\HoomdossierSession;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +16,7 @@ use Illuminate\Support\Collection;
  * App\Models\ExampleBuilding
  *
  * @property int $id
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property int|null $building_type_id
  * @property int|null $cooperation_id
  * @property int|null $order
@@ -19,53 +24,42 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\BuildingType|null $buildingType
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExampleBuildingContent> $contents
  * @property-read int|null $contents_count
  * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read array $translations
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding forAnyOrMyCooperation()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding forMyCooperation()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding generic()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding query()
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereBuildingTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereIsDefault($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereUpdatedAt($value)
+ * @property-read mixed $translations
+ * @method static \Database\Factories\ExampleBuildingFactory factory($count = null, $state = [])
+ * @method static Builder<static>|ExampleBuilding newModelQuery()
+ * @method static Builder<static>|ExampleBuilding newQuery()
+ * @method static Builder<static>|ExampleBuilding query()
+ * @method static Builder<static>|ExampleBuilding whereBuildingTypeId($value)
+ * @method static Builder<static>|ExampleBuilding whereCooperationId($value)
+ * @method static Builder<static>|ExampleBuilding whereCreatedAt($value)
+ * @method static Builder<static>|ExampleBuilding whereId($value)
+ * @method static Builder<static>|ExampleBuilding whereIsDefault($value)
+ * @method static Builder<static>|ExampleBuilding whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|ExampleBuilding whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|ExampleBuilding whereLocale(string $column, string $locale)
+ * @method static Builder<static>|ExampleBuilding whereLocales(string $column, array $locales)
+ * @method static Builder<static>|ExampleBuilding whereName($value)
+ * @method static Builder<static>|ExampleBuilding whereOrder($value)
+ * @method static Builder<static>|ExampleBuilding whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ExampleBuilding extends Model
 {
-    use HasTranslations;
+    use HasFactory,
+        HasTranslations;
 
     protected $translatable = [
         'name',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'is_default' => 'boolean',
     ];
 
     public $fillable = [
         'name', 'building_type_id', 'cooperation_id', 'order', 'is_default',
     ];
 
-    /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -78,39 +72,42 @@ class ExampleBuilding extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * Get the attributes that should be cast.
      */
-    public function contents()
+    protected function casts(): array
+    {
+        return [
+            'is_default' => 'boolean',
+        ];
+    }
+
+    public function contents(): HasMany
     {
         return $this->hasMany(ExampleBuildingContent::class);
     }
 
-    public function buildingType()
+    public function buildingType(): BelongsTo
     {
         return $this->belongsTo(BuildingType::class);
     }
 
-    public function cooperation()
+    public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class);
     }
 
-    /**
-     * @param $year
-     *
-     * @return ExampleBuildingContent|null
-     */
-    public function getContentForYear($year)
+    public function getContentForYear(int $year): ?ExampleBuildingContent
     {
         $content = $this->contents()
-                    ->where('build_year', '<=', $year)
-                    ->orderBy('build_year', 'desc')
-                    ->first();
+            ->where('build_year', '<=', $year)
+            ->orderBy('build_year', 'desc')
+            ->first();
 
         if ($content instanceof ExampleBuildingContent) {
             return $content;
         }
 
+        /** @var ExampleBuildingContent|null */
         return $this->contents()
             ->whereNull('build_year')
             ->first();
@@ -134,12 +131,9 @@ class ExampleBuilding extends Model
 
     /**
      * Scope a query to only include buildings for my cooperation.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForMyCooperation($query)
+    #[Scope]
+    protected function forMyCooperation(Builder $query): Builder
     {
         $cooperationId = ! empty(HoomdossierSession::getCooperation()) ? HoomdossierSession::getCooperation() : 0;
 
@@ -148,12 +142,9 @@ class ExampleBuilding extends Model
 
     /**
      * Scope a query to only include buildings for my cooperation.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForAnyOrMyCooperation($query)
+    #[Scope]
+    protected function forAnyOrMyCooperation(Builder $query): Builder
     {
         $cooperationId = \Session::get('cooperation', 0);
 
@@ -162,12 +153,9 @@ class ExampleBuilding extends Model
 
     /**
      * Scope on only generic example buildings.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeGeneric($query)
+    #[Scope]
+    protected function generic(Builder $query): Builder
     {
         return $query->whereNull('cooperation_id');
     }

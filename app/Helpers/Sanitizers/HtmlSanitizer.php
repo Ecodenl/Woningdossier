@@ -6,8 +6,6 @@ class HtmlSanitizer implements Sanitizer
 {
     /**
      * @param $input
-     *
-     * @return string|null
      */
     public function sanitize($input): ?string
     {

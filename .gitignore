@@ -1,8 +1,10 @@
 /scratches
 /node_modules
 /public/hot
+/public/build
 /public/storage
 /storage/*.key
+/storage/pail
 /vendor
 /.vagrant
 Homestead.json
@@ -11,7 +13,6 @@ npm-debug.log
 yarn-error.log
 .env
 .env.testing
-phpunit.xml
 
 # JS Output
 app.js.LICENSE.txt
@@ -19,7 +20,9 @@ app.js.LICENSE.txt
 # translation file
 resources/lang/*/uuid.php
 
-storage/app/downloads
+storage/app/private/downloads
+storage/app/private/uploads
+storage/app/private/exports
 storage/api-docs/
 
 # IntelliJ project files
@@ -53,5 +56,6 @@ _ide_helper_models.php
 _ide_helper.php
 .php_cs.cache
 /storage/app/exports/
-/.phpunit.result.cache
-/mysql
+/.phpunit.cache
+.phpunit.result.cache
+/mysql/.nova

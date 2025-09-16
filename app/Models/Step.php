@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\StepHelper;
 use App\Scopes\NoGeneralDataScope;
@@ -19,43 +22,41 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $parent_id
  * @property string $slug
  * @property string $short
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $scan_id
- * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeasureApplication> $measureApplications
  * @property-read int|null $measure_applications_count
  * @property-read Step|null $parentStep
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
+ * @property-read \App\Models\QuestionnaireStep|null $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $questionnaires
  * @property-read int|null $questionnaires_count
  * @property-read \App\Models\Scan|null $scan
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
- * @method static Builder|Step childrenForStep(\App\Models\Step $step)
- * @method static Builder|Step expert()
- * @method static \Database\Factories\StepFactory factory(...$parameters)
- * @method static Builder|Step forScan(\App\Models\Scan $scan)
- * @method static Builder|Step newModelQuery()
- * @method static Builder|Step newQuery()
- * @method static Builder|Step ordered()
- * @method static Builder|Step query()
- * @method static Builder|Step quickScan()
- * @method static Builder|Step recalculable()
- * @method static Builder|Step whereCreatedAt($value)
- * @method static Builder|Step whereId($value)
- * @method static Builder|Step whereName($value)
- * @method static Builder|Step whereOrder($value)
- * @method static Builder|Step whereParentId($value)
- * @method static Builder|Step whereScanId($value)
- * @method static Builder|Step whereShort($value)
- * @method static Builder|Step whereSlug($value)
- * @method static Builder|Step whereUpdatedAt($value)
- * @method static Builder|Step withGeneralData()
- * @method static Builder|Step withoutChildren()
+ * @property-read mixed $translations
+ * @method static \Database\Factories\StepFactory factory($count = null, $state = [])
+ * @method static Builder<static>|Step newModelQuery()
+ * @method static Builder<static>|Step newQuery()
+ * @method static Builder<static>|Step query()
+ * @method static Builder<static>|Step whereCreatedAt($value)
+ * @method static Builder<static>|Step whereId($value)
+ * @method static Builder<static>|Step whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|Step whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|Step whereLocale(string $column, string $locale)
+ * @method static Builder<static>|Step whereLocales(string $column, array $locales)
+ * @method static Builder<static>|Step whereName($value)
+ * @method static Builder<static>|Step whereOrder($value)
+ * @method static Builder<static>|Step whereParentId($value)
+ * @method static Builder<static>|Step whereScanId($value)
+ * @method static Builder<static>|Step whereShort($value)
+ * @method static Builder<static>|Step whereSlug($value)
+ * @method static Builder<static>|Step whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+#[ScopedBy([NoGeneralDataScope::class])]
 class Step extends Model
 {
     use HasFactory,
@@ -65,28 +66,52 @@ class Step extends Model
     protected $fillable = ['slug', 'name', 'order'];
 
     protected $translatable = [
-        'name'
+        'name',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
 
-        static::addGlobalScope(new NoGeneralDataScope());
+    // Static calls
+    public static function allSlugs(): array
+    {
+        return [
+            "ventilation",
+            "wall-insulation",
+            "insulated-glazing",
+            "floor-insulation",
+            "roof-insulation",
+            "high-efficiency-boiler",
+            "heat-pump",
+            "solar-panels",
+            "heater",
+            "woninggegevens",
+            "bewoners-gebruik",
+            "woonwensen",
+            "woonstatus",
+            "verwarming",
+            "kleine-maatregelen",
+            "woninggegevens",
+            "bewoners-gebruik",
+            "woonwensen",
+            "woonstatus",
+            "kleine-maatregelen",
+        ];
     }
 
-    public function resolveChildRouteBinding($childType, $value, $field)
+    // Model methods
+    public function resolveChildRouteBinding($childType, $value, $field): ?Model
     {
-        // so this method is supposed to resolve the child route binding (any relationship)
-        // which could be any child of the step
-        // the sub step has a translatable slug, which is impossible to configure on the routes
-        if ($childType === 'subStep' && $field === 'slug'){
+        // So this method is supposed to resolve the child route binding (any relationship)
+        // which could be any child of the step.
+        // the sub step has a translatable slug, which is impossible to configure on the routes, so we ensure
+        // we alter the slug to the translatable type.
+        if ($childType === 'subStep' && $field === 'slug') {
             $field = (new SubStep())->getRouteKeyName();
-            return parent::resolveChildRouteBinding($childType, $value, $field);
         }
+
+        return parent::resolveChildRouteBinding($childType, $value, $field);
     }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }
@@ -96,7 +121,8 @@ class Step extends Model
         return in_array($this->short, ['heating']);
     }
 
-    public function scopeWithGeneralData(Builder $query): Builder
+    #[Scope]
+    protected function withGeneralData(Builder $query): Builder
     {
         return $query->withoutGlobalScope(NoGeneralDataScope::class);
     }
@@ -106,8 +132,9 @@ class Step extends Model
         return $this->hasMany(SubStep::class);
     }
 
-    public function nextStepForScan()
+    public function nextStepForScan(): ?Step
     {
+        /** @var null|Step */
         return $this
             ->scan
             ->steps()
@@ -116,8 +143,9 @@ class Step extends Model
             ->first();
     }
 
-    public function previousStepForScan()
+    public function previousStepForScan(): ?Step
     {
+        /** @var null|Step */
         return $this
             ->scan
             ->steps()
@@ -129,25 +157,23 @@ class Step extends Model
 
     /**
      * Return the parent of the step.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parentStep()
+    public function parentStep(): BelongsTo
     {
         return $this->belongsTo(Step::class, 'parent_id', 'id');
     }
 
-    public function scopeChildrenForStep(Builder $query, Step $step)
+    #[Scope]
+    protected function childrenForStep(Builder $query, Step $step)
     {
         return $query->where('parent_id', $step->id);
     }
 
     /**
      * Method to leave out the sub steps.
-     *
-     * @return Builder
      */
-    public function scopeWithoutChildren(Builder $query)
+    #[Scope]
+    protected function withoutChildren(Builder $query): Builder
     {
         return $query->where('parent_id', null);
     }
@@ -159,48 +185,51 @@ class Step extends Model
             ->withPivot('order');
     }
 
-    public function scopeOrdered(Builder $query): Builder
+    #[Scope]
+    protected function ordered(Builder $query): Builder
     {
         return $query->orderBy('order', 'asc');
     }
 
     /** @deprecated Use scopeForScan instead */
-    public function scopeQuickScan(Builder $query): Builder
+    #[Scope]
+    protected function quickScan(Builder $query): Builder
     {
-        $quickScan = Scan::findByShort(Scan::QUICK);
-        return $this->scopeForScan($query, $quickScan);
+        $quickScan = Scan::quick();
+        return $this->forScan($query, $quickScan);
     }
 
     /** @deprecated Use scopeForScan instead */
-    public function scopeExpert(Builder $query): Builder
+    #[Scope]
+    protected function expert(Builder $query): Builder
     {
-        $expertScan = Scan::findByShort(Scan::EXPERT);
-        return $this->scopeForScan($query, $expertScan);
+        $expertScan = Scan::expert();
+        return $this->forScan($query, $expertScan);
     }
 
-    public function scopeForScan(Builder $query, Scan $scan): Builder
+    #[Scope]
+    protected function forScan(Builder $query, Scan $scan): Builder
     {
         return $query->where('scan_id', $scan->id);
     }
 
-    public function scopeRecalculable(Builder $query): Builder
+    #[Scope]
+    protected function recalculable(Builder $query): Builder
     {
         return $query->where(
             fn (Builder $q) => $q->expert()->orWhere('short', 'small-measures')
         );
     }
 
-    public function scan()
+    public function scan(): BelongsTo
     {
         return $this->belongsTo(Scan::class);
     }
 
     /**
      * Get the measure applications from a step.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function measureApplications()
+    public function measureApplications(): HasMany
     {
         return $this->hasMany(MeasureApplication::class);
     }

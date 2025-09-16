@@ -27,21 +27,9 @@ class SyncTargetGroups extends Command
     protected $description = 'This command will map our ToolQuestionCustomValues to the correct target groups.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle(MappingService $mappingService)
+    public function handle(MappingService $mappingService): int
     {
         Wrapper::wrapCall(function () use ($mappingService) {
             $map = [
@@ -55,6 +43,13 @@ class SyncTargetGroups extends Command
             )->keyBy('Value');
 
             foreach ($map as $from => $target) {
+                if (! $targetGroups->has($target)) {
+                    DiscordNotifier::init()->notify("Sync target groups for {$target} not found!");
+                    Log::info('Target groups:');
+                    Log::info($targetGroups);
+                    continue;
+                }
+
                 $mappingService->from(
                     ToolQuestion::findByShort('building-contract-type')
                         ->toolQuestionCustomValues()
@@ -65,10 +60,10 @@ class SyncTargetGroups extends Command
 
             $this->info("Measures mapped to building-contract-type question custom values.");
             Log::debug("Measures mapped to building-contract-type question custom values.");
-        }, function ($exception) {
+        }, function () {
             $this->error('Something is going on with VerbeterJeHuis!');
         });
 
-        return 0;
+        return self::SUCCESS;
     }
 }

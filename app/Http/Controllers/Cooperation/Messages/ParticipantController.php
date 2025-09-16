@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Messages;
 
+use Illuminate\Http\RedirectResponse;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Helpers\Hoomdossier;
@@ -24,19 +25,16 @@ class ParticipantController extends Controller
 {
     /**
      * Remove a participant from a group chat and revoke his building access permissions.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function revokeAccess(Cooperation $cooperation, Request $request)
+    public function revokeAccess(Cooperation $cooperation, Request $request): RedirectResponse
     {
         // get the group participant user id (which is only a coach, but still)
-        $groupParticipantUserId = $request->get('user_id');
+        $groupParticipantUserId = $request->input('user_id');
         // get the building owner id
-        $buildingOwnerId = $request->get('building_owner_id');
+        $buildingOwnerId = $request->input('building_owner_id');
 
         // the building from the user / resident
         $building = Building::find($buildingOwnerId);
-
         $revokedParticipant = User::find($groupParticipantUserId);
 
         if ($building instanceof Building) {
@@ -52,13 +50,11 @@ class ParticipantController extends Controller
 
     /**
      * Add a user / participant to a group chat and give him building access permission.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function addWithBuildingAccess(Cooperation $cooperation, Request $request)
+    public function addWithBuildingAccess(Cooperation $cooperation, Request $request): RedirectResponse
     {
-        $userId = $request->get('user_id', '');
-        $buildingId = $request->get('building_id', '');
+        $userId = $request->input('user_id', '');
+        $buildingId = $request->input('building_id', '');
 
         // the receiver of the message
         $user = $cooperation->users()->find($userId);
@@ -79,45 +75,12 @@ class ParticipantController extends Controller
             $coachMail = (new NotifyCoachParticipantAdded($resident, $user))->onQueue(Queue::APP_EXTERNAL);
             $residentMail = (new NotifyResidentParticipantAdded($resident, $user))->onQueue(Queue::APP_EXTERNAL);
 
-            Mail::to([['email' => $user->account->email, 'name'=> $user->getFullName()]])->queue($coachMail);
-            Mail::to([['email' => $resident->account->email, 'name'=> $resident->getFullName()]])->queue($residentMail);
+            Mail::to([['email' => $user->account->email, 'name' => $user->getFullName()]])->queue($coachMail);
+            Mail::to([['email' => $resident->account->email, 'name' => $resident->getFullName()]])->queue($residentMail);
         }
 
         // since the coordinator is the only one who can do this atm.
         return redirect()->back()
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
-    }
-
-    /**
-     * Method to set a collection of messages to read.
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function setRead(Cooperation $cooperation, Request $request)
-    {
-        $isPublic = $request->get('is_public');
-        $buildingId = $request->get('building_id');
-
-        $messagesToSetRead = PrivateMessage::forMyCooperation()
-            ->conversation($buildingId);
-
-        // check which messages we have to set read
-        if ($isPublic) {
-            $messagesToSetRead = $messagesToSetRead->public();
-        } else {
-            $messagesToSetRead = $messagesToSetRead->private();
-        }
-
-        $messagesToSetRead = $messagesToSetRead->get();
-
-        if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-            PrivateMessageViewService::markAsReadByCooperation($messagesToSetRead, $cooperation);
-        } elseif (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
-            $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-            PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
-        } else {
-            $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-            PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
-        }
     }
 }

@@ -11,21 +11,28 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $liters
  * @property int $savings
  * @property int $boiler
- * @property string $collector
+ * @property numeric $collector
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification query()
- * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification whereBoiler($value)
- * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification whereCollector($value)
- * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification whereLiters($value)
- * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification whereSavings($value)
- * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterSpecification newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterSpecification newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterSpecification query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterSpecification whereBoiler($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterSpecification whereCollector($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterSpecification whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterSpecification whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterSpecification whereLiters($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterSpecification whereSavings($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HeaterSpecification whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class HeaterSpecification extends Model
 {
+
+    protected function casts(): array
+    {
+        return [
+            'collector' => 'decimal:1',
+        ];
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Mail\Middleware;
 
 use App\Helpers\Arr;
 use Closure;
+use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 
@@ -19,13 +20,7 @@ use Illuminate\Support\Facades\Log;
  */
 class Whitelist
 {
-    /**
-     * @param \Illuminate\Mail\SendQueuedMailable|? $mail
-     * @param \Closure $next
-     *
-     * @return void
-     */
-    public function handle($mail, Closure $next)
+    public function handle(?SendQueuedMailable $mail, Closure $next): void
     {
         /** @var \Illuminate\Mail\Mailable $mailable */
         $mailable = $mail->mailable;

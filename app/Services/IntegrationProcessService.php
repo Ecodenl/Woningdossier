@@ -36,7 +36,7 @@ class IntegrationProcessService
 
     public function lastSyncedAt(): ?Carbon
     {
-        return optional($this->resolve())->synced_at;
+        return $this->resolve()?->synced_at;
     }
 
     public function syncedNow(): void

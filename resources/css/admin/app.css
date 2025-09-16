@@ -1,0 +1,4 @@
+@import '../base/app.css';
+
+/* Base CSS (for admin) */
+@import "./components/items.css";

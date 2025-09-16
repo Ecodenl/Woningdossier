@@ -4,25 +4,31 @@ namespace App\Helpers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 
 class RoleHelper
 {
-    const ROLE_SUPERUSER = 'superuser';
-    const ROLE_SUPER_ADMIN = 'super-admin';
-    const ROLE_COOPERATION_ADMIN = 'cooperation-admin';
-    const ROLE_COACH = 'coach';
-    const ROLE_RESIDENT = 'resident';
-    const ROLE_COORDINATOR = 'coordinator';
+    const string ROLE_SUPERUSER = 'superuser';
+    const string ROLE_SUPER_ADMIN = 'super-admin';
+    const string ROLE_COOPERATION_ADMIN = 'cooperation-admin';
+    const string ROLE_COACH = 'coach';
+    const string ROLE_RESIDENT = 'resident';
+    const string ROLE_COORDINATOR = 'coordinator';
+
+    const array ADMIN_ROLES = [
+        self::ROLE_COORDINATOR,
+        self::ROLE_SUPERUSER,
+        self::ROLE_SUPER_ADMIN,
+        self::ROLE_COACH, // TODO: Check if we should keep this one here, not really an admin role
+        self::ROLE_COOPERATION_ADMIN
+    ];
 
     /**
      * Get the right route / url by a role name.
      *
-     * @param bool $checkUser whether or not to check the user's role against the role name. Defaults to true.
-     *
      * @return string The target url
      */
-    public static function getUrlByRoleName(string $roleName, $checkUser = true)
+    public static function getUrlByRoleName(string $roleName): string
     {
         $redirectMap = [
             'cooperation-admin' => 'cooperation.admin.cooperation.cooperation-admin.index',
@@ -33,10 +39,10 @@ class RoleHelper
         ];
 
         $user = Hoomdossier::user();
+        /** @var Role|null $role */
+        $role = $user?->roles()->where('name', $roleName)->first();
 
-        if (! $checkUser ||
-            ($user instanceof User && $user->roles()->where('name', $roleName)->first() instanceof Role)
-        ) {
+        if ($user instanceof User && $role instanceof Role) {
             // the resident may be redirect to his last visited url.
             if ($roleName === self::ROLE_RESIDENT && ! empty($user->last_visited_url)) {
                 // For now just local; if host mismatches (e.g. due to DB dump) don't redirect externally
@@ -55,13 +61,9 @@ class RoleHelper
 
     /**
      * Get the right route / url by a role.
-     *
-     * @param bool Whether or not to check the user's role against the role name. Defaults to true.
-     *
-     * @return string
      */
-    public static function getUrlByRole(Role $role, $checkUser = true)
+    public static function getUrlByRole(Role $role): string
     {
-        return self::getUrlByRoleName($role->name, $checkUser);
+        return self::getUrlByRoleName($role->name);
     }
 }

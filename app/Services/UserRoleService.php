@@ -17,8 +17,6 @@ class UserRoleService
 
     /**
      * Method returns the roles a specific role is allowed to see
-     *
-     * @return array
      */
     public function getViewableRoles(): array
     {
@@ -61,8 +59,6 @@ class UserRoleService
 
     /**
      * Method returns the roles the user can manage
-     *
-     * @return array
      */
     public function getManageableRoles(): array
     {

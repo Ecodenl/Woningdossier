@@ -31,25 +31,15 @@ class PdfReport extends Command
     protected $description = 'Send the PDF to Econobis for all buildings that either haven\'t send it yet, or have changed.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $interval = $this->option('interval');
-        $interval = is_numeric($interval) ? (int)$interval : null;
-        $interval = is_null($interval) ? config("hoomdossier.services.econobis.interval.".SendPdfReportToEconobis::class) : $interval;
+        $interval = is_numeric($interval) ? (int) $interval : null;
+        $interval = is_null($interval)
+            ? config("hoomdossier.services.econobis.interval." . SendPdfReportToEconobis::class)
+            : $interval;
         $datetime = Carbon::now()->subMinutes($interval);
 
         // Applies available_until global scope
@@ -80,8 +70,8 @@ class PdfReport extends Command
                     Log::debug("Sending PDF report to Econobis for building {$fileStorage->building_id}");
                     SendPdfReportToEconobis::dispatch($fileStorage->building)->onQueue(Queue::APP_EXTERNAL);
                 }
-            }, FileStorage::getModel()->getTable().'.'.FileStorage::getModel()->getKeyName(), 'file_storage_id');
+            }, FileStorage::getModel()->getTable() . '.' . FileStorage::getModel()->getKeyName(), 'file_storage_id');
 
-        return 0;
+        return self::SUCCESS;
     }
 }

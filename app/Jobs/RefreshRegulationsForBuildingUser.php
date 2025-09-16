@@ -26,10 +26,8 @@ class RefreshRegulationsForBuildingUser extends NonHandleableJobAfterReset
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         Log::debug('Handle of refresh regulations for building user');
         $user = $this->building->user;

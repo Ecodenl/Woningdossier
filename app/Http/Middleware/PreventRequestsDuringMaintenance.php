@@ -11,19 +11,14 @@ use Closure;
 class PreventRequestsDuringMaintenance extends Middleware
 {
     /**
-     * The URIs that should be reachable while maintenance mode is enabled.
+     * Handle an incoming request.
      *
-     * @var array
-     */
-    protected $except = [
-    ];
-
-    /**
-     * Handle an incoming request. Remove the full handle method after go-live.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
      * @return mixed
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws \ErrorException
      */
     public function handle($request, Closure $next)
     {

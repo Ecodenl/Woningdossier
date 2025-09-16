@@ -27,8 +27,7 @@ class RoofInsulationHelper extends ToolHelper
     {
         $updatedMeasureIds = $this->getValues('updated_measure_ids');
 
-        $energyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
-        $results = RoofInsulationCalculate::calculate($this->building, $this->masterInputSource, $energyHabit, $this->getValues());
+        $results = RoofInsulationCalculate::calculate($this->building, $this->masterInputSource, $this->getValues());
 
         $result = [];
 
@@ -55,7 +54,7 @@ class RoofInsulationHelper extends ToolHelper
         if ($this->considers($step)) {
             foreach (array_keys($result) as $roofCat) {
                 $primaryRoof = RoofType::find($this->getValues('building_features')['roof_type_id']);
-                $primaryRoofShort = optional($primaryRoof)->short;
+                $primaryRoofShort = $primaryRoof?->short;
 
                 $roofStep = Step::findByShort('roof-insulation');
                 // If the user has answered the step about roof insulation, we will continue with both possible roof
@@ -92,8 +91,11 @@ class RoofInsulationHelper extends ToolHelper
 
                                 // We only want to check old advices if the updated attributes are not relevant to this measure
                                 if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
-                                        $oldAdvices);
+                                    UserActionPlanAdviceService::checkOldAdvices(
+                                        $actionPlanAdvice,
+                                        $measureApplication,
+                                        $oldAdvices
+                                    );
                                 }
 
                                 $actionPlanAdvice->save();
@@ -144,7 +146,7 @@ class RoofInsulationHelper extends ToolHelper
                     //    }
                     //}
                     if (array_key_exists('tiles_condition', $extra)) {
-                        $tilesCondition = (int)$extra['tiles_condition'];
+                        $tilesCondition = (int) $extra['tiles_condition'];
 
                         $surface = $roofCatData['roof_surface'] ?? 0;
                         if ($tilesCondition > 0 && $surface > 0) {
@@ -168,8 +170,11 @@ class RoofInsulationHelper extends ToolHelper
 
                                 // We only want to check old advices if the updated attributes are not relevant to this measure
                                 if (! in_array($replaceMeasure->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure,
-                                        $oldAdvices);
+                                    UserActionPlanAdviceService::checkOldAdvices(
+                                        $actionPlanAdvice,
+                                        $replaceMeasure,
+                                        $oldAdvices
+                                    );
                                 }
 
                                 $actionPlanAdvice->save();
@@ -177,7 +182,7 @@ class RoofInsulationHelper extends ToolHelper
                         }
                     }
                     if ($isBitumenRoof && array_key_exists('bitumen_replaced_date', $extra)) {
-                        $bitumenReplaceYear = (int)$extra['bitumen_replaced_date'];
+                        $bitumenReplaceYear = (int) $extra['bitumen_replaced_date'];
                         if ($bitumenReplaceYear <= 0) {
                             $bitumenReplaceYear = Carbon::now()->year - 10;
                         }
@@ -202,8 +207,11 @@ class RoofInsulationHelper extends ToolHelper
 
                             // We only want to check old advices if the updated attributes are not relevant to this measure
                             if (! in_array($replaceMeasure->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure,
-                                    $oldAdvices);
+                                UserActionPlanAdviceService::checkOldAdvices(
+                                    $actionPlanAdvice,
+                                    $replaceMeasure,
+                                    $oldAdvices
+                                );
                             }
 
                             $actionPlanAdvice->save();

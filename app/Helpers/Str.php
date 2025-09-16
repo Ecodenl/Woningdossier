@@ -29,63 +29,21 @@ class Str extends \Illuminate\Support\Str
     }
 
     /**
-     * Check if a given string is a valid UUID.
-     *
-     * @param string $uuid The string to check
-     */
-    public static function isValidUuid($uuid): bool
-    {
-        if (! is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if a given string is a valid GUID.
-     *
-     * https://stackoverflow.com/questions/1253373/php-check-for-valid-guid/#answer-1515456
-     *
-     * @param $guid
-     */
-    public static function isValidGuid($guid): bool
-    {
-        if (preg_match('/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i', $guid)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if a string contains a pipe.
-     *
-     * @param $string
-     */
-    public static function isPiped($string): bool
-    {
-        if (count(explode('|', $string)) > 1) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Returns a random UUID. Only used as a fallback in case all other methods
      * don't work.
-     *
-     * @return string
      */
-    protected static function randomUuid()
+    protected static function randomUuid(): string
     {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
             mt_rand(0, 0xffff),
             mt_rand(0, 0x0fff) | 0x4000,
             mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
         );
     }
 
@@ -121,7 +79,7 @@ class Str extends \Illuminate\Support\Str
 
     public static function lcfirst($string)
     {
-        return SupportStr::lower(SupportStr::substr($string, 0, 1)).SupportStr::substr($string, 1);
+        return SupportStr::lower(SupportStr::substr($string, 0, 1)) . SupportStr::substr($string, 1);
     }
 
     public static function isValidJson($value, $arrayOnly = true): bool
@@ -135,13 +93,9 @@ class Str extends \Illuminate\Support\Str
     /**
      * Check if a needle is somewhere (partially) in an array.
      *
-     * @param  array  $array
      * @param  $needle
-     * @param  bool  $ignoreCase
-     *
-     * @return bool
      */
-    public static function arrContains(array $array, $needle, bool $ignoreCase = false)
+    public static function arrContains(array $array, $needle, bool $ignoreCase = false): bool
     {
         $needle = $ignoreCase ? strtolower($needle) : $needle;
 
@@ -165,13 +119,9 @@ class Str extends \Illuminate\Support\Str
     /**
      * Check if a needle is somewhere at the start in an array.
      *
-     * @param  array  $array
      * @param $needle
-     * @param  bool  $ignoreCase
-     *
-     * @return bool
      */
-    public static function arrStartsWith(array $array, $needle, bool $ignoreCase = false)
+    public static function arrStartsWith(array $array, $needle, bool $ignoreCase = false): bool
     {
         $needle = $ignoreCase ? strtolower($needle) : $needle;
 
@@ -195,11 +145,7 @@ class Str extends \Illuminate\Support\Str
     /**
      * Check if a needle is somewhere at the start of the keys in an array.
      *
-     * @param  array  $array
      * @param $needle
-     * @param  bool  $ignoreCase
-     *
-     * @return bool
      */
     public static function arrKeyStartsWith(array $array, $needle, bool $ignoreCase = false): bool
     {
@@ -208,10 +154,6 @@ class Str extends \Illuminate\Support\Str
 
     /**
      * Convert HTML array format to dot
-     *
-     * @param  string  $htmlArray
-     *
-     * @return string
      */
     public static function htmlArrToDot(string $htmlArray): string
     {
@@ -223,44 +165,7 @@ class Str extends \Illuminate\Support\Str
     }
 
     /**
-     * Convert a dotted string to a valid HTML input name.
-     *
-     * @param  string|null  $dottedName
-     * @param  bool  $asArray
-     *
-     * @return string|null
-     */
-    public static function dotToHtml(?string $dottedName, bool $asArray = false): ?string
-    {
-        // No use for an empty string
-        if (empty($dottedName)) {
-            return $dottedName;
-        }
-
-        $htmlName = \Illuminate\Support\Str::of($dottedName);
-
-        // Nothing to replace if no dots
-        if ($htmlName->contains('.')) {
-            $htmlName = $htmlName->replaceFirst('.', '[') // Replace first dot with opening bracket
-            ->replace('*', '') // Remove wildcards
-            ->replace('.', '][') // Replace other dots with separating brackets
-            ->append(']'); // Add final bracket
-        }
-
-        if ($asArray) {
-            // Append HTML array if requested
-            $htmlName = $htmlName->append('[]');
-        }
-
-        return $htmlName;
-    }
-
-    /**
      * Check if a string has replaceables.
-     *
-     * @param  string  $string
-     *
-     * @return bool
      */
     public static function hasReplaceables(string $string): bool
     {
@@ -275,14 +180,43 @@ class Str extends \Illuminate\Support\Str
     /**
      * Prepare a JSON string for dropping in HTML.
      * TODO: Tests
-     *
-     * @param  string  $json
-     *
-     * @return string
      */
     public static function prepareJsonForHtml(string $json): string
     {
         // TODO: Just use {{ json_encode() }} in blade!
         return str_replace('"', '\'', $json);
+    }
+
+    /**
+     * Convert a dotted string to a valid HTML input name.
+     *
+     * @param  string|null  $dottedName
+     * @param  bool  $asArray
+     *
+     * @return string|null
+     */
+    public static function convertDotToHtml(?string $dottedName, bool $asArray = false): ?string
+    {
+        // No use for an empty string
+        if (empty($dottedName)) {
+            return $dottedName;
+        }
+
+        $htmlName = static::of($dottedName);
+
+        // Nothing to replace if no dots
+        if ($htmlName->contains('.')) {
+            $htmlName = $htmlName->replaceFirst('.', '[') // Replace first dot with opening bracket
+                ->replace('*', '') // Remove wildcards
+                ->replace('.', '][') // Replace other dots with separating brackets
+                ->append(']'); // Add final bracket
+        }
+
+        if ($asArray) {
+            // Append HTML array if requested
+            $htmlName = $htmlName->append('[]');
+        }
+
+        return $htmlName;
     }
 }

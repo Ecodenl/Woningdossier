@@ -26,10 +26,8 @@ class MissingVbjehuisMunicipalityMappingEmail extends Mailable implements Should
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this
             ->subject(__('cooperation/mail/admin/missing-vbjehuis-municipality-mapping.subject'))

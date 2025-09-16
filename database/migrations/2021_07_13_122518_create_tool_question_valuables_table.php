@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateToolQuestionValuablesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::dropIfExists('tool_question_valuables');
 
@@ -25,7 +23,7 @@ class CreateToolQuestionValuablesTable extends Migration
             $table->unsignedBigInteger('tool_question_valuable_id')->index();
             $table->string('tool_question_valuable_type')->index();
             $table->json('extra')->nullable();
-            $table->json('conditions')->nullable()->default(null);
+            $table->json('conditions')->nullable();
 
             $table->timestamps();
         });
@@ -33,11 +31,9 @@ class CreateToolQuestionValuablesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('tool_question_valuables');
     }
-}
+};

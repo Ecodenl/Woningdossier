@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $insulation_roof_surface
  * @property int|null $zinc_surface
  * @property int|null $building_heating_id
- * @property array|null $extra
+ * @property array<array-key, mixed>|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building $building
@@ -28,29 +29,28 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\BuildingHeating|null $heating
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\ElementValue|null $insulation
- * @property-read \App\Models\MeasureApplication $measureApplication
  * @property-read \App\Models\RoofType $roofType
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forBuilding($building)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forMe(?\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType query()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereBuildingHeatingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereElementValueId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereExtra($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereInsulationRoofSurface($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereRoofSurface($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereRoofTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereZincSurface($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType forBuilding(\App\Models\Building|int $building)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType forUser(\App\Models\User|int $user)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereBuildingHeatingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereElementValueId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereExtra($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereInsulationRoofSurface($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereRoofSurface($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereRoofTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingRoofType whereZincSurface($value)
  * @mixin \Eloquent
  */
 class BuildingRoofType extends Model
@@ -58,15 +58,6 @@ class BuildingRoofType extends Model
     use GetValueTrait;
     use GetMyValuesTrait;
     
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'extra' => 'array',
-    ];
 
     protected $fillable = [
         'building_id', 'roof_type_id', 'input_source_id', 'element_value_id',
@@ -79,54 +70,44 @@ class BuildingRoofType extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
      */
-    public function building()
+    protected function casts(): array
+    {
+        return [
+            'extra' => 'array',
+        ];
+    }
+
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function roofType()
+    public function roofType(): BelongsTo
     {
         return $this->belongsTo(RoofType::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function elementValue()
+    public function elementValue(): BelongsTo
     {
         return $this->belongsTo(ElementValue::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function insulation()
+    public function insulation(): BelongsTo
     {
         return $this->elementValue();
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function heating()
+    public function heating(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'building_heating_id');
     }
 
-    public function buildingHeating()
+    public function buildingHeating(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class);
-    }
-
-    public function measureApplication()
-    {
-        \Log::critical(__METHOD__.': Dit werkt niet!!');
-
-        return $this->belongsTo(MeasureApplication::class);
     }
 }

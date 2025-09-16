@@ -3,15 +3,23 @@
 namespace App\Http\Controllers\Cooperation\Frontend\Tool;
 
 use App\Helpers\HoomdossierSession;
-use App\Http\Controllers\Cooperation\Tool\ToolController;
+use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\Scan;
 use App\Models\Step;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class ExpertScanController extends ToolController
+class ExpertScanController extends Controller
 {
+    protected InputSource $masterInputSource;
+
+    public function __construct()
+    {
+        $this->masterInputSource = InputSource::master();
+    }
+
     public function index(Request $request, Cooperation $cooperation, Step $step)
     {
         $scan = Scan::findByShort(Scan::EXPERT);

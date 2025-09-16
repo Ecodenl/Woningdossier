@@ -51,22 +51,47 @@ const fractionTwelve = {
 
 module.exports = {
     important: '#app-body',
-    purge: {
-        'content': ['./resources/**/*.blade.php'],
-        safelist: [
-            'col-span-2',
-            'col-span-3',
-            'col-span-6',
-            'w-full',
-            'w-1/2',
-            'static',
-            'text-blue-900',
-            'text-green',
-            'text-orange',
-            'text-red',
-        ],
-    },
-    darkMode: false, // or 'media' or 'class'
+    content: ['./resources/**/*.blade.php'],
+    safelist: [
+        'col-span-2',
+        'col-span-3',
+        'col-span-6',
+        'w-1/2',
+        'w-full',
+        'static',
+        'text-green',
+        'text-green/100',
+        'text-orange',
+        'text-orange/100',
+        'text-red',
+        'text-red/100',
+        'text-yellow',
+        'text-yellow/100',
+        'text-blue',
+        'text-blue/100',
+        'text-blue-900',
+        'text-blue-900/100',
+        'border-green',
+        'border-green/100',
+        'border-red',
+        'border-red/100',
+        'border-yellow',
+        'border-yellow/100',
+        'border-blue',
+        'border-blue/100',
+        'border-blue-900',
+        'border-blue-900/100',
+        'bg-green',
+        'bg-green/100',
+        'bg-red',
+        'bg-red/100',
+        'bg-yellow',
+        'bg-yellow/100',
+        'bg-blue',
+        'bg-blue/100',
+        'bg-blue-900',
+        'bg-blue-900/100',
+    ],
     theme: {
         extend: {
             // So, box-shadows don't have 'separate' values for e.g. color. We apply a class name based on
@@ -142,6 +167,20 @@ module.exports = {
                 'center-lg-red-50': '0 25px 15px -10px rgba(227,20,64,0.5)',
                 'center-lg-red-75': '0 25px 15px -10px rgba(227,20,64,0.75)',
                 'center-lg-red': '0 25px 15px -10px rgba(227,20,64,1)',
+
+                // Blue
+                'center-blue-25': '0 15px 15px -10px rgba(17,34,200,0.25)',
+                'center-blue-50': '0 15px 15px -10px rgba(17,34,200,0.5)',
+                'center-blue-75': '0 15px 15px -10px rgba(17,34,200,0.75)',
+                'center-blue': '0 15px 15px -10px rgba(17,34,200,1)',
+                'center-md-blue-25': '0 20px 15px -10px rgba(17,34,200,0.25)',
+                'center-md-blue-50': '0 20px 15px -10px rgba(17,34,200,0.5)',
+                'center-md-blue-75': '0 20px 15px -10px rgba(17,34,200,0.75)',
+                'center-md-blue': '0 20px 15px -10px rgba(17,34,200,1)',
+                'center-lg-blue-25': '0 25px 15px -10px rgba(17,34,200,0.25)',
+                'center-lg-blue-50': '0 25px 15px -10px rgba(17,34,200,0.5)',
+                'center-lg-blue-75': '0 25px 15px -10px rgba(17,34,200,0.75)',
+                'center-lg-blue': '0 25px 15px -10px rgba(17,34,200,1)',
             },
             width: {
                 ...fractionTen,
@@ -164,6 +203,7 @@ module.exports = {
             },
             maxWidth: {
                 ...fractionTwenty,
+                '1/2': '50%',
             },
             spacing: {
                 ...fractionTwelve
@@ -177,6 +217,11 @@ module.exports = {
                 '80': '80',
                 '90': '90',
                 '100': '100',
+                '110': '110',
+                '120': '120',
+                '130': '130',
+                '140': '140',
+                '150': '150',
             },
             backgroundOpacity: {
                 '85': '0.85',
@@ -190,11 +235,12 @@ module.exports = {
             }
         },
         colors: {
+            current: 'currentColor',
             transparent: 'transparent',
             black: '#000000',
             white: '#FFFFFF',
-            'gray': {
-                DEFAULT: '#CDD2D7',
+            gray: {
+                'DEFAULT': '#CDD2D7',
                 '50': '#FFFFFF',
                 '100': '#FFFFFF',
                 '200': '#FFFFFF',
@@ -206,23 +252,29 @@ module.exports = {
                 '800': '#707E8C',
                 '900': '#57626D'
             },
-            green: '#2CA982',
+            green: {
+                'DEFAULT': '#2CA982',
+                '200': '#27ae60',
+                '500': '#2CA982',
+                '600': '#18825F',
+                '700': '#30815f'
+            },
             purple: {
-                DEFAULT: '#622191',
-                100: '#E1DCF2',
+                'DEFAULT': '#622191',
+                '100': '#E1DCF2',
+                '500': '#622191',
             },
             blue: {
-                900: '#1122C8',
-                800: '#3781F0',
-                DEFAULT: '#414C57',
-                500: '#647585',
-                100: '#F0F1F2'
+                '900': '#1122C8',
+                '800': '#3781F0',
+                'DEFAULT': '#414C57', /* TODO: DEFAULT Should match 500! */
+                '500': '#647585',
+                '100': '#F0F1F2'
             },
-
             orange: '#FF7F4A',
             yellow: '#FFBD5A',
             red: {
-                DEFAULT: '#E41440',
+                'DEFAULT': '#E41440',
                 '50': '#fef2f2',
                 '100': '#fee2e2',
                 '200': '#fecaca',
@@ -245,19 +297,8 @@ module.exports = {
             'xxl': ['48px', '54px'],
         },
     },
-    variants: {
-        extend: {
-            backgroundColor: ['active'],
-            backgroundOpacity: ['active'],
-            borderOpacity: ['active'],
-            borderColor: ['active'],
-            textColor: ['active'],
-            boxShadow: ['active'],
-            cursor: ['hover', 'focus'],
-        },
-    },
     plugins: [
-        plugin(function({ addUtilities, theme, e }) {
+        plugin(function ({ addUtilities, theme, e }) {
             const spacing = theme('spacing', {});
 
             const pads = _.map(spacing,(value, key) => {

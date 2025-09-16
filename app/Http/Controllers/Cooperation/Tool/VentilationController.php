@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 use App\Calculations\Ventilation;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Cooperation\Tool\VentilationHelper;
@@ -21,12 +24,7 @@ use Illuminate\Http\Request;
 
 class VentilationController extends ToolController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function index(LegacyService $legacyService)
+    public function index(LegacyService $legacyService): View
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
@@ -47,16 +45,16 @@ class VentilationController extends ToolController
             ->getMeasureRelatedAnswers(Step::findByShort('ventilation'));
 
         return view('cooperation.tool.ventilation.index', compact(
-            'building', 'buildingVentilation', 'howValues', 'livingSituationValues', 'usageValues', 'measureRelatedAnswers',
+            'building',
+            'buildingVentilation',
+            'howValues',
+            'livingSituationValues',
+            'usageValues',
+            'measureRelatedAnswers',
         ));
     }
 
-    /**
-     * Method to store the data from the ventilation form.
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function store(VentilationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
+    public function store(VentilationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
@@ -96,7 +94,7 @@ class VentilationController extends ToolController
         StepCommentService::save($building, $inputSource, $step, $stepComments['comment']);
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
-        if (!empty($dirtyAttributes)) {
+        if (! empty($dirtyAttributes)) {
             UserToolDataChanged::dispatch($buildingOwner);
         }
         $updatedMeasureIds = [];
@@ -113,13 +111,12 @@ class VentilationController extends ToolController
         return $this->completeStore($this->step, $building, $inputSource);
     }
 
-    public function calculate(Request $request)
+    public function calculate(Request $request): JsonResponse
     {
+        /** @var \App\Models\Building $building */
         $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
-        $userEnergyHabit = $user->energyHabit()->forInputSource($this->masterInputSource)->first();
 
-        $result = Ventilation::calculate($building, $this->masterInputSource, $userEnergyHabit, $request->all());
+        $result = Ventilation::calculate($building, $this->masterInputSource, $request->all());
 
         return response()->json($result);
     }

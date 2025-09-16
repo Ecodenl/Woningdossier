@@ -6,13 +6,13 @@ use App\Models\Building;
 
 class BuildingObserver
 {
-    public function saving(Building $building)
+    public function saving(Building $building): void
     {
         // Not allowed as null
         $building->extension ??= '';
     }
 
-    public function saved(Building $building)
+    public function saved(Building $building): void
     {
         \App\Helpers\Cache\Building::wipe($building->id);
     }
@@ -20,11 +20,11 @@ class BuildingObserver
     /**
      * Deleting event.
      */
-    public function deleting(Building $building)
+    public function deleting(Building $building): void
     {
         $building->user_id             = null;
         $building->country_code        = 'nl';
-        $building->primary             = false;
+        $building->primary             = 0;
         $building->save();
 
         // delete the privatemessages from the building
@@ -48,7 +48,7 @@ class BuildingObserver
         $building->currentPaintworkStatus()->allInputSources()->delete();
     }
 
-    public function deleted(Building $building)
+    public function deleted(Building $building): void
     {
         \App\Helpers\Cache\Building::wipe($building->id);
     }

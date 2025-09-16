@@ -10,18 +10,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $id
  * @property int $cooperation_preset_id
- * @property array $content
+ * @property array<array-key, mixed> $content
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\CooperationPreset $cooperationPreset
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent query()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent whereContent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent whereCooperationPresetId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationPresetContent whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent whereCooperationPresetId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationPresetContent whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CooperationPresetContent extends Model
@@ -30,9 +30,12 @@ class CooperationPresetContent extends Model
         'cooperation_preset_id', 'content',
     ];
 
-    protected $casts = [
-        'content' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'content' => 'array',
+        ];
+    }
 
     public function cooperationPreset(): BelongsTo
     {

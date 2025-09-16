@@ -9,10 +9,8 @@ class CooperationMeasureApplicationFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => ['nl' => $this->faker->randomElement(['Vloertje', 'Bakstel', 'Nieuwe lampen', 'Keuken', 'Badkamer'])],
@@ -25,8 +23,8 @@ class CooperationMeasureApplicationFactory extends Factory
             'extra' => [
                 'icon' => 'icon-tools',
             ],
-            'is_extensive_measure' => $this->faker->boolean,
-            'is_deletable' => $this->faker->boolean,
+            'is_extensive_measure' => $this->faker->boolean(),
+            'is_deletable' => $this->faker->boolean(),
         ];
     }
 }

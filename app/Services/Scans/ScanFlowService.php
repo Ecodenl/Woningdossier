@@ -247,8 +247,11 @@ class ScanFlowService
         // There are incomplete steps left, set the sub step
         if (! $nextSubStep instanceof SubStep && $nextStep instanceof Step) {
             // retrieve all incomplete sub steps for the building
-            $incompleteSubSteps = SubStepHelper::getIncompleteSubSteps($this->building, $nextStep,
-                $this->inputSource);
+            $incompleteSubSteps = SubStepHelper::getIncompleteSubSteps(
+                $this->building,
+                $nextStep,
+                $this->inputSource
+            );
             foreach ($incompleteSubSteps as $subStep) {
                 if ($this->building->user->account->can('show', [$subStep, $this->building])) {
                     $nextSubStep = $subStep;
@@ -307,25 +310,23 @@ class ScanFlowService
                         ->on('sub_steps.id', '=', 'completed_sub_steps.sub_step_id')
                         ->where('completed_sub_steps.input_source_id', $masterInputSource->id)
                         ->where('building_id', $building->id);
-
                 })
                 ->orderByDesc('completed_sub_steps.created_at')
                 ->first();
 
-            // get all the completed steps
-            $mostRecentCompletedStep = optional(
-                $scan
-                    ->completedSteps()
-                    ->forInputSource($masterInputSource)
-                    ->forBuilding($building)
-                    ->orderByDesc('created_at')
-                    ->first()
-            )->step;
+            /** @var null|Step $mostRecentCompletedStep */
+            $mostRecentCompletedStep = $scan->completedSteps()
+                ->forInputSource($masterInputSource)
+                ->forBuilding($building)
+                ->orderByDesc('created_at')
+                ->first()?->step;
 
             // it could be that there is no completed step yet, in that case we just pick the first one.
             if (! $mostRecentCompletedStep instanceof Step) {
+                /** @var Step $mostRecentCompletedStep */
                 $mostRecentCompletedStep = $scan->steps()->orderBy('order')->first();
             }
+
             if ($mostRecentCompletedSubStep instanceof SubStep) {
                 $url = ScanFlowService::init($scan, $building, $masterInputSource)
                     ->forStep($mostRecentCompletedStep)
@@ -411,7 +412,7 @@ class ScanFlowService
                     $visibleQuestions++;
 
                     $answer = $this->getAnswer($toolQuestion->short, false);
-                    if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
+                    if (! empty($answer) || is_numeric($answer)) {
                         $questionsWithAnswers++;
                     }
                 }

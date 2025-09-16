@@ -8,20 +8,12 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         //TODO: Convert "PluralModelNameTableSeeder" into "SingularModelNameSeeder"
         // as per L7 convention: UsersTableSeeder to > UserSeeder
 
-        ////        $this->call(MovingPartsOfWindowAndDoorIsolatedsTableSeeder::class);
-        ////        $this->call(WoodElementsTableSeeder::class);
-        ////        $this->call(HouseFramesTableSeeder::class);
-//        $this->call(BuildingCurrentHeatingsTableSeeder::class);
-//        $this->call(HeatSourcesTableSeeder::class);
-//        $this->call(BuildingServiceTypeTableSeeder::class);
         $this->call(InputSourcesTableSeeder::class);
         $this->call(RoleTableSeeder::class);
         $this->call(BuildingCategoriesTableSeeder::class);
@@ -30,7 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BuildingTypeCategoriesTableSeeder::class);
         $this->call(BuildingTypesTableSeeder::class);
         $this->call(EnergyLabelsTableSeeder::class);
-        $this->call(BuildingHeatingApplicationsTableSeeder::class);
         $this->call(ServiceTypesTableSeeder::class);
         $this->call(RoofTypesTableSeeder::class);
         $this->call(CooperationsTableSeeder::class);
@@ -40,12 +31,9 @@ class DatabaseSeeder extends Seeder
         $this->call(BuildingsTableSeeder::class);
         $this->call(ScansTableSeeder::class);
         $this->call(StepsTableSeeder::class);
-        $this->call(MeasuresTableSeeder::class);
         $this->call(ExampleBuildingsTableSeeder::class);
-        $this->call(InterestsTableSeeder::class);
         $this->call(InsulatingGlazingsTableSeeder::class);
         $this->call(ElementsValuesTableSeeder::class);
-        $this->call(MotivationsTableSeeder::class);
         $this->call(BuildingTypeElementMaxSavingTableSeeder::class);
         $this->call(BuildingHeatingsTableSeeder::class);
         $this->call(MeasureApplicationsTableSeeder::class);
@@ -57,7 +45,6 @@ class DatabaseSeeder extends Seeder
         $this->call(KeyFigureInsulationFactorsTableSeeder::class);
         $this->call(PaintworkStatusesTableSeeder::class);
         $this->call(WoodRotStatusesTableSeeder::class);
-        $this->call(CrawlspaceAccessesTableSeeder::class);
         $this->call(RoofTileStatusesTableSeeder::class);
         $this->call(ServiceValuesTableSeeder::class);
         $this->call(PvPanelOrientationsTableSeeder::class);
@@ -70,20 +57,6 @@ class DatabaseSeeder extends Seeder
         $this->call(KeyFigureBoilerEfficienciesTableSeeder::class);
         $this->call(PvPanelYieldsTableSeeder::class);
         $this->call(KeyFigureConsumptionTapWatersTableSeeder::class);
-
-        // New
-        $this->call(HeatingAgesTableSeeder::class);
-
-        $this->call(SolarWaterHeatersTableSeeder::class);
-        $this->call(PresentWindowsTableSeeder::class);
-        $this->call(PresentShowerWtwsTableSeeder::class);
-        $this->call(InterestedToExecuteMeasuresTableSeeder::class);
-        $this->call(ComfortComplaintsTableSeeder::class);
-        $this->call(ExperienceAirQualityInHomesTableSeeder::class);
-        $this->call(SufferFromsTableSeeder::class);
-        $this->call(PresentHeatPumpsTableSeeder::class);
-
-        $this->call(VentilationsTableSeeder::class);
 
         $this->call(FileTypeCategoriesTableSeeder::class);
         $this->call(FileTypesTableSeeder::class);

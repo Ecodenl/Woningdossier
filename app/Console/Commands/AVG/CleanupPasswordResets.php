@@ -23,27 +23,17 @@ class CleanupPasswordResets extends Command
     protected $description = 'Cleanup the old password resets';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         // Expire is in minutes.
         $expires = config('auth.passwords.users.expire');
 
         $hasExpired = Carbon::now()->subMinutes($expires);
 
-        DB::table('password_resets')->where('created_at', '<', $hasExpired)->delete();
+        DB::table('password_reset_tokens')->where('created_at', '<', $hasExpired)->delete();
+
+        return self::SUCCESS;
     }
 }

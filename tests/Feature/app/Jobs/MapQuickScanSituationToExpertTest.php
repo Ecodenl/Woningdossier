@@ -20,7 +20,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class MapQuickScanSituationToExpertTest extends TestCase
+final class MapQuickScanSituationToExpertTest extends TestCase
 {
     use WithFaker,
         RefreshDatabase;
@@ -31,7 +31,7 @@ class MapQuickScanSituationToExpertTest extends TestCase
     protected Building $building;
     protected InputSource $inputSource;
 
-    public function test_job_maps_all_cases_correctly()
+    public function test_job_maps_all_cases_correctly(): void
     {
         // One user is seeded, we'll just use it.
         $user = User::first();

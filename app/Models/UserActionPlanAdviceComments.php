@@ -16,21 +16,21 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource $inputSource
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forBuilding($building)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forMe(?\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments query()
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments whereComment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments forBuilding(\App\Models\Building|int $building)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments forUser(\App\Models\User|int $user)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActionPlanAdviceComments whereUserId($value)
  * @mixin \Eloquent
  */
 class UserActionPlanAdviceComments extends Model

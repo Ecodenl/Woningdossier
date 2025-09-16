@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\AccountObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
@@ -22,37 +24,38 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string|null $two_factor_recovery_codes
  * @property string|null $two_factor_confirmed_at
  * @property string|null $remember_token
- * @property string|null $email_verified_at
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string|null $old_email
  * @property string|null $old_email_token
  * @property int $active
  * @property bool $is_admin
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
- * @method static \Database\Factories\AccountFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Account newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Account newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Account query()
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereIsAdmin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereOldEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereOldEmailToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereTwoFactorConfirmedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereTwoFactorRecoveryCodes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereTwoFactorSecret($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereUpdatedAt($value)
+ * @method static \Database\Factories\AccountFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereIsAdmin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereOldEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereOldEmailToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereTwoFactorConfirmedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereTwoFactorRecoveryCodes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereTwoFactorSecret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([AccountObserver::class])]
 class Account extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
@@ -60,43 +63,35 @@ class Account extends Authenticatable implements MustVerifyEmail
     protected $fillable = ['email', 'password', 'email_verified_at', 'old_email', 'old_email_token',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'is_admin' => 'boolean',
-        'email_verified_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_admin' => 'boolean',
+            'email_verified_at' => 'datetime',
+        ];
+    }
 
     /**
      * Send the password reset notification.
-     *
-     * @param string $token
-     *
-     * @return void
      */
-    public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($token, $this, $this->user()->cooperation));
     }
 
     /**
      * Send the email verification notification.
-     *
-     * @return void
      */
-    public function sendEmailVerificationNotification()
+    public function sendEmailVerificationNotification(): void
     {
         $this->notify(new VerifyEmailNotification($this->user()));
     }

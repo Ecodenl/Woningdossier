@@ -3,8 +3,9 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class PhoneNumber extends LocaleBasedRule implements Rule
+class PhoneNumber extends LocaleBasedRule implements ValidationRule
 {
     protected $countryRegexes = [
         'nl' => '/(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0]{1}[0-9\-\s]{9}$)|^\(0[1-9]{2}\)\s?[0-9]{7}|^\(0[1-9]{3}\)\s?[0-9]{6}|(\+31[0]?[1-9]{1}[0-9\s\-]{9})/',
@@ -14,12 +15,9 @@ class PhoneNumber extends LocaleBasedRule implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
      * @param mixed  $value
-     *
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         if (empty($this->country)) {
             return false;
@@ -37,11 +35,16 @@ class PhoneNumber extends LocaleBasedRule implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
-    public function message()
+    public function message(): string
     {
         return trans('validation.phone_number');
+    }
+
+    public function validate(string $attribute, mixed $value, \Closure $fail): void
+    {
+        if (! $this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 }

@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExampleBuildingContentsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('example_building_contents', function (Blueprint $table) {
             $table->increments('id');
@@ -19,7 +17,7 @@ class CreateExampleBuildingContentsTable extends Migration
             $table->integer('example_building_id')->unsigned();
             $table->foreign('example_building_id')->references('id')->on('example_buildings')->onDelete('restrict');
 
-            $table->integer('build_year')->nullable()->default(null);
+            $table->integer('build_year')->nullable();
             $table->text('content')->nullable();
 
             $table->timestamps();
@@ -28,11 +26,9 @@ class CreateExampleBuildingContentsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('example_building_contents');
     }
-}
+};

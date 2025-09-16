@@ -24,6 +24,7 @@
         'label' => __($toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"), ['name' => $humanReadableAnswer]),
         'inputName' => "filledInAnswers.{$toolQuestion->short}",
         'withInputSource' => ! $disabled,
+        'id' => $toolQuestion->short,
     ])
         @slot('sourceSlot')
             @include('cooperation.sub-step-templates.parts.source-slot-values', [

@@ -33,7 +33,7 @@ class WoonplanService
     public function canAccessWoonplan(): bool
     {
         // when a user is observing another building, he can always see the Woonplan
-        if ($this->isObserving) {
+        if ($this->isObserving || app()->isLocal()) {
             return true;
         }
         // if the user is on the quick scan some abnormal rules apply
@@ -54,7 +54,7 @@ class WoonplanService
         return $this;
     }
 
-    public function canEnterExpertScan(Cooperation $cooperation)
+    public function canEnterExpertScan(Cooperation $cooperation): bool
     {
         // first check that the cooperation has the expert-scan
         if ($cooperation->scans()->where('short', Scan::EXPERT)->exists()) {
@@ -68,6 +68,7 @@ class WoonplanService
 
     public function buildingCompletedFirstFourSteps(): bool
     {
+        /** @var \Illuminate\Support\Collection<\App\Models\Step> $steps */
         $steps = $this->scan->steps()->where('short', '!=', 'small-measures')->get();
         foreach ($steps as $step) {
             if ($this->building->hasNotCompleted($step, $this->inputSource)) {
@@ -81,7 +82,7 @@ class WoonplanService
     {
         // simple method to check whether the user has measure applications
         // in his user action plan advice.
-        return $this->building->user->actionPlanAdvices()
+        return $this->building->user->userActionPlanAdvices()
             ->withInvisible()
             ->forInputSource($this->inputSource)
             ->where('user_action_plan_advisable_type', MeasureApplication::class)

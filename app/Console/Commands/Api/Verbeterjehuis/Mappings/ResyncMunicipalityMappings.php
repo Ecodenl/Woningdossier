@@ -3,7 +3,7 @@
 namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
 use App\Helpers\Arr;
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Helpers\Wrapper;
 use App\Models\Mapping;
 use App\Services\Verbeterjehuis\RegulationService;
@@ -26,26 +26,16 @@ class ResyncMunicipalityMappings extends Command
     protected $description = 'Walk through all mappings to update the ID based on name';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $vbjehuisMunicipalities = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Cities']) ?? [];
 
         if (! empty($vbjehuisMunicipalities)) {
-            foreach (Mapping::forType(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->get() as $mapping) {
+            foreach (Mapping::forType(MappingType::MUNICIPALITY_VBJEHUIS->value)->get() as $mapping) {
                 // Get the current data from Verbeterjehuis.
                 $current = Arr::first(Arr::where($vbjehuisMunicipalities, fn ($data) => $data['Name'] === data_get($mapping->target_data, 'Name')));
 

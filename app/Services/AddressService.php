@@ -7,10 +7,7 @@ class AddressService
     /**
      * Normalizes a zipcode to a Dutch zipcode format optionally with a space.
      *
-     * @param string|null $zip
      * @param bool $withSpace Defaults to false
-     *
-     * @return string|null
      */
     public function normalizeZipcode(?string $zip, bool $withSpace = false): ?string
     {

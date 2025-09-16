@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
@@ -9,17 +10,19 @@ use App\Helpers\Hoomdossier;
 
 class AdminController extends Controller
 {
-    public function stopSession(Cooperation $cooperation)
+    public function stopSession(Cooperation $cooperation): RedirectResponse
     {
         $user = \App\Helpers\Hoomdossier::user();
         $building = $user->building;
         $role = HoomdossierSession::getRole(true);
 
-        $buildingId = HoomdossierSession::getBuilding(false);
+        $observingBuilding = HoomdossierSession::getBuilding(true);
         HoomdossierSession::switchRole($building, $role);
 
         // If they can start/stop a session, they can see a user's building.
-        return redirect()->route('cooperation.admin.buildings.show', compact('buildingId'));
+        return redirect()->route('cooperation.admin.buildings.show', [
+            'building' => $observingBuilding,
+        ]);
     }
 
     public function index()

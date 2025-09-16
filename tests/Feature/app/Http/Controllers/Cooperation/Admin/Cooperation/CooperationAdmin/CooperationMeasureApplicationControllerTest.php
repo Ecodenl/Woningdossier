@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class CooperationMeasureApplicationControllerTest extends TestCase
+final class CooperationMeasureApplicationControllerTest extends TestCase
 {
     use WithFaker,
         RefreshDatabase;
@@ -32,7 +32,7 @@ class CooperationMeasureApplicationControllerTest extends TestCase
 
     protected $followRedirects = true;
 
-    public function test_destroying_a_measure_properly_converts_related_advices()
+    public function test_destroying_a_measure_properly_converts_related_advices(): void
     {
         $cooperationAdminAccount = Account::factory()->create(['password' => Hash::make('secret')]);
         $residentAccount = Account::factory()->create(['password' => Hash::make('secret')]);
@@ -64,15 +64,17 @@ class CooperationMeasureApplicationControllerTest extends TestCase
             ->create(['user_id' => $resident->id]);
 
         $inputSource = InputSource::findByShort(InputSource::COOPERATION_SHORT);
+        /** @var Role $role */
         $role = Role::findByName(RoleHelper::ROLE_COOPERATION_ADMIN);
 
         $this->actingAs($cooperationAdminAccount);
         HoomdossierSession::setHoomdossierSessions($cooperationAdminBuilding, $inputSource, $inputSource, $role);
+        HoomdossierSession::setCooperation($cooperation);
 
         $cooperationMeasureApplication = CooperationMeasureApplication::factory()
             ->create([
                 'cooperation_id' => $cooperation->id,
-                'is_extensive_measure' => false,
+                'is_extensive_measure' => false, // False, because if true, they will just be deleted
                 'is_deletable' => true,
             ]);
         $secondCooperationMeasureApplication = CooperationMeasureApplication::factory()
@@ -118,7 +120,7 @@ class CooperationMeasureApplicationControllerTest extends TestCase
         $this->assertDatabaseCount('cooperation_measure_applications', 2);
         $this->assertDatabaseCount('custom_measure_applications', 0);
 
-        // NOTE: Because of the GetMyValuesTrait, we will end up with a total of 6 advices!
+        // NOTE: Because of the GetMyValuesTrait (creation for master input source), we will end up with a total of 6 advices!
         $this->assertDatabaseCount('user_action_plan_advices', 6);
 
         // NOTE: We run tests in sync, so after this delete request, the HandleCooperationMeasureApplicationDeletion

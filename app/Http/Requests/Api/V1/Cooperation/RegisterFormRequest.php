@@ -22,10 +22,8 @@ class RegisterFormRequest extends ApiRequest
 
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -33,7 +31,7 @@ class RegisterFormRequest extends ApiRequest
     /**
      * so fields can be modified or added before validation.
      */
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
         $this->cooperation = $this->route('cooperation');
 
@@ -45,10 +43,8 @@ class RegisterFormRequest extends ApiRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $country = $this->cooperation->country;
 
@@ -73,7 +69,7 @@ class RegisterFormRequest extends ApiRequest
         $account = Account::where('email', $this->get('email'))->first();
         // if the account exists but the user is not associated with the current cooperation
         // then we unset the email and password rule because we dont need to validate them, we handle them in the controller
-        if ($account instanceof Account && !$account->isAssociatedWith($this->cooperation)) {
+        if ($account instanceof Account && ! $account->isAssociatedWith($this->cooperation)) {
             unset($rules['email']);
         }
 
@@ -95,17 +91,16 @@ class RegisterFormRequest extends ApiRequest
         $validator->after(function (Validator $validator) {
             $contactId = $this->input('extra.contact_id');
             // If contact_id is set we want to ensure it's unique PER cooperation
-            if (!empty($contactId)) {
+            if (! empty($contactId)) {
                 $query = DB::table('users')->where('extra->contact_id', $contactId)
                     ->where('cooperation_id', $this->cooperation->id);
 
                 // We found a user, so one exists with this contact ID
                 if ($query->first() instanceof \stdClass) {
                     $validator->errors()->add('extra.contact_id', __(
-                            'validation.custom-rules.api.contact-id-unique',
-                            ['attribute' => __('validation.attributes')['users.extra.contact_id'],]
-                        )
-                    );
+                        'validation.custom-rules.api.contact-id-unique',
+                        ['attribute' => __('validation.attributes')['users.extra.contact_id']]
+                    ));
                 }
             }
         });

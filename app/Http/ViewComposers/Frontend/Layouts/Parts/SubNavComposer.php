@@ -16,11 +16,14 @@ class SubNavComposer
         $this->request = $request;
     }
 
-    public function create(View $view)
+    public function create(View $view): void
     {
+        /** @var \App\Models\Cooperation $cooperation */
         $cooperation = $this->request->route('cooperation');
+        /** @var \App\Models\Scan $scan */
+        $scan = $this->request->route('scan');
 
-        $steps = $this->request->route('scan')->steps()->with(['questionnaires' => function ($query) use ($cooperation) {
+        $steps = $scan->steps()->with(['questionnaires' => function ($query) use ($cooperation) {
             $query->active()->where('cooperation_id', $cooperation->id)->orderByPivot('order');
         }])->get();
 

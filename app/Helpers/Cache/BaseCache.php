@@ -10,38 +10,20 @@ class BaseCache
 {
     /**
      * Returns the cache key for a particular format and parameters.
-     *
-     * @param $string
-     * @param mixed ...$parameters
-     *
-     * @return string
      */
-    public static function getCacheKey($string, ...$parameters): string
+    public static function getCacheKey(string $string, ...$parameters): string
     {
         $prefix = config('hoomdossier.cache.prefix', '');
-
-        return $prefix.sprintf($string, ...$parameters);
+        return $prefix . sprintf($string, ...$parameters);
     }
 
     /**
      * Returns the cache key for a particular format and parameters, prefixed with the current cooperation.
-     *
-     * @param $string
-     * @param mixed ...$parameters
-     *
-     * @return string
      */
-    public static function getCooperationCacheKey($string, ...$parameters): string
+    public static function getCooperationCacheKey(\App\Models\Cooperation $cooperation, string $string, ...$parameters): string
     {
-        $prefix = config('hoomdossier.cache.prefix', '');
-
-        $cooperation = request()->route('cooperation');
-
-        if ($cooperation instanceof \App\Models\Cooperation) {
-            $prefix .= "{$cooperation->slug}_";
-        }
-
-        return $prefix.sprintf($string, ...$parameters);
+        $prefix = config('hoomdossier.cache.prefix', '') . "{$cooperation->slug}_";
+        return $prefix . sprintf($string, ...$parameters);
     }
 
     public static function cacheModel(string $cacheKey, Builder $query): ?Model
@@ -59,7 +41,7 @@ class BaseCache
         return $result instanceof Model ? $result : null;
     }
 
-    public static function clear(string $key)
+    public static function clear(string $key): void
     {
         Cache::forget($key);
     }

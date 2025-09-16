@@ -9,18 +9,20 @@ class BuildingFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'street' => $this->faker->streetName,
+            'municipality_id' => null,
+            'street' => $this->faker->streetName(),
             'number' => $this->faker->numberBetween(3, 22),
+            'extension' => '',
             'city' => 'bubba',
-            'postal_code' => $this->faker->postcode,
-            'owner' => $this->faker->boolean,
-            'primary' => $this->faker->boolean,
+            'postal_code' => $this->faker->postcode(),
+            'owner' => $this->faker->boolean(),
+            'primary' => $this->faker->boolean(),
+            'bag_addressid' => '',
+            'bag_woonplaats_id' => null,
         ];
     }
 

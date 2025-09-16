@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNotificationsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->increments('id');
@@ -23,19 +21,17 @@ class CreateNotificationsTable extends Migration
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
 
             $table->string('type');
-
             $table->uuid('uuid');
+
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('notifications');
     }
-}
+};

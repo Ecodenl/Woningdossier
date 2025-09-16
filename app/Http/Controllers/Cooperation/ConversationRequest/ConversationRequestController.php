@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
-use App\Helpers\Deprecation;
+use App\Deprecation\DeprecationLogger;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
@@ -13,20 +13,15 @@ use App\Models\MeasureApplication;
 use App\Models\Scan;
 use App\Services\Models\BuildingStatusService;
 use App\Services\PrivateMessageService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\App;
+use Illuminate\View\View;
 
 class ConversationRequestController extends Controller
 {
-    /**
-     * Show the form.
-     *
-     * @param string|null $requestType             Default: null
-     * @param string|null $measureApplicationShort Default: null
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
-     */
-    public function index(Cooperation $cooperation, $requestType, $measureApplicationShort = null)
+    public function index(Cooperation $cooperation, ?string $requestType, ?string $measureApplicationShort = null): View|RedirectResponse
     {
-        Deprecation::alert(__CLASS__ . ' used!');
+        DeprecationLogger::alert(__CLASS__ . ' used!');
         $scan = $cooperation->scans()->where('scans.short', '!=', Scan::EXPERT)->first();
 
         // if the user is observing, he has nothing to do here.
@@ -40,7 +35,7 @@ class ConversationRequestController extends Controller
         if (! is_null($measureApplicationShort)) {
             $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->firstOrFail();
             // set the measure application name if there is a measure application
-            $measureApplicationName = $measureApplication->measure_name;
+            $measureApplicationName = $measureApplication->getTranslation('measure_name', App::getLocale());
             $title = __('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName]);
         }
 
@@ -49,20 +44,18 @@ class ConversationRequestController extends Controller
 
     /**
      * Save the conversation request for whatever the conversation request may be.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(BuildingStatusService $buildingStatusService, ConversationRequest $request, Cooperation $cooperation)
+    public function store(BuildingStatusService $buildingStatusService, ConversationRequest $request, Cooperation $cooperation): RedirectResponse
     {
-        Deprecation::alert(__CLASS__ . ' used!');
+        DeprecationLogger::alert(__CLASS__ . ' used!');
         PrivateMessageService::createConversationRequest(HoomdossierSession::getBuilding(true), Hoomdossier::user(), $request);
 
         $buildingStatusService->forBuilding(HoomdossierSession::getBuilding(true))->setStatus('pending');
 
-        $successMessage = __('conversation-requests.store.success.'.InputSource::COACH_SHORT);
+        $successMessage = __('conversation-requests.store.success.' . InputSource::COACH_SHORT);
 
         if (InputSource::RESIDENT_SHORT == HoomdossierSession::getInputSource(true)->short) {
-            $successMessage = __('conversation-requests.store.success.'.InputSource::RESIDENT_SHORT, ['url' => route('cooperation.my-account.messages.index', compact('cooperation'))]);
+            $successMessage = __('conversation-requests.store.success.' . InputSource::RESIDENT_SHORT, ['url' => route('cooperation.my-account.messages.edit', compact('cooperation'))]);
         }
 
         $scan = $cooperation->scans()->where('scans.short', '!=', Scan::EXPERT)->first();

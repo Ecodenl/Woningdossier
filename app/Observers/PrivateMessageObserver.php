@@ -12,7 +12,7 @@ class PrivateMessageObserver
     /**
      * For every message that is created we want to create a row in the private_message_view.
      */
-    public function created(PrivateMessage $privateMessage)
+    public function created(PrivateMessage $privateMessage): void
     {
         PrivateMessageReceiverEvent::dispatch($privateMessage, HoomdossierSession::getCooperation(true), Auth::user());
     }

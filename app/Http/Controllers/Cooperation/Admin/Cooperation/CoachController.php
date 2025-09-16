@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
+use Illuminate\View\View;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
@@ -13,10 +14,8 @@ class CoachController extends Controller
 {
     /**
      * Show all the coaches and coordinators.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         $users = $cooperation
             ->users()
@@ -29,12 +28,8 @@ class CoachController extends Controller
 
     /**
      * Show a list of a coach its connected buildings.
-     *
-     * @param $userId
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(Cooperation $cooperation, User $user)
+    public function show(Cooperation $cooperation, User $user): View
     {
         $userToShow = $user;
         $buildingFromUser = $userToShow->building;
@@ -52,7 +47,11 @@ class CoachController extends Controller
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();
 
         return view('cooperation.admin.cooperation.coaches.show', compact(
-            'connectedBuildingsForUser', 'userToShow', 'roles', 'buildingFromUser', 'buildings'
+            'connectedBuildingsForUser',
+            'userToShow',
+            'roles',
+            'buildingFromUser',
+            'buildings'
         ));
     }
 }

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use App\Calculations\InsulatedGlazing;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
@@ -29,16 +32,8 @@ use Illuminate\Support\Str as SupportStr;
 
 class InsulatedGlazingController extends ToolController
 {
-    /**
-     * Display a listing of the resources.
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function index(LegacyService $legacyService)
+    public function index(LegacyService $legacyService): View
     {
-        /**
-         * @var Building
-         */
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
@@ -66,6 +61,7 @@ class InsulatedGlazingController extends ToolController
             'glass-in-lead',
         ];
 
+        $measureApplications = [];
         foreach ($measureApplicationShorts as $measureApplicationShort) {
             $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
@@ -77,7 +73,7 @@ class InsulatedGlazingController extends ToolController
                     ->first();
                 $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
 
-                if (!$currentInsulatedGlazingInputs->isEmpty()) {
+                if (! $currentInsulatedGlazingInputs->isEmpty()) {
                     $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInputs;
                 }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
@@ -96,22 +92,33 @@ class InsulatedGlazingController extends ToolController
             ->getMeasureRelatedAnswers(Step::findByShort('insulated-glazing'));
 
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'myBuildingElements', 'buildingOwner',
-            'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
-            'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
-            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility',
+            'building',
+            'myBuildingElements',
+            'buildingOwner',
+            'heatings',
+            'measureApplications',
+            'insulatedGlazings',
+            'buildingInsulatedGlazings',
+            'crackSealing',
+            'frames',
+            'woodElements',
+            'buildingFeaturesForMe',
+            'paintworkStatuses',
+            'woodRotStatuses',
+            'buildingInsulatedGlazingsForMe',
+            'buildingPaintworkStatusesOrderedOnInputSourceCredibility',
             'measureRelatedAnswers'
         ));
     }
 
-    public function calculate(Request $request)
+    public function calculate(Request $request): JsonResponse
     {
+        /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
         $result = InsulatedGlazing::calculate(
             $building,
             $this->masterInputSource,
-            $building->user->energyHabit()->forInputSource($this->masterInputSource)->first(),
             $request->all()
         );
 
@@ -120,10 +127,8 @@ class InsulatedGlazingController extends ToolController
 
     /**
      * Store the incoming request and redirect to the next step.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(InsulatedGlazingFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
+    public function store(InsulatedGlazingFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -153,7 +158,7 @@ class InsulatedGlazingController extends ToolController
         }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
-        if (!empty($dirtyAttributes)) {
+        if (! empty($dirtyAttributes)) {
             UserToolDataChanged::dispatch($user);
         }
 
@@ -168,7 +173,7 @@ class InsulatedGlazingController extends ToolController
                 if (SupportStr::startsWith($dirtyName, 'building_insulated_glazings')) {
                     // Format always has the ID as second attr
                     $id = explode('.', Str::htmlArrToDot($dirtyName))[1] ?? null;
-                    if (!is_null($id) && !in_array($id, $updatedMeasureIds)) {
+                    if (! is_null($id) && ! in_array($id, $updatedMeasureIds)) {
                         // Add ID
                         $updatedMeasureIds[] = $id;
                     }
@@ -183,8 +188,13 @@ class InsulatedGlazingController extends ToolController
             }
         }
 
-        $values = $request->only('considerables', 'building_insulated_glazings', 'building_features',
-            'building_elements', 'building_paintwork_statuses');
+        $values = $request->only(
+            'considerables',
+            'building_insulated_glazings',
+            'building_features',
+            'building_elements',
+            'building_paintwork_statuses'
+        );
         $values['updated_measure_ids'] = $updatedMeasureIds;
 
         (new InsulatedGlazingHelper($user, $inputSource))

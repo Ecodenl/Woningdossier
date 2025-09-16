@@ -13,7 +13,7 @@
     <div class="radio-wrapper pr-3">
         <input type="radio"
                id="{{$uuid}}"
-               wire:model="filledInAnswers.{{$toolQuestion->short}}"
+               wire:model.live="filledInAnswers.{{$toolQuestion->short}}"
                value="{{$toolQuestionValue['value']}}"
                @if($disabled) disabled="disabled" @endif
         >

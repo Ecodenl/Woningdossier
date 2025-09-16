@@ -1,7 +1,8 @@
 <div>
     <div class="w-full flex flex-wrap" x-data="{ selected: null }">
 
-        <div class="w-full flex flex-wrap justify-between" x-data="tabs(@if(request()->has('tab')) '{{ request()->get('tab') }}' @endif)">
+        <div class="w-full flex flex-wrap justify-between"
+             x-data="tabs(@if(request()->has('tab')) '{{ request()->get('tab') }}' @endif)">
             <nav class="nav-tabs" x-show="selected === null">
                 @foreach(__('cooperation/frontend/tool.my-regulations.categories') as $key => $category)
                     <a x-bind="tab" href="#" @if($loop->first) x-ref="main-tab" @endif data-tab="{{ $key }}">
@@ -11,7 +12,8 @@
             </nav>
             @can('refreshRegulations')
                 <div class="flex items-center gap-x-2" @if($isRefreshing) wire:poll="checkIfIsRefreshed" @endif>
-                    <button class="btn btn-purple" type="button" @if($isRefreshing) disabled="disabled" @endif wire:click="refreshRegulations">
+                    <button class="btn btn-purple" type="button" @if($isRefreshing) disabled="disabled" @endif
+                            wire:click="refreshRegulations">
                         <span class="w-full mx-1 flex justify-between items-center">
                             @if($isRefreshing)
                                 <i class="icon-md icon-ventilation-fan animate-spin-slow"></i>
@@ -65,9 +67,9 @@
                                     </p>
                                     <div class="my-8"></div>
                                     <div class="flex flex-wrap flex-row w-full items-center">
-                                                <span class="flex as-text mr-1">
-                                                    {{ Str::ucfirst(__('default.for')) }}:
-                                                </span>
+                                        <span class="flex as-text mr-1">
+                                            {{ Str::ucfirst(__('default.for')) }}:
+                                        </span>
                                         {{-- TODO: Logic --}}
                                         @php($total = count($regulation['advisable_names']))
                                         @for($i = 0; $i < $total; $i++)

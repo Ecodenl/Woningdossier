@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -16,33 +17,33 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $input_source_id
  * @property int $service_id
  * @property int|null $service_value_id
- * @property array|null $extra
+ * @property array<array-key, mixed>|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\Service $service
  * @property-read \App\Models\ServiceType|null $serviceType
  * @property-read \App\Models\ServiceValue|null $serviceValue
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forBuilding($building)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forMe(?\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService query()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereExtra($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereServiceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereServiceValueId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService forBuilding(\App\Models\Building|int $building)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService forUser(\App\Models\User|int $user)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService whereExtra($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService whereServiceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService whereServiceValueId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingService whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class BuildingService extends Model implements Auditable
@@ -51,33 +52,37 @@ class BuildingService extends Model implements Auditable
         GetMyValuesTrait,
         \App\Traits\Models\Auditable;
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'extra' => 'array',
-    ];
-
     protected $fillable = ['service_value_id', 'input_source_id', 'extra', 'building_id', 'service_id'];
 
-    public function building()
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'extra' => 'array',
+        ];
+    }
+
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
-    public function serviceType()
+    public function serviceType(): BelongsTo
     {
+        // TODO: Broken
         return $this->belongsTo(ServiceType::class);
     }
 
-    public function service()
+    public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
 
-    public function serviceValue()
+    public function serviceValue(): BelongsTo
     {
         return $this->belongsTo(ServiceValue::class);
     }

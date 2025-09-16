@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Cache;
 
 class Schema extends BaseCache
 {
-    const CACHE_KEY_HAS_COLUMN = 'Schema_hasColumn_%s_%s';
+    const string CACHE_KEY_HAS_COLUMN = 'Schema_hasColumn_%s_%s';
 
     public static function hasColumn($table, $attribute): bool
     {

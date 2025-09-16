@@ -15,6 +15,7 @@ use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Services\DossierSettingsService;
 use App\Services\UserService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -22,10 +23,8 @@ class SettingsController extends Controller
 {
     /**
      * Update the account.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(MyAccountSettingsFormRequest $request)
+    public function update(MyAccountSettingsFormRequest $request): RedirectResponse
     {
         $user = Hoomdossier::user();
         $cooperation = $user->cooperation;
@@ -54,10 +53,8 @@ class SettingsController extends Controller
 
     /**
      * Reset the user his plan / file / dossier.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function resetFile(Request $request, DossierSettingsService $dossierSettingsService)
+    public function resetFile(Request $request, DossierSettingsService $dossierSettingsService): RedirectResponse
     {
         $user = Hoomdossier::user();
 
@@ -66,7 +63,7 @@ class SettingsController extends Controller
         $masterInputSource = InputSource::master();
         ResetDossierForUser::dispatchSync($user, $masterInputSource);
         foreach ($inputSourceIds as $inputSourceId) {
-            Log::debug("resetting for input source ".$inputSourceId);
+            Log::debug("resetting for input source " . $inputSourceId);
             $relevantInputSource = InputSource::find($inputSourceId);
             ResetDossierForUser::dispatchSync($user, $relevantInputSource);
         }
@@ -83,7 +80,7 @@ class SettingsController extends Controller
     }
 
     // Delete account
-    public function destroy()
+    public function destroy(): RedirectResponse
     {
         $user = Hoomdossier::user();
         $accountId = $user->account_id;

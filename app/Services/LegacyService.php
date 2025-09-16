@@ -39,7 +39,7 @@ class LegacyService
         return $this;
     }
 
-    public function getMeasureRelatedAnswers(Step $step)
+    public function getMeasureRelatedAnswers(Step $step): array
     {
         $cdService = ConditionService::init()->building($this->building)->inputSource($this->inputSource);
 

@@ -34,7 +34,9 @@ class BagService
         // we can, but if the result is 100, we will attempt another fetch since there _might_ be more.
         do {
             ++$page;
-            $list = $this->wrapCall(fn () => $this->lvbag->adresUitgebreid()->page($page)->pageSize(100)->list($attributes) ?? []);
+            $list = $this->wrapCall(
+                fn () => $this->lvbag->adresUitgebreid()->page($page)->pageSize(100)->list($attributes)
+            );
             $filtered = array_filter(array_unique(array_map(function ($address) {
                 return trim(($address['huisletter'] ?? '') . ($address['huisnummertoevoeging'] ?? ''));
             }, $list)));
@@ -52,8 +54,6 @@ class BagService
      *
      * @param $postalCode
      * @param $number
-     * @param  null|string  $houseNumberExtension
-     * @return array
      */
     public function addressExpanded($postalCode, $number, ?string $houseNumberExtension = ""): AddressExpanded
     {
@@ -84,10 +84,10 @@ class BagService
                 $huisletter = array_shift($extensions);
                 $huisnummertoevoeging = implode('', $extensions);
 
-                if (!empty($huisletter)) {
+                if (! empty($huisletter)) {
                     $filteredExtensions['huisletter'] = $huisletter;
                 }
-                if (!empty($huisnummertoevoeging)) {
+                if (! empty($huisnummertoevoeging)) {
                     $filteredExtensions['huisnummertoevoeging'] = $huisnummertoevoeging;
                 }
                 $addressExpanded = $this->listAddressExpanded(
@@ -115,8 +115,8 @@ class BagService
     {
         return new AddressExpanded($this->wrapCall(function () use ($attributes) {
             $list = $this->lvbag
-                    ->adresUitgebreid()
-                    ->list($attributes) ?? [];
+                ->adresUitgebreid()
+                ->list($attributes);
             return array_shift($list);
         }));
     }
@@ -129,7 +129,7 @@ class BagService
             $result['endpoint_failure'] = false;
         } catch (\Exception $exception) {
             if ($exception->getCode() !== 200) {
-                Log::error($exception->getMessage() .' '. $exception->getTraceAsString());
+                Log::error($exception->getMessage() . ' ' . $exception->getTraceAsString());
                 $result['endpoint_failure'] = true;
             }
         }

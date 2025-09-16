@@ -13,9 +13,9 @@ use App\Models\UserEnergyHabit;
 
 class KeyFigures implements KeyFiguresInterface
 {
-    const M3_GAS_TO_KWH = 8.792; // m3 gas -> kWh
+    const float M3_GAS_TO_KWH = 8.792; // m3 gas -> kWh
 
-    protected static $angles = [
+    protected static array $angles = [
         20 => 20,
         30 => 30,
         40 => 40,
@@ -34,21 +34,14 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * @param $angle
-     *
-     * @return PvPanelYield|null
      */
-    public static function getYield(PvPanelOrientation $orientation, $angle)
+    public static function getYield(PvPanelOrientation $orientation, $angle): ?PvPanelYield
     {
         return \App\Helpers\KeyFigures\PvPanels\KeyFigures::getYield($orientation, $angle);
     }
 
     /**
      * Get the key figure for the current water consumption.
-     *
-     * @param int|null $residentCount
-     * @param \App\Models\ComfortLevelTapWater $comfortLevel
-     *
-     * @return \App\Models\KeyFigureConsumptionTapWater|null
      */
     public static function getCurrentConsumption(?int $residentCount, ComfortLevelTapWater $comfortLevel): ?KeyFigureConsumptionTapWater
     {
@@ -56,20 +49,12 @@ class KeyFigures implements KeyFiguresInterface
         $ttl = 60 * 60 * 24; // 24 hours
         return cache()->remember($key, $ttl, function () use ($residentCount, $comfortLevel) {
             return KeyFigureConsumptionTapWater::where('resident_count', $residentCount)
-                                               ->where('comfort_level_tap_water_id', $comfortLevel->id)
-                                               ->first();
+                ->where('comfort_level_tap_water_id', $comfortLevel->id)
+                ->first();
         });
-
-
     }
 
-    /**
-     * @param int   $waterConsumption
-     * @param float $helpFactor
-     *
-     * @return array
-     */
-    public static function getSystemSpecifications($waterConsumption, $helpFactor)
+    public static function getSystemSpecifications(int $waterConsumption, float $helpFactor): array
     {
         $initialHeater = HeaterSpecification::where('liters', $waterConsumption)->first();
 
@@ -93,12 +78,8 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * Return the advised collector size based on the relative collector size.
-     *
-     * @param float $relativeCollectorSize
-     *
-     * @return float
      */
-    public static function getAdvisedCollectorSize($relativeCollectorSize)
+    public static function getAdvisedCollectorSize(float $relativeCollectorSize): float
     {
         if ($relativeCollectorSize <= 2) {
             return 1.6;
@@ -123,10 +104,8 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * Returns the key figures from this class.
-     *
-     * @return array
      */
-    public static function getKeyFigures()
+    public static function getKeyFigures(): array
     {
         $figures = [];
 

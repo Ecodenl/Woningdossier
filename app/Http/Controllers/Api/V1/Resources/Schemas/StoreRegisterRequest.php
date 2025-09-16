@@ -148,6 +148,4 @@ class StoreRegisterRequest
      */
 
     public $roles;
-
-
 }

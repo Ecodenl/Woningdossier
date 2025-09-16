@@ -3,7 +3,8 @@
 use App\Http\Controllers\Cooperation;
 use Illuminate\Support\Facades\Route;
 
-Route::resource('clients', Cooperation\Admin\SuperAdmin\ClientController::class);
+Route::resource('clients', Cooperation\Admin\SuperAdmin\ClientController::class)
+    ->except(['show']);
 
 Route::resource('tool-questions', Cooperation\Admin\SuperAdmin\ToolQuestionController::class)
     ->parameter('tool-questions', 'toolQuestion')
@@ -34,7 +35,6 @@ Route::get('home', [Cooperation\Admin\SuperAdmin\SuperAdminController::class, 'i
 
 Route::name('users.')->prefix('users')->group(function () {
     Route::get('', [Cooperation\Admin\SuperAdmin\UserController::class, 'index'])->name('index');
-    Route::get('search', [Cooperation\Admin\SuperAdmin\UserController::class, 'filter'])->name('filter');
 });
 
 Route::resource('questionnaires', Cooperation\Admin\SuperAdmin\QuestionnaireController::class)->parameter('questionnaires', 'questionnaire');
@@ -69,7 +69,7 @@ Route::prefix('cooperations')->name('cooperations.')->group(function () {
         Route::resource('users', Cooperation\Admin\SuperAdmin\Cooperation\UserController::class)
             ->only(['index', 'show', 'create', 'store']);
         Route::post('users/{id}/confirm', [
-            Cooperation\Admin\SuperAdmin\Cooperation\UserController::class, 'confirm',])
+            Cooperation\Admin\SuperAdmin\Cooperation\UserController::class, 'confirm'])
             ->name('users.confirm');
         Route::prefix('settings')->as('settings.')->group(function () {
             Route::get('', [Cooperation\Admin\SuperAdmin\Cooperation\SettingsController::class, 'index'])->name('index');

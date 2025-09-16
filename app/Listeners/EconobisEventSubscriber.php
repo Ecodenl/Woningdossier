@@ -31,7 +31,7 @@ class EconobisEventSubscriber
     {
         Log::debug(__METHOD__);
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
-        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->building->id)->isNotEmpty();
+        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($event->building)->isNotEmpty();
         if ($canSendUserInformationToEconobis && $userHasConnectedCoaches) {
             Log::debug(__METHOD__ . ' - dispatching SendAppointmentDateToEconobis');
             SendAppointmentDateToEconobis::dispatch($event->building);
@@ -41,22 +41,22 @@ class EconobisEventSubscriber
     public function sendBuildingStatusToEconobis(BuildingStatusUpdated $event)
     {
         // Econobis only wants the status if it's `executed` ("uitgevoerd")
-        $econobisWantsStatus = ($status = optional($event->building->getMostRecentBuildingStatus())->status) instanceof Status && $status->short === 'executed';
+        $econobisWantsStatus = ($status = $event->building->getMostRecentBuildingStatus()?->status) instanceof Status && $status->short === 'executed';
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
-        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->building->id)->isNotEmpty();
+        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($event->building)->isNotEmpty();
         if ($canSendUserInformationToEconobis && $userHasConnectedCoaches && $econobisWantsStatus) {
             SendBuildingStatusToEconobis::dispatch($event->building);
         }
     }
 
-    public function sendScanStatusToEconobis($event)
+    public function sendScanStatusToEconobis(BuildingCompletedHisFirstSubStep|UserResetHisBuilding $event)
     {
         if ($this->canUserSendInformationToEconobis($event)) {
             SendScanStatusToEconobis::dispatch($event->building);
         }
     }
 
-    public function sendBuildingFilledInAnswersToEconobis($event)
+    public function sendBuildingFilledInAnswersToEconobis(UserResetHisBuilding $event)
     {
         if ($this->canUserSendInformationToEconobis($event)) {
             SendBuildingFilledInAnswersToEconobis::dispatch($event->building);

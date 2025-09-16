@@ -18,7 +18,7 @@ class AddressFormRequest extends FormRequest
         return $this;
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'address.postal_code' => ['required', new PostalCode($this->country)],

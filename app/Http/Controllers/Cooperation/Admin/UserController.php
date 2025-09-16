@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
-use App\Helpers\Hoomdossier;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
@@ -17,7 +19,7 @@ class UserController extends Controller
 {
     use CreatesUsers;
 
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         // change the relationship to building on merge.
         $users = $cooperation
@@ -34,7 +36,7 @@ class UserController extends Controller
         return view('cooperation.admin.users.index', compact('users'));
     }
 
-    public function create(Cooperation $cooperation)
+    public function create(Cooperation $cooperation): View
     {
         $userCurrentRole = HoomdossierSession::getRole(true);
         $roles = Role::orderByDesc('level')->get();
@@ -43,7 +45,7 @@ class UserController extends Controller
         return view('cooperation.admin.users.create', compact('userCurrentRole', 'roles', 'coaches'));
     }
 
-    public function store(UserFormRequest $request, Cooperation $cooperation)
+    public function store(UserFormRequest $request, Cooperation $cooperation): RedirectResponse
     {
         $this->createUser($request, $cooperation);
 
@@ -63,7 +65,7 @@ class UserController extends Controller
 
         $user = User::find($userId);
 
-        $this->authorize('destroy', $user);
+        Gate::authorize('destroy', $user);
 
         if ($user instanceof User) {
             UserService::deleteUser($user);

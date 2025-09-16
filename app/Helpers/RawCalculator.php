@@ -15,35 +15,38 @@ use App\Models\PriceIndexing;
 use App\Models\UserEnergyHabit;
 use App\Services\Kengetallen\KengetallenService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class RawCalculator
 {
     /**
      * Calculate the gas savings for the given building when applying the
      * given Element.
-     *
-     * @param $surface
-     * @param $measureAdvice
-     *
-     * @return int|mixed
      */
-    public static function calculateGasSavings(Building $building, InputSource $inputSource, ElementValue $element, UserEnergyHabit $energyHabit, $surface, $measureAdvice)
+    public static function calculateGasSavings(
+        Building $building,
+        InputSource $inputSource,
+        ElementValue $element,
+        UserEnergyHabit $energyHabit,
+        $surface,
+        $measureAdvice
+    )
     {
         $result = 0;
         $building->getBuildingType($inputSource);
 
         $roomTempCalculator = new RoomTemperatureCalculator($energyHabit);
         $averageHouseTemperature = $roomTempCalculator->getAverageHouseTemperature();
-        self::debug(__METHOD__.' Average house temperature = '.$averageHouseTemperature);
+        self::debug(__METHOD__ . ' Average house temperature = ' . $averageHouseTemperature);
         $kengetalEnergySaving = Temperature::energySavingFigureWallInsulation($measureAdvice, $averageHouseTemperature);
-        self::debug(__METHOD__.' Kengetal energiebesparing = '.$kengetalEnergySaving);
+        self::debug(__METHOD__ . ' Kengetal energiebesparing = ' . $kengetalEnergySaving);
 
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(
                 $surface * $kengetalEnergySaving,
-                self::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
+                self::maxGasSavings($building, $inputSource, $element->element)
             );
-            self::debug(__METHOD__.' '.$result.' = min('.$surface.' * '.$kengetalEnergySaving.', '.self::maxGasSavings($building, $inputSource, $energyHabit, $element->element).')');
+            self::debug(__METHOD__ . ' ' . $result . ' = min(' . $surface . ' * ' . $kengetalEnergySaving . ', ' . self::maxGasSavings($building, $inputSource, $element->element) . ')');
         }
 
         return $result;
@@ -58,9 +61,8 @@ class RawCalculator
      */
     public static function calculateCo2Savings($gasSavings)
     {
-
         $result = $gasSavings * Kengetallen::CO2_SAVING_GAS;
-        self::debug(__METHOD__.' CO2 besparing: '.$result.' = '.$gasSavings.' * '.Kengetallen::CO2_SAVING_GAS);
+        self::debug(__METHOD__ . ' CO2 besparing: ' . $result . ' = ' . $gasSavings . ' * ' . Kengetallen::CO2_SAVING_GAS);
 
         return $result;
     }
@@ -69,30 +71,24 @@ class RawCalculator
      * Calculate the money savings in euro / m3 gas based on the key figure.
      *
      * @param float|int $gasSavings
-     *
-     * @return float|int
      */
-    public static function calculateMoneySavings($gasSavings, $euroSavingsGas)
+    public static function calculateMoneySavings($gasSavings, float $euroSavingsGas): float
     {
         $result = $gasSavings * $euroSavingsGas;
-        self::debug(__METHOD__." Euro's besparing: ".$result.' = '.$gasSavings.' * '.$euroSavingsGas);
+        self::debug(__METHOD__ . " Euro's besparing: " . $result . ' = ' . $gasSavings . ' * ' . $euroSavingsGas);
 
         return $result;
     }
 
     public static function calculateCostIndication($surface, MeasureApplication $measureApplication)
     {
-        if (! $measureApplication instanceof MeasureApplication) {
-            return 0;
-        }
-
         if (null == $surface || '0.0' == $surface) {
             $result = 0;
         } else {
             $result = max($surface * $measureApplication->costs, $measureApplication->minimal_costs);
         }
 
-        self::debug(__METHOD__.' Cost indication: '.$result.' = max('.$surface.' * '.$measureApplication->costs.', '.$measureApplication->minimal_costs.')');
+        self::debug(__METHOD__ . ' Cost indication: ' . $result . ' = max(' . $surface . ' * ' . $measureApplication->costs . ', ' . $measureApplication->minimal_costs . ')');
 
         return $result;
     }
@@ -101,16 +97,19 @@ class RawCalculator
      * Return the costs of applying a particular measure in a particular year.
      * This takes yearly cost indexing into account.
      *
-     * @param MeasureApplication $measure         The measure to apply
-     * @param mixed              $number          The amount of measures. (might be m2, pieces, etc.)
-     * @param int|null           $applicationYear
-     * @param bool               $applyIndexing   Whether or not to apply indexing
-     *
-     * @return float|int
+     * @param MeasureApplication $measure The measure to apply
+     * @param null|int|float $number The amount of measures. (might be m2, pieces, etc.)
+     * @param null|int $applicationYear The year the measure was executed
+     * @param bool $applyIndexing Whether or not to apply indexing
      */
-    public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, $applicationYear = null, $applyIndexing = true)
+    public static function calculateMeasureApplicationCosts(
+        MeasureApplication $measure,
+        null|int|float $number,
+        ?int $applicationYear = null,
+        bool $applyIndexing = true
+    ): float|int
     {
-        self::debug(__METHOD__.' for measure '.$measure->measure_name);
+        self::debug(__METHOD__ . ' for measure ' . $measure->getTranslation('measure_name', 'nl'));
         if (! is_numeric($number) || $number <= 0) {
             return 0;
         }
@@ -124,7 +123,7 @@ class RawCalculator
         }
 
         $total = max($number * $measure->costs, $measure->minimal_costs);
-        self::debug(__METHOD__.' Non indexed costs: '.$total.' = max('.$number.' * '.$measure->costs.', '.$measure->minimal_costs.')');
+        self::debug(__METHOD__ . ' Non indexed costs: ' . $total . ' = max(' . $number . ' * ' . $measure->costs . ', ' . $measure->minimal_costs . ')');
         // Apply indexing (general indexing which applies for measures)
 
         if ($applyIndexing) {
@@ -140,59 +139,9 @@ class RawCalculator
 
         $totalIndexed = $total * pow((1 + ($costIndex / 100)), $yearFactor);
 
-        self::debug(__METHOD__.' Indexed costs: '.$totalIndexed.' = '.$total.' * '.(1 + ($costIndex / 100)).'^'.$yearFactor);
+        self::debug(__METHOD__ . ' Indexed costs: ' . $totalIndexed . ' = ' . $total . ' * ' . (1 + ($costIndex / 100)) . '^' . $yearFactor);
 
         return $totalIndexed;
-    }
-
-    /**
-     * @param float|int                    $costs    Amount indexed on $fromYear
-     * @param int                          $fromYear Previous year used for indexing
-     * @param int                          $toYear   New year to index
-     * @param int|float|PriceIndexing|null $index    Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
-     *
-     * @return float|int
-     */
-    public static function reindexCosts($costs, $fromYear, $toYear, $index = null)
-    {
-        if (is_null($fromYear)) {
-            $fromYear = Carbon::now()->year;
-        }
-        if (is_null($toYear)) {
-            $toYear = Carbon::now()->year;
-        }
-        $yearFactor = $toYear - $fromYear;
-
-        if (is_null($index)) {
-            //$index = PriceIndexing::where('short', 'common')->first();
-            $index = \App\Helpers\Cache\Calculator::getPriceIndex('common');
-        }
-        // default = 2%
-        $costIndex = 2;
-        if ($index instanceof PriceIndexing) {
-            $costIndex = $index->percentage;
-        } elseif (! is_null($index) && $index >= 0 && $index <= 100) {
-            $costIndex = $index;
-        }
-
-        $costsIndexed = $costs * pow((1 + ($costIndex / 100)), $yearFactor);
-        self::debug(__METHOD__.' Re-indexed costs: '.$costsIndexed.' = '.$costs.' * '.(1 + ($costIndex / 100)).'^'.$yearFactor);
-
-        return $costsIndexed;
-    }
-
-    /**
-     * Index costs. Basically this is 'reindexing' where the costs were indexed
-     * for this year.
-     *
-     * @param float|int $costs
-     * @param int       $toYear
-     *
-     * @return float|int
-     */
-    public static function indexCosts($costs, $toYear)
-    {
-        return self::reindexCosts($costs, null, $toYear);
     }
 
     /**
@@ -200,11 +149,10 @@ class RawCalculator
      * Based on the building, only a max percentage of gas can be saved for
      * particular Elements.
      *
-     * @param UserEnergyHabit|null $energyHabit
      *
      * @return float|int
      */
-    public static function maxGasSavings(Building $building, InputSource $inputSource, $energyHabit, Element $element)
+    public static function maxGasSavings(Building $building, InputSource $inputSource, Element $element)
     {
         $result = 0;
 
@@ -220,9 +168,9 @@ class RawCalculator
             if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
                 $saving = $maxSaving->max_saving;
             }
-            self::debug(__METHOD__.' Max saving for building_type '.$buildingType->id.' + element '.$element->id.' ('.$element->short.') = '.$saving.'%');
+            self::debug(__METHOD__ . ' Max saving for building_type ' . $buildingType->id . ' + element ' . $element->id . ' (' . $element->short . ') = ' . $saving . '%');
             $result = $usage * ($saving / 100);
-            self::debug(__METHOD__.' '.$result.' = '.$usage.' * '.($saving / 100));
+            self::debug(__METHOD__ . ' ' . $result . ' = ' . $usage . ' * ' . ($saving / 100));
         }
 
         // when someone fills in a way to low non realistic gas usage it will be below 0
@@ -234,8 +182,10 @@ class RawCalculator
         return $result;
     }
 
-    protected static function debug($line)
+    protected static function debug(string $line): void
     {
-        // \Log::debug($line);
+        if (config('hoomdossier.services.enable_calculation_logging')) {
+            Log::channel('calculations')->debug($line);
+        }
     }
 }

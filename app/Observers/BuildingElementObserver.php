@@ -39,8 +39,7 @@ class BuildingElementObserver
                     $comfort = $elementValue->configurations['comfort'] ?? 0;
 
                     // We need to check the lowest glass type, so we need to check the other element value also
-                    $elementToCompare = $buildingElement->element_id === $livingRoomsWindows->id
-                        ? $sleepingRoomsWindows : $livingRoomsWindows;
+                    $elementToCompare = $buildingElement->element_id === $livingRoomsWindows->id ? $sleepingRoomsWindows : $livingRoomsWindows;
 
                     $otherElementValue = optional($building->buildingElements()
                         ->where('element_id', $elementToCompare->id)
@@ -52,12 +51,10 @@ class BuildingElementObserver
                         $comfort = min($comfort, ($otherElementValue->configurations['comfort'] ?? 0));
                     }
 
-                    if (($singlePaneGlass = InsulatingGlazing::where('name->nl', 'Enkelglas')->first())
-                        instanceof InsulatingGlazing
+                    if (($singlePaneGlass = InsulatingGlazing::where('name->nl', 'Enkelglas')->first()) instanceof InsulatingGlazing
                     ) {
                         // This assumes there's no other insulated glazings, which there are not currently
-                        if (($doublePaneGlass = InsulatingGlazing::where('id', '!=', $singlePaneGlass->id)->first())
-                            instanceof InsulatingGlazing
+                        if (($doublePaneGlass = InsulatingGlazing::where('id', '!=', $singlePaneGlass->id)->first()) instanceof InsulatingGlazing
                         ) {
                             // If comfort is below 3, then it's single pane glass. If it's higher/equal to 3, then it's
                             // double pane glass.

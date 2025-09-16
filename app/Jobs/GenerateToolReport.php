@@ -40,13 +40,11 @@ class GenerateToolReport implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         if (App::runningInConsole()) {
-            Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
+            Log::debug(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
         }
 
         // Define dump type based on file type
@@ -115,7 +113,7 @@ class GenerateToolReport implements ShouldQueue
                     ]
                 );
             }, 'energyHabit' => fn ($q) => $q->forInputSource($inputSource)])
-            ->chunkById(100, function($users) use ($dumpService, &$rows, &$chunkNo) {
+            ->chunkById(100, function ($users) use ($dumpService, &$rows, &$chunkNo) {
                 foreach ($users as $user) {
                     $rows[$user->building->id] = $dumpService->user($user)->generateDump();
                     if ($this->fileType->short === 'total-report') {
@@ -151,7 +149,7 @@ class GenerateToolReport implements ShouldQueue
                 $rows = [];
             });
 
-        $this->fileStorage->isProcessed();
+        $this->fileStorage->finishProcess();
     }
 
     public function failed(Throwable $exception)

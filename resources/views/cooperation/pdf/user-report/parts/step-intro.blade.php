@@ -15,10 +15,10 @@
 
 <div id="step-intro" class="group">
     <div class="icon-container">
-        <img src="{{ pdfAsset($stepIconMap[$step->short]) }}" alt="{{ $step->name }}"
+        <img src="{{ asset($stepIconMap[$step->short]) }}" alt="{{ $step->name }}"
              style="max-width: 100%; max-height: 100%;">
     </div>
-    <h2 class="text-green">
+    <h2 class="text-green-600">
         {{ $step->name }}
     </h2>
     <p>

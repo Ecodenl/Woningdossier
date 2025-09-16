@@ -10,20 +10,24 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $short
- * @property array $name
+ * @property array<array-key, mixed> $name
  * @property string $percentage
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read array $translations
- * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing query()
- * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing wherePercentage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing whereUpdatedAt($value)
+ * @property-read mixed $translations
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing whereLocale(string $column, string $locale)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing whereLocales(string $column, array $locales)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing wherePercentage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class PriceIndexing extends Model

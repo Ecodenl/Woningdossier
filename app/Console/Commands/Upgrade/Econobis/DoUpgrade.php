@@ -23,21 +23,9 @@ class DoUpgrade extends Command
     protected $description = 'Run all commands for the Econobis upgrade.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $commands = [
             SeedCommand::class => [
@@ -48,7 +36,7 @@ class DoUpgrade extends Command
         ];
 
         foreach ($commands as $command => $variants) {
-            if ( ! is_array(Arr::first($variants))) {
+            if (! is_array(Arr::first($variants))) {
                 $variants = [$variants];
             }
 

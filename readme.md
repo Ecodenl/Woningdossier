@@ -20,21 +20,16 @@ But we want to make sure that it remains Open Source. That is why we need the le
 
 ## Tech: Setup
 
-### The server
-There are multiple ways to get the development environment up and running. How 
-you run it is a matter of taste.
-
-Options:
-- [Vagrant + ansible](docs/setup/vagrant-ansible.md)
-- [Docker](docs/setup/docker.md)
+### Local development
+Use Laravel Sail via [Docker](docs/setup/docker.md)
 
 ## The application
 
 ### PHP version
-PHP 7.4 is the current targeted version as this is the lowest actively supported PHP version.
+PHP 8.3 is the current targeted version.
 
 ### Conventions
-The Hoomdossier is based on Laravel 6.0 LTS. Our goal is to confirm as much as 
+The Hoomdossier is based on Laravel 12. Our goal is to confirm as much as 
 possible to the conventions by the framework (i.e. PSR-4 autoloading).
 
 ### Code conventions

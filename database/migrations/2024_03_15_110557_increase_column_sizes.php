@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class IncreaseColumnSizes extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('user_action_plan_advices', function (Blueprint $table) {
             $table->decimal('savings_gas', 65)->nullable()->change();
@@ -28,11 +26,9 @@ class IncreaseColumnSizes extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // No need to roll back
     }
-}
+};

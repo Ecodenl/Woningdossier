@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\MeasureApplicationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature as FloorInsulationTemperature;
 use App\Helpers\KeyFigures\WallInsulation\Temperature as WallInsulationTemperature;
 use App\Scopes\VisibleScope;
@@ -19,62 +22,64 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  *
  * @property int $id
  * @property string $measure_type
- * @property array $measure_name
- * @property array|null $measure_info
+ * @property array<array-key, mixed> $measure_name
+ * @property array<array-key, mixed>|null $measure_info
  * @property string $short
  * @property string $application
- * @property array|null $cost_range
+ * @property array<array-key, mixed>|null $cost_range
  * @property string|null $savings_money
  * @property float $costs
- * @property array $cost_unit
+ * @property array<array-key, mixed> $cost_unit
  * @property float $minimal_costs
  * @property int $maintenance_interval
- * @property array $maintenance_unit
+ * @property array<array-key, mixed> $maintenance_unit
  * @property int $step_id
  * @property bool $has_calculations
- * @property array|null $configurations
+ * @property array<array-key, mixed>|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string $info
  * @property-read string $name
- * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
- * @property-read int|null $interests_count
  * @property-read \App\Models\Step $step
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read mixed $translations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
- * @method static Builder|MeasureApplication measureType(string $measureType)
- * @method static Builder|MeasureApplication newModelQuery()
- * @method static Builder|MeasureApplication newQuery()
- * @method static Builder|MeasureApplication query()
- * @method static Builder|MeasureApplication whereApplication($value)
- * @method static Builder|MeasureApplication whereConfigurations($value)
- * @method static Builder|MeasureApplication whereCostRange($value)
- * @method static Builder|MeasureApplication whereCostUnit($value)
- * @method static Builder|MeasureApplication whereCosts($value)
- * @method static Builder|MeasureApplication whereCreatedAt($value)
- * @method static Builder|MeasureApplication whereHasCalculations($value)
- * @method static Builder|MeasureApplication whereId($value)
- * @method static Builder|MeasureApplication whereMaintenanceInterval($value)
- * @method static Builder|MeasureApplication whereMaintenanceUnit($value)
- * @method static Builder|MeasureApplication whereMeasureInfo($value)
- * @method static Builder|MeasureApplication whereMeasureName($value)
- * @method static Builder|MeasureApplication whereMeasureType($value)
- * @method static Builder|MeasureApplication whereMinimalCosts($value)
- * @method static Builder|MeasureApplication whereSavingsMoney($value)
- * @method static Builder|MeasureApplication whereShort($value)
- * @method static Builder|MeasureApplication whereStepId($value)
- * @method static Builder|MeasureApplication whereUpdatedAt($value)
+ * @method static Builder<static>|MeasureApplication newModelQuery()
+ * @method static Builder<static>|MeasureApplication newQuery()
+ * @method static Builder<static>|MeasureApplication query()
+ * @method static Builder<static>|MeasureApplication whereApplication($value)
+ * @method static Builder<static>|MeasureApplication whereConfigurations($value)
+ * @method static Builder<static>|MeasureApplication whereCostRange($value)
+ * @method static Builder<static>|MeasureApplication whereCostUnit($value)
+ * @method static Builder<static>|MeasureApplication whereCosts($value)
+ * @method static Builder<static>|MeasureApplication whereCreatedAt($value)
+ * @method static Builder<static>|MeasureApplication whereHasCalculations($value)
+ * @method static Builder<static>|MeasureApplication whereId($value)
+ * @method static Builder<static>|MeasureApplication whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|MeasureApplication whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|MeasureApplication whereLocale(string $column, string $locale)
+ * @method static Builder<static>|MeasureApplication whereLocales(string $column, array $locales)
+ * @method static Builder<static>|MeasureApplication whereMaintenanceInterval($value)
+ * @method static Builder<static>|MeasureApplication whereMaintenanceUnit($value)
+ * @method static Builder<static>|MeasureApplication whereMeasureInfo($value)
+ * @method static Builder<static>|MeasureApplication whereMeasureName($value)
+ * @method static Builder<static>|MeasureApplication whereMeasureType($value)
+ * @method static Builder<static>|MeasureApplication whereMinimalCosts($value)
+ * @method static Builder<static>|MeasureApplication whereSavingsMoney($value)
+ * @method static Builder<static>|MeasureApplication whereShort($value)
+ * @method static Builder<static>|MeasureApplication whereStepId($value)
+ * @method static Builder<static>|MeasureApplication whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+#[ObservedBy([MeasureApplicationObserver::class])]
 class MeasureApplication extends Model
 {
     use HasTranslations,
         HasShortTrait,
         HasMappings;
 
-    const ENERGY_SAVING = 'energy_saving';
-    const MAINTENANCE = 'maintenance';
+    const string ENERGY_SAVING = 'energy_saving';
+    const string MAINTENANCE = 'maintenance';
 
     protected $translatable = [
         'measure_name', 'measure_info', 'cost_unit', 'maintenance_unit',
@@ -84,15 +89,18 @@ class MeasureApplication extends Model
         'measure_name', 'measure_info', 'configurations', 'cost_range', 'savings_money',
     ];
 
-    protected $casts = [
-        'cost_range' => 'array',
-        'has_calculations' => 'boolean',
-        'configurations' => 'array',
-    ];
-
     protected $appends = [
         'name',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'cost_range' => 'array',
+            'has_calculations' => 'boolean',
+            'configurations' => 'array',
+        ];
+    }
 
    # Model methods
     /**
@@ -116,16 +124,17 @@ class MeasureApplication extends Model
     # Attributes
     public function getNameAttribute(): string
     {
-        return $this->measure_name;
+        return $this->getTranslation('measure_name', 'nl');
     }
 
     public function getInfoAttribute(): string
     {
-        return $this->measure_info;
+        return $this->getTranslation('measure_info', 'nl');
     }
 
     # Scopes
-    public function scopeMeasureType(Builder $query, string $measureType): Builder
+    #[Scope]
+    protected function measureType(Builder $query, string $measureType): Builder
     {
         return $query->where('measure_type', $measureType);
     }
@@ -145,16 +154,5 @@ class MeasureApplication extends Model
             UserActionPlanAdvice::class,
             'user_action_plan_advisable'
         )->withoutGlobalScope(VisibleScope::class);
-    }
-
-    /**
-     * Returns all the interest levels given for the interest.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function interests(): MorphToMany
-    {
-        return $this->morphToMany(Interest::class, 'interested_in', 'user_interests');
-//        return $this->morphed(Interest::class, 'interested_in', 'user_interests');
     }
 }

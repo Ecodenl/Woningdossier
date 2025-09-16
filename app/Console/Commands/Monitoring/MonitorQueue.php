@@ -26,21 +26,9 @@ class MonitorQueue extends Command
     protected $description = 'Creates a queue log for the size of every queue at this moment.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         // Log queue size for each available queue.
         foreach (Queue::getQueueNames() as $queueName) {
@@ -70,6 +58,6 @@ class MonitorQueue extends Command
             ->where('created_at', '<=', Carbon::now()->subDays(7))
             ->delete();
 
-        return 0;
+        return self::SUCCESS;
     }
 }

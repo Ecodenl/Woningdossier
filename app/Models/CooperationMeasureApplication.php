@@ -2,6 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\CooperationMeasureApplicationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Scopes\VisibleScope;
 use App\Traits\Models\HasMappings;
@@ -15,11 +20,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * App\Models\CooperationMeasureApplication
  *
  * @property int $id
- * @property array $name
- * @property array $info
- * @property array $costs
+ * @property array<array-key, mixed> $name
+ * @property array<array-key, mixed> $info
+ * @property array<array-key, mixed> $costs
  * @property string $savings_money
- * @property array $extra
+ * @property array<array-key, mixed> $extra
  * @property bool $is_extensive_measure
  * @property bool $is_deletable
  * @property int $cooperation_id
@@ -27,32 +32,35 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Cooperation $cooperation
- * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read mixed $translations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
- * @method static Builder|CooperationMeasureApplication extensiveMeasures()
- * @method static \Database\Factories\CooperationMeasureApplicationFactory factory(...$parameters)
- * @method static Builder|CooperationMeasureApplication newModelQuery()
- * @method static Builder|CooperationMeasureApplication newQuery()
- * @method static \Illuminate\Database\Query\Builder|CooperationMeasureApplication onlyTrashed()
- * @method static Builder|CooperationMeasureApplication query()
- * @method static Builder|CooperationMeasureApplication smallMeasures()
- * @method static Builder|CooperationMeasureApplication whereCooperationId($value)
- * @method static Builder|CooperationMeasureApplication whereCosts($value)
- * @method static Builder|CooperationMeasureApplication whereCreatedAt($value)
- * @method static Builder|CooperationMeasureApplication whereDeletedAt($value)
- * @method static Builder|CooperationMeasureApplication whereExtra($value)
- * @method static Builder|CooperationMeasureApplication whereId($value)
- * @method static Builder|CooperationMeasureApplication whereInfo($value)
- * @method static Builder|CooperationMeasureApplication whereIsDeletable($value)
- * @method static Builder|CooperationMeasureApplication whereIsExtensiveMeasure($value)
- * @method static Builder|CooperationMeasureApplication whereName($value)
- * @method static Builder|CooperationMeasureApplication whereSavingsMoney($value)
- * @method static Builder|CooperationMeasureApplication whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|CooperationMeasureApplication withTrashed()
- * @method static \Illuminate\Database\Query\Builder|CooperationMeasureApplication withoutTrashed()
+ * @method static \Database\Factories\CooperationMeasureApplicationFactory factory($count = null, $state = [])
+ * @method static Builder<static>|CooperationMeasureApplication newModelQuery()
+ * @method static Builder<static>|CooperationMeasureApplication newQuery()
+ * @method static Builder<static>|CooperationMeasureApplication onlyTrashed()
+ * @method static Builder<static>|CooperationMeasureApplication query()
+ * @method static Builder<static>|CooperationMeasureApplication whereCooperationId($value)
+ * @method static Builder<static>|CooperationMeasureApplication whereCosts($value)
+ * @method static Builder<static>|CooperationMeasureApplication whereCreatedAt($value)
+ * @method static Builder<static>|CooperationMeasureApplication whereDeletedAt($value)
+ * @method static Builder<static>|CooperationMeasureApplication whereExtra($value)
+ * @method static Builder<static>|CooperationMeasureApplication whereId($value)
+ * @method static Builder<static>|CooperationMeasureApplication whereInfo($value)
+ * @method static Builder<static>|CooperationMeasureApplication whereIsDeletable($value)
+ * @method static Builder<static>|CooperationMeasureApplication whereIsExtensiveMeasure($value)
+ * @method static Builder<static>|CooperationMeasureApplication whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|CooperationMeasureApplication whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|CooperationMeasureApplication whereLocale(string $column, string $locale)
+ * @method static Builder<static>|CooperationMeasureApplication whereLocales(string $column, array $locales)
+ * @method static Builder<static>|CooperationMeasureApplication whereName($value)
+ * @method static Builder<static>|CooperationMeasureApplication whereSavingsMoney($value)
+ * @method static Builder<static>|CooperationMeasureApplication whereUpdatedAt($value)
+ * @method static Builder<static>|CooperationMeasureApplication withTrashed()
+ * @method static Builder<static>|CooperationMeasureApplication withoutTrashed()
  * @mixin \Eloquent
  */
+#[ObservedBy([CooperationMeasureApplicationObserver::class])]
 class CooperationMeasureApplication extends Model
 {
     use HasFactory,
@@ -66,34 +74,37 @@ class CooperationMeasureApplication extends Model
         'name', 'info', 'costs', 'savings_money', 'extra', 'cooperation_id', 'is_extensive_measure', 'is_deletable',
     ];
 
-    protected $casts = [
-        'costs' => 'array',
-        'extra' => 'array',
-        'is_extensive_measure' => 'boolean',
-        'is_deletable' => 'boolean',
-    ];
-
-    # Model Methods
-    public function getType(): string
+    protected function casts(): array
     {
-        return $this->is_extensive_measure
-            ? CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE
-            : CooperationMeasureApplicationHelper::SMALL_MEASURE;
+        return [
+            'costs' => 'array',
+            'extra' => 'array',
+            'is_extensive_measure' => 'boolean',
+            'is_deletable' => 'boolean',
+        ];
     }
 
-    # Scopes
-    public function scopeExtensiveMeasures(Builder $query): Builder
+    // Model Methods
+    public function getType(): string
+    {
+        return $this->is_extensive_measure ? CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE : CooperationMeasureApplicationHelper::SMALL_MEASURE;
+    }
+
+    // Scopes
+    #[Scope]
+    protected function extensiveMeasures(Builder $query): Builder
     {
         return $query->where('is_extensive_measure', true);
     }
 
-    public function scopeSmallMeasures(Builder $query): Builder
+    #[Scope]
+    protected function smallMeasures(Builder $query): Builder
     {
         return $query->where('is_extensive_measure', false);
     }
 
-    # Relations
-    public function userActionPlanAdvices()
+    // Relations
+    public function userActionPlanAdvices(): MorphMany
     {
         // We need to retrieve this without the visible tag
         // The visible tag defines whether it should be shown on my plan or not, but for other locations
@@ -104,7 +115,7 @@ class CooperationMeasureApplication extends Model
         )->withoutGlobalScope(VisibleScope::class);
     }
 
-    public function cooperation()
+    public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class);
     }

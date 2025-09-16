@@ -1,5 +1,6 @@
 /* Hyperlink */
-a:not(.btn) {
+a:not(.btn),
+button.as-link {
     @apply text-blue-900 underline font-medium cursor-pointer transition text-sm relative;
 
     @apply hover:!bg-opacity-60 hover:!text-opacity-60 hover:!border-opacity-60;
@@ -13,7 +14,10 @@ a:hover i, a:focus i {
 /* Hyperlink in paragraph */
 p a:not(.btn),
 .as-text a:not(.btn),
-a:not(.btn).in-text {
+a:not(.btn).in-text,
+p button.as-link,
+.as-text button.as-link,
+button.as-link.in-text {
     @apply text-purple no-underline font-medium;
 }
 
@@ -78,42 +82,42 @@ a:not(.btn).in-text {
     @apply active:bg-blue-900 active:bg-opacity-100 active:text-white focus:shadow-center-blue-50;
 }
 .btn-outline-purple {
-    @apply border border-solid border-purple border-opacity-25 border bg-white text-purple;
+    @apply border border-solid border-purple border-opacity-25 bg-white text-purple;
 
     @apply hover:border-opacity-75 hover:shadow-center-purple-25;
     @apply focus:border-opacity-75 focus:shadow-center-purple-25;
     @apply active:border-opacity-100 focus:shadow-center-purple-50;
 }
 .btn-outline-orange {
-    @apply border border-solid border-orange border-opacity-25 border bg-white text-orange;
+    @apply border border-solid border-orange border-opacity-25 bg-white text-orange;
 
     @apply hover:border-opacity-75 hover:shadow-center-orange-25;
     @apply focus:border-opacity-75 focus:shadow-center-orange-25;
     @apply active:border-opacity-100 focus:shadow-center-orange-50;
 }
 .btn-outline-yellow {
-    @apply border border-solid border-yellow border-opacity-50 border bg-white text-yellow;
+    @apply border border-solid border-yellow border-opacity-50 bg-white text-yellow;
 
     @apply hover:border-opacity-75 hover:shadow-center-yellow-25;
     @apply focus:border-opacity-75 focus:shadow-center-yellow-25;
     @apply active:border-opacity-100 focus:shadow-center-yellow-50;
 }
 .btn-outline-green {
-    @apply border border-solid border-green border-opacity-25 border bg-white text-green;
+    @apply border border-solid border-green border-opacity-25 bg-white text-green;
 
     @apply hover:border-opacity-75 hover:shadow-center-green-25;
     @apply focus:border-opacity-75 focus:shadow-center-green-25;
     @apply active:border-opacity-100 focus:shadow-center-green-50;
 }
 .btn-outline-red {
-    @apply border border-solid border-red border-opacity-25 border bg-white text-red;
+    @apply border border-solid border-red border-opacity-25 bg-white text-red;
 
     @apply hover:border-opacity-75 hover:shadow-center-red-25;
     @apply focus:border-opacity-75 focus:shadow-center-red-25;
     @apply active:border-opacity-100 focus:shadow-center-red-50;
 }
 .btn-outline-blue {
-    @apply border border-solid border-blue-900 border-opacity-25 border bg-white text-blue-900;
+    @apply border border-solid border-blue-900 border-opacity-25 bg-white text-blue-900;
 
     @apply hover:border-opacity-75 hover:shadow-center-blue-25;
     @apply focus:border-opacity-75 focus:shadow-center-blue-25;

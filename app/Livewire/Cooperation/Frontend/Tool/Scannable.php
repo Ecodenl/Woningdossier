@@ -128,6 +128,11 @@ abstract class Scannable extends Component
 
     protected function evaluateToolQuestions(): void
     {
+        // Ensure we reset the computed property before we run through the related rules. If we don't unset,
+        // the substeppables might be limited to only a previously set amount, meaning the rules of the
+        // missing substeppables won't be removed.
+        unset($this->subSteppables);
+
         $evaluator = ConditionEvaluator::init()
             ->building($this->building)
             ->inputSource($this->masterInputSource);

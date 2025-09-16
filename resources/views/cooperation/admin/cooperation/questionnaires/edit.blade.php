@@ -98,7 +98,7 @@
 @endsection
 
 @push('js')
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         document.getElementById('leave-creation-tool').addEventListener('click', function (event) {
             if (confirm('@lang('cooperation/admin/cooperation/cooperation-admin/questionnaires.edit.leave-warning')')) {
 

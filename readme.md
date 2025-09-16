@@ -6,10 +6,10 @@
 
 
 
-To contribute to this project you must assign copyright of your contribution to Econobis B.V. 
-To do this, include the following filled-in copyright assignment form in your patch: [Individual contributor assignment agreement](https://alfresco.econobis.nl/share/page/site/projectgroep-econobis/document-details?nodeRef=workspace://SpacesStore/beaaae10-302a-4f8e-aceb-1040360ba4b7)
+To contribute to this project you must assign copyright of your contribution to Cooperatie Econobis U.A. 
+To do this, include the following filled-in copyright assignment form in your patch: [Individual contributor assignment agreement](https://alfresco.econobis.nl/share/s/vPzg80L8SiaKwUJXFRhKtA)
 
-Econobis B.V. is 100% daughter of Coöperatieve Vereniging Energie Coöperaties op Orde UA. More information can be viewed on [www.econobis.nl](https://www.econobis.nl/).
+More information can be viewed on [www.econobis.nl](https://www.econobis.nl/).
 
 ## Why all this legal stuff ? 
 We want clean renewable energy. We want a digital energy market which is democratic controlled, fair and accessible for all people at all times. 
@@ -20,21 +20,16 @@ But we want to make sure that it remains Open Source. That is why we need the le
 
 ## Tech: Setup
 
-### The server
-There are multiple ways to get the development environment up and running. How 
-you run it is a matter of taste.
-
-Options:
-- [Vagrant + ansible](docs/setup/vagrant-ansible.md)
-- [Docker](docs/setup/docker.md)
+### Local development
+Use Laravel Sail via [Docker](docs/setup/docker.md)
 
 ## The application
 
 ### PHP version
-PHP 7.4 is the current targeted version as this is the lowest actively supported PHP version.
+PHP 8.3 is the current targeted version.
 
 ### Conventions
-The Hoomdossier is based on Laravel 6.0 LTS. Our goal is to confirm as much as 
+The Hoomdossier is based on Laravel 12. Our goal is to confirm as much as 
 possible to the conventions by the framework (i.e. PSR-4 autoloading).
 
 ### Code conventions

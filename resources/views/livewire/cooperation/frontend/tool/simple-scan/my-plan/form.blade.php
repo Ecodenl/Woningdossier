@@ -27,7 +27,7 @@
         </div>
     </div>
     <div class="w-full flex flex-wrap flex-row justify-center items-center"
-         @if($disabled) x-data @else x-data="draggables()" @endif>
+         x-data="draggables()">
         <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10">
             @foreach($cards as $cardCategory => $cardCollection)
                 <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">

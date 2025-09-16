@@ -50,7 +50,7 @@
 @endsection
 
 @push('js')
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         const userId = @js($user->id);
         const cooperationId = @js($cooperationToManage->id);
 

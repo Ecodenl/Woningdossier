@@ -53,7 +53,7 @@ class ExportCustomQuestionnaireToCsv extends Command
 
             $filename = "{$date}-{$questionnaireName}-{$isAnonymized}.csv";
 
-            $this->info('Export completed! stored under storage/app/exports');
+            $this->info('Export completed! Stored under /storage/app/private/exports');
             Excel::store(new CsvExport($rows), $filename, 'exports', \Maatwebsite\Excel\Excel::CSV);
         } else {
             $this->alert("No questionnaire with ID: {$this->argument('questionnaireId')} found");

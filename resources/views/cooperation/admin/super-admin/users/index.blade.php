@@ -58,7 +58,7 @@
 @endsection
 
 @if($users->isNotEmpty())
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', function () {
             new DataTable('#table', {
                 scrollX: true,

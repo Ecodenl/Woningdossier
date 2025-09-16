@@ -1,6 +1,6 @@
 <div x-data="modal()" class="w-full flex">
     <div class="w-full" x-data="tiptapEditor($wire.entangle('filledInAnswers.{{$toolQuestion->short}}'))" x-on:click="toggle()" wire:ignore>
-        @component('cooperation.layouts.components.tiptap')
+        @component('cooperation.layouts.components.tiptap', ['disableToolbar' => true])
             <textarea wire:model.change="filledInAnswers.{{$toolQuestion->short}}" id="clickable-{{$toolQuestion->short}}"
                       class="form-input" placeholder="{{$toolQuestion->placeholder}}"
                       x-ref="editor"

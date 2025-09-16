@@ -46,7 +46,7 @@
 </div>
 
 @push('js')
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         document.addEventListener('change', (event) => {
             let target = event.target;
 

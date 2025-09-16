@@ -17,13 +17,17 @@
                     @lang(session('status'))
                 @endcomponent
             @endif
-            <p>
+            <div class="as-text">
                 @lang('cooperation/auth/verify.body')
-                <a onclick="document.getElementById('resend-form').submit()">
-                    @lang('cooperation/auth/verify.do-it')
-                </a>
-            </p>
-            <button class="btn btn-outline-purple" onclick="location.reload()">
+                <form method="POST" id="resend-form" class="inline"
+                      action="{{ route('cooperation.auth.verification.send') }}">
+                    @csrf
+                    <button class="as-link">
+                        @lang('cooperation/auth/verify.do-it')
+                    </button>
+                </form>
+            </div>
+            <button class="btn btn-outline-purple" id="reload-page">
                 @lang('cooperation/auth/verify.reload-page')
             </button>
 
@@ -43,8 +47,12 @@
             </p>
         </div>
     </div>
-    <form method="POST" class="hidden" id="resend-form"
-          action="{{ route('cooperation.auth.verification.send') }}">
-        @csrf
-    </form>
 @endsection
+
+@push('js')
+    <script type="module" nonce="{{ $cspNonce }}">
+        document.addEventListener('DOMContentLoaded', function(e) {
+            document.getElementById('reload-page').addEventListener('click', () => location.reload());
+        });
+    </script>
+@endpush

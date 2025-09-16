@@ -61,7 +61,7 @@ return [
              * Middleware allows to prevent unexpected access to API documentation
             */
             'middleware' => [
-                'api' => [],
+                'api' => [\App\Http\Middleware\SecurityHeaders::class],
                 'asset' => [],
                 'docs' => [],
                 'oauth2_callback' => [],

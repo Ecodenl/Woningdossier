@@ -203,6 +203,7 @@ module.exports = {
             },
             maxWidth: {
                 ...fractionTwenty,
+                '1/2': '50%',
             },
             spacing: {
                 ...fractionTwelve

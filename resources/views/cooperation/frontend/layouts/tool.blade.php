@@ -104,7 +104,7 @@
 
 @if(RouteLogic::inExpertTool(Route::currentRouteName()))
     @push('js')
-        <script type="module">
+        <script type="module" nonce="{{ $cspNonce }}">
             $('input').keypress(function (event) {
                 // get the current keycode
                 var keycode = (event.keyCode ? event.keyCode : event.which);

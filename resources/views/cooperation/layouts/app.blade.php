@@ -32,7 +32,7 @@
         </style>
         @stack('css')
 
-        <script type="module">
+        <script type="module" nonce="{{ $cspNonce }}">
             function agentHas(keyword) {
                 return navigator.userAgent.toLowerCase().search(keyword.toLowerCase()) > -1;
             }
@@ -67,11 +67,11 @@
             @yield('main')
         </main>
 
-        @livewireScriptConfig
+        @livewireScriptConfig(['nonce' => $cspNonce])
         {{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
         @vite('resources/js/app.js')
 
-        <script type="module">
+        <script type="module" nonce="{{ $cspNonce }}">
             document.addEventListener('DOMContentLoaded', function () {
                 // Bind simple function to remove errors when clicked
                 let formErrors = document.getElementsByClassName('form-error');

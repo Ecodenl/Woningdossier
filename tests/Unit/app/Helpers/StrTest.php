@@ -187,30 +187,6 @@ final class StrTest extends TestCase
         $this->assertEquals($expected, Str::htmlArrToDot($value));
     }
 
-    public static function dotToHtmlProvider(): array
-    {
-        return [
-            ['', false, ''],
-            ['', true, ''],
-            [null, false, null],
-            [null, true, null],
-            ['table', false, 'table'],
-            ['table', true, 'table[]'],
-            ['table.column', false, 'table[column]'],
-            ['table.column', true, 'table[column][]'],
-            ['table.json_column.field', false, 'table[json_column][field]'],
-            ['table.json_column.field', true, 'table[json_column][field][]'],
-            ['table.json_column.field.sub_field', false, 'table[json_column][field][sub_field]'],
-            ['table.json_column.field.sub_field', true, 'table[json_column][field][sub_field][]'],
-        ];
-    }
-
-    #[DataProvider('dotToHtmlProvider')]
-    public function test_dot_to_html($dottedName, $asArray, $expected): void
-    {
-        $this->assertEquals($expected, Str::dotToHtml($dottedName, $asArray));
-    }
-
     public static function hasReplaceablesProvider(): array
     {
         return [

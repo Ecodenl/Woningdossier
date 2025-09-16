@@ -51,7 +51,7 @@
 @endsection
 
 @push('js')
-    <script type="module">
+    <script type="module" nonce="{{ $cspNonce }}">
         const destroyQuestionnaireRoute = '{{route('cooperation.admin.cooperation.questionnaires.destroy', ['questionnaire' => ':questionnaire-id'])}}';
 
         document.addEventListener('DOMContentLoaded', function () {

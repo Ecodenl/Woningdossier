@@ -17,8 +17,8 @@
     <div x-data="datepicker('{{$name}}', @js($mode === 'datetime'))" x-cloak class="datepicker">
         <div class="relative">
             {{-- Input that holds the value --}}
-            <input type="hidden" x-ref="{{ $name }}" value="{{ $date }}" class="datepicker-value"
-                   @if($livewire) wire:model.lazy="{{$name}}" @else name="{{ $htmlName }}" @endif>
+            <input type="text" x-ref="{{ $name }}" class="datepicker-value hidden"
+                   @if($livewire) wire:model.lazy="{{$name}}" @else value="{{ $date }}" name="{{ $htmlName }}" @endif>
 
             {{-- Visual input --}}
             <input type="text"
@@ -29,7 +29,7 @@
                    x-on:click="showDatepicker = !showDatepicker; if (showDatepicker) { mode = 'day'; }"
                    x-on:keydown.escape="showDatepicker = false"
                    class="form-input cursor-pointer w-full font-medium"
-                   placeholder="{{ $placeholder ?? 'Select date' }}">
+                   placeholder="{{ $placeholder ?? 'Select date' }}" wire:ignore>
 
             {{-- Calendar icon in input --}}
             <div class="absolute top-1 right-0 px-3 py-1 cursor-pointer" x-on:click="showDatepicker = !showDatepicker">
@@ -135,7 +135,7 @@
 </div>
 
 @pushonce('css')
-    <script>
+    <script type="module" nonce="{{ $cspNonce }}">
         window.days = @json(array_values(__('default.day-shorts')));
         window.months = @json(array_values(__('default.months')));
     </script>

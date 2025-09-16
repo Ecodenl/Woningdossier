@@ -65,15 +65,13 @@ class SubStepService
 
     /**
      * Incomplete a step for a building.
-     *
-     * @return void
      */
-    public function incomplete()
+    public function incomplete(): void
     {
-        optional(CompletedSubStep::allInputSources()->where([
+        CompletedSubStep::allInputSources()->where([
             'sub_step_id' => $this->subStep->id,
             'input_source_id' => $this->inputSource->id,
             'building_id' => $this->building->id,
-        ])->first())->delete();
+        ])->first()?->delete();
     }
 }

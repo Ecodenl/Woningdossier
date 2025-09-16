@@ -10,10 +10,19 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class RoofInsulationCalculator
 {
-    public static function calculateGasSavings(Building $building, InputSource $inputSource, ElementValue $element, UserEnergyHabit $energyHabit, BuildingHeating $heating, $surface, $totalSurface, $measureAdvice)
+    public static function calculateGasSavings(
+        Building $building,
+        InputSource $inputSource,
+        ElementValue $element,
+        BuildingHeating $heating,
+        $surface,
+        $totalSurface,
+        $measureAdvice
+    )
     {
         if (0 == $totalSurface) {
             return 0;
@@ -21,14 +30,18 @@ class RoofInsulationCalculator
         $result = 0;
 
         $kengetalEnergySaving = Temperature::energySavingFigureRoofInsulation($measureAdvice, $heating);
-        self::debug('Kengetal energebesparing = '.$kengetalEnergySaving);
+        self::debug('Kengetal energebesparing = ' . $kengetalEnergySaving);
 
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(
                 $surface * $kengetalEnergySaving,
-                ($surface / $totalSurface) * RawCalculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
+                ($surface / $totalSurface) * RawCalculator::maxGasSavings($building, $inputSource, $element->element)
             );
-            self::debug($result.' = min('.$surface.' * '.$kengetalEnergySaving.', ('.$surface / $totalSurface.') * '.RawCalculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element).')');
+            self::debug(
+                $result
+                . ' = min(' . $surface . ' * ' . $kengetalEnergySaving . ', (' . $surface / $totalSurface . ') * '
+                . RawCalculator::maxGasSavings($building, $inputSource, $element->element) . ')'
+            );
         }
 
         return $result;
@@ -36,25 +49,27 @@ class RoofInsulationCalculator
 
     public static function determineApplicationYear(MeasureApplication $measureApplication, $last, $factor)
     {
-        self::debug(__METHOD__.' ('.$measureApplication->measure_name.', '.$last.', '.$factor.')');
+        self::debug(__METHOD__ . ' (' . $measureApplication->getTranslation('measure_name', 'nl') . ', ' . $last . ', ' . $factor . ')');
 
         $correctedMaintenanceInterval = ceil($factor * $measureApplication->maintenance_interval);
 
-        self::debug($correctedMaintenanceInterval.' = ceil('.$factor.' * '.$measureApplication->maintenance_interval.')');
+        self::debug($correctedMaintenanceInterval . ' = ceil(' . $factor . ' * ' . $measureApplication->maintenance_interval . ')');
 
         if ($last + $correctedMaintenanceInterval <= Carbon::now()->year) {
-            self::debug('Last replacement is longer than '.$correctedMaintenanceInterval.' years ago.');
+            self::debug('Last replacement is longer than ' . $correctedMaintenanceInterval . ' years ago.');
             $year = Carbon::now()->year;
         } else {
             $year = $last + $correctedMaintenanceInterval;
-            self::debug($year.' = '.$last.' + '.$correctedMaintenanceInterval);
+            self::debug($year . ' = ' . $last . ' + ' . $correctedMaintenanceInterval);
         }
 
         return $year;
     }
 
-    protected static function debug($line)
+    protected static function debug(string $line): void
     {
-        // \Log::debug($line);
+        if (config('hoomdossier.services.enable_calculation_logging')) {
+            Log::channel('calculations')->debug($line);
+        }
     }
 }

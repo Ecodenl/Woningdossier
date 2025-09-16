@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use App\Services\Scans\ScanFlowService;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\BuildingObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Helpers\Conditions\ConditionEvaluator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\Arr;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\QuestionValues\QuestionValue;
-use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
 use App\Traits\HasMedia;
@@ -17,10 +19,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use OwenIt\Auditing\Models\Audit;
+use Plank\Mediable\MediableInterface;
 
 /**
  * App\Models\Building
@@ -41,101 +42,98 @@ use OwenIt\Auditing\Models\Audit;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[] $buildingCoachStatuses
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingCoachStatus> $buildingCoachStatuses
  * @property-read int|null $building_coach_statuses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingElement> $buildingElements
  * @property-read int|null $building_elements_count
  * @property-read \App\Models\BuildingFeature|null $buildingFeatures
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingNotes> $buildingNotes
  * @property-read int|null $building_notes_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingPermission> $buildingPermissions
  * @property-read int|null $building_permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingService> $buildingServices
  * @property-read int|null $building_services_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[] $buildingStatuses
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingStatus> $buildingStatuses
  * @property-read int|null $building_statuses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingVentilation[] $buildingVentilations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingVentilation> $buildingVentilations
  * @property-read int|null $building_ventilations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[] $completedSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompletedStep> $completedSteps
  * @property-read int|null $completed_steps_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedSubStep[] $completedSubSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompletedSubStep> $completedSubSteps
  * @property-read int|null $completed_sub_steps_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingInsulatedGlazing> $currentInsulatedGlazing
  * @property-read int|null $current_insulated_glazing_count
  * @property-read \App\Models\BuildingPaintworkStatus|null $currentPaintworkStatus
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomMeasureApplication[] $customMeasureApplications
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CustomMeasureApplication> $customMeasureApplications
  * @property-read int|null $custom_measure_applications_count
  * @property-read \App\Models\BuildingHeater|null $heater
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
  * @property-read \App\Models\Municipality|null $municipality
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PrivateMessage> $privateMessages
  * @property-read int|null $private_messages_count
  * @property-read \App\Models\BuildingPvPanel|null $pvPanels
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionsAnswer> $questionAnswers
  * @property-read int|null $question_answers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingRoofType> $roofTypes
  * @property-read int|null $roof_types_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\StepComment[] $stepComments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StepComment> $stepComments
  * @property-read int|null $step_comments_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionAnswer[] $toolQuestionAnswers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestionAnswer> $toolQuestionAnswers
  * @property-read int|null $tool_question_answers_count
  * @property-read \App\Models\User|null $user
- * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
- * @method static \Database\Factories\BuildingFactory factory(...$parameters)
- * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
- * @method static Builder|Building newModelQuery()
- * @method static Builder|Building newQuery()
- * @method static \Illuminate\Database\Query\Builder|Building onlyTrashed()
- * @method static Builder|Building query()
- * @method static Builder|Building whereBagAddressid($value)
- * @method static Builder|Building whereBagWoonplaatsId($value)
- * @method static Builder|Building whereCity($value)
- * @method static Builder|Building whereCountryCode($value)
- * @method static Builder|Building whereCreatedAt($value)
- * @method static Builder|Building whereDeletedAt($value)
- * @method static Builder|Building whereExtension($value)
- * @method static Builder|Building whereHasMedia($tags = [], bool $matchAll = false)
- * @method static Builder|Building whereHasMediaMatchAll(array $tags)
- * @method static Builder|Building whereId($value)
- * @method static Builder|Building whereMunicipalityId($value)
- * @method static Builder|Building whereNumber($value)
- * @method static Builder|Building whereOwner($value)
- * @method static Builder|Building wherePostalCode($value)
- * @method static Builder|Building wherePrimary($value)
- * @method static Builder|Building whereStreet($value)
- * @method static Builder|Building whereUpdatedAt($value)
- * @method static Builder|Building whereUserId($value)
- * @method static Builder|Building withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
- * @method static Builder|Building withMediaAndVariants($tags = [], bool $matchAll = false)
- * @method static Builder|Building withMediaAndVariantsMatchAll($tags = [])
- * @method static Builder|Building withMediaMatchAll(bool $tags = [], bool $withVariants = false)
- * @method static Builder|Building withRecentBuildingStatusInformation()
- * @method static \Illuminate\Database\Query\Builder|Building withTrashed()
- * @method static \Illuminate\Database\Query\Builder|Building withoutTrashed()
+ * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
+ * @method static \Database\Factories\BuildingFactory factory($count = null, $state = [])
+ * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
+ * @method static Builder<static>|Building newModelQuery()
+ * @method static Builder<static>|Building newQuery()
+ * @method static Builder<static>|Building onlyTrashed()
+ * @method static Builder<static>|Building query()
+ * @method static Builder<static>|Building whereBagAddressid($value)
+ * @method static Builder<static>|Building whereBagWoonplaatsId($value)
+ * @method static Builder<static>|Building whereCity($value)
+ * @method static Builder<static>|Building whereCountryCode($value)
+ * @method static Builder<static>|Building whereCreatedAt($value)
+ * @method static Builder<static>|Building whereDeletedAt($value)
+ * @method static Builder<static>|Building whereExtension($value)
+ * @method static Builder<static>|Building whereHasMedia($tags = [], bool $matchAll = false)
+ * @method static Builder<static>|Building whereHasMediaMatchAll($tags)
+ * @method static Builder<static>|Building whereId($value)
+ * @method static Builder<static>|Building whereMunicipalityId($value)
+ * @method static Builder<static>|Building whereNumber($value)
+ * @method static Builder<static>|Building whereOwner($value)
+ * @method static Builder<static>|Building wherePostalCode($value)
+ * @method static Builder<static>|Building wherePrimary($value)
+ * @method static Builder<static>|Building whereStreet($value)
+ * @method static Builder<static>|Building whereUpdatedAt($value)
+ * @method static Builder<static>|Building whereUserId($value)
+ * @method static Builder<static>|Building withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
+ * @method static Builder<static>|Building withMediaAndVariants($tags = [], bool $matchAll = false)
+ * @method static Builder<static>|Building withMediaAndVariantsMatchAll($tags = [])
+ * @method static Builder<static>|Building withMediaMatchAll(bool $tags = [], bool $withVariants = false)
+ * @method static Builder<static>|Building withTrashed()
+ * @method static Builder<static>|Building withoutTrashed()
  * @mixin \Eloquent
  */
-class Building extends Model
+#[ObservedBy([BuildingObserver::class])]
+class Building extends Model implements MediableInterface
 {
     use HasFactory,
         SoftDeletes,
         HasMedia;
 
     public $fillable = [
+        'municipality_id',
         'street',
         'number',
+        'extension',
         'city',
         'postal_code',
+        //'country_code',
+        //'owner',
+        //'primary',
         'bag_addressid',
-        'municipality_id',
         'bag_woonplaats_id',
-        'building_coach_status_id',
-        'extension',
-        'is_active',
-    ];
-
-    protected $casts = [
-        'is_active' => 'boolean',
     ];
 
     // Static methods
@@ -173,12 +171,12 @@ class Building extends Model
     }
 
     // Unsorted
-    public function getAnswerForAllInputSources(ToolQuestion $toolQuestion, bool $withMaster = false)
+    public function getAnswerForAllInputSources(ToolQuestion $toolQuestion, bool $withMaster = false): array
     {
         // TODO: See if and how we can reduce query calls here
         $inputSources = InputSource::all();
 
-        $answers = null;
+        $answers = [];
         $where = [];
 
         if (! $withMaster) {
@@ -191,7 +189,8 @@ class Building extends Model
             ];
         }
 
-        // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
+        // This means we should get the answer the "traditional way", from another
+        // table (not from the tool_question_answers)
         if (! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table = $saveIn['table'];
@@ -230,14 +229,18 @@ class Building extends Model
                 // weird cases like building values.
                 if (is_array($value)) {
                     foreach ($value as $definitiveValue) {
-                        $answer = $questionValues->isNotEmpty() && !is_null($definitiveValue) && isset($questionValues[$definitiveValue]) ? $questionValues[$definitiveValue] : $definitiveValue;
+                        $answer = $questionValues->isNotEmpty() && ! is_null($definitiveValue) && isset($questionValues[$definitiveValue])
+                            ? $questionValues[$definitiveValue]
+                            : $definitiveValue;
                         $answers[$inputSource->short][] = [
                             'answer' => $answer,
                             'value' => $definitiveValue,
                         ];
                     }
                 } else {
-                    $answer = $questionValues->isNotEmpty() && !is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
+                    $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value])
+                        ? $questionValues[$value]
+                        : $value;
                     $answers[$inputSource->short][] = [
                         'answer' => $answer,
                         'value' => $value,
@@ -254,7 +257,7 @@ class Building extends Model
                 ->get();
 
             foreach ($toolQuestionAnswers as $index => $toolQuestionAnswer) {
-                $answer = optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer;
+                $answer = $toolQuestionAnswer->toolQuestionCustomValue->name ?? $toolQuestionAnswer->answer;
                 $answers[$toolQuestionAnswer->inputSource->short][$index] = [
                     'answer' => $answer,
                     'value' => $toolQuestionAnswer->toolQuestionCustomValue->short ?? $answer,
@@ -263,8 +266,8 @@ class Building extends Model
         }
 
         // As last step, we want to clean up empty values
-        foreach (($answers ?? []) as $short => $answer) {
-            if (empty($answer) || (is_array($answer) && Arr::isWholeArrayEmpty($answer))) {
+        foreach ($answers as $short => $answer) {
+            if (Arr::isWholeArrayEmpty($answer)) {
                 unset($answers[$short]);
             }
         }
@@ -272,12 +275,7 @@ class Building extends Model
         return $answers;
     }
 
-    /**
-     * @param InputSource $inputSource
-     * @param ToolQuestion $toolQuestion
-     * @return array|mixed
-     */
-    public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
+    public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion): mixed
     {
         if (! is_null($toolQuestion->for_specific_input_source_id)) {
             // If a tool question has a specific input source, it won't be saved to master.
@@ -287,7 +285,8 @@ class Building extends Model
 
         $answer = null;
         $where['input_source_id'] = $inputSource->id;
-        // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
+        // This means we should get the answer the "traditional way", from another
+        // table (not from the tool_question_answers).
         if (! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table = $saveIn['table'];
@@ -357,13 +356,9 @@ class Building extends Model
 
     /**
      * Scope to return the buildings with most recent information from the building status.
-     *
-     * @param Builder $query
-     *
-     * @return Builder
      */
-    public function scopeWithRecentBuildingStatusInformation(Builder $query
-    ): Builder
+    #[Scope]
+    protected function withRecentBuildingStatusInformation(Builder $query): Builder
     {
         $recentBuildingStatuses = DB::table('building_statuses')
             ->selectRaw(
@@ -391,51 +386,36 @@ class Building extends Model
             ->leftJoin('statuses', 'bs.status_id', '=', 'statuses.id');
     }
 
-    public function stepComments()
+    public function stepComments(): HasMany
     {
         return $this->hasMany(StepComment::class);
     }
 
     /**
      * Check if a step is completed for a building with matching input source id.
-     *
-     * @return bool
      */
-    public function hasCompleted(Step $step, InputSource $inputSource = null)
+    public function hasCompleted(Step $step, InputSource $inputSource = null): bool
     {
         if ($inputSource instanceof InputSource) {
             return $this->completedSteps()
-                    ->forInputSource($inputSource)
-                    ->where('step_id', $step->id)->count() > 0;
+                ->forInputSource($inputSource)
+                ->where('step_id', $step->id)->count() > 0;
         }
 
         return $this->completedSteps()
-                ->where('step_id', $step->id)->count() > 0;
-    }
-
-    /**
-     * Check if all quick scan steps have been completed
-     *
-     * @deprecated
-     * @depends-annotations(use hasCompletedScan instead)
-     * @return bool
-     */
-    public function hasCompletedQuickScan(InputSource $inputSource): bool
-    {
-        $scan = Scan::findByShort('quick-scan');
-        return $this->hasCompletedScan($scan, $inputSource);
+            ->where('step_id', $step->id)->count() > 0;
     }
 
     public function hasNotCompletedScan(Scan $scan, InputSource $inputSource): bool
     {
-        return !$this->hasCompletedScan($scan, $inputSource);
+        return ! $this->hasCompletedScan($scan, $inputSource);
     }
 
     public function hasCompletedScan(Scan $scan, InputSource $inputSource): bool
     {
         $steps = $scan->steps;
         foreach ($steps as $step) {
-            if (!$this->hasCompleted($step, $inputSource)) {
+            if (! $this->hasCompleted($step, $inputSource)) {
                 return false;
             }
         }
@@ -444,10 +424,6 @@ class Building extends Model
 
     /**
      * Check if a building has answered any or a specific expert step
-     *
-     * @param \App\Models\Step|null $step
-     *
-     * @return bool
      */
     public function hasAnsweredExpertQuestion(Step $step = null): bool
     {
@@ -473,20 +449,16 @@ class Building extends Model
 
     /**
      * Check if a step is not completed.
-     *
-     * @return bool
      */
-    public function hasNotCompleted(Step $step, InputSource $inputSource = null)
+    public function hasNotCompleted(Step $step, InputSource $inputSource = null): bool
     {
-        return !$this->hasCompleted($step, $inputSource);
+        return ! $this->hasCompleted($step, $inputSource);
     }
 
     /**
      * Returns the user progress.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function completedSteps()
+    public function completedSteps(): HasMany
     {
         return $this->hasMany(CompletedStep::class);
     }
@@ -497,54 +469,35 @@ class Building extends Model
     }
 
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function buildingFeatures()
+    public function buildingFeatures(): HasOne
     {
         return $this->hasOne(BuildingFeature::class);
     }
 
     /**
      * Return all the building notes.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function buildingNotes()
+    public function buildingNotes(): HasMany
     {
         return $this->hasMany(BuildingNotes::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function buildingElements()
+    public function buildingElements(): HasMany
     {
         return $this->hasMany(BuildingElement::class);
     }
 
-    /**
-     * @return HasMany
-     */
-    public function buildingVentilations()
+    public function buildingVentilations(): HasMany
     {
         return $this->hasMany(BuildingVentilation::class);
     }
 
-    /**
-     * @param $short
-     *
-     * @return BuildingElement|null
-     */
-    public function getBuildingElement($short, InputSource $inputSource = null)
+    public function getBuildingElement(string $short, InputSource $inputSource = null): ?BuildingElement
     {
         if ($inputSource instanceof InputSource) {
             return $this->buildingElements()
@@ -560,6 +513,7 @@ class Building extends Model
                 );
         }
 
+        /** @var null|BuildingElement */
         return $this->buildingElements()
             ->leftJoin(
                 'elements as e',
@@ -588,16 +542,10 @@ class Building extends Model
                 '=',
                 'e.id'
             )
-            ->where('e.short', $short)->select(['building_elements.*']
-            )->get();
+            ->where('e.short', $short)->select(['building_elements.*'])->get();
     }
 
-    /**
-     * @param string $short
-     *
-     * @return BuildingService|null
-     */
-    public function getBuildingService($short, InputSource $inputSource)
+    public function getBuildingService(string $short, InputSource $inputSource): ?BuildingService
     {
         return $this->buildingServices()
             ->forInputSource($inputSource)
@@ -610,20 +558,15 @@ class Building extends Model
             ->where('s.short', $short)->first(['building_services.*']);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function buildingServices()
+    public function buildingServices(): HasMany
     {
         return $this->hasMany(BuildingService::class);
     }
 
     /**
      * Return the building type from a builing through the building features.
-     *
-     * @return BuildingType|null
      */
-    public function getBuildingType(InputSource $inputSource)
+    public function getBuildingType(InputSource $inputSource): ?BuildingType
     {
         $buildingFeature = $this->buildingFeatures()->forInputSource(
             $inputSource
@@ -636,34 +579,22 @@ class Building extends Model
         return null;
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function currentInsulatedGlazing()
+    public function currentInsulatedGlazing(): HasMany
     {
         return $this->hasMany(BuildingInsulatedGlazing::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function currentPaintworkStatus()
+    public function currentPaintworkStatus(): HasOne
     {
         return $this->hasOne(BuildingPaintworkStatus::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function pvPanels()
+    public function pvPanels(): HasOne
     {
         return $this->hasOne(BuildingPvPanel::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function heater()
+    public function heater(): HasOne
     {
         return $this->hasOne(BuildingHeater::class);
     }
@@ -671,35 +602,29 @@ class Building extends Model
     /**
      * Returns all roof types of this building. Get the primary via the
      * building features.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function roofTypes()
+    public function roofTypes(): HasMany
     {
         return $this->hasMany(BuildingRoofType::class);
     }
 
     /**
-     * Get all the statuses for a building.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * Get all the coach statuses for a building.
      */
-    public function buildingCoachStatuses()
+    public function buildingCoachStatuses(): HasMany
     {
         return $this->hasMany(BuildingCoachStatus::class);
     }
 
-    public function buildingPermissions()
+    public function buildingPermissions(): HasMany
     {
         return $this->hasMany(BuildingPermission::class);
     }
 
     /**
      * Get all the answers for the building.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function questionAnswers()
+    public function questionAnswers(): HasMany
     {
         return $this->hasMany(QuestionsAnswer::class);
     }
@@ -735,7 +660,7 @@ class Building extends Model
      */
     public function getAppointmentDate()
     {
-        return optional($this->getMostRecentBuildingStatus())->appointment_date;
+        return $this->getMostRecentBuildingStatus()?->appointment_date;
     }
 
     public function getFirstIncompleteStep(Scan $scan, InputSource $inputSource): ?Step
@@ -746,6 +671,7 @@ class Building extends Model
             ->forBuilding($this)
             ->pluck('step_id');
 
+        /** @var null|Step */
         return $scan
             ->steps()
             ->whereNotIn('id', $completedStepIds)
@@ -782,7 +708,7 @@ class Building extends Model
                 // Break the loop if there are no incomplete sub steps left.
                 $passes = true;
             }
-        } while(! $passes);
+        } while (! $passes);
 
         // If no sub step was found, just return to the first available one. This is a fallback, and generally should
         // not happen.
@@ -792,6 +718,7 @@ class Building extends Model
                 ->first();
         }
 
+        /** @var null|\App\Models\SubStep $firstIncompleteSubStep */
         return $firstIncompleteSubStep;
     }
 }

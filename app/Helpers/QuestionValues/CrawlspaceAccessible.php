@@ -16,7 +16,7 @@ class CrawlspaceAccessible extends QuestionValuable
     {
         $values = collect();
 
-        foreach(['yes' => 'Ja', 'no' => 'Nee', 'unknown' => 'Onbekend',] as $value => $name) {
+        foreach (['yes' => 'Ja', 'no' => 'Nee', 'unknown' => 'Onbekend'] as $value => $name) {
             $values->push(compact('value', 'name'));
         }
 

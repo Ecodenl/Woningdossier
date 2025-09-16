@@ -4,8 +4,6 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
-use App\Actions\Fortify\UpdateUserPassword;
-use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Responses\LoginResponse;
 use App\Responses\LogoutResponse;
 use App\Responses\PasswordResetResponse;
@@ -28,10 +26,8 @@ class FortifyServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
          Fortify::ignoreRoutes();
 
@@ -65,15 +61,11 @@ class FortifyServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Fortify::createUsersUsing(CreateNewUser::class);
 
-        Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
-        Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
 
@@ -83,9 +75,7 @@ class FortifyServiceProvider extends ServiceProvider
         );
 
         RateLimiter::for('login', function (Request $request) {
-            return app()->isLocal()
-                ? Limit::none()
-                : Limit::perMinute(50)->by($request->email . $request->ip());
+            return app()->isLocal() ? Limit::none() : Limit::perMinute(50)->by($request->email . $request->ip());
         });
 
         Fortify::registerView(function () {

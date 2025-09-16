@@ -1,213 +1,154 @@
-@push('css')
-    {{-- Styling so hidden select2 doesn't get crappy width --}}
-    <style>
-        span.select2-container {
-            width: 100% !important;
-        }
-    </style>
-@endpush
 <div>
-    <form wire:submit.prevent="save()" autocomplete="off">
-        <div class="row">
-            <div class="col-sm-6">
-                <a id="leave-creation-tool" class="btn btn-warning"
-                   href="{{route('cooperation.admin.super-admin.cooperation-presets.show', compact('cooperation', 'cooperationPreset'))}}">
-                    @lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool')
-                </a>
-            </div>
-            <div class="col-sm-6">
-                <button type="submit" class="btn btn-primary pull-right">
-                    @lang('default.buttons.save')
-                </button>
-            </div>
-        </div>
-        <div class="row alert-top-space">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        @if($cooperationPresetContent->exists)
-                            @lang('cooperation/admin/super-admin/cooperation-preset-contents.edit.title')
-                        @else
-                            @lang('cooperation/admin/super-admin/cooperation-preset-contents.create.title')
-                        @endif
-                    </div>
-                    <div class="panel-body">
-                        @foreach(config('hoomdossier.supported_locales') as $locale)
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    @component('layouts.parts.components.form-group', ['input_name' => "content.name.{$locale}"])
-                                        <label for="name-{{$locale}}">
-                                            @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.name.label')
-                                        </label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon">{{$locale}}</span>
-                                            <input type="text" class="form-control" id="name-{{$locale}}"
-                                                   wire:model="content.name.{{$locale}}"
-                                                   placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.name.placeholder')">
-                                        </div>
-                                    @endcomponent
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    @component('layouts.parts.components.form-group', ['input_name' => "content.info.{$locale}"])
-                                        <label for="info-{{$locale}}">
-                                            @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.info.label')
-                                        </label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon">{{$locale}}</span>
-                                            <textarea class="form-control" id="info-{{$locale}}"
-                                                      wire:model="content.info.{{$locale}}"
-                                                      placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.info.placeholder')"
-                                            ></textarea>
-                                        </div>
-                                    @endcomponent
-                                </div>
-                            </div>
-                        @endforeach
-                        <div class="row" @if($content['is_extensive_measure']) style="display: none;" @endif>
-                            <div class="col-sm-6">
-                                @component('layouts.parts.components.form-group', ['input_name' => 'content.relations.mapping.measure_category'])
-                                    <label for="measure-category">
-                                        @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
-                                    </label>
-                                    <div wire:ignore>
-                                        {{-- Wire:ignore here so the select2 doesn't die, but still allows error messages --}}
-                                        <select class="form-control"
-                                                wire:model="content.relations.mapping.measure_category"
-                                                id="measure-category">
-                                            <option value="">
-                                                @lang('default.form.dropdown.choose')
-                                            </option>
-                                            @foreach($measures as $measure)
-                                                <option value="{{ $measure->id }}">
-                                                    {{ $measure->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                @endcomponent
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                @component('layouts.parts.components.form-group', ['input_name' => 'content.costs.from'])
-                                    <label for="costs-from">
-                                        @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-from.label')
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
-                                        <input type="text" class="form-control" id="costs-from"
-                                               wire:model="content.costs.from"
-                                               placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-from.placeholder')">
-                                    </div>
-                                @endcomponent
-                            </div>
-                            <div class="col-sm-6">
-                                @component('layouts.parts.components.form-group', ['input_name' => 'content.costs.to'])
-                                    <label for="costs-to">
-                                        @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-to.label')
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
-                                        <input type="text" class="form-control" id="costs-to"
-                                               wire:model="content.costs.to"
-                                               placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-to.placeholder')">
-                                    </div>
-                                @endcomponent
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                @component('layouts.parts.components.form-group', ['input_name' => 'content.savings_money'])
-                                    <label for="savings-money">
-                                        @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.savings.label')
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
-                                        <input type="text" class="form-control" id="savings-money"
-                                               wire:model="content.savings_money"
-                                               placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.savings.placeholder')">
-                                    </div>
-                                @endcomponent
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                @component('layouts.parts.components.form-group', ['input_name' => 'content.extra.icon'])
-                                    <label for="icon">
-                                        @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.icon.label')
-                                    </label>
-                                    <div wire:ignore>
-                                        <select class="form-control" id="icon"
-                                                wire:model="content.extra.icon">
-                                            <option value="">
-                                                @lang('default.form.dropdown.choose')
-                                            </option>
-                                            @foreach(File::allFiles(public_path('icons')) as $file)
-                                                @php
-                                                    $iconName = "icon-" . str_replace(".{$file->getExtension()}", '', $file->getBasename());
-                                                @endphp
-                                                <option value="{{ $iconName }}">
-                                                    {{ $iconName }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                @endcomponent
-                            </div>
-                            <div class="col-sm-6" wire:ignore>
-                                <i id="icon-preview" style="margin-top: 2.6rem;"></i>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                @component('layouts.parts.components.form-group', ['input_name' => 'content.is_extensive_measure'])
-                                    <div class="checkbox-wrapper mt-10">
-                                        <input id="is-extensive-measure" wire:model="content.is_extensive_measure"
-                                               type="checkbox" value="1">
-                                        <label for="is-extensive-measure">
-                                            <span class="checkmark"></span>
-                                            <span>
-                                                @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.is-extensive-measure.label')
-                                            </span>
-                                        </label>
-                                    </div>
-                                @endcomponent
-                            </div>
-                        </div>
-                    </div>
+    <form class="w-full flex flex-wrap"
+          wire:submit="save()" autocomplete="off">
+        @csrf
+
+        @foreach(Hoomdossier::getSupportedLocales() as $locale)
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'withInputSource' => false,
+                'label' => __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.name.label'),
+                'class' => 'w-full -mt-5',
+                'id' => "name-{$locale}",
+                'inputName' => "content.name", //.{$locale},
+            ])
+                <div class="input-group-prepend">
+                    {{ $locale }}
                 </div>
+                <input id="{{ "name-{$locale}" }}" class="form-input" type="text" wire:model="content.name.{{$locale}}"
+                       placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.name.placeholder')">
+            @endcomponent
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'withInputSource' => false,
+                'label' => __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.info.label'),
+                'id' => "info-{$locale}",
+                'class' => 'w-full',
+                'inputName' => "content.info", //.{$locale},
+            ])
+                <div class="input-group-prepend">
+                    {{ $locale }}
+                </div>
+                <textarea id="{{ "info-{$locale}" }}" class="form-input" type="text" wire:model="content.info.{{$locale}}"
+                          placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.info.placeholder')"
+                ></textarea>
+            @endcomponent
+        @endforeach
+
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'withInputSource' => false,
+            'label' => __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label'),
+            'id' => 'measure-category',
+            'class' => 'w-full lg:w-1/2 lg:pr-3 ' . ($content['is_extensive_measure'] ? 'hidden' : ''),
+            'inputName' => "content.relations.mapping.measure_category",
+        ])
+            @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true])
+                <select class="form-input hidden" wire:model="content.relations.mapping.measure_category"
+                        id="measure-category">
+                    <option value="" disabled selected>
+                        @lang('default.form.dropdown.choose')
+                    </option>
+                    <option value="" class="text-red">
+                        @lang('default.form.dropdown.none')
+                    </option>
+                    @foreach($measures as $measure)
+                        <option value="{{ $measure->id }}">
+                            {{ $measure->name }}
+                        </option>
+                    @endforeach
+                </select>
+            @endcomponent
+
+        @endcomponent
+
+        <div class="w-full"></div>
+
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'withInputSource' => false,
+            'label' => __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-from.label'),
+            'id' => "costs-from",
+            'class' => 'w-full lg:w-1/2 lg:pr-3',
+            'inputName' => "content.costs.from",
+        ])
+            <div class="input-group-prepend">
+                <i class="icon-md icon-moneybag"></i>
             </div>
+            <input id="costs-from" class="form-input" type="text" wire:model="content.costs.from"
+                   placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-from.placeholder')">
+        @endcomponent
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'withInputSource' => false,
+            'label' => __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-to.label'),
+            'id' => "costs-to",
+            'class' => 'w-full lg:w-1/2 lg:pl-3',
+            'inputName' => "content.costs.to",
+        ])
+            <div class="input-group-prepend">
+                <i class="icon-md icon-moneybag"></i>
+            </div>
+            <input id="costs-to" class="form-input" type="text" wire:model="content.costs.to"
+                   placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-to.placeholder')">
+        @endcomponent
+
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'withInputSource' => false,
+            'label' => __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.savings.label'),
+            'id' => "savings-money",
+            'class' => 'w-full lg:w-1/2 lg:pr-3',
+            'inputName' => "content.savings_money",
+        ])
+            <div class="input-group-prepend">
+                <i class="icon-md icon-moneybag"></i>
+            </div>
+            <input id="savings-money" class="form-input" type="text" wire:model="content.savings_money"
+                   placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.savings.placeholder')">
+        @endcomponent
+
+        <div class="w-full"></div>
+
+        <div class="flex w-full flex-wrap">
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'withInputSource' => false,
+                'label' => __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.icon.label'),
+                'id' => 'icon',
+                'class' => 'w-full lg:w-1/2 lg:pr-3',
+                'inputName' => "content.extra.icon",
+            ])
+                @component('cooperation.frontend.layouts.components.alpine-select', ['withSearch' => true, 'icon' => 'icon-detached-house'])
+                    <select class="form-input hidden" wire:model.live="content.extra.icon"
+                            id="icon">
+                        @foreach(File::allFiles(public_path('icons')) as $file)
+                            @php
+                                $iconName = "icon-" . str_replace(".{$file->getExtension()}", '', $file->getBasename());
+                            @endphp
+                            <option value="{{ $iconName }}" data-icon="{{ $iconName }}">
+                                {{ $iconName }}
+                            </option>
+                        @endforeach
+                    </select>
+                @endcomponent
+            @endcomponent
+        </div>
+
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'withInputSource' => false,
+            'class' => 'w-full lg:w-1/2 lg:pr-3',
+            'inputName' => "content.is_extensive_measure",
+        ])
+            <div class="checkbox-wrapper">
+                <input id="is-extensive-measure" wire:model.live="content.is_extensive_measure"
+                       type="checkbox" value="1">
+                <label for="is-extensive-measure">
+                    <span class="checkmark"></span>
+                    <span>
+                        @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.is-extensive-measure.label')
+                    </span>
+                </label>
+            </div>
+        @endcomponent
+
+        <div class="w-full mt-5">
+            <button class="btn btn-green flex justify-center items-center" type="submit">
+                @lang('default.buttons.save')
+            </button>
         </div>
     </form>
 </div>
-
-@push('js')
-    <script>
-        $(document).ready(() => {
-            var $measureCategory = $('#measure-category');
-            $measureCategory.select2();
-
-            $measureCategory.change(function (event) {
-                Livewire.emitTo('cooperation.admin.super-admin.cooperation-presets.cooperation-preset-contents.cooperation-measure-applications.form', 'fieldUpdate', 'content.relations.mapping.measure_category', $(this).val());
-            });
-
-            var $icon = $('#icon');
-            $icon.select2();
-
-            $icon.change(function (event) {
-                var $iconPreview = $('#icon-preview');
-                $iconPreview.removeClass();
-                var icon = $(this).val();
-                $iconPreview.addClass(`icon-lg ${icon}`);
-
-                // So, select2 triggers a jQuery change, which isn't caught by Livewire. We dispatch an emit
-                // to handle it...
-                Livewire.emitTo('cooperation.admin.super-admin.cooperation-presets.cooperation-preset-contents.cooperation-measure-applications.form', 'fieldUpdate', 'content.extra.icon', icon);
-            });
-
-            $icon.trigger('change');
-        });
-    </script>
-@endpush

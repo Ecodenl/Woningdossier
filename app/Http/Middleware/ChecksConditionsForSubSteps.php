@@ -2,9 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\QuickScanHelper;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\SubStep;
@@ -15,19 +16,17 @@ class ChecksConditionsForSubSteps
 {
     /**
      * Handle an incoming request.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
-     * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         $building = HoomdossierSession::getBuilding(true);
 
+        /** @var \App\Models\Scan $scan */
         $scan = $request->route('scan');
+        /** @var \App\Models\Step $step */
+        $step = $request->route('step');
         /** @var SubStep $subStep */
         $subStep = $request->route('subStep');
-        $step = $request->route('step');
 
         $returnToNextStep = $request->user()->cannot('show', [$subStep, $building]);
 

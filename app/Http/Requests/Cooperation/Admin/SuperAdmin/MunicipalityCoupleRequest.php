@@ -7,33 +7,32 @@ use App\Helpers\Wrapper;
 use App\Models\Mapping;
 use App\Models\Municipality;
 use App\Services\Verbeterjehuis\RegulationService;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MunicipalityCoupleRequest extends FormRequest
 {
     protected Municipality $municipality;
 
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
-        $this->municipality = $this->route('municipality');
+        /** @var Municipality $municipality */
+        $municipality = $this->route('municipality');
+        $this->municipality = $municipality;
     }
 
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin');
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'bag_municipalities' => [
@@ -42,7 +41,7 @@ class MunicipalityCoupleRequest extends FormRequest
             ],
             'bag_municipalities.*' => [
                 // User input is always allowed. If existing mapping, it cannot be coupled already.
-                function ($attribute, $value, $fail) {
+                function (string $attribute, mixed $value, Closure $fail) {
                     $mapping = Mapping::find($value);
 
                     if ($mapping instanceof Mapping) {
@@ -54,9 +53,9 @@ class MunicipalityCoupleRequest extends FormRequest
             ],
             'vbjehuis_municipality' => [
                 'nullable',
-                function ($attribute, $value, $fail) {
-                    $parts = explode('-', $value, 2);
-                    $id = $parts[0] ?? '';
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $parts = explode('~', $value, 2);
+                    $id = $parts[0];
                     $name = $parts[1] ?? '';
 
                     // So the value is not null, but is it valid?

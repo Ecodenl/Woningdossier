@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\Resources\Schemas;
+
 /**
  * @OA\Schema(
  *     title="RegisterStored",
@@ -9,7 +10,6 @@ namespace App\Http\Controllers\Api\V1\Resources\Schemas;
 
 class RegisterStored
 {
-
     /**
      * @OA\Property(
      *      title="User id",

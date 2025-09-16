@@ -26,10 +26,11 @@ return [
 
     'user' => [
         'morph_prefix' => 'user',
-        'guards'       => [
+        'guards' => [
             'web',
             'sanctum',
         ],
+        'resolver' => OwenIt\Auditing\Resolvers\UserResolver::class,
     ],
 
     /*
@@ -40,11 +41,10 @@ return [
     | Define the User, IP Address, User Agent and URL resolver implementations.
     |
     */
-    'resolver' => [
-        'user'       => OwenIt\Auditing\Resolvers\UserResolver::class,
-         'ip_address' => \App\Resolvers\Audit\IpAddressResolver::class,
-        'user_agent' =>  \App\Resolvers\Audit\UserAgentResolver::class,
-        'url'        => OwenIt\Auditing\Resolvers\UrlResolver::class,
+    'resolvers' => [
+        'ip_address' => \App\Resolvers\Audit\IpAddressResolver::class,
+        'user_agent' => \App\Resolvers\Audit\UserAgentResolver::class,
+        'url' => OwenIt\Auditing\Resolvers\UrlResolver::class,
     ],
 
     /*
@@ -60,7 +60,7 @@ return [
         'created',
         'updated',
         'deleted',
-//        'restored',
+        //        'restored',
     ],
 
     /*
@@ -119,7 +119,7 @@ return [
 
     'drivers' => [
         'database' => [
-            'table'      => 'audits',
+            'table' => 'audits',
             'connection' => null,
         ],
     ],
@@ -134,4 +134,24 @@ return [
     */
 
     'console' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Empty Values
+    |--------------------------------------------------------------------------
+    |
+    | Should Audit records be stored when the recorded old_values & new_values
+    | are both empty?
+    |
+    | Some events may be empty on purpose. Use allowed_empty_values to exclude
+    | those from the empty values check. For example when auditing
+    | model retrieved events which will never have new and old values
+    |
+    */
+
+    'empty_values'         => true,
+    'allowed_empty_values' => [
+        'retrieved'
+    ],
+
 ];

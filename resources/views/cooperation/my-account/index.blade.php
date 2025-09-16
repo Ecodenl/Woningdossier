@@ -394,8 +394,8 @@
 
 
 @push('js')
-    <script>
-        $(document).ready(function () {
+    <script type="module" nonce="{{ $cspNonce }}">
+        document.addEventListener('DOMContentLoaded', function () {
             $('.change-interval').change(function () {
                 $(this).parents('#change-interval-form').first().submit();
             });

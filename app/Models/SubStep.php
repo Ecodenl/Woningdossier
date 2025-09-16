@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,40 +17,42 @@ use Illuminate\Support\Facades\App;
  * App\Models\SubStep
  *
  * @property int $id
- * @property array $name
- * @property array $slug
+ * @property array<array-key, mixed> $name
+ * @property array<array-key, mixed> $slug
  * @property int $order
- * @property array|null $conditions
+ * @property array<array-key, mixed>|null $conditions
  * @property int $step_id
  * @property int|null $sub_step_template_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Model|\Eloquent $commentable
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedSubStep[] $completedSubSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompletedSubStep> $completedSubSteps
  * @property-read int|null $completed_sub_steps_count
- * @property-read array $translations
  * @property-read \App\Models\Step $step
  * @property-read \App\Models\SubStepTemplate|null $subStepTemplate
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubSteppable[] $subSteppables
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestion[] $toolQuestions
+ * @property-read \App\Models\SubSteppable|null $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestion> $toolQuestions
  * @property-read int|null $tool_questions_count
- * @method static Builder|SubStep bySlug(string $slug, string $locale = 'nl')
- * @method static \Database\Factories\SubStepFactory factory(...$parameters)
- * @method static Builder|SubStep forScan(\App\Models\Scan $scan)
- * @method static Builder|SubStep newModelQuery()
- * @method static Builder|SubStep newQuery()
- * @method static Builder|SubStep ordered()
- * @method static Builder|SubStep query()
- * @method static Builder|SubStep whereConditions($value)
- * @method static Builder|SubStep whereCreatedAt($value)
- * @method static Builder|SubStep whereId($value)
- * @method static Builder|SubStep whereName($value)
- * @method static Builder|SubStep whereOrder($value)
- * @method static Builder|SubStep whereSlug($value)
- * @method static Builder|SubStep whereStepId($value)
- * @method static Builder|SubStep whereSubStepTemplateId($value)
- * @method static Builder|SubStep whereUpdatedAt($value)
+ * @property-read mixed $translations
+ * @method static \Database\Factories\SubStepFactory factory($count = null, $state = [])
+ * @method static Builder<static>|SubStep newModelQuery()
+ * @method static Builder<static>|SubStep newQuery()
+ * @method static Builder<static>|SubStep query()
+ * @method static Builder<static>|SubStep whereConditions($value)
+ * @method static Builder<static>|SubStep whereCreatedAt($value)
+ * @method static Builder<static>|SubStep whereId($value)
+ * @method static Builder<static>|SubStep whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|SubStep whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|SubStep whereLocale(string $column, string $locale)
+ * @method static Builder<static>|SubStep whereLocales(string $column, array $locales)
+ * @method static Builder<static>|SubStep whereName($value)
+ * @method static Builder<static>|SubStep whereOrder($value)
+ * @method static Builder<static>|SubStep whereSlug($value)
+ * @method static Builder<static>|SubStep whereStepId($value)
+ * @method static Builder<static>|SubStep whereSubStepTemplateId($value)
+ * @method static Builder<static>|SubStep whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class SubStep extends Model
@@ -67,34 +73,40 @@ class SubStep extends Model
         'slug',
     ];
 
-    protected $casts = [
-        'conditions' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'conditions' => 'array',
+        ];
+    }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         $locale = App::getLocale();
         return "slug->{$locale}";
     }
 
-    public function getRouteKey()
+    public function getRouteKey(): string
     {
-        return $this->slug;
+        return $this->getTranslation('slug', App::getLocale());
     }
 
     // Scopes
-    public function scopeOrdered(Builder $query)
+    #[Scope]
+    protected function ordered(Builder $query)
     {
         return $query->orderBy('order');
     }
 
     // TODO: Slug trait?
-    public function scopeBySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
+    #[Scope]
+    protected function bySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
     {
         return $query->where("slug->{$locale}", $slug);
     }
 
-    public function scopeForScan(Builder $query, Scan $scan): Builder
+    #[Scope]
+    protected function forScan(Builder $query, Scan $scan): Builder
     {
         return $query->whereHas('step', function ($query) use ($scan) {
             $query->where('scan_id', $scan->id);
@@ -112,7 +124,7 @@ class SubStep extends Model
         return $this->belongsTo(SubStepTemplate::class);
     }
 
-    public function toolQuestions()
+    public function toolQuestions(): MorphToMany
     {
         return $this->morphedByMany(ToolQuestion::class, 'sub_steppable')
             ->using(SubSteppable::class)
@@ -120,12 +132,12 @@ class SubStep extends Model
             ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
     }
 
-    public function completedSubSteps()
+    public function completedSubSteps(): HasMany
     {
         return $this->hasMany(CompletedSubStep::class);
     }
 
-    public function subSteppables()
+    public function subSteppables(): HasMany
     {
         return $this->hasMany(SubSteppable::class);
     }
@@ -133,7 +145,7 @@ class SubStep extends Model
     /**
      * Get the parent commentable model (post or video).
      */
-    public function commentable()
+    public function commentable(): MorphTo
     {
         return $this->morphTo();
     }

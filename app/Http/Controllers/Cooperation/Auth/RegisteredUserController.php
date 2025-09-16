@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Models\Building;
+use Illuminate\Http\JsonResponse;
 use App\Events\Registered;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
@@ -19,7 +21,6 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
     /**
      * Show the registration view.
      *
-     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Laravel\Fortify\Contracts\RegisterViewResponse|mixed
      */
@@ -30,7 +31,7 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
             CooperationSettingHelper::SHORT_REGISTER_URL
         );
 
-        if (!empty($registerUrl)) {
+        if (! empty($registerUrl)) {
             return redirect()->away($registerUrl);
         }
 
@@ -39,26 +40,25 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
 
     /**
      * Create a new registered user.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \Laravel\Fortify\Contracts\CreatesNewUsers $creator
-     *
-     * @return \Laravel\Fortify\Contracts\RegisterResponse
      */
     public function store(Request $request, CreatesNewUsers $creator): RegisterResponse
     {
         /** @var \App\Actions\Fortify\CreateNewUser $creator */
-        $user = $creator->request($request)->create($request->all());
-        $account = $user->account;
+        $account = $creator->request($request)->create($request->all());
+        $user = $account->user();
+        $building = $user->building;
 
         if ($account->wasRecentlyCreated) {
             $account->sendEmailVerificationNotification();
             event(new Registered($user->cooperation, $user));
-        } else {
+        } elseif ($user->wasRecentlyCreated) {
+            // We don't want to dispatch this if only a building was made
             UserAssociatedWithOtherCooperation::dispatch($user->cooperation, $user);
         }
-        // at this point, a user can't register without accepting the privacy terms.
-        UserAllowedAccessToHisBuilding::dispatch($user, $user->building);
+
+        // At this point, a user can't register without accepting the privacy terms. If he just added a building,
+        // he should have already accepted it.
+        UserAllowedAccessToHisBuilding::dispatch($user, $building);
 
         $this->guard->login($account);
 
@@ -67,27 +67,31 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
 
     /**
      * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function checkExistingEmail(Request $request, Cooperation $cooperation, ?Cooperation $forCooperation = null)
+    public function checkExistingEmail(Request $request, Cooperation $cooperation, ?Cooperation $forCooperation = null): JsonResponse
     {
         $cooperationToCheckFor = $forCooperation instanceof Cooperation ? $forCooperation : $cooperation;
 
         $email = $request->get('email');
         $account = Account::where('email', $email)->first();
 
-        $response = ['email_exists' => false, 'user_is_already_member_of_cooperation' => false];
+        $response = [
+            'email_exists' => false,
+            'user_is_already_member_of_cooperation' => false,
+            'user_has_no_building' => false,
+        ];
 
         if ($account instanceof Account) {
             $response['email_exists'] = true;
 
             // check if the user is a member of the cooperation
-            if ($account->users()->forMyCooperation($cooperationToCheckFor->id)->first() instanceof User) {
+            if (($user = $account->users()->forMyCooperation($cooperationToCheckFor->id)->first()) instanceof User) {
                 $response['user_is_already_member_of_cooperation'] = true;
-            }
 
-            return response()->json($response);
+                if (! $user->building instanceof Building) {
+                    $response['user_has_no_building'] = true;
+                }
+            }
         }
 
         return response()->json($response);

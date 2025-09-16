@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateToolQuestionCustomValuesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('tool_question_custom_values', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -25,7 +23,7 @@ class CreateToolQuestionCustomValuesTable extends Migration
             $table->boolean('show');
             $table->integer('order');
             $table->json('extra')->nullable();
-            $table->json('conditions')->nullable()->default(null);
+            $table->json('conditions')->nullable();
 
             $table->timestamps();
         });
@@ -33,11 +31,9 @@ class CreateToolQuestionCustomValuesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('tool_question_custom_values');
     }
-}
+};

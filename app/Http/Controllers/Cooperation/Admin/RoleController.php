@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
@@ -14,7 +16,7 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    public function assignRole(Cooperation $cooperation, Request $request)
+    public function assignRole(Cooperation $cooperation, Request $request): RedirectResponse
     {
         // the user id to assign the role to
         $userId = $request->get('user_id');
@@ -30,7 +32,7 @@ class RoleController extends Controller
             $user = User::find($userId);
         }
 
-        $this->authorize('view', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true)]);
+        Gate::authorize('view', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true)]);
 
 
         $user->assignRole($role);
@@ -38,7 +40,7 @@ class RoleController extends Controller
         return redirect()->back();
     }
 
-    public function removeRole(Cooperation $cooperation, Request $request)
+    public function removeRole(Cooperation $cooperation, Request $request): RedirectResponse
     {
         $currentUser = Hoomdossier::user();
         // the user id to assign the role to
@@ -54,7 +56,7 @@ class RoleController extends Controller
             $user = User::find($userId);
         }
 
-        $this->authorize('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
+        Gate::authorize('delete', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
 
         // we cant delete a role if the user only has 1 role.
         if ($user->hasMultipleRoles()) {

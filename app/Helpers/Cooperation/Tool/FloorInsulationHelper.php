@@ -121,8 +121,7 @@ class FloorInsulationHelper extends ToolHelper
 
             // don't save if not applicable
             if ($floorInsulationValue instanceof ElementValue) {
-                $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
-                $results = FloorInsulation::calculate($this->building, $this->masterInputSource, $userEnergyHabit, $this->getValues());
+                $results = FloorInsulation::calculate($this->building, $this->masterInputSource, $this->getValues());
 
                 if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
                     $measureApplication = MeasureApplication::where('measure_name->nl', $results['insulation_advice'])
@@ -137,8 +136,11 @@ class FloorInsulationHelper extends ToolHelper
 
                         // We only want to check old advices if the updated attributes are not relevant to this measure
                         if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                            UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
-                                $oldAdvices);
+                            UserActionPlanAdviceService::checkOldAdvices(
+                                $actionPlanAdvice,
+                                $measureApplication,
+                                $oldAdvices
+                            );
                         }
 
                         $actionPlanAdvice->save();

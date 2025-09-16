@@ -16,34 +16,23 @@ class UserChangedHisEmailEvent
     use InteractsWithSockets;
     use SerializesModels;
 
-    public $cooperation;
-    public $oldEmail;
-    public $newEmail;
-    public $user;
-    public $account;
-
-    /**
-     * UserChangedHisEmailEvent constructor.
-     *
-     * @param $oldEmail
-     * @param $newEmail
-     */
-    public function __construct(User $user, Account $account, $oldEmail, $newEmail)
+    public function __construct(
+        public User $user,
+        public Account $account,
+        public string $oldEmail,
+        public string $newEmail
+    )
     {
-        Log::debug('User changed his mail from '.$oldEmail.' to '.$newEmail);
-        $this->user = $user;
-        $this->account = $account;
-        $this->oldEmail = $oldEmail;
-        $this->newEmail = $newEmail;
+        Log::debug('User changed his mail from ' . $oldEmail . ' to ' . $newEmail);
     }
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn()
+    public function broadcastOn(): array
     {
-        return new PrivateChannel('channel-name');
+        return [new PrivateChannel('channel-name')];
     }
 }

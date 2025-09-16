@@ -27,21 +27,9 @@ class ImportToolQuestionTranslations extends Command
     protected $description = 'This command will update the tool question translations, based on the csv.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle(Excel $excel)
+    public function handle(Excel $excel): int
     {
         if (! Storage::disk('local')->exists('tool-questions.csv')) {
             $this->error('"tool-questions.csv" not found at /storage/app!');
@@ -55,6 +43,6 @@ class ImportToolQuestionTranslations extends Command
             Excel::CSV
         );
 
-        return 0;
+        return self::SUCCESS;
     }
 }

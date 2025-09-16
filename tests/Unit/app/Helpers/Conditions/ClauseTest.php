@@ -6,15 +6,13 @@ use App\Helpers\Conditions\Clause;
 use Illuminate\Support\Arr;
 use PHPUnit\Framework\TestCase;
 
-class ClauseTest extends TestCase
+final class ClauseTest extends TestCase
 {
 
     /**
      * A basic unit test example.
-     *
-     * @return void
      */
-    public function testSingleClause()
+    public function testSingleClause(): void
     {
         $clause = new Clause('A', '=', 1);
 
@@ -24,7 +22,7 @@ class ClauseTest extends TestCase
         $this->assertEquals($expect, $clause->toArray());
     }
 
-    public function testSimpleAndClause()
+    public function testSimpleAndClause(): void
     {
         $clause  = new Clause('A', Clause::EQ, 1);
         $clauseB = new Clause('B', Clause::GT, 1);

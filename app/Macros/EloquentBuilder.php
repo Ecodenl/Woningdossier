@@ -10,7 +10,5 @@ EloquentBuilder::macro('withWhereHas', function ($relation, Closure $callback = 
      * @see https://github.com/laravel/framework/blob/1c2eef82924ff5f9ae14b0fad9f70f5f922a0d17/src/Illuminate/Database/Eloquent/Concerns/QueriesRelationships.php#L166
      */
     return $this->whereHas(Str::before($relation, ':'), $callback, $operator, $count)
-        ->with($callback
-            ? [$relation => fn ($query) => $callback($query)]
-            : $relation);
+        ->with($callback ? [$relation => fn ($query) => $callback($query)] : $relation);
 });

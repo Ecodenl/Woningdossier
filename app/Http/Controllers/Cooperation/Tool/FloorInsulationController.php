@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use App\Calculations\FloorInsulation;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
@@ -21,12 +24,7 @@ use App\Services\ToolQuestionService;
 
 class FloorInsulationController extends ToolController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function index(LegacyService $legacyService)
+    public function index(LegacyService $legacyService): View
     {
         $typeIds = [4];
         /** @var Building $building */
@@ -35,7 +33,7 @@ class FloorInsulationController extends ToolController
         $buildingInsulation = $building->getBuildingElement('floor-insulation', $this->masterInputSource);
         $buildingInsulationForMe = $building->getBuildingElementsForMe('floor-insulation');
 
-        $floorInsulation = optional($buildingInsulation)->element;
+        $floorInsulation = $buildingInsulation?->element;
 
         $crawlspace = Element::where('short', 'crawlspace')->first();
         $buildingCrawlspace = $building->getBuildingElement($crawlspace->short, $this->masterInputSource);
@@ -62,37 +60,35 @@ class FloorInsulationController extends ToolController
             ->getMeasureRelatedAnswers(Step::findByShort('floor-insulation'));
 
         return view('cooperation.tool.floor-insulation.index', compact(
-            'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe',
+            'floorInsulation',
+            'buildingInsulation',
+            'buildingInsulationForMe',
             'buildingElementsOrderedOnInputSourceCredibility',
-            'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingFeaturesOrderedOnInputSourceCredibility',
-            'crawlspacePresent', 'building', 'measureRelatedAnswers'
+            'crawlspace',
+            'buildingCrawlspace',
+            'typeIds',
+            'buildingFeaturesOrderedOnInputSourceCredibility',
+            'crawlspacePresent',
+            'building',
+            'measureRelatedAnswers'
         ));
     }
 
-    public function calculate(FloorInsulationFormRequest $request)
+    public function calculate(FloorInsulationFormRequest $request): JsonResponse
     {
-        /**
-         * @var Building
-         */
+        /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
 
         $result = FloorInsulation::calculate(
             $building,
             $this->masterInputSource,
-            $user->energyHabit()->forInputSource($this->masterInputSource)->first(),
             $request->all()
         );
 
         return response()->json($result);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(FloorInsulationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
+    public function store(FloorInsulationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;

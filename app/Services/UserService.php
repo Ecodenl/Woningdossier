@@ -113,7 +113,7 @@ class UserService
      */
     public function resetUser(InputSource $inputSource)
     {
-        Log::debug(__METHOD__." ".$this->user->id." for input source ".$inputSource->short);
+        Log::debug(__METHOD__ . " " . $this->user->id . " for input source " . $inputSource->short);
         // only remove the example building id from the building
         $user = $this->user;
         $cooperation = $user->cooperation;
@@ -148,14 +148,16 @@ class UserService
 
         // Remove all mappings related to custom measure applications
         DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
-            ->whereIn('from_model_id',
-                $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray())
+            ->whereIn(
+                'from_model_id',
+                $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray()
+            )
             ->delete();
         // Remove custom measure applications the user has made
         $building->customMeasureApplications()->forInputSource($inputSource)->delete();
 
         // remove the action plan advices from the user
-        $user->actionPlanAdvices()->withInvisible()->forInputSource($inputSource)->delete();
+        $user->userActionPlanAdvices()->withInvisible()->forInputSource($inputSource)->delete();
         // remove the energy habits from a user
         $user->energyHabit()->forInputSource($inputSource)->delete();
 
@@ -171,7 +173,9 @@ class UserService
             if ($cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
                 // re-query the bag
                 $addressData = app(BagService::class)->addressExpanded(
-                    $building->postal_code, $building->number, $building->extension
+                    $building->postal_code,
+                    $building->number,
+                    $building->extension
                 )->prepareForBuilding();
 
                 if (! empty(($addressData['bag_addressid'] ?? null))) {
@@ -199,10 +203,8 @@ class UserService
 
     /**
      * Method to register a user.
-     *
-     * @return User
      */
-    public static function register(Cooperation $cooperation, array $roles, array $registerData)
+    public static function register(Cooperation $cooperation, array $roles, array $registerData): User
     {
         $email = $registerData['email'];
         // try to obtain the existing account
@@ -225,33 +227,30 @@ class UserService
 
     /**
      * Method to create a new user with all necessary actions to make the tool work.
-     *
-     * @param $account
-     * @param $data
-     *
-     * @return User|\Illuminate\Database\Eloquent\Model
      */
-    public static function create(Cooperation $cooperation, array $roles, $account, $data)
+    public static function create(Cooperation $cooperation, array $roles, Account $account, array $data): User
     {
-        Log::debug('account id for registration: '.$account->id);
+        if (! ($user = $account->users()->forMyCooperation($cooperation->id)->first()) instanceof User) {
+            // Create the user for an account
+            /** @var User $user */
+            $user = User::create(
+                [
+                    'extra' => $data['extra'] ?? null,
+                    'account_id' => $account->id,
+                    'first_name' => $data['first_name'],
+                    'last_name' => $data['last_name'],
+                    'phone_number' => $data['phone_number'] ?? '',
+                ]
+            );
+        }
 
-        // Create the user for an account
-        $user = User::create(
-            [
-                'extra' => $data['extra'] ?? null,
-                'account_id' => $account->id,
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'phone_number' => $data['phone_number'] ?? '',
-            ]
-        );
-
-        // filter relevant data from the request
+        // Filter relevant data from the request
         $data['address']['extension'] ??= null;
         $buildingData = $data['address'];
 
-        // create the building for the user
-        $building = $user->building()->save(new Building($buildingData));
+        // Create the building for the user.
+        $building = Building::create($buildingData);
+        $building->user()->associate($user)->save();
 
         // We need an input source. From the API, roles are passed as string. From the other sources as ID. We just
         // fetch them all and grab the first one.
@@ -260,9 +259,7 @@ class UserService
         )->get();
 
         // Fallback to resident in case of illogical situation.
-        $inputSource = $rolesWithSources->isNotEmpty()
-            ? $rolesWithSources->first()->inputSource
-            : InputSource::resident();
+        $inputSource = $rolesWithSources->isNotEmpty() ? $rolesWithSources->first()->inputSource : InputSource::resident();
 
         if ($cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
             CheckBuildingAddress::dispatchSync($building, $inputSource);
@@ -276,14 +273,18 @@ class UserService
             AttachEnergyLabel::dispatch($building);
         }
 
-        app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
+        // Attach cooperation.
         $user->cooperation()->associate(
             $cooperation
         )->save();
+        app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
 
         $user->assignRole($roles);
 
         app(BuildingStatusService::class)->forBuilding($building)->setStatus('active');
+
+        // Don't want to keep anything eager loaded.
+        $user->unsetRelations();
 
         return $user;
     }
@@ -292,12 +293,18 @@ class UserService
     /**
      * Method to delete a user and its user info.
      */
-    public static function deleteUser(User $user, bool $shouldForceDeleteBuilding = false)
+    public static function deleteUser(User $user, bool $shouldForceDeleteBuilding = false): void
     {
         $accountId = $user->account_id;
         $building = $user->building;
+        // Load the user onto the building with the correct cooperation. When managing, the session cooperation
+        // might not be the right one.
+        $building->load(['user' => fn ($q) => $q->forMyCooperation($user->cooperation_id)]);
+
         $cooperation = $user->cooperation;
         $accountRelated = app(EconobisService::class)->forBuilding($building)->resolveAccountRelated();
+        // Convert to array (WITH the API key!) to ensure Econobis can delete the user.
+        $cooperationData = $cooperation->makeVisible('econobis_api_key')->toArray();
 
         if ($building instanceof Building) {
             if ($shouldForceDeleteBuilding) {
@@ -310,12 +317,8 @@ class UserService
         }
 
         // remove the action plan advices from the user
-        $user->actionPlanAdvices()->withoutGlobalScopes()->delete();
+        $user->userActionPlanAdvices()->withoutGlobalScopes()->delete();
 
-        // remove the user interests
-        // we keep the user interests table until we are 100% sure it can be removed
-        // but because of gdpr we have to keep this until the table is removed
-        $user->userInterests()->withoutGlobalScopes()->delete();
         // we cant use the relationship because we just want to delete everything
         Considerable::forUser($user)->allInputSources()->delete();
         // remove the energy habits from a user
@@ -324,8 +327,6 @@ class UserService
         $user->notificationSettings()->withoutGlobalScopes()->delete();
         // first detach the roles from the user
         $user->roles()->detach($user->roles);
-        // remove the user his motivations
-        $user->motivations()->delete();
 
         // remove the user itself.
         $user->delete();
@@ -334,14 +335,14 @@ class UserService
         $building->toolQuestionAnswers()->withoutGlobalScopes()->delete();
         // remove the user itself.
         // if the account has no users anymore then we delete the account itself too.
-        if (0 == User::withoutGlobalScopes()->where('account_id', $accountId)->count()) {
+        if (0 === User::withoutGlobalScopes()->where('account_id', $accountId)->count()) {
             // bye !
             $account = Account::find($accountId);
             if ($account instanceof Account) {
                 $account->delete();
             }
         }
-        UserDeleted::dispatch($cooperation, $accountRelated['account_related']);
+        UserDeleted::dispatch($cooperationData, $accountRelated['account_related']);
     }
 
     /**
@@ -350,11 +351,9 @@ class UserService
      * input sources will be combined. If not possible, the data of $user1 will be
      * leading and the data of user2 will be deleted.
      *
-     * @return User
      * @throws \Exception
-     *
      */
-    public static function merge(User $user1, User $user2)
+    public static function merge(User $user1, User $user2): User
     {
         // The simple cases: where we can just update the user_id or coach_id
         $tables = [
@@ -364,7 +363,6 @@ class UserService
                 'logs',
                 //'notification_settings', will be deleted
                 'private_message_views',
-                //'user_motivations', will be deleted
             ],
             'from_user_id' => [
                 'private_messages',
@@ -380,7 +378,7 @@ class UserService
 
         foreach ($tables as $column => $tablesWithColumn) {
             foreach ($tablesWithColumn as $tableWithColumn) {
-                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.';');
+                Log::debug('UPDATE ' . $tableWithColumn . ' SET ' . $column . ' = ' . $user1->id . ' WHERE ' . $column . ' = ' . $user2->id . ';');
                 DB::table($tableWithColumn)
                     ->where($column, '=', $user2->id)
                     ->update([$column => $user1->id]);
@@ -396,13 +394,12 @@ class UserService
                 'user_action_plan_advice_comments',
                 'user_action_plan_advices',
                 'user_energy_habits',
-                'user_interests',
             ],
         ];
 
         foreach ($tables as $column => $tablesWithColumn) {
             foreach ($tablesWithColumn as $tableWithColumn) {
-                Log::debug('Checking input sources for '.$tableWithColumn);
+                Log::debug('Checking input sources for ' . $tableWithColumn);
                 $inputSources = DB::table($tableWithColumn)
                     ->where($column, '=', $user1->id)
                     ->select('input_source_id')
@@ -410,8 +407,10 @@ class UserService
                     ->pluck('input_source_id')
                     ->toArray();
 
-                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.' AND WHERE input_source NOT IN ('.implode(',',
-                        $inputSources).');');
+                Log::debug('UPDATE ' . $tableWithColumn . ' SET ' . $column . ' = ' . $user1->id . ' WHERE ' . $column . ' = ' . $user2->id . ' AND WHERE input_source NOT IN (' . implode(
+                    ',',
+                    $inputSources
+                ) . ');');
                 DB::table($tableWithColumn)
                     ->where($column, '=', $user2->id)
                     ->whereNotIn('input_source_id', $inputSources)

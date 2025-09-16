@@ -2,13 +2,17 @@
     $withLabels ??= false;
     // Any object that has the correct columns
     $defaults ??= new stdClass();
-
-    $supportsLvBag = $cooperation->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG);
+    $checks ??= [
+        'correct_address',
+    ];
+    /** @var \App\Models\Cooperation $cooperation */
+    $supportsLvBag ??= $cooperation->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG);
 @endphp
 
 <div class="{{ $class ?? 'flex flex-wrap w-full' }}" @if(! empty($attr)) {!! $attr !!} @endif
      x-data="checkAddress({
-        @if($supportsLvBag) 'correct_address': '{{ route('api.get-address-data', ['country' => $cooperation->country]) }}' @endif
+         @if(in_array('correct_address', $checks) && $supportsLvBag) 'correct_address': '{{ route('api.get-address-data', ['country' => $cooperation->country]) }}', @endif
+         @if(in_array('duplicates', $checks)) 'duplicates': '{{ route('api.check-address-duplicates', ['cooperation' => $cooperationToManage ?? $cooperation]) }}', @endif
      }, @js($supportsLvBag))">
 
     @component('cooperation.frontend.layouts.components.form-group', [
@@ -39,12 +43,12 @@
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
         'label' => $withLabels ? __('auth.register.form.house-number-extension') : '',
-        'labelAttr' => $supportsLvBag ? 'style="display: none;"' : '',
+        'labelAttr' => 'style="display: none;"',
         'class' => 'w-full -mt-5 lg:w-1/4 lg:pl-3',
         'inputName' => 'address.house_number_extension',
         'id' => 'extension',
     ])
-        <input class="form-input" type="text" name="address[extension]" @if($supportsLvBag) style="display: none;" @endif
+        <input class="form-input" type="text" name="address[extension]" style="display: none;"
                value="{{ old('address.extension', $defaults->extension ?? '') }}"
                placeholder="@lang('auth.register.form.house-number-extension')"
                x-bind="houseNumberExtensionField">

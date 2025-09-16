@@ -2,17 +2,15 @@
 
 namespace App\Listeners;
 
+use App\Events\BuildingAddressUpdated;
 use App\Jobs\RefreshRegulationsForBuildingUser;
 
 class RefreshBuildingUserHisAdvices extends NonHandleableListenerAfterReset
 {
     /**
      * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
      */
-    public function handle($event)
+    public function handle(BuildingAddressUpdated $event): void
     {
         $this->checkLastResetAt(function () use ($event) {
             RefreshRegulationsForBuildingUser::dispatch($event->building);

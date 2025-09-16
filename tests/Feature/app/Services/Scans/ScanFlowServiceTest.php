@@ -23,11 +23,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class ScanFlowServiceTest extends TestCase
+final class ScanFlowServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_conditionals_get_handled_correctly()
+    public function test_conditionals_get_handled_correctly(): void
     {
         $this->seed(ToolQuestionTypesTableSeeder::class);
         $this->seed(ScansTableSeeder::class);

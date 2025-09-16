@@ -7,16 +7,16 @@ use App\Models\Cooperation;
 
 class MediaHelper
 {
-    const LOGO = 'logo';
-    const BUILDING_IMAGE = 'building-image';
-    const BACKGROUND = 'background';
-    const PDF_BACKGROUND = 'pdf-background';
-    const GENERIC_FILE = 'generic-file';
-    const GENERIC_IMAGE = 'generic-image';
-    const REPORT = 'report';
-    const QUOTATION = 'quotation';
-    const INVOICE = 'invoice';
-    const BILL = 'bill';
+    const string LOGO = 'logo';
+    const string BUILDING_IMAGE = 'building-image';
+    const string BACKGROUND = 'background';
+    const string PDF_BACKGROUND = 'pdf-background';
+    const string GENERIC_FILE = 'generic-file';
+    const string GENERIC_IMAGE = 'generic-image';
+    const string REPORT = 'report';
+    const string QUOTATION = 'quotation';
+    const string INVOICE = 'invoice';
+    const string BILL = 'bill';
 
     /**
      * These are the tags that are fillable (or better said, selectable). Tags that are not set here cannot be selected

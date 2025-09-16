@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use Illuminate\Http\RedirectResponse;
 use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingNoteRequest;
@@ -11,10 +12,8 @@ class BuildingNoteController extends Controller
 {
     /**
      * Method to store a note for a building.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(BuildingNoteRequest $request)
+    public function store(BuildingNoteRequest $request): RedirectResponse
     {
         $note = $request->input('building.note');
         $buildingId = $request->input('building.id');
@@ -25,6 +24,6 @@ class BuildingNoteController extends Controller
             'coach_id' => Hoomdossier::user()->id,
         ]);
 
-        return redirect()->back()->with('fragment', $request->get('fragment'));
+        return redirect()->back()->withFragment('building-notes');
     }
 }

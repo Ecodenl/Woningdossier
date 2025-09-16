@@ -2,18 +2,20 @@
 
 namespace Tests\Unit\app\Helpers\DataTypes;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\DataTypes\Caster;
 use Tests\TestCase;
 
-class CasterTest extends TestCase
+final class CasterTest extends TestCase
 {
-    public function getCastProvider()
+    public static function getCastProvider(): array
     {
         return [
             [Caster::STRING, 10, false, '10'],
             [Caster::STRING, '10', false, '10'],
             [Caster::STRING, 'gibberish', false, 'gibberish'],
-            [Caster::STRING, null, false, ''],
+            [Caster::STRING, null, false, null],
+            [Caster::STRING, null, true, ''],
             [Caster::STRING, true, false, '1'],
             [Caster::STRING, false, false, ''],
             [Caster::INT, 'gibberish', false, 0],
@@ -92,7 +94,7 @@ class CasterTest extends TestCase
             [Caster::JSON, '{"a":"a","b":"b","c":{"a":"a"}}', false, ['a' => 'a', 'b' => 'b', 'c' => ['a' => 'a']]],
             [Caster::JSON, 10, false, 10],
             [Caster::JSON, 10.3, false, 10.3],
-            [Caster::JSON, '10', false, '10'],
+            [Caster::JSON, '10', false, 10],
             [Caster::JSON, null, false, null],
             [Caster::JSON, null, true, null],
             [Caster::IDENTIFIER, 10, false, 10],
@@ -104,20 +106,18 @@ class CasterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getCastProvider
-     */
-    public function test_get_cast(string $dataType, $value, bool $force, $expected)
+    #[DataProvider('getCastProvider')]
+    public function test_get_cast(string $dataType, mixed $value, bool $force, mixed $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {
             $caster->force();
         }
 
-        $this->assertEquals($expected, $caster->getCast());
+        $this->assertSame($expected, $caster->getCast());
     }
 
-    public function reverseFormattedProvider()
+    public static function reverseFormattedProvider(): array
     {
         // Provider note: The code only reverse formats ints and floats, as they are the only  user input that require
         // formatting. Therefore, this test is limited to these 2 only (in detail).
@@ -155,20 +155,18 @@ class CasterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider reverseFormattedProvider
-     */
-    public function test_reverse_formatted(string $dataType, $value, bool $force, $expected)
+    #[DataProvider('reverseFormattedProvider')]
+    public function test_reverse_formatted(string $dataType, mixed $value, bool $force, mixed $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {
             $caster->force();
         }
 
-        $this->assertEquals($expected, $caster->reverseFormatted());
+        $this->assertSame($expected, $caster->reverseFormatted());
     }
 
-    public function getFormatForUserProvider()
+    public static function getFormatForUserProvider(): array
     {
         // Provider note: The code only formats ints (and bucketed ints) and floats, as they are the only that
         // (currently) require formatting. The other values apply a `getCast()`. See other tests on those results.
@@ -182,7 +180,7 @@ class CasterTest extends TestCase
             [Caster::INT, '10,3', false, '10'],
             [Caster::INT, '10.73', false, '11'],
             [Caster::INT, '10,73', false, '10'],
-            [Caster::INT, 'AmIANumber?', false, null],
+            [Caster::INT, 'AmIANumber?', false, '0'],
             [Caster::INT_5, null, false, null],
             [Caster::INT_5, null, true, '0'],
             [Caster::INT_5, '0', false, '0'],
@@ -193,7 +191,7 @@ class CasterTest extends TestCase
             [Caster::INT_5, '12.73', false, '15'],
             [Caster::INT_5, '13', false, '15'],
             [Caster::INT_5, '10,73', false, '10'],
-            [Caster::INT_5, 'AmIANumber?', false, null],
+            [Caster::INT_5, 'AmIANumber?', false, '0'],
             [Caster::FLOAT, null, false, null],
             [Caster::FLOAT, null, true, '0'],
             [Caster::FLOAT, '0', false, '0'],
@@ -206,14 +204,12 @@ class CasterTest extends TestCase
             [Caster::FLOAT, '10,735', false, '10,0'],
             [Caster::FLOAT, '10,75', false, '10,0'],
             [Caster::FLOAT, '10.75', false, '10,8'],
-            [Caster::FLOAT, 'AmIANumber?', false, null],
+            [Caster::FLOAT, 'AmIANumber?', false, '0'],
         ];
     }
 
-    /**
-     * @dataProvider getFormatForUserProvider
-     */
-    public function test_get_format_for_user(string $dataType, $value, bool $force, $expected)
+    #[DataProvider('getFormatForUserProvider')]
+    public function test_get_format_for_user(string $dataType, mixed $value, bool $force, mixed $expected): void
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {
@@ -221,6 +217,6 @@ class CasterTest extends TestCase
         }
 
         // Note: Test currently does not support locale. When we do add a second locale, this will need revisiting.
-        $this->assertEquals($expected, $caster->getFormatForUser());
+        $this->assertSame($expected, $caster->getFormatForUser());
     }
 }

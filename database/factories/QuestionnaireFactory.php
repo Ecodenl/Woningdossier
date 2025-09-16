@@ -8,16 +8,23 @@ class QuestionnaireFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'cooperation_id' => \App\Models\Cooperation::factory(),
+            'cooperation_id' => null,
             'name' => [
                 'nl' => $this->faker->text(80),
             ],
         ];
+    }
+
+    public function withCooperation()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'cooperation_id' => \App\Models\Cooperation::factory(),
+            ];
+        });
     }
 }

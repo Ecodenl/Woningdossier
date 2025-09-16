@@ -14,32 +14,20 @@ class UserChangedHisEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $account;
-    public $user;
-    public $newMail;
-    public $oldMail;
-
-    /**
-     * UserChangedHisEmail constructor.
-     *
-     * @param $newMail
-     * @param $oldMail
-     */
-    public function __construct(User $user, Account $account, $newMail, $oldMail)
+    public function __construct(
+        public User $user,
+        public Account $account,
+        public string $newMail,
+        public string $oldMail
+    )
     {
         $this->onQueue(Queue::APP_EXTERNAL);
-        $this->user = $user;
-        $this->account = $account;
-        $this->newMail = $newMail;
-        $this->oldMail = $oldMail;
     }
 
     /**
      * Build the message.
-     *
-     * @return $thi
      */
-    public function build()
+    public function build(): static
     {
         return $this
             ->subject(strip_tags(__('cooperation/mail/changed-email.subject')))

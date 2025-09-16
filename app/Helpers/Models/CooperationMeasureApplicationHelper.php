@@ -19,8 +19,6 @@ class CooperationMeasureApplicationHelper
 
     public static function getTypeForScan(Scan $scan): string
     {
-        return $scan->short === 'quick-scan'
-            ? static::SMALL_MEASURE
-            : static::EXTENSIVE_MEASURE;
+        return $scan->short === 'quick-scan' ? static::SMALL_MEASURE : static::EXTENSIVE_MEASURE;
     }
 }

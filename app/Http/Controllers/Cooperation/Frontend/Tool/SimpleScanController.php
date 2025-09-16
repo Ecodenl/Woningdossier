@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Frontend\Tool;
 
+use Illuminate\View\View;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Jobs\CloneOpposingInputSource;
@@ -13,7 +14,7 @@ use App\Services\Models\NotificationService;
 
 class SimpleScanController extends Controller
 {
-    public function index(Cooperation $cooperation, Scan $scan, Step $step, SubStep $subStep)
+    public function index(Cooperation $cooperation, Scan $scan, Step $step, SubStep $subStep): View
     {
         // the route will always be matched, however a sub step has to match the step.
         abort_if(! $step->subSteps()->find($subStep->id) instanceof SubStep, 404);
@@ -25,8 +26,9 @@ class SimpleScanController extends Controller
             ->setType(CloneOpposingInputSource::class)
             ->isActive();
 
-        return view("cooperation.frontend.tool.simple-scan.index",
-            compact('scan', 'step', 'subStep', 'activeNotification', 'currentInputSource'));
+        return view(
+            "cooperation.frontend.tool.simple-scan.index",
+            compact('scan', 'step', 'subStep', 'activeNotification', 'currentInputSource')
+        );
     }
-
 }

@@ -2,6 +2,8 @@
 
 namespace App\Actions\Fortify;
 
+use App\Models\Building;
+use App\Models\User;
 use App\Helpers\RoleHelper;
 use App\Http\Requests\AddressFormRequest;
 use App\Models\Account;
@@ -27,11 +29,8 @@ class CreateNewUser implements CreatesNewUsers
 
     /**
      * Validate and create a newly registered user.
-     *
-     * @param  array  $input
-     * @return \App\Models\User
      */
-    public function create(array $input)
+    public function create(array $input): Account
     {
         $this->request ??= request();
         $this->input = $input;
@@ -41,11 +40,13 @@ class CreateNewUser implements CreatesNewUsers
 
         $cooperation = $this->request->route('cooperation');
 
-        return UserService::register($cooperation, [RoleHelper::ROLE_RESIDENT], $input);
+        $user = UserService::register($cooperation, [RoleHelper::ROLE_RESIDENT], $input);
+        return $user->account;
     }
 
     private function rules(): array
     {
+        /** @var \App\Models\Cooperation $cooperation */
         $cooperation = $this->request->route('cooperation');
 
         $rules = array_merge([
@@ -63,12 +64,28 @@ class CreateNewUser implements CreatesNewUsers
             'allow_access' => 'required|accepted',
         ], (new AddressFormRequest())->setCountry($cooperation->country)->rules());
 
-        // try to get the account
+        // Try to get the account from the given email.
         $account = Account::where('email', $this->get('email'))->first();
-        // if the account exists but the user is not associated with the current cooperation
-        // then we unset the email and password rule because we dont need to validate them, we handle them in the controller
-        if ($account instanceof Account && ! $account->isAssociatedWith($this->request->route('cooperation'))) {
+        // If the account exists but the user is not associated with the current cooperation,
+        // then we unset the email and password rule because we don't need to validate them, we
+        // handle them in the controller.
+        if ($account instanceof Account && ! $account->isAssociatedWith($cooperation)) {
             unset($rules['email'], $rules['password']);
+        }
+        // If the account has a user for the current cooperation, but no building, we only want to
+        // validate the address rules.
+        if ($account instanceof Account
+            && ($user = $account->users()->forMyCooperation($cooperation->id)->first()) instanceof User
+            && ! $user->building instanceof Building
+        ) {
+            unset(
+                $rules['email'],
+                $rules['password'],
+                $rules['first_name'],
+                $rules['last_name'],
+                $rules['phone_number'],
+                $rules['allow_access'],
+            );
         }
 
         return $rules;
@@ -84,7 +101,7 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * so fields can be modified or added before validation.
      */
-    private function prepareForValidation()
+    private function prepareForValidation(): void
     {
         // Add new data field before it gets sent to the validator
         $this->set([

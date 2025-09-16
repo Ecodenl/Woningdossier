@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
@@ -32,43 +33,43 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string|null $end_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
  * @property-read \App\Models\BuildingHeating|null $heatingFirstFloor
  * @property-read \App\Models\BuildingHeating|null $heatingSecondFloor
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\User|null $user
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forBuilding($building)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forMe(?\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit query()
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereAmountElectricity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereAmountGas($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereAmountWater($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereBuildingComplaints($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereCookGas($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereEndDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereHeatedSpaceOutside($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereHeatingFirstFloor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereHeatingSecondFloor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereHoursHigh($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereRenovationPlans($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereResidentCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereStartDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereThermostatHigh($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereThermostatLow($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereWaterComfortId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit forBuilding(\App\Models\Building|int $building)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit forUser(\App\Models\User|int $user)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereAmountElectricity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereAmountGas($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereAmountWater($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereBuildingComplaints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereCookGas($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereEndDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereHeatedSpaceOutside($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereHeatingFirstFloor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereHeatingSecondFloor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereHoursHigh($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereRenovationPlans($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereResidentCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereThermostatHigh($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereThermostatLow($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserEnergyHabit whereWaterComfortId($value)
  * @mixin \Eloquent
  */
 class UserEnergyHabit extends Model implements Auditable
@@ -96,34 +97,23 @@ class UserEnergyHabit extends Model implements Auditable
 
     /**
      * Get the user that belongsTo this habit.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function heatingFirstFloor()
+    public function heatingFirstFloor(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'heating_first_floor');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function heatingSecondFloor()
+    public function heatingSecondFloor(): BelongsTo
     {
         return $this->belongsTo(BuildingHeating::class, 'heating_second_floor');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function comfortLevelTapWater()
+    public function comfortLevelTapWater(): BelongsTo
     {
         return $this->belongsTo(ComfortLevelTapWater::class, 'water_comfort_id');
     }

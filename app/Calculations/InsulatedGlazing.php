@@ -21,11 +21,8 @@ class InsulatedGlazing
 {
     /**
      * Return the calculate results for the insulated glazings.
-     *
-     * @param $energyHabit
-     * @param $calculateData
      */
-    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
+    public static function calculate(Building $building, InputSource $inputSource, $calculateData): array
     {
         $result = [
             'savings_gas' => 0,
@@ -35,7 +32,6 @@ class InsulatedGlazing
             'measure' => [],
         ];
 
-
         $buildingInsulatedGlazings = $calculateData['building_insulated_glazings'] ?? [];
 
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazingsData) {
@@ -43,7 +39,6 @@ class InsulatedGlazing
 
             // we cant use the $user->considers() because this will also be used on the frontend
             if (isset($calculateData['considerables'][$measureApplicationId]) && $calculateData['considerables'][$measureApplicationId]['is_considering']) {
-
                 $buildingHeatingId = array_key_exists('building_heating_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['building_heating_id'] : 0;
                 $buildingHeating = BuildingHeating::find($buildingHeatingId);
                 $insulatedGlazingId = array_key_exists('insulating_glazing_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['insulating_glazing_id'] : 0;
@@ -51,18 +46,15 @@ class InsulatedGlazing
 
                 if ($measureApplication instanceof MeasureApplication && $buildingHeating instanceof BuildingHeating) {
                     $m2 = NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']);
-                    $gasSavings = 0;
-                    if (is_numeric($m2)) {
-                        $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
-                            $m2,
-                            $measureApplication,
-                            $buildingHeating,
-                            $insulatedGlazing
-                        );
-                    }
+                    $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
+                        $m2,
+                        $measureApplication,
+                        $buildingHeating,
+                        $insulatedGlazing
+                    );
 
                     $result['measure'][$measureApplication->id] = [
-                        'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, (int)$buildingInsulatedGlazingsData['m2'], (int)$buildingInsulatedGlazingsData['windows']),
+                        'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, (int) $buildingInsulatedGlazingsData['m2'], (int) $buildingInsulatedGlazingsData['windows']),
                         'savings_gas' => $gasSavings,
                         // calculated outside this foreach
                         //'savings_co2' => RawCalculator::calculateCo2Savings($gasSavings),
@@ -91,7 +83,7 @@ class InsulatedGlazing
         // note: first no instanceof was used
         // now calculate the net gas savings (based on the sum of all measure applications)
         // + calculate and add savings_co2 and savings_money to the result structure
-        $result['savings_gas'] = InsulatedGlazingCalculator::calculateNetGasSavings($rawTotalSavingsGas, $building, $inputSource, $energyHabit);
+        $result['savings_gas'] = InsulatedGlazingCalculator::calculateNetGasSavings($rawTotalSavingsGas, $building, $inputSource);
 
         // \Log::debug(__METHOD__.' Net total gas savings: '.$result['savings_gas']);
 
@@ -128,18 +120,14 @@ class InsulatedGlazing
         $framesValueId = 0;
 
         if (array_key_exists($frames->id, $buildingElements)) {
-            $framesValueId = (int)$buildingElements[$frames->id];
+            $framesValueId = (int) $buildingElements[$frames->id];
         }
         $frameElementValue = ElementValue::find($framesValueId);
 
         // only applies for wooden frames
         if ($frameElementValue instanceof ElementValue && 'frames' == $frameElementValue->element->short) {
-            $windowSurface = 0;
+            $windowSurface = NumberFormatter::reverseFormat($calculateData['building_features']['window_surface'] ?? 0);
 
-            $windowSurfaceFormatted = NumberFormatter::reverseFormat($calculateData['building_features']['window_surface'] ?? 0);
-            if (is_numeric($windowSurfaceFormatted)) {
-                $windowSurface = $windowSurfaceFormatted;
-            }
             // frame type use used as ratio (e.g. wood + some others -> use 70% of surface)
             $woodElementValues = [];
 
@@ -157,7 +145,7 @@ class InsulatedGlazing
 
             $measureApplication = MeasureApplication::where('short', 'paint-wood-elements')->first();
 
-            $number = InsulatedGlazingCalculator::calculatePaintworkSurface($frameElementValue, $woodElementValues, NumberFormatter::reverseFormat($windowSurface));
+            $number = InsulatedGlazingCalculator::calculatePaintworkSurface($frameElementValue, $woodElementValues, $windowSurface);
 
             $buildingPaintworkStatuses = $calculateData['building_paintwork_statuses'] ?? [];
             $paintworkStatus = null;
@@ -165,7 +153,7 @@ class InsulatedGlazing
             $lastPaintedYear = 2000;
             // Only calculate if last painted year is set
             if (array_key_exists('last_painted_year', $buildingPaintworkStatuses) && ! is_null($buildingPaintworkStatuses['last_painted_year'])) {
-                $year = (int)$buildingPaintworkStatuses['last_painted_year'];
+                $year = (int) $buildingPaintworkStatuses['last_painted_year'];
                 if ($year > 1950) {
                     $lastPaintedYear = $year;
                 }

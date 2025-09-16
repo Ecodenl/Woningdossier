@@ -16,7 +16,8 @@ class All extends Command
      *
      * @var string
      */
-    protected $signature = 'api:econobis:out:hoomdossier:all {building : The id of the building you would like to process.}';
+    protected $signature = 'api:econobis:out:hoomdossier:all 
+                            {building : The id of the building you would like to process.}';
 
     /**
      * The console command description.
@@ -26,21 +27,9 @@ class All extends Command
     protected $description = 'Run all out commands.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $commands = [
             AppointmentDate::class,
@@ -54,5 +43,7 @@ class All extends Command
             $this->call($command, ['building' => $this->argument('building')]);
             $this->info("Processed {$command}");
         }
+
+        return self::SUCCESS;
     }
 }

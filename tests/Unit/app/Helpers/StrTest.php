@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\app\Helpers;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Helpers\Str;
 use Tests\TestCase;
 
-class StrTest extends TestCase
+final class StrTest extends TestCase
 {
-    public static function isConsideredEmptyAnswerProvider()
+    public static function isConsideredEmptyAnswerProvider(): array
     {
         return [
             [null, true],
@@ -24,15 +25,13 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isConsideredEmptyAnswerProvider
-     */
-    public function testIsConsideredEmptyAnswer($values, $expected)
+    #[DataProvider('isConsideredEmptyAnswerProvider')]
+    public function testIsConsideredEmptyAnswer($values, $expected): void
     {
         $this->assertEquals($expected, Str::isConsideredEmptyAnswer($values));
     }
 
-    public static function lcfirstProvider()
+    public static function lcfirstProvider(): array
     {
         return [
             [0, '0'],
@@ -43,15 +42,13 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider lcfirstProvider
-     */
-    public function testLcfirst($value, $expected)
+    #[DataProvider('lcfirstProvider')]
+    public function testLcfirst($value, $expected): void
     {
         $this->assertEquals($expected, Str::lcfirst($value));
     }
 
-    public static function isValidJsonProvider()
+    public static function isValidJsonProvider(): array
     {
         return [
             ['{"has_crawlspace":"yes","access":"yes"}', true, true],
@@ -67,15 +64,13 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isValidJsonProvider
-     */
-    public function testIsValidJson($value, $arrayOnly, $expected)
+    #[DataProvider('isValidJsonProvider')]
+    public function testIsValidJson($value, $arrayOnly, $expected): void
     {
         $this->assertEquals($expected, Str::isValidJson($value, $arrayOnly));
     }
 
-    public static function arrContainsProvider()
+    public static function arrContainsProvider(): array
     {
         return [
             [[], null, false, false],
@@ -101,15 +96,13 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider arrContainsProvider
-     */
-    public function testArrContains($array, $needle, $ignoreCase, $expected)
+    #[DataProvider('arrContainsProvider')]
+    public function testArrContains($array, $needle, $ignoreCase, $expected): void
     {
         $this->assertEquals($expected, Str::arrContains($array, $needle, $ignoreCase));
     }
 
-    public static function arrStartsWithProvider()
+    public static function arrStartsWithProvider(): array
     {
         return [
             [[], null, false, false],
@@ -135,15 +128,13 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider arrStartsWithProvider
-     */
-    public function test_arr_starts_with($array, $needle, $ignoreCase, $expected)
+    #[DataProvider('arrStartsWithProvider')]
+    public function test_arr_starts_with($array, $needle, $ignoreCase, $expected): void
     {
         $this->assertEquals($expected, Str::arrStartsWith($array, $needle, $ignoreCase));
     }
 
-    public static function arrKeyStartsWithProvider()
+    public static function arrKeyStartsWithProvider(): array
     {
         return [
             [[], null, false, false],
@@ -174,15 +165,13 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider arrKeyStartsWithProvider
-     */
-    public function test_arr_key_starts_with($array, $needle, $ignoreCase, $expected)
+    #[DataProvider('arrKeyStartsWithProvider')]
+    public function test_arr_key_starts_with($array, $needle, $ignoreCase, $expected): void
     {
         $this->assertEquals($expected, Str::arrKeyStartsWith($array, $needle, $ignoreCase));
     }
 
-    public static function htmlArrToDotProvider()
+    public static function htmlArrToDotProvider(): array
     {
         return [
             ['table[column]', 'table.column'],
@@ -192,15 +181,29 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider htmlArrToDotProvider
-     */
-    public function testHtmlArrToDot($value, $expected)
+    #[DataProvider('htmlArrToDotProvider')]
+    public function testHtmlArrToDot($value, $expected): void
     {
         $this->assertEquals($expected, Str::htmlArrToDot($value));
     }
 
-    public function dotToHtmlProvider()
+    public static function hasReplaceablesProvider(): array
+    {
+        return [
+            ['this is :name', true],
+            ['this is a :replacable within', true],
+            ['this has no replacable', false],
+            ['this has :count :replacables!', true],
+        ];
+    }
+
+    #[DataProvider('hasReplaceablesProvider')]
+    public function testHasReplaceables($string, $expected): void
+    {
+        $this->assertEquals($expected, Str::hasReplaceables($string));
+    }
+
+    public static function convertDotToHtmlProvider(): array
     {
         return [
             ['', false, ''],
@@ -218,30 +221,10 @@ class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dotToHtmlProvider
-     */
-    public function test_dot_to_html($dottedName, $asArray, $expected)
+    #[DataProvider('convertDotToHtmlProvider')]
+    public function test_convert_dot_to_html($dottedName, $asArray, $expected): void
     {
-        $this->assertEquals($expected, Str::dotToHtml($dottedName, $asArray));
-    }
-
-    public static function hasReplaceablesProvider()
-    {
-        return [
-            ['this is :name', true],
-            ['this is a :replacable within', true],
-            ['this has no replacable', false],
-            ['this has :count :replacables!', true],
-        ];
-    }
-
-    /**
-     * @dataProvider hasReplaceablesProvider
-     */
-    public function testHasReplaceables($string, $expected)
-    {
-        $this->assertEquals($expected, Str::hasReplaceables($string));
+        $this->assertEquals($expected, Str::convertDotToHtml($dottedName, $asArray));
     }
 
     public function makeComparableProvider()

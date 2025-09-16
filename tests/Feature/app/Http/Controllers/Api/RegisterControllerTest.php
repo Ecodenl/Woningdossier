@@ -16,7 +16,7 @@ use Laravel\Sanctum\Sanctum;
 use Tests\MocksLvbag;
 use Tests\TestCase;
 
-class RegisterControllerTest extends TestCase
+final class RegisterControllerTest extends TestCase
 {
     use WithFaker,
         RefreshDatabase,
@@ -32,8 +32,8 @@ class RegisterControllerTest extends TestCase
         parent::setUp();
 
         $this->formData = [
-            Country::COUNTRY_NL => [
-                "email" => $this->faker->email,
+            Country::NL->value => [
+                "email" => $this->faker->email(),
                 "first_name" => "Demo",
                 "last_name" => "Example",
                 "postal_code" => "1234AB",
@@ -46,8 +46,8 @@ class RegisterControllerTest extends TestCase
                 "city" => "Zerocity",
                 "phone_number" => '+31611223344',
             ],
-            Country::COUNTRY_BE => [
-                "email" => $this->faker->email,
+            Country::BE->value => [
+                "email" => $this->faker->email(),
                 "first_name" => "Demo",
                 "last_name" => "Example",
                 'postal_code' => '1000',
@@ -62,10 +62,10 @@ class RegisterControllerTest extends TestCase
             ],
         ];
         // Only create mock for NL, since BE doesn't support it and will only trigger on NL data.
-        $this->mockLvbagClientAdresUitgebreid($this->formData[Country::COUNTRY_NL])->createLvbagMock();
+        $this->mockLvbagClientAdresUitgebreid($this->formData[Country::NL->value])->createLvbagMock();
     }
 
-    public function test_valid_data_registers_new_account()
+    public function test_valid_data_registers_new_account(): void
     {
         foreach ($this->formData as $country => $formData) {
             /** @var Cooperation $cooperation */
@@ -87,7 +87,7 @@ class RegisterControllerTest extends TestCase
         }
     }
 
-    public function test_valid_data_with_tool_question_answers_registers_new_account()
+    public function test_valid_data_with_tool_question_answers_registers_new_account(): void
     {
         foreach ($this->formData as $country => $formData) {
             /** @var Cooperation $cooperation */
@@ -121,7 +121,7 @@ class RegisterControllerTest extends TestCase
         }
     }
 
-    public function test_restricted_client_cannot_access_cooperation()
+    public function test_restricted_client_cannot_access_cooperation(): void
     {
         /** @var Cooperation $cooperation */
         Cooperation::factory()->create(['slug' => 'groen-is-gras']);
@@ -139,7 +139,7 @@ class RegisterControllerTest extends TestCase
         $response->assertForbidden();
     }
 
-    public function test_restricted_client_can_access_cooperation()
+    public function test_restricted_client_can_access_cooperation(): void
     {
         /** @var Cooperation $cooperation */
         Cooperation::factory()->create(['slug' => 'groen-is-gras']);
@@ -156,7 +156,7 @@ class RegisterControllerTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_existing_account_will_register_user_on_other_cooperation()
+    public function test_existing_account_will_register_user_on_other_cooperation(): void
     {
         foreach ($this->formData as $country => $formData) {
             /** @var Client $client */
@@ -191,7 +191,7 @@ class RegisterControllerTest extends TestCase
         }
     }
 
-    public function test_invalid_data_returns_422()
+    public function test_invalid_data_returns_422(): void
     {
         foreach ($this->formData as $country => $formData) {
             /** @var Cooperation $cooperation */

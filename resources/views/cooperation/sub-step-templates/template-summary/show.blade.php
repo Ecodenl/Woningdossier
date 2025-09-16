@@ -28,7 +28,7 @@
     {{-- Loop all sub steps except for the current (summary) step --}}
     @foreach($subStepsToSummarize as $subStepToSummarize)
         {{-- Only display sub steps that are valid to the user --}}
-        @if($evaluator->evaluateCollection($subStepToSummarize->conditions ?? [], $answers))
+        @if($evaluator->setAnswers($answers)->evaluate($subStepToSummarize->conditions ?? []))
             @php
                 $subStepRoute = route('cooperation.frontend.tool.simple-scan.index', [
                     'cooperation' => $cooperation, 'scan' => $scan, 'step' => $step, 'subStep' => $subStepToSummarize
@@ -55,7 +55,7 @@
                                     $advisables = [];
                                     $type = \App\Helpers\Models\CooperationMeasureApplicationHelper::getTypeForScan($scan);
                                 @endphp
-                                @foreach($building->user->actionPlanAdvices()->forInputSource($masterInputSource)->get() as $advice)
+                                @foreach($building->user->userActionPlanAdvices()->forInputSource($masterInputSource)->get() as $advice)
                                     @php
                                         if ($advice->user_action_plan_advisable_type === \App\Models\CustomMeasureApplication::class) {
                                             $advisable = $advice->userActionPlanAdvisable()
@@ -95,7 +95,7 @@
                             $showQuestion = true;
 
                             if (! empty($subSteppablePivot->conditions)) {
-                                $showQuestion = $evaluator->evaluateCollection($subSteppablePivot->conditions, $answers);
+                                $showQuestion = $evaluator->setAnswers($answers)->evaluate($subSteppablePivot->conditions);
                             }
 
                             // Comments come at the end, and have exceptional logic...
@@ -162,7 +162,7 @@
     @endforeach
 
     <div class="flex flex-row flex-wrap w-full">
-        @foreach($this->substeppables as $subSteppablePivot)
+        @foreach($this->subSteppables as $subSteppablePivot)
             @php
                 $toolQuestion = $subSteppablePivot->subSteppable;
                 $disabled = ! $building->user->account->can('answer', $toolQuestion);

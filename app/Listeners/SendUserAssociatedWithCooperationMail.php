@@ -6,6 +6,7 @@ use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\Queue;
 use App\Mail\UserAssociatedWithCooperation;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Mail;
 
 class SendUserAssociatedWithCooperationMail implements ShouldQueue
 {
@@ -13,14 +14,10 @@ class SendUserAssociatedWithCooperationMail implements ShouldQueue
 
     /**
      * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
      */
-    public function handle(UserAssociatedWithOtherCooperation $event)
+    public function handle(UserAssociatedWithOtherCooperation $event): void
     {
-        \Mail::to($event->user->account->email)->send(
+        Mail::to($event->user->account->email)->send(
             new UserAssociatedWithCooperation($event->cooperation, $event->user)
         );
     }

@@ -1,3 +1,4 @@
+{{-- TODO: Move to cooperation/layouts --}}
 <div class="form-group {{ $class ?? '' }}" @if(! empty($attr)) {!! $attr !!} @endif>
     <div class="form-header">
         @if(! empty($route))
@@ -5,7 +6,7 @@
         @endif
                 <label class="form-label {{$labelClass ?? ''}} @if(! ($withInputSource ?? true)) max-w-16/20 @endif @if(! empty($route)) cursor-pointer @endif"
                        @if(! empty($labelAttr)) {!! $labelAttr !!} @endif
-                       for="{{ $id ?? '' }}">
+                       @if(! empty($id)) for="{{ $id }}" @endif>
                     {!! $label ?? '' !!}
                 </label>
         @if(! empty($route))
@@ -35,5 +36,4 @@
         </p>
         @enderror
     </div>
-
 </div>

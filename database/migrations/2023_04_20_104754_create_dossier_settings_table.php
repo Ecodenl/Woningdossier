@@ -4,19 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDossierSettingsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('dossier_settings', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedInteger('input_source_id')->nullable()->default(null);
+            $table->unsignedInteger('input_source_id')->nullable();
             $table->foreign('input_source_id')->references('id')->on('input_sources')->nullOnDelete();
 
             $table->unsignedInteger('building_id')->unsigned();
@@ -24,7 +22,7 @@ class CreateDossierSettingsTable extends Migration
 
             $table->string('type');
 
-            $table->timestamp('done_at')->nullable()->default(null);
+            $table->timestamp('done_at')->nullable();
 
             $table->timestamps();
         });
@@ -32,11 +30,9 @@ class CreateDossierSettingsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('dossier_settings');
     }
-}
+};

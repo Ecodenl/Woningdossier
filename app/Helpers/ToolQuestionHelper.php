@@ -8,6 +8,7 @@ use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Schema;
 
 class ToolQuestionHelper
@@ -15,9 +16,8 @@ class ToolQuestionHelper
     /**
      * The tool questions (shorts) that are allowed to be filled upon register.
      * Note: When changing this, ensure you update the Swagger Docs in the Register Controller and the related tests!
-     * @var array
      */
-    const SUPPORTED_API_SHORTS = [
+    const array SUPPORTED_API_SHORTS = [
         'amount-gas',
         'amount-electricity',
         'resident-count',
@@ -27,7 +27,7 @@ class ToolQuestionHelper
      * These tables should query on one or more extra column(s)
      * Order for multiple columns is very important, it should be ordered as the where values in the save_in
      */
-    const TABLE_COLUMN = [
+    const array TABLE_COLUMN = [
         'building_elements' => ['element_id'],
         'building_insulated_glazings' => ['measure_application_id'],
         'building_roof_types' => ['roof_type_id'],
@@ -40,7 +40,7 @@ class ToolQuestionHelper
     /**
      * An array map of tool questions that should do a full recalculate on change.
      */
-    const TOOL_QUESTION_FULL_RECALCULATE = [
+    const array TOOL_QUESTION_FULL_RECALCULATE = [
         'gas-price-euro',
         'electricity-price-euro',
         'thermostat-high',
@@ -59,7 +59,7 @@ class ToolQuestionHelper
      * The tool question "current-floor-insulation" will also be questioned on the expert step "floor-insulation"
      * Thus we will map it to floor insulation step.
      */
-    const TOOL_QUESTION_STEP_MAP = [
+    const array TOOL_QUESTION_STEP_MAP = [
         'roof-type' => ['roof-insulation'],
         'water-comfort' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'cook-type' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
@@ -135,7 +135,7 @@ class ToolQuestionHelper
     /**
      * Who would be surprised that some questions should trigger a recalculate but only in certain conditions?
      */
-    const TOOL_RECALCULATE_CONDITIONS = [
+    const array TOOL_RECALCULATE_CONDITIONS = [
         'interested-in-heat-pump' => [
             [
                 [
@@ -174,7 +174,7 @@ class ToolQuestionHelper
      * Array map from tool question to another tool question short, giving the data that should be replaced,
      * and which tool question to get the answer for, for the replaceable.
      */
-    const TOOL_QUESTION_ANSWER_REPLACEABLES = [
+    const array TOOL_QUESTION_ANSWER_REPLACEABLES = [
         // the question where we will replace something.
         'building-type' => [
             // the question that will be used to replace
@@ -184,7 +184,11 @@ class ToolQuestionHelper
         ],
     ];
 
-    public static function stepShortsForToolQuestion(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource): array
+    public static function stepShortsForToolQuestion(
+        ToolQuestion $toolQuestion,
+        Building $building,
+        InputSource $inputSource
+    ): array
     {
         if (isset(self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short])) {
             $data = self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short];
@@ -208,7 +212,11 @@ class ToolQuestionHelper
      * Simple method to determine whether the given tool question should use the old advice on a recalculate
      *
      */
-    public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource): bool
+    public static function shouldToolQuestionDoFullRecalculate(
+        ToolQuestion $toolQuestion,
+        Building $building,
+        InputSource $inputSource
+    ): bool
     {
         if (in_array($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE, true)) {
             $pass = true;
@@ -229,11 +237,6 @@ class ToolQuestionHelper
 
     /**
      * Simple method to resolve the save in to something we can use.
-     *
-     * @param string $saveIn
-     * @param Building $building
-     *
-     * @return array
      */
     public static function resolveSaveIn(string $saveIn, Building $building): array
     {
@@ -264,7 +267,7 @@ class ToolQuestionHelper
                 }
             } else {
                 // so no columns for the table are found, al of the extra saved in parts are columns.
-                $column = implode('.', $savedInParts).'.'.$column;
+                $column = implode('.', $savedInParts) . '.' . $column;
             }
         }
 
@@ -273,16 +276,14 @@ class ToolQuestionHelper
 
     /**
      * Get a human readable answer.
-     *
-     * @param \App\Models\Building $building
-     * @param \App\Models\InputSource $inputSource
-     * @param \App\Models\ToolQuestion $toolQuestion
-     * @param bool $withIcons
-     * @param null $answer
-     *
-     * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Translation\Translator|int|mixed|string|string[]|null
      */
-    public static function getHumanReadableAnswer(Building $building, InputSource $inputSource, ToolQuestion $toolQuestion, bool $withIcons = false, $answer = null)
+    public static function getHumanReadableAnswer(
+        Building $building,
+        InputSource $inputSource,
+        ToolQuestion $toolQuestion,
+        bool $withIcons = false,
+        mixed $answer = null
+    ): null|string|array
     {
         $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
 
@@ -290,7 +291,7 @@ class ToolQuestionHelper
             $answer = $building->getAnswer($inputSource, $toolQuestion);
         }
 
-        if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
+        if (! empty($answer) || is_numeric($answer)) {
             $questionValues = QuestionValue::init($building->user->cooperation, $toolQuestion)
                 ->forInputSource($inputSource)
                 ->forBuilding($building)
@@ -349,16 +350,14 @@ class ToolQuestionHelper
 
     /**
      * Handle potential replaceables in a tool question name.
-     *
-     * @param \App\Models\Building $building
-     * @param \App\Models\InputSource $inputSource
-     * @param \App\Models\ToolQuestion $toolQuestion
-     *
-     * @return \App\Models\ToolQuestion
      */
-    public static function handleToolQuestionReplaceables(Building $building, InputSource $inputSource, ToolQuestion $toolQuestion): ToolQuestion
+    public static function handleToolQuestionReplaceables(
+        Building $building,
+        InputSource $inputSource,
+        ToolQuestion $toolQuestion
+    ): ToolQuestion
     {
-        if (\App\Helpers\Str::hasReplaceables($toolQuestion->name)) {
+        if (\App\Helpers\Str::hasReplaceables($toolQuestion->getTranslation('name', App::getLocale()))) {
             $data = self::TOOL_QUESTION_ANSWER_REPLACEABLES[$toolQuestion->short];
             $toolQuestionForAnswer = ToolQuestion::findByShort($data['short']);
 
@@ -368,7 +367,7 @@ class ToolQuestionHelper
                 $toolQuestionForAnswer
             );
 
-            $toolQuestion->name = __($toolQuestion->name, [$data['replaceable'] => $humanReadableAnswer]);
+            $toolQuestion->name = __($toolQuestion->getTranslation('name', App::getLocale()), [$data['replaceable'] => $humanReadableAnswer]);
         }
 
         return $toolQuestion;

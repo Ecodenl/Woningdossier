@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Contracts\Auditable;
-use Plank\Mediable\Mediable;
+use Plank\Mediable\MediableInterface;
 
 /**
  * App\Models\CooperationSetting
@@ -17,32 +19,33 @@ use Plank\Mediable\Mediable;
  * @property string|null $value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
+ * @property-read int|null $audits_count
  * @property-read \App\Models\Cooperation $cooperation
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
- * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
- * @method static Builder|CooperationSetting forShort(string $short)
- * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
- * @method static Builder|CooperationSetting newModelQuery()
- * @method static Builder|CooperationSetting newQuery()
- * @method static Builder|CooperationSetting query()
- * @method static Builder|CooperationSetting whereCooperationId($value)
- * @method static Builder|CooperationSetting whereCreatedAt($value)
- * @method static Builder|CooperationSetting whereHasMedia($tags = [], bool $matchAll = false)
- * @method static Builder|CooperationSetting whereHasMediaMatchAll(array $tags)
- * @method static Builder|CooperationSetting whereId($value)
- * @method static Builder|CooperationSetting whereShort($value)
- * @method static Builder|CooperationSetting whereUpdatedAt($value)
- * @method static Builder|CooperationSetting whereValue($value)
- * @method static Builder|CooperationSetting withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
- * @method static Builder|CooperationSetting withMediaAndVariants($tags = [], bool $matchAll = false)
- * @method static Builder|CooperationSetting withMediaAndVariantsMatchAll($tags = [])
- * @method static Builder|CooperationSetting withMediaMatchAll(bool $tags = [], bool $withVariants = false)
+ * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
+ * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
+ * @method static Builder<static>|CooperationSetting newModelQuery()
+ * @method static Builder<static>|CooperationSetting newQuery()
+ * @method static Builder<static>|CooperationSetting query()
+ * @method static Builder<static>|CooperationSetting whereCooperationId($value)
+ * @method static Builder<static>|CooperationSetting whereCreatedAt($value)
+ * @method static Builder<static>|CooperationSetting whereHasMedia($tags = [], bool $matchAll = false)
+ * @method static Builder<static>|CooperationSetting whereHasMediaMatchAll($tags)
+ * @method static Builder<static>|CooperationSetting whereId($value)
+ * @method static Builder<static>|CooperationSetting whereShort($value)
+ * @method static Builder<static>|CooperationSetting whereUpdatedAt($value)
+ * @method static Builder<static>|CooperationSetting whereValue($value)
+ * @method static Builder<static>|CooperationSetting withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
+ * @method static Builder<static>|CooperationSetting withMediaAndVariants($tags = [], bool $matchAll = false)
+ * @method static Builder<static>|CooperationSetting withMediaAndVariantsMatchAll($tags = [])
+ * @method static Builder<static>|CooperationSetting withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @mixin \Eloquent
  */
-class CooperationSetting extends Model implements Auditable
+class CooperationSetting extends Model implements Auditable, MediableInterface
 {
-    use Mediable,
+    use HasMedia,
         \App\Traits\Models\Auditable;
 
     public $fillable = [
@@ -56,7 +59,8 @@ class CooperationSetting extends Model implements Auditable
     //
 
     # Scopes
-    public function scopeForShort(Builder $query, string $short): Builder
+    #[Scope]
+    protected function forShort(Builder $query, string $short): Builder
     {
         return $query->where('short', $short);
     }

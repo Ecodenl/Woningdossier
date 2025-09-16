@@ -22,7 +22,7 @@ class ToolQuestionAnswerObserver
             $questionValuesClass = "App\\Observers\\ToolQuestionAnswer\\{$className}";
 
             if (class_exists($questionValuesClass)) {
-                Log::debug("Custom observer triggered for {$toolQuestion->short} tool_question_answer data:". json_encode($toolQuestionAnswer->getAttributes()));
+                Log::debug("Custom observer triggered for {$toolQuestion->short} tool_question_answer data:" . json_encode($toolQuestionAnswer->getAttributes()));
                 $questionValuesClass::apply($toolQuestionAnswer);
             }
         }

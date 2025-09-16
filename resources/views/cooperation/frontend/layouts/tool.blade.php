@@ -1,4 +1,4 @@
-@extends('cooperation.frontend.layouts.app')
+@extends('cooperation.layouts.app')
 
 @section('header')
     <div class="w-full">
@@ -28,7 +28,7 @@
 @section('main_style', '')
 
 @section('main')
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20"
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20 tool-layout"
          @if(request()->input('iframe', false)) style="padding-top: 0;" @endif>
         @if(RouteLogic::inExpertTool(Route::currentRouteName()))
             @php
@@ -52,7 +52,7 @@
                                                                                             :step="$currentStep"
                                                                                             :questionnaire="$questionnaire ?? null"/>
                                 @else
-                                    @if(! \App\helpers\HoomdossierSession::isUserObserving())
+                                    @if(! HoomdossierSession::isUserObserving())
                                         <button class="float-right btn btn-purple submit-main-form">
                                             @lang('default.buttons.save')
                                         </button>
@@ -65,7 +65,7 @@
                             </div>
 
                             <div class="px-4 py-8">
-                                @if(! \App\helpers\HoomdossierSession::isUserObserving())
+                                @if(! HoomdossierSession::isUserObserving())
                                     @php
                                         // This only shows in expert, and since lite can't go to expert, we just
                                         // fetch the quick scan.
@@ -104,7 +104,7 @@
 
 @if(RouteLogic::inExpertTool(Route::currentRouteName()))
     @push('js')
-        <script>
+        <script type="module" nonce="{{ $cspNonce }}">
             $('input').keypress(function (event) {
                 // get the current keycode
                 var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -115,16 +115,15 @@
                 }
             });
 
-            $(document).ready(function () {
+            document.addEventListener('DOMContentLoaded', function () {
                 // scroll to top off page for less clunky behaviour
                 window.scrollTo(0, 0);
 
                 whenObservingDisableInputs();
             });
 
-            function whenObservingDisableInputs()
-            {
-                var isUserObservingTool = '{{\App\Helpers\HoomdossierSession::getIsObserving()}}';
+            function whenObservingDisableInputs() {
+                var isUserObservingTool = '{{HoomdossierSession::getIsObserving()}}';
 
                 if (isUserObservingTool) {
                     var tabContent = $('.tab-content');
@@ -140,32 +139,6 @@
                 $('#main-tab #main-content form').submit();
                 $('.submit-main-form').prop('disabled', 'disabled').addClass('disabled');
             });
-
-            $('#copy-coach-input').on('submit', function (event) {
-                if (confirm('@lang('woningdossier.cooperation.tool.general-data.coach-input.copy.help')')) {
-
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
-            $('#copy-example-building-input').on('submit', function (event) {
-                if (confirm('@lang('woningdossier.cooperation.tool.general-data.example-building-input.copy.help')')) {
-
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
-
-            function inputType(input) {
-                return input.prop('type');
-            }
-        </script>
-        <script src="{{ asset('js/are-you-sure.js') }}"></script>
-
-        <script>
-            $("form.form-horizontal").areYouSure();
         </script>
     @endpush
 @endif

@@ -11,11 +11,11 @@ use Database\Seeders\InputSourcesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class NotificationServiceTest extends TestCase
+final class NotificationServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_set_notifications_active()
+    public function test_set_notifications_active(): void
     {
         $this->seed(InputSourcesTableSeeder::class);
         $building = Building::factory()->withUser()->create();
@@ -47,7 +47,7 @@ class NotificationServiceTest extends TestCase
         }
     }
 
-    public function test_notifications_are_active()
+    public function test_notifications_are_active(): void
     {
         $this->seed(InputSourcesTableSeeder::class);
         $building = Building::factory()->withUser()->create();
@@ -120,7 +120,7 @@ class NotificationServiceTest extends TestCase
         $this->assertTrue($notificationService->hasActiveTypes(['test', 'className']));
     }
 
-    public function test_deactivating_clears_notification()
+    public function test_deactivating_clears_notification(): void
     {
         $this->seed(InputSourcesTableSeeder::class);
         $building = Building::factory()->withUser()->create();
@@ -158,7 +158,7 @@ class NotificationServiceTest extends TestCase
         }
     }
 
-    public function test_nullable_input_source_handles_as_expected()
+    public function test_nullable_input_source_handles_as_expected(): void
     {
         $this->seed(InputSourcesTableSeeder::class);
         $building = Building::factory()->withUser()->create();

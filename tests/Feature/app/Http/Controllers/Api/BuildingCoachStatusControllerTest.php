@@ -14,18 +14,17 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-
-class BuildingCoachStatusControllerTest extends TestCase
+final class BuildingCoachStatusControllerTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
-    // TODO: Update after subsidy merge
+    use WithFaker,
+        RefreshDatabase;
+
     private array $formData;
     private Cooperation $cooperation;
+    public bool $seed = true;
 
     protected function setUp(): void
     {
-        $this->markTestSkipped();
-        $this->markTestIncomplete();
         parent::setUp();
 
         $this->formData = [
@@ -43,27 +42,31 @@ class BuildingCoachStatusControllerTest extends TestCase
         $this->cooperation = Cooperation::factory()->create();
     }
 
-    public function test_validation()
+    public function testValidation(): void
     {
         $cooperation = $this->cooperation;
 
         // No data
-        $response = $this->post(route('api.v1.cooperation.building-coach-status.store', compact('cooperation')));
+        $response = $this->post(
+            route('api.v1.cooperation.building-coach-status.store', compact('cooperation'))
+        );
         $response->assertStatus(422);
 
         // There are no users with these contact IDs
-        $response = $this->post(route('api.v1.cooperation.building-coach-status.store', compact('cooperation')), $this->formData);
+        $response = $this->post(
+            route('api.v1.cooperation.building-coach-status.store', compact('cooperation')),
+            $this->formData
+        );
         $response->assertStatus(422);
 
-
-        $resident = User::factory()->forBuilding()->create([
+        $resident = User::factory()->withAccount()->create([
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['resident_contact_id'],
             ],
         ]);
         Building::factory()->create(['user_id' => $resident->id]);
 
-        $coach = User::factory()->create([
+        $coach = User::factory()->withAccount()->create([
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['coach_contact_id'],
             ],
@@ -71,14 +74,20 @@ class BuildingCoachStatusControllerTest extends TestCase
         Building::factory()->create(['user_id' => $coach->id]);
 
         // There are no users (in the current cooperation) with these contact IDs
-        $response = $this->post(route('api.v1.cooperation.building-coach-status.store', compact('cooperation')), $this->formData);
+        $response = $this->post(
+            route('api.v1.cooperation.building-coach-status.store', compact('cooperation')),
+            $this->formData
+        );
         $response->assertStatus(422);
 
         $resident->update(['cooperation_id' => $this->cooperation->id]);
         $coach->update(['cooperation_id' => $this->cooperation->id]);
 
         // The users don't have the correct roles
-        $response = $this->post(route('api.v1.cooperation.building-coach-status.store', compact('cooperation')), $this->formData);
+        $response = $this->post(
+            route('api.v1.cooperation.building-coach-status.store', compact('cooperation')),
+            $this->formData
+        );
         $response->assertStatus(422);
 
         // Keep DB clean (if we don't, we get overlapping contact IDs)
@@ -87,7 +96,7 @@ class BuildingCoachStatusControllerTest extends TestCase
         $coach->building->delete();
         $coach->delete();
 
-        $resident = User::factory()->asResident()->create([
+        $resident = User::factory()->withAccount()->asResident()->create([
             'cooperation_id' => $this->cooperation->id,
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['resident_contact_id'],
@@ -95,7 +104,8 @@ class BuildingCoachStatusControllerTest extends TestCase
             'allow_access' => false,
         ]);
         Building::factory()->create(['user_id' => $resident->id]);
-        $coach = User::factory()->asCoach()->create([
+
+        $coach = User::factory()->withAccount()->asCoach()->create([
             'cooperation_id' => $this->cooperation->id,
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['coach_contact_id'],
@@ -104,57 +114,72 @@ class BuildingCoachStatusControllerTest extends TestCase
         Building::factory()->create(['user_id' => $coach->id]);
 
         // Resident hasn't given access
-        $response = $this->post(route('api.v1.cooperation.building-coach-status.store', compact('cooperation')), $this->formData);
+        $response = $this->post(
+            route('api.v1.cooperation.building-coach-status.store', compact('cooperation')),
+            $this->formData
+        );
         $response->assertStatus(422);
         $resident->update(['allow_access' => true]);
 
         // Now everything should be good!
-        $response = $this->post(route('api.v1.cooperation.building-coach-status.store', compact('cooperation')), $this->formData);
+        $response = $this->post(
+            route('api.v1.cooperation.building-coach-status.store', compact('cooperation')),
+            $this->formData
+        );
         $response->assertStatus(200);
 
         // Coach already linked!
-        $response = $this->post(route('api.v1.cooperation.building-coach-status.store', compact('cooperation')), $this->formData);
+        $response = $this->post(
+            route('api.v1.cooperation.building-coach-status.store', compact('cooperation')),
+            $this->formData
+        );
         $response->assertStatus(422);
     }
 
-    public function test_building_coach_status_gets_created()
+    public function testBuildingCoachStatusGetsCreated(): void
     {
         $cooperation = $this->cooperation;
-        // Just for this test
-        config(['queue.default' => 'sync']);
+        // Just for this test // IS ALREADY THE DEFAULT
+        //config(['queue.default' => 'sync']);
 
-        $resident = User::factory()->asResident()->create([
+        $resident = User::factory()->withAccount()->asResident()->create([
             'cooperation_id' => $this->cooperation->id,
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['resident_contact_id'],
             ],
             'allow_access' => true,
         ]);
-        $coach = User::factory()->asCoach()->create([
+        Building::factory()->create(['user_id' => $resident->id]);
+
+        $coach = User::factory()->withAccount()->asCoach()->create([
             'cooperation_id' => $this->cooperation->id,
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['coach_contact_id'],
             ],
         ]);
+        Building::factory()->create(['user_id' => $coach->id]);
 
-        $response = $this->post(route('api.v1.cooperation.building-coach-status.store', compact('cooperation')), $this->formData);
+        $response = $this->post(
+            route('api.v1.cooperation.building-coach-status.store', compact('cooperation')),
+            $this->formData
+        );
         $response->assertStatus(200);
 
-        $bcs = BuildingCoachStatus::where('coach_id', $coach->id)
-            ->where('building_id', $resident->building->id)
-            ->first();
-        $this->assertInstanceOf(BuildingCoachStatus::class, $bcs);
+        $this->assertDatabaseHas('building_coach_statuses', [
+            'coach_id' => $coach->id,
+            'building_id' => $resident->building->id,
+        ]);
 
-        $bp = BuildingPermission::where('user_id', $coach->id)
-            ->where('building_id', $resident->building->id)
-            ->first();
-        $this->assertInstanceOf(BuildingPermission::class, $bp);
+        $this->assertDatabaseHas('building_permissions', [
+            'user_id' => $coach->id,
+            'building_id' => $resident->building->id,
+        ]);
 
-        $pm = PrivateMessage::where('is_public', true)
-            ->where('from_user_id', $coach->id)
-            ->where('building_id', $resident->building->id)
-            ->where('to_cooperation_id', $this->cooperation->id)
-            ->first();
-        $this->assertInstanceOf(PrivateMessage::class, $pm);
+        $this->assertDatabaseHas('private_messages', [
+            'is_public' => true,
+            'from_user_id' => $coach->id,
+            'building_id' => $resident->building->id,
+            'to_cooperation_id' => $this->cooperation->id,
+        ]);
     }
 }

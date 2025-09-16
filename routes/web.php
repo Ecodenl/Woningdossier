@@ -5,9 +5,6 @@ use App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin\Cooperat
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
-
-/** @noinspection PhpParamsInspection */
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,8 +15,23 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// When a user goes to www.hoomdossier.nl, it aborts as 404 since it's failing to find cooperation "www". While
+// technically correct, it can be confusing. We just redirect them to the index page.
+Route::domain('www.' . config('hoomdossier.domain'))->group(function () {
+    // Can't call route('index') since it will keep the www. domain.
+    Route::get('', fn() => redirect(str_replace('://www.', '://', Request::url())));
+    // Non-existent route, fall back to index.
+    Route::fallback(fn() => redirect()->route('index'));
+});
+
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
     Route::middleware('cooperation')->name('cooperation.')->group(function () {
+        Route::prefix('media')->as('media.')->group(function () {
+            Route::get('{media}', [Cooperation\MediaController::class, 'serve'])->name('serve');
+            Route::get('{media}/download', [Cooperation\MediaController::class, 'download'])->name('download');
+        });
+
         if ('local' == app()->environment()) {
             Route::get('mail', function () {
                 //return new \App\Mail\UserCreatedEmail(\App\Models\Cooperation::find(1), \App\Models\User::find(1), 'sdfkhasgdfuiasdgfyu');
@@ -44,12 +56,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
         Route::get('switch-language/{locale}', [Cooperation\UserLanguageController::class, 'switchLanguage'])->name('switch-language');
 
-
-        Route::prefix('create-building')->name('create-building.')->group(function () {
-            Route::get('', [Cooperation\CreateBuildingController::class, 'index'])->name('index');
-            Route::post('', [Cooperation\CreateBuildingController::class, 'store'])->name('store');
-        });
-
         Route::name('recover-old-email.')->prefix('recover-old-email')->group(function () {
             Route::get('{token}', [Cooperation\RecoverOldEmailController::class, 'recover'])->name('recover');
         });
@@ -58,7 +64,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
         Route::resource('disclaimer', Cooperation\DisclaimController::class)->only('index');
 
         // group can be accessed by everyone that's authorized and has a role in its session
-        Route::middleware('auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified')->group(function () {
+        Route::middleware(['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified'])->group(function () {
             Route::get('messages/count', [Cooperation\MessagesController::class, 'getTotalUnreadMessageCount'])->name('message.get-total-unread-message-count');
 
             if (in_array(app()->environment(), ['local', 'accept'])) {
@@ -74,7 +80,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::prefix('file-storage')->name('file-storage.')->group(function () {
                 Route::post('{fileType}', [Cooperation\FileStorageController::class, 'store'])
                     ->name('store');
-                Route::get('is-being-processed/{fileType}', [Cooperation\FileStorageController::class, 'checkIfFileIsBeingProcessed'])->name('check-if-file-is-being-processed');
 
                 Route::get('download/{fileStorage}', [Cooperation\FileStorageController::class, 'download'])
                     ->name('download');
@@ -85,10 +90,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::name('messages.')->prefix('messages')->group(function () {
                 Route::name('participants.')->prefix('participants')->group(function () {
                     Route::post('revoke-access', [Cooperation\Messages\ParticipantController::class, 'revokeAccess'])->name('revoke-access');
-
                     Route::post('add-with-building-access', [Cooperation\Messages\ParticipantController::class, 'addWithBuildingAccess'])->name('add-with-building-access');
-
-                    Route::post('set-read', [Cooperation\Messages\ParticipantController::class, 'setRead'])->name('set-read');
                 });
             });
 
@@ -103,7 +105,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::post('reset-dossier', [Cooperation\MyAccount\SettingsController::class, 'resetFile'])->name('reset-file');
                 });
 
-                Route::resource('hoom-settings', Cooperation\MyAccount\HoomSettingsController::class);
+                Route::resource('hoom-settings', Cooperation\MyAccount\HoomSettingsController::class)
+                    ->only('update');
 
                 Route::resource('notification-settings', Cooperation\MyAccount\NotificationSettingsController::class)->only([
                     'index', 'show', 'update',
@@ -128,33 +131,17 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::as('frontend.')->middleware(['track-visited-url'])->group(function () {
                 Route::resource('help', Cooperation\Frontend\HelpController::class)->only('index');
                 Route::as('tool.')->group(function () {
-                    $scans = \App\Helpers\Cache\Scan::allShorts();
-                    $simpleScans = \App\Helpers\Cache\Scan::simpleShorts();
-
-                    // TODO: Deprecate to whereIn in L9
                     Route::get('{scan}', [Cooperation\Frontend\Tool\ScanController::class, 'redirect'])
                         ->name('scan.redirect')
-                        ->where(collect(['scan'])
-                            ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $scans)])
-                            ->all()
-                        );
+                        ->whereIn('scan', \App\Models\Scan::allShorts());
 
                     Route::prefix('{scan}')
-                        ->where(collect(['scan'])
-                            ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $simpleScans)])
-                            ->all()
-                        )
+                        ->whereIn('scan', \App\Models\Scan::simpleShorts())
                         ->as('simple-scan.')
                         ->middleware('cooperation-has-scan')
                         ->group(function () {
-                            $steps = \App\Helpers\Cache\Step::allSlugs();
-
                             Route::prefix('{step:slug}')
-                                ->where(
-                                    collect(['step'])
-                                        ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $steps)])
-                                        ->all()
-                                )
+                                ->whereIn('step', \App\Models\Step::allSlugs())
                                 ->group(function () {
                                     // Define this route as last to not match above routes as step/sub step combo
                                     Route::get('{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
@@ -204,27 +191,41 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::post('', [Cooperation\Tool\QuestionnaireController::class, 'store'])->name('store');
                 });
 
-                Route::resource('building-type', Cooperation\Tool\BuildingTypeController::class)->only('store');
-
+                // TODO: Deprecate
+                // Heat pump > Heating
                 Route::get('heat-pump', function () {
                     Log::debug('HeatPumpController::index redirecting to heating');
 
                     return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
                 })->name('heat-pump.index');
 
+                // HR boiler > Heating
+                Route::prefix('high-efficiency-boiler')->name('high-efficiency-boiler.')->group(function () {
+                    Route::get('', function () {
+                        Log::debug('HighEfficiencyBoilerController::index redirecting to heating');
+
+                        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
+                    })->name('index');
+                });
+
+                // Heater (solar boiler) > Heating
+                Route::prefix('heater')->name('heater.')->group(function () {
+                    Route::get('', function () {
+                        Log::debug('HeaterController::index redirecting to heating');
+
+                        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
+                    })->name('index');
+                });
+                // TODO: End deprecation
+
+                // Ventilation
                 Route::prefix('ventilation')->name('ventilation.')->group(function () {
                     Route::resource('', Cooperation\Tool\VentilationController::class)->only('index', 'store');
                     Route::post('calculate', [Cooperation\Tool\VentilationController::class, 'calculate'])->name('calculate');
                 });
 
                 // Wall Insulation
-                Route::prefix('/wall-insulation')->name('wall-insulation.')->group(function () {
-                    Route::resource('', Cooperation\Tool\WallInsulationController::class)->only('index', 'store');
-                    Route::post('calculate', [Cooperation\Tool\WallInsulationController::class, 'calculate'])->name('calculate');
-                });
-
-                // Wall Insulation
-                Route::group(['prefix' => 'verwarming', 'as' => 'heating.'], function () {
+                Route::prefix('wall-insulation')->name('wall-insulation.')->group(function () {
                     Route::resource('', Cooperation\Tool\WallInsulationController::class)->only('index', 'store');
                     Route::post('calculate', [Cooperation\Tool\WallInsulationController::class, 'calculate'])->name('calculate');
                 });
@@ -247,28 +248,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::post('calculate', [Cooperation\Tool\RoofInsulationController::class, 'calculate'])->name('calculate');
                 });
 
-                // HR boiler
-                Route::prefix('high-efficiency-boiler')->name('high-efficiency-boiler.')->group(function () {
-                    Route::get('', function () {
-                        Log::debug('HighEfficiencyBoilerController::index redirecting to heating');
-
-                        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
-                    })->name('index');
-                });
-
                 // Solar panels
                 Route::prefix('solar-panels')->name('solar-panels.')->group(function () {
                     Route::resource('', Cooperation\Tool\SolarPanelsController::class)->only('index', 'store');
                     Route::post('calculate', [Cooperation\Tool\SolarPanelsController::class, 'calculate'])->name('calculate');
-                });
-
-                // Heater (solar boiler)
-                Route::prefix('heater')->name('heater.')->group(function () {
-                    Route::get('', function () {
-                        Log::debug('HeaterController::index redirecting to heating');
-
-                        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
-                    })->name('index');
                 });
             });
 
@@ -307,7 +290,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::post('message', [Cooperation\Admin\MessagesController::class, 'sendMessage'])->name('send-message');
 
-                    Route::resource('building-notes', Cooperation\Admin\BuildingNoteController::class)->only('store');
+                    Route::resource('building-notes', Cooperation\Admin\BuildingNoteController::class)
+                        ->only('store');
 
                     Route::prefix('building-status')->name('building-status.')->group(function () {
                         Route::post('set-status', [Cooperation\Admin\BuildingStatusController::class, 'setStatus'])->name('set-status');
@@ -318,7 +302,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 Route::middleware('current-role:cooperation-admin|coach|coordinator|super-admin')->group(function () {
                     Route::name('buildings.')->prefix('buildings')->group(function () {
-                        Route::get('show/{buildingId}', [Cooperation\Admin\BuildingController::class, 'show'])->name('show');
+                        Route::get('show/{building}', [Cooperation\Admin\BuildingController::class, 'show'])->name('show');
 
                         Route::middleware('current-role:cooperation-admin|coordinator|super-admin')->group(function () {
                             Route::get('{building}/edit', [Cooperation\Admin\BuildingController::class, 'edit'])->name('edit');
@@ -354,8 +338,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         ->middleware('current-role:cooperation-admin');
                     // not in the cooperation-admin group, probably need to be used for the coordinator as well.
                     Route::name('questionnaires.')->prefix('questionnaire')->middleware('current-role:cooperation-admin')->group(function () {
-                        Route::delete('delete-question/{questionId}', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'deleteQuestion'])->name('delete');
-                        Route::delete('delete-option/{questionId}/{optionId}', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'deleteQuestionOption'])->name('delete-question-option');
                         Route::post('set-active', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'setActive'])->name('set-active');
                     });
 
@@ -364,7 +346,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         // needs to be the last route due to the param
                         Route::get('home', [Cooperation\Admin\Cooperation\Coordinator\CoordinatorController::class, 'index'])->name('index');
                     });
-
 
                     /* section for the cooperation-admin */
                     Route::prefix('cooperation-admin')->name('cooperation-admin.')->middleware('current-role:cooperation-admin|super-admin')->group(function () {
@@ -429,7 +410,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 });
 
 Route::get('/', function () {
-    if (stristr(\Request::url(), '://www.')) {
+    if (str_contains(\Illuminate\Support\Facades\Request::url(), '://www.')) {
         // The user has prefixed the subdomain with a www subdomain.
         // Remove the www part and redirect to that.
         return redirect(str_replace('://www.', '://', Request::url()));

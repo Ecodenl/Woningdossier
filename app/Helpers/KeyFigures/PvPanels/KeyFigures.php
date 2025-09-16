@@ -61,10 +61,8 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * @param $angle
-     *
-     * @return PvPanelYield|null
      */
-    public static function getYield(PvPanelOrientation $orientation, $angle)
+    public static function getYield(PvPanelOrientation $orientation, $angle): ?PvPanelYield
     {
         return PvPanelYield::where('pv_panel_orientation_id', $orientation->id)
             ->where('angle', $angle)->first();
@@ -82,10 +80,8 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * Returns the key figures from this class.
-     *
-     * @return array
      */
-    public static function getKeyFigures()
+    public static function getKeyFigures(): array
     {
         return [
             'COST_WP' => self::COST_WP,

@@ -2,19 +2,17 @@
 
 namespace Tests\Unit\app\Services\Models;
 
-use App\Helpers\Arr;
-use App\Helpers\MappingHelper;
+use App\Enums\MappingType;
 use App\Models\Mapping;
 use App\Models\Municipality;
 use App\Services\MappingService;
 use App\Services\Models\MunicipalityService;
-use App\Services\Verbeterjehuis\RegulationService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class MunicipalityServiceTest extends TestCase
+final class MunicipalityServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -25,10 +23,8 @@ class MunicipalityServiceTest extends TestCase
      * This test checks whether the `getAvailableBagMunicipalities` method returns the correct BAG municipalities
      * saved in the mappings table. All rows that have no target mapping, or where the target is the passed
      * municipality, should be returned.
-     *
-     * @return void
      */
-    public function test_we_get_correct_available_bag_municipalities()
+    public function test_we_get_correct_available_bag_municipalities(): void
     {
         // DB seeding also seeds mappings. We clear them since we're asserting a count.
         DB::table('mappings')->delete();
@@ -46,7 +42,7 @@ class MunicipalityServiceTest extends TestCase
 
         foreach (['Hellevoetsluis', 'Voorne aan Zee', 'Westvoorne', 'Rotterdam', 'Goeree-Overflakkee'] as $bagMunicipality) {
             $mappingService->from($bagMunicipality)
-                ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                ->sync([], MappingType::BAG_MUNICIPALITY->value);
         }
 
         $this->assertDatabaseCount('mappings', 5);
@@ -60,7 +56,7 @@ class MunicipalityServiceTest extends TestCase
         // Sync to first municipality
         foreach (['Hellevoetsluis', 'Voorne aan Zee', 'Westvoorne'] as $bagMunicipality) {
             $mappingService->from($bagMunicipality)
-                ->sync([$municipality1], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                ->sync([$municipality1], MappingType::BAG_MUNICIPALITY->value);
         }
 
         // Linked to this one, but nothing else yet so all 5 should be available.
@@ -75,10 +71,8 @@ class MunicipalityServiceTest extends TestCase
     /**
      * This test checks of the `retrieveBagMunicipalities` method returns all the BAG municipality rows attached to the
      * passed municipality.
-     *
-     * @return void
      */
-    public function test_retrieve_bag_municipalities_returns_correct_mapped_municipalities()
+    public function test_retrieve_bag_municipalities_returns_correct_mapped_municipalities(): void
     {
         // DB seeding also seeds mappings. We clear them since we're asserting a count.
         DB::table('mappings')->delete();
@@ -92,12 +86,12 @@ class MunicipalityServiceTest extends TestCase
 
         foreach (['Hellevoetsluis', 'Voorne aan Zee', 'Westvoorne', 'Rotterdam', 'Goeree-Overflakkee'] as $bagMunicipality) {
             $mappingService->from($bagMunicipality)
-                ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                ->sync([], MappingType::BAG_MUNICIPALITY->value);
         }
 
         foreach (['Hellevoetsluis', 'Voorne aan Zee', 'Westvoorne'] as $bagMunicipality) {
             $mappingService->from($bagMunicipality)
-                ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                ->sync([$municipality], MappingType::BAG_MUNICIPALITY->value);
         }
 
         $municipalityService = MunicipalityService::init()->forMunicipality($municipality);
@@ -109,10 +103,8 @@ class MunicipalityServiceTest extends TestCase
     /**
      * This test checks of the `retrieveVbjehuisMuncipality` method returns the mapping attached to the passed
      * municipality which links to the Vbjehuis municipality.
-     *
-     * @return void
      */
-    public function test_retrieve_vbjehuis_municipality_returns_correct_mapped_municipality()
+    public function test_retrieve_vbjehuis_municipality_returns_correct_mapped_municipality(): void
     {
         $municipality = Municipality::factory()->create([
             'name' => 'Voorne aan Zee',
@@ -122,7 +114,7 @@ class MunicipalityServiceTest extends TestCase
         // Link 1 to municipality, one not.
         $mappingService = MappingService::init();
         $mappingService->from($municipality)
-            ->sync([['Name' => 'Voorne aan Zee', 'Id' => '3148']], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
+            ->sync([['Name' => 'Voorne aan Zee', 'Id' => '3148']], MappingType::MUNICIPALITY_VBJEHUIS->value);
 
         $municipalityService = MunicipalityService::init()->forMunicipality($municipality);
         $vbjeHuisMunicipality = $municipalityService->retrieveVbjehuisMuncipality();

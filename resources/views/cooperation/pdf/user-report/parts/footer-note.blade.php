@@ -1,5 +1,5 @@
 <htmlpagefooter name="page-footer">
-    <div class="pull-right">
+    <div class="float-right">
         <p class="text-right">
             <small>
                 {{ $userCooperation->name . ' - ' . strip_tags(__('pdf/user-report.defaults.page')) }} {PAGENO}

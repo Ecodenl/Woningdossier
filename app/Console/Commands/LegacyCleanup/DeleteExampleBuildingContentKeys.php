@@ -23,21 +23,9 @@ class DeleteExampleBuildingContentKeys extends Command
     protected $description = 'Command to remove old keys from the existing example building content';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
 
         $keysToRemove = [
@@ -45,10 +33,10 @@ class DeleteExampleBuildingContentKeys extends Command
             'solar-panels.-.building_pv_panels.total_installed_power',
         ];
 
-        foreach(ExampleBuildingContent::cursor() as $exampleBuildingContent) {
+        foreach (ExampleBuildingContent::cursor() as $exampleBuildingContent) {
             $content = $exampleBuildingContent->content;
             // forget the keys we need to remove
-            foreach($keysToRemove as $keyToRemove) {
+            foreach ($keysToRemove as $keyToRemove) {
                 Arr::forget($content, $keyToRemove);
             }
 

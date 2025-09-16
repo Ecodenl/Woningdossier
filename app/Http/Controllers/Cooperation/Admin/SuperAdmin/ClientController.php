@@ -2,67 +2,46 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\ClientFormRequest;
 use App\Models\Client;
 use App\Models\Cooperation;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): View
     {
         $clients = Client::all();
 
         return view('cooperation.admin.super-admin.clients.index', compact('clients'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(): View
     {
         return view('cooperation.admin.super-admin.clients.create');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function store(ClientFormRequest $request): RedirectResponse
     {
-        //
+        $name = $request->input('clients.name');
+        $short = Str::slug($name);
+        $client = Client::create(compact('name', 'short'));
+
+        return redirect()
+            ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
+            ->with('success', __('cooperation/admin/super-admin/clients.store.success'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Cooperation $cooperation, Client $client)
+    public function edit(Cooperation $cooperation, Client $client): View
     {
         return view('cooperation.admin.super-admin.clients.edit', compact('client'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(ClientFormRequest $request, Cooperation $cooperation, Client $client)
+    public function update(ClientFormRequest $request, Cooperation $cooperation, Client $client): RedirectResponse
     {
         $name = $request->input('clients.name');
         $short = Str::slug($name);
@@ -74,32 +53,13 @@ class ClientController extends Controller
             ->with('success', __('cooperation/admin/super-admin/clients.update.success'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function store(ClientFormRequest $request)
+    public function destroy(Cooperation $cooperation, Client $client): RedirectResponse
     {
-        $name = $request->input('clients.name');
-        $short = Str::slug($name);
-        $client = Client::create(compact('name', 'short'));
+        Gate::authorize('delete', $client);
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
-            ->with('success', __('cooperation/admin/super-admin/clients.store.success'));
-    }
+        $client->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return redirect()->route('cooperation.admin.super-admin.clients.index')
+            ->with('success', __('cooperation/admin/super-admin/clients.destroy.success'));
     }
 }

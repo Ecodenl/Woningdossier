@@ -1,51 +1,51 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/tool-calculation-results.index.header')
+])
 
 @section('content')
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/super-admin/tool-calculation-results.index.header')
-        </div>
-
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-sm-12">
-                    <table class="table table-responsive ">
-                        <thead>
-                        <tr>
-                            <th>@lang('cooperation/admin/super-admin/tool-calculation-results.index.table.columns.name')</th>
-                            <th>@lang('cooperation/admin/super-admin/tool-calculation-results.index.table.columns.short')</th>
-                            <th>@lang('cooperation/admin/super-admin/tool-calculation-results.index.table.columns.actions')</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @forelse($toolCalculationResults as $toolCalculationResult)
-                            <tr>
-                                <td>{{$toolCalculationResult->name}}</td>
-                                <td>{{$toolCalculationResult->short}}</td>
-                                <td>
-                                    <a href="{{route('cooperation.admin.super-admin.tool-calculation-results.edit', compact('toolCalculationResult'))}}" class="btn btn-default">@lang('cooperation/admin/super-admin/tool-calculation-results.index.table.columns.edit')</a>
-                                </td>
-                            </tr>
-                        @empty
-
-                        @endforelse
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </div>
+    <div class="w-full data-table">
+        <table id="table" class="table fancy-table">
+            <thead>
+                <tr>
+                    <th>@lang('cooperation/admin/super-admin/tool-calculation-results.index.table.columns.name')</th>
+                    <th>@lang('cooperation/admin/super-admin/tool-calculation-results.index.table.columns.short')</th>
+                    <th>@lang('cooperation/admin/super-admin/tool-calculation-results.index.table.columns.actions')</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($toolCalculationResults as $toolCalculationResult)
+                    <tr>
+                        <td>{{$toolCalculationResult->name}}</td>
+                        <td>{{$toolCalculationResult->short}}</td>
+                        <td>
+                            <a href="{{route('cooperation.admin.super-admin.tool-calculation-results.edit', compact('toolCalculationResult'))}}"
+                               class="btn btn-blue">
+                                @lang('cooperation/admin/super-admin/tool-calculation-results.index.table.columns.edit')
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 @endsection
 
-
 @push('js')
-    <script>
-        $(document).ready(function () {
-            $('table').dataTable({
-                responsive: false
+    <script type="module" nonce="{{ $cspNonce }}">
+        document.addEventListener('DOMContentLoaded', function () {
+            new DataTable('#table', {
+                scrollX: true,
+                language: {
+                    url: '{{ asset('js/datatables-dutch.json') }}'
+                },
+                layout: {
+                    bottomEnd: {
+                        paging: {
+                            firstLast: false
+                        }
+                    }
+                },
             });
         });
     </script>
 @endpush
-

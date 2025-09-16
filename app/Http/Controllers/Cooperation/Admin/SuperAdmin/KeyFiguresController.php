@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\Support\Facades\App;
+use Illuminate\View\View;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures as KeyFigures;
@@ -15,11 +17,11 @@ use App\Models\Service;
 
 class KeyFiguresController extends Controller
 {
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation): View
     {
         // we handle translations in the view.
         $keyfigures = [
-            'general'   => ( new \ReflectionClass(Kengetallen::class) )->getConstants(),
+            'general' => ( new \ReflectionClass(Kengetallen::class) )->getConstants(),
         ];
 
         // Bank
@@ -39,37 +41,44 @@ class KeyFiguresController extends Controller
 
         $measureApplications = MeasureApplication::all();
 
-        return view('cooperation.admin.super-admin.key-figures.index',
+        return view(
+            'cooperation.admin.super-admin.key-figures.index',
             compact(
                 'keyfigures',
                 'measureApplications'
-            ));
+            )
+        );
     }
 
     // todo refactor
-    protected function keyFiguresInsulatedGlazing()
+    protected function keyFiguresInsulatedGlazing(): array
     {
         $figures = [];
 
         // Insulated glazing key figures
-        $igMeasures = MeasureApplication::whereIn('short',
+        $igMeasures = MeasureApplication::whereIn(
+            'short',
             [
                 'glass-in-lead',
                 'hrpp-glass-only',
                 'hrpp-glass-frames',
                 'hr3p-frames',
-            ])->get();
+            ]
+        )->get();
         $igmIds = $igMeasures->pluck('id');
 
-        $keyFigureTemperatures = KeyFigureTemperature::whereIn('measure_application_id',
-            $igmIds)->get();
+        $keyFigureTemperatures = KeyFigureTemperature::whereIn(
+            'measure_application_id',
+            $igmIds
+        )->get();
 
         /** @var KeyFigureTemperature $keyFigureTemperature */
         foreach ($keyFigureTemperatures as $keyFigureTemperature) {
-            $k = sprintf('%s (%s) %s',
-                $keyFigureTemperature->measureApplication->measure_name,
-                $keyFigureTemperature->insulatingGlazing->name,
-                $keyFigureTemperature->buildingHeating->name
+            $k = sprintf(
+                '%s (%s) %s',
+                $keyFigureTemperature->measureApplication->getTranslation('measure_name', App::getLocale()),
+                $keyFigureTemperature->insulatingGlazing->getTranslation('name', App::getLocale()),
+                $keyFigureTemperature->buildingHeating->getTranslation('name', App::getLocale()),
             );
             $figures[$k] = $keyFigureTemperature->key_figure;
         }
@@ -78,32 +87,34 @@ class KeyFiguresController extends Controller
     }
 
     // todo refactor
-    protected function maxSavings()
+    protected function maxSavings(): array
     {
         $figures = [];
 
         $maxSavings = BuildingTypeElementMaxSaving::all();
         /** @var BuildingTypeElementMaxSaving $maxSaving */
         foreach ($maxSavings as $maxSaving) {
-            $k = sprintf('%s %s - %s',
+            $k = sprintf(
+                '%s %s - %s',
                 __('key-figures.max-savings.prefix'),
-                $maxSaving->buildingType->name,
-                $maxSaving->element->name);
-            $figures[$k] = $maxSaving->max_saving.'%';
+                $maxSaving->buildingType->getTranslation('name', App::getLocale()),
+                $maxSaving->element->getTranslation('name', App::getLocale()),
+            );
+            $figures[$k] = $maxSaving->max_saving . '%';
         }
 
         return $figures;
     }
 
     // todo refactor
-    protected function priceIndexes()
+    protected function priceIndexes(): array
     {
         $indexes = PriceIndexing::all();
 
         return $indexes->pluck('percentage', 'short')->toArray();
     }
 
-    protected function keyFiguresBoiler()
+    protected function keyFiguresBoiler(): array
     {
         $figures = [];
         $hrBoiler = Service::where('short', '=', 'boiler')->first();
@@ -111,7 +122,7 @@ class KeyFiguresController extends Controller
             foreach ($hrBoiler->values as $boiler) {
                 $efficiency = $boiler->keyFigureBoilerEfficiency;
                 foreach (['heating', 'wtw'] as $for) {
-                    $figures[$boiler->value.' '.__('key-figures.boiler.'.$for)] = $efficiency->$for.'%';
+                    $figures[$boiler->getTranslation('value', App::getLocale()) . ' ' . __('key-figures.boiler.' . $for)] = $efficiency->$for . '%';
                 }
             }
         }

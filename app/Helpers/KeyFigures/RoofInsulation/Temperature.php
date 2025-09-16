@@ -8,12 +8,12 @@ use App\Models\MeasureApplication;
 
 class Temperature implements KeyFiguresInterface
 {
-    const ROOF_INSULATION_PITCHED_INSIDE = 'pitched, from inside';
-    const ROOF_INSULATION_PITCHED_REPLACE_TILES = 'pitched, replace tiles';
-    const ROOF_INSULATION_FLAT_ON_CURRENT = 'flat, current';
-    const ROOF_INSULATION_FLAT_REPLACE = 'flat, replace';
+    const string ROOF_INSULATION_PITCHED_INSIDE = 'pitched, from inside';
+    const string ROOF_INSULATION_PITCHED_REPLACE_TILES = 'pitched, replace tiles';
+    const string ROOF_INSULATION_FLAT_ON_CURRENT = 'flat, current';
+    const string ROOF_INSULATION_FLAT_REPLACE = 'flat, replace';
 
-    protected static $calculationValues = [
+    protected static array $calculationValues = [
         self::ROOF_INSULATION_PITCHED_INSIDE => [
             2 => 10.24,
             3 => 7.41,
@@ -37,20 +37,17 @@ class Temperature implements KeyFiguresInterface
     ];
 
     /**
-     * kengetal energiebesparing.
+     * Kengetal energiebesparing.
      *
      * @param string $measure Use ROOF_INSULATION_* consts
-     * @param $avgHouseTemp
-     *
-     * @return string|null Null on failure
      */
-    public static function energySavingFigureRoofInsulation($measure, BuildingHeating $heating)
+    public static function energySavingFigureRoofInsulation(string $measure, BuildingHeating $heating): ?string
     {
         if (! array_key_exists($measure, self::$calculationValues)) {
             return null;
         }
         if (! array_key_exists($heating->calculate_value, self::$calculationValues[$measure])) {
-            return 0;
+            return '0';
         }
 
         return number_format(self::$calculationValues[$measure][$heating->calculate_value], 2);
@@ -58,10 +55,8 @@ class Temperature implements KeyFiguresInterface
 
     /**
      * Returns the key figures from this class.
-     *
-     * @return array
      */
-    public static function getKeyFigures()
+    public static function getKeyFigures(): array
     {
         $figures = [];
 
@@ -76,7 +71,7 @@ class Temperature implements KeyFiguresInterface
         foreach ($consts as $const => $measure) {
             $calculationKey = constant("self::$const");
             foreach (self::$calculationValues[$calculationKey] as $heatingCalcValue => $fig) {
-                $figures[$const.'_'.$heatingCalcValue] = $fig;
+                $figures[$const . '_' . $heatingCalcValue] = $fig;
             }
         }
 

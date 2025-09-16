@@ -1,16 +1,16 @@
 <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$this->subSteppables->count() > 1 ? 10 : 5}} ">
 
     @php
-        // some necessary crap to display the toolQuestions in the right manor
+        // Required setup to display toolQuestions in the correct manner.
         $topLeftPivot = $this->subSteppables->where('order', 0)->first();
-        $topLeft = optional($topLeftPivot)->subSteppable;
+        $topLeft = $topLeftPivot?->subSteppable;
         $topRightFirstPivot = $this->subSteppables->where('order', 1)->first();
-        $topRightFirst = optional($topRightFirstPivot)->subSteppable;
+        $topRightFirst = $topRightFirstPivot?->subSteppable;
         $topRightSecondPivot = $this->subSteppables->where('order', 2)->first();
-        $topRightSecond = optional($topRightSecondPivot)->subSteppable;
+        $topRightSecond = $topRightSecondPivot?->subSteppable;
 
         $bottomLeftPivot = $this->subSteppables->where('order', 3)->first();
-        $bottomLeft = optional($bottomLeftPivot)->subSteppable;
+        $bottomLeft = $bottomLeftPivot?->subSteppable;
     @endphp
     <div class="w-full flex flex-wrap">
         @if($topLeft instanceof \App\Models\ToolQuestion)
@@ -21,6 +21,7 @@
                 'class' => 'form-group-heading w-full lg:w-1/2 lg:pr-3',
                 'label' => $topLeft->name,
                 'inputName' => "filledInAnswers.{$topLeft->short}",
+                'id' => $topLeft->short,
             ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
@@ -48,6 +49,7 @@
                     'class' => 'form-group-heading w-full',
                     'label' => $topRightFirst->name,
                     'inputName' => "filledInAnswers.{$topRightFirst->short}",
+                    'id' => $topRightFirst->short,
                 ])
                     @slot('sourceSlot')
                         @include('cooperation.sub-step-templates.parts.source-slot-values', [
@@ -73,6 +75,7 @@
                     'class' => 'form-group-heading w-full',
                     'label' => $topRightSecond->name,
                     'inputName' => "filledInAnswers.{$topRightSecond->short}",
+                    'id' => $topRightSecond->short,
                 ])
                     @slot('sourceSlot')
                         @include('cooperation.sub-step-templates.parts.source-slot-values', [
@@ -102,6 +105,7 @@
                 'label' => $bottomLeft->name,
                 'inputName' => "filledInAnswers.{$bottomLeft->short}",
                 'inputGroupClass' => 'w-1/2',
+                'id' => $bottomLeft->short,
             ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [

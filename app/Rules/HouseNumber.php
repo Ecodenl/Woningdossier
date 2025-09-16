@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class HouseNumber extends LocaleBasedRule implements Rule
+class HouseNumber extends LocaleBasedRule implements ValidationRule
 {
     protected $countryRegexes = [
         'nl' => '/^([1-9]{1}((\s?-\s?[A-Za-z0-9]+)|[A-Za-z0-9 ]*))$/',
@@ -14,12 +15,9 @@ class HouseNumber extends LocaleBasedRule implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
      * @param mixed  $value
-     *
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         if (empty($this->country)) {
             return false;
@@ -36,11 +34,16 @@ class HouseNumber extends LocaleBasedRule implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
-    public function message()
+    public function message(): string
     {
         return trans('validation.house_number');
+    }
+
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (! $this->passes($attribute, $value)) {
+            $fail($this->message());
+        }
     }
 }

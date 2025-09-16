@@ -34,10 +34,8 @@ class SendPdfReportToEconobis implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle(EconobisService $econobisService, EconobisApi $econobis)
+    public function handle(EconobisService $econobisService, EconobisApi $econobis): void
     {
         Log::debug("Processing PDF report payload to Econobis for building {$this->building->id}");
         $this->wrapCall(function () use ($econobis, $econobisService) {
@@ -50,8 +48,6 @@ class SendPdfReportToEconobis implements ShouldQueue
 
     /**
      * Get the middleware the job should pass through.
-     *
-     * @return array
      */
     public function middleware(): array
     {

@@ -16,7 +16,7 @@ class HasCavityWall extends QuestionValuable
     {
         $values = collect();
 
-        foreach(WallInsulationHelper::getCavityWallValues() as $value => $name) {
+        foreach (WallInsulationHelper::getCavityWallValues() as $value => $name) {
             $values->push(compact('value', 'name'));
         }
 

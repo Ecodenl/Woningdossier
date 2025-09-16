@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Livewire\Cooperation\Admin\ExampleBuildings;
+
+use Illuminate\Support\Facades\Gate;
+use App\Helpers\HoomdossierSession;
+use App\Jobs\GenerateExampleBuildingCsv;
+use App\Models\Cooperation;
+use App\Models\FileStorage;
+use App\Models\FileType;
+use App\Models\InputSource;
+use App\Services\FileTypeService;
+use Livewire\Component;
+
+class CsvExport extends Component
+{
+
+    public Cooperation $cooperation;
+    public FileType $fileType;
+    public ?FileStorage $fileStorage;
+    public InputSource $inputSource;
+
+    public function mount(Cooperation $cooperation)
+    {
+        $this->cooperation = $cooperation;
+        $this->fileType = FileType::findByShort('example-building-overview');
+        $this->fileStorage = $this->fileType->files()->mostRecent()->first();
+        $this->inputSource = HoomdossierSession::getInputSource(true);
+    }
+
+    public function render()
+    {
+        return view('livewire.cooperation.admin.example-buildings.csv-export');
+    }
+
+    public function generate()
+    {
+        // and we create the new file
+        $this->fileStorage = new FileStorage([
+            'cooperation_id' => $this->cooperation->id,
+            'file_type_id' => $this->fileType->id,
+            'filename' => (new FileTypeService($this->fileType))->niceFileName(),
+            'input_source_id' => $this->inputSource->id,
+            'is_being_processed' => true,
+        ]);
+
+        Gate::authorize('store', [$this->fileStorage, $this->fileType]);
+        $this->fileStorage->save();
+        GenerateExampleBuildingCsv::dispatch($this->cooperation, $this->fileType, $this->fileStorage);
+    }
+}

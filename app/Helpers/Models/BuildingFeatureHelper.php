@@ -86,10 +86,15 @@ class BuildingFeatureHelper
                                     // which will give us the map to a potential new measure
                                     $newShort = RoofType::MEASURE_MAP[$roofTypeToLink->short][$measureApplication->short] ?? null;
 
-                                    $measureApplication = MeasureApplication::findByShort($newShort);
+                                    // So, the measure application short comes from the example building. The data might be incorrect, in which
+                                    // a pitched roof type measure is saved with a flat roof type. In that case, it's null, because the
+                                    // measure exists, but isn't in the mapping. We won't do anything with it.
+                                    if (! is_null($newShort)) {
+                                        $measureApplication = MeasureApplication::findByShort($newShort);
 
-                                    if ($measureApplication instanceof MeasureApplication) {
-                                        $extra['measure_application_id'] = $measureApplication->id;
+                                        if ($measureApplication instanceof MeasureApplication) {
+                                            $extra['measure_application_id'] = $measureApplication->id;
+                                        }
                                     }
                                 }
 

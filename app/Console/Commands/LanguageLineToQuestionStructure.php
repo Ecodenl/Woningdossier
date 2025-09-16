@@ -22,22 +22,11 @@ class LanguageLineToQuestionStructure extends Command
     protected $description = 'Converts regular language lines to a question structure, will set help_language_line_id';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
+        // TODO: Check if this can be deprecated
         // temporary command to convert normal translations to question like structure
         // this will be removed in the near future as refactor is needed
         $groupsToConvert = explode(',', $this->option('groups-to-convert'));
@@ -68,5 +57,7 @@ class LanguageLineToQuestionStructure extends Command
                 }
             }
         }
+
+        return self::SUCCESS;
     }
 }

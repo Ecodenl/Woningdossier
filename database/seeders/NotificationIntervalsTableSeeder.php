@@ -9,10 +9,8 @@ class NotificationIntervalsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $notificationIntervals = [
             [
@@ -24,14 +22,14 @@ class NotificationIntervalsTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Wekelijks',
+                    'nl' => 'Per week',
                     'en' => 'Weekly',
                 ],
                 'short' => 'weekly',
             ],
             [
                 'name' => [
-                    'nl' => 'Geen interesse',
+                    'nl' => 'Geen mails ontvangen',
                     'en' => 'No interest',
                 ],
                 'short' => 'no-interest',

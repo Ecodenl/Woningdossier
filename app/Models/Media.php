@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Request;
 
 /**
@@ -19,38 +22,46 @@ use Illuminate\Support\Facades\Request;
  * @property string|null $variant_name
  * @property int|null $original_media_id
  * @property int|null $input_source_id
- * @property array|null $custom_properties
+ * @property array<array-key, mixed>|null $custom_properties
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $alt
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Building> $buildings
+ * @property-read int|null $buildings_count
+ * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Cooperation> $cooperations
+ * @property-read int|null $cooperations_count
  * @property-read string $basename
+ * @property-read string $url
  * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\Mediable|null $mediable
  * @property-read Media|null $originalMedia
- * @property-read \Illuminate\Database\Eloquent\Collection|Media[] $variants
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Media> $variants
  * @property-read int|null $variants_count
- * @method static Builder|Media forPathOnDisk(string $disk, string $path)
- * @method static Builder|Media inDirectory(string $disk, string $directory, bool $recursive = false)
- * @method static Builder|Media inOrUnderDirectory(string $disk, string $directory)
- * @method static \Illuminate\Database\Eloquent\Builder|Media newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Media newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Media query()
- * @method static Builder|Media unordered()
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereAggregateType($value)
- * @method static Builder|Media whereBasename(string $basename)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereCustomProperties($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereDirectory($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereDisk($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereExtension($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereFilename($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereInputSourceId($value)
- * @method static Builder|Media whereIsOriginal()
- * @method static Builder|Media whereIsVariant(?string $variant_name = null)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereMimeType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereOriginalMediaId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereSize($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Media whereVariantName($value)
+ * @method static Builder<static>|Media forPathOnDisk(string $disk, string $path)
+ * @method static Builder<static>|Media inDirectory(string $disk, string $directory, bool $recursive = false)
+ * @method static Builder<static>|Media inOrUnderDirectory(string $disk, string $directory)
+ * @method static Builder<static>|Media newModelQuery()
+ * @method static Builder<static>|Media newQuery()
+ * @method static Builder<static>|Media query()
+ * @method static Builder<static>|Media unordered()
+ * @method static Builder<static>|Media whereAggregateType($value)
+ * @method static Builder<static>|Media whereAlt($value)
+ * @method static Builder<static>|Media whereBasename(string $basename)
+ * @method static Builder<static>|Media whereCreatedAt($value)
+ * @method static Builder<static>|Media whereCustomProperties($value)
+ * @method static Builder<static>|Media whereDirectory($value)
+ * @method static Builder<static>|Media whereDisk($value)
+ * @method static Builder<static>|Media whereExtension($value)
+ * @method static Builder<static>|Media whereFilename($value)
+ * @method static Builder<static>|Media whereId($value)
+ * @method static Builder<static>|Media whereInputSourceId($value)
+ * @method static Builder<static>|Media whereIsOriginal()
+ * @method static Builder<static>|Media whereIsVariant(?string $variant_name = null)
+ * @method static Builder<static>|Media whereMimeType($value)
+ * @method static Builder<static>|Media whereOriginalMediaId($value)
+ * @method static Builder<static>|Media whereSize($value)
+ * @method static Builder<static>|Media whereUpdatedAt($value)
+ * @method static Builder<static>|Media whereVariantName($value)
  * @mixin \Eloquent
  */
 class Media extends \Plank\Mediable\Media
@@ -60,10 +71,15 @@ class Media extends \Plank\Mediable\Media
         'custom_properties' => 'array',
     ];
 
-    # Model methods
+    // Model methods
+    /**
+     * NOTE: The provided URL may be 403 forbidden due to disk visibility.
+     *
+     * @throws \Plank\Mediable\Exceptions\MediaUrlException
+     */
     public function getUrl(): string
     {
-        $url =  parent::getUrl();
+        $url = parent::getUrl();
 
         // Do some magic to ensure the correct subdomain is used within the host
         $mediaUrlHost = Request::create($url)->getSchemeAndHttpHost();
@@ -76,14 +92,33 @@ class Media extends \Plank\Mediable\Media
         return $url;
     }
 
-    public function getPath(): string
+    public function ownedBy(User $user): bool
     {
-        return parse_url($this->getUrl())['path'] ?? '';
+        return $this->buildings()->whereHas('user', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->exists();
     }
 
-    # Relations
+    // Relations
     public function inputSource(): BelongsTo
     {
         return $this->belongsTo(InputSource::class);
+    }
+
+    public function mediable(): HasOne
+    {
+        return $this->hasOne(Mediable::class);
+    }
+
+    public function buildings(): MorphToMany
+    {
+        return $this->morphedByMany(Building::class, 'mediable')
+            ->withPivot(['tag', 'order']);
+    }
+
+    public function cooperations(): MorphToMany
+    {
+        return $this->morphedByMany(Cooperation::class, 'mediable')
+            ->withPivot(['tag', 'order']);
     }
 }

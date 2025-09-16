@@ -96,18 +96,18 @@ trait CallsEconobisApi
 
         if ($shouldNotifyDiscord) {
             $environment = app()->environment();
-            // TODO: In PHP 8, just use the nullsafe operator (?->)
-            if (!isset($this->building)) {
+            if (! isset($this->building)) {
                 $cooperationId = 'No building for building ID ' . $buildingId . ' so no cooperation either';
             } else {
-                $cooperationId = optional(optional(optional($this->building)->user)->cooperation)->id ?? 'No cooperation ID';
+                $cooperationId = $this->building->user->cooperation->id ?? 'No cooperation ID';
             }
-            DiscordNotifier::init()->notify(get_class($exception)." Failed to send [{$environment}] '{$class}' building_id: {$buildingId} cooperation_id: {$cooperationId}");
+            DiscordNotifier::init()->notify(get_class($exception) . " Failed to send [{$environment}] '{$class}' building_id: {$buildingId} cooperation_id: {$cooperationId}");
         }
     }
 
     public function middleware(): array
     {
+        // TODO: See if we should still apply the skip middleware
         // Note: when on Laravel 11: the first middleware should be a Skip::when($this->building->trashed())
         // as we have seen cases where the building was trashed before the job was executed,
         // resulting in an ErrorException 'Trying to get property 'cooperation' of non-object'

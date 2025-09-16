@@ -53,10 +53,8 @@ class PdfReport extends NonHandleableJobAfterReset
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle(KengetallenService $kengetallenService)
+    public function handle(KengetallenService $kengetallenService): void
     {
         if (App::runningInConsole()) {
             Log::debug(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
@@ -194,7 +192,6 @@ class PdfReport extends NonHandleableJobAfterReset
                             if ($userActionPlanAdvice->userActionPlanAdvisable->step_id === $smallMeasureAdvicestep->id) {
                                 $smallMeasureAdvices['small-measures'][] = $userActionPlanAdvice;
                             }
-
                         } else {
                             if ($userActionPlanAdvice->userActionPlanAdvisable instanceof CooperationMeasureApplication) {
                                 $smallMeasureAdvices['cooperation-measures'][] = $userActionPlanAdvice;
@@ -250,7 +247,7 @@ class PdfReport extends NonHandleableJobAfterReset
             ->where('comment', '!=', '')
             ->get();
 
-        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($building);
         $connectedCoachNames = User::whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
             ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
             ->pluck('full_name')
@@ -295,7 +292,7 @@ class PdfReport extends NonHandleableJobAfterReset
         // save the pdf report
         Storage::disk('downloads')->put($this->fileStorage->filename, $pdf);
 
-        $this->fileStorage->isProcessed();
+        $this->fileStorage->finishProcess();
     }
 
     public function failed(Throwable $exception)

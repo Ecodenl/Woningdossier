@@ -7,16 +7,16 @@ use App\Models\UserEnergyHabit;
 
 class RoomTemperatureCalculator
 {
-    const FLOOR_GROUND_ROOM_LIVING_ROOM = 'bg woonkamer';
-    const FLOOR_GROUND_ROOM_KITCHEN = 'bg keuken';
-    const FLOOR_GROUND_ROOM_HALL = 'bg gang';
-    const FLOOR_ONE_ROOM_BEDROOM1 = '1e v slaapkamer1';
-    const FLOOR_ONE_ROOM_BEDROOM2 = '1e v slaapkamer2';
-    const FLOOR_ONE_ROOM_HALL = '1e v gang';
-    const ROOM_BATHROOM = 'badkamer';
-    const ROOM_ATTIC = 'zolder';
+    const string FLOOR_GROUND_ROOM_LIVING_ROOM = 'bg woonkamer';
+    const string FLOOR_GROUND_ROOM_KITCHEN = 'bg keuken';
+    const string FLOOR_GROUND_ROOM_HALL = 'bg gang';
+    const string FLOOR_ONE_ROOM_BEDROOM1 = '1e v slaapkamer1';
+    const string FLOOR_ONE_ROOM_BEDROOM2 = '1e v slaapkamer2';
+    const string FLOOR_ONE_ROOM_HALL = '1e v gang';
+    const string ROOM_BATHROOM = 'badkamer';
+    const string ROOM_ATTIC = 'zolder';
 
-    protected $rooms = [
+    protected array $rooms = [
         self::FLOOR_GROUND_ROOM_LIVING_ROOM => [
             'm2' => 30,
             'temp high' => 0,
@@ -85,18 +85,20 @@ class RoomTemperatureCalculator
 
     public function __construct(UserEnergyHabit $habits)
     {
-        if (! $habits->heatingFirstFloor instanceof BuildingHeating) {
-            $habits->heatingFirstFloor = BuildingHeating::where('is_default', true)->first();
+        $firstFloorHeating = $habits->heatingFirstFloor;
+        if (! $firstFloorHeating instanceof BuildingHeating) {
+            $firstFloorHeating = BuildingHeating::where('is_default', true)->first();
         }
 
-        if (! $habits->heatingSecondFloor instanceof BuildingHeating) {
-            $habits->heatingSecondFloor = BuildingHeating::where('is_default', true)->first();
+        $secondFloorHeating = $habits->heatingSecondFloor;
+        if (! $secondFloorHeating instanceof BuildingHeating) {
+            $secondFloorHeating = BuildingHeating::where('is_default', true)->first();
         }
 
         // new logic:
         // if the heating_(first/second)_floor is Not applicable (calculate_value 4):
         // set ALL m2 for that FLOOR to 0
-        if (5 == $habits->heatingFirstFloor->calculate_value) {
+        if (5 == $firstFloorHeating->calculate_value) {
             $firstFloorRooms = [
                 self::FLOOR_ONE_ROOM_BEDROOM1,
                 self::FLOOR_ONE_ROOM_BEDROOM2,
@@ -108,7 +110,7 @@ class RoomTemperatureCalculator
                 $this->rooms[$firstFloorRoom]['m2'] = 0;
             }
         }
-        if (5 == $habits->heatingSecondFloor->calculate_value) {
+        if (5 == $secondFloorHeating->calculate_value) {
             $secondFloorRooms = [
                 self::ROOM_ATTIC,
             ];
@@ -140,7 +142,7 @@ class RoomTemperatureCalculator
         $this->rooms[self::FLOOR_GROUND_ROOM_HALL]['average'] = $this->calculateAverage(self::FLOOR_GROUND_ROOM_HALL);
 
         // 1st fl bedroom1
-        $this->rooms[self::FLOOR_ONE_ROOM_BEDROOM1]['temp high'] = $habits->heatingFirstFloor instanceof BuildingHeating ? $habits->heatingFirstFloor->degree : 10;
+        $this->rooms[self::FLOOR_ONE_ROOM_BEDROOM1]['temp high'] = $firstFloorHeating instanceof BuildingHeating ? $firstFloorHeating->degree : 10;
         $this->rooms[self::FLOOR_ONE_ROOM_BEDROOM1]['hours high'] = $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['hours high'];
         $this->rooms[self::FLOOR_ONE_ROOM_BEDROOM1]['temp low'] = $this->calculateTempLow(self::FLOOR_ONE_ROOM_BEDROOM1);
         $this->rooms[self::FLOOR_ONE_ROOM_BEDROOM1]['hours low'] = $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['hours low'];
@@ -168,7 +170,7 @@ class RoomTemperatureCalculator
         $this->rooms[self::ROOM_BATHROOM]['average'] = $this->calculateAverage(self::ROOM_BATHROOM);
 
         // attic
-        $this->rooms[self::ROOM_ATTIC]['temp high'] = $habits->heatingSecondFloor instanceof BuildingHeating ? $habits->heatingSecondFloor->degree : 10;
+        $this->rooms[self::ROOM_ATTIC]['temp high'] = $secondFloorHeating instanceof BuildingHeating ? $secondFloorHeating->degree : 10;
         $this->rooms[self::ROOM_ATTIC]['hours high'] = $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['hours high'];
         $this->rooms[self::ROOM_ATTIC]['temp low'] = $this->calculateTempLow(self::ROOM_ATTIC);
         $this->rooms[self::ROOM_ATTIC]['hours low'] = $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['hours low'];
@@ -206,8 +208,7 @@ class RoomTemperatureCalculator
     protected function calculateAverage($room)
     {
         return (
-            ($this->rooms[$room]['temp high'] * $this->rooms[$room]['hours high']) +
-            ($this->rooms[$room]['temp low'] * $this->rooms[$room]['hours low'])
+            ($this->rooms[$room]['temp high'] * $this->rooms[$room]['hours high']) + ($this->rooms[$room]['temp low'] * $this->rooms[$room]['hours low'])
         ) / 24;
     }
 }

@@ -9,20 +9,21 @@ class BuildingNoteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'coordinator', 'cooperation-admin']);
     }
 
+    public function prepareForValidation(): void
+    {
+        $this->redirect = url()->previous() . '#building-notes';
+    }
+
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'building.note' => 'required',

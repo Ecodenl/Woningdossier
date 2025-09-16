@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,60 +15,85 @@ use Illuminate\Support\Facades\App;
  * App\Models\Scan
  *
  * @property int $id
- * @property array $name
- * @property array $slug
+ * @property array<array-key, mixed> $name
+ * @property array<array-key, mixed> $slug
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[] $completedSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompletedStep> $completedSteps
  * @property-read int|null $completed_steps_count
- * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Step> $steps
  * @property-read int|null $steps_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
- * @method static Builder|Scan bySlug(string $slug, string $locale = 'nl')
- * @method static Builder|Scan expert()
- * @method static Builder|Scan newModelQuery()
- * @method static Builder|Scan newQuery()
- * @method static Builder|Scan query()
- * @method static Builder|Scan simple()
- * @method static Builder|Scan whereCreatedAt($value)
- * @method static Builder|Scan whereId($value)
- * @method static Builder|Scan whereName($value)
- * @method static Builder|Scan whereShort($value)
- * @method static Builder|Scan whereSlug($value)
- * @method static Builder|Scan whereUpdatedAt($value)
+ * @property-read mixed $translations
+ * @method static Builder<static>|Scan newModelQuery()
+ * @method static Builder<static>|Scan newQuery()
+ * @method static Builder<static>|Scan query()
+ * @method static Builder<static>|Scan whereCreatedAt($value)
+ * @method static Builder<static>|Scan whereId($value)
+ * @method static Builder<static>|Scan whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|Scan whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|Scan whereLocale(string $column, string $locale)
+ * @method static Builder<static>|Scan whereLocales(string $column, array $locales)
+ * @method static Builder<static>|Scan whereName($value)
+ * @method static Builder<static>|Scan whereShort($value)
+ * @method static Builder<static>|Scan whereSlug($value)
+ * @method static Builder<static>|Scan whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Scan extends Model
 {
     use HasTranslations, HasShortTrait;
 
-    const LITE = 'lite-scan';
-    const QUICK = 'quick-scan';
-    const EXPERT = 'expert-scan';
+    const string LITE = 'lite-scan';
+    const string QUICK = 'quick-scan';
+    const string EXPERT = 'expert-scan';
 
     protected $translatable = ['name', 'slug'];
 
     // Static calls
-    public static function lite(): ?Model
+    public static function lite(): ?self
     {
         return static::findByShort(self::LITE);
     }
 
-    public static function quick(): ?Model
+    public static function quick(): ?self
     {
         return self::findByShort(self::QUICK);
     }
 
-    public static function expert(): ?Model
+    public static function expert(): ?self
     {
         return self::findByShort(self::EXPERT);
     }
 
+    public static function allShorts(): array
+    {
+        return [
+            self::EXPERT,
+            self::QUICK,
+            self::LITE,
+        ];
+    }
+
+    public static function simpleShorts(): array
+    {
+        return [
+            self::QUICK,
+            self::LITE,
+        ];
+    }
+
+    public static function expertShorts(): array
+    {
+        return [
+            self::EXPERT,
+        ];
+    }
+
     // Model Methods
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         $locale = App::getLocale();
         return "slug->{$locale}";
@@ -94,18 +120,21 @@ class Scan extends Model
     }
 
     // Scopes
-    public function scopeSimple(Builder $query)
+    #[Scope]
+    protected function simpleScans(Builder $query)
     {
         return $query->whereIn('short', [static::LITE, static::QUICK]);
     }
 
-    public function scopeExpert(Builder $query)
+    #[Scope]
+    protected function expertScans(Builder $query)
     {
         return $query->whereIn('short', [static::EXPERT]);
     }
 
     // TODO: Slug trait?
-    public function scopeBySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
+    #[Scope]
+    protected function bySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
     {
         return $query->where("slug->{$locale}", $slug);
     }

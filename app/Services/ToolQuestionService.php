@@ -232,10 +232,9 @@ class ToolQuestionService
      *
      * @param $givenAnswer
      *
-     * @return void
      * @throws \Exception
      */
-    private function checkConditionalAnswers($givenAnswer)
+    private function checkConditionalAnswers($givenAnswer): void
     {
         // TODO: See how to handle JSON answers in case it ever becomes a conditional (comes back as literal JSON)
         // We build the answers ourselves to make a few less queries
@@ -264,7 +263,7 @@ class ToolQuestionService
 
         $toolQuestionsToUnset = [];
         foreach ($conditionalCustomValues as $conditionalCustomValue) {
-            if (! $evaluator->evaluateCollection($conditionalCustomValue->conditions, $answers)) {
+            if (! $evaluator->setAnswers($answers)->evaluate($conditionalCustomValue->conditions)) {
                 $answer = $this->building->getAnswer($this->currentInputSource, $conditionalCustomValue->toolQuestion);
 
                 // TODO: Expand this if there are single-value answers
@@ -289,7 +288,7 @@ class ToolQuestionService
         // should be reset
 
         //foreach ($toolQuestionValuables as $conditionalValuable) {
-        //    if (! $evaluator->evaluateCollection($conditionalValuable->conditions, $answers)) {
+        //    if (! $evaluator->setAnswers($answers)->evaluate($conditionalValuable->conditions)) {
         //        $answer = $this->building->getAnswer($this->currentInputSource, $conditionalValuable->toolQuestion);
         //
         //        // TODO: Expand this if there are multi-value answers
@@ -340,7 +339,7 @@ class ToolQuestionService
         }
     }
 
-    private function clearAnswer(ToolQuestion $toolQuestion, array $where)
+    private function clearAnswer(ToolQuestion $toolQuestion, array $where): void
     {
         if (is_null($toolQuestion->save_in)) {
             // We don't want to mess with the master if it's the example building

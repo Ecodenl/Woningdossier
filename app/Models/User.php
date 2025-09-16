@@ -2,6 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Observers\UserObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Deprecation\DeprecationLogger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\HoomdossierSession;
 use App\Traits\HasCooperationTrait;
@@ -13,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -25,7 +34,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $last_name
  * @property string $phone_number
  * @property string|null $last_visited_url
- * @property array|null $extra
+ * @property array<array-key, mixed>|null $extra
  * @property bool $allow_access
  * @property \Illuminate\Support\Carbon|null $tool_last_changed_at
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
@@ -33,97 +42,87 @@ use Spatie\Permission\Traits\HasRoles;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $refreshing_regulations
  * @property-read \App\Models\Account|null $account
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
- * @property-read int|null $action_plan_advices_count
  * @property-read \App\Models\Building|null $building
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingCoachStatus> $buildingCoachStatuses
+ * @property-read int|null $building_coach_statuses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingNotes> $buildingNotes
  * @property-read int|null $building_notes_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingPermission> $buildingPermissions
  * @property-read int|null $building_permissions_count
- * @property-read \Plank\Mediable\MediableCollection|\App\Models\Building[] $buildings
- * @property-read int|null $buildings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
+ * @property-read \App\Models\CompletedQuestionnaire|null $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Questionnaire> $completedQuestionnaires
  * @property-read int|null $completed_questionnaires_count
  * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read \Plank\Mediable\MediableCollection|\App\Models\Cooperation[] $cooperations
- * @property-read int|null $cooperations_count
  * @property-read \App\Models\UserEnergyHabit|null $energyHabit
  * @property-read mixed $email
  * @property-read mixed $is_admin
  * @property-read mixed $old_email_token
  * @property-read mixed $oldemail
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
- * @property-read int|null $interests_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Log> $logs
  * @property-read int|null $logs_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
- * @property-read int|null $motivations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NotificationSetting[] $notificationSettings
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationSetting> $notificationSettings
  * @property-read int|null $notification_settings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Role> $roles
  * @property-read int|null $roles_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdviceComments> $userActionPlanAdviceComments
  * @property-read int|null $user_action_plan_advice_comments_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserCost[] $userCosts
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserCost> $userCosts
  * @property-read int|null $user_costs_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
- * @property-read int|null $user_interests_count
- * @method static Builder|User byContact($contact)
- * @method static Builder|User econobisContacts()
- * @method static \Database\Factories\UserFactory factory(...$parameters)
- * @method static Builder|User forAllCooperations()
- * @method static Builder|User forMyCooperation($cooperationId)
- * @method static Builder|User newModelQuery()
- * @method static Builder|User newQuery()
- * @method static Builder|User permission($permissions)
- * @method static Builder|User query()
- * @method static Builder|User role($roles, $guard = null)
- * @method static Builder|User whereAccountId($value)
- * @method static Builder|User whereAllowAccess($value)
- * @method static Builder|User whereCooperationId($value)
- * @method static Builder|User whereCreatedAt($value)
- * @method static Builder|User whereExtra($value)
- * @method static Builder|User whereFirstName($value)
- * @method static Builder|User whereId($value)
- * @method static Builder|User whereLastName($value)
- * @method static Builder|User whereLastVisitedUrl($value)
- * @method static Builder|User wherePhoneNumber($value)
- * @method static Builder|User whereRefreshingRegulations($value)
- * @method static Builder|User whereRegulationsRefreshedAt($value)
- * @method static Builder|User whereToolLastChangedAt($value)
- * @method static Builder|User whereUpdatedAt($value)
+ * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @method static Builder<static>|User forAllCooperations()
+ * @method static Builder<static>|User forMyCooperation(\App\Models\Cooperation|int $cooperation)
+ * @method static Builder<static>|User newModelQuery()
+ * @method static Builder<static>|User newQuery()
+ * @method static Builder<static>|User permission($permissions, $without = false)
+ * @method static Builder<static>|User query()
+ * @method static Builder<static>|User role($roles, $guard = null, $without = false)
+ * @method static Builder<static>|User whereAccountId($value)
+ * @method static Builder<static>|User whereAllowAccess($value)
+ * @method static Builder<static>|User whereCooperationId($value)
+ * @method static Builder<static>|User whereCreatedAt($value)
+ * @method static Builder<static>|User whereExtra($value)
+ * @method static Builder<static>|User whereFirstName($value)
+ * @method static Builder<static>|User whereId($value)
+ * @method static Builder<static>|User whereLastName($value)
+ * @method static Builder<static>|User whereLastVisitedUrl($value)
+ * @method static Builder<static>|User wherePhoneNumber($value)
+ * @method static Builder<static>|User whereRefreshingRegulations($value)
+ * @method static Builder<static>|User whereRegulationsRefreshedAt($value)
+ * @method static Builder<static>|User whereToolLastChangedAt($value)
+ * @method static Builder<static>|User whereUpdatedAt($value)
+ * @method static Builder<static>|User withoutPermission($permissions)
+ * @method static Builder<static>|User withoutRole($roles, $guard = null)
  * @mixin \Eloquent
  */
+#[ObservedBy([UserObserver::class])]
 class User extends Model implements AuthorizableContract
 {
-    use HasFactory;
-
-    use HasRoles,
+    use HasFactory,
+        HasRoles,
         HasCooperationTrait,
         Authorizable;
 
     protected $guard_name = 'web';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'tool_last_changed_at', 'extra', 'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access', 'regulations_refreshed_at',
+        'tool_last_changed_at', 'extra', 'first_name', 'last_name', 'phone_number',
+        'account_id', 'allow_access', 'regulations_refreshed_at',
         'last_visited_url', 'cooperation_id',
     ];
 
-    protected $casts = [
-        'allow_access' => 'boolean',
-        'extra' => 'array',
-        'tool_last_changed_at' => 'datetime:Y-m-d H:i:s',
-        'regulations_refreshed_at' => 'datetime:Y-m-d H:i:s',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'allow_access' => 'boolean',
+            'extra' => 'array',
+            'tool_last_changed_at' => 'datetime:Y-m-d H:i:s',
+            'regulations_refreshed_at' => 'datetime:Y-m-d H:i:s',
+        ];
+    }
 
     // We can't eager load roles by default because if the admin changes them, they don't refresh
     //protected $with = [
@@ -131,14 +130,16 @@ class User extends Model implements AuthorizableContract
     //];
 
     # Scopes
-    public function scopeByContact(Builder $query, $contact): Builder
+    #[Scope]
+    protected function byContact(Builder $query, $contact): Builder
     {
         // We assume $contact is an ID. Maybe in the future this won't be the case but this way it can be easily
         // expanded
         return $query->where('extra->contact_id', $contact);
     }
 
-    public function scopeEconobisContacts(Builder $query): Builder
+    #[Scope]
+    protected function econobisContacts(Builder $query): Builder
     {
         return $query->whereNotNull('extra->contact_id');
     }
@@ -155,10 +156,6 @@ class User extends Model implements AuthorizableContract
             ->withPivot(['is_considering', 'input_source_id']);
     }
 
-    /**
-     * @param Model $related
-     * @return MorphToMany
-     */
     public function considerablesForModel(Model $related): MorphToMany
     {
         return $this->considerables($related->getMorphClass())->wherePivot('considerable_id', $related->id);
@@ -167,7 +164,7 @@ class User extends Model implements AuthorizableContract
     # Unsorted
     public function considers(Model $model, InputSource $inputSource): bool
     {
-        $considerableModel =  $this->considerablesForModel($model)
+        $considerableModel = $this->considerablesForModel($model)
             ->wherePivot('input_source_id', $inputSource->id)
             ->first();
 
@@ -182,49 +179,6 @@ class User extends Model implements AuthorizableContract
     public function allowedAccess(): bool
     {
         return $this->allow_access;
-    }
-
-    /**
-     * Return the intermediary table of the interests.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function userInterests()
-    {
-        return $this->hasMany(UserInterest::class);
-    }
-
-    /**
-     * Scope like method because of relationships.
-     *
-     * @param $interestedInType
-     * @param $interestedInId
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function userInterestsForSpecificType($interestedInType, $interestedInId, InputSource $inputSource = null)
-    {
-        if ($inputSource instanceof InputSource) {
-            return $this->userInterests()
-                ->where('interested_in_type', $interestedInType)
-                ->where('interested_in_id', $interestedInId)
-                ->forInputSource($inputSource);
-        }
-
-        return $this->userInterests()
-            ->where('interested_in_type', $interestedInType)
-            ->where('interested_in_id', $interestedInId);
-    }
-
-
-    /**
-     * Return all the interest levels of a user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function interests()
-    {
-        return $this->hasManyThrough(Interest::class, UserInterest::class, 'user_id', 'id', 'id', 'interest_id');
     }
 
     // ------ User -> Account table / model migration stuff -------
@@ -252,11 +206,10 @@ class User extends Model implements AuthorizableContract
     /**
      * Quick short hand helper for user to account data migration.
      *
-     * @param string $property
      *
      * @return mixed|null
      */
-    public function getAccountProperty($property)
+    public function getAccountProperty(string $property)
     {
         \Log::debug('Account property ' . $property . ' is accessed via User!');
         if ($this->account instanceof Account) {
@@ -266,23 +219,20 @@ class User extends Model implements AuthorizableContract
         return null;
     }
 
-    // ------ End User -> Account table / model migration stuff -------
-    public function buildings()
-    {
-        return $this->hasMany(Building::class);
-    }
-
-    public function building()
+    public function building(): HasOne
     {
         return $this->hasOne(Building::class);
     }
 
+    public function buildingCoachStatuses(): HasMany
+    {
+        return $this->hasMany(BuildingCoachStatus::class, 'coach_id');
+    }
+
     /**
      * Return the notification settings from a user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function notificationSettings()
+    public function notificationSettings(): HasMany
     {
         return $this->hasMany(NotificationSetting::class);
     }
@@ -291,51 +241,29 @@ class User extends Model implements AuthorizableContract
      * Determine if a user retrieves a notification.
      *
      * @param $notificationTypeShort
-     *
-     * @return bool
      */
-    public function retrievesNotifications($notificationTypeShort)
+    public function retrievesNotifications($notificationTypeShort): bool
     {
         $notificationType = NotificationType::where('short', $notificationTypeShort)->first();
         $notInterestedInterval = NotificationInterval::where('short', 'no-interest')->first();
 
-        $doesUserRetrievesNotifications =
-
-            $this->notificationSettings()
-                ->where('type_id', $notificationType->id)
-                ->where('interval_id', '!=', $notInterestedInterval->id)
-                ->exists();
-
-        return $doesUserRetrievesNotifications;
+        return $this->notificationSettings()
+            ->where('type_id', $notificationType->id)
+            ->where('interval_id', '!=', $notInterestedInterval->id)
+            ->exists();
     }
 
-    public function energyHabit()
+    public function energyHabit(): HasOne
     {
         return $this->hasOne(UserEnergyHabit::class);
     }
 
     /**
      * Return all the building notes a user has created.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function buildingNotes(): HasMany
     {
         return $this->hasMany(BuildingNotes::class, 'coach_id', 'id');
-    }
-
-    public function motivations(): HasMany
-    {
-        return $this->hasMany(UserMotivation::class);
-    }
-
-    /**
-     * @deprecated use userActionPlanAdvices
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function actionPlanAdvices()
-    {
-        return $this->hasMany(UserActionPlanAdvice::class);
     }
 
     public function userActionPlanAdvices(): HasMany
@@ -356,17 +284,10 @@ class User extends Model implements AuthorizableContract
     /**
      * The cooperations the user is associated with.
      */
-    public function cooperations()
+    public function cooperation(): BelongsTo
     {
-        return $this->belongsToMany(Cooperation::class, 'cooperation_user');
-    }
-
-    /**
-     * The cooperations the user is associated with.
-     */
-    public function cooperation()
-    {
-        return $this->belongsTo(Cooperation::class, 'cooperation_id', 'id');
+        return $this->belongsTo(Cooperation::class, 'cooperation_id', 'id')
+            ->withTrashed();
     }
 
     /**
@@ -377,29 +298,21 @@ class User extends Model implements AuthorizableContract
         return "{$this->first_name} {$this->last_name}";
     }
 
-    public function buildingPermissions()
+    public function buildingPermissions(): HasMany
     {
-        return $this->hasMany(\App\Models\BuildingPermission::class);
-    }
-
-    public function isBuildingOwner(Building $building)
-    {
-        if ($this->buildings()->find($building->id) instanceof Building) {
-            return true;
-        }
-
-        return false;
+        return $this->hasMany(BuildingPermission::class);
     }
 
     /**
-     * Check if a user is not removed from the building coach status table.
-     *
-     * @param $buildingId
+     * Check if a user is removed from the building coach status table.
      */
-    public function isRemovedFromBuildingCoachStatus($buildingId): bool
+    public function isRemovedFromBuildingCoachStatus(int $buildingId): bool
     {
         // get the last known coach status for the current coach
-        $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $this->id)->where('building_id', $buildingId)->get()->last();
+        $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $this->id)
+            ->where('building_id', $buildingId)
+            ->orderByDesc('id')
+            ->first();
 
         if ($buildingCoachStatus instanceof BuildingCoachStatus) {
             // if the coach his last known building status for the current building is removed
@@ -412,14 +325,9 @@ class User extends Model implements AuthorizableContract
         return false;
     }
 
-    /**
-     * Return the opposite of the isRemovedFromBuildingCoachStatus function.
-     *
-     * @param $buildingId
-     */
-    public function isNotRemovedFromBuildingCoachStatus($buildingId): bool
+    public function isNotRemovedFromBuildingCoachStatus(int $buildingId): bool
     {
-        return !$this->isRemovedFromBuildingCoachStatus($buildingId);
+        return ! $this->isRemovedFromBuildingCoachStatus($buildingId);
     }
 
     /**
@@ -432,7 +340,7 @@ class User extends Model implements AuthorizableContract
 //        if (is_null(HoomdossierSession::getBuilding())) {
 //            return false;
 //        } else {
-        if ($this->building->id != HoomdossierSession::getBuilding()) {
+        if ($this->building->id !== HoomdossierSession::getBuilding()) {
             return true;
         }
 
@@ -447,7 +355,7 @@ class User extends Model implements AuthorizableContract
      */
     public function hasNotRole($roles): bool
     {
-        return !$this->hasRole($roles);
+        return ! $this->hasRole($roles);
     }
 
     /**
@@ -463,15 +371,14 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Function to check if a user has a role, and if the user has that role check if the role is set in the Hoomdossier session.
-     *
-     * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
+     * Function to check if a user has a role, and if the user has that role check if
+     * the role is set in the Hoomdossier session.
      */
-    public function hasRoleAndIsCurrentRole($roles): bool
+    public function hasRoleAndIsCurrentRole(string|array|Role|Collection $roles): bool
     {
         // collect the role names from the gives roles.
         $roleNames = [];
-        if (is_string($roles) && false !== strpos($roles, '|')) {
+        if (is_string($roles) && str_contains($roles, '|')) {
             $roleNames = $this->convertPipeToArray($roles);
         }
 
@@ -507,17 +414,13 @@ class User extends Model implements AuthorizableContract
      */
     public function hasNotMultipleRoles(): bool
     {
-        return !$this->hasMultipleRoles();
+        return ! $this->hasMultipleRoles();
     }
 
     /**
      * Retrieve the completed questionnaires from the user.
-     *
-     * @param InputSource $inputSource
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function completedQuestionnaires()
+    public function completedQuestionnaires(): BelongsToMany
     {
         return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires')
             ->using(CompletedQuestionnaire::class);
@@ -525,10 +428,8 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Check whether a user completed a questionnaire.
-     *
-     * @return bool
      */
-    public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null)
+    public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null): bool
     {
         $query = $this->completedQuestionnaires()
             ->where('questionnaire_id', $questionnaire->id);
@@ -542,39 +443,25 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Return the user its account information.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function account()
+    public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
     }
-
     /**
-     * Get the user its bcrypted password from the accounts table.
-     *
-     * @return string
-     */
-    public function getAuthPassword()
-    {
-        return $this->account->password;
-    }
 
-    /**
      * Get the user its email from the accounts table.
-     *
-     * @return string
      */
-    public function getEmailForPasswordReset()
+    public function getEmailForPasswordReset(): string
     {
         return $this->account->email;
     }
 
-    public function logout()
+    public function logout(): void
     {
         // used in the handler.php
         HoomdossierSession::destroy();
-        \Auth::logout();
+        Auth::logout();
         request()->session()->invalidate();
     }
 }

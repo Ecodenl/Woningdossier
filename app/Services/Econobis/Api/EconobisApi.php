@@ -37,7 +37,7 @@ class EconobisApi
         return $this;
     }
 
-    public function hoomdossier()
+    public function hoomdossier(): Hoomdossier
     {
         return new Hoomdossier($this->client, 'hoomdossier');
     }

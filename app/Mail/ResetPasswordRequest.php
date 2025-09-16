@@ -29,16 +29,14 @@ class ResetPasswordRequest extends Mailable implements ShouldQueue
         $this->onQueue(Queue::APP_HIGH);
         $this->token = $token;
         $this->account = $account;
-        $this->user = $account->user();
+        $this->user = $account->users()->forMyCooperation($cooperation)->first();
         $this->userCooperation = $cooperation;
     }
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this
             ->to($this->account->email, sprintf('%s %s', $this->user->first_name, $this->user->last_name))

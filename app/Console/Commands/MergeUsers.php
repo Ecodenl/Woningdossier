@@ -25,21 +25,9 @@ class MergeUsers extends Command
     protected $description = 'Merge two users within the same cooperation. The first user has the \'truth\' whenever in doubt';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $userId1 = (int) $this->argument('userId1');
         $userId2 = (int) $this->argument('userId2');
@@ -47,11 +35,11 @@ class MergeUsers extends Command
         $user2 = User::find($userId2);
 
         if (! $user1 instanceof User) {
-            $this->error('No user with ID '.$userId1);
+            $this->error('No user with ID ' . $userId1);
             exit;
         }
         if (! $user2 instanceof User) {
-            $this->error('No user with ID '.$userId2);
+            $this->error('No user with ID ' . $userId2);
             exit;
         }
         if ($user1->cooperation_id !== $user2->cooperation_id) {
@@ -62,8 +50,12 @@ class MergeUsers extends Command
         Log::warning(
             sprintf(
                 'Merging users %s %s (%s) and %s %s (%s)',
-                $user1->first_name, $user1->last_name, $user1->id,
-                $user2->first_name, $user2->last_name, $user2->id
+                $user1->first_name,
+                $user1->last_name,
+                $user1->id,
+                $user2->first_name,
+                $user2->last_name,
+                $user2->id
             )
         );
 
@@ -71,5 +63,7 @@ class MergeUsers extends Command
 
 //        Artisan::call('user:delete', ['user' => $userId2]);
         Log::info(sprintf('Users %s and %s were merged', $userId1, $userId2));
+
+        return self::SUCCESS;
     }
 }

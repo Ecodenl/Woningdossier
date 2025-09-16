@@ -1,81 +1,83 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', [
+    'panelTitle' => __('cooperation/admin/super-admin/clients/personal-access-tokens.index.header', ['client_name' => $client->name]),
+    'panelLink' => route('cooperation.admin.super-admin.clients.personal-access-tokens.create', compact('client'))
+])
 
 @section('content')
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.header', ['client_name' => $client->name])
-            <a href="{{ route('cooperation.admin.super-admin.clients.personal-access-tokens.create', compact('client')) }}"
-               class="btn btn-success">
-                @lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.header-button')
-            </a>
-        </div>
+    <div class="w-full data-table">
+        @if(session()->has('token'))
+            <p>@lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.token-created')</p>
+            @component('cooperation.layouts.components.alert', ['color' => 'green', 'dismissible' => false])
+                {{session('token')->plainTextToken}}
+            @endcomponent
+        @endif
+        <table id="table" class="table fancy-table">
 
 
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-sm-12">
+            <thead>
+                <tr>
+                    <th>@lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.name')</th>
+                    <th>@lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.last-used')</th>
+                    <th>@lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.actions')</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($client->tokens as $personalAccessToken)
+                    <tr>
+                        <td>{{$personalAccessToken->name}}</td>
+                        <td>{{$personalAccessToken->last_used_at}}</td>
+                        <td>
+                            <form class="inline"
+                                  action="{{route('cooperation.admin.super-admin.clients.personal-access-tokens.destroy', compact('client', 'personalAccessToken'))}}"
+                                  method="POST">
+                                @csrf
+                                @method('DELETE')
 
-                    @if(session()->has('token'))
-                        <p>@lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.token-created')</p>
-                        @component('cooperation.tool.components.alert')
-                            {{session('token')->plainTextToken}}
-                        @endcomponent
-                    @endif
+                                <button type="submit" class="btn btn-red destroy">
+                                    @lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.delete')
+                                </button>
+                            </form>
 
-                    <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
-                        <thead>
-                        <tr>
-                            <th>@lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.name')</th>
-                            <th>@lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.last-used')</th>
-                            <th>@lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.actions')</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($client->tokens as $personalAccessToken)
-                            <tr>
-                                <td>{{$personalAccessToken->name}}</td>
-                                <td>{{$personalAccessToken->last_used_at}}</td>
-                                <td>
-                                    <form method="post" action="{{route('cooperation.admin.super-admin.clients.personal-access-tokens.destroy', compact('client', 'personalAccessToken'))}}" style="display: inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger destroy">
-                                            @lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.delete')
-                                        </button>
-                                    </form>
-
-                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.clients.personal-access-tokens.edit', compact('client', 'personalAccessToken'))}}">
-                                        @lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.edit')
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+                            <a class="btn btn-blue"
+                               href="{{route('cooperation.admin.super-admin.clients.personal-access-tokens.edit', compact('client', 'personalAccessToken'))}}">
+                                @lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.edit')
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 @endsection
 
-
 @push('js')
-    <script>
-        $(document).ready(function () {
-            $('#table').DataTable({
-                responsive: true,
-                columnDefs: [
-                    {responsivePriority: 2, targets: 1},
-                    {responsivePriority: 1, targets: 0}
-                ],
+    <script type="module" nonce="{{ $cspNonce }}">
+        document.addEventListener('DOMContentLoaded', function () {
+            new DataTable('#table', {
+                scrollX: true,
+                // responsive: true,
+                // columnDefs: [
+                //     {responsivePriority: 2, targets: 1},
+                //     {responsivePriority: 1, targets: 0}
+                // ],
+                language: {
+                    url: '{{ asset('js/datatables-dutch.json') }}'
+                },
+                layout: {
+                    bottomEnd: {
+                        paging: {
+                            firstLast: false
+                        }
+                    }
+                },
             });
+        });
 
-            $(document).on('click', '.destroy', function (event) {
-                if (! confirm('@lang('cooperation/admin/super-admin/clients/personal-access-tokens.destroy.confirm')')) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+        document.on('click', '.destroy', function (event) {
+            if (! confirm('@lang('cooperation/admin/super-admin/clients/personal-access-tokens.destroy.confirm')')) {
+                event.preventDefault();
+                return false;
+            }
         });
     </script>
 @endpush

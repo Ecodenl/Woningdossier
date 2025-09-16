@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Closure;
+use Throwable;
 
 class Wrapper
 {
@@ -12,7 +13,7 @@ class Wrapper
         try {
             // If callback doesn't return anything, results will be null.
             $results = $closure();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             if ($defaultExceptionReporting) {
                 report($exception);
             }

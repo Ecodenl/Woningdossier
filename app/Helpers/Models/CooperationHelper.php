@@ -4,6 +4,7 @@ namespace App\Helpers\Models;
 
 use App\Models\Cooperation;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Storage;
 
 class CooperationHelper
 {
@@ -18,10 +19,14 @@ class CooperationHelper
         $cooperation->exampleBuildings()->delete();
 
         $users = $cooperation->users()->withoutGlobalScopes()->get();
+        /** @var \App\Models\User $user */
         foreach ($users as $user) {
             UserService::deleteUser($user, true);
         }
 
-        $cooperation->delete();
+        // Remove media
+        Storage::disk('uploads')->deleteDirectory($cooperation->slug);
+
+        $cooperation->forceDelete();
     }
 }

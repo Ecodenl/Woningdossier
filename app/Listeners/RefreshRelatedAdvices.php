@@ -2,6 +2,8 @@
 
 namespace App\Listeners;
 
+use App\Events\CooperationMeasureApplicationUpdated;
+use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\Queue;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\CooperationMeasureApplication;
@@ -18,24 +20,11 @@ class RefreshRelatedAdvices implements ShouldQueue
     public $queue = Queue::APP_EXTERNAL;
 
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Handle the event.
      *
-     * @param object $event
-     *
-     * @return void
      * @throws \Exception
      */
-    public function handle($event)
+    public function handle(CooperationMeasureApplicationUpdated|CustomMeasureApplicationChanged $event): void
     {
         $measureModel = $event->measureModel;
         $advisableModels = [

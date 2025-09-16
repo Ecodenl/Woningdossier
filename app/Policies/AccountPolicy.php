@@ -28,4 +28,10 @@ class AccountPolicy
 
         return $user instanceof User && $user->cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG);
     }
+
+    public function disableTwoFactor(Account $account, Account $target): bool
+    {
+        return $account->user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN)
+            || $account->id === $target->id;
+    }
 }

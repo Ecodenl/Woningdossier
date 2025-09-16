@@ -23,21 +23,9 @@ class DeleteUser extends Command
     protected $description = 'Delete one or a range of users';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         // Note: the range cannot contain spaces like "1 - 2" as this would
         // result in an error on the command: it would see multiple arguments.
@@ -53,13 +41,13 @@ class DeleteUser extends Command
         foreach ($userIds as $userId) {
             $user = User::find($userId);
             if ($user instanceof User) {
-                \Log::warning('Deleting user '.$user->id);
+                \Log::warning('Deleting user ' . $user->id);
                 UserService::deleteUser($user);
-                \Log::info('User '.$user->id.' was deleted');
-                $this->info('User '.$user->id.' was deleted');
+                \Log::info('User ' . $user->id . ' was deleted');
+                $this->info('User ' . $user->id . ' was deleted');
             }
         }
 
-        return;
+        return self::SUCCESS;
     }
 }

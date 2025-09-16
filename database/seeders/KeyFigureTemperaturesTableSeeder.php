@@ -9,198 +9,192 @@ class KeyFigureTemperaturesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $figures = [
             [
                 'measure_application' => 'Glas in lood vervangen',
                 'short' => 'glass-in-lead',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Verwarmd, de meeste radiatoren staan aan',
+                'building_heating' => 2,
                 'key_figure' => 13.04,
             ],
             [
                 'measure_application' => 'Glas in lood vervangen',
                 'short' => 'glass-in-lead',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                'building_heating' => 3,
                 'key_figure' => 9.02,
             ],
             [
                 'measure_application' => 'Glas in lood vervangen',
                 'short' => 'glass-in-lead',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Onverwarmd, de radiatoren staan op * of uit',
+                'building_heating' => 4,
                 'key_figure' => 5.65,
             ],
             [
                 'measure_application' => 'Glas in lood vervangen',
                 'short' => 'glass-in-lead',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Verwarmd, de meeste radiatoren staan aan',
+                'building_heating' => 2,
                 'key_figure' => 0.00,
             ],
             [
                 'measure_application' => 'Glas in lood vervangen',
                 'short' => 'glass-in-lead',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                'building_heating' => 3,
                 'key_figure' => 0.00,
             ],
             [
                 'measure_application' => 'Glas in lood vervangen',
                 'short' => 'glass-in-lead',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Onverwarmd, de radiatoren staan op * of uit',
+                'building_heating' => 4,
                 'key_figure' => 0.00,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (alleen het glas)?',
                 'short' => 'hrpp-glass-only',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Verwarmd, de meeste radiatoren staan aan',
+                'building_heating' => 2,
                 'key_figure' => 20.32,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (alleen het glas)?',
                 'short' => 'hrpp-glass-only',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                'building_heating' => 3,
                 'key_figure' => 14.28,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (alleen het glas)?',
                 'short' => 'hrpp-glass-only',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Onverwarmd, de radiatoren staan op * of uit',
+                'building_heating' => 4,
                 'key_figure' => 9.19,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (alleen het glas)?',
                 'short' => 'hrpp-glass-only',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Verwarmd, de meeste radiatoren staan aan',
+                'building_heating' => 2,
                 'key_figure' => 7.27,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (alleen het glas)?',
                 'short' => 'hrpp-glass-only',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                'building_heating' => 3,
                 'key_figure' => 5.26,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (alleen het glas)?',
                 'short' => 'hrpp-glass-frames',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Onverwarmd, de radiatoren staan op * of uit',
+                'building_heating' => 4,
                 'key_figure' => 3.54,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (inclusief kozijn)?',
                 'short' => 'hrpp-glass-frames',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Verwarmd, de meeste radiatoren staan aan',
+                'building_heating' => 2,
                 'key_figure' => 21.64,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (inclusief kozijn)?',
                 'short' => 'hrpp-glass-frames',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                'building_heating' => 3,
                 'key_figure' => 15.23,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (inclusief kozijn)?',
                 'short' => 'hrpp-glass-frames',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Onverwarmd, de radiatoren staan op * of uit',
+                'building_heating' => 4,
                 'key_figure' => 9.82,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (inclusief kozijn)?',
                 'short' => 'hrpp-glass-frames',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Verwarmd, de meeste radiatoren staan aan',
+                'building_heating' => 2,
                 'key_figure' => 8.6,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (inclusief kozijn)?',
                 'short' => 'hrpp-glass-frames',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                'building_heating' => 3,
                 'key_figure' => 6.21,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (inclusief kozijn)?',
                 'short' => 'hrpp-glass-frames',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Onverwarmd, de radiatoren staan op * of uit',
+                'building_heating' => 4,
                 'key_figure' => 4.18,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van drievoudige HR beglazing (inclusief kozijn)?',
                 'short' => 'hr3p-frames',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Verwarmd, de meeste radiatoren staan aan',
+                'building_heating' => 2,
                 'key_figure' => 22.96,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van drievoudige HR beglazing (inclusief kozijn)?',
                 'short' => 'hr3p-frames',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                'building_heating' => 3,
                 'key_figure' => 16.19,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van drievoudige HR beglazing (inclusief kozijn)?',
                 'short' => 'hr3p-frames',
                 'insulating_glazing' => 'Enkelglas',
-                'building_heating' => 'Onverwarmd, de radiatoren staan op * of uit',
+                'building_heating' => 4,
                 'key_figure' => 10.47,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van drievoudige HR beglazing (inclusief kozijn)?',
                 'short' => 'hr3p-frames',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Verwarmd, de meeste radiatoren staan aan',
+                'building_heating' => 2,
                 'key_figure' => 9.92,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van drievoudige HR beglazing (inclusief kozijn)?',
                 'short' => 'hr3p-frames',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                'building_heating' => 3,
                 'key_figure' => 7.17,
             ],
             [
                 'measure_application' => 'Bent u geïnteresseerd in het plaatsen van drievoudige HR beglazing (inclusief kozijn)?',
                 'short' => 'hr3p-frames',
                 'insulating_glazing' => 'Dubbelglas / voorzetraam',
-                'building_heating' => 'Onverwarmd, de radiatoren staan op * of uit',
+                'building_heating' => 4,
                 'key_figure' => 4.82,
             ],
         ];
 
         foreach ($figures as $figure) {
             $measureApplication = DB::table('measure_applications')
-                                     ->where('short', $figure['short'])
-                                     ->first();
+                ->where('short', $figure['short'])
+                ->first();
 
             $insulatedGlazing = DB::table('insulating_glazings')
-                                     ->where('translations.language', '=', 'nl')
-                                     ->where('translations.translation', '=', $figure['insulating_glazing'])
-                                     ->join('translations', 'insulating_glazings.name', '=', 'translations.key')
-                                     ->first(['insulating_glazings.*']);
+                ->where('name->nl', $figure['insulating_glazing'])
+                ->first();
 
             $buildingHeating = DB::table('building_heatings')
-                                     ->where('translations.language', '=', 'nl')
-                                     ->where('translations.translation', '=', $figure['building_heating'])
-                                     ->join('translations', 'building_heatings.name', '=', 'translations.key')
-                                     ->first(['building_heatings.*']);
+                ->where('calculate_value', $figure['building_heating'])
+                ->first();
 
             if (! is_null($measureApplication) && $buildingHeating instanceof \stdClass) {
                 DB::table('key_figure_temperatures')->insert([

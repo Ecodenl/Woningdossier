@@ -1,4 +1,4 @@
-@extends('cooperation.frontend.layouts.app')
+@extends('cooperation.layouts.app')
 
 @section('main')
     <div class="w-full min-h-screen flex justify-center items-center flex-col py-20">
@@ -8,28 +8,32 @@
                 @lang('cooperation/auth/verify.heading')
             </h1>
             @if (session('resent'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                @component('cooperation.layouts.components.alert', ['color' => 'green'])
                     @lang('cooperation/auth/verify.resent')
                 @endcomponent
             @endif
             @if(session('status'))
-                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                @component('cooperation.layouts.components.alert', ['color' => 'green'])
                     @lang(session('status'))
                 @endcomponent
             @endif
-            <p>
+            <div class="as-text">
                 @lang('cooperation/auth/verify.body')
-                <a onclick="document.getElementById('resend-form').submit()">
-                    @lang('cooperation/auth/verify.do-it')
-                </a>
-            </p>
-            <button class="btn btn-outline-purple" onclick="location.reload()">
+                <form method="POST" id="resend-form" class="inline"
+                      action="{{ route('cooperation.auth.verification.send') }}">
+                    @csrf
+                    <button class="as-link">
+                        @lang('cooperation/auth/verify.do-it')
+                    </button>
+                </form>
+            </div>
+            <button class="btn btn-outline-purple" id="reload-page">
                 @lang('cooperation/auth/verify.reload-page')
             </button>
 
             <p>
                 @if(\Illuminate\Support\Facades\Auth::check())
-                    @include('cooperation.frontend.shared.parts.logout')
+                    @include('cooperation.layouts.parts.logout')
                 @else
                     <a href="{{ route('cooperation.auth.login') }}">
                         @lang('auth.login.form.header')
@@ -43,8 +47,12 @@
             </p>
         </div>
     </div>
-    <form method="POST" class="hidden" id="resend-form"
-          action="{{ route('cooperation.auth.verification.send') }}">
-        @csrf
-    </form>
 @endsection
+
+@push('js')
+    <script type="module" nonce="{{ $cspNonce }}">
+        document.addEventListener('DOMContentLoaded', function(e) {
+            document.getElementById('reload-page').addEventListener('click', () => location.reload());
+        });
+    </script>
+@endpush

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\LanguageLine;
@@ -11,15 +13,10 @@ use Illuminate\Support\Facades\Artisan;
 
 class TranslationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function index()
+    public function index(): View
     {
         $steps = Step::whereNotIn('short', [
-            'heat-pump', 'heater', 'high-efficiency-boiler',
+            'heat-pump', 'heater', 'high-efficiency-boiler', 'heating',
         ])->get();
 
         $mailLangFiles = [
@@ -35,23 +32,15 @@ class TranslationController extends Controller
     }
 
     /**
-     *
-     * @param  \App\Models\Cooperation  $cooperation
-     * @param  string  $group  So we can get the translations / questions from language_line table for the step
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param string $group So we can get the translations / questions from language_line table for the step
      */
-    public function edit(Cooperation $cooperation, string $group)
+    public function edit(Cooperation $cooperation, string $group): View
     {
         // see the index file, we change the "/" to "_" otherwise it won't be picked up by routing
 
         $group = str_replace('_', '/', $group);
         // it is what it is, for the time being this will do. TODO: should be refactored
-        $step = Step::withGeneralData()->whereShort($group)->first();
 
-        if ($step instanceof Step && ! is_null($step->parent_id)) {
-            $group = "cooperation/tool/general-data/{$group}";
-        }
         if ('ventilation' == $group) {
             $group = "cooperation/tool/{$group}";
         }
@@ -65,7 +54,8 @@ class TranslationController extends Controller
         $translations = LanguageLine::with([
             'subQuestions' => function ($query) {
                 return $query->with('helpText');
-            }, 'helpText', ])
+            }, 'helpText',
+        ])
             ->forGroup($group)
             ->mainQuestions()
             ->get();
@@ -73,16 +63,7 @@ class TranslationController extends Controller
         return view('cooperation.admin.super-admin.translations.edit', compact('translations', 'group'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Cooperation  $cooperation
-     * @param $group
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update(Request $request, Cooperation $cooperation, $group)
+    public function update(Request $request, Cooperation $cooperation, $group): RedirectResponse
     {
         $languageLinesData = $request->get('language_lines', []);
 
@@ -104,6 +85,6 @@ class TranslationController extends Controller
 
         return redirect()
             ->route('cooperation.admin.super-admin.translations.index')
-            ->with('success', __('woningdossier.cooperation.admin.super-admin.translations.update.success'));
+            ->with('success', __('cooperation/admin/super-admin/translations.update.success'));
     }
 }

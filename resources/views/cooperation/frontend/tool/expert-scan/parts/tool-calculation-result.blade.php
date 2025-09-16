@@ -23,7 +23,7 @@
         @endif        
         <input class="form-input" autocomplete="off"
                id="{{$calculationResultField->short}}"
-               wire:model="calculationResults.{{$calculationResultField->short}}"
+               wire:model.live="calculationResults.{{$calculationResultField->short}}"
                placeholder="{{$calculationResultField->placeholder}}" type="text"
                disabled>
     @endcomponent

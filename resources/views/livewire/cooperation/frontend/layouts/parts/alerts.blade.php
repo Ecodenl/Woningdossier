@@ -1,6 +1,6 @@
 <div x-data="dropdown()" x-ref="dropdown-wrapper"
      class="dropdown-wrapper w-inherit flex items-center">
-    <input type="hidden" wire:model="alertOpen"
+    <input type="hidden" wire:model.live="alertOpen"
            x-on:element:updated.window="if ($event.detail.field === 'alertOpen') { toggle($event.detail.value); }">
     <a href="#" x-on:click="toggle()" x-ref="dropdown-toggle" class="dropdown-toggle select-none flex mr-1">
         <svg xmlns="http://www.w3.org/2000/svg" class="text-white icon-md bg-blue-500 rounded-full p-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

@@ -31,7 +31,7 @@ class EconobisEventSubscriber
     {
         Log::debug(__METHOD__);
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
-        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->building->id)->isNotEmpty();
+        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($event->building)->isNotEmpty();
         if ($canSendUserInformationToEconobis && $userHasConnectedCoaches) {
             Log::debug(__METHOD__ . ' - dispatching SendAppointmentDateToEconobis');
             SendAppointmentDateToEconobis::dispatch($event->building);
@@ -41,22 +41,22 @@ class EconobisEventSubscriber
     public function sendBuildingStatusToEconobis(BuildingStatusUpdated $event)
     {
         // Econobis only wants the status if it's `executed` ("uitgevoerd")
-        $econobisWantsStatus = ($status = optional($event->building->getMostRecentBuildingStatus())->status) instanceof Status && $status->short === 'executed';
+        $econobisWantsStatus = ($status = $event->building->getMostRecentBuildingStatus()?->status) instanceof Status && $status->short === 'executed';
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
-        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->building->id)->isNotEmpty();
+        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($event->building)->isNotEmpty();
         if ($canSendUserInformationToEconobis && $userHasConnectedCoaches && $econobisWantsStatus) {
             SendBuildingStatusToEconobis::dispatch($event->building);
         }
     }
 
-    public function sendScanStatusToEconobis($event)
+    public function sendScanStatusToEconobis(BuildingCompletedHisFirstSubStep|UserResetHisBuilding $event)
     {
         if ($this->canUserSendInformationToEconobis($event)) {
             SendScanStatusToEconobis::dispatch($event->building);
         }
     }
 
-    public function sendBuildingFilledInAnswersToEconobis($event)
+    public function sendBuildingFilledInAnswersToEconobis(UserResetHisBuilding $event)
     {
         if ($this->canUserSendInformationToEconobis($event)) {
             SendBuildingFilledInAnswersToEconobis::dispatch($event->building);
@@ -65,8 +65,9 @@ class EconobisEventSubscriber
 
     public function sendUserDeletedToEconobis(UserDeleted $event)
     {
-        // so this is the same as the policy used above, but at this stage the user does not exist anymore.
-        // so we have to do it manually.
+        // So this is the same as the policy used above, but at this stage the user does not exist anymore.
+        // The cooperation most likely also no longer exists, and therefore we expect the data as array and do checks
+        // manually.
         if (! empty($event->accountRelated['account_id'])) {
             SendUserDeletedToEconobis::dispatch($event->cooperation, $event->accountRelated);
         }
@@ -85,6 +86,7 @@ class EconobisEventSubscriber
 
     private function canUserSendInformationToEconobis($event)
     {
+        // A building belongs to a single user, but might not be found if we don't scope it for all cooperations.
         $user = $event->building->user()->forAllCooperations()->first();
         return $user->account->can(
             'send-user-information-to-econobis',

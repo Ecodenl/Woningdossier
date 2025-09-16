@@ -7,7 +7,8 @@
         <!-- Sentry JS SDK 2.1.+ required -->
         <script src="https://cdn.ravenjs.com/3.3.0/raven.min.js"></script>
 
-        <script type="module" nonce="{{ $cspNonce }}">
+{{--        <script type="module" nonce="{{ $cspNonce }}">--}}
+        <script type="module">
             @if (Auth::check())
             Raven.showReportDialog({
                 eventId: '{{ Sentry::getLastEventID() }}',

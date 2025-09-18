@@ -65,8 +65,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
         // group can be accessed by everyone that's authorized and has a role in its session
         Route::middleware(['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified'])->group(function () {
-            Route::get('messages/count', [Cooperation\MessagesController::class, 'getTotalUnreadMessageCount'])->name('message.get-total-unread-message-count');
-
             if (in_array(app()->environment(), ['local', 'accept'])) {
                 // debug purpose only
                 Route::name('pdf.')->prefix('pdf')->group(function () {
@@ -91,6 +89,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::name('participants.')->prefix('participants')->group(function () {
                     Route::post('revoke-access', [Cooperation\Messages\ParticipantController::class, 'revokeAccess'])->name('revoke-access');
                     Route::post('add-with-building-access', [Cooperation\Messages\ParticipantController::class, 'addWithBuildingAccess'])->name('add-with-building-access');
+                    Route::post('set-read', [Cooperation\Messages\ParticipantController::class, 'setRead'])->name('set-read');
                 });
             });
 

@@ -17,9 +17,9 @@
             </thead>
             <tbody>
                 @foreach($buildings as $building)
-                        <?php
+                    @php
                         $mostRecentMessage = $building->privateMessages->last();
-                        ?>
+                    @endphp
                     <tr>
                         <td data-sort="{{strtotime($mostRecentMessage->created_at->format('d-m-Y H:i'))}}">
                             {{$mostRecentMessage->created_at->format('d-m-Y H:i')}}
@@ -49,7 +49,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             new DataTable('#table', {
                 scrollX: true,
-                order: [[0, "desc"]],
+                order: [[5, "desc"]],
                 // responsive: true,
                 // columnDefs: [
                 //     {responsivePriority: 1, targets: 1},

@@ -203,6 +203,13 @@
         <nav class="nav-tabs">
             <a x-bind="tab" data-tab="messages-intern">
                 @lang('cooperation/admin/buildings.show.tabs.messages-intern.title')
+
+                {{-- 0 because these are the private messages --}}
+                @if(($messageCountSplit[0] ?? 0) > 0)
+                    <div class="absolute flex-shrink-0 flex -right-1 -top-1 z-10 notification-bubble">
+                        <span class="h-3 w-3 rounded-full border border-white bg-red" aria-hidden="true"></span>
+                    </div>
+                @endif
             </a>
 
             @can('talk-to-resident', [$building])
@@ -226,6 +233,13 @@
                     @endcomponent
 
                     @lang('cooperation/admin/buildings.show.tabs.messages-public.title')
+
+                    {{-- 1 because these are the public messages --}}
+                    @if(($messageCountSplit[1] ?? 0) > 0)
+                        <div class="absolute flex-shrink-0 flex -right-1 -top-1 z-10 notification-bubble">
+                            <span class="h-3 w-3 rounded-full border border-white bg-red" aria-hidden="true"></span>
+                        </div>
+                    @endif
                 </a>
             @endcan
 
@@ -497,8 +511,28 @@
             @endcan
         });
 
-        window.addEventListener('tab-switched', () => {
+        window.addEventListener('tab-switched', (event) => {
             setChatScroll();
+
+            const toTab = event.detail.to;
+
+            // If the tab is a messages tab we want to unread these messages.
+            if (['messages-public', 'messages-intern'].includes(toTab)) {
+                const notifBubble = document.querySelector(`a[data-tab="${toTab}"] .notification-bubble`);
+
+                // If bubble exists, then there are messages unread.
+                if (notifBubble) {
+                    const isPublic = toTab === 'messages-public';
+                    fetchRequest('{{ route('cooperation.messages.participants.set-read') }}', 'POST', {
+                        is_public: isPublic,
+                        building_id: {{ $building->id }},
+                    }).then(res => res.json()).then(data => {
+                        if (data.unread === 0) {
+                            notifBubble.remove();
+                        }
+                    });
+                }
+            }
         });
     </script>
 @endpush

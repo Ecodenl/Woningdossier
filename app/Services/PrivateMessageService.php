@@ -21,10 +21,10 @@ class PrivateMessageService
      */
     public static function create(Request $request): void
     {
-        $message = strip_tags($request->get('message', ''));
+        $message = strip_tags($request->input('message', ''));
 
-        $isPublic = $request->get('is_public', true);
-        $buildingId = $request->get('building_id', '');
+        $isPublic = $request->input('is_public', true);
+        $buildingId = $request->input('building_id', '');
 
         // if the is public is set to false
         // and the user current role is resident, then something isn't right.

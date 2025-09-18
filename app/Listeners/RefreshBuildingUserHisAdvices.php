@@ -3,10 +3,13 @@
 namespace App\Listeners;
 
 use App\Events\BuildingAddressUpdated;
+use App\Helpers\Queue;
 use App\Jobs\RefreshRegulationsForBuildingUser;
 
 class RefreshBuildingUserHisAdvices extends NonHandleableListenerAfterReset
 {
+    public $queue = Queue::APP_HIGH;
+
     /**
      * Handle the event.
      */

@@ -15,7 +15,7 @@
         @endif
 
         <div class="w-full flex flex-row flex-wrap items-center">
-            <textarea id="btn-input" required autofocus autocomplete="false" name="message" type="text"
+            <textarea required autofocus autocomplete="false" name="message" type="text"
                    class="form-input w-10/12 m-0" placeholder="@lang('my-account.messages.edit.chat.input')"
             ></textarea>
 

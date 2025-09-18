@@ -15,7 +15,7 @@ class PrivateMessageViewService
      * Make a collection of private messages as read by a resident or coach
      * These have a user ID - input source ID combination.
      */
-    public static function markAsReadByUser(Collection $privateMessages, User $user, InputSource $inputSource)
+    public static function markAsReadByUser(Collection $privateMessages, User $user, InputSource $inputSource): void
     {
         foreach ($privateMessages as $privateMessage) {
             PrivateMessageView::where('private_message_id', '=', $privateMessage->id)
@@ -29,7 +29,7 @@ class PrivateMessageViewService
      * Mark a collection of private messages as read by a cooperation
      * These have a cooperation ID.
      */
-    public static function markAsReadByCooperation(Collection $privateMessages, Cooperation $cooperation)
+    public static function markAsReadByCooperation(Collection $privateMessages, Cooperation $cooperation): void
     {
         foreach ($privateMessages as $privateMessage) {
             PrivateMessageView::where('private_message_id', '=', $privateMessage->id)

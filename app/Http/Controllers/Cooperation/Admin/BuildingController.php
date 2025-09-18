@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Models\PrivateMessageView;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -55,6 +56,7 @@ class BuildingController extends Controller
 
         $privateMessages = PrivateMessage::private()->conversation($buildingId)->get();
         $publicMessages = PrivateMessage::public()->conversation($buildingId)->get();
+        $messageCountSplit = PrivateMessageView::getTotalUnreadMessagesForCurrentRole(true, [['building_id', $building->id]]);
 
         // get all the building notes
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
@@ -75,6 +77,7 @@ class BuildingController extends Controller
             'mostRecentStatus',
             'privateMessages',
             'publicMessages',
+            'messageCountSplit',
             'buildingNotes',
             'statuses',
             'logs',

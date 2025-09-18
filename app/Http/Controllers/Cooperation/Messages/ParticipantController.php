@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Messages;
 
+use App\Models\PrivateMessageView;
 use Illuminate\Http\RedirectResponse;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
@@ -82,5 +83,40 @@ class ParticipantController extends Controller
         // since the coordinator is the only one who can do this atm.
         return redirect()->back()
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
+    }
+
+    /**
+     * Method to set a collection of messages to read.
+     */
+    public function setRead(Cooperation $cooperation, Request $request)
+    {
+        $isPublic = (bool) $request->input('is_public');
+        $buildingId = $request->input('building_id');
+
+        $messagesToSetRead = PrivateMessage::forMyCooperation()
+            ->conversation($buildingId);
+
+        // check which messages we have to set read
+        if ($isPublic) {
+            $messagesToSetRead = $messagesToSetRead->public();
+        } else {
+            $messagesToSetRead = $messagesToSetRead->private();
+        }
+
+        $messagesToSetRead = $messagesToSetRead->get();
+
+        if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin'])) {
+            PrivateMessageViewService::markAsReadByCooperation($messagesToSetRead, $cooperation);
+        } elseif (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
+            $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+            PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
+        } else {
+            $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+            PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
+        }
+
+        return response()->json([
+            'unread' => PrivateMessageView::getTotalUnreadMessagesForCurrentRole(true, [['building_id', $buildingId]])[(int) $isPublic] ?? 0,
+        ]);
     }
 }

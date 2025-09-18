@@ -5,7 +5,7 @@
         @include('cooperation.layouts.parts.message-box', [
             'privateMessages' => $privateMessages,
             'building' => $building,
-            'isPublic' => false,
+            'isPublic' => true,
             'showParticipants' => true,
             'url' => route('cooperation.my-account.messages.store'),
         ])

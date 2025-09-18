@@ -24,6 +24,12 @@ export default (defaultTab = null) => ({
                         this.currentTab = this.$el.querySelector('[x-bind="tab"]')?.dataset.tab;
                     }
                 }
+
+                // Tab has been set.
+                if (this.currentTab !== null) {
+                    // We trigger an update.
+                    triggerCustomEvent('tab-switched', {from: null, to: this.currentTab});
+                }
             }
         });
     },

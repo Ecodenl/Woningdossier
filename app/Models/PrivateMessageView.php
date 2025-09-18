@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\BuildingCoachStatusService;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Observers\PrivateMessageViewObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -122,7 +123,14 @@ class PrivateMessageView extends Model
                 Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']),
                 function ($query) {
                     $query->whereNull('input_source_id')
-                        ->where('private_message_views.to_cooperation_id', HoomdossierSession::getCooperation());
+                        ->where('private_message_views.to_cooperation_id', HoomdossierSession::getCooperation())
+                        // When the current user is a coach, he can only view the cooperation related messages that are
+                        // related to the coach.
+                        ->when(Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach']), function ($query) {
+                            $query->whereIn('building_id', BuildingCoachStatusService::getConnectedBuildingsByUser(
+                                Hoomdossier::user()
+                            )->pluck('building_id'));
+                        });
                 },
                 function ($query) {
                     $query->where('private_message_views.user_id', '=', Hoomdossier::user()->id)
@@ -131,10 +139,14 @@ class PrivateMessageView extends Model
             )
             // Where not read
             ->where('read_at', null)
+            // Apply custom wheres to scope the unread count to a specific section, such as a building
             ->when(! empty($where), fn ($q) => $q->where($where))
+            // Finally, if split, we want to fetch the count grouped by private and public messages. Else we
+            // apply a normal count. NOTE: This must be an anonymous query, else it remains wrapped as query.
             ->when(
                 $splitByPublic,
-                fn ($q) => $q->selectRaw('is_public, COUNT(*) as total')->groupBy('is_public')->pluck('total', 'is_public')->all(),
+                fn ($q) => $q->selectRaw('is_public, COUNT(*) as total')
+                    ->groupBy('is_public')->pluck('total', 'is_public')->all(),
                 fn ($q) => $q->count()
             );
     }

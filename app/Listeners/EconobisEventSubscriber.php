@@ -65,8 +65,9 @@ class EconobisEventSubscriber
 
     public function sendUserDeletedToEconobis(UserDeleted $event)
     {
-        // so this is the same as the policy used above, but at this stage the user does not exist anymore.
-        // so we have to do it manually.
+        // So this is the same as the policy used above, but at this stage the user does not exist anymore.
+        // The cooperation most likely also no longer exists, and therefore we expect the data as array and do checks
+        // manually.
         if (! empty($event->accountRelated['account_id'])) {
             SendUserDeletedToEconobis::dispatch($event->cooperation, $event->accountRelated);
         }
@@ -85,6 +86,7 @@ class EconobisEventSubscriber
 
     private function canUserSendInformationToEconobis($event)
     {
+        // A building belongs to a single user, but might not be found if we don't scope it for all cooperations.
         $user = $event->building->user()->forAllCooperations()->first();
         return $user->account->can(
             'send-user-information-to-econobis',

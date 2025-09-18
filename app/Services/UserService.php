@@ -293,7 +293,7 @@ class UserService
     /**
      * Method to delete a user and its user info.
      */
-    public static function deleteUser(User $user, bool $shouldForceDeleteBuilding = false)
+    public static function deleteUser(User $user, bool $shouldForceDeleteBuilding = false): void
     {
         $accountId = $user->account_id;
         $building = $user->building;
@@ -303,6 +303,8 @@ class UserService
 
         $cooperation = $user->cooperation;
         $accountRelated = app(EconobisService::class)->forBuilding($building)->resolveAccountRelated();
+        // Convert to array (WITH the API key!) to ensure Econobis can delete the user.
+        $cooperationData = $cooperation->makeVisible('econobis_api_key')->toArray();
 
         if ($building instanceof Building) {
             if ($shouldForceDeleteBuilding) {
@@ -333,14 +335,14 @@ class UserService
         $building->toolQuestionAnswers()->withoutGlobalScopes()->delete();
         // remove the user itself.
         // if the account has no users anymore then we delete the account itself too.
-        if (0 == User::withoutGlobalScopes()->where('account_id', $accountId)->count()) {
+        if (0 === User::withoutGlobalScopes()->where('account_id', $accountId)->count()) {
             // bye !
             $account = Account::find($accountId);
             if ($account instanceof Account) {
                 $account->delete();
             }
         }
-        UserDeleted::dispatch($cooperation, $accountRelated['account_related']);
+        UserDeleted::dispatch($cooperationData, $accountRelated['account_related']);
     }
 
     /**

@@ -31,10 +31,13 @@ class Delete extends Command
     public function handle(EconobisService $econobisService): int
     {
         $building = Building::find($this->argument('building'));
+        $cooperation = $building->user->cooperation;
+        // Convert to array (WITH the API key!) to ensure Econobis can delete the user.
+        $cooperationData = $cooperation->makeVisible('econobis_api_key')->toArray();
 
         if ($building instanceof Building && $building->user?->cooperation instanceof Cooperation) {
             SendUserDeletedToEconobis::dispatch(
-                $building->user->cooperation,
+                $cooperationData,
                 $econobisService->forBuilding($building)->resolveAccountRelated()
             );
         }

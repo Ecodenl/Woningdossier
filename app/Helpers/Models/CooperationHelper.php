@@ -27,6 +27,6 @@ class CooperationHelper
         // Remove media
         Storage::disk('uploads')->deleteDirectory($cooperation->slug);
 
-        $cooperation->delete();
+        $cooperation->forceDelete();
     }
 }

@@ -23,6 +23,7 @@ return new class extends Migration
                 $table->string('econobis_wildcard')->nullable();
                 $table->longText('econobis_api_key')->nullable();
                 $table->timestamps();
+                $table->softDeletes();
             });
 
             Schema::table('users', function (Blueprint $table) {

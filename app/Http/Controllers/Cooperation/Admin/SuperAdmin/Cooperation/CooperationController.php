@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
+use App\Jobs\DestroyCooperation;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
-use App\Helpers\Models\CooperationHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 
@@ -36,7 +36,11 @@ class CooperationController extends Controller
     {
         Gate::authorize('delete', $cooperationToDestroy);
 
-        CooperationHelper::destroyCooperation($cooperationToDestroy);
+        // Soft delete.
+        $cooperationToDestroy->delete();
+
+        // Dispatch job to handle the rest.
+        DestroyCooperation::dispatch($cooperationToDestroy);
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
             ->with('success', __('cooperation/admin/super-admin/cooperations.destroy.success'));

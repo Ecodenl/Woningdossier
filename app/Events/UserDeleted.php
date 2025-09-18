@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Cooperation;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -12,18 +11,13 @@ class UserDeleted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public array $accountRelated;
-    public Cooperation $cooperation;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Cooperation $cooperation, array $accountRelated)
+    public function __construct(public array $cooperation, public array $accountRelated)
     {
-        $this->cooperation = $cooperation;
-        $this->accountRelated = $accountRelated;
     }
 
     /**

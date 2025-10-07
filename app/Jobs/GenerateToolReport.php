@@ -10,6 +10,7 @@ use App\Models\FileType;
 use App\Models\InputSource;
 use App\Services\ContentStructureService;
 use App\Services\DumpService;
+use App\Traits\ShouldLog;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,7 +23,7 @@ use Throwable;
 
 class GenerateToolReport implements ShouldQueue
 {
-    use Queueable, Dispatchable, InteractsWithQueue, SerializesModels;
+    use Queueable, Dispatchable, InteractsWithQueue, SerializesModels, ShouldLog;
 
     protected $cooperation;
     protected $anonymizeData;
@@ -45,10 +46,10 @@ class GenerateToolReport implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::debug(__CLASS__  . " generating {$this->fileType->short} for cooperation {$this->cooperation->id}.");
+        $this->log(__CLASS__  . " generating {$this->fileType->short} for cooperation {$this->cooperation->id}.");
 
         if (App::runningInConsole()) {
-            Log::debug(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
+            $this->log(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
         }
 
         // Define dump type based on file type
@@ -118,6 +119,7 @@ class GenerateToolReport implements ShouldQueue
                 );
             }, 'energyHabit' => fn ($q) => $q->forInputSource($inputSource)])
             ->chunkById(100, function ($users) use ($dumpService, &$rows, &$chunkNo) {
+                $this->log(__CLASS__ . ' - Generating dumps for chunk ' . $chunkNo);
                 foreach ($users as $user) {
                     $rows[$user->building->id] = $dumpService->user($user)->generateDump();
                     if ($this->fileType->short === 'total-report') {
@@ -128,29 +130,30 @@ class GenerateToolReport implements ShouldQueue
                     }
                 }
 
-                Log::debug('GenerateTotalReport - Putting chunk ' . $chunkNo);
+                $this->log(__CLASS__ . ' - Putting chunk ' . $chunkNo);
                 $path = Storage::disk('downloads')->path($this->fileStorage->filename);
-                Log::debug('GenerateTotalReport - Path: ' . $path);
+                $this->log(__CLASS__ . ' - Path: ' . $path);
                 $handle = fopen($path, 'a');
                 if (! $handle) {
-                    Log::error('GenerateTotalReport - no handle');
+                    $this->log(__CLASS__ . ' - no handle', method: 'error');
                 }
-                Log::debug('GenerateTotalReport - ' . count($rows) .  ' rows on chunk ' . $chunkNo);
+                $this->log(__CLASS__ . ' - ' . count($rows) .  ' rows on chunk ' . $chunkNo);
                 foreach ($rows as $row) {
                     $strlen = fputcsv($handle, $row);
                     if ($strlen === false) {
-                        Log::error('GenerateTotalReport - no characters written to path');
+                        $this->log(__CLASS__ . ' - no characters written to path', method: 'error');
                     } else {
-                        Log::info('GenerateTotalReport - ' . $strlen . ' characters written to path');
+                        $this->log(__CLASS__ . ' - ' . $strlen . ' characters written to path', method: 'info');
                     }
                 }
-                Log::debug('GenerateTotalReport - closing handle');
+                $this->log(__CLASS__ . ' - closing handle');
                 fclose($handle);
-                Log::debug('GenerateTotalReport - Chunk ' . $chunkNo . ' put');
+                $this->log(__CLASS__ . ' - Chunk ' . $chunkNo . ' put');
                 $chunkNo++;
 
                 // empty the rows, to prevent it from becoming to big and potentially slow.
                 $rows = [];
+                $this->log(__CLASS__ . ' - ' . memory_get_usage());
             });
 
         $this->fileStorage->finishProcess();
@@ -160,7 +163,7 @@ class GenerateToolReport implements ShouldQueue
     {
         $this->fileStorage->delete();
 
-        Log::debug("GenerateTotalReport failed: {$this->cooperation->id}");
+        $this->log("GenerateTotalReport failed: {$this->cooperation->id}");
         report($exception);
     }
 }

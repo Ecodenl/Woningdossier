@@ -6,12 +6,14 @@ use App\Traits\FluentCaller;
 use App\Traits\HasDynamicAnswers;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Traits\ShouldLog;
 use Illuminate\Support\Collection;
 
 abstract class Calculator
 {
     use FluentCaller,
-        HasDynamicAnswers;
+        HasDynamicAnswers,
+        ShouldLog;
 
     /**
      * @param  \App\Models\Building  $building
@@ -23,6 +25,7 @@ abstract class Calculator
         $this->building = $building;
         $this->inputSource = $inputSource;
         $this->answers = $answers instanceof Collection ? $answers : collect();
+        $this->isCalculations = true;
     }
 
     /**

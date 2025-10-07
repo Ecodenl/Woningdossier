@@ -15,12 +15,10 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class Heating extends Calculator
 {
-
     protected array $boilerShares = [
         'current' => 100,
         'new' => 100,
@@ -120,7 +118,7 @@ class Heating extends Calculator
                 'district-heating',
                 $heatSources
             )) {
-                Log::debug(
+                $this->log(
                     __METHOD__ . ' - correcting situation (because no hr-boiler / district-heating => assign gas rest to wtw and not to heating'
                 );
                 $wtw[$situation]['gas'] = $amountGas - $cooking[$situation]['gas'];
@@ -459,7 +457,7 @@ class Heating extends Calculator
     {
         // either 'new' or 'current'
         $case = Str::contains($heatSourceShort, 'new-') ? 'new' : 'current';
-        Log::debug(__METHOD__ . ' - case: ' . $case);
+        $this->log(__METHOD__ . ' - case: ' . $case);
 
         // Note the energy usage for tap water will be EITHER gas (m3) or
         // electricity (kWh). Which means one of the two array keys will be 0
@@ -483,7 +481,7 @@ class Heating extends Calculator
         );
 
         if (empty($primaryWtwHeatSourceShort) || $primaryWtwHeatSourceShort == 'none') {
-            //Log::debug(__METHOD__.' - No primary wtw heat source, returning 0\'s');
+            $this->log(__METHOD__ . ' - No primary wtw heat source, returning 0\'s');
 
             return $result;
         }
@@ -726,7 +724,6 @@ class Heating extends Calculator
         return null;
     }
 
-
     protected function energyUsageForCooking(string $toolQuestionShort): array
     {
         $cookType = $this->getAnswer($toolQuestionShort);
@@ -750,7 +747,6 @@ class Heating extends Calculator
                 ];
         }
     }
-
 
     protected function getBoilerKeyFigureEfficiency(string $boilerTypeShort): ?KeyFigureBoilerEfficiency
     {

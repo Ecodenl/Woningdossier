@@ -16,7 +16,15 @@ export default (name, enableTime = false) => ({
         this.$el.datepicker = this;
 
         const date = this.$refs[this.name].value;
-        const d = date ? new Date(date) : new Date();
+        let d = new Date();
+        if (date) {
+            d = new Date(date);
+            if (isNaN(d)) {
+                // Safari 15 fix: replace space with 'T'
+                d = new Date(date.replace(' ', 'T'));
+            }
+        }
+        // const d = date ? new Date(date) : new Date();
 
         this.year = d.getFullYear();
         this.month = d.getMonth();
@@ -123,8 +131,15 @@ export default (name, enableTime = false) => ({
     },
     // Formatting
     formatDate(date, withTime = false) {
+        let locale = 'nl';
+        try {
+            date.toLocaleDateString(locale);
+        } catch (e) {
+            locale = 'nl-NL';
+        }
+
         return withTime
-            ? date.toLocaleString('nl', {
+            ? date.toLocaleString(locale, {
                 weekday: "short",
                 year: "numeric",
                 month: "numeric",
@@ -132,7 +147,7 @@ export default (name, enableTime = false) => ({
                 hour: "2-digit",
                 minute: "2-digit"
             })
-            : date.toLocaleDateString('nl', {weekday: "short", year: "numeric", month: "numeric", day: "numeric"});
+            : date.toLocaleDateString(locale, {weekday: "short", year: "numeric", month: "numeric", day: "numeric"});
     },
     // Browsing related methods
     leftClick()
@@ -185,11 +200,23 @@ export default (name, enableTime = false) => ({
     getCurrentDay() {
         const current = this.$refs[this.name].value;
         if (current) {
-            return (new Date(current)).getDate();
+            let d = new Date(current);
+            if (isNaN(d) || true) {
+                // Safari 15 fix: replace space with 'T'
+                d = new Date(current.replace(' ', 'T'));
+            }
+            return d.getDate();
         }
     },
     setDate(date) {
         if (date.length > 0) {
+            let d = new Date(date);
+            if (isNaN(d)) {
+                // Safari 15 fix: replace space with 'T'
+                d = new Date(date.replace(' ', 'T'));
+            }
+            date = d;
+
             date = new Date(date);
             this.year = date.getFullYear();
             this.month = date.getMonth();

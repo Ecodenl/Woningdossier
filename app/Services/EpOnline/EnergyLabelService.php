@@ -8,6 +8,7 @@ use App\Models\BuildingFeature;
 use App\Models\EnergyLabel;
 use App\Models\InputSource;
 use App\Traits\Services\HasBuilding;
+use App\Traits\ShouldLog;
 use Ecodenl\EpOnlinePhpWrapper\EpOnline;
 use Ecodenl\EpOnlinePhpWrapper\Resources\PandEnergielabel;
 use GuzzleHttp\Exception\ClientException;
@@ -16,7 +17,7 @@ use Throwable;
 
 class EnergyLabelService
 {
-    use HasBuilding;
+    use HasBuilding, ShouldLog;
 
     private PandEnergielabel $client;
 
@@ -174,12 +175,5 @@ class EnergyLabelService
         }
 
         return '';
-    }
-
-    private function log(string $message, array $data = []): void
-    {
-        if (config('hoomdossier.services.enable_logging')) {
-            Log::debug($message, $data);
-        }
     }
 }

@@ -45,6 +45,8 @@ class GenerateToolReport implements ShouldQueue
      */
     public function handle(): void
     {
+        Log::debug(__CLASS__  . " generating {$this->fileType->short} for cooperation {$this->cooperation->id}.");
+
         if (App::runningInConsole()) {
             Log::debug(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
         }

@@ -55,36 +55,36 @@ class FileStorageController extends Controller
 
         $questionnaire = Questionnaire::find($request->input('file_storages.questionnaire_id'));
 
-        Log::debug('Generate ' . $fileType->short . ' file..');
-        Log::debug('Context:');
-        $account = Hoomdossier::account();
-        $inputSourceValue = HoomdossierSession::getInputSourceValue();
-        if (! is_null($inputSourceValue)) {
-            $inputSourceValue = \App\Helpers\Cache\InputSource::find($inputSourceValue);
-        }
+        Log::debug("Generate {$fileType->short} file for cooperation {$cooperation->id}.");
+        //Log::debug('Context:');
+        //$account = Hoomdossier::account();
+        //$inputSourceValue = HoomdossierSession::getInputSourceValue();
+        //if (! is_null($inputSourceValue)) {
+        //    $inputSourceValue = \App\Helpers\Cache\InputSource::find($inputSourceValue);
+        //}
 
-        $u = [
-            'account' => $account->id,
-            'id' => $user->id,
-            'role' => HoomdossierSession::getRole(true)?->name,
-            'is_observing' => HoomdossierSession::isUserObserving() ? 'yes' : 'no',
-            'is_comparing' => HoomdossierSession::isUserComparingInputSources() ? 'yes' : 'no',
-            'input_source' => $inputSource->short,
-            'operating_on_own_building' => $building->user->id == $user->id ? 'yes' : 'no',
-            'operating_as' => $inputSourceValue->short,
-        ];
-        $tags = [
-            'building:id' => $building->id,
-            'building:owner' => $building->user->id,
-        ];
+        //$u = [
+        //    'account' => $account->id,
+        //    'id' => $user->id,
+        //    'role' => HoomdossierSession::getRole(true)?->name,
+        //    'is_observing' => HoomdossierSession::isUserObserving() ? 'yes' : 'no',
+        //    'is_comparing' => HoomdossierSession::isUserComparingInputSources() ? 'yes' : 'no',
+        //    'input_source' => $inputSource->short,
+        //    'operating_on_own_building' => $building->user->id == $user->id ? 'yes' : 'no',
+        //    'operating_as' => $inputSourceValue->short,
+        //];
+        //$tags = [
+        //    'building:id' => $building->id,
+        //    'building:owner' => $building->user->id,
+        //];
 
-        Log::debug('User info:');
-        Log::debug(json_encode($u));
-        Log::debug('Building info:');
-        Log::debug(json_encode($tags));
-
-        Log::debug('--- end of debug log stuff ---');
-        Log::debug(' ');
+        //Log::debug('User info:');
+        //Log::debug(json_encode($u));
+        //Log::debug('Building info:');
+        //Log::debug(json_encode($tags));
+        //
+        //Log::debug('--- end of debug log stuff ---');
+        //Log::debug(' ');
 
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         $fileName = $this->getFileNameForFileType($fileType, $user, $inputSource);

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation;
 
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;

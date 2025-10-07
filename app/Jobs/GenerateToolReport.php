@@ -16,7 +16,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\App;
 use Throwable;
@@ -29,6 +29,7 @@ class GenerateToolReport implements ShouldQueue
     protected $anonymizeData;
     protected $fileType;
     protected $fileStorage;
+    protected string $path;
 
     public $tries = 1;
 
@@ -39,6 +40,8 @@ class GenerateToolReport implements ShouldQueue
         $this->fileStorage = $fileStorage;
         $this->cooperation = $cooperation;
         $this->anonymizeData = $anonymizeData;
+
+        $this->path = Storage::disk('downloads')->path($fileStorage->filename);
     }
 
     /**
@@ -46,6 +49,9 @@ class GenerateToolReport implements ShouldQueue
      */
     public function handle(): void
     {
+        // Silence all events dispatched because otherwise it clogs the memory with events (and causes overflow)
+        // that we don't even care about.
+        DB::unsetEventDispatcher();
         $this->log(__CLASS__  . " generating {$this->fileType->short} for cooperation {$this->cooperation->id}.");
 
         if (App::runningInConsole()) {
@@ -91,9 +97,9 @@ class GenerateToolReport implements ShouldQueue
             $dumpService->headerStructure[] = 'Contact id';
         }
 
-        $rows[] = $dumpService->headerStructure;
-        $chunkNo = 1;
-
+        $handle = fopen($this->path, 'a');
+        fputcsv($handle, $dumpService->headerStructure);
+        
         // Get all users with a building and who have completed the quick scan
         $cooperation->users()
             ->whereHas('building.buildingStatuses')
@@ -118,43 +124,30 @@ class GenerateToolReport implements ShouldQueue
                     ]
                 );
             }, 'energyHabit' => fn ($q) => $q->forInputSource($inputSource)])
-            ->chunkById(100, function ($users) use ($dumpService, &$rows, &$chunkNo) {
-                $this->log(__CLASS__ . ' - Generating dumps for chunk ' . $chunkNo);
+            ->chunkById(100, function ($users) use ($dumpService, $handle) {
+                $this->log(__CLASS__ . ' (startOfChunk) - ' . memory_get_usage());
+
                 foreach ($users as $user) {
-                    $rows[$user->building->id] = $dumpService->user($user)->generateDump();
+                    $this->log(__CLASS__ . ' (pre-gen) - ' . memory_get_usage());
+                    $dataToWrite = $dumpService->user($user)->generateDump();
+                    $this->log(__CLASS__ . ' (post-gen) - ' . memory_get_usage());
+
                     if ($this->fileType->short === 'total-report') {
-                        $rows[$user->building->id]['Account id'] = $user->account_id;
-                        $rows[$user->building->id]['User id'] = $user->id;
-                        $rows[$user->building->id]['Building id'] = $user->building->id;
-                        $rows[$user->building->id]['Contact id'] = optional($user->extra)['contact_id'];
+                        $dataToWrite['Account id'] = $user->account_id;
+                        $dataToWrite['User id'] = $user->id;
+                        $dataToWrite['Building id'] = $user->building->id;
+                        $dataToWrite['Contact id'] = optional($user->extra)['contact_id'];
                     }
+
+                    fputcsv($handle, $dataToWrite);
                 }
 
-                $this->log(__CLASS__ . ' - Putting chunk ' . $chunkNo);
-                $path = Storage::disk('downloads')->path($this->fileStorage->filename);
-                $this->log(__CLASS__ . ' - Path: ' . $path);
-                $handle = fopen($path, 'a');
-                if (! $handle) {
-                    $this->log(__CLASS__ . ' - no handle', method: 'error');
-                }
-                $this->log(__CLASS__ . ' - ' . count($rows) .  ' rows on chunk ' . $chunkNo);
-                foreach ($rows as $row) {
-                    $strlen = fputcsv($handle, $row);
-                    if ($strlen === false) {
-                        $this->log(__CLASS__ . ' - no characters written to path', method: 'error');
-                    } else {
-                        $this->log(__CLASS__ . ' - ' . $strlen . ' characters written to path', method: 'info');
-                    }
-                }
-                $this->log(__CLASS__ . ' - closing handle');
-                fclose($handle);
-                $this->log(__CLASS__ . ' - Chunk ' . $chunkNo . ' put');
-                $chunkNo++;
+                $this->log(__CLASS__ . ' (endOfChunk) - ' . memory_get_usage());
 
-                // empty the rows, to prevent it from becoming to big and potentially slow.
-                $rows = [];
-                $this->log(__CLASS__ . ' - ' . memory_get_usage());
+                unset($users);
+                gc_collect_cycles();
             });
+        fclose($handle);
 
         $this->fileStorage->finishProcess();
     }

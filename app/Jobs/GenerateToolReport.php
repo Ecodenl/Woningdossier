@@ -29,6 +29,8 @@ class GenerateToolReport implements ShouldQueue
     protected $fileType;
     protected $fileStorage;
 
+    public $tries = 1;
+
     public function __construct(Cooperation $cooperation, FileType $fileType, FileStorage $fileStorage, bool $anonymizeData = false)
     {
         $this->queue = Queue::EXPORTS;

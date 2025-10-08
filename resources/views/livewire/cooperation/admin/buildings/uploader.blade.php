@@ -2,7 +2,7 @@
     // When the temporary upload from Livewire fails, an error is thrown for the upload input. When the input is
     // multiple, one gets thrown for EVERY uploaded file. The error bag is shared with the view but not with
     // the component for whatever reason. We need this to be able to set the correct error message.
-    if($errors->any()) {
+    if ($errors->any()) {
         $errorBag = $errors->getBag('default')->getMessages();
         foreach($errorBag as $key => $error) {
             if(Str::startsWith($key, 'document')) {
@@ -35,48 +35,48 @@
     }
 @endphp
 
-<div class="flex flex-wrap w-full pb-5" x-data>
-    @can('create', [\App\Models\Media::class, $currentInputSource, $building, $tag])
-        <div class="flex flex-wrap w-full">
-            @component('cooperation.frontend.layouts.components.form-group', [
-               'label' => __('cooperation/admin/buildings.show.building-image'),
-               'class' => 'w-1/3',
-               'withInputSource' => false,
-               'id' => 'file-uploader',
-               'inputName' => 'document'
-            ])
+<div class="flex flex-wrap w-full pb-5">
+    @component('cooperation.frontend.layouts.components.form-group', [
+       'label' => __('cooperation/admin/buildings.show.building-image'),
+       'class' => 'w-1/3',
+       'withInputSource' => false,
+       'id' => 'file-uploader',
+       'inputName' => 'document'
+    ])
+        @if($image instanceof \App\Models\Media)
+            @can('view', [$image, $currentInputSource])
+                <div class="flex flex-col flex-wrap justify-center items-start w-full gap-4"
+                     id="uploaded-image">
+                    @if(in_array($image->extension, MediaHelper::getImageMimes(true)))
+                        {{-- Image --}}
+                        <a href="{{ route('cooperation.media.serve', ['cooperation' => $cooperation, 'media' => $image]) }}"
+                           target="_blank" class="inline-flex"
+                           title="@lang('cooperation/frontend/tool.my-plan.uploader.form.header-view')">
+                            <img src="{{ route('cooperation.media.serve', ['cooperation' => $cooperation, 'media' => $image]) }}" class="object-cover w-full rounded-lg max-w-[25rem]">
+                        </a>
+                    @else
+                        {{-- Document --}}
+                        <i class="icon-xxxl icon-other"></i>
+                    @endif
+
+                    @can('delete', [$image, $currentInputSource])
+                        <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {$wire.call('deleteOldImage'); close(); document.getElementById('uploaded-image').fadeOut(250);}"
+                                class="flex px-4 btn btn-outline-red items-center">
+                            @lang('cooperation/frontend/tool.my-plan.uploader.form.delete.title')
+                            <i class="ml-2 icon-md icon-trash-can-red"></i>
+                        </button>
+                    @endcan
+                </div>
+
+                <hr class="w-full">
+            @endcan
+        @else
+            @can('create', [\App\Models\Media::class, $currentInputSource, $building, $tag])
                 <input wire:model.live="document" wire:loading.attr="disabled"
                        class="form-input" id="uploader" type="file" autocomplete="off"
                        {{-- This is a Livewire event we can capture --}}
                        x-on:livewire-upload-finish="$wire.dispatchSelf('uploadDone')">
-            @endcomponent
-        </div>
-    @endcan
-
-    @if($image instanceof \App\Models\Media)
-        @can('view', [$image, $currentInputSource])
-            <div class="flex flex-wrap {{--justify-center--}} items-center w-full md:w-1/4" id="uploaded-image">
-                @if(in_array($image->extension, MediaHelper::getImageMimes(true)))
-                    {{-- Image --}}
-                    <a href="{{ route('cooperation.media.serve', ['cooperation' => $cooperation, 'media' => $image]) }}" target="_blank" class="mr-4">
-                        @lang('cooperation/frontend/tool.my-plan.uploader.form.header-view')
-                    </a>
-{{--                    <img src="{{ $image->getUrl() }}" class="object-cover w-full">--}}
-                @else
-                    {{-- Document --}}
-                    <i class="icon-xxxl icon-other"></i>
-                @endif
-
-                @can('delete', [$image, $currentInputSource])
-                    <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {$wire.call('deleteOldImage'); close(); document.getElementById('uploaded-image').fadeOut(250);}"
-                            class="flex px-4 btn btn-outline-red items-center">
-                        @lang('cooperation/frontend/tool.my-plan.uploader.form.delete.title')
-                        <i class="ml-2 icon-md icon-trash-can-red"></i>
-                    </button>
-                @endcan
-            </div>
-
-            <hr class="w-full">
-        @endcan
-    @endif
+            @endcan
+        @endif
+    @endcomponent
 </div>

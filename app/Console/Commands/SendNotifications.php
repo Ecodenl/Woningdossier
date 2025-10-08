@@ -191,6 +191,6 @@ class SendNotifications extends Command
             return $diff->h >= 4 || $diff->days >= 1;
         }
 
-        return $diff->days >= 6 && $diff->h >= 23 && $diff->i >= 50;
+        return ($diff->days >= 6 && $diff->h >= 23 && $diff->i >= 50) || $diff->days >= 7;
     }
 }

@@ -217,7 +217,7 @@
                         @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.help')
                     </p>
 
-                    <ul class="mt-4 w-full text-blue-500 text-sm bg-white rounded-lg border border-blue-500 border-opacity-50 divide-y divide-blue-500 py-2 list-none pl-0">
+                    <ul class="mt-4 w-full text-blue text-sm bg-white rounded-lg border border-blue-500 border-opacity-50 divide-y divide-blue-500 py-2 list-none pl-0">
                         @foreach(\App\Models\Step::expert()->get() as $step)
                             @if(! in_array($step->short, ['high-efficiency-boiler', 'heater', 'heat-pump']))
                                 <li class="py-1 px-3">

@@ -2,7 +2,7 @@
     @foreach($groupParticipants as $groupParticipant)
         @if($groupParticipant instanceof \App\Models\User)
             <div class="group-member mr-1">
-                <span class="px-2 inline text-sm text-blue-500 font-bold bg-green bg-opacity-50 px-1 py-2 rounded-lg flex items-center @cannot('remove-participant-from-chat', $groupParticipant) not-removable-user cursor-not-allowed @endcan @can('remove-participant-from-chat', $groupParticipant) @if(!$groupParticipant->buildings->contains('id', $buildingId)) is-removable-user cursor-pointer @endif @endcan">
+                <span class="px-2 inline text-sm text-blue font-bold bg-green bg-opacity-50 px-1 py-2 rounded-lg flex items-center @cannot('remove-participant-from-chat', $groupParticipant) not-removable-user cursor-not-allowed @endcan @can('remove-participant-from-chat', $groupParticipant) @if(!$groupParticipant->buildings->contains('id', $buildingId)) is-removable-user cursor-pointer @endif @endcan">
                     {{$groupParticipant->getFullName()}}
                     @can('remove-participant-from-chat', $groupParticipant)
                         <span data-building-owner-id="{{$buildingId}}"

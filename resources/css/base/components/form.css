@@ -21,7 +21,7 @@
 }
 
 .form-header .form-label {
-    @apply text-blue-500 text-sm font-bold max-w-15/20;
+    @apply text-blue text-sm font-bold max-w-15/20;
 }
 
 .form-header .form-label strong {
@@ -45,7 +45,7 @@
 .radio-wrapper > label,
 .checkbox-wrapper > label,
 .add-option-wrapper > label {
-    @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500/50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
+    @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500/50 text-blue text-sm outline-none max-w-full bg-white leading-10 relative;
 
     @apply hover:border-green/100;
     @apply focus:border-green/100;
@@ -64,7 +64,7 @@
 }
 
 .form-input::placeholder {
-    @apply text-blue-500 text-opacity-50;
+    @apply text-blue text-opacity-50;
 }
 
 .form-input.no-placeholder::placeholder {
@@ -72,7 +72,7 @@
 }
 
 .form-input-option {
-    @apply absolute flex items-center h-10 px-3 rounded-lg border border-blue-500 text-blue-500 text-sm bg-white leading-10 top-0.5;
+    @apply absolute flex items-center h-10 px-3 rounded-lg border border-blue-500 text-blue text-sm bg-white leading-10 top-0.5;
 
     @apply hover:cursor-pointer hover:border-red;
     @apply focus:cursor-pointer focus:border-red;
@@ -140,7 +140,7 @@ input.form-input:read-only:not(.select-wrapper input):not(.datepicker input),
 }
 
 .slider-bubble {
-    @apply absolute bg-white rounded-lg text-blue-500 font-light text-sm flex justify-center items-center border border-blue-500 border-solid bottom-8;
+    @apply absolute bg-white rounded-lg text-blue font-light text-sm flex justify-center items-center border border-blue-500 border-solid bottom-8;
     width: 43px;
     height: 33px;
 }
@@ -339,7 +339,7 @@ input.form-input:read-only:not(.select-wrapper input):not(.datepicker input),
 }
 
 .input-group .input-group-prepend {
-    @apply h-11 leading-10 rounded-l-lg mb-3 z-10 relative flex justify-center items-center bg-blue-100 bg-opacity-50 text-blue-500 text-sm border border-r-0 border-solid border-blue-500 border-opacity-50;
+    @apply h-11 leading-10 rounded-l-lg mb-3 z-10 relative flex justify-center items-center bg-blue-100 bg-opacity-50 text-blue text-sm border border-r-0 border-solid border-blue-500 border-opacity-50;
     padding: 2px 10px;
     min-width: 2.75rem;
 }
@@ -355,7 +355,7 @@ input.form-input:read-only:not(.select-wrapper input):not(.datepicker input),
 }
 
 .input-group .input-group-append {
-    @apply h-11 leading-10 rounded-r-lg mb-3 z-10 relative flex justify-center items-center bg-blue-100 bg-opacity-50 text-blue-500 text-sm border border-l-0 border-solid border-blue-500 border-opacity-50;
+    @apply h-11 leading-10 rounded-r-lg mb-3 z-10 relative flex justify-center items-center bg-blue-100 bg-opacity-50 text-blue text-sm border border-l-0 border-solid border-blue-500 border-opacity-50;
     padding: 2px 10px;
     min-width: 2.75rem;
 }
@@ -377,7 +377,7 @@ input.form-input:read-only:not(.select-wrapper input):not(.datepicker input),
 
 .select-wrapper .select-dropdown {
     /* min-h-12, height of 1 option. Displays better when no options are available */
-    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-50 top-full shadow-xl min-h-12 max-h-72 overflow-auto;
+    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 text-blue text-sm bg-white z-50 top-full shadow-xl min-h-12 max-h-72 overflow-auto;
 }
 
 .select-wrapper .select-dropdown .select-option,

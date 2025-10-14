@@ -17,7 +17,7 @@
 
 .tiptap-menu button.text,
 .tiptap-menu a.text {
-    @apply text-blue-500 font-light text-sm;
+    @apply text-blue font-light text-sm;
 }
 
 .tiptap-menu svg {
@@ -42,7 +42,7 @@
 }
 
 .tiptap-footer .tiptap-current-tag {
-    @apply text-blue-500 font-medium text-sm;
+    @apply text-blue font-medium text-sm;
 }
 
 /* Tiptap editor styling */
@@ -96,5 +96,5 @@
 
 /* Align styling with frontend if needed */
 /*.tiptap a {*/
-/*    @apply text-blue-500 cursor-pointer;*/
+/*    @apply text-blue cursor-pointer;*/
 /*}*/

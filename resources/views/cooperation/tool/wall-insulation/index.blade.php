@@ -48,7 +48,7 @@
             @if(isset($building->buildingFeatures->build_year))
                 <div class="flex flex-row flex-wrap w-full">
                     <div class="w-full">
-                        <label for="house_has_insulation" class="text-sm text-blue-500 font-bold">
+                        <label for="house_has_insulation" class="text-sm text-blue font-bold">
                             @lang('wall-insulation.intro.build-year.title', ['year' => $building->buildingFeatures->build_year])
                             @if($building->buildingFeatures->build_year >= 1985)
                                 @lang('wall-insulation.intro.build-year-post-1985.title')

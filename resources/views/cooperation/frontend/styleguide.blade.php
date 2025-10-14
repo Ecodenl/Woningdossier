@@ -14,7 +14,7 @@
     <!-- Typography -->
     <div class="w-full">
         <div class="w-full border-b border-solid border-black border-opacity-25 py-2 mb-4">
-            <span class="pr-3 bg-white text-sm font-normal text-blue-500 uppercase">
+            <span class="pr-3 bg-white text-sm font-normal text-blue uppercase">
                 Logo
             </span>
         </div>
@@ -28,13 +28,13 @@
     <!-- Colors -->
     <div class="w-full">
         <div class="w-full border-b border-solid border-black border-opacity-25 py-2 mb-4">
-            <span class="pr-3 bg-white text-sm font-normal text-blue-500 uppercase">
+            <span class="pr-3 bg-white text-sm font-normal text-blue uppercase">
                 Colors
             </span>
         </div>
         <div class="flex w-full">
             <div class="w-3/12">
-                <span class="block pr-3 mb-2 bg-white text-sm text-blue-500 font-light">
+                <span class="block pr-3 mb-2 bg-white text-sm text-blue font-light">
                     Primary
                 </span>
 
@@ -48,7 +48,7 @@
                             <span>.bg-purple</span>
                             <span>#622191</span>
                         </div>
-                        <div class="bg-white text-center p-4 text-sm text-blue-500 font-light rounded-lg h-24 w-24 flex flex-col justify-between border-2 border-solid border-blue-100">
+                        <div class="bg-white text-center p-4 text-sm text-blue font-light rounded-lg h-24 w-24 flex flex-col justify-between border-2 border-solid border-blue-100">
                             <span>.bg-white</span>
                             <span>#FFFFFF</span>
                         </div>
@@ -63,7 +63,7 @@
                             <span>.bg-blue-500</span>
                             <span>#647585</span>
                         </div>
-                        <div class="bg-blue-100 text-center p-4 text-sm text-blue-500 font-light rounded-lg h-24 w-24 flex flex-col justify-between">
+                        <div class="bg-blue-100 text-center p-4 text-sm text-blue font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                             <span>.bg-blue-100</span>
                             <span>#F0F1F2</span>
                         </div>
@@ -74,7 +74,7 @@
             <div class="w-1/12"></div>
 
             <div class="w-5/12">
-                <span class="block pr-3 mb-2 bg-white text-sm text-blue-500 font-light">
+                <span class="block pr-3 mb-2 bg-white text-sm text-blue font-light">
                     Secondary
                 </span>
 
@@ -106,7 +106,7 @@
     <!-- Typography -->
     <div class="w-full">
         <div class="w-full border-b border-solid border-black border-opacity-25 py-2 mb-4">
-            <span class="pr-3 bg-white text-sm font-normal text-blue-500 uppercase">
+            <span class="pr-3 bg-white text-sm font-normal text-blue uppercase">
                 Typography
             </span>
         </div>
@@ -194,7 +194,7 @@
                     </p>
 
                     <div class="flex items-center space-x-3">
-                        <div class="w-5 h-5 bg-blue-500 rounded-full"></div>
+                        <div class="w-5 h-5 bg-blue rounded-full"></div>
                         <p>System font Regular 14/24 pt</p>
                     </div>
                 </div>
@@ -205,7 +205,7 @@
                     </p>
 
                     <div class="flex items-center space-x-3">
-                        <div class="w-5 h-5 bg-blue-500 rounded-full"></div>
+                        <div class="w-5 h-5 bg-blue rounded-full"></div>
                         <p>System font Italic 14/24 pt</p>
                     </div>
                 </div>
@@ -213,7 +213,7 @@
                 <div class="space-x-10">
                     <div class="space-y-3 inline-block">
                         <p>
-                            <a>This is a text link <span class="font-bold text-blue-500">(P A, pre-styled)</span></a>
+                            <a>This is a text link <span class="font-bold text-blue">(P A, pre-styled)</span></a>
                         </p>
 
                         <div class="flex items-center space-x-3">
@@ -224,7 +224,7 @@
 
                     <div class="space-y-3 inline-block">
                         <a>
-                            This is a hyperlink <span class="font-bold no-underline text-blue-500">(A, pre-styled)</span>
+                            This is a hyperlink <span class="font-bold no-underline text-blue">(A, pre-styled)</span>
                         </a>
 
                         <div class="flex items-center space-x-3">
@@ -239,7 +239,7 @@
     <!-- Buttons -->
     <div class="w-full">
         <div class="w-full border-b border-solid border-black border-opacity-25 py-2 mb-4">
-            <span class="pr-3 bg-white text-sm font-normal text-blue-500 uppercase">
+            <span class="pr-3 bg-white text-sm font-normal text-blue uppercase">
                 Buttons
             </span>
         </div>
@@ -280,7 +280,7 @@
     <!-- Icons -->
     <div class="w-full">
         <div class="w-full border-b border-solid border-black border-opacity-25 py-2 mb-4">
-            <span class="pr-3 bg-white text-sm font-normal text-blue-500 uppercase">
+            <span class="pr-3 bg-white text-sm font-normal text-blue uppercase">
                 Icons
             </span>
         </div>

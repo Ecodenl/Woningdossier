@@ -141,6 +141,7 @@ class SendNotifications extends Command
         // left join notification_settings as ns on pmv.user_id = ns.user_id
         // where pmv.read_at is null and ns.interval_id in (1,2) and pmv.created_at > ns.last_notified_at
         return DB::table("private_message_views as pmv")
+            // TODO: Unnecessary select?
             ->select(
                 "pmv.private_message_id",
                 "pmv.user_id",
@@ -191,6 +192,6 @@ class SendNotifications extends Command
             return $diff->h >= 4 || $diff->days >= 1;
         }
 
-        return $diff->days >= 6 && $diff->h >= 23 && $diff->i >= 50;
+        return ($diff->days >= 6 && $diff->h >= 23 && $diff->i >= 50) || $diff->days >= 7;
     }
 }

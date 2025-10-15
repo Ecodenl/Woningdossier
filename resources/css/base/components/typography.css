@@ -23,7 +23,7 @@ p,
 .as-text,
 ul li,
 ol li {
-    @apply text-blue-500 font-light text-sm;
+    @apply text-blue font-light text-sm;
 }
 
 b,

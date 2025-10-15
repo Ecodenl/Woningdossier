@@ -1,13 +1,13 @@
 <li class="@if($privateMessage->isMyMessage()) right @else left @endif">
     <div class="chat-body py-1">
         @if($privateMessage->isMyMessage())
-            <strong class="float-right text-sm text-blue-500">{{$privateMessage->getSender()}}</strong>
-            <small class="text-sm text-blue-500 flex items-center">
+            <strong class="float-right text-sm text-blue">{{$privateMessage->getSender()}}</strong>
+            <small class="text-sm text-blue flex items-center">
                 <span class="icon-sm icon-timer mr-1"></span>{{$privateMessage->created_at->diffForHumans()}}
             </small>
         @else
-            <strong class="text-sm text-blue-500">{{$privateMessage->getSender()}}</strong>
-            <small class="float-right text-sm text-blue-500 flex items-center">
+            <strong class="text-sm text-blue">{{$privateMessage->getSender()}}</strong>
+            <small class="float-right text-sm text-blue flex items-center">
                 <span class="icon-sm icon-timer mr-1"></span>{{$privateMessage->created_at->diffForHumans()}}
             </small>
         @endif

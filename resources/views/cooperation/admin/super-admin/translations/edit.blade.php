@@ -75,7 +75,7 @@
                                        name="language_lines[{{$locale}}][question][{{$translation->id}}]"
                                        value="{{$text}}">
                             @endif
-                            <label class="w-full text-blue-500 text-sm font-bold key-label">
+                            <label class="w-full text-blue text-sm font-bold key-label">
                                 {{"Key: {$translation->group}.{$translation->key}"}}
                             </label>
                         @endcomponent
@@ -95,7 +95,7 @@
                                         'content' => $helpText,
                                         'htmlName' => "language_lines[{$helpTextLocale}][help][{$translation->helpText->id}]",
                                     ])
-                                    <label class="w-full text-blue-500 text-sm font-bold key-label">
+                                    <label class="w-full text-blue text-sm font-bold key-label">
                                         {{"Key: {$translation->helpText->group}.{$translation->helpText->key}"}}
                                     </label>
                                 @endcomponent
@@ -120,7 +120,7 @@
                                                    class="form-input question-input mb-0"
                                                    name="language_lines[{{$locale}}][question][{{$subQuestion->id}}]"
                                                    value="{{$text}}">
-                                            <label class="w-full text-blue-500 text-sm font-bold key-label">
+                                            <label class="w-full text-blue text-sm font-bold key-label">
                                                 {{"Key: {$subQuestion->group}.{$subQuestion->key}"}}
                                             </label>
                                         @endcomponent
@@ -141,7 +141,7 @@
                                                     'content' => $text,
                                                     'htmlName' => "language_lines[{$locale}][help][{$subQuestion->helpText->id}]",
                                                 ])
-                                                <label class="w-full text-blue-500 text-sm font-bold key-label">
+                                                <label class="w-full text-blue text-sm font-bold key-label">
                                                     {{"Key: {$subQuestion->helpText->group}.{$subQuestion->helpText->key}"}}
                                                 </label>
                                             @endcomponent

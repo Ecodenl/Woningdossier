@@ -69,7 +69,7 @@
                             <div class="p-1 mb-1 mx-1 rounded border border-blue/50 cursor-pointer hover:border-blue/25"
                                  style="width: 30%" x-on:click="setMonth(index)">
                                 <div x-text="monthName"
-                                     class="text-blue-500 font-medium text-center text-xs"></div>
+                                     class="text-blue font-medium text-center text-xs"></div>
                             </div>
                         </template>
                     </div>
@@ -85,7 +85,7 @@
                         <template x-for="(dayShort, index) in window.days" :key="index">
                             <div style="width: 14.26%" class="px-1">
                                 <div x-text="dayShort"
-                                     class="text-blue-500 font-medium text-center text-sm"></div>
+                                     class="text-blue font-medium text-center text-sm"></div>
                             </div>
                         </template>
                     </div>

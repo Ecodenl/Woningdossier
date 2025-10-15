@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder<static>|ToolQuestionCustomValue newQuery()
  * @method static Builder<static>|ToolQuestionCustomValue ordered(string $direction = 'asc')
  * @method static Builder<static>|ToolQuestionCustomValue query()
+ * @method static Builder<static>|ToolQuestionCustomValue visible()
  * @method static Builder<static>|ToolQuestionCustomValue whereConditions($value)
  * @method static Builder<static>|ToolQuestionCustomValue whereCreatedAt($value)
  * @method static Builder<static>|ToolQuestionCustomValue whereExtra($value)

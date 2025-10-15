@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
+use App\Models\Step;
 use Illuminate\Support\Facades\Gate;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\HoomdossierSession;
@@ -25,6 +26,7 @@ use Illuminate\Support\Collection;
 use App\Helpers\Arr;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 
 class Form extends CustomMeasureForm
 {
@@ -340,6 +342,15 @@ class Form extends CustomMeasureForm
         foreach ($this->cards[$category] as $order => $card) {
             $this->updateAdvice($card['id'], ['order' => $order]);
         }
+    }
+
+    #[Computed]
+    public function expertSteps(): Collection
+    {
+        $expertScan = Scan::expert();
+        return Step::forScan($expertScan)
+            ->whereNotIn('short', ['high-efficiency-boiler', 'heater', 'heat-pump'])
+            ->get();
     }
 
     public function updateAdvice($id, array $update): void

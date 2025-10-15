@@ -28,7 +28,8 @@ class NavbarComposer
         $scan->load(['steps.subSteps']);
 
         $view->with('scan', $scan);
-        $view->with('expertSteps', Step::expert()->get());
+        $expertScan = Scan::expert();
+        $view->with('expertSteps', Step::forScan($expertScan)->get());
         $view->with('building', HoomdossierSession::getBuilding(true));
         $view->with('masterInputSource', InputSource::findByShort(InputSource::MASTER_SHORT));
     }

@@ -36,9 +36,12 @@ use Illuminate\Support\Facades\App;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestion> $toolQuestions
  * @property-read int|null $tool_questions_count
  * @property-read mixed $translations
+ * @method static Builder<static>|SubStep bySlug(string $slug, string $locale = 'nl')
  * @method static \Database\Factories\SubStepFactory factory($count = null, $state = [])
+ * @method static Builder<static>|SubStep forScan(\App\Models\Scan $scan)
  * @method static Builder<static>|SubStep newModelQuery()
  * @method static Builder<static>|SubStep newQuery()
+ * @method static Builder<static>|SubStep ordered()
  * @method static Builder<static>|SubStep query()
  * @method static Builder<static>|SubStep whereConditions($value)
  * @method static Builder<static>|SubStep whereCreatedAt($value)

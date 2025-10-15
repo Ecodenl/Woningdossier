@@ -288,7 +288,7 @@ class HeatPump extends Calculator
         if ($this->heatingTemperature instanceof ToolQuestionCustomValue) {
             // scenario 2 (use of beta factor 1) is included in the beta factor method, so we can keep the code smaller
             $coverage = KeyFigureHeatPumpCoverage::forBetaFactor($this->betaFactor())
-                ->forHeatingTemperature($this->heatingTemperature)
+                ->forToolQuestionCustomValue($this->heatingTemperature)
                 ->first();
 
             if ($coverage instanceof KeyFigureHeatPumpCoverage) {
@@ -309,7 +309,7 @@ class HeatPump extends Calculator
 
         if ($heatPumpConfigurable instanceof Model && $this->heatingTemperature instanceof ToolQuestionCustomValue) {
             return HeatPumpCharacteristic::forHeatPumpConfigurable($heatPumpConfigurable)
-                ->forHeatingTemperature($this->heatingTemperature)
+                ->forToolQuestionCustomValue($this->heatingTemperature)
                 ->first();
         }
 

@@ -40,7 +40,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $refreshing_regulations
  * @property-read \App\Models\Account|null $account
  * @property-read \App\Models\Building|null $building
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingCoachStatus> $buildingCoachStatuses
@@ -72,6 +71,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $user_action_plan_advices_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserCost> $userCosts
  * @property-read int|null $user_costs_count
+ * @method static Builder<static>|User byContact($contact)
+ * @method static Builder<static>|User econobisContacts()
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static Builder<static>|User forAllCooperations()
  * @method static Builder<static>|User forMyCooperation(\App\Models\Cooperation|int $cooperation)
@@ -90,7 +91,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder<static>|User whereLastName($value)
  * @method static Builder<static>|User whereLastVisitedUrl($value)
  * @method static Builder<static>|User wherePhoneNumber($value)
- * @method static Builder<static>|User whereRefreshingRegulations($value)
  * @method static Builder<static>|User whereRegulationsRefreshedAt($value)
  * @method static Builder<static>|User whereToolLastChangedAt($value)
  * @method static Builder<static>|User whereUpdatedAt($value)

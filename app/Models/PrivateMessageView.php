@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static Builder<static>|PrivateMessageView allInputSources()
  * @method static Builder<static>|PrivateMessageView forBuilding(\App\Models\Building|int $building)
+ * @method static Builder<static>|PrivateMessageView forCurrentInputSource()
  * @method static Builder<static>|PrivateMessageView forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder<static>|PrivateMessageView forMe(?\App\Models\User $user = null)
  * @method static Builder<static>|PrivateMessageView forUser(\App\Models\User|int $user)

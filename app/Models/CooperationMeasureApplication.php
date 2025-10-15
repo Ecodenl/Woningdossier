@@ -35,11 +35,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserActionPlanAdvice> $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
+ * @method static Builder<static>|CooperationMeasureApplication extensiveMeasures()
  * @method static \Database\Factories\CooperationMeasureApplicationFactory factory($count = null, $state = [])
  * @method static Builder<static>|CooperationMeasureApplication newModelQuery()
  * @method static Builder<static>|CooperationMeasureApplication newQuery()
  * @method static Builder<static>|CooperationMeasureApplication onlyTrashed()
  * @method static Builder<static>|CooperationMeasureApplication query()
+ * @method static Builder<static>|CooperationMeasureApplication smallMeasures()
  * @method static Builder<static>|CooperationMeasureApplication whereCooperationId($value)
  * @method static Builder<static>|CooperationMeasureApplication whereCosts($value)
  * @method static Builder<static>|CooperationMeasureApplication whereCreatedAt($value)
@@ -56,7 +58,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder<static>|CooperationMeasureApplication whereName($value)
  * @method static Builder<static>|CooperationMeasureApplication whereSavingsMoney($value)
  * @method static Builder<static>|CooperationMeasureApplication whereUpdatedAt($value)
- * @method static Builder<static>|CooperationMeasureApplication withTrashed()
+ * @method static Builder<static>|CooperationMeasureApplication withTrashed(bool $withTrashed = true)
  * @method static Builder<static>|CooperationMeasureApplication withoutTrashed()
  * @mixin \Eloquent
  */

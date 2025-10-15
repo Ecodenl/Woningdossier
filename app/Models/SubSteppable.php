@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subSteppable
  * @property-read \App\Models\ToolQuestionType|null $toolQuestionType
  * @method static \Database\Factories\SubSteppableFactory factory($count = null, $state = [])
+ * @method static Builder<static>|SubSteppable forScan(\App\Models\Scan $scan)
  * @method static Builder<static>|SubSteppable newModelQuery()
  * @method static Builder<static>|SubSteppable newQuery()
  * @method static Builder<static>|SubSteppable query()

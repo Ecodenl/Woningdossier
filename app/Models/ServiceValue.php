@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\KeyFigureBoilerEfficiency|null $keyFigureBoilerEfficiency
  * @property-read \App\Models\Service|null $service
  * @property-read mixed $translations
+ * @method static Builder<static>|ServiceValue byValue(string $name, string $locale = 'nl')
  * @method static Builder<static>|ServiceValue newModelQuery()
  * @method static Builder<static>|ServiceValue newQuery()
  * @method static Builder<static>|ServiceValue query()

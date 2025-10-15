@@ -1,5 +1,5 @@
 .table {
-    @apply w-full;
+    @apply w-full table-auto;
 }
 
 /* Extra utility to add dividing borders between columns */
@@ -12,16 +12,16 @@
 }
 
 /* Simple table with row dividers */
-.table.simple-table {
-    @apply table-fixed;
-}
+/*.table.simple-table {
+
+}*/
 
 .table.simple-table thead {
     @apply border-b border-blue/50;
 }
 
 .table.simple-table thead tr th {
-    @apply px-6 py-3 text-left text-sm font-semibold text-blue tracking-wide;
+    @apply px-6 py-3 text-left text-sm font-semibold text-blue tracking-wide whitespace-nowrap;
 }
 
 .table.simple-table tbody {
@@ -29,12 +29,12 @@
 }
 
 .table.simple-table tbody tr td {
-    @apply px-6 py-4 text-blue font-light text-sm;
+    @apply px-6 py-4 text-blue font-light text-sm whitespace-nowrap;
 }
 
 /* Fancy table with alternating backgrounds */
 .table.fancy-table {
-    @apply table-fixed border border-blue-500/50;
+    @apply border border-blue-500/50;
     /* Can't add rounded corners (rounded-lg), border is staying square, TODO */
 }
 
@@ -43,7 +43,7 @@
 }
 
 .table.fancy-table thead tr th {
-    @apply px-6 py-3 bg-blue-500 bg-opacity-25 text-left text-sm font-semibold text-blue tracking-wide;
+    @apply px-6 py-3 bg-blue-500 bg-opacity-25 text-left text-sm font-semibold text-blue tracking-wide whitespace-nowrap;
 }
 
 .table.fancy-table tbody {
@@ -55,15 +55,15 @@
 }
 
 .table.fancy-table tbody tr td {
-    @apply px-6 py-4 text-blue font-light text-sm;
+    @apply px-6 py-4 text-blue font-light text-sm whitespace-nowrap;
 }
 
 /* Data tables have more rows with smaller text count. We reduce vertical padding to compact the table */
 .data-table .table.fancy-table thead tr th {
-    @apply py-2;
+    @apply py-2 whitespace-nowrap;
 }
 .data-table .table.fancy-table tbody tr td {
-    @apply py-2;
+    @apply py-2 whitespace-nowrap;
 }
 
 

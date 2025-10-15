@@ -218,7 +218,7 @@
                     </p>
 
                     <ul class="mt-4 w-full text-blue text-sm bg-white rounded-lg border border-blue-500 border-opacity-50 divide-y divide-blue-500 py-2 list-none pl-0">
-                        @foreach($expertSteps as $step)
+                        @foreach($this->expertSteps as $step)
                             <li class="py-1 px-3">
                                 <a href="{{ route("cooperation.frontend.tool.expert-scan.index", compact('cooperation', 'step')) }}"
                                    class="in-text">

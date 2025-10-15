@@ -68,10 +68,8 @@
     <script type="module" nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', function () {
             new DataTable('#table', {
-                scrollX: true,
                 autoWidth: false,
                 pageLength: 50,
-                // responsive: true,
                 // columnDefs: [
                 //     {responsivePriority: 2, targets: 1},
                 //     {responsivePriority: 1, targets: 0}

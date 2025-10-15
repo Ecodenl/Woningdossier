@@ -54,8 +54,6 @@
     <script type="module" nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', function () {
             new DataTable('#table', {
-                scrollX: true,
-                responsive: false,
                 language: {
                     url: '{{ asset('js/datatables-dutch.json') }}'
                 },

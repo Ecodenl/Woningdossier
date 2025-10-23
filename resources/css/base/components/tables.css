@@ -21,7 +21,7 @@
 }
 
 .table.simple-table thead tr th {
-    @apply px-6 py-3 text-left text-sm font-semibold text-blue-500 tracking-wide whitespace-nowrap;
+    @apply px-6 py-3 text-left text-sm font-semibold text-blue tracking-wide whitespace-nowrap;
 }
 
 .table.simple-table tbody {
@@ -29,7 +29,7 @@
 }
 
 .table.simple-table tbody tr td {
-    @apply px-6 py-4 text-blue-500 font-light text-sm whitespace-nowrap;
+    @apply px-6 py-4 text-blue font-light text-sm whitespace-nowrap;
 }
 
 /* Fancy table with alternating backgrounds */
@@ -43,7 +43,7 @@
 }
 
 .table.fancy-table thead tr th {
-    @apply px-6 py-3 bg-blue-500 bg-opacity-25 text-left text-sm font-semibold text-blue-500 tracking-wide whitespace-nowrap;
+    @apply px-6 py-3 bg-blue-500 bg-opacity-25 text-left text-sm font-semibold text-blue tracking-wide whitespace-nowrap;
 }
 
 .table.fancy-table tbody {
@@ -55,7 +55,7 @@
 }
 
 .table.fancy-table tbody tr td {
-    @apply px-6 py-4 text-blue-500 font-light text-sm whitespace-nowrap;
+    @apply px-6 py-4 text-blue font-light text-sm whitespace-nowrap;
 }
 
 /* Data tables have more rows with smaller text count. We reduce vertical padding to compact the table */

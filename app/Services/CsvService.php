@@ -158,9 +158,9 @@ class CsvService
                                 ->where('questions_answers.building_id', '=', $building->id);
                         }
                     )
-                        ->select('questions_answers.answer', 'questions.id as question_id', 'questions.name as question_name', 'questions.deleted_at')
-                        ->orderBy('questions.order')
-                        ->get()->pullTranslationFromJson('question_name');
+                    ->select('questions_answers.answer', 'questions.id as question_id', 'questions.name as question_name', 'questions.deleted_at')
+                    ->orderBy('questions.order')
+                    ->get()->pullTranslationFromJson('question_name');
 
 
                 foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {

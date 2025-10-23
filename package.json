@@ -13,7 +13,7 @@
         "postcss": "^8.4.49",
         "resolve-url-loader": "^5.0.0",
         "tailwindcss": "^3.4.16",
-        "vite": "^6.3.6",
+        "vite": "^6.4.1",
         "concurrently": "^9.0.1"
     },
     "dependencies": {

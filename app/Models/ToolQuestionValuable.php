@@ -25,7 +25,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read Model|\Eloquent $toolQuestionValuables
  * @method static Builder<static>|ToolQuestionValuable newModelQuery()
  * @method static Builder<static>|ToolQuestionValuable newQuery()
+ * @method static Builder<static>|ToolQuestionValuable ordered()
  * @method static Builder<static>|ToolQuestionValuable query()
+ * @method static Builder<static>|ToolQuestionValuable visible()
  * @method static Builder<static>|ToolQuestionValuable whereConditions($value)
  * @method static Builder<static>|ToolQuestionValuable whereCreatedAt($value)
  * @method static Builder<static>|ToolQuestionValuable whereExtra($value)

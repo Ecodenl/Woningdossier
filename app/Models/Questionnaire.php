@@ -16,9 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property array<array-key, mixed> $name
- * @property int|null $step_id
  * @property int $cooperation_id
- * @property int $order
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -31,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Step> $steps
  * @property-read int|null $steps_count
  * @property-read mixed $translations
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire active()
  * @method static \Database\Factories\QuestionnaireFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire forAllCooperations()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire forMyCooperation(\App\Models\Cooperation|int $cooperation)
@@ -46,8 +45,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereLocale(string $column, string $locale)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereStepId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Questionnaire whereUpdatedAt($value)
  * @mixin \Eloquent
  */

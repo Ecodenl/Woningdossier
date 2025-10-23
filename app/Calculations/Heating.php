@@ -713,9 +713,7 @@ class Heating extends Calculator
                     return HeatPumpCharacteristic::forHeatPumpConfigurable(
                         $heatPumpConfigurable
                     )
-                        ->forHeatingTemperature(
-                            $heatingTemperature
-                        )
+                        ->forToolQuestionCustomValue($heatingTemperature)
                         ->first();
                 }
             );

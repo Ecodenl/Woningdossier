@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder<static>|FileTypeCategory newModelQuery()
  * @method static Builder<static>|FileTypeCategory newQuery()
  * @method static Builder<static>|FileTypeCategory query()
+ * @method static Builder<static>|FileTypeCategory short($short)
  * @method static Builder<static>|FileTypeCategory whereCreatedAt($value)
  * @method static Builder<static>|FileTypeCategory whereId($value)
  * @method static Builder<static>|FileTypeCategory whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')

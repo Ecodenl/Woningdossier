@@ -29,6 +29,9 @@ use Illuminate\Support\Collection;
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read mixed $translations
  * @method static \Database\Factories\ExampleBuildingFactory factory($count = null, $state = [])
+ * @method static Builder<static>|ExampleBuilding forAnyOrMyCooperation()
+ * @method static Builder<static>|ExampleBuilding forMyCooperation()
+ * @method static Builder<static>|ExampleBuilding generic()
  * @method static Builder<static>|ExampleBuilding newModelQuery()
  * @method static Builder<static>|ExampleBuilding newQuery()
  * @method static Builder<static>|ExampleBuilding query()

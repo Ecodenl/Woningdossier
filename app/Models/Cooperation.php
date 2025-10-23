@@ -26,6 +26,7 @@ use Plank\Mediable\MediableInterface;
  * @property string $country
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property string|null $website_url
  * @property string|null $econobis_wildcard
  * @property string|null $econobis_api_key
@@ -52,10 +53,12 @@ use Plank\Mediable\MediableInterface;
  * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereCooperationEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereCountry($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereEconobisApiKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereEconobisWildcard($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereHasMedia($tags = [], bool $matchAll = false)
@@ -69,6 +72,8 @@ use Plank\Mediable\MediableInterface;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaAndVariants($tags = [], bool $matchAll = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaAndVariantsMatchAll($tags = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMediaMatchAll(bool $tags = [], bool $withVariants = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withoutTrashed()
  * @mixin \Eloquent
  */
 #[ObservedBy([CooperationObserver::class])]

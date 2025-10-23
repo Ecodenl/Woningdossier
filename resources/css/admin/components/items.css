@@ -61,7 +61,7 @@
 }
 
 .dt-length label {
-    @apply text-blue-500 font-light text-sm ml-2;
+    @apply text-blue font-light text-sm ml-2;
 }
 
 .dt-length select {
@@ -80,11 +80,11 @@
 }
 
 .dt-search label {
-    @apply text-blue-500 font-light text-sm mr-4;
+    @apply text-blue font-light text-sm mr-4;
 }
 
 .dt-input {
-    @apply cursor-pointer h-11 pl-3 mb-3 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
+    @apply cursor-pointer h-11 pl-3 mb-3 rounded-lg border border-blue-500 border-opacity-50 text-blue text-sm outline-none max-w-full bg-white leading-10 relative;
 
     @apply hover:border-green hover:border-opacity-100;
     @apply focus:border-green focus:border-opacity-100;
@@ -118,5 +118,5 @@
 }
 
 .dt-info {
-    @apply text-blue-500 font-light text-sm
+    @apply text-blue font-light text-sm
 }

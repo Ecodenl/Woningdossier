@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read LanguageLine|null $helpText
  * @property-read \Illuminate\Database\Eloquent\Collection<int, LanguageLine> $subQuestions
  * @property-read int|null $sub_questions_count
+ * @method static Builder<static>|LanguageLine forGroup($group)
+ * @method static Builder<static>|LanguageLine mainQuestions()
  * @method static Builder<static>|LanguageLine newModelQuery()
  * @method static Builder<static>|LanguageLine newQuery()
  * @method static Builder<static>|LanguageLine query()

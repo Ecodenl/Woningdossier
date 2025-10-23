@@ -47,7 +47,7 @@
                 {{-- Options --}}
                 @if(in_array($question['type'], ['select', 'radio', 'checkbox']))
                     <div class="w-full flex flex-wrap p-4 -mt-4">
-                        <label class="w-full text-blue-500 text-sm font-bold max-w-15/20">
+                        <label class="w-full text-blue text-sm font-bold max-w-15/20">
                             @lang('cooperation/admin/cooperation/cooperation-admin/questionnaires.form.option.label')
                         </label>
                         @error("questions.{$order}.options")

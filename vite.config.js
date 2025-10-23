@@ -21,5 +21,8 @@ export default defineConfig({
         cors: true, // <-- laat alle origins toe (alleen dev)
         hmr: { host: 'localhost', protocol: 'ws', port: 5173 },
         origin: 'http://localhost:5173',
+        proxy: {
+            '/icons': 'http://localhost:80',
+        }
     },
 });

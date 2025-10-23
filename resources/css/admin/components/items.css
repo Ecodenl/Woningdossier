@@ -56,6 +56,10 @@
     @apply flex flex-wrap flex-row w-full justify-between items-center my-2 overflow-auto;
 }
 
+.dt-layout-full {
+    @apply w-full;
+}
+
 .dt-length label {
     @apply text-blue font-light text-sm ml-2;
 }

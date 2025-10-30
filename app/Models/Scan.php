@@ -27,9 +27,12 @@ use Illuminate\Support\Facades\App;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubStep> $subSteps
  * @property-read int|null $sub_steps_count
  * @property-read mixed $translations
+ * @method static Builder<static>|Scan bySlug(string $slug, string $locale = 'nl')
+ * @method static Builder<static>|Scan expertScans()
  * @method static Builder<static>|Scan newModelQuery()
  * @method static Builder<static>|Scan newQuery()
  * @method static Builder<static>|Scan query()
+ * @method static Builder<static>|Scan simpleScans()
  * @method static Builder<static>|Scan whereCreatedAt($value)
  * @method static Builder<static>|Scan whereId($value)
  * @method static Builder<static>|Scan whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')

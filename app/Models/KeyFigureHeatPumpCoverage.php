@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $percentage
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage forBetaFactor($betafactor)
+ * @method static Builder<static>|KeyFigureHeatPumpCoverage forToolQuestionCustomValue(\App\Models\ToolQuestionCustomValue $toolQuestionCustomValue)
  * @method static Builder<static>|KeyFigureHeatPumpCoverage newModelQuery()
  * @method static Builder<static>|KeyFigureHeatPumpCoverage newQuery()
  * @method static Builder<static>|KeyFigureHeatPumpCoverage query()
@@ -34,18 +36,6 @@ class KeyFigureHeatPumpCoverage extends Model
         return [
             'betafactor' => 'decimal:2',
         ];
-    }
-
-    #[Scope]
-    protected function forHeatingTemperature(
-        Builder $query,
-        ToolQuestionCustomValue $heatingTemperature
-    ): Builder
-    {
-        return $this->forToolQuestionCustomValue(
-            $query,
-            $heatingTemperature
-        );
     }
 
     #[Scope]

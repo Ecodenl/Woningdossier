@@ -48,7 +48,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereValidation($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Question withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Question withoutTrashed()
  * @mixin \Eloquent
  */

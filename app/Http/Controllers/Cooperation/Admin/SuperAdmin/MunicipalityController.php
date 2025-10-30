@@ -23,7 +23,7 @@ class MunicipalityController extends Controller
     {
         $municipalities = Municipality::all();
         $bagMunicipalities = Mapping::forType(MappingType::BAG_MUNICIPALITY->value)
-            ->select('target_model_id', 'from_value')
+            ->select(['target_model_id', 'from_value'])
             ->get()
             ->groupBy('target_model_id')
             ->map(function ($maps, $id) {

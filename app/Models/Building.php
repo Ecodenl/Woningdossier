@@ -111,7 +111,8 @@ use Plank\Mediable\MediableInterface;
  * @method static Builder<static>|Building withMediaAndVariants($tags = [], bool $matchAll = false)
  * @method static Builder<static>|Building withMediaAndVariantsMatchAll($tags = [])
  * @method static Builder<static>|Building withMediaMatchAll(bool $tags = [], bool $withVariants = false)
- * @method static Builder<static>|Building withTrashed()
+ * @method static Builder<static>|Building withRecentBuildingStatusInformation()
+ * @method static Builder<static>|Building withTrashed(bool $withTrashed = true)
  * @method static Builder<static>|Building withoutTrashed()
  * @mixin \Eloquent
  */

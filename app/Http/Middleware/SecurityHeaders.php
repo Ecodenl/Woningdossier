@@ -70,7 +70,7 @@ class SecurityHeaders
 
     protected function addNonceToInlineScripts(string $content, string $nonce) : string
     {
-        return preg_replace_callback('/<script(.*?)>(.*?)<\/script>/is', function ($match) use ($nonce) {
+        $res = preg_replace_callback('/<script(.*?)>(.*?)<\/script>/is', function ($match) use ($nonce) {
             $attributes = $match[1];
             $scriptContent = $match[2];
 
@@ -80,6 +80,15 @@ class SecurityHeaders
 
             return "<script$attributes>$scriptContent</script>";
         }, $content);
+
+        // If result is null, there was a preg error. We will return the content so the
+        // app doesn't (fully) break but we will log the error because it could be
+        if (is_null($res)) {
+            report(new \Exception(preg_last_error_msg()));
+
+            return $content;
+        }
+        return $res;
     }
 
     /**

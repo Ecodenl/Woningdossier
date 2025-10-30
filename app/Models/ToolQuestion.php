@@ -47,6 +47,7 @@ use Illuminate\Support\Collection;
  * @property-read int|null $tool_question_valuables_count
  * @property-read mixed $translations
  * @method static \Database\Factories\ToolQuestionFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion findByShortsOrdered($shorts)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestion query()

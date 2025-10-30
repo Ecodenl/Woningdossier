@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building|null $building
  * @property-read Model|\Eloquent|null $loggable
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Log forBuildingId($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Log newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Log newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Log query()

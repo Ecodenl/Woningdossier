@@ -5,31 +5,32 @@ namespace App\Helpers;
 class Kengetallen
 {
     // D95 (Energiekosten gas)
-    // this is still being used, however it wont be called manually. See KengetallenService and related resolvers
-    const EURO_SAVINGS_GAS = 1.45; // euro / m3 gas
+    // NOTE: this is still being used, however it won't be called
+    // manually. See KengetallenService and related resolvers (KengetallenCodes).
+    const float EURO_SAVINGS_GAS = 1.42; // euro / m3 gas
     // D96 (Energiekosten elektra)
-    const EURO_SAVINGS_ELECTRICITY = 0.40; // euro / kWh
+    const float EURO_SAVINGS_ELECTRICITY = 0.21; // euro / kWh
 
     // D99 (CO2 Besparing gas)
-    const CO2_SAVING_GAS = 1.88; // kg / m3 gas
+    const float CO2_SAVING_GAS = 1.88; // kg / m3 gas
     // D100 (CO2 Besparing elektra)
-    const CO2_SAVINGS_ELECTRICITY = 0.335; // kg / kWh
+    const float CO2_SAVINGS_ELECTRICITY = 0.335; // kg / kWh
 
     // D128 (Energiebesparing door aanbrengen kierdichting)
-    const PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING = 5; // %
+    const int PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING = 5; // %
     // D129 (Energiebesparing door vervangen kierdichting)
-    const PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING = 1; // %
+    const int PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING = 1; // %
 
     // Energieinhoud gas
     // D116 (Kalorische waarde van het gas)
-    const GAS_CALORIFIC_VALUE = 31.65; // MJ
+    const float GAS_CALORIFIC_VALUE = 31.65; // MJ
     // D117 (Omrekenfactor MJ in kWh)
-    const GAS_CONVERSION_FACTOR = 3.6; // MJ / kWh
+    const float GAS_CONVERSION_FACTOR = 3.6; // MJ / kWh
 
     // Energiegebruik voor koken
-    const ENERGY_USAGE_COOK_TYPE_GAS = 37; // m3
-    const ENERGY_USAGE_COOK_TYPE_ELECTRIC = 225; // kWh
-    const ENERGY_USAGE_COOK_TYPE_INDUCTION = 175; // kWh
+    const int ENERGY_USAGE_COOK_TYPE_GAS = 37; // m3
+    const int ENERGY_USAGE_COOK_TYPE_ELECTRIC = 225; // kWh
+    const int ENERGY_USAGE_COOK_TYPE_INDUCTION = 175; // kWh
 
     /**
      * gas (m3) / gasKwhPerM3() = kWh

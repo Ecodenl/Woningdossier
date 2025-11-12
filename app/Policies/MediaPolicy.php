@@ -35,7 +35,7 @@ class MediaPolicy
                 if ($mediable instanceof Building) {
                     // if the user is not a member of the same cooperation as the building media trying to view, refuse the request.
                     $mediableUser = $mediable->user()->withoutGlobalScope(CooperationScope::class)->first();
-                    if (!$user->cooperations()->pluck('id')->contains($mediableUser->cooperation_id)) {
+                    if (! $user->cooperations()->pluck('id')->contains($mediableUser->cooperation_id)) {
                         return false;
                     }
                     // Cooperations match / falls in allowed collection.

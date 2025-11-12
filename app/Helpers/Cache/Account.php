@@ -46,7 +46,7 @@ class Account extends BaseCache
 
         // Clearing might be done in the queue, which might not have a session.
         // In that case, we will just update them all.
-        foreach ($account->users()->forAllCooperations()->with('cooperation')->get() as $user) {
+        foreach ($account->users()->forAllCooperations()->withWhereHas('cooperation')->get() as $user) {
             static::clear(self::getCooperationCacheKey($user->cooperation, static::CACHE_KEY_USER, $account->id));
         }
     }

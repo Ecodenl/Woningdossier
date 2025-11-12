@@ -10,6 +10,7 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Media;
+use App\Scopes\CooperationScope;
 use App\Services\BuildingCoachStatusService;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -22,21 +23,35 @@ class MediaPolicy
         // Order of given parameters is consistent. Mediable and tag might not be provided. Inputsource can be nullable
         // in the case of not being logged in (e.g. login page, register page). In that case, the account is also
         // null.
-
         if ($media instanceof Media) {
-            // If user owns the media he can do everything.
-            if ($user instanceof Account && $media->ownedBy($user->user())) {
-                return true;
-            } elseif ($inputSource?->short === InputSource::COACH_SHORT && $mediable instanceof Building) {
-                // A coach is not allowed to do anything if he isn't coupled.
-                // Get the buildings the user is connected to.
-                $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user->user());
+            // Mediable might not be set, but is important for checks. Attempt to set it.
+            $mediable ??= $media->mediable->mediable;
 
-                // Check if the current building is in that collection.
-                if (! $connectedBuildingsForUser->contains('building_id', $mediable->id)) {
-                    return false;
+            if ($user instanceof Account) {
+                // If user owns the media he can do everything.
+                if ($media->ownedBy($user->user())) {
+                    return true;
                 }
-            } elseif ($ability === 'view' && ($media->cooperations()->exists() || $media->mediable->tag === MediaHelper::BUILDING_IMAGE)) {
+                if ($mediable instanceof Building) {
+                    // if the user is not a member of the same cooperation as the building media trying to view, refuse the request.
+                    $mediableUser = $mediable->user()->withoutGlobalScope(CooperationScope::class)->first();
+                    if (! $user->cooperations()->pluck('id')->contains($mediableUser->cooperation_id)) {
+                        return false;
+                    }
+                    // Cooperations match / falls in allowed collection.
+                    if ($inputSource?->short === InputSource::COACH_SHORT) {
+                        // A coach is not allowed to do anything if he isn't coupled.
+                        // Get the buildings the user is connected to.
+                        $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user->user());
+
+                        // Check if the current building is in that collection.
+                        if (! $connectedBuildingsForUser->contains('building_id', $mediable->id)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            if ($ability === 'view' && ($media->cooperations()->exists() || $media->mediable->tag === MediaHelper::BUILDING_IMAGE)) {
                 // The cooperation media is publicly viewable. Since media is only coupled to one model, we don't
                 // need to check further.
                 // If it's building image, we will make it publicly viewable so the PDF can access it.

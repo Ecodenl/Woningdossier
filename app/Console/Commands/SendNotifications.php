@@ -11,6 +11,7 @@ use App\Models\PrivateMessageView;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -37,14 +38,17 @@ class SendNotifications extends Command
      */
     public function handle(): int
     {
-        // get the current notification type
-        $notificationType = NotificationType::where('short', $this->option('type'))->first();
+        // We literally have ONE notification type. Let's not force devs to use a short for something that's not needed.
+        $notificationType = empty($this->option('type'))
+            ? NotificationType::first()
+            : NotificationType::where('short', $this->option('type'))->first();
 
         // if it exists: only send the specific notification type
         if ($notificationType instanceof NotificationType) {
             $this->info('Notification type: ' . $this->option('type') . ' exists, let\'s do some work.');
 
             $userIdsData = $this->getUserIdsToNotify();
+
             foreach ($userIdsData as $userIdData) {
                 $user = User::with(['cooperation', 'building'])->withoutGlobalScopes()->find($userIdData->user_id);
                 if (! $user instanceof User) {
@@ -136,25 +140,52 @@ class SendNotifications extends Command
 
     protected function getUserIdsToNotify(): Collection
     {
-        // select pmv.private_message_id, pmv.user_id, pmv.created_at, ns.last_notified_at
-        // from private_message_views as pmv
-        // left join notification_settings as ns on pmv.user_id = ns.user_id
-        // where pmv.read_at is null and ns.interval_id in (1,2) and pmv.created_at > ns.last_notified_at
+        // TODO: Should we fetch IDs for interval IDs beforehand instead of hardcoded?
+
+        // SELECT DISTINCT(pmv.user_id) FROM private_message_views as pmv
+        // LEFT JOIN notification_settings AS ns ON pmv.user_id = ns.user_id
+        // WHERE pmv.read_at IS NULL
+        // AND ns.interval_id IN (1,2)
+        // AND pmv.created_at > ns.last_notified_at;
+
+        // This query fetches all the users who have a private message unread.
+        //$query = DB::table("private_message_views as pmv")
         return DB::table("private_message_views as pmv")
-            // TODO: Unnecessary select?
-            ->select(
-                "pmv.private_message_id",
-                "pmv.user_id",
-                "pmv.created_at",
-                "ns.last_notified_at"
-            )
             ->leftJoin("notification_settings as ns", "pmv.user_id", "=", "ns.user_id")
             ->whereNull("pmv.read_at")
             ->whereIn("ns.interval_id", [1, 2])
-            ->whereRaw("pmv.created_at > ns.last_notified_at")
+            ->whereColumn('pmv.created_at', '>', 'ns.last_notified_at')
             ->select(["pmv.user_id"])
             ->distinct()
             ->get();
+
+        //TODO @pvkouteren
+        // Either we union query on below to fetch the cooperation user IDs (and would still require later filtering
+        // so coaches don't get notifications for buildings they cannot access! (See PrivateMessageView line 131)),
+        // or we alter the private message view table to a) drop the to_cooperation_id, or b) to always set the
+        // user_id even if targeted at a cooperation, but with extra logic to set all views as read if one person
+        // in the cooperation views it.
+        // The issue is basically that we don't want everyone in a cooperation to handle the same message, but
+        // the querying is rather complex now.
+
+        //return DB::table("private_message_views as pmv")
+        //    ->leftJoin('users', 'users.cooperation_id', '=', 'pmv.to_cooperation_id')
+        //    ->leftJoin(
+        //        'model_has_roles',
+        //        fn (JoinClause $join) => $join
+        //            ->on('users.id', '=', 'model_has_roles.model_id')
+        //            ->where('model_has_roles.model_type', User::class)
+        //    )
+        //    ->leftJoin("notification_settings as ns", "users.id", "=", "ns.user_id")
+        //    ->whereNull("pmv.read_at")
+        //    ->whereIn("ns.interval_id", [1, 2])
+        //    ->whereIn('role_id', [3,4,6])
+        //    ->whereColumn('pmv.created_at', '>', 'ns.last_notified_at')
+        //    ->select(['users.id'])
+        //    ->distinct()
+        //    ->union($query)
+        //    ->get();
+
     }
 
     /**

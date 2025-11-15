@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\PrivateMessageReceiverEvent;
+use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\Client;
 use App\Models\InputSource;
@@ -23,13 +24,17 @@ class PrivateMessageReceiverListener
 
         $user = null;
         if ($authenticatedUser instanceof Account) {
-            $user = $authenticatedUser->users()->where('cooperation_id', $event->cooperation->id)->first();
+            $user = $authenticatedUser->users()
+                ->forAllCooperations()
+                ->where('cooperation_id', $event->cooperation->id)
+                ->first();
         }
 
         $buildingFromOwner = $event->privateMessage->building;
         $privateMessage = $event->privateMessage;
         $groupParticipants = PrivateMessage::getGroupParticipants($buildingFromOwner);
 
+        // TODO: This shouldn't generate a PMV for a coach input source because the coach works from a cooperation perspective
         $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuilding($buildingFromOwner);
 
         // now we create for every group participant a privatemessageview
@@ -61,7 +66,7 @@ class PrivateMessageReceiverListener
         }
 
         // avoid unnecessary privateMessagesViews, we dont want to create a row for the user itself
-        if ($isClient || ($user instanceof User && ! $user->hasRoleAndIsCurrentRole(['coordinator']))) {
+        if ($isClient || ($user instanceof User && ! $user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH, RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN]))) {
             // Create a a privateMessageView for the cooperation itself
             // since a cooperation is not a 'participant' of a chat we need to create a row for the manually
             PrivateMessageView::create([

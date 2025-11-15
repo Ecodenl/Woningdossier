@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\RoleHelper;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Observers\PrivateMessageObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -194,26 +195,11 @@ class PrivateMessage extends Model
         $user = Hoomdossier::user();
 
         // a coordinator and cooperation admin talks from a cooperation, not from his own name.
-        if ($user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-            if ($this->from_cooperation_id == HoomdossierSession::getCooperation()) {
-                return true;
-            }
-            // if a user would be a coach and a coordinator / cooperation-admin and he would be sending from the coordinator section.
-            // after that switching back to the coach section and start to send message as a coach, he would be see the messages he sent as a coordinator as they were his messages
-            // while this is true, its looks odd.
-        } elseif ($user->id == $this->from_user_id && is_null($this->from_cooperation_id)) {
-            return true;
+        if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH, RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN])) {
+            return $this->from_cooperation_id == HoomdossierSession::getCooperation();
         }
 
-        return false;
-    }
-
-    /**
-     * Returns the opposite from isMyMessage().
-     */
-    public function isNotMyMessage(): bool
-    {
-        return ! $this->isMyMessage();
+        return $user->id == $this->from_user_id && is_null($this->from_cooperation_id);
     }
 
     /**

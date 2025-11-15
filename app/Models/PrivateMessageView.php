@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\RoleHelper;
 use App\Services\BuildingCoachStatusService;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Observers\PrivateMessageViewObserver;
@@ -121,13 +122,13 @@ class PrivateMessageView extends Model
             ->when(
                 // If the user's current role is coordinator or cooperation admin, then he
                 // speaks for the cooperation itself, so we need to get the unread messages for the cooperation.
-                Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']),
+                Hoomdossier::user()->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH, RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN]),
                 function ($query) {
                     $query->whereNull('input_source_id')
                         ->where('private_message_views.to_cooperation_id', HoomdossierSession::getCooperation())
                         // When the current user is a coach, he can only view the cooperation related messages that are
                         // related to the coach.
-                        ->when(Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach']), function ($query) {
+                        ->when(Hoomdossier::user()->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH]), function ($query) {
                             $query->whereIn('building_id', BuildingCoachStatusService::getConnectedBuildingsByUser(
                                 Hoomdossier::user()
                             )->pluck('building_id'));

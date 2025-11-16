@@ -30,9 +30,12 @@ class PrivateMessageReceiverListener
         $privateMessage = $event->privateMessage;
         $groupParticipants = PrivateMessage::getGroupParticipants($buildingFromOwner);
 
+        /**
+         * Collection of App\Models\BuildingCoachStatus with properties coach_id, added, removed
+         */
         $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuilding($buildingFromOwner);
 
-        // now we create for every group participant a privatemessageview
+        // now we create for every group participant a PrivateMessageView
         foreach ($groupParticipants as $groupParticipant) {
             // check the group participant is the owner of the building and the send message is private
             $isMessagePrivateAndGroupParticipantOwnerFromBuilding = $buildingFromOwner->user_id == $groupParticipant->id && PrivateMessage::isPrivate($privateMessage);
@@ -47,8 +50,8 @@ class PrivateMessageReceiverListener
             }
 
             // this checks if the current participant of the "group / chat", is the current authenticated user.
-            // because if so, we wont be creating a "unread message" (private message view)
-            // (because the current authenticated user is the sender of the message, and does not need a notification about a message he send himself)
+            // because if so, we won't be creating an "unread message" (private message view)
+            // (because the current authenticated user is the sender of the message, and does not need a notification about a message he sent himself)
             $isGroupParticipantNonAuthenticatedUser = $user instanceof User && $groupParticipant->id != $user->id;
 
             if (! $isMessagePrivateAndGroupParticipantOwnerFromBuilding && ($isClient || $isGroupParticipantNonAuthenticatedUser)) {
@@ -60,9 +63,9 @@ class PrivateMessageReceiverListener
             }
         }
 
-        // avoid unnecessary privateMessagesViews, we dont want to create a row for the user itself
+        // avoid unnecessary privateMessagesViews, we don't want to create a row for the user itself
         if ($isClient || ($user instanceof User && ! $user->hasRoleAndIsCurrentRole(['coordinator']))) {
-            // Create a a privateMessageView for the cooperation itself
+            // Create a PrivateMessageView for the cooperation itself
             // since a cooperation is not a 'participant' of a chat we need to create a row for the manually
             PrivateMessageView::create([
                 'private_message_id' => $event->privateMessage->id,

@@ -184,7 +184,7 @@ class PrivateMessage extends Model
             $groupMembers->prepend($building->user);
         }
 
-        return $groupMembers;
+        return $groupMembers->unique('id');
     }
 
     /**

@@ -23,7 +23,7 @@ class SendNotifications extends Command
      * @var string
      */
     protected $signature = 'send:notifications
-                            {--type= : Notification type to send, if left empty all notification types will be sent.}';
+                            {--type=private-message : Notification type to send, if left empty all notification types will be sent.}';
 
     /**
      * The console command description.

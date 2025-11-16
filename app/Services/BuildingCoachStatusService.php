@@ -64,6 +64,8 @@ class BuildingCoachStatusService
 
     /**
      * Returns all the connected coaches from a building.
+     *
+     * @return Collection<BuildingCoachStatus> Collection of App\Models\BuildingCoachStatus with properties coach_id, added, removed
      */
     public static function getConnectedCoachesByBuilding(Building $building, bool $eagerLoadCoach = false): Collection
     {

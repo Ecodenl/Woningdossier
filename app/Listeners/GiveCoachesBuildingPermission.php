@@ -53,7 +53,7 @@ class GiveCoachesBuildingPermission
                 ]);
             });
 
-            // give the user a unread message.
+            // give the user an unread message.
             PrivateMessageView::create([
                 'input_source_id' => InputSource::findByShort(InputSource::RESIDENT_SHORT)->id,
                 'private_message_id' => $privateMessage->id,

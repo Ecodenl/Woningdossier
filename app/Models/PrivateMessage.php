@@ -93,7 +93,7 @@ class PrivateMessage extends Model
      */
     public static function isPrivate(PrivateMessage $privateMessage): bool
     {
-        return !self::isPublic($privateMessage);
+        return ! self::isPublic($privateMessage);
     }
 
     /**
@@ -170,7 +170,7 @@ class PrivateMessage extends Model
     public static function getGroupParticipants(?Building $building = null, bool $publicConversation = true): Collection
     {
         // Check if building exists. We do this so we can pass nullable buildings for ease of use.
-        if (!$building instanceof Building || !$building->exists) {
+        if (! $building instanceof Building || ! $building->exists) {
             return collect();
         }
 
@@ -214,7 +214,7 @@ class PrivateMessage extends Model
      */
     public function isNotMyMessage(): bool
     {
-        return !$this->isMyMessage();
+        return ! $this->isMyMessage();
     }
 
     /**

@@ -67,14 +67,14 @@ class HoomdossierSession extends Session
         $cooperation = self::get('cooperation');
 
         // if there is no cooperation set and the application is not running in the console, we have a serious issue.
-        if (!is_int($cooperation) && !app()->runningInConsole()) {
+        if (! is_int($cooperation) && ! app()->runningInConsole()) {
             Log::error('Cooperation was not an integer!!');
             Log::error($cooperation);
         }
 
         // So, if we want to hydrate the object, it cannot be null. Generally, it's only null in testing,
         // but in case of really weird session stuff, we don't want to trigger an exception just for caching.
-        if ($object && !is_null($cooperation)) {
+        if ($object && ! is_null($cooperation)) {
             $cooperation = CooperationCache::find($cooperation);
         }
 
@@ -102,7 +102,7 @@ class HoomdossierSession extends Session
      */
     public static function hasRole(): bool
     {
-        return !empty(self::getRole());
+        return ! empty(self::getRole());
     }
 
     /**
@@ -200,7 +200,7 @@ class HoomdossierSession extends Session
     public static function getRole(bool $object = false): int|Role|null
     {
         $id = self::getHoomdossierSession('role_id');
-        if (!$object || is_null($id)) {
+        if (! $object || is_null($id)) {
             return $id;
         }
 
@@ -209,7 +209,7 @@ class HoomdossierSession extends Session
 
     public static function currentRoleIs($role): bool
     {
-        if (!(RoleCache::findByName($role) instanceof Role)) {
+        if (! (RoleCache::findByName($role) instanceof Role)) {
             return false;
         }
 
@@ -228,7 +228,7 @@ class HoomdossierSession extends Session
     public static function getInputSource(bool $object = false): int|InputSource|null
     {
         $id = self::getHoomdossierSession('input_source_id');
-        if (!$object) {
+        if (! $object) {
             return $id;
         }
 
@@ -245,7 +245,7 @@ class HoomdossierSession extends Session
     {
         $id = self::getHoomdossierSession('input_source_value_id');
 
-        if (!$object) {
+        if (! $object) {
             return $id;
         }
 
@@ -258,7 +258,7 @@ class HoomdossierSession extends Session
     public static function getBuilding(bool $hydrate = false): null|int|Building
     {
         $building = self::getHoomdossierSession('building_id');
-        if ($hydrate && !empty($building)) {
+        if ($hydrate && ! empty($building)) {
             $building = BuildingCache::find($building);
         }
 
@@ -286,7 +286,7 @@ class HoomdossierSession extends Session
      */
     public static function isUserNotComparingInputSources(): bool
     {
-        return !self::getIsUserComparingInputSources();
+        return ! self::getIsUserComparingInputSources();
     }
 
     /**
@@ -302,7 +302,7 @@ class HoomdossierSession extends Session
      */
     public static function getAll(): array
     {
-        return (array)self::get('hoomdossier_session');
+        return (array) self::get('hoomdossier_session');
     }
 
     public static function switchRole(Building $building, Role $role): void

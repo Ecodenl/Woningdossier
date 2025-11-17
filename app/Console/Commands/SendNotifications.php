@@ -49,7 +49,7 @@ class SendNotifications extends Command
             $userIdsData = $this->getUserIdsToNotify();
             foreach ($userIdsData as $userIdData) {
                 $user = User::with(['cooperation', 'building'])->withoutGlobalScopes()->find($userIdData->user_id);
-                if (!$user instanceof User) {
+                if (! $user instanceof User) {
                     continue;
                 }
                 // same goes for the building
@@ -78,14 +78,14 @@ class SendNotifications extends Command
 
                         // check if there actually are new messages
                         if ($unreadMessageCount > 0) {
-
                             $send = false;
 
                             switch ($notificationSetting->interval->short) {
                                 case 'direct':
                                     if ($this->moreThanFiveMinutesAgo($notifiedDiff)) {
                                         Log::debug(
-                                            sprintf('Send direct mail to c %s, u %s, b %s, unread %s',
+                                            sprintf(
+                                                'Send direct mail to c %s, u %s, b %s, unread %s',
                                                 $cooperation->getKey(),
                                                 $user->getKey(),
                                                 $building->getKey(),
@@ -100,7 +100,8 @@ class SendNotifications extends Command
                                     // date is 23 hours, send them a message
                                     if ($this->almostMoreThanOneDayAgo($notifiedDiff)) {
                                         Log::debug(
-                                            sprintf('Send daily mail to c %s, u %s, b %s, unread %s',
+                                            sprintf(
+                                                'Send daily mail to c %s, u %s, b %s, unread %s',
                                                 $cooperation->getKey(),
                                                 $user->getKey(),
                                                 $building->getKey(),
@@ -113,7 +114,8 @@ class SendNotifications extends Command
                                 case 'weekly':
                                     if ($this->almostMoreThanOneWeekAgo($notifiedDiff)) {
                                         Log::debug(
-                                            sprintf('Send weekly mail to c %s, u %s, b %s, unread %s',
+                                            sprintf(
+                                                'Send weekly mail to c %s, u %s, b %s, unread %s',
                                                 $cooperation->getKey(),
                                                 $user->getKey(),
                                                 $building->getKey(),
@@ -181,7 +183,7 @@ class SendNotifications extends Command
      */
     protected function almostMoreThanOneDayAgo(CarbonInterval $diff): bool
     {
-        if (!App::environment('production')) {
+        if (! App::environment('production')) {
             return $diff->totalHours >= 1;
         }
 
@@ -200,7 +202,7 @@ class SendNotifications extends Command
      */
     protected function almostMoreThanOneWeekAgo(CarbonInterval $diff): bool
     {
-        if (!App::environment('production')) {
+        if (! App::environment('production')) {
             return $diff->totalHours >= 4;
         }
 

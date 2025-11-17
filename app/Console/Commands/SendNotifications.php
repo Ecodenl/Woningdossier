@@ -164,7 +164,7 @@ class SendNotifications extends Command
             )
             ->leftJoin("notification_settings as ns", "pmv.user_id", "=", "ns.user_id")
             ->whereNull("pmv.read_at")
-            ->whereIn("ns.interval_id", [1, 2])
+            ->whereNotIn("ns.interval_id", [3])
             ->whereRaw("pmv.created_at > ns.last_notified_at")
             ->select(["pmv.user_id"])
             ->distinct()

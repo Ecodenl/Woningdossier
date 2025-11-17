@@ -19,6 +19,7 @@ class NotificationIntervalsTableSeeder extends Seeder
                     'en' => 'Every day',
                 ],
                 'short' => 'daily',
+                'order' => 1,
             ],
             [
                 'name' => [
@@ -26,6 +27,7 @@ class NotificationIntervalsTableSeeder extends Seeder
                     'en' => 'Weekly',
                 ],
                 'short' => 'weekly',
+                'order' => 2,
             ],
             [
                 'name' => [
@@ -33,17 +35,26 @@ class NotificationIntervalsTableSeeder extends Seeder
                     'en' => 'No interest',
                 ],
                 'short' => 'no-interest',
+                'order' => 3,
+            ],
+            [
+                'name' => [
+                    'nl' => 'Direct',
+                    'en' => 'Directly',
+                ],
+                'short' => 'direct',
+                'order' => 0,
             ],
         ];
 
-        foreach ($notificationIntervals as $notificationInterval) {
+        foreach ($notificationIntervals as $i => $notificationInterval) {
             // only create it when there is no interval.
-            if (! DB::table('notification_intervals')->where('short', $notificationInterval['short'])->first() instanceof \stdClass) {
-                DB::table('notification_intervals')->insert([
-                    'name'  => json_encode($notificationInterval['name']),
-                    'short' => $notificationInterval['short'],
-                ]);
-            }
+            DB::table('notification_intervals')->updateOrInsert([
+                'short' => $notificationInterval['short'],
+            ], [
+                'name' => json_encode($notificationInterval['name']),
+                'order' => $notificationInterval['order'] ?? $i,
+            ]);
         }
     }
 }

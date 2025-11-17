@@ -10,8 +10,10 @@ use App\Models\NotificationType;
 use App\Models\PrivateMessageView;
 use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -47,7 +49,7 @@ class SendNotifications extends Command
             $userIdsData = $this->getUserIdsToNotify();
             foreach ($userIdsData as $userIdData) {
                 $user = User::with(['cooperation', 'building'])->withoutGlobalScopes()->find($userIdData->user_id);
-                if (! $user instanceof User) {
+                if (!$user instanceof User) {
                     continue;
                 }
                 // same goes for the building
@@ -58,10 +60,7 @@ class SendNotifications extends Command
                 $notificationSetting = $user->notificationSettings()->where('type_id', $notificationType->id)->first();
 
                 // if the notification setting, building and cooperation exists do some things.
-                if ($notificationSetting instanceof NotificationSetting
-                    && $building instanceof Building
-                    && $cooperation instanceof Cooperation
-                ) {
+                if ($notificationSetting instanceof NotificationSetting && $building instanceof Building && $cooperation instanceof Cooperation) {
                     $now = Carbon::now();
 
                     // check if the user has a last notified at
@@ -79,44 +78,57 @@ class SendNotifications extends Command
 
                         // check if there actually are new messages
                         if ($unreadMessageCount > 0) {
+
+                            $send = false;
+
                             switch ($notificationSetting->interval->short) {
+                                case 'direct':
+                                    if ($this->moreThanFiveMinutesAgo($notifiedDiff)) {
+                                        Log::debug(
+                                            sprintf('Send direct mail to c %s, u %s, b %s, unread %s',
+                                                $cooperation->getKey(),
+                                                $user->getKey(),
+                                                $building->getKey(),
+                                                $unreadMessageCount
+                                            )
+                                        );
+                                        $send = true;
+                                    }
+                                    break;
                                 case 'daily':
                                     // If the difference between now and the last notified
                                     // date is 23 hours, send them a message
                                     if ($this->almostMoreThanOneDayAgo($notifiedDiff)) {
                                         Log::debug(
-                                            "Send daily mail to c " . $cooperation->id
-                                            . ", u " . $user->id . ", b " . $building->id
-                                            . ", unread " . $unreadMessageCount
+                                            sprintf('Send daily mail to c %s, u %s, b %s, unread %s',
+                                                $cooperation->getKey(),
+                                                $user->getKey(),
+                                                $building->getKey(),
+                                                $unreadMessageCount
+                                            )
                                         );
-                                        SendUnreadMessageCountEmail::dispatch(
-                                            $cooperation,
-                                            $user,
-                                            $building,
-                                            $notificationSetting,
-                                            $unreadMessageCount
-                                        );
+                                        $send = true;
                                     }
                                     break;
                                 case 'weekly':
                                     if ($this->almostMoreThanOneWeekAgo($notifiedDiff)) {
                                         Log::debug(
-                                            "Send weekly mail to c " . $cooperation->id
-                                            . ", u " . $user->id . ", b " . $building->id .
-                                            ", unread " . $unreadMessageCount
+                                            sprintf('Send weekly mail to c %s, u %s, b %s, unread %s',
+                                                $cooperation->getKey(),
+                                                $user->getKey(),
+                                                $building->getKey(),
+                                                $unreadMessageCount
+                                            )
                                         );
-                                        SendUnreadMessageCountEmail::dispatch(
-                                            $cooperation,
-                                            $user,
-                                            $building,
-                                            $notificationSetting,
-                                            $unreadMessageCount
-                                        );
+                                        $send = true;
                                     }
                                     break;
                                 case 'no-interest':
                                     // don't send anything
                                     break;
+                            }
+                            if ($send) {
+                                SendUnreadMessageCountEmail::dispatch($cooperation, $user, $building, $notificationSetting, $unreadMessageCount);
                             }
                         }
                     } else {
@@ -167,13 +179,13 @@ class SendNotifications extends Command
      * On local / test environments the diff for one day is set to one hour
      * (Hoom logic)
      */
-    protected function almostMoreThanOneDayAgo(\DateInterval $diff): bool
+    protected function almostMoreThanOneDayAgo(CarbonInterval $diff): bool
     {
-        if (! \App::environment('production')) {
-            return $diff->h >= 1 || $diff->days >= 1;
+        if (!App::environment('production')) {
+            return $diff->totalHours >= 1;
         }
 
-        return ($diff->h >= 23 && $diff->i >= 50) || $diff->days >= 1;
+        return $diff->totalMinutes >= (23 * 60 + 50); // 1430 minuten
     }
 
     /**
@@ -186,12 +198,18 @@ class SendNotifications extends Command
      * On local / test environments the diff for one week is set to 4 hours
      * (Hoom logic)
      */
-    protected function almostMoreThanOneWeekAgo(\DateInterval $diff): bool
+    protected function almostMoreThanOneWeekAgo(CarbonInterval $diff): bool
     {
-        if (! \App::environment('production')) {
-            return $diff->h >= 4 || $diff->days >= 1;
+        if (!App::environment('production')) {
+            return $diff->totalHours >= 4;
         }
 
-        return ($diff->days >= 6 && $diff->h >= 23 && $diff->i >= 50) || $diff->days >= 7;
+        return $diff->totalMinutes >= (6 * 24 * 60 + 23 * 60 + 50); // 10070 minuten
+    }
+
+    protected function moreThanFiveMinutesAgo(CarbonInterval $diff): bool
+    {
+        // no difference with live
+        return $diff->totalMinutes > 5;
     }
 }

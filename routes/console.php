@@ -13,7 +13,7 @@ use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Woonplan;
 use App\Console\Commands\Api\Econobis\Out\Hoomdossier\PdfReport;
 use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Gebruik;
 
-Schedule::command(SendNotifications::class, ['--type' => 'private-message'])->everyFifteenMinutes();
+Schedule::command(SendNotifications::class, ['--type' => 'private-message'])->everyFiveMinutes();
 
 Schedule::command(MonitorQueue::class)->everyFiveMinutes();
 

@@ -47,8 +47,8 @@ class SendNotifications extends Command
             $this->info('Notification type: ' . $this->option('type') . ' exists, let\'s do some work.');
 
             $userIdsData = $this->getUserIdsToNotify();
-            foreach ($userIdsData as $userIdData) {
-                $user = User::with(['cooperation', 'building'])->withoutGlobalScopes()->find($userIdData->user_id);
+            foreach ($userIdsData as $userId) {
+                $user = User::with(['cooperation', 'building'])->withoutGlobalScopes()->find($userId);
                 if (! $user instanceof User) {
                     continue;
                 }

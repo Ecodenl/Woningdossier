@@ -61,12 +61,11 @@ class SendNotifications extends Command
 
                 // if the notification setting, building and cooperation exists do some things.
                 if ($notificationSetting instanceof NotificationSetting && $building instanceof Building && $cooperation instanceof Cooperation) {
-                    $now = Carbon::now();
 
                     // check if the user has a last notified at
                     if ($notificationSetting->last_notified_at instanceof Carbon) {
                         $lastNotifiedAt = $notificationSetting->last_notified_at;
-                        $notifiedDiff = $now->diff($lastNotifiedAt);
+                        $notifiedDiff = $lastNotifiedAt->diff(now());
 
                         // Get the total unread messages for a user within its given cooperation, after the
                         // last notified at. We dont want to spam users.
@@ -150,10 +149,10 @@ class SendNotifications extends Command
 
     protected function getUserIdsToNotify(): Collection
     {
-        // select pmv.private_message_id, pmv.user_id, pmv.created_at, ns.last_notified_at
-        // from private_message_views as pmv
-        // left join notification_settings as ns on pmv.user_id = ns.user_id
-        // where pmv.read_at is null and ns.interval_id in (1,2) and pmv.created_at > ns.last_notified_at
+//         select pmv.private_message_id, pmv.user_id, pmv.created_at, ns.last_notified_at
+//         from private_message_views as pmv
+//         left join notification_settings as ns on pmv.user_id = ns.user_id
+//         where pmv.read_at is null and ns.interval_id not in (3) and pmv.created_at > ns.last_notified_at
         return DB::table("private_message_views as pmv")
             // TODO: Unnecessary select?
             ->select(

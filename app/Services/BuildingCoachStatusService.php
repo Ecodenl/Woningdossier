@@ -65,7 +65,7 @@ class BuildingCoachStatusService
     /**
      * Returns all the connected coaches from a building.
      *
-     * @return \Illuminate\Database\Eloquent\Collection<int, BuildingCoachStatus> Collection of App\Models\BuildingCoachStatus with properties coach_id, added, removed
+     * @return \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model> Collection of App\Models\BuildingCoachStatus with properties coach_id, added, removed
      */
     public static function getConnectedCoachesByBuilding(Building $building, bool $eagerLoadCoach = false): \Illuminate\Database\Eloquent\Collection
     {

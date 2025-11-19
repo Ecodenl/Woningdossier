@@ -35,8 +35,8 @@ use Illuminate\Support\Collection;
  * @method static Builder<static>|PrivateMessage myPrivateMessages()
  * @method static Builder<static>|PrivateMessage newModelQuery()
  * @method static Builder<static>|PrivateMessage newQuery()
- * @method static Builder<static>|PrivateMessage private()
- * @method static Builder<static>|PrivateMessage public()
+ * @method static Builder<static>|PrivateMessage private ()
+ * @method static Builder<static>|PrivateMessage public ()
  * @method static Builder<static>|PrivateMessage query()
  * @method static Builder<static>|PrivateMessage whereBuildingId($value)
  * @method static Builder<static>|PrivateMessage whereCreatedAt($value)
@@ -66,7 +66,7 @@ class PrivateMessage extends Model
     protected function casts(): array
     {
         return [
-            'is_public'    => 'boolean',
+            'is_public' => 'boolean',
         ];
     }
 
@@ -175,7 +175,8 @@ class PrivateMessage extends Model
         }
 
         // All coaches with access to this building are considered a participant
-        $groupMembers = BuildingCoachStatusService::getConnectedCoachesByBuilding($building, true);
+        $buildingCoachStatuses = BuildingCoachStatusService::getConnectedCoachesByBuilding($building, true);
+        $groupMembers = $buildingCoachStatuses->pluck('coach')->filter();
 
         // TODO: Bool is always true at this point, deprecate parameter?
         // If it's a public conversation we push the building owner in it
@@ -183,7 +184,7 @@ class PrivateMessage extends Model
             $groupMembers->prepend($building->user);
         }
 
-        return $groupMembers;
+        return $groupMembers->unique('id');
     }
 
     /**

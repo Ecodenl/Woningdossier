@@ -64,8 +64,10 @@ class BuildingCoachStatusService
 
     /**
      * Returns all the connected coaches from a building.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model> Collection of App\Models\BuildingCoachStatus with properties coach_id, added, removed
      */
-    public static function getConnectedCoachesByBuilding(Building $building, bool $eagerLoadCoach = false): Collection
+    public static function getConnectedCoachesByBuilding(Building $building, bool $eagerLoadCoach = false): \Illuminate\Database\Eloquent\Collection
     {
         return $building->buildingCoachStatuses()
             ->selectRaw('coach_id, SUM(status = ?) AS added, SUM(status = ?) AS removed', [BuildingCoachStatus::STATUS_ADDED, BuildingCoachStatus::STATUS_REMOVED])

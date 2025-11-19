@@ -6,9 +6,7 @@ use Illuminate\View\View;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
-use App\Models\BuildingPermission;
 use App\Models\Cooperation;
-use App\Models\NotificationInterval;
 
 class TwoFactorAuthenticationController extends Controller
 {

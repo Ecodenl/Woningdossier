@@ -6,6 +6,10 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Role;
+use App\Helpers\Cache\Building as BuildingCache;
+use App\Helpers\Cache\Cooperation as CooperationCache;
+use App\Helpers\Cache\InputSource as InputSourceCache;
+use App\Helpers\Cache\Role as RoleCache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
@@ -71,7 +75,7 @@ class HoomdossierSession extends Session
         // So, if we want to hydrate the object, it cannot be null. Generally, it's only null in testing,
         // but in case of really weird session stuff, we don't want to trigger an exception just for caching.
         if ($object && ! is_null($cooperation)) {
-            $cooperation = \App\Helpers\Cache\Cooperation::find($cooperation);
+            $cooperation = CooperationCache::find($cooperation);
         }
 
         return $cooperation;
@@ -196,16 +200,16 @@ class HoomdossierSession extends Session
     public static function getRole(bool $object = false): int|Role|null
     {
         $id = self::getHoomdossierSession('role_id');
-        if (! $object) {
+        if (! $object || is_null($id)) {
             return $id;
         }
 
-        return \App\Helpers\Cache\Role::find($id);
+        return RoleCache::find($id);
     }
 
     public static function currentRoleIs($role): bool
     {
-        if (! (\App\Helpers\Cache\Role::findByName($role) instanceof Role)) {
+        if (! (RoleCache::findByName($role) instanceof Role)) {
             return false;
         }
 
@@ -228,7 +232,7 @@ class HoomdossierSession extends Session
             return $id;
         }
 
-        return \App\Helpers\Cache\InputSource::find($id);
+        return InputSourceCache::find($id);
     }
 
     /**
@@ -237,7 +241,7 @@ class HoomdossierSession extends Session
      *
      * @return int|InputSource|null
      */
-    public static function getInputSourceValue($object = false)
+    public static function getInputSourceValue($object = false): int|InputSource|null
     {
         $id = self::getHoomdossierSession('input_source_value_id');
 
@@ -245,7 +249,7 @@ class HoomdossierSession extends Session
             return $id;
         }
 
-        return \App\Helpers\Cache\InputSource::find($id);
+        return InputSourceCache::find($id);
     }
 
     /**
@@ -255,7 +259,7 @@ class HoomdossierSession extends Session
     {
         $building = self::getHoomdossierSession('building_id');
         if ($hydrate && ! empty($building)) {
-            $building = \App\Helpers\Cache\Building::find($building);
+            $building = BuildingCache::find($building);
         }
 
         return $building;

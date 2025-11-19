@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\OrderScope;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,4 +36,12 @@ class NotificationInterval extends Model
     protected $translatable = [
         'name',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new OrderScope());
+    }
 }

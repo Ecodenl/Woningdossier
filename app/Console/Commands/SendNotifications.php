@@ -61,7 +61,6 @@ class SendNotifications extends Command
 
                 // if the notification setting, building and cooperation exists do some things.
                 if ($notificationSetting instanceof NotificationSetting && $building instanceof Building && $cooperation instanceof Cooperation) {
-
                     // check if the user has a last notified at
                     if ($notificationSetting->last_notified_at instanceof Carbon) {
                         $lastNotifiedAt = $notificationSetting->last_notified_at;

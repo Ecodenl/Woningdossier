@@ -6,6 +6,9 @@ use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Services\Lvbag\Payloads\City;
 use App\Traits\FluentCaller;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\ServerException;
 use Illuminate\Support\Facades\Log;
 
 class BagService
@@ -127,6 +130,14 @@ class BagService
         try {
             $result = $closure();
             $result['endpoint_failure'] = false;
+        } catch (ServerException|ConnectException $exception) {
+            // Server errors (5xx) and connection issues are temporary - rethrow for retry
+            $this->logBagException($exception);
+            throw $exception;
+        } catch (ClientException $exception) {
+            // Client errors (4xx) are permanent - log and rethrow
+            $this->logBagException($exception);
+            throw $exception;
         } catch (\Exception $exception) {
             if ($exception->getCode() !== 200) {
                 Log::error($exception->getMessage() . ' ' . $exception->getTraceAsString());
@@ -134,5 +145,30 @@ class BagService
             }
         }
         return $result;
+    }
+
+    private function logBagException(\Exception $exception): void
+    {
+        $context = [
+            'exception_class' => get_class($exception),
+            'code' => $exception->getCode(),
+        ];
+
+        // Extract response body if available (Guzzle exceptions have this)
+        if (method_exists($exception, 'getResponse') && $exception->getResponse() !== null) {
+            $response = $exception->getResponse();
+            $context['status_code'] = $response->getStatusCode();
+            $context['reason_phrase'] = $response->getReasonPhrase();
+
+            try {
+                $body = $response->getBody();
+                $body->rewind();
+                $context['response_body'] = $body->getContents();
+            } catch (\Exception $e) {
+                $context['response_body'] = 'Could not read response body';
+            }
+        }
+
+        Log::error("BAG API error: {$exception->getMessage()}", $context);
     }
 }

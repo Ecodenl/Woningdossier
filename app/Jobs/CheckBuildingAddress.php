@@ -53,7 +53,7 @@ class CheckBuildingAddress extends NonHandleableJobAfterReset
                 ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'))
                 ->attachMunicipality()
                 ->updateBuildingFeatures($building->only('postal_code', 'number', 'extension'));
-        } catch (ServerException|ConnectException $e) {
+        } catch (ServerException | ConnectException $e) {
             // Server errors (5xx) and connection issues are temporary - retry
             Log::warning("CheckBuildingAddress: Temporary BAG API error, will retry", $addressContext);
             $this->release(60);

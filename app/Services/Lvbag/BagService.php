@@ -130,7 +130,7 @@ class BagService
         try {
             $result = $closure();
             $result['endpoint_failure'] = false;
-        } catch (ServerException|ConnectException $exception) {
+        } catch (ServerException | ConnectException $exception) {
             // Server errors (5xx) and connection issues are temporary - rethrow for retry
             $this->logBagException($exception);
             throw $exception;

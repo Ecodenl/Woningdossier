@@ -15,7 +15,7 @@ class ToolLabelsTableSeeder extends Seeder
         $labels = [
             [
                 'name' => [
-                    'nl' => 'Standaard energieprijzen: gas = €1,45, elektra = €0,40',
+                    'nl' => 'Standaard energieprijzen: gas = €1,42, elektra = €0,21',
                 ],
                 'short' => 'gas-electricity-price-explain'
             ],

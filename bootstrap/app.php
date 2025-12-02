@@ -100,6 +100,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         Integration::handles($exceptions);
 
+        $exceptions->dontReport([
+            \App\Exceptions\BuildingAddressCheckFailedException::class,
+        ]);
+
         $exceptions->render(function (RoleInSessionHasNoAssociationWithUser $e, Request $request) {
             // try to obtain a role from the user.
             $role = Hoomdossier::user()->roles()->first();

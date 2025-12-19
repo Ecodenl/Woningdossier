@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property string $short
  * @property string $application
  * @property array<array-key, mixed>|null $cost_range
- * @property string|null $savings_money
+ * @property numeric|null $savings_money
  * @property float $costs
  * @property array<array-key, mixed> $cost_unit
  * @property float $minimal_costs

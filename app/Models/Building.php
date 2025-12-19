@@ -35,6 +35,7 @@ use Plank\Mediable\MediableInterface;
  * @property string $city
  * @property string $postal_code
  * @property string $country_code
+ * @property int|null $owner
  * @property int $primary
  * @property string $bag_addressid
  * @property string|null $bag_woonplaats_id
@@ -100,6 +101,7 @@ use Plank\Mediable\MediableInterface;
  * @method static Builder<static>|Building whereId($value)
  * @method static Builder<static>|Building whereMunicipalityId($value)
  * @method static Builder<static>|Building whereNumber($value)
+ * @method static Builder<static>|Building whereOwner($value)
  * @method static Builder<static>|Building wherePostalCode($value)
  * @method static Builder<static>|Building wherePrimary($value)
  * @method static Builder<static>|Building whereStreet($value)

@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $measure_application_id
  * @property int|null $insulating_glazing_id
  * @property int|null $building_heating_id
- * @property string|null $m2
+ * @property numeric|null $m2
  * @property int|null $windows
  * @property array<array-key, mixed>|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at

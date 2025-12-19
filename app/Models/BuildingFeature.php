@@ -25,18 +25,18 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $roof_type_id
  * @property int|null $energy_label_id
  * @property int|null $cavity_wall
- * @property string|null $wall_surface
- * @property string|null $insulation_wall_surface
+ * @property numeric|null $wall_surface
+ * @property numeric|null $insulation_wall_surface
  * @property int|null $facade_plastered_painted
  * @property int|null $wall_joints
  * @property int|null $contaminated_wall_joints
  * @property int|null $element_values
  * @property int|null $facade_plastered_surface_id
  * @property int|null $facade_damaged_paintwork_id
- * @property string|null $surface
- * @property string|null $floor_surface
- * @property string|null $insulation_surface
- * @property string|null $window_surface
+ * @property numeric|null $surface
+ * @property numeric|null $floor_surface
+ * @property numeric|null $insulation_surface
+ * @property numeric|null $window_surface
  * @property int|null $volume
  * @property int|null $build_year
  * @property int|null $building_layers

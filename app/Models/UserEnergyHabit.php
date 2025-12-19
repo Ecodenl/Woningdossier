@@ -16,8 +16,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $user_id
  * @property int|null $input_source_id
  * @property int|null $resident_count
- * @property string|null $thermostat_high
- * @property string|null $thermostat_low
+ * @property numeric|null $thermostat_high
+ * @property numeric|null $thermostat_low
  * @property int|null $hours_high
  * @property int|null $heating_first_floor
  * @property int|null $heating_second_floor

@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property array<array-key, mixed> $name
  * @property array<array-key, mixed> $info
  * @property array<array-key, mixed> $costs
- * @property string $savings_money
+ * @property numeric $savings_money
  * @property array<array-key, mixed> $extra
  * @property bool $is_extensive_measure
  * @property bool $is_deletable

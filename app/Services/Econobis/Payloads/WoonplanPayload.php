@@ -154,7 +154,9 @@ class WoonplanPayload extends EconobisPayload
         $userActionPlanAdviceComments = UserActionPlanAdviceComments::allInputSources()
             ->whereIn('input_source_id', [InputSource::resident()->id, InputSource::coach()->id])
             ->where('user_id', $this->building->user_id)
-            ->get();
+            ->orderBy('updated_at')
+            ->get()
+            ->keyBy('input_source_id');
 
         $payload['user_action_plan_advice_comments'] = $userActionPlanAdviceComments
             ->pluck('comment', 'inputSource.short')

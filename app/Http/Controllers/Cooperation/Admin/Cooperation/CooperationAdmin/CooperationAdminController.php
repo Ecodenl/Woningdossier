@@ -10,6 +10,6 @@ class CooperationAdminController extends Controller
 {
     public function index(Cooperation $cooperation): RedirectResponse
     {
-        return redirect()->route('cooperation.admin.users.index');
+        return to_route('cooperation.admin.users.index');
     }
 }

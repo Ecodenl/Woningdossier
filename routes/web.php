@@ -22,7 +22,7 @@ Route::domain('www.' . config('hoomdossier.domain'))->group(function () {
     // Can't call route('index') since it will keep the www. domain.
     Route::get('', fn() => redirect(str_replace('://www.', '://', Request::url())));
     // Non-existent route, fall back to index.
-    Route::fallback(fn() => redirect()->route('index'));
+    Route::fallback(fn() => to_route('index'));
 });
 
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
@@ -183,7 +183,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::get('/', function () {
                     // Usually we check the scans. However, the lite scan can't come here anyway.
                     $scan = \App\Models\Scan::findByShort(\App\Models\Scan::QUICK);
-                    return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
+                    return to_route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
                 })->name('index');
 
                 Route::prefix('questionnaire')->name('questionnaire.')->group(function () {
@@ -195,7 +195,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::get('heat-pump', function () {
                     Log::debug('HeatPumpController::index redirecting to heating');
 
-                    return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
+                    return to_route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
                 })->name('heat-pump.index');
 
                 // HR boiler > Heating
@@ -203,7 +203,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::get('', function () {
                         Log::debug('HighEfficiencyBoilerController::index redirecting to heating');
 
-                        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
+                        return to_route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
                     })->name('index');
                 });
 
@@ -212,7 +212,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::get('', function () {
                         Log::debug('HeaterController::index redirecting to heating');
 
-                        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
+                        return to_route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
                     })->name('index');
                 });
                 // TODO: End deprecation

@@ -413,7 +413,7 @@ class FormBuilder extends Component
             }
         }
 
-        return redirect()->route('cooperation.admin.cooperation.questionnaires.index', ['cooperation' => $this->cooperation])
+        return to_route('cooperation.admin.cooperation.questionnaires.index', ['cooperation' => $this->cooperation])
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/questionnaires.edit.success'));
     }
 }

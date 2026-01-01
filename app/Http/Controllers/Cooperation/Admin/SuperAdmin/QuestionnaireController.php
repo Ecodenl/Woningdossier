@@ -44,8 +44,7 @@ class QuestionnaireController extends Controller
             CopyQuestionnaireToCooperation::dispatch($cooperation, $questionnaire);
         }
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.questionnaires.index')
+        return to_route('cooperation.admin.super-admin.questionnaires.index')
             ->with('success', __('cooperation/admin/super-admin/questionnaires.copy.success'));
     }
 }

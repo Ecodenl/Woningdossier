@@ -20,7 +20,7 @@ class AdminController extends Controller
         HoomdossierSession::switchRole($building, $role);
 
         // If they can start/stop a session, they can see a user's building.
-        return redirect()->route('cooperation.admin.buildings.show', [
+        return to_route('cooperation.admin.buildings.show', [
             'building' => $observingBuilding,
         ]);
     }
@@ -33,7 +33,7 @@ class AdminController extends Controller
         if (1 == $user->getRoleNames()->count()) {
             $roleName = $user->getRoleNames()->first();
 
-            return redirect()->route('cooperation.admin.switch-role', $roleName);
+            return to_route('cooperation.admin.switch-role', $roleName);
         }
 
         return view('cooperation.admin.choose-roles', compact('user'));

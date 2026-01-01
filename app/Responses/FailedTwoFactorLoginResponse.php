@@ -22,8 +22,7 @@ class FailedTwoFactorLoginResponse implements FailedTwoFactorLoginResponseContra
             ]);
         }
 
-        return redirect()
-            ->route('cooperation.auth.two-factor.login')
+        return to_route('cooperation.auth.two-factor.login')
             ->withErrors([$key => $message]);
     }
 }

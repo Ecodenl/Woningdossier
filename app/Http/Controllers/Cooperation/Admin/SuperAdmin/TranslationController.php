@@ -83,8 +83,7 @@ class TranslationController extends Controller
 
         Artisan::call('queue:restart');
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.translations.index')
+        return to_route('cooperation.admin.super-admin.translations.index')
             ->with('success', __('cooperation/admin/super-admin/translations.update.success'));
     }
 }

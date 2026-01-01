@@ -47,7 +47,7 @@ class SettingsController extends Controller
             }
         }
 
-        return redirect()->route('cooperation.my-account.index')
+        return to_route('cooperation.my-account.index')
             ->with('success', __('my-account.settings.store.success'));
     }
 
@@ -99,6 +99,6 @@ class SettingsController extends Controller
             $success = __('my-account.settings.destroy.success.full');
         }
 
-        return redirect()->route('cooperation.welcome', compact('cooperation'))->with('success', $success);
+        return to_route('cooperation.welcome', compact('cooperation'))->with('success', $success);
     }
 }

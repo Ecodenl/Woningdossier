@@ -33,8 +33,7 @@ class MeasureApplicationController extends Controller
 
         $measureApplication->update($measureApplicationData);
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.measure-applications.index')
+        return to_route('cooperation.admin.super-admin.measure-applications.index')
             ->with('success', __('cooperation/admin/super-admin/measure-applications.update.success'));
     }
 }

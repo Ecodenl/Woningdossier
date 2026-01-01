@@ -263,8 +263,7 @@ class Form extends Component
             }
         }
 
-        return redirect()
-            ->route('cooperation.admin.example-buildings.edit', ['cooperation' => HoomdossierSession::getCooperation(true), 'exampleBuilding' => $this->exampleBuilding])
+        return to_route('cooperation.admin.example-buildings.edit', ['cooperation' => HoomdossierSession::getCooperation(true), 'exampleBuilding' => $this->exampleBuilding])
             ->with('success', __('cooperation/admin/example-buildings.update.success'));
     }
 }

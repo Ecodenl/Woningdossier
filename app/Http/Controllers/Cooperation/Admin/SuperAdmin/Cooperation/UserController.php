@@ -57,8 +57,10 @@ class UserController extends Controller
     {
         $this->createUser($request, $cooperationToManage);
 
-        return to_route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index',
-                compact('cooperation', 'cooperationToManage'))
+        return to_route(
+            'cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index',
+            compact('cooperation', 'cooperationToManage')
+        )
             ->with('success', __('cooperation/admin/users.store.success'));
     }
 

@@ -19,7 +19,7 @@ class CooperationHasScan
         $scan = $request->route('scan');
 
         if ($cooperation->scans()->where('scans.id', $scan->id)->doesntExist()) {
-            return redirect()->route('cooperation.home');
+            return to_route('cooperation.home');
         }
 
         return $next($request);

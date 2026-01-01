@@ -26,7 +26,7 @@ class ConversationRequestController extends Controller
 
         // if the user is observing, he has nothing to do here.
         if (HoomdossierSession::isUserObserving()) {
-            return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
+            return to_route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
         }
 
         $title = __('conversation-requests.index.request-coach-conversation');
@@ -59,7 +59,7 @@ class ConversationRequestController extends Controller
         }
 
         $scan = $cooperation->scans()->where('scans.short', '!=', Scan::EXPERT)->first();
-        return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'))
+        return to_route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'))
             ->with('success', $successMessage);
     }
 }

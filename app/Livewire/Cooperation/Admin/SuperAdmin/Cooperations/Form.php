@@ -153,11 +153,10 @@ class Form extends Component
             Cooperation::create($cooperationToEditFormData);
         }
 
-        return redirect()
-            ->route(
-                'cooperation.admin.super-admin.cooperations.index',
-                ['cooperation' => HoomdossierSession::getCooperation(true)]
-            )
+        return to_route(
+            'cooperation.admin.super-admin.cooperations.index',
+            ['cooperation' => HoomdossierSession::getCooperation(true)]
+        )
             ->with('success', $message);
     }
 }

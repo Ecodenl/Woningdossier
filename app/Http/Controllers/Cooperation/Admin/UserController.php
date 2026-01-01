@@ -49,8 +49,7 @@ class UserController extends Controller
     {
         $this->createUser($request, $cooperation);
 
-        return redirect()
-            ->route('cooperation.admin.users.index')
+        return to_route('cooperation.admin.users.index')
             ->with('success', __('cooperation/admin/users.store.success'));
     }
 

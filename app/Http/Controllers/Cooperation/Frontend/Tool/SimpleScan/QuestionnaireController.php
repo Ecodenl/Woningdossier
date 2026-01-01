@@ -21,7 +21,7 @@ class QuestionnaireController extends Controller
             // opened URL. In that case, if it becomes inactive, then suddenly the user has a 404 in their face
             // and no simple way to return to the tool. Instead, we will redirect them to the action plan, which
             // will then redirect them to an available step if they cannot access the woonplan.
-            return redirect()->route(
+            return to_route(
                 'cooperation.frontend.tool.simple-scan.my-plan.index',
                 compact('cooperation', 'scan')
             );

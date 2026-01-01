@@ -42,7 +42,7 @@ class CooperationController extends Controller
         // Dispatch job to handle the rest.
         DestroyCooperation::dispatch($cooperationToDestroy);
 
-        return redirect()->route('cooperation.admin.super-admin.cooperations.index')
+        return to_route('cooperation.admin.super-admin.cooperations.index')
             ->with('success', __('cooperation/admin/super-admin/cooperations.destroy.success'));
     }
 }

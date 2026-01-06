@@ -50,6 +50,11 @@ class UserFactory extends Factory
         return $this->afterCreating(fn (User $user) => $user->assignRole(RoleHelper::ROLE_COOPERATION_ADMIN));
     }
 
+    public function asCoordinator(): UserFactory
+    {
+        return $this->afterCreating(fn (User $user) => $user->assignRole(RoleHelper::ROLE_COORDINATOR));
+    }
+
     public function withAccount(): UserFactory
     {
         return $this->state(function (array $attributes) {

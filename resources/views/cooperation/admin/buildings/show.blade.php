@@ -207,7 +207,9 @@
                 {{-- 0 because these are the private messages --}}
                 @if(($messageCountSplit[0] ?? 0) > 0)
                     <div class="absolute flex-shrink-0 flex -right-1 -top-1 z-10 notification-bubble">
-                        <span class="h-3 w-3 rounded-full border border-white bg-red" aria-hidden="true"></span>
+                        <span class="flex items-center justify-center min-w-5 h-5 px-1 text-xs font-bold text-white bg-red rounded-full">
+                            {{ $messageCountSplit[0] > 99 ? '99+' : $messageCountSplit[0] }}
+                        </span>
                     </div>
                 @endif
             </a>
@@ -237,7 +239,9 @@
                     {{-- 1 because these are the public messages --}}
                     @if(($messageCountSplit[1] ?? 0) > 0)
                         <div class="absolute flex-shrink-0 flex -right-1 -top-1 z-10 notification-bubble">
-                            <span class="h-3 w-3 rounded-full border border-white bg-red" aria-hidden="true"></span>
+                            <span class="flex items-center justify-center min-w-5 h-5 px-1 text-xs font-bold text-white bg-red rounded-full">
+                                {{ $messageCountSplit[1] > 99 ? '99+' : $messageCountSplit[1] }}
+                            </span>
                         </div>
                     @endif
                 </a>

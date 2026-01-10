@@ -302,6 +302,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::middleware('current-role:cooperation-admin|coach|coordinator|super-admin')->group(function () {
                     Route::name('buildings.')->prefix('buildings')->group(function () {
                         Route::get('show/{building}', [Cooperation\Admin\BuildingController::class, 'show'])->name('show');
+                        Route::post('{building}/small-measures-setting', [Cooperation\Admin\BuildingController::class, 'updateSmallMeasuresSetting'])->name('small-measures-setting.update');
 
                         Route::middleware('current-role:cooperation-admin|coordinator|super-admin')->group(function () {
                             Route::get('{building}/edit', [Cooperation\Admin\BuildingController::class, 'edit'])->name('edit');

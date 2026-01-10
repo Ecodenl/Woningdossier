@@ -104,6 +104,17 @@ return [
         ],
         'next' => 'Volgende',
         'previous' => 'Vorige',
+
+        'small-measures' => [
+            'title' => 'Kleine maatregelen zichtbaarheid',
+            'description' => 'De coöperatie heeft kleine maatregelen uitgeschakeld voor de onderstaande scan(s). U kunt deze instelling per woning overschrijven.',
+            'cooperation-disabled' => 'Uitgeschakeld door coöperatie',
+            'enable-for-building' => 'Inschakelen voor deze woning',
+            'success' => 'Kleine maatregelen instelling bijgewerkt',
+            'error' => [
+                'cooperation-enabled' => 'Kleine maatregelen zijn al ingeschakeld op coöperatie-niveau.',
+            ],
+        ],
     ],
     'edit' => [
         'account-user-info-title' => 'Gebruiker gegevens',

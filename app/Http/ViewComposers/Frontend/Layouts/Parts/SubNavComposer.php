@@ -4,6 +4,7 @@ namespace App\Http\ViewComposers\Frontend\Layouts\Parts;
 
 use App\Helpers\Blade\RouteLogic;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\SmallMeasuresSettingHelper;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -23,16 +24,23 @@ class SubNavComposer
         /** @var \App\Models\Scan $scan */
         $scan = $this->request->route('scan');
 
+        $building = HoomdossierSession::getBuilding(true);
+
         $steps = $scan->steps()->with(['questionnaires' => function ($query) use ($cooperation) {
             $query->active()->where('cooperation_id', $cooperation->id)->orderByPivot('order');
         }])->get();
+
+        // Filter kleine maatregelen step indien niet enabled
+        if ($building && ! SmallMeasuresSettingHelper::isEnabledForBuilding($building, $scan)) {
+            $steps = $steps->filter(fn ($step) => $step->short !== 'small-measures');
+        }
 
         $view->with('steps', $steps);
 
         $view->with('scan', $this->request->route('scan'));
 
         $view->with('currentStep', $this->request->route('step'));
-        $view->with('building', HoomdossierSession::getBuilding(true));
+        $view->with('building', $building);
 
         if (RouteLogic::inQuestionnaire($this->request->route())) {
             $view->with('currentQuestionnaire', $this->request->route('questionnaire'));

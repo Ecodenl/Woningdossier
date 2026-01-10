@@ -30,6 +30,14 @@ class CooperationScan extends Pivot
 {
     use HasFactory;
 
+    protected $fillable = [
+        'small_measures_enabled',
+    ];
+
+    protected $casts = [
+        'small_measures_enabled' => 'boolean',
+    ];
+
     public function cooperation(): BelongsTo
     {
         return $this->belongsTo(Cooperation::class);

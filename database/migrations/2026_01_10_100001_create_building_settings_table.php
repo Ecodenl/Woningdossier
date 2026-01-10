@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('building_settings', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->unsignedBigInteger('building_id');
+            $table->unsignedInteger('building_id');
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade');
 
             $table->string('short');

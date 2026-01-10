@@ -199,6 +199,52 @@
         @endcan
     </div>
 
+    {{-- Kleine Maatregelen Override Sectie --}}
+    @if(collect($smallMeasuresSettings)->contains('cooperation_enabled', false))
+        <div class="w-full mt-6 p-4 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4">
+                @lang('cooperation/admin/buildings.show.small-measures.title')
+            </h3>
+
+            <p class="text-sm text-gray-600 mb-4">
+                @lang('cooperation/admin/buildings.show.small-measures.description')
+            </p>
+
+            @foreach($scans as $scanItem)
+                @if(! ($smallMeasuresSettings[$scanItem->short]['cooperation_enabled'] ?? true))
+                    <div class="flex items-center justify-between mb-3 p-3 bg-gray-50 rounded">
+                        <div>
+                            <span class="font-medium">{{ $scanItem->name }}</span>
+                            <span class="text-sm text-gray-500">
+                                (@lang('cooperation/admin/buildings.show.small-measures.cooperation-disabled'))
+                            </span>
+                        </div>
+
+                        <form action="{{ route('cooperation.admin.buildings.small-measures-setting.update', $building) }}"
+                              method="POST"
+                              class="flex items-center">
+                            @csrf
+                            <input type="hidden" name="scan_short" value="{{ $scanItem->short }}">
+
+                            <label class="flex items-center cursor-pointer">
+                                <input type="hidden" name="enabled" value="0">
+                                <input type="checkbox"
+                                       name="enabled"
+                                       value="1"
+                                       class="form-checkbox h-5 w-5 text-green-600"
+                                       @if($smallMeasuresSettings[$scanItem->short]['building_override'] ?? false) checked @endif
+                                       onchange="this.form.submit()">
+                                <span class="ml-2">
+                                    @lang('cooperation/admin/buildings.show.small-measures.enable-for-building')
+                                </span>
+                            </label>
+                        </form>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    @endif
+
     <div x-data="tabs()">
         <nav class="nav-tabs">
             <a x-bind="tab" data-tab="messages-intern">

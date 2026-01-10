@@ -3,6 +3,7 @@
 namespace App\Services\Scans;
 
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\SmallMeasuresSettingHelper;
 use App\Helpers\StepHelper;
 use App\Helpers\SubStepHelper;
 use App\Models\Building;
@@ -256,6 +257,18 @@ class ScanFlowService
                 if ($this->building->user->account->can('show', [$subStep, $this->building])) {
                     $nextSubStep = $subStep;
                     break;
+                }
+            }
+        }
+
+        // Skip small-measures step if not enabled for this building
+        if ($nextStep instanceof Step && $nextStep->short === 'small-measures') {
+            if (! SmallMeasuresSettingHelper::isEnabledForBuilding($this->building, $this->scan)) {
+                $nextStep = $nextStep->nextStepForScan();
+                $nextSubStep = null;
+
+                if ($nextStep instanceof Step) {
+                    $nextSubStep = $nextStep->subSteps()->orderBy('order')->first();
                 }
             }
         }

@@ -13,5 +13,12 @@ return [
         'type' => [
             'label' => 'Selecteer hier welke scans je beschikbaar wilt stellen.',
         ],
+        'small-measures' => [
+            'title' => 'Kleine maatregelen',
+            'description' => 'Bepaal per scan-type of de stap "Kleine maatregelen" zichtbaar is voor bewoners.',
+            'label' => 'Kleine maatregelen zichtbaar',
+            'quick-scan' => 'Uitgebreide variant',
+            'lite-scan' => 'Eenvoudige variant',
+        ],
     ],
 ];

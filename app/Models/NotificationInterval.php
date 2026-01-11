@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property array<array-key, mixed> $name
  * @property string $short
+ * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $translations
@@ -25,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationInterval whereLocale(string $column, string $locale)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationInterval whereLocales(string $column, array $locales)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationInterval whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationInterval whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationInterval whereShort($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationInterval whereUpdatedAt($value)
  * @mixin \Eloquent

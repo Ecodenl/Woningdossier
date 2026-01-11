@@ -245,7 +245,9 @@ class PdfReport extends NonHandleableJobAfterReset
             ->with('inputSource')
             ->whereNotNull('comment')
             ->where('comment', '!=', '')
-            ->get();
+            ->orderBy('updated_at')
+            ->get()
+            ->keyBy('input_source_id');
 
         $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($building);
         $connectedCoachNames = User::whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())

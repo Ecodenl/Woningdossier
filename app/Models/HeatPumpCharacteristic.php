@@ -13,8 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $heat_pump_configurable_type
  * @property int $heat_pump_configurable_id
  * @property int|null $tool_question_custom_value_id
- * @property string $scop
- * @property string $scop_tap_water
+ * @property numeric $scop
+ * @property numeric $scop_tap_water
  * @property int $share_percentage_tap_water
  * @property int $costs
  * @property int $standard_power_kw

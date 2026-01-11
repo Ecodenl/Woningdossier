@@ -142,7 +142,9 @@ class Cooperation extends Model implements MediableInterface
 
     public function scans(): BelongsToMany
     {
-        return $this->belongsToMany(Scan::class)->using(CooperationScan::class);
+        return $this->belongsToMany(Scan::class)
+            ->using(CooperationScan::class)
+            ->withPivot('small_measures_enabled');
     }
 
     public function cooperationMeasureApplications(): HasMany

@@ -25,13 +25,29 @@ class ScanController extends Controller
         $currentScan = CooperationScanService::init($cooperation)->getCurrentType();
         $mapping = CooperationScanService::translationMap();
 
-        return view('cooperation.admin.cooperation.cooperation-admin.scans.index', compact('scans', 'mapping', 'currentScan'));
+        // Haal huidige small_measures_enabled instellingen op
+        $smallMeasuresSettings = [];
+        foreach ($cooperation->scans as $scan) {
+            $smallMeasuresSettings[$scan->short] = $scan->pivot->small_measures_enabled ?? true;
+        }
+
+        return view('cooperation.admin.cooperation.cooperation-admin.scans.index', compact('scans', 'mapping', 'currentScan', 'smallMeasuresSettings'));
     }
 
     public function store(ScansFormRequest $request, Cooperation $cooperation): RedirectResponse
     {
         CooperationScanService::init($cooperation)->syncScan($request->input('scans.type'));
 
+        // Sync small measures instellingen
+        $smallMeasuresEnabled = $request->input('scans.small_measures_enabled', []);
+
+        foreach ($cooperation->scans()->get() as $scan) {
+            $cooperation->scans()->updateExistingPivot($scan->id, [
+                'small_measures_enabled' => isset($smallMeasuresEnabled[$scan->short])
+                    ? filter_var($smallMeasuresEnabled[$scan->short], FILTER_VALIDATE_BOOLEAN)
+                    : true,
+            ]);
+        }
 
         return redirect()->back()
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/scans.store.success'));

@@ -199,6 +199,30 @@
         @endcan
     </div>
 
+    {{-- Kleine Maatregelen Override Sectie --}}
+    @if(collect($smallMeasuresSettings)->contains('cooperation_enabled', false))
+        <div class="w-full mt-6 p-4 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4">
+                @lang('cooperation/admin/buildings.show.small-measures.title')
+            </h3>
+
+            <p class="text-sm text-gray-600 mb-4">
+                @lang('cooperation/admin/buildings.show.small-measures.description')
+            </p>
+
+            @foreach($scans as $scanItem)
+                @if(! ($smallMeasuresSettings[$scanItem->short]['cooperation_enabled'] ?? true))
+                    <livewire:cooperation.admin.buildings.small-measures-toggle
+                        :building="$building"
+                        :cooperation="$cooperation"
+                        :scan="$scanItem"
+                        :key="'small-measures-toggle-' . $scanItem->id"
+                    />
+                @endif
+            @endforeach
+        </div>
+    @endif
+
     <div x-data="tabs()">
         <nav class="nav-tabs">
             <a x-bind="tab" data-tab="messages-intern">

@@ -15,7 +15,7 @@ return [
         ],
         'small-measures' => [
             'title' => 'Kleine maatregelen',
-            'description' => 'Bepaal per scan-type of de stap "Kleine maatregelen" zichtbaar is voor bewoners.',
+            'description' => 'Bepaal per scan-type of de stap "Kleine maatregelen" zichtbaar is.',
             'label' => 'Kleine maatregelen zichtbaar',
             'quick-scan' => 'Uitgebreide variant',
             'lite-scan' => 'Eenvoudige variant',

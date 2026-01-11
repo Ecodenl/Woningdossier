@@ -5,7 +5,8 @@
 @section('content')
     <form class="flex flex-wrap w-full"
           action="{{route('cooperation.admin.cooperation.cooperation-admin.scans.store')}}"
-          method="POST">
+          method="POST"
+          x-data="{ selectedScan: '{{ $currentScan }}' }">
         @csrf
 
         @component('cooperation.frontend.layouts.components.form-group', [
@@ -16,7 +17,7 @@
             'inputName' => "scans.type",
         ])
             @component('cooperation.frontend.layouts.components.alpine-select')
-                <select class="form-input hidden" name="scans[type]" id="scans">
+                <select class="form-input hidden" name="scans[type]" id="scans" x-model="selectedScan">
                     @foreach($mapping as $type => $typeTranslation)
                         <option @if($currentScan === $type) selected @endif value="{{$type}}">{{$typeTranslation}}</option>
                     @endforeach
@@ -35,7 +36,9 @@
             </p>
 
             @foreach(['quick-scan' => __('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.quick-scan'), 'lite-scan' => __('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.lite-scan')] as $scanShort => $scanName)
-                <div class="flex items-center mb-3">
+                <div class="flex items-center mb-3"
+                     x-show="selectedScan === '{{ $scanShort }}' || selectedScan === 'both-scans'"
+                     x-cloak>
                     <label class="flex items-center cursor-pointer">
                         <input type="hidden" name="scans[small_measures_enabled][{{ $scanShort }}]" value="0">
                         <input type="checkbox"

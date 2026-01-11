@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\SmallMeasuresSettingHelper;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -22,6 +23,14 @@ class SubStepPolicy
         if (! $building instanceof Building) {
             Log::alert(__METHOD__ . " building is not set for URL " . request()->fullUrl());
             $building = HoomdossierSession::getBuilding(true);
+        }
+
+        // Check if small-measures step is enabled for this building
+        $step = $subStep->step;
+        if ($step->short === 'small-measures') {
+            if (! SmallMeasuresSettingHelper::isEnabledForBuilding($building, $step->scan)) {
+                return false;
+            }
         }
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);

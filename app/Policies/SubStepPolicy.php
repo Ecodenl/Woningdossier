@@ -16,7 +16,7 @@ class SubStepPolicy
 {
     use HandlesAuthorization;
 
-    public function show(Account $account, SubStep $subStep, Building $building = null): bool
+    public function show(Account $account, SubStep $subStep, ?Building $building = null): bool
     {
         // We don't want session data in the policy. This is here to ensure we didn't forget anything.
         // TODO: Remove this once alerts no longer trigger

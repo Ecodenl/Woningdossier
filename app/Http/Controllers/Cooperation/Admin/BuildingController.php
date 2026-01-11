@@ -20,9 +20,11 @@ use App\Models\PrivateMessage;
 use App\Models\Scan;
 use App\Models\Status;
 use App\Models\User;
+use App\Helpers\SmallMeasuresSettingHelper;
 use App\Services\BuildingCoachStatusService;
 use App\Services\UserRoleService;
 use App\Models\Role;
+use Illuminate\Http\Request;
 
 class BuildingController extends Controller
 {
@@ -65,6 +67,16 @@ class BuildingController extends Controller
         $scans = $cooperation->load(['scans' => fn($q) => $q->where('short', '!=', Scan::EXPERT)])->scans;
         $userCurrentRole = HoomdossierSession::getRole(true);
 
+        // Haal small measures instellingen op per scan
+        $smallMeasuresSettings = [];
+        foreach ($scans as $scanItem) {
+            $smallMeasuresSettings[$scanItem->short] = [
+                'cooperation_enabled' => SmallMeasuresSettingHelper::isEnabledForCooperation($cooperation, $scanItem),
+                'building_override' => SmallMeasuresSettingHelper::hasOverride($building, $scanItem),
+                'effective' => SmallMeasuresSettingHelper::isEnabledForBuilding($building, $scanItem),
+            ];
+        }
+
         return view('cooperation.admin.buildings.show', compact(
             'userRoleService',
             'userCurrentRole',
@@ -82,7 +94,36 @@ class BuildingController extends Controller
             'statuses',
             'logs',
             'scan',
+            'smallMeasuresSettings',
         ));
+    }
+
+    public function updateSmallMeasuresSetting(
+        Request $request,
+        Cooperation $cooperation,
+        Building $building
+    ): RedirectResponse
+    {
+        Gate::authorize('show', [$building]);
+
+        $validated = $request->validate([
+            'scan_short' => ['required', 'in:quick-scan,lite-scan'],
+            'enabled' => ['required'],
+        ]);
+
+        $scan = Scan::findByShort($validated['scan_short']);
+        $enabled = filter_var($validated['enabled'], FILTER_VALIDATE_BOOLEAN);
+
+        // Alleen toestaan als cooperatie instelling UIT staat
+        if (SmallMeasuresSettingHelper::isEnabledForCooperation($cooperation, $scan)) {
+            return redirect()->back()
+                ->with('warning', __('cooperation/admin/buildings.small-measures.error.cooperation-enabled'));
+        }
+
+        SmallMeasuresSettingHelper::setOverride($building, $scan, $enabled);
+
+        return redirect()->back()
+            ->with('success', __('cooperation/admin/buildings.small-measures.success'));
     }
 
     public function edit(Cooperation $cooperation, Building $building): View

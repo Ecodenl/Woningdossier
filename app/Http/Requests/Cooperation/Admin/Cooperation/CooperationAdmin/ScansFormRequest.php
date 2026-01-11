@@ -25,7 +25,10 @@ class ScansFormRequest extends FormRequest
         return [
             'scans.type' => Rule::in(
                 array_keys(CooperationScanService::translationMap())
-            )
+            ),
+            'scans.small_measures_enabled' => ['nullable', 'array'],
+            'scans.small_measures_enabled.quick-scan' => ['nullable'],
+            'scans.small_measures_enabled.lite-scan' => ['nullable'],
         ];
     }
 }

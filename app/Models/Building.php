@@ -646,6 +646,11 @@ class Building extends Model implements MediableInterface
         return $this->hasMany(BuildingStatus::class);
     }
 
+    public function buildingSettings(): HasMany
+    {
+        return $this->hasMany(BuildingSetting::class);
+    }
+
     /**
      * Get the most recent BuildingStatus.
      */

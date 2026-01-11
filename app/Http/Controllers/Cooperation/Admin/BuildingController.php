@@ -102,7 +102,8 @@ class BuildingController extends Controller
         Request $request,
         Cooperation $cooperation,
         Building $building
-    ): RedirectResponse {
+    ): RedirectResponse
+    {
         Gate::authorize('show', [$building]);
 
         $validated = $request->validate([

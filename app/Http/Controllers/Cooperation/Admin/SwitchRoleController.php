@@ -28,7 +28,7 @@ class SwitchRoleController extends Controller
         if (! $user || ! $user->hasRole($role)) {
             Log::debug('No user or user does not have this role');
 
-            return redirect()->route('cooperation.admin.index');
+            return to_route('cooperation.admin.index');
         }
 
         HoomdossierSession::switchRole($building, $role);

@@ -25,7 +25,7 @@ class CooperationPresetContentController extends Controller
     {
         $cooperationPresetContent->delete();
 
-        return redirect()->route('cooperation.admin.super-admin.cooperation-presets.show', compact('cooperation', 'cooperationPreset'))
+        return to_route('cooperation.admin.super-admin.cooperation-presets.show', compact('cooperation', 'cooperationPreset'))
             ->with('success', __('cooperation/admin/super-admin/cooperation-preset-contents.destroy.success'));
     }
 }

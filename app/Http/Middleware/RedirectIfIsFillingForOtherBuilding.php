@@ -19,7 +19,7 @@ class RedirectIfIsFillingForOtherBuilding
         if ($user->isFillingToolForOtherBuilding()) {
             Log::debug('Wow, user id ' . $user->id . ' tried to do something fishy!');
 
-            return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'ventilation']);
+            return to_route('cooperation.frontend.tool.expert-scan.index', ['step' => 'ventilation']);
         }
 
         return $next($request);

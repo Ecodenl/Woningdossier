@@ -20,11 +20,10 @@ class RegisterResponse implements \Laravel\Fortify\Contracts\RegisterResponse
 
         if (Auth::guard()->user()->hasVerifiedEmail()) {
             Auth::guard()->logout();
-            return redirect()->route('cooperation.auth.login')
+            return to_route('cooperation.auth.login')
                 ->with('success', __('auth.register.form.message.account-connected'));
         }
 
-        return redirect()
-            ->route('cooperation.auth.verification.notice');
+        return to_route('cooperation.auth.verification.notice');
     }
 }

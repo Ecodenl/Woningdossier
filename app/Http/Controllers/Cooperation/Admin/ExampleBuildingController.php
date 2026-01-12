@@ -49,7 +49,7 @@ class ExampleBuildingController extends Controller
     {
         $exampleBuilding->delete();
 
-        return redirect()->route('cooperation.admin.example-buildings.index')
+        return to_route('cooperation.admin.example-buildings.index')
             ->with('success', __('cooperation/admin/example-buildings.destroy.success'));
     }
 
@@ -75,6 +75,6 @@ class ExampleBuildingController extends Controller
                 ->save();
         }
 
-        return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building copied');
+        return to_route('cooperation.admin.example-buildings.index')->with('success', 'Example building copied');
     }
 }

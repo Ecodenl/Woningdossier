@@ -31,8 +31,7 @@ class ClientController extends Controller
         $short = Str::slug($name);
         $client = Client::create(compact('name', 'short'));
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
+        return to_route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
             ->with('success', __('cooperation/admin/super-admin/clients.store.success'));
     }
 
@@ -48,8 +47,7 @@ class ClientController extends Controller
         $client->update(compact('name', 'short'));
 
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.clients.index', compact('client'))
+        return to_route('cooperation.admin.super-admin.clients.index', compact('client'))
             ->with('success', __('cooperation/admin/super-admin/clients.update.success'));
     }
 
@@ -59,7 +57,7 @@ class ClientController extends Controller
 
         $client->delete();
 
-        return redirect()->route('cooperation.admin.super-admin.clients.index')
+        return to_route('cooperation.admin.super-admin.clients.index')
             ->with('success', __('cooperation/admin/super-admin/clients.destroy.success'));
     }
 }

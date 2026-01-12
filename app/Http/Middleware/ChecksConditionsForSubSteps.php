@@ -52,7 +52,7 @@ class ChecksConditionsForSubSteps
                     if ($subStep instanceof SubStep && $request->user()->can('show', [$subStep, $building])) {
                         if (! $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStep->id)->first() instanceof CompletedSubStep) {
                             // Not answered, redirect back
-                            return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
+                            return to_route('cooperation.frontend.tool.simple-scan.index', [
                                 'scan' => $scan,
                                 'step' => $subStep->step,
                                 'subStep' => $subStep,

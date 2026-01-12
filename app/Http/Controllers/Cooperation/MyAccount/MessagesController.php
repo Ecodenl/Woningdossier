@@ -24,7 +24,7 @@ class MessagesController extends Controller
     public function index(Cooperation $cooperation): RedirectResponse
     {
         DeprecationLogger::log(__METHOD__ . ' used!');
-        return redirect(route('cooperation.my-account.messages.edit'));
+        return to_route('cooperation.my-account.messages.edit');
     }
 
     public function edit(Cooperation $cooperation): RedirectResponse|View
@@ -42,7 +42,7 @@ class MessagesController extends Controller
         // this is on register a private message will be created.
         if (! $privateMessages->first() instanceof PrivateMessage) {
             DeprecationLogger::alert("Redirecting conversation request!");
-            return redirect()->route('cooperation.conversation-requests.index', ['requestType' => PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION]);
+            return to_route('cooperation.conversation-requests.index', ['requestType' => PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION]);
         }
 
         Gate::authorize('update', $privateMessages->first());

@@ -99,7 +99,7 @@ class Form extends Component
         }
 
         $cooperation = HoomdossierSession::getCooperation(true);
-        return redirect()->route(
+        return to_route(
             'cooperation.admin.super-admin.cooperation-presets.show',
             ['cooperation' => $cooperation, 'cooperationPreset' => $this->cooperationPreset]
         )->with('success', $message);

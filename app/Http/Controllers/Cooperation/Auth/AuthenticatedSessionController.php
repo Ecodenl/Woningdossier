@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends \Laravel\Fortify\Http\Controllers\A
             if (! $account->user()->building instanceof Building) {
                 app(DiscordNotifier::class)->notify('No building attached for user id: ' . $account->user()->id . '; account id: ' . $account->id);
 
-                return redirect()->route('cooperation.register')
+                return to_route('cooperation.register')
                     ->with('warning', __('auth.login.warning'));
             }
         }

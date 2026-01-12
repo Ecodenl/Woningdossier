@@ -28,8 +28,7 @@ class ToolQuestionController extends Controller
     {
         $toolQuestion->update($request->validated()['tool_questions']);
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.tool-questions.edit', compact('toolQuestion'))
+        return to_route('cooperation.admin.super-admin.tool-questions.edit', compact('toolQuestion'))
             ->with('success', __('cooperation/admin/super-admin/tool-questions.update.success'));
     }
 }

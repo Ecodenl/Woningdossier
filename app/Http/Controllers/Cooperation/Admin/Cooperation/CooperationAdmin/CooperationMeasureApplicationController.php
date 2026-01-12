@@ -56,7 +56,7 @@ class CooperationMeasureApplicationController extends Controller
 
         CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 
-        return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', compact('type'))
+        return to_route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', compact('type'))
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.store.success'));
     }
 
@@ -92,7 +92,7 @@ class CooperationMeasureApplicationController extends Controller
 
         CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 
-        return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => $cooperationMeasureApplication->getType()])
+        return to_route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => $cooperationMeasureApplication->getType()])
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.update.success'));
     }
 
@@ -105,7 +105,7 @@ class CooperationMeasureApplicationController extends Controller
 
         HandleCooperationMeasureApplicationDeletion::dispatch($cooperationMeasureApplication);
 
-        return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => $cooperationMeasureApplication->getType()])
+        return to_route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => $cooperationMeasureApplication->getType()])
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.destroy.success'));
     }
 }

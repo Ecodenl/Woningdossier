@@ -18,7 +18,7 @@ class NotificationSettingsController extends Controller
             'interval_id' => $intervalId,
         ]);
 
-        return redirect()->route('cooperation.my-account.index')
+        return to_route('cooperation.my-account.index')
             ->with('success', __('my-account.notification-settings.update.success'));
     }
 }

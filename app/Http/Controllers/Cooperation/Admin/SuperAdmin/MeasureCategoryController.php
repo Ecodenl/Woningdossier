@@ -47,7 +47,7 @@ class MeasureCategoryController extends Controller
             }
         }
 
-        return redirect()->route('cooperation.admin.super-admin.measure-categories.index')
+        return to_route('cooperation.admin.super-admin.measure-categories.index')
             ->with('success', __('cooperation/admin/super-admin/measure-categories.store.success'));
     }
 
@@ -86,7 +86,7 @@ class MeasureCategoryController extends Controller
             }
         }
 
-        return redirect()->route('cooperation.admin.super-admin.measure-categories.index')
+        return to_route('cooperation.admin.super-admin.measure-categories.index')
             ->with('success', __('cooperation/admin/super-admin/measure-categories.update.success'));
     }
 }

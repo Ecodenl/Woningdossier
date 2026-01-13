@@ -18,7 +18,7 @@
         "ecodenl/ep-online-php-wrapper": "^5.0",
         "ecodenl/lvbag-php-wrapper": "^2.1.2",
         "guzzlehttp/guzzle": "^7.10",
-        "laravel/fortify": "^1.32",
+        "laravel/fortify": "^1.33",
         "laravel/framework": "^12.47",
         "laravel/sanctum": "^4.2",
         "laravel/tinker": "^2.10.1",

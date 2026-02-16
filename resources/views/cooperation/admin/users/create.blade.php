@@ -141,6 +141,31 @@
 
             {{-- TODO: Contact ID? --}}
 
+            @if(($cooperationScanType ?? null) === 'both-scans')
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
+                    'label' => __('cooperation/admin/users.create.form.scan-variant.label'),
+                    'id' => 'scan-variant',
+                    'inputName' => 'scan_variant',
+                    'withInputSource' => false,
+                    'attr' => 'x-show="! alreadyMember && ! noBuilding"',
+                ])
+                    @component('cooperation.frontend.layouts.components.alpine-select')
+                        <select id="scan-variant" class="form-input hidden" name="scan_variant">
+                            <option value="both-scans" @if(old('scan_variant', 'both-scans') === 'both-scans') selected @endif>
+                                {{ \App\Services\CooperationScanService::translationMap()['both-scans'] }}
+                            </option>
+                            <option value="lite-scan" @if(old('scan_variant') === 'lite-scan') selected @endif>
+                                {{ \App\Services\CooperationScanService::translationMap()[\App\Models\Scan::LITE] }}
+                            </option>
+                            <option value="quick-scan" @if(old('scan_variant') === 'quick-scan') selected @endif>
+                                {{ \App\Services\CooperationScanService::translationMap()[\App\Models\Scan::QUICK] }}
+                            </option>
+                        </select>
+                    @endcomponent
+                @endcomponent
+            @endif
+
             <h3 class="w-full heading-4 my-4" x-show="! alreadyMember && ! noBuilding">
                 @lang('cooperation/admin/buildings.edit.address-info-title')
             </h3>

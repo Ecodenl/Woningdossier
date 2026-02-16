@@ -6,11 +6,13 @@ use App\Events\ParticipantAddedEvent;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\Hoomdossier;
+use App\Helpers\ScanAvailabilityHelper;
 use App\Helpers\Str;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
+use App\Models\Scan;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
@@ -57,6 +59,20 @@ trait CreatesUsers
 
         // at this point, a user cant register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user, $building);
+
+        // Set scan availability based on selected variant
+        $scanVariant = $request->input('scan_variant');
+        if ($scanVariant === 'lite-scan') {
+            $quickScan = Scan::quick();
+            if ($quickScan) {
+                ScanAvailabilityHelper::setAvailability($building, $quickScan, false);
+            }
+        } elseif ($scanVariant === 'quick-scan') {
+            $liteScan = Scan::lite();
+            if ($liteScan) {
+                ScanAvailabilityHelper::setAvailability($building, $liteScan, false);
+            }
+        }
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {

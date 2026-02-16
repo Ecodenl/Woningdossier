@@ -105,6 +105,17 @@ return [
         'next' => 'Volgende',
         'previous' => 'Vorige',
 
+        'scan-availability' => [
+            'title' => 'Beschikbare scans',
+            'description' => 'Bepaal welke scans beschikbaar zijn voor dit dossier.',
+            'enable-for-building' => 'Beschikbaar',
+            'success' => 'Scan beschikbaarheid bijgewerkt',
+            'disabled-reasons' => [
+                'only-active-scan' => 'Deze scan kan niet worden uitgeschakeld omdat het de enige actieve scan is.',
+                'quick-data-exists' => 'De lite scan kan niet worden ingeschakeld omdat er al data is ingevuld voor de quick scan.',
+            ],
+        ],
+
         'small-measures' => [
             'title' => 'Kleine maatregelen zichtbaarheid',
             'description' => 'De coöperatie heeft kleine maatregelen uitgeschakeld voor de onderstaande scan(s). U kunt deze instelling per woning overschrijven.',

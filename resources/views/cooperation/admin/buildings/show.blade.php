@@ -27,12 +27,12 @@
                 </button>
             @endcan
             @can('access-building', $building)
-                @if($scans->count() > 1)
+                @if($availableScans->count() > 1)
                     @component('cooperation.layouts.components.dropdown', [
                         'label' => __('cooperation/admin/buildings.show.observe-building.label') . '<i class="icon-sm icon-show ml-1"></i>',
                         'class' => 'btn btn-green',
                     ])
-                        @foreach($scans as $scan)
+                        @foreach($availableScans as $scan)
                             @php
                                 $transShort = app(\App\Services\Models\ScanService::class)
                                     ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
@@ -46,7 +46,7 @@
                         @endforeach
                     @endcomponent
                 @else
-                    @foreach($scans as $scan)
+                    @foreach($availableScans as $scan)
                         <a class="btn btn-green" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
                             <span class="flex items-center">
                                 @lang('cooperation/admin/buildings.show.observe-building.label')
@@ -57,12 +57,12 @@
                 @endif
                 {{-- TODO: This should be a policy --}}
                 @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
-                    @if($scans->count() > 1)
+                    @if($availableScans->count() > 1)
                         @component('cooperation.layouts.components.dropdown', [
                             'label' => __('cooperation/admin/buildings.show.fill-for-user.label') . '<i class="icon-sm icon-tools ml-1"></i>',
                             'class' => 'btn btn-yellow',
                         ])
-                            @foreach($scans as $scan)
+                            @foreach($availableScans as $scan)
                                 @php
                                     $transShort = app(\App\Services\Models\ScanService::class)
                                         ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
@@ -76,7 +76,7 @@
                             @endforeach
                         @endcomponent
                     @else
-                        @foreach($scans as $scan)
+                        @foreach($availableScans as $scan)
                             <a class="btn btn-yellow" href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
                                 @php
                                     $transShort = app(\App\Services\Models\ScanService::class)
@@ -199,8 +199,30 @@
         @endcan
     </div>
 
+    {{-- Scan Beschikbaarheid Sectie --}}
+    @if($scans->count() > 1)
+        <div class="w-full mt-6 p-4 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4">
+                @lang('cooperation/admin/buildings.show.scan-availability.title')
+            </h3>
+
+            <p class="text-sm text-gray-600 mb-4">
+                @lang('cooperation/admin/buildings.show.scan-availability.description')
+            </p>
+
+            @foreach($scans as $scanItem)
+                <livewire:cooperation.admin.buildings.scan-availability-toggle
+                    :building="$building"
+                    :cooperation="$cooperation"
+                    :scan="$scanItem"
+                    :key="'scan-toggle-' . $scanItem->id"
+                />
+            @endforeach
+        </div>
+    @endif
+
     {{-- Kleine Maatregelen Override Sectie --}}
-    @if(collect($smallMeasuresSettings)->contains('cooperation_enabled', false))
+    @if(collect($smallMeasuresSettings)->contains(fn ($settings, $short) => ! $settings['cooperation_enabled'] && $availableScans->contains('short', $short)))
         <div class="w-full mt-6 p-4 border border-gray-200 rounded-lg">
             <h3 class="text-lg font-semibold mb-4">
                 @lang('cooperation/admin/buildings.show.small-measures.title')
@@ -210,7 +232,7 @@
                 @lang('cooperation/admin/buildings.show.small-measures.description')
             </p>
 
-            @foreach($scans as $scanItem)
+            @foreach($availableScans as $scanItem)
                 @if(! ($smallMeasuresSettings[$scanItem->short]['cooperation_enabled'] ?? true))
                     <livewire:cooperation.admin.buildings.small-measures-toggle
                         :building="$building"

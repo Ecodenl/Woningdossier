@@ -4,6 +4,7 @@ namespace App\Http\ViewComposers\Frontend\Layouts\Parts;
 
 use App\Helpers\Blade\RouteLogic;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\ScanAvailabilityHelper;
 use App\Helpers\SmallMeasuresSettingHelper;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -29,6 +30,11 @@ class SubNavComposer
         $steps = $scan->steps()->with(['questionnaires' => function ($query) use ($cooperation) {
             $query->active()->where('cooperation_id', $cooperation->id)->orderByPivot('order');
         }])->get();
+
+        // Filter scan indien niet beschikbaar voor dit building
+        if ($building && ! ScanAvailabilityHelper::isAvailableForBuilding($building, $scan)) {
+            $steps = collect();
+        }
 
         // Filter kleine maatregelen step indien niet enabled
         if ($building && ! SmallMeasuresSettingHelper::isEnabledForBuilding($building, $scan)) {

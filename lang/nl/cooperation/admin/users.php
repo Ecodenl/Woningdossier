@@ -40,6 +40,9 @@ return [
             'city' => 'Plaats',
             'phone-number' => 'Telefoonnummer',
             'select-coach' => 'Selecteer een coach om te koppelen aan de gebruiker',
+            'scan-variant' => [
+                'label' => 'Welke variant gebruiken?',
+            ],
             'submit' => 'Gebruiker aanmaken',
         ],
     ],

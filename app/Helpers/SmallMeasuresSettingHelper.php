@@ -45,6 +45,11 @@ class SmallMeasuresSettingHelper
             return false;
         }
 
+        // Lite scan vereist altijd kleine maatregelen
+        if ($scan->isLiteScan()) {
+            return true;
+        }
+
         $cooperationScan = $cooperation->scans()
             ->where('scans.id', $scan->id)
             ->first();

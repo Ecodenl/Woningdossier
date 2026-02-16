@@ -42,10 +42,15 @@ class ScanController extends Controller
         $smallMeasuresEnabled = $request->input('scans.small_measures_enabled', []);
 
         foreach ($cooperation->scans()->get() as $scan) {
-            $cooperation->scans()->updateExistingPivot($scan->id, [
-                'small_measures_enabled' => isset($smallMeasuresEnabled[$scan->short])
+            // Lite scan vereist altijd kleine maatregelen
+            $enabled = $scan->isLiteScan()
+                ? true
+                : (isset($smallMeasuresEnabled[$scan->short])
                     ? filter_var($smallMeasuresEnabled[$scan->short], FILTER_VALIDATE_BOOLEAN)
-                    : true,
+                    : true);
+
+            $cooperation->scans()->updateExistingPivot($scan->id, [
+                'small_measures_enabled' => $enabled,
             ]);
         }
 

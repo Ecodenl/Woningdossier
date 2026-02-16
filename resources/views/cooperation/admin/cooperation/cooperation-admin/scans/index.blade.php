@@ -36,18 +36,24 @@
             </p>
 
             @foreach(['quick-scan' => __('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.quick-scan'), 'lite-scan' => __('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.lite-scan')] as $scanShort => $scanName)
+                @php $isLiteScan = $scanShort === \App\Models\Scan::LITE; @endphp
                 <div class="flex items-center mb-3"
                      x-show="selectedScan === '{{ $scanShort }}' || selectedScan === 'both-scans'"
                      x-cloak>
-                    <label class="flex items-center cursor-pointer">
-                        <input type="hidden" name="scans[small_measures_enabled][{{ $scanShort }}]" value="0">
+                    <label class="flex items-center {{ $isLiteScan ? 'cursor-not-allowed opacity-60' : 'cursor-pointer' }}">
+                        <input type="hidden" name="scans[small_measures_enabled][{{ $scanShort }}]" value="{{ $isLiteScan ? '1' : '0' }}">
                         <input type="checkbox"
                                name="scans[small_measures_enabled][{{ $scanShort }}]"
                                value="1"
                                class="form-checkbox h-5 w-5 text-green-600"
-                               @if($smallMeasuresSettings[$scanShort] ?? true) checked @endif>
+                               @if($isLiteScan) checked disabled @elseif($smallMeasuresSettings[$scanShort] ?? true) checked @endif>
                         <span class="ml-2">
                             {{ $scanName }}: @lang('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.label')
+                            @if($isLiteScan)
+                                <span class="text-sm text-gray-500 italic">
+                                    (@lang('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.always-required'))
+                                </span>
+                            @endif
                         </span>
                     </label>
                 </div>

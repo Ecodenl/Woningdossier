@@ -19,6 +19,7 @@ return [
             'label' => 'Kleine maatregelen zichtbaar',
             'quick-scan' => 'Uitgebreide variant',
             'lite-scan' => 'Eenvoudige variant',
+            'always-required' => 'altijd vereist voor deze scan',
         ],
     ],
 ];

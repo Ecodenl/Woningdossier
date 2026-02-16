@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\ScanAvailabilityHelper;
 use App\Helpers\SmallMeasuresSettingHelper;
 use App\Models\Account;
 use App\Models\Building;
@@ -25,8 +26,13 @@ class SubStepPolicy
             $building = HoomdossierSession::getBuilding(true);
         }
 
-        // Check if small-measures step is enabled for this building
+        // Check if scan is available for this building
         $step = $subStep->step;
+        if (! ScanAvailabilityHelper::isAvailableForBuilding($building, $step->scan)) {
+            return false;
+        }
+
+        // Check if small-measures step is enabled for this building
         if ($step->short === 'small-measures') {
             if (! SmallMeasuresSettingHelper::isEnabledForBuilding($building, $step->scan)) {
                 return false;

@@ -20,6 +20,7 @@ use App\Models\PrivateMessage;
 use App\Models\Scan;
 use App\Models\Status;
 use App\Models\User;
+use App\Helpers\ScanAvailabilityHelper;
 use App\Helpers\SmallMeasuresSettingHelper;
 use App\Services\BuildingCoachStatusService;
 use App\Services\UserRoleService;
@@ -77,6 +78,11 @@ class BuildingController extends Controller
             ];
         }
 
+        // Filter scans op building-niveau beschikbaarheid voor de knoppen
+        $availableScans = $scans->filter(
+            fn ($scanItem) => ScanAvailabilityHelper::isAvailableForBuilding($building, $scanItem)
+        );
+
         return view('cooperation.admin.buildings.show', compact(
             'userRoleService',
             'userCurrentRole',
@@ -95,6 +101,7 @@ class BuildingController extends Controller
             'logs',
             'scan',
             'smallMeasuresSettings',
+            'availableScans',
         ));
     }
 

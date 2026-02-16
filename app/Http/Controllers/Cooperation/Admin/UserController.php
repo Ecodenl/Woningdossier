@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Models\Cooperation;
 use App\Models\User;
+use App\Services\CooperationScanService;
 use App\Services\UserService;
 use App\Traits\Http\CreatesUsers;
 use Illuminate\Http\Request;
@@ -41,8 +42,9 @@ class UserController extends Controller
         $userCurrentRole = HoomdossierSession::getRole(true);
         $roles = Role::orderByDesc('level')->get();
         $coaches = $cooperation->getCoaches();
+        $cooperationScanType = CooperationScanService::init($cooperation)->getCurrentType();
 
-        return view('cooperation.admin.users.create', compact('userCurrentRole', 'roles', 'coaches'));
+        return view('cooperation.admin.users.create', compact('userCurrentRole', 'roles', 'coaches', 'cooperationScanType'));
     }
 
     public function store(UserFormRequest $request, Cooperation $cooperation): RedirectResponse

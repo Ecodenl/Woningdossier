@@ -9,12 +9,16 @@ class BuildingSettingHelper
 {
     const SHORT_SMALL_MEASURES_ENABLED_QUICK_SCAN = 'small_measures_enabled_quick-scan';
     const SHORT_SMALL_MEASURES_ENABLED_LITE_SCAN = 'small_measures_enabled_lite-scan';
+    const SHORT_SCAN_ENABLED_QUICK_SCAN = 'scan_enabled_quick-scan';
+    const SHORT_SCAN_ENABLED_LITE_SCAN = 'scan_enabled_lite-scan';
 
     public static function getAvailableSettings(): array
     {
         return [
             static::SHORT_SMALL_MEASURES_ENABLED_QUICK_SCAN => 'boolean',
             static::SHORT_SMALL_MEASURES_ENABLED_LITE_SCAN => 'boolean',
+            static::SHORT_SCAN_ENABLED_QUICK_SCAN => 'boolean',
+            static::SHORT_SCAN_ENABLED_LITE_SCAN => 'boolean',
         ];
     }
 

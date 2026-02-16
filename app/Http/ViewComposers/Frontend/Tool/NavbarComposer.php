@@ -3,6 +3,7 @@
 namespace App\Http\ViewComposers\Frontend\Tool;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\ScanAvailabilityHelper;
 use App\Helpers\SmallMeasuresSettingHelper;
 use App\Models\InputSource;
 use App\Models\Scan;
@@ -29,6 +30,11 @@ class NavbarComposer
         $scan->load(['steps.subSteps']);
 
         $building = HoomdossierSession::getBuilding(true);
+
+        // Filter scan indien niet beschikbaar voor dit building
+        if ($building && ! ScanAvailabilityHelper::isAvailableForBuilding($building, $scan)) {
+            $scan->setRelation('steps', collect());
+        }
 
         // Filter kleine maatregelen step indien niet enabled
         if ($building && ! SmallMeasuresSettingHelper::isEnabledForBuilding($building, $scan)) {

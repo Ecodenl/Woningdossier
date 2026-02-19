@@ -2,16 +2,23 @@
     <div>
         <span class="font-medium">{{ $scan->name }}</span>
         <span class="text-sm text-gray-500">
-            (@lang('cooperation/admin/buildings.show.small-measures.cooperation-disabled'))
+            @if($locked)
+                (@lang('cooperation/admin/buildings.show.small-measures.always-enabled'))
+            @else
+                (@lang($cooperationEnabled
+                    ? 'cooperation/admin/buildings.show.small-measures.cooperation-enabled'
+                    : 'cooperation/admin/buildings.show.small-measures.cooperation-disabled'))
+            @endif
         </span>
     </div>
 
-    <label class="flex items-center cursor-pointer">
+    <label class="flex items-center {{ $locked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }}">
         <input type="checkbox"
                wire:model.live="enabled"
-               class="h-5 w-5">
+               class="h-5 w-5"
+               @disabled($locked)>
         <span class="ml-2">
-            @lang('cooperation/admin/buildings.show.small-measures.enable-for-building')
+            @lang('cooperation/admin/buildings.show.small-measures.toggle-for-building')
         </span>
     </label>
 </div>

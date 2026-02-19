@@ -3,6 +3,7 @@
 namespace App\Livewire\Cooperation\Admin\Buildings;
 
 use App\Helpers\ScanAvailabilityHelper;
+use App\Helpers\SmallMeasuresSettingHelper;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Scan;
@@ -46,6 +47,11 @@ class ScanAvailabilityToggle extends Component
         }
 
         ScanAvailabilityHelper::setAvailability($this->building, $this->scan, $value);
+
+        // Clear small measures override when disabling a scan
+        if (! $value) {
+            SmallMeasuresSettingHelper::clearOverride($this->building, $this->scan);
+        }
 
         session()->flash('success', __('cooperation/admin/buildings.show.scan-availability.success'));
 

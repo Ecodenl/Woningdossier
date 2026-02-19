@@ -1,4 +1,4 @@
-export default (emailUrl) => ({
+export default (emailUrl, scansEnabled = {}) => ({
     allowAccess: false,
     showEmailWarning: false,
     alreadyMember: false,
@@ -6,6 +6,10 @@ export default (emailUrl) => ({
     emailExists: false,
     emailUrl: emailUrl,
     submitted: false,
+    scansEnabled: scansEnabled,
+    get hasAnyScanEnabled() {
+        return Object.values(this.scansEnabled).some(v => v);
+    },
 
     checkEmail(element, safeValue = null) {
         // Don't apply check if current value is safe value

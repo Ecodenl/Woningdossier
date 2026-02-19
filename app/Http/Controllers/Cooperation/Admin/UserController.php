@@ -10,7 +10,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Models\Cooperation;
 use App\Models\User;
-use App\Services\CooperationScanService;
+use App\Helpers\SmallMeasuresSettingHelper;
+use App\Models\Scan;
 use App\Services\UserService;
 use App\Traits\Http\CreatesUsers;
 use Illuminate\Http\Request;
@@ -42,9 +43,20 @@ class UserController extends Controller
         $userCurrentRole = HoomdossierSession::getRole(true);
         $roles = Role::orderByDesc('level')->get();
         $coaches = $cooperation->getCoaches();
-        $cooperationScanType = CooperationScanService::init($cooperation)->getCurrentType();
 
-        return view('cooperation.admin.users.create', compact('userCurrentRole', 'roles', 'coaches', 'cooperationScanType'));
+        $allScans = Scan::simpleScans()->get();
+        $cooperationScanIds = $cooperation->scans->pluck('id')->toArray();
+
+        $smallMeasuresSettings = [];
+        foreach ($allScans as $scan) {
+            $smallMeasuresSettings[$scan->short] = [
+                'cooperation_enabled' => SmallMeasuresSettingHelper::isEnabledForCooperation($cooperation, $scan),
+            ];
+        }
+
+        return view('cooperation.admin.users.create', compact(
+            'userCurrentRole', 'roles', 'coaches', 'allScans', 'cooperationScanIds', 'smallMeasuresSettings'
+        ));
     }
 
     public function store(UserFormRequest $request, Cooperation $cooperation): RedirectResponse

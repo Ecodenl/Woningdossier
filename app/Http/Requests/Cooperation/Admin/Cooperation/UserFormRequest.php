@@ -6,6 +6,7 @@ use App\Http\Requests\AddressFormRequest;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Rules\PhoneNumber;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -39,7 +40,10 @@ class UserFormRequest extends FormRequest
             'users.extra.contact_id' => ['nullable', 'numeric', 'integer', 'gt:0'],
             'roles' => 'required|exists:roles,id', // TODO: This doesn't evaluate if the user may assign the role.
             'coach_id' => ['nullable', Rule::exists('users', 'id')],
-            'scan_variant' => ['nullable', 'in:lite-scan,quick-scan,both-scans'],
+            'scans_enabled' => ['required', 'array'],
+            'scans_enabled.*' => ['required', 'in:0,1'],
+            'small_measures_override' => ['nullable', 'array'],
+            'small_measures_override.*' => ['nullable', 'in:0,1'],
         ], (new AddressFormRequest())->setCountry($cooperationToCheckFor->country)->rules());
 
         // try to get the account
@@ -51,5 +55,17 @@ class UserFormRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            $scansEnabled = $this->input('scans_enabled', []);
+            $hasAtLeastOne = collect($scansEnabled)->contains('1');
+
+            if (! $hasAtLeastOne) {
+                $validator->errors()->add('scans_enabled', __('cooperation/admin/users.create.form.scan-availability.at-least-one'));
+            }
+        });
     }
 }

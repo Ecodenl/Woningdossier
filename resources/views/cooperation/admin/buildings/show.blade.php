@@ -200,7 +200,7 @@
     </div>
 
     {{-- Scan Beschikbaarheid Sectie --}}
-    @if($scans->count() > 1)
+    @if($scans->count() >= 1)
         <div class="w-full mt-6 p-4 border border-gray-200 rounded-lg">
             <h3 class="text-lg font-semibold mb-4">
                 @lang('cooperation/admin/buildings.show.scan-availability.title')
@@ -222,7 +222,7 @@
     @endif
 
     {{-- Kleine Maatregelen Override Sectie --}}
-    @if(collect($smallMeasuresSettings)->contains(fn ($settings, $short) => ! $settings['cooperation_enabled'] && $availableScans->contains('short', $short)))
+    @if($availableScans->isNotEmpty())
         <div class="w-full mt-6 p-4 border border-gray-200 rounded-lg">
             <h3 class="text-lg font-semibold mb-4">
                 @lang('cooperation/admin/buildings.show.small-measures.title')
@@ -233,14 +233,12 @@
             </p>
 
             @foreach($availableScans as $scanItem)
-                @if(! ($smallMeasuresSettings[$scanItem->short]['cooperation_enabled'] ?? true))
-                    <livewire:cooperation.admin.buildings.small-measures-toggle
-                        :building="$building"
-                        :cooperation="$cooperation"
-                        :scan="$scanItem"
-                        :key="'small-measures-toggle-' . $scanItem->id"
-                    />
-                @endif
+                <livewire:cooperation.admin.buildings.small-measures-toggle
+                    :building="$building"
+                    :cooperation="$cooperation"
+                    :scan="$scanItem"
+                    :key="'small-measures-toggle-' . $scanItem->id"
+                />
             @endforeach
         </div>
     @endif

@@ -65,7 +65,7 @@ class BuildingController extends Controller
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 
         $scan = $cooperation->scans()->where('short', '!=', Scan::EXPERT)->first();
-        $scans = $cooperation->load(['scans' => fn($q) => $q->where('short', '!=', Scan::EXPERT)])->scans;
+        $scans = Scan::simpleScans()->get();
         $userCurrentRole = HoomdossierSession::getRole(true);
 
         // Haal small measures instellingen op per scan

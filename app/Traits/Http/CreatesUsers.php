@@ -7,6 +7,7 @@ use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\Hoomdossier;
 use App\Helpers\ScanAvailabilityHelper;
+use App\Helpers\SmallMeasuresSettingHelper;
 use App\Helpers\Str;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Mail\UserCreatedEmail;
@@ -60,17 +61,35 @@ trait CreatesUsers
         // at this point, a user cant register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user, $building);
 
-        // Set scan availability based on selected variant
-        $scanVariant = $request->input('scan_variant');
-        if ($scanVariant === 'lite-scan') {
-            $quickScan = Scan::quick();
-            if ($quickScan) {
-                ScanAvailabilityHelper::setAvailability($building, $quickScan, false);
+        // Set scan availability per scan
+        $scansEnabled = $request->input('scans_enabled', []);
+        $cooperationScanIds = $cooperation->scans->pluck('id')->toArray();
+
+        foreach (Scan::simpleScans()->get() as $scan) {
+            $enabled = filter_var($scansEnabled[$scan->short] ?? '0', FILTER_VALIDATE_BOOLEAN);
+            $isCooperationDefault = in_array($scan->id, $cooperationScanIds);
+
+            // Only save when differing from cooperation default
+            if ($enabled !== $isCooperationDefault) {
+                ScanAvailabilityHelper::setAvailability($building, $scan, $enabled);
             }
-        } elseif ($scanVariant === 'quick-scan') {
-            $liteScan = Scan::lite();
-            if ($liteScan) {
-                ScanAvailabilityHelper::setAvailability($building, $liteScan, false);
+        }
+
+        // Set small measures overrides, only for enabled scans
+        $smallMeasuresOverrides = $request->input('small_measures_override', []);
+        foreach (Scan::simpleScans()->get() as $scan) {
+            $scanEnabled = filter_var($scansEnabled[$scan->short] ?? '0', FILTER_VALIDATE_BOOLEAN);
+
+            // Skip small measures for disabled scans
+            if (! $scanEnabled) {
+                continue;
+            }
+
+            $enabled = filter_var($smallMeasuresOverrides[$scan->short] ?? '0', FILTER_VALIDATE_BOOLEAN);
+            $cooperationDefault = SmallMeasuresSettingHelper::isEnabledForCooperation($cooperation, $scan);
+
+            if ($enabled !== $cooperationDefault) {
+                SmallMeasuresSettingHelper::setOverride($building, $scan, $enabled);
             }
         }
 

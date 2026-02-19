@@ -118,8 +118,11 @@ return [
 
         'small-measures' => [
             'title' => 'Kleine maatregelen zichtbaarheid',
-            'description' => 'De coöperatie heeft kleine maatregelen uitgeschakeld voor de onderstaande scan(s). U kunt deze instelling per woning overschrijven.',
+            'description' => 'Beheer de zichtbaarheid van kleine maatregelen per scan voor deze woning. Standaard op basis van coöperatie-instellingen.',
+            'cooperation-enabled' => 'Ingeschakeld door coöperatie',
             'cooperation-disabled' => 'Uitgeschakeld door coöperatie',
+            'always-enabled' => 'Altijd ingeschakeld',
+            'toggle-for-building' => 'Inschakelen voor deze woning',
             'enable-for-building' => 'Inschakelen voor deze woning',
             'success' => 'Kleine maatregelen instelling bijgewerkt',
             'error' => [

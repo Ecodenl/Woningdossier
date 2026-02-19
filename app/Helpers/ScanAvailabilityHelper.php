@@ -12,40 +12,34 @@ use App\Models\ToolQuestionAnswer;
 class ScanAvailabilityHelper
 {
     /**
-     * Check of een scan beschikbaar is voor een building.
-     * Expert scan volgt coöperatieniveau (buiten scope).
-     * null (geen record) = enabled (code-default).
+     * Check if a scan is available for a building.
+     * Expert scan follows cooperation level (out of scope).
+     * null (no record) = follow cooperation default.
      */
     public static function isAvailableForBuilding(Building $building, Scan $scan): bool
     {
-        // Expert scan: altijd coöperatieniveau, buiten scope
+        // Expert scan: always cooperation level, out of scope
         if ($scan->isExpertScan()) {
             return true;
         }
 
-        // Check of de coöperatie deze scan heeft
-        $cooperation = $building->user->cooperation;
-        if (! $cooperation->scans->contains('id', $scan->id)) {
-            return false;
-        }
-
-        // Check BuildingSetting; null (geen record) = enabled (code-default)
         $value = BuildingSettingHelper::getSettingValue(
             $building,
             static::getBuildingSettingShort($scan),
             null
         );
 
-        // null = geen override = enabled (default)
-        if (is_null($value)) {
-            return true;
+        // Explicit building override takes precedence
+        if (! is_null($value)) {
+            return filter_var($value, FILTER_VALIDATE_BOOLEAN);
         }
 
-        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+        // No override: follow cooperation default
+        return $building->user->cooperation->scans->contains('id', $scan->id);
     }
 
     /**
-     * Heeft het building een antwoord op de roof-type ToolQuestion (eerste unieke quick-scan vraag)?
+     * Check if the building has an answer to the roof-type ToolQuestion (first unique quick-scan question).
      */
     public static function hasQuickScanData(Building $building): bool
     {
@@ -62,16 +56,16 @@ class ScanAvailabilityHelper
     }
 
     /**
-     * Kan de scan ingeschakeld worden? Retourneert true of vertaalsleutel met reden.
+     * Can the scan be enabled? Returns true or a translation key with reason.
      */
     public static function canEnable(Building $building, Scan $scan): true|string
     {
-        // Quick: altijd inschakelen
+        // Quick: can always be enabled
         if ($scan->isQuickScan()) {
             return true;
         }
 
-        // Lite: alleen als er geen quick-scan data is
+        // Lite: only if there is no quick-scan data
         if ($scan->isLiteScan()) {
             if (static::hasQuickScanData($building)) {
                 return 'cooperation/admin/buildings.show.scan-availability.disabled-reasons.quick-data-exists';
@@ -84,8 +78,8 @@ class ScanAvailabilityHelper
     }
 
     /**
-     * Kan de scan uitgeschakeld worden? Retourneert true of vertaalsleutel met reden.
-     * Een scan kan alleen uitgeschakeld worden als de andere scan ook aanstaat.
+     * Can the scan be disabled? Returns true or a translation key with reason.
+     * A scan can only be disabled if the other scan is also enabled.
      */
     public static function canDisable(Building $building, Scan $scan): true|string
     {
@@ -111,19 +105,17 @@ class ScanAvailabilityHelper
     }
 
     /**
-     * Sla scan beschikbaarheid op.
-     * true/null → scan enabled (verwijder record)
-     * false → '0' opslaan
+     * Save scan availability. Always stores '1' or '0' explicitly.
      */
     public static function setAvailability(Building $building, Scan $scan, bool $enabled): void
     {
         BuildingSettingHelper::syncSettings($building, [
-            static::getBuildingSettingShort($scan) => $enabled ? null : '0',
+            static::getBuildingSettingShort($scan) => $enabled ? '1' : '0',
         ]);
     }
 
     /**
-     * Get de building setting short voor een specifieke scan.
+     * Get the building setting short for a specific scan.
      */
     public static function getBuildingSettingShort(Scan $scan): string
     {

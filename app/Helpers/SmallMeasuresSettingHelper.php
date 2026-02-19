@@ -10,42 +10,41 @@ use App\Models\Scan;
 class SmallMeasuresSettingHelper
 {
     /**
-     * Check of kleine maatregelen zichtbaar zijn voor een building binnen een scan.
+     * Check if small measures are enabled for a building within a scan.
      */
     public static function isEnabledForBuilding(Building $building, Scan $scan): bool
     {
-        $cooperation = $building->user->cooperation;
-
-        // Haal cooperatie-niveau instelling op
-        $cooperationEnabled = static::isEnabledForCooperation($cooperation, $scan);
-
-        // Als cooperatie instelling AAN staat: altijd zichtbaar
-        if ($cooperationEnabled) {
+        // Lite scan always requires small measures, cannot be overridden
+        if ($scan->isLiteScan()) {
             return true;
         }
 
-        // Als cooperatie instelling UIT staat: check building override
         $override = BuildingSettingHelper::getSettingValue(
             $building,
             static::getBuildingSettingShort($scan),
-            false
+            null
         );
 
-        // Cast naar boolean
-        return filter_var($override, FILTER_VALIDATE_BOOLEAN);
+        // Explicit building override takes precedence
+        if (! is_null($override)) {
+            return filter_var($override, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        // No override: follow cooperation default
+        return static::isEnabledForCooperation($building->user->cooperation, $scan);
     }
 
     /**
-     * Check of kleine maatregelen enabled zijn op cooperatie-niveau voor een scan.
+     * Check if small measures are enabled at cooperation level for a scan.
      */
     public static function isEnabledForCooperation(Cooperation $cooperation, Scan $scan): bool
     {
-        // Expert scan heeft geen kleine maatregelen
+        // Expert scan has no small measures
         if ($scan->isExpertScan()) {
             return false;
         }
 
-        // Lite scan vereist altijd kleine maatregelen
+        // Lite scan always requires small measures
         if ($scan->isLiteScan()) {
             return true;
         }
@@ -55,14 +54,14 @@ class SmallMeasuresSettingHelper
             ->first();
 
         if (! $cooperationScan) {
-            return true; // Default: aan
+            return true; // Default: enabled
         }
 
         return (bool) ($cooperationScan->pivot->small_measures_enabled ?? true);
     }
 
     /**
-     * Get de building setting short voor een specifieke scan.
+     * Get the building setting short for a specific scan.
      */
     public static function getBuildingSettingShort(Scan $scan): string
     {
@@ -70,7 +69,7 @@ class SmallMeasuresSettingHelper
     }
 
     /**
-     * Check of een building override heeft voor een scan.
+     * Check if a building has an override for a scan.
      */
     public static function hasOverride(Building $building, Scan $scan): bool
     {
@@ -81,12 +80,22 @@ class SmallMeasuresSettingHelper
     }
 
     /**
-     * Set de building override voor een scan.
+     * Set the building override for a scan.
      */
     public static function setOverride(Building $building, Scan $scan, bool $enabled): void
     {
         BuildingSettingHelper::syncSettings($building, [
-            static::getBuildingSettingShort($scan) => $enabled ? '1' : null,
+            static::getBuildingSettingShort($scan) => $enabled ? '1' : '0',
+        ]);
+    }
+
+    /**
+     * Remove the building override for a scan (revert to cooperation default).
+     */
+    public static function clearOverride(Building $building, Scan $scan): void
+    {
+        BuildingSettingHelper::syncSettings($building, [
+            static::getBuildingSettingShort($scan) => null,
         ]);
     }
 }

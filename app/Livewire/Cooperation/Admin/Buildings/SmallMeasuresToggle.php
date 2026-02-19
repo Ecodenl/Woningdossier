@@ -15,6 +15,7 @@ class SmallMeasuresToggle extends Component
     public Scan $scan;
     public bool $enabled = false;
     public bool $cooperationEnabled;
+    public bool $locked = false;
 
     public function mount(Building $building, Cooperation $cooperation, Scan $scan): void
     {
@@ -22,13 +23,15 @@ class SmallMeasuresToggle extends Component
         $this->cooperation = $cooperation;
         $this->scan = $scan;
         $this->cooperationEnabled = SmallMeasuresSettingHelper::isEnabledForCooperation($cooperation, $scan);
-        $this->enabled = SmallMeasuresSettingHelper::hasOverride($building, $scan);
+        $this->enabled = SmallMeasuresSettingHelper::isEnabledForBuilding($building, $scan);
+        // Lite scan always requires small measures
+        $this->locked = $scan->isLiteScan();
     }
 
     public function updatedEnabled(bool $value): void
     {
-        // Only allow when cooperation setting is OFF
-        if ($this->cooperationEnabled) {
+        if ($this->locked) {
+            $this->enabled = true;
             return;
         }
 

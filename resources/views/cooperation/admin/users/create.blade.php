@@ -28,15 +28,7 @@
     <div class="flex w-full"
          x-data="register(
              '{{route('cooperation.check-existing-email', ['cooperation' => $cooperation, 'forCooperation' => $cooperationToManage ?? $cooperation])}}',
-             {
-                 @foreach($allScans as $scan)
-                     @php
-                         $isCoopScan = in_array($scan->id, $cooperationScanIds);
-                         $oldVal = old('scans_enabled.' . $scan->short, $isCoopScan ? '1' : '0');
-                     @endphp
-                     '{{ $scan->short }}': {{ $oldVal === '1' ? 'true' : 'false' }},
-                 @endforeach
-             }
+             '{{ old('scans.type', $currentScan) }}'
          )">
         <form class="w-full flex flex-wrap"
               @if(isset($cooperationToManage))
@@ -150,87 +142,68 @@
 
             {{-- TODO: Contact ID? --}}
 
-            {{-- Scan availability & small measures checkboxes --}}
+            {{-- Scan availability & small measures --}}
             <div class="w-full flex flex-wrap" x-show="! alreadyMember && ! noBuilding">
-                {{-- Scan availability --}}
-                <div class="w-full lg:w-1/2 lg:pr-3 mb-4">
-                    <label class="form-label">
-                        @lang('cooperation/admin/users.create.form.scan-availability.label')
-                    </label>
+                {{-- Scan type select --}}
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'withInputSource' => false,
+                    'label' => __('cooperation/admin/users.create.form.scan-availability.label'),
+                    'id' => 'scans-type',
+                    'class' => 'w-full lg:w-1/2 lg:pr-3',
+                    'inputName' => 'scans.type',
+                ])
                     <p class="text-sm text-gray-600 mb-2">
                         @lang('cooperation/admin/users.create.form.scan-availability.description')
                     </p>
+                    @component('cooperation.frontend.layouts.components.alpine-select')
+                        <select class="form-input hidden" name="scans[type]" id="scans-type" x-model="selectedScan">
+                            @foreach($mapping as $type => $typeTranslation)
+                                <option @if($currentScan === $type) selected @endif value="{{ $type }}">{{ $typeTranslation }}</option>
+                            @endforeach
+                        </select>
+                    @endcomponent
+                @endcomponent
 
-                    @foreach($allScans as $scan)
-                        @php
-                            $isCooperationScan = in_array($scan->id, $cooperationScanIds);
-                        @endphp
-                        <div class="flex items-center mb-2">
-                            <input type="hidden" name="scans_enabled[{{ $scan->short }}]" value="0">
-                            <input type="checkbox"
-                                   id="scan-enabled-{{ $scan->short }}"
-                                   name="scans_enabled[{{ $scan->short }}]"
-                                   value="1"
-                                   class="form-checkbox mr-2"
-                                   x-model="scansEnabled['{{ $scan->short }}']"
-                            >
-                            <label for="scan-enabled-{{ $scan->short }}">
-                                {{ $scan->name }}
-                                @if(! $isCooperationScan)
-                                    <span class="text-sm text-gray-500">
-                                        (@lang('cooperation/admin/users.create.form.scan-availability.not-in-cooperation'))
+                {{-- Small measures checkboxes --}}
+                <div class="form-group w-full lg:w-1/2 lg:pl-3">
+                    <div class="form-header">
+                        <label class="form-label max-w-16/20">
+                            @lang('cooperation/admin/users.create.form.small-measures.label')
+                        </label>
+                    </div>
+                    <div class="w-full">
+                        <p class="text-sm text-gray-600 mb-2">
+                            @lang('cooperation/admin/users.create.form.small-measures.description')
+                        </p>
+
+                        @foreach(['quick-scan' => __('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.quick-scan'), 'lite-scan' => __('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.lite-scan')] as $scanShort => $scanName)
+                            @php
+                                $isLiteScan = $scanShort === \App\Models\Scan::LITE;
+                                $smCoopEnabled = $smallMeasuresSettings[$scanShort]['cooperation_enabled'] ?? true;
+                                $oldSmValue = $isLiteScan ? '1' : old('scans.small_measures_enabled.' . $scanShort, $smCoopEnabled ? '1' : '0');
+                            @endphp
+                            <div class="flex items-center mb-3"
+                                 x-show="selectedScan === '{{ $scanShort }}' || selectedScan === 'both-scans'"
+                                 x-cloak>
+                                <label class="flex items-center {{ $isLiteScan ? 'cursor-not-allowed opacity-60' : 'cursor-pointer' }}">
+                                    <input type="hidden" name="scans[small_measures_enabled][{{ $scanShort }}]" value="{{ $isLiteScan ? '1' : '0' }}">
+                                    <input type="checkbox"
+                                           name="scans[small_measures_enabled][{{ $scanShort }}]"
+                                           value="1"
+                                           class="form-checkbox h-5 w-5 text-green-600"
+                                           @if($isLiteScan) checked disabled @elseif($oldSmValue === '1') checked @endif>
+                                    <span class="ml-2">
+                                        {{ $scanName }}: @lang('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.label')
+                                        @if($isLiteScan)
+                                            <span class="text-sm text-gray-500 italic">
+                                                (@lang('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.always-required'))
+                                            </span>
+                                        @endif
                                     </span>
-                                @endif
-                            </label>
-                        </div>
-                    @endforeach
-
-                    @error('scans_enabled')
-                        <p class="text-red text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                {{-- Small measures - only visible for enabled scans --}}
-                <div class="w-full lg:w-1/2 lg:pl-3 mb-4"
-                     x-show="hasAnyScanEnabled" x-cloak>
-                    <label class="form-label">
-                        @lang('cooperation/admin/users.create.form.small-measures.label')
-                    </label>
-                    <p class="text-sm text-gray-600 mb-2">
-                        @lang('cooperation/admin/users.create.form.small-measures.description')
-                    </p>
-
-                    @foreach($allScans as $scan)
-                        @php
-                            $smCoopEnabled = $smallMeasuresSettings[$scan->short]['cooperation_enabled'] ?? true;
-                            $smLocked = $scan->isLiteScan();
-                            $oldSmValue = $smLocked ? '1' : old('small_measures_override.' . $scan->short, $smCoopEnabled ? '1' : '0');
-                        @endphp
-                        <div class="flex items-center mb-2"
-                             x-show="scansEnabled['{{ $scan->short }}']" x-cloak>
-                            <input type="hidden" name="small_measures_override[{{ $scan->short }}]" value="{{ $smLocked ? '1' : '0' }}">
-                            <input type="checkbox"
-                                   id="small-measures-{{ $scan->short }}"
-                                   name="small_measures_override[{{ $scan->short }}]"
-                                   value="1"
-                                   class="form-checkbox mr-2"
-                                   @checked($oldSmValue === '1')
-                                   @disabled($smLocked)
-                            >
-                            <label for="small-measures-{{ $scan->short }}" @class(['opacity-50' => $smLocked])>
-                                {{ $scan->name }}
-                                <span class="text-sm text-gray-500">
-                                    @if($smLocked)
-                                        (@lang('cooperation/admin/users.create.form.small-measures.always-enabled'))
-                                    @else
-                                        (@lang($smCoopEnabled
-                                            ? 'cooperation/admin/users.create.form.small-measures.cooperation-enabled'
-                                            : 'cooperation/admin/users.create.form.small-measures.cooperation-disabled'))
-                                    @endif
-                                </span>
-                            </label>
-                        </div>
-                    @endforeach
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
@@ -249,12 +222,9 @@
             </div>
 
             <div class="w-full mt-5" x-show="! alreadyMember && ! noBuilding">
-                <p class="text-red text-sm mb-2" x-show="! hasAnyScanEnabled" x-cloak>
-                    @lang('cooperation/admin/users.create.form.scan-availability.at-least-one')
-                </p>
                 <button class="btn btn-green flex justify-center items-center w-full" type="submit"
                         x-on:click="setTimeout(() => {submitted = true;});"
-                        x-bind:disabled="submitted || alreadyMember || noBuilding || ! hasAnyScanEnabled">
+                        x-bind:disabled="submitted || alreadyMember || noBuilding">
                     @lang('cooperation/admin/users.create.form.submit')
                     <i class="w-3 h-3 icon-plus-purple ml-1"></i>
                 </button>

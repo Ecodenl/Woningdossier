@@ -41,10 +41,8 @@ return [
             'phone-number' => 'Telefoonnummer',
             'select-coach' => 'Selecteer een coach om te koppelen aan de gebruiker',
             'scan-availability' => [
-                'label' => 'Scan beschikbaarheid',
-                'description' => 'Selecteer welke scans beschikbaar zijn voor deze gebruiker. Standaard op basis van coöperatie-instellingen.',
-                'not-in-cooperation' => 'niet in coöperatie',
-                'at-least-one' => 'Er moet minimaal één scan geselecteerd zijn.',
+                'label' => 'Beschikbare varianten',
+                'description' => 'Selecteer welke varianten beschikbaar zijn voor deze gebruiker.',
             ],
             'small-measures' => [
                 'label' => 'Kleine maatregelen',

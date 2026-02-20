@@ -13,6 +13,7 @@ use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\Role;
 use App\Models\Scan;
+use App\Services\CooperationScanService;
 use App\Models\User;
 use App\Traits\Http\CreatesUsers;
 
@@ -52,11 +53,11 @@ class UserController extends Controller
         $roles = Role::orderByDesc('level')->get();
         $coaches = $cooperationToManage->getCoaches();
 
-        $allScans = Scan::simpleScans()->get();
-        $cooperationScanIds = $cooperationToManage->scans->pluck('id')->toArray();
+        $mapping = CooperationScanService::translationMap();
+        $currentScan = CooperationScanService::init($cooperationToManage)->getCurrentType();
 
         $smallMeasuresSettings = [];
-        foreach ($allScans as $scan) {
+        foreach (Scan::simpleScans()->get() as $scan) {
             $smallMeasuresSettings[$scan->short] = [
                 'cooperation_enabled' => SmallMeasuresSettingHelper::isEnabledForCooperation($cooperationToManage, $scan),
             ];
@@ -64,7 +65,7 @@ class UserController extends Controller
 
         return view('cooperation.admin.users.create', compact(
             'userCurrentRole', 'roles', 'coaches', 'cooperationToManage',
-            'allScans', 'cooperationScanIds', 'smallMeasuresSettings'
+            'mapping', 'currentScan', 'smallMeasuresSettings'
         ));
     }
 

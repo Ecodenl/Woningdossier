@@ -61,31 +61,25 @@ trait CreatesUsers
         // at this point, a user cant register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user, $building);
 
-        // Set scan availability per scan
-        $scansEnabled = $request->input('scans_enabled', []);
-        $cooperationScanIds = $cooperation->scans->pluck('id')->toArray();
+        // Set scan availability based on selected type
+        $scanType = $request->input('scans.type');
+        ScanAvailabilityHelper::syncAvailability($building, $scanType);
+
+        // Set small measures overrides, only for scans enabled by the selected type
+        $smallMeasuresEnabled = $request->input('scans.small_measures_enabled', []);
+        $enabledScanShorts = match ($scanType) {
+            Scan::QUICK => [Scan::QUICK],
+            Scan::LITE => [Scan::LITE],
+            'both-scans' => [Scan::QUICK, Scan::LITE],
+            default => [Scan::QUICK],
+        };
 
         foreach (Scan::simpleScans()->get() as $scan) {
-            $enabled = filter_var($scansEnabled[$scan->short] ?? '0', FILTER_VALIDATE_BOOLEAN);
-            $isCooperationDefault = in_array($scan->id, $cooperationScanIds);
-
-            // Only save when differing from cooperation default
-            if ($enabled !== $isCooperationDefault) {
-                ScanAvailabilityHelper::setAvailability($building, $scan, $enabled);
-            }
-        }
-
-        // Set small measures overrides, only for enabled scans
-        $smallMeasuresOverrides = $request->input('small_measures_override', []);
-        foreach (Scan::simpleScans()->get() as $scan) {
-            $scanEnabled = filter_var($scansEnabled[$scan->short] ?? '0', FILTER_VALIDATE_BOOLEAN);
-
-            // Skip small measures for disabled scans
-            if (! $scanEnabled) {
+            if (! in_array($scan->short, $enabledScanShorts)) {
                 continue;
             }
 
-            $enabled = filter_var($smallMeasuresOverrides[$scan->short] ?? '0', FILTER_VALIDATE_BOOLEAN);
+            $enabled = filter_var($smallMeasuresEnabled[$scan->short] ?? '0', FILTER_VALIDATE_BOOLEAN);
             $cooperationDefault = SmallMeasuresSettingHelper::isEnabledForCooperation($cooperation, $scan);
 
             if ($enabled !== $cooperationDefault) {

@@ -106,8 +106,8 @@ return [
         'previous' => 'Vorige',
 
         'scan-availability' => [
-            'title' => 'Beschikbare scans',
-            'description' => 'Bepaal welke scans beschikbaar zijn voor dit dossier.',
+            'title' => 'Beschikbare varianten',
+            'description' => 'Bepaal welke varianten beschikbaar zijn voor dit dossier.',
             'enable-for-building' => 'Beschikbaar',
             'success' => 'Scan beschikbaarheid bijgewerkt',
             'disabled-reasons' => [

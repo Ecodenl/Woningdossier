@@ -8,6 +8,7 @@ use App\Models\InputSource;
 use App\Models\Scan;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionAnswer;
+use App\Services\CooperationScanService;
 
 class ScanAvailabilityHelper
 {
@@ -111,6 +112,66 @@ class ScanAvailabilityHelper
     {
         BuildingSettingHelper::syncSettings($building, [
             static::getBuildingSettingShort($scan) => $enabled ? '1' : '0',
+        ]);
+    }
+
+    /**
+     * Determine the current scan type for a building (quick-scan, lite-scan, or both-scans).
+     */
+    public static function getCurrentTypeForBuilding(Building $building): string
+    {
+        $liteScan = Scan::lite();
+        $quickScan = Scan::quick();
+
+        $liteAvailable = $liteScan && static::isAvailableForBuilding($building, $liteScan);
+        $quickAvailable = $quickScan && static::isAvailableForBuilding($building, $quickScan);
+
+        if ($liteAvailable && $quickAvailable) {
+            return 'both-scans';
+        }
+
+        if ($liteAvailable) {
+            return Scan::LITE;
+        }
+
+        return Scan::QUICK;
+    }
+
+    /**
+     * Sync scan availability for a building based on a type selection (quick-scan, lite-scan, or both-scans).
+     */
+    public static function syncAvailability(Building $building, string $type): void
+    {
+        $enabledScans = [
+            Scan::QUICK => [Scan::QUICK],
+            Scan::LITE => [Scan::LITE],
+            'both-scans' => [Scan::QUICK, Scan::LITE],
+        ];
+
+        $scansToEnable = $enabledScans[$type] ?? [Scan::QUICK];
+        $cooperationScanShorts = $building->user->cooperation->scans->pluck('short')->toArray();
+
+        foreach (Scan::simpleScans()->get() as $scan) {
+            $shouldBeEnabled = in_array($scan->short, $scansToEnable);
+            $isCooperationDefault = in_array($scan->short, $cooperationScanShorts);
+
+            if ($shouldBeEnabled !== $isCooperationDefault) {
+                // Store an override when it differs from the cooperation default
+                static::setAvailability($building, $scan, $shouldBeEnabled);
+            } else {
+                // Clear any existing override when it matches the cooperation default
+                static::clearAvailability($building, $scan);
+            }
+        }
+    }
+
+    /**
+     * Clear scan availability override (revert to cooperation default).
+     */
+    public static function clearAvailability(Building $building, Scan $scan): void
+    {
+        BuildingSettingHelper::syncSettings($building, [
+            static::getBuildingSettingShort($scan) => null,
         ]);
     }
 

@@ -1,4 +1,4 @@
-export default (emailUrl, scansEnabled = {}) => ({
+export default (emailUrl, selectedScan = 'quick-scan') => ({
     allowAccess: false,
     showEmailWarning: false,
     alreadyMember: false,
@@ -6,10 +6,7 @@ export default (emailUrl, scansEnabled = {}) => ({
     emailExists: false,
     emailUrl: emailUrl,
     submitted: false,
-    scansEnabled: scansEnabled,
-    get hasAnyScanEnabled() {
-        return Object.values(this.scansEnabled).some(v => v);
-    },
+    selectedScan: selectedScan,
 
     checkEmail(element, safeValue = null) {
         // Don't apply check if current value is safe value

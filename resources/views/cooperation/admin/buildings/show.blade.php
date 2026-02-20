@@ -199,51 +199,12 @@
         @endcan
     </div>
 
-    {{-- Scan Beschikbaarheid Sectie --}}
-    @if($scans->count() >= 1)
-        <div class="w-full mt-6 p-4 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4">
-                @lang('cooperation/admin/buildings.show.scan-availability.title')
-            </h3>
+    <livewire:cooperation.admin.buildings.scan-settings
+        :building="$building"
+        :cooperation="$cooperation"
+    />
 
-            <p class="text-sm text-gray-600 mb-4">
-                @lang('cooperation/admin/buildings.show.scan-availability.description')
-            </p>
-
-            @foreach($scans as $scanItem)
-                <livewire:cooperation.admin.buildings.scan-availability-toggle
-                    :building="$building"
-                    :cooperation="$cooperation"
-                    :scan="$scanItem"
-                    :key="'scan-toggle-' . $scanItem->id"
-                />
-            @endforeach
-        </div>
-    @endif
-
-    {{-- Kleine Maatregelen Override Sectie --}}
-    @if($availableScans->isNotEmpty())
-        <div class="w-full mt-6 p-4 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4">
-                @lang('cooperation/admin/buildings.show.small-measures.title')
-            </h3>
-
-            <p class="text-sm text-gray-600 mb-4">
-                @lang('cooperation/admin/buildings.show.small-measures.description')
-            </p>
-
-            @foreach($availableScans as $scanItem)
-                <livewire:cooperation.admin.buildings.small-measures-toggle
-                    :building="$building"
-                    :cooperation="$cooperation"
-                    :scan="$scanItem"
-                    :key="'small-measures-toggle-' . $scanItem->id"
-                />
-            @endforeach
-        </div>
-    @endif
-
-    <div x-data="tabs()">
+    <div x-data="tabs()" class="mt-12">
         <nav class="nav-tabs">
             <a x-bind="tab" data-tab="messages-intern">
                 @lang('cooperation/admin/buildings.show.tabs.messages-intern.title')

@@ -44,6 +44,9 @@ return [
         'bag' => [
             'secret' => env('BAG_API_KEY', ''),
         ],
+        'milieucentraal' => [
+            'secret' => env('MILIEUCENTRAAL_API_KEY', ''),
+        ],
         'econobis' => [
             'enabled' => env('ECONOBIS_ENABLED', false),
             'wildcard' => env('ECONOBIS_WILDCARD', 'test'),

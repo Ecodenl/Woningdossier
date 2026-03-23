@@ -32,6 +32,7 @@ class Client
             'base_uri'        => $this->baseUrl,
             'headers'         => [
                 'Accept' => 'application/json',
+                'apiKey' => config('hoomdossier.services.milieucentraal.secret'),
             ],
             'allow_redirects' => false,
         ];

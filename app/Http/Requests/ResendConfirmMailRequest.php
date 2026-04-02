@@ -25,8 +25,8 @@ class ResendConfirmMailRequest extends FormRequest
                 'required',
                 Rule::email(),
                 Rule::exists('accounts', 'email')->where(function ($query) {
-    $query->where('confirm_token', '!=', null);
-}),
+                    $query->where('confirm_token', '!=', null);
+                }),
             ],
         ];
     }

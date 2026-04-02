@@ -26,7 +26,9 @@ class BuildingNoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'building.note' => 'required',
+            'building.note' => [
+                'required',
+            ],
             'building.id' => ['required', Rule::exists('buildings', 'id')],
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use Illuminate\Validation\Rule;
 use App\Helpers\Hoomdossier;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Models\CooperationMeasureApplication;
@@ -44,7 +45,7 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
             ],
             'cooperation_measure_applications.measure_category' => [
                 'nullable',
-                'exists:measure_categories,id',
+                Rule::exists('measure_categories', 'id'),
             ],
             'cooperation_measure_applications.costs.from' => [
                 'nullable', 'numeric', 'min:0',

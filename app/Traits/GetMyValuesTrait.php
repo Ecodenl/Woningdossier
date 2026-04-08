@@ -73,6 +73,16 @@ trait GetMyValuesTrait
         return \App\Helpers\Cache\Schema::hasColumn($this->getTable(), $attribute);
     }
 
+    protected function getIgnoreAttributes(): array
+    {
+        // @phpstan-ignore function.alreadyNarrowedType
+        if (property_exists($this, 'ignoreAttributes')) {
+            return $this->ignoreAttributes;
+        }
+
+        return [];
+    }
+
     protected function saveForMasterInputSource(): void
     {
         $tablesToIgnore = [
@@ -84,7 +94,7 @@ trait GetMyValuesTrait
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             $data = $this->attributesToArray();
             // In case there's attributes we don't want to copy over
-            foreach (($this->ignoreAttributes ?? []) as $ignoreAttribute) {
+            foreach ($this->getIgnoreAttributes() as $ignoreAttribute) {
                 unset($data[$ignoreAttribute]);
             }
 
@@ -210,7 +220,7 @@ trait GetMyValuesTrait
     /**
      * Scope all the available input for a user.
      */
-    public function scopeForMe(Builder $query, User $user = null): Builder
+    public function scopeForMe(Builder $query, ?User $user = null): Builder
     {
         $whereUserOrBuildingId = $this->determineWhereColumn($user);
 
@@ -266,7 +276,7 @@ trait GetMyValuesTrait
     /**
      * Determine if we should query on the user or building id.
      */
-    protected function determineWhereColumn(User $user = null): array
+    protected function determineWhereColumn(?User $user = null): array
     {
         // because recent changes in the application with jobs / commands running on the commandline we need to
         // obtain data from objects as much as possible

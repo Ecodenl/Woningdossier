@@ -395,7 +395,7 @@ class Building extends Model implements MediableInterface
     /**
      * Check if a step is completed for a building with matching input source id.
      */
-    public function hasCompleted(Step $step, InputSource $inputSource = null): bool
+    public function hasCompleted(Step $step, ?InputSource $inputSource = null): bool
     {
         if ($inputSource instanceof InputSource) {
             return $this->completedSteps()
@@ -426,7 +426,7 @@ class Building extends Model implements MediableInterface
     /**
      * Check if a building has answered any or a specific expert step
      */
-    public function hasAnsweredExpertQuestion(Step $step = null): bool
+    public function hasAnsweredExpertQuestion(?Step $step = null): bool
     {
         // TODO: Should we rename this to "hasAnsweredExpertStep"? Or maybe just use "hasCompleted"?
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -451,7 +451,7 @@ class Building extends Model implements MediableInterface
     /**
      * Check if a step is not completed.
      */
-    public function hasNotCompleted(Step $step, InputSource $inputSource = null): bool
+    public function hasNotCompleted(Step $step, ?InputSource $inputSource = null): bool
     {
         return ! $this->hasCompleted($step, $inputSource);
     }
@@ -498,7 +498,7 @@ class Building extends Model implements MediableInterface
         return $this->hasMany(BuildingVentilation::class);
     }
 
-    public function getBuildingElement(string $short, InputSource $inputSource = null): ?BuildingElement
+    public function getBuildingElement(string $short, ?InputSource $inputSource = null): ?BuildingElement
     {
         if ($inputSource instanceof InputSource) {
             return $this->buildingElements()

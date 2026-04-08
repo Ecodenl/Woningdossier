@@ -3,7 +3,7 @@
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Str;
 
-EloquentBuilder::macro('withWhereHas', function ($relation, Closure $callback = null, $operator = '>=', $count = 1) {
+EloquentBuilder::macro('withWhereHas', function ($relation, ?Closure $callback = null, $operator = '>=', $count = 1) {
     /**
      * @var EloquentBuilder $this
      *

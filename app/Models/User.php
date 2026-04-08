@@ -429,7 +429,7 @@ class User extends Model implements AuthorizableContract
     /**
      * Check whether a user completed a questionnaire.
      */
-    public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null): bool
+    public function hasCompletedQuestionnaire(Questionnaire $questionnaire, ?InputSource $inputSource = null): bool
     {
         $query = $this->completedQuestionnaires()
             ->where('questionnaire_id', $questionnaire->id);

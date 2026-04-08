@@ -20,7 +20,10 @@ class ClientFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'clients.name' => 'required|max:256',
+            'clients.name' => [
+                'required',
+                'max:256',
+            ],
         ];
     }
 }

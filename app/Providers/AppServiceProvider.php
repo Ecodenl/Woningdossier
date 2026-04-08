@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Listeners\EconobisEventSubscriber;
+use App\Listeners\FilterBlockedEmailDomains;
 use App\Listeners\QueueEventSubscriber;
 use App\Listeners\UserEventSubscriber;
+use Illuminate\Mail\Events\MessageSending;
 use App\Models\Cooperation;
 use App\Policies\AccountPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -141,6 +143,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function attachSubscribers(): void
     {
+        Event::listen(MessageSending::class, FilterBlockedEmailDomains::class);
+
         Event::subscribe(UserEventSubscriber::class);
         Event::subscribe(QueueEventSubscriber::class);
         Event::subscribe(EconobisEventSubscriber::class);

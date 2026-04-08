@@ -25,7 +25,7 @@ class CooperationMiddleware
 
         // if no valid cooperation is found, return to index
         if (! $cooperation instanceof Cooperation) {
-            return redirect()->route('index');
+            return to_route('index');
         }
 
         HoomdossierSession::setCooperation($cooperation);

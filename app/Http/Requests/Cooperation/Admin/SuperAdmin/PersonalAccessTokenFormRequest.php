@@ -20,7 +20,10 @@ class PersonalAccessTokenFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'personal_access_tokens.name' => 'required|max:256'
+            'personal_access_tokens.name' => [
+                'required',
+                'max:256',
+            ],
         ];
     }
 }

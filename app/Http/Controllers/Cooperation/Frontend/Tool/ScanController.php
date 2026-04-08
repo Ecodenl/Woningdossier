@@ -17,10 +17,10 @@ class ScanController extends Controller
 
         if ($scan->short === Scan::EXPERT) {
             $step = Step::forScan($scan)->first();
-            return redirect()->route('cooperation.frontend.tool.expert-scan.index', compact('scan', 'step'));
+            return to_route('cooperation.frontend.tool.expert-scan.index', compact('scan', 'step'));
         }
         Log::debug("Simple scan redirect, should this be happening ?");
 
-        return redirect()->route('cooperation.home');
+        return to_route('cooperation.home');
     }
 }

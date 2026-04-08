@@ -31,8 +31,7 @@ class ToolCalculationResultController extends Controller
     {
         $toolCalculationResult->update($request->validated()['tool_calculation_results']);
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.tool-calculation-results.edit', compact('toolCalculationResult'))
+        return to_route('cooperation.admin.super-admin.tool-calculation-results.edit', compact('toolCalculationResult'))
             ->with('success', __('cooperation/admin/super-admin/tool-calculation-results.update.success'));
     }
 }

@@ -89,6 +89,9 @@ return [
             // Email addresses that should be allowed through the email filter if the app isn't in production.
             'whitelist' => env('HOOM_CONTACT_EMAIL_WHITELIST', ''),
             'whitelist_enabled' => env('HOOM_CONTACT_EMAIL_WHITELIST_ENABLED', true),
+            // Comma-separated list of email domains to block (e.g. "@ecogeenmail.nl,@example.com").
+            // Emails to addresses matching these domains will be silently dropped.
+            'blocked_domains' => env('HOOM_CONTACT_EMAIL_BLOCKED_DOMAINS', ''),
         ],
     ],
 

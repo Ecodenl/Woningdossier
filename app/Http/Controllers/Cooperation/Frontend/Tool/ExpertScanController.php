@@ -48,11 +48,11 @@ class ExpertScanController extends Controller
             Log::debug('ExpertScanController::index found redirect step ' . $step->short);
 
             $step = Step::findByShort($redirectSteps[$step->short]);
-            return redirect()->route('cooperation.frontend.tool.expert-scan.index', compact('step'));
+            return to_route('cooperation.frontend.tool.expert-scan.index', compact('step'));
         }
 
         Log::debug('ExpertScanController::index found static step ' . $step->short);
         // at this point the step exists, however wrong url. So we will help them a bit.
-        return redirect()->route("cooperation.tool.{$step->short}.index");
+        return to_route("cooperation.tool.{$step->short}.index");
     }
 }

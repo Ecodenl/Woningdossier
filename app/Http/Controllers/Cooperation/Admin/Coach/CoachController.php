@@ -10,6 +10,6 @@ class CoachController extends Controller
     public function index(): RedirectResponse
     {
         // no home page that is relevant, so we redirect them to the building page
-        return redirect()->route('cooperation.admin.coach.buildings.index');
+        return to_route('cooperation.admin.coach.buildings.index');
     }
 }

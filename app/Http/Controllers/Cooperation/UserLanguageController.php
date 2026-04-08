@@ -24,12 +24,12 @@ class UserLanguageController extends Controller
         $referer = $request->headers->get('referer', null);
 
         if (is_null($referer)) {
-            return redirect()->route('cooperation.welcome', compact('cooperation'));
+            return to_route('cooperation.welcome', compact('cooperation'));
         } else {
             // check if referer is in current domain
             $host = parse_url($referer, PHP_URL_HOST);
             if (false === stristr($host, config('hoomdossier.domain'))) {
-                return redirect()->route('cooperation.welcome', compact('cooperation'));
+                return to_route('cooperation.welcome', compact('cooperation'));
             }
 
             return redirect($referer);

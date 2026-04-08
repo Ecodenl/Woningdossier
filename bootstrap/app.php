@@ -112,7 +112,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ? HoomdossierSession::setRole($role)
                 : Hoomdossier::user()->logout();
 
-            return redirect()->route('cooperation.home');
+            return to_route('cooperation.home');
         });
 
         $exceptions->render(function (UnauthorizedException $e, Request $request) {
@@ -125,7 +125,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 )->with('warning', __('default.messages.exceptions.no-right-roles'));
             }
 
-            return redirect()->route('cooperation.home');
+            return to_route('cooperation.home');
         });
 
         $exceptions->render(function (ModelNotFoundException $e, Request $request) {
@@ -164,12 +164,12 @@ return Application::configure(basePath: dirname(__DIR__))
             $cooperationId = session()->get('cooperation', null);
 
             if (is_null($cooperationId)) {
-                return redirect()->route('index');
+                return to_route('index');
             }
 
             $cooperation = Cooperation::find($cooperationId);
             if (! $cooperation instanceof Cooperation) {
-                return redirect()->route('index');
+                return to_route('index');
             }
 
             return redirect()->guest($e->redirectTo($request) ?? route('cooperation.auth.login', compact('cooperation')));

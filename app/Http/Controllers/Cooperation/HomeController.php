@@ -16,7 +16,7 @@ class HomeController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        $scans = $cooperation->load(['scans' => fn($q) => $q->where('short', '!=', Scan::EXPERT)])->scans
+        $scans = Scan::simpleScans()->get()
             ->filter(fn ($scan) => ScanAvailabilityHelper::isAvailableForBuilding($building, $scan))
             ->values();
 

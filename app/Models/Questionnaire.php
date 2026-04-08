@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Cooperation $cooperation
+ * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\QuestionnaireStep> $questionnaireSteps
  * @property-read int|null $questionnaire_steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Question> $questions

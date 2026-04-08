@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $cooperation_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Cooperation $cooperation
+ * @property-read \App\Models\Cooperation|null $cooperation
  * @method static Builder<static>|CooperationRedirect from(string $slug)
  * @method static Builder<static>|CooperationRedirect newModelQuery()
  * @method static Builder<static>|CooperationRedirect newQuery()

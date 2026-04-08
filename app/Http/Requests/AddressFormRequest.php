@@ -26,8 +26,16 @@ class AddressFormRequest extends FormRequest
             // If NL, should be returned from the BAG. However, validating is pretty rough... so as long as it's a string?
             // TODO: Should we enhance validation?
             'address.extension' => ['nullable', 'string'],
-            'address.street' => 'required|string|max:255',
-            'address.city' => 'required|string|max:255',
+            'address.street' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+            'address.city' => [
+                'required',
+                'string',
+                'max:255',
+            ],
         ];
     }
 }

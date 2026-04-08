@@ -49,7 +49,7 @@ class MunicipalityController extends Controller
         $data = $request->validated()['municipalities'];
         $municipality = Municipality::create($data);
 
-        return redirect()->route('cooperation.admin.super-admin.municipalities.show', compact('municipality'))
+        return to_route('cooperation.admin.super-admin.municipalities.show', compact('municipality'))
             ->with('success', __('cooperation/admin/super-admin/municipalities.store.success'));
     }
 
@@ -76,7 +76,7 @@ class MunicipalityController extends Controller
         $data = $request->validated()['municipalities'];
         $municipality->update($data);
 
-        return redirect()->route('cooperation.admin.super-admin.municipalities.index')
+        return to_route('cooperation.admin.super-admin.municipalities.index')
             ->with('success', __('cooperation/admin/super-admin/municipalities.update.success'));
     }
 
@@ -141,7 +141,7 @@ class MunicipalityController extends Controller
             }
         }
 
-        return redirect()->route('cooperation.admin.super-admin.municipalities.show', compact('municipality'))
+        return to_route('cooperation.admin.super-admin.municipalities.show', compact('municipality'))
             ->with('success', __('cooperation/admin/super-admin/municipalities.couple.success'));
     }
 }

@@ -36,7 +36,7 @@ class BuildingController extends Controller
         $user = $building->user;
 
         if ($building->trashed() || ! $user instanceof User) {
-            return redirect()->route('cooperation.admin.index');
+            return to_route('cooperation.admin.index');
         }
 
         Gate::authorize('show', [$building]);
@@ -127,7 +127,7 @@ class BuildingController extends Controller
         $building->user->update($validatedData['users']);
         $building->user->account->update($validatedData['accounts']);
 
-        return redirect()->route('cooperation.admin.buildings.edit', compact('building'))
+        return to_route('cooperation.admin.buildings.edit', compact('building'))
             ->with('success', __('cooperation/admin/buildings.update.success'));
     }
 }

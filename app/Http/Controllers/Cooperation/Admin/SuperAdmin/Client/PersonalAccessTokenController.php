@@ -38,8 +38,7 @@ class PersonalAccessTokenController extends Controller
             $request->input('personal_access_tokens.abilities', ['*'])
         );
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
+        return to_route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
             ->with('token', $newAccessToken);
     }
 
@@ -50,8 +49,7 @@ class PersonalAccessTokenController extends Controller
             'abilities' => $request->input('personal_access_tokens.abilities', ['*'])
         ]);
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
+        return to_route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
             ->with('success', __('cooperation/admin/super-admin/clients/personal-access-tokens.update.success'));
     }
 
@@ -59,8 +57,7 @@ class PersonalAccessTokenController extends Controller
     {
         $personalAccessToken->delete();
 
-        return redirect()
-            ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
+        return to_route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
             ->with('success', __('cooperation/admin/super-admin/clients/personal-access-tokens.destroy.success'));
     }
 }

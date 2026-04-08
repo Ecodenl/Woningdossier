@@ -15,7 +15,9 @@ class QuestionnaireRequest extends FormRequest
         return [
             'questionnaires.steps' => ['required', 'array', 'min:1'],
             'questionnaires.steps.*' => [Rule::exists('steps', 'id')],
-            'questionnaires.name.*' => 'required',
+            'questionnaires.name.*' => [
+                'required',
+            ],
         ];
     }
 }

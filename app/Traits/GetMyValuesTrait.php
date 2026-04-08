@@ -84,7 +84,7 @@ trait GetMyValuesTrait
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             $data = $this->attributesToArray();
             // In case there's attributes we don't want to copy over
-            foreach ($this->ignoreAttributes as $ignoreAttribute) {
+            foreach (($this->ignoreAttributes ?? []) as $ignoreAttribute) {
                 unset($data[$ignoreAttribute]);
             }
 

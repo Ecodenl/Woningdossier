@@ -31,6 +31,7 @@ class Account extends BaseCache
         $cooperation = HoomdossierSession::getCooperation(true);
         throw_if(! $cooperation instanceof \App\Models\Cooperation, new RuntimeException('Cooperation NOT set!'));
 
+        /** @var User|null */
         return Cache::remember(
             self::getCooperationCacheKey($cooperation, static::CACHE_KEY_USER, $account->id),
             config('hoomdossier.cache.times.default'),

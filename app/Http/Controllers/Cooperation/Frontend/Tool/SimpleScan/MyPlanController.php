@@ -43,7 +43,7 @@ class MyPlanController extends Controller
                 $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, $masterInputSource);
 
                 if ($firstIncompleteSubStep instanceof SubStep) {
-                    return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
+                    return to_route('cooperation.frontend.tool.simple-scan.index', [
                         'scan' => $scan,
                         'step' => $firstIncompleteStep,
                         'subStep' => $firstIncompleteSubStep,

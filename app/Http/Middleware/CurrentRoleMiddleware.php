@@ -42,7 +42,7 @@ class CurrentRoleMiddleware
         // if the user has multiple roles, while trying to access a url he is not authorized to
         // then it seems like a good idea to let him choose a role.
         if (Hoomdossier::user()->hasMultipleRoles() && ! \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole($roles)) {
-            return redirect(route('cooperation.admin.index'));
+            return to_route('cooperation.admin.index');
         }
 
         // check if the user has the role and if it is his current role.

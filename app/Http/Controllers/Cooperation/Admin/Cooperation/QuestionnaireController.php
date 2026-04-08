@@ -56,7 +56,7 @@ class QuestionnaireController extends Controller
 
         $this->attachStepIds($steps, $cooperation, $questionnaire);
 
-        return redirect()->route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire'));
+        return to_route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire'));
     }
 
     public function edit(Cooperation $cooperation, Questionnaire $questionnaire): View
@@ -93,8 +93,7 @@ class QuestionnaireController extends Controller
 
         $this->attachStepIds($steps, $cooperation, $questionnaire);
 
-        return redirect()
-            ->route('cooperation.admin.cooperation.questionnaires.index')
+        return to_route('cooperation.admin.cooperation.questionnaires.index')
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/questionnaires.edit.success'));
     }
 

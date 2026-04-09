@@ -124,7 +124,7 @@ class FileStorage extends Model
      * Query to scope the most recent report.
      */
     #[Scope]
-    protected function mostRecent(Builder $query, Questionnaire $questionnaire = null): Builder
+    protected function mostRecent(Builder $query, ?Questionnaire $questionnaire = null): Builder
     {
         if ($questionnaire instanceof Questionnaire) {
             return $query->orderByDesc('created_at')->where('questionnaire_id', $questionnaire->id);

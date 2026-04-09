@@ -79,7 +79,7 @@ class FileType extends Model
     /**
      * Check if the filetype has a file that is being processed.
      */
-    public function isBeingProcessed(Building $building = null, InputSource $inputSource = null): bool
+    public function isBeingProcessed(?Building $building = null, ?InputSource $inputSource = null): bool
     {
         return FileType::whereHas('files', function ($q) use ($building, $inputSource) {
             $q = $q->withExpired()->beingProcessed();

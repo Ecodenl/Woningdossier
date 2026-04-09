@@ -150,7 +150,7 @@ class FileStorageController extends Controller
      *
      * @throws \Exception
      */
-    private function handleExistingFiles(Building $building, InputSource $inputSource, FileType $fileType, Questionnaire $questionnaire = null)
+    private function handleExistingFiles(Building $building, InputSource $inputSource, FileType $fileType, ?Questionnaire $questionnaire = null)
     {
         // For the users: delete the other existing file storages and files for the given file type.
         if (InputSource::COOPERATION_SHORT != $inputSource->short) {

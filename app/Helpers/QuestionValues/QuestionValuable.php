@@ -19,7 +19,7 @@ abstract class QuestionValuable implements ShouldReturnQuestionValues
     public Cooperation $cooperation;
     public Collection $questionValues;
 
-    public function __construct(Cooperation $cooperation, Collection $questionValues, Collection $answers = null)
+    public function __construct(Cooperation $cooperation, Collection $questionValues, ?Collection $answers = null)
     {
         $this->cooperation = $cooperation;
         $this->questionValues = $questionValues;

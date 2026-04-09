@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property array<array-key, mixed>|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building $building
+ * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\BuildingHeating|null $buildingHeating
  * @property-read \App\Models\ElementValue|null $elementValue
  * @property-read \App\Models\BuildingHeating|null $heating

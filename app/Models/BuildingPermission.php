@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $building_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building $building
+ * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\BuildingCoachStatus $buildingCoachStatus
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingPermission newModelQuery()

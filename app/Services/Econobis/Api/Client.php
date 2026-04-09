@@ -26,7 +26,7 @@ class Client
     public string $wildcard;
     public string $apiKey;
 
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(?LoggerInterface $logger = null)
     {
         $this->logger = $logger;
         $this->config = [

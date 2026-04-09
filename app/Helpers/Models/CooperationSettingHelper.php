@@ -19,7 +19,7 @@ class CooperationSettingHelper
         ];
     }
 
-    public static function getSettingValue(Cooperation $cooperation, string $short, string $default = null)
+    public static function getSettingValue(Cooperation $cooperation, string $short, ?string $default = null)
     {
         return optional(
             $cooperation->cooperationSettings()

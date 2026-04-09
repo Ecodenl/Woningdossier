@@ -44,7 +44,7 @@ class InsulatedGlazingCalculator
         float $m2,
         MeasureApplication $measureApplication,
         BuildingHeating $heating,
-        InsulatingGlazing $glazing = null
+        ?InsulatingGlazing $glazing = null
     ): float
     {
         $query = KeyFigureTemperature::where('measure_application_id', $measureApplication->id)

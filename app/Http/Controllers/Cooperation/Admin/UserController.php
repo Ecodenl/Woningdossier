@@ -56,7 +56,12 @@ class UserController extends Controller
         }
 
         return view('cooperation.admin.users.create', compact(
-            'userCurrentRole', 'roles', 'coaches', 'mapping', 'currentScan', 'smallMeasuresSettings'
+            'userCurrentRole',
+            'roles',
+            'coaches',
+            'mapping',
+            'currentScan',
+            'smallMeasuresSettings'
         ));
     }
 

@@ -55,5 +55,4 @@ class UserFormRequest extends FormRequest
 
         return $rules;
     }
-
 }

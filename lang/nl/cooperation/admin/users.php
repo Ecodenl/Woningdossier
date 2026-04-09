@@ -40,6 +40,17 @@ return [
             'city' => 'Plaats',
             'phone-number' => 'Telefoonnummer',
             'select-coach' => 'Selecteer een coach om te koppelen aan de gebruiker',
+            'scan-availability' => [
+                'label' => 'Beschikbare varianten',
+                'description' => 'Selecteer welke varianten beschikbaar zijn voor deze gebruiker.',
+            ],
+            'small-measures' => [
+                'label' => 'Kleine maatregelen',
+                'description' => 'Selecteer voor welke scans kleine maatregelen beschikbaar zijn. Standaard op basis van coöperatie-instellingen.',
+                'cooperation-enabled' => 'coöperatie aan',
+                'cooperation-disabled' => 'coöperatie uit',
+                'always-enabled' => 'altijd aan',
+            ],
             'submit' => 'Gebruiker aanmaken',
         ],
     ],

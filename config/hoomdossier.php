@@ -106,7 +106,10 @@ return [
         'allow_unsafe_inline_styles' => env('ALLOW_UNSAFE_INLINE_STYLES', false),
         // Applicable for production: Allow the usage of eval() and new Function() if really required (e.g. by a library).
         'allow_unsafe_eval_scripts' => env('ALLOW_UNSAFE_EVAL_SCRIPTS', false),
-        // Dev only. Most of the time you will use the default or you have set this in the .env as the VITE_PORT is also changed in the docker-compose.
-        'vite_host' => env('VITE_HOST', 'http://localhost:5173'),
+        // Dev only. Derived from VITE_PORT so CSP headers stay in sync with the Vite dev server.
+        'vite_host' => env('VITE_HOST', 'http://localhost:'.env('VITE_PORT', '5173')),
+        // Dev only. The HMR host may differ from localhost (e.g. woondossier.vm).
+        'vite_hmr_host' => env('VITE_HMR_HOST'),
+        'vite_port' => env('VITE_PORT', '5173'),
     ],
 ];

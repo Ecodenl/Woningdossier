@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $wood_rot_status_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building $building
+ * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\PaintworkStatus|null $paintworkStatus
  * @property-read \App\Models\WoodRotStatus|null $woodRotStatus

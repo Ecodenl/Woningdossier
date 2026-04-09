@@ -38,7 +38,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property bool $allow_access
  * @property \Illuminate\Support\Carbon|null $tool_last_changed_at
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
- * @property int|null $refreshing_regulations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Account|null $account
@@ -92,7 +91,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder<static>|User whereLastName($value)
  * @method static Builder<static>|User whereLastVisitedUrl($value)
  * @method static Builder<static>|User wherePhoneNumber($value)
- * @method static Builder<static>|User whereRefreshingRegulations($value)
  * @method static Builder<static>|User whereRegulationsRefreshedAt($value)
  * @method static Builder<static>|User whereToolLastChangedAt($value)
  * @method static Builder<static>|User whereUpdatedAt($value)
@@ -431,7 +429,7 @@ class User extends Model implements AuthorizableContract
     /**
      * Check whether a user completed a questionnaire.
      */
-    public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null): bool
+    public function hasCompletedQuestionnaire(Questionnaire $questionnaire, ?InputSource $inputSource = null): bool
     {
         $query = $this->completedQuestionnaires()
             ->where('questionnaire_id', $questionnaire->id);

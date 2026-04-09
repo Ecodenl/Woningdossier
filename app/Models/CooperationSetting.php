@@ -21,7 +21,7 @@ use Plank\Mediable\MediableInterface;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\Cooperation $cooperation
+ * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
  * @property-read int|null $media_count
  * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])

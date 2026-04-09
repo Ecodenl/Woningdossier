@@ -15,7 +15,7 @@ class FileStoragePolicy
 {
     use HandlesAuthorization;
 
-    public function download(Account $account, FileStorage $fileStorage, Building $building = null)
+    public function download(Account $account, FileStorage $fileStorage, ?Building $building = null)
     {
         $user = $account->user();
 

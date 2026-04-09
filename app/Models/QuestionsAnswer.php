@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource $inputSource
- * @property-read \App\Models\Question $question
+ * @property-read \App\Models\Question|null $question
  * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer forBuilding(\App\Models\Building|int $building)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionsAnswer forInputSource(\App\Models\InputSource $inputSource)

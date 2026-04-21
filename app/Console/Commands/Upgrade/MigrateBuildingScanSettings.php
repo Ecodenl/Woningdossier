@@ -2,7 +2,8 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Helpers\Models\BuildingSettingHelper;
+use App\Helpers\ScanAvailabilityHelper;
+use App\Helpers\SmallMeasuresSettingHelper;
 use App\Models\Building;
 use App\Models\Scan;
 use Illuminate\Console\Command;
@@ -29,12 +30,14 @@ class MigrateBuildingScanSettings extends Command
         $totalBuildings = 0;
         $totalRows = 0;
 
+        $simpleScans = Scan::simpleScans()->get();
+
         Building::query()
             ->whereNotNull('user_id')
             ->whereHas('user', fn ($q) => $q->whereNotNull('cooperation_id'))
             ->whereHas('user.cooperation', fn ($q) => $q->whereNull('deleted_at'))
             ->with('user.cooperation.scans')
-            ->chunkById($chunkSize, function ($buildings) use ($dryRun, $now, &$totalBuildings, &$totalRows) {
+            ->chunkById($chunkSize, function ($buildings) use ($dryRun, $now, $simpleScans, &$totalBuildings, &$totalRows) {
                 $rows = [];
 
                 foreach ($buildings as $building) {
@@ -45,42 +48,31 @@ class MigrateBuildingScanSettings extends Command
 
                     $totalBuildings++;
 
-                    foreach ($building->user->cooperation->scans as $scan) {
-                        $buildingId = $building->id;
+                    foreach ($simpleScans as $scan) {
+                        $cooperationScan = $building->user->cooperation->scans->firstWhere('id', $scan->id);
+                        $scanEnabled = $cooperationScan !== null;
 
-                        if ($scan->short === Scan::QUICK) {
-                            $rows[] = [
-                                'building_id' => $buildingId,
-                                'short' => BuildingSettingHelper::SHORT_SCAN_ENABLED_QUICK_SCAN,
-                                'value' => '1',
-                                'created_at' => $now,
-                                'updated_at' => $now,
-                            ];
-                            $rows[] = [
-                                'building_id' => $buildingId,
-                                'short' => BuildingSettingHelper::SHORT_SMALL_MEASURES_ENABLED_QUICK_SCAN,
-                                'value' => $scan->pivot->small_measures_enabled ? '1' : '0',
-                                'created_at' => $now,
-                                'updated_at' => $now,
-                            ];
-                        }
+                        $rows[] = [
+                            'building_id' => $building->id,
+                            'short' => ScanAvailabilityHelper::getBuildingSettingShort($scan),
+                            'value' => $scanEnabled ? '1' : '0',
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
 
-                        if ($scan->short === Scan::LITE) {
-                            $rows[] = [
-                                'building_id' => $buildingId,
-                                'short' => BuildingSettingHelper::SHORT_SCAN_ENABLED_LITE_SCAN,
-                                'value' => '1',
-                                'created_at' => $now,
-                                'updated_at' => $now,
-                            ];
-                            $rows[] = [
-                                'building_id' => $buildingId,
-                                'short' => BuildingSettingHelper::SHORT_SMALL_MEASURES_ENABLED_LITE_SCAN,
-                                'value' => '1',
-                                'created_at' => $now,
-                                'updated_at' => $now,
-                            ];
-                        }
+                        $smallMeasuresEnabled = match (true) {
+                            $scan->isLiteScan() => true,
+                            $cooperationScan !== null => (bool) ($cooperationScan->pivot->small_measures_enabled ?? true),
+                            default => true,
+                        };
+
+                        $rows[] = [
+                            'building_id' => $building->id,
+                            'short' => SmallMeasuresSettingHelper::getBuildingSettingShort($scan),
+                            'value' => $smallMeasuresEnabled ? '1' : '0',
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
                     }
                 }
 

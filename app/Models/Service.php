@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property array<array-key, mixed> $info
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translatable_columns_from
  * @property-read \App\Models\ServiceType $serviceType
  * @property-read mixed $translations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ServiceValue> $values

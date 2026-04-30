@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translatable_columns_from
  * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestionType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ToolQuestionType newQuery()

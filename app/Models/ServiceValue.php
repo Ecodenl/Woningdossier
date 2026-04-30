@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property array<array-key, mixed>|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translatable_columns_from
  * @property-read \App\Models\KeyFigureBoilerEfficiency|null $keyFigureBoilerEfficiency
  * @property-read \App\Models\Service|null $service
  * @property-read mixed $translations

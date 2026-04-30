@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property string|null $unit_of_measure
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translatable_columns_from
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SubSteppable> $subSteppables
  * @property-read int|null $sub_steppables_count
  * @property-read \App\Models\SubSteppable|null $pivot

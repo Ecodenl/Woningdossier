@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingFeature> $buildingFeatures
  * @property-read int|null $building_features_count
  * @property-read \App\Models\BuildingTypeCategory|null $buildingTypeCategory
+ * @property-read array $translatable_columns_from
  * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingType newQuery()

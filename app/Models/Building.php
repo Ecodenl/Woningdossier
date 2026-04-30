@@ -53,6 +53,8 @@ use Plank\Mediable\MediableInterface;
  * @property-read int|null $building_permissions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingService> $buildingServices
  * @property-read int|null $building_services_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingSetting> $buildingSettings
+ * @property-read int|null $building_settings_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingStatus> $buildingStatuses
  * @property-read int|null $building_statuses_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingVentilation> $buildingVentilations

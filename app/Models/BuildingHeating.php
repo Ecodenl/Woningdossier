@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $is_default
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translatable_columns_from
  * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingHeating newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingHeating newQuery()

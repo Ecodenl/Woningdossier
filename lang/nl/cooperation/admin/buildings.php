@@ -104,6 +104,31 @@ return [
         ],
         'next' => 'Volgende',
         'previous' => 'Vorige',
+
+        'scan-availability' => [
+            'title' => 'Beschikbare varianten',
+            'description' => 'Bepaal welke varianten beschikbaar zijn voor dit dossier.',
+            'enable-for-building' => 'Beschikbaar',
+            'success' => 'Scan beschikbaarheid bijgewerkt',
+            'disabled-reasons' => [
+                'only-active-scan' => 'Deze scan kan niet worden uitgeschakeld omdat het de enige actieve scan is.',
+                'quick-data-exists' => 'De lite scan kan niet worden ingeschakeld omdat er al data is ingevuld voor de quick scan.',
+            ],
+        ],
+
+        'small-measures' => [
+            'title' => 'Kleine maatregelen zichtbaarheid',
+            'description' => 'Beheer de zichtbaarheid van kleine maatregelen per scan voor deze woning. Standaard op basis van coöperatie-instellingen.',
+            'cooperation-enabled' => 'Ingeschakeld door coöperatie',
+            'cooperation-disabled' => 'Uitgeschakeld door coöperatie',
+            'always-enabled' => 'Altijd ingeschakeld',
+            'toggle-for-building' => 'Inschakelen voor deze woning',
+            'enable-for-building' => 'Inschakelen voor deze woning',
+            'success' => 'Kleine maatregelen instelling bijgewerkt',
+            'error' => [
+                'cooperation-enabled' => 'Kleine maatregelen zijn al ingeschakeld op coöperatie-niveau.',
+            ],
+        ],
     ],
     'edit' => [
         'account-user-info-title' => 'Gebruiker gegevens',

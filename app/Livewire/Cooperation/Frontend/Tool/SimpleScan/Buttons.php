@@ -36,7 +36,7 @@ class Buttons extends Component
     public function mount(Request $request, Scan $scan, Step $step, $subStepOrQuestionnaire): void
     {
         $this->account = $request->user();
-        $this->building = $this->account->user()->building;
+        $this->building = HoomdossierSession::getBuilding(true);
         $this->cooperation = HoomdossierSession::getCooperation(true);
 
         // set default steps, the checks will come later on.

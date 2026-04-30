@@ -27,12 +27,12 @@
                 </button>
             @endcan
             @can('access-building', $building)
-                @if($scans->count() > 1)
+                @if($availableScans->count() > 1)
                     @component('cooperation.layouts.components.dropdown', [
                         'label' => __('cooperation/admin/buildings.show.observe-building.label') . '<i class="icon-sm icon-show ml-1"></i>',
                         'class' => 'btn btn-green',
                     ])
-                        @foreach($scans as $scan)
+                        @foreach($availableScans as $scan)
                             @php
                                 $transShort = app(\App\Services\Models\ScanService::class)
                                     ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
@@ -46,7 +46,7 @@
                         @endforeach
                     @endcomponent
                 @else
-                    @foreach($scans as $scan)
+                    @foreach($availableScans as $scan)
                         <a class="btn btn-green" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
                             <span class="flex items-center">
                                 @lang('cooperation/admin/buildings.show.observe-building.label')
@@ -57,12 +57,12 @@
                 @endif
                 {{-- TODO: This should be a policy --}}
                 @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
-                    @if($scans->count() > 1)
+                    @if($availableScans->count() > 1)
                         @component('cooperation.layouts.components.dropdown', [
                             'label' => __('cooperation/admin/buildings.show.fill-for-user.label') . '<i class="icon-sm icon-tools ml-1"></i>',
                             'class' => 'btn btn-yellow',
                         ])
-                            @foreach($scans as $scan)
+                            @foreach($availableScans as $scan)
                                 @php
                                     $transShort = app(\App\Services\Models\ScanService::class)
                                         ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
@@ -76,7 +76,7 @@
                             @endforeach
                         @endcomponent
                     @else
-                        @foreach($scans as $scan)
+                        @foreach($availableScans as $scan)
                             <a class="btn btn-yellow" href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
                                 @php
                                     $transShort = app(\App\Services\Models\ScanService::class)
@@ -199,7 +199,12 @@
         @endcan
     </div>
 
-    <div x-data="tabs()">
+    <livewire:cooperation.admin.buildings.scan-settings
+        :building="$building"
+        :cooperation="$cooperation"
+    />
+
+    <div x-data="tabs()" class="mt-12">
         <nav class="nav-tabs">
             <a x-bind="tab" data-tab="messages-intern">
                 @lang('cooperation/admin/buildings.show.tabs.messages-intern.title')

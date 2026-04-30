@@ -10,6 +10,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Models\Cooperation;
 use App\Models\User;
+use App\Helpers\SmallMeasuresSettingHelper;
+use App\Models\Scan;
+use App\Services\CooperationScanService;
 use App\Services\UserService;
 use App\Traits\Http\CreatesUsers;
 use Illuminate\Http\Request;
@@ -42,7 +45,24 @@ class UserController extends Controller
         $roles = Role::orderByDesc('level')->get();
         $coaches = $cooperation->getCoaches();
 
-        return view('cooperation.admin.users.create', compact('userCurrentRole', 'roles', 'coaches'));
+        $mapping = CooperationScanService::translationMap();
+        $currentScan = CooperationScanService::init($cooperation)->getCurrentType();
+
+        $smallMeasuresSettings = [];
+        foreach (Scan::simpleScans()->get() as $scan) {
+            $smallMeasuresSettings[$scan->short] = [
+                'cooperation_enabled' => SmallMeasuresSettingHelper::isEnabledForCooperation($cooperation, $scan),
+            ];
+        }
+
+        return view('cooperation.admin.users.create', compact(
+            'userCurrentRole',
+            'roles',
+            'coaches',
+            'mapping',
+            'currentScan',
+            'smallMeasuresSettings'
+        ));
     }
 
     public function store(UserFormRequest $request, Cooperation $cooperation): RedirectResponse

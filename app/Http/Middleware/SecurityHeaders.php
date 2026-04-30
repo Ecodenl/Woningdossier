@@ -142,6 +142,11 @@ class SecurityHeaders
         $viteHost = rtrim(config('hoomdossier.security.vite_host', 'http://localhost:5173'), '/');
         $viteWs   = preg_replace('~^http~', 'ws', $viteHost);
 
+        // HMR may use a different host (e.g. woondossier.vm) than the Vite dev server origin.
+        $hmrHost = config('hoomdossier.security.vite_hmr_host');
+        $vitePort = config('hoomdossier.security.vite_port', '5173');
+        $hmrWs = $hmrHost ? "ws://{$hmrHost}:{$vitePort}" : null;
+
         // Vite (http) and WebSocket (ws) are required for development.
         $scriptSrc = ["'self'", "'nonce-{$nonce}'", "https://cdn.ravenjs.com", "'unsafe-inline'",  $viteHost];
         if (app()->environment(['local', 'testing'])) {
@@ -149,6 +154,9 @@ class SecurityHeaders
         }
         $styleSrc = ["'self'", "'unsafe-inline'", "https://fonts.bunny.net", $viteHost];
         $connectSrc = ["'self'", "https:", $viteHost, $viteWs];
+        if ($hmrWs) {
+            $connectSrc[] = $hmrWs;
+        }
         $imgSrc     = ["'self'", "data:", "https:", $viteHost];
         $fontSrc    = ["'self'", "data:", "https://fonts.bunny.net", $viteHost];
         $workerSrc  = ["'self'", "blob:"];

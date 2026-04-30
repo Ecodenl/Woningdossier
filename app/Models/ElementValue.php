@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Element $element
  * @property-read int $insulation_factor
+ * @property-read array $translatable_columns_from
  * @property-read mixed $translations
  * @method static \Database\Factories\ElementValueFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ElementValue newModelQuery()

@@ -53,6 +53,8 @@ use Plank\Mediable\MediableInterface;
  * @property-read int|null $building_permissions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingService> $buildingServices
  * @property-read int|null $building_services_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingSetting> $buildingSettings
+ * @property-read int|null $building_settings_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingStatus> $buildingStatuses
  * @property-read int|null $building_statuses_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingVentilation> $buildingVentilations
@@ -395,7 +397,7 @@ class Building extends Model implements MediableInterface
     /**
      * Check if a step is completed for a building with matching input source id.
      */
-    public function hasCompleted(Step $step, InputSource $inputSource = null): bool
+    public function hasCompleted(Step $step, ?InputSource $inputSource = null): bool
     {
         if ($inputSource instanceof InputSource) {
             return $this->completedSteps()
@@ -426,7 +428,7 @@ class Building extends Model implements MediableInterface
     /**
      * Check if a building has answered any or a specific expert step
      */
-    public function hasAnsweredExpertQuestion(Step $step = null): bool
+    public function hasAnsweredExpertQuestion(?Step $step = null): bool
     {
         // TODO: Should we rename this to "hasAnsweredExpertStep"? Or maybe just use "hasCompleted"?
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -451,7 +453,7 @@ class Building extends Model implements MediableInterface
     /**
      * Check if a step is not completed.
      */
-    public function hasNotCompleted(Step $step, InputSource $inputSource = null): bool
+    public function hasNotCompleted(Step $step, ?InputSource $inputSource = null): bool
     {
         return ! $this->hasCompleted($step, $inputSource);
     }
@@ -498,7 +500,7 @@ class Building extends Model implements MediableInterface
         return $this->hasMany(BuildingVentilation::class);
     }
 
-    public function getBuildingElement(string $short, InputSource $inputSource = null): ?BuildingElement
+    public function getBuildingElement(string $short, ?InputSource $inputSource = null): ?BuildingElement
     {
         if ($inputSource instanceof InputSource) {
             return $this->buildingElements()
@@ -644,6 +646,11 @@ class Building extends Model implements MediableInterface
     public function buildingStatuses(): HasMany
     {
         return $this->hasMany(BuildingStatus::class);
+    }
+
+    public function buildingSettings(): HasMany
+    {
+        return $this->hasMany(BuildingSetting::class);
     }
 
     /**

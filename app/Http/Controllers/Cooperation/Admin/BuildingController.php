@@ -20,6 +20,7 @@ use App\Models\PrivateMessage;
 use App\Models\Scan;
 use App\Models\Status;
 use App\Models\User;
+use App\Helpers\ScanAvailabilityHelper;
 use App\Services\BuildingCoachStatusService;
 use App\Services\UserRoleService;
 use App\Models\Role;
@@ -62,8 +63,12 @@ class BuildingController extends Controller
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 
         $scan = $cooperation->scans()->where('short', '!=', Scan::EXPERT)->first();
-        $scans = $cooperation->load(['scans' => fn($q) => $q->where('short', '!=', Scan::EXPERT)])->scans;
         $userCurrentRole = HoomdossierSession::getRole(true);
+
+        // Filter scans op building-niveau beschikbaarheid voor de knoppen
+        $availableScans = Scan::simpleScans()->get()->filter(
+            fn ($scanItem) => ScanAvailabilityHelper::isAvailableForBuilding($building, $scanItem)
+        );
 
         return view('cooperation.admin.buildings.show', compact(
             'userRoleService',
@@ -72,7 +77,6 @@ class BuildingController extends Controller
             'building',
             'roles',
             'coaches',
-            'scans',
             'coachesWithActiveBuildingCoachStatus',
             'mostRecentStatus',
             'privateMessages',
@@ -82,6 +86,7 @@ class BuildingController extends Controller
             'statuses',
             'logs',
             'scan',
+            'availableScans',
         ));
     }
 

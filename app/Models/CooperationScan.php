@@ -12,9 +12,10 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property int $id
  * @property int $cooperation_id
  * @property int $scan_id
+ * @property bool $small_measures_enabled
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Cooperation $cooperation
+ * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \App\Models\Scan $scan
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationScan newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationScan newQuery()
@@ -23,12 +24,21 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationScan whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationScan whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationScan whereScanId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationScan whereSmallMeasuresEnabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CooperationScan whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CooperationScan extends Pivot
 {
     use HasFactory;
+
+    protected $fillable = [
+        'small_measures_enabled',
+    ];
+
+    protected $casts = [
+        'small_measures_enabled' => 'boolean',
+    ];
 
     public function cooperation(): BelongsTo
     {

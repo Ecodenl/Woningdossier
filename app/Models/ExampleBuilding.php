@@ -27,6 +27,7 @@ use Illuminate\Support\Collection;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExampleBuildingContent> $contents
  * @property-read int|null $contents_count
  * @property-read \App\Models\Cooperation|null $cooperation
+ * @property-read array $translatable_columns_from
  * @property-read mixed $translations
  * @method static \Database\Factories\ExampleBuildingFactory factory($count = null, $state = [])
  * @method static Builder<static>|ExampleBuilding forAnyOrMyCooperation()

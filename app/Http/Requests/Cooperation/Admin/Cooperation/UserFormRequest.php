@@ -6,6 +6,7 @@ use App\Http\Requests\AddressFormRequest;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Rules\PhoneNumber;
+use App\Services\CooperationScanService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -39,6 +40,9 @@ class UserFormRequest extends FormRequest
             'users.extra.contact_id' => ['nullable', 'numeric', 'integer', 'gt:0'],
             'roles' => 'required|exists:roles,id', // TODO: This doesn't evaluate if the user may assign the role.
             'coach_id' => ['nullable', Rule::exists('users', 'id')],
+            'scans.type' => ['required', Rule::in(array_keys(CooperationScanService::translationMap()))],
+            'scans.small_measures_enabled' => ['nullable', 'array'],
+            'scans.small_measures_enabled.*' => ['nullable'],
         ], (new AddressFormRequest())->setCountry($cooperationToCheckFor->country)->rules());
 
         // try to get the account

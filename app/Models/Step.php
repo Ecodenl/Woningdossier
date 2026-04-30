@@ -20,13 +20,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property int|null $parent_id
+ * @property int|null $scan_id
  * @property string $slug
  * @property string $short
  * @property array<array-key, mixed> $name
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $scan_id
+ * @property-read array $translatable_columns_from
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeasureApplication> $measureApplications
  * @property-read int|null $measure_applications_count
  * @property-read Step|null $parentStep

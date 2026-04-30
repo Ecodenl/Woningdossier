@@ -23,7 +23,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\Building $building
+ * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\InputSource $inputSource
  * @property-read \App\Models\ToolQuestion $toolQuestion
  * @property-read \App\Models\ToolQuestionCustomValue|null $toolQuestionCustomValue

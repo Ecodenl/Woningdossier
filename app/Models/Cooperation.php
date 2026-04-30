@@ -24,13 +24,13 @@ use Plank\Mediable\MediableInterface;
  * @property string $name
  * @property string $slug
  * @property string $country
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property string|null $website_url
  * @property string|null $econobis_wildcard
  * @property string|null $econobis_api_key
  * @property string|null $cooperation_email
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \Plank\Mediable\MediableCollection<int, \App\Models\Building> $buildings
  * @property-read int|null $buildings_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CooperationMeasureApplication> $cooperationMeasureApplications
@@ -142,7 +142,9 @@ class Cooperation extends Model implements MediableInterface
 
     public function scans(): BelongsToMany
     {
-        return $this->belongsToMany(Scan::class)->using(CooperationScan::class);
+        return $this->belongsToMany(Scan::class)
+            ->using(CooperationScan::class)
+            ->withPivot('small_measures_enabled');
     }
 
     public function cooperationMeasureApplications(): HasMany

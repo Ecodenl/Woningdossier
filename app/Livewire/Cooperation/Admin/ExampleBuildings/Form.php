@@ -89,7 +89,7 @@ class Form extends Component
         ];
     }
 
-    public function mount(ExampleBuilding $exampleBuilding = null): void
+    public function mount(?ExampleBuilding $exampleBuilding = null): void
     {
         $this->isSuperAdmin = HoomdossierSession::getRole(true)?->name === RoleHelper::ROLE_SUPER_ADMIN;
         $this->buildingTypes = BuildingType::all();

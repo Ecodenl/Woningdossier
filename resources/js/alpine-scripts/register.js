@@ -1,4 +1,4 @@
-export default (emailUrl) => ({
+export default (emailUrl, selectedScan = 'quick-scan') => ({
     allowAccess: false,
     showEmailWarning: false,
     alreadyMember: false,
@@ -6,6 +6,7 @@ export default (emailUrl) => ({
     emailExists: false,
     emailUrl: emailUrl,
     submitted: false,
+    selectedScan: selectedScan,
 
     checkEmail(element, safeValue = null) {
         // Don't apply check if current value is safe value

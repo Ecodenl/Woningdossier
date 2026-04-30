@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\FileTypeCategory|null $category
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FileStorage> $files
  * @property-read int|null $files_count
+ * @property-read array $translatable_columns_from
  * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FileType newQuery()
@@ -79,7 +80,7 @@ class FileType extends Model
     /**
      * Check if the filetype has a file that is being processed.
      */
-    public function isBeingProcessed(Building $building = null, InputSource $inputSource = null): bool
+    public function isBeingProcessed(?Building $building = null, ?InputSource $inputSource = null): bool
     {
         return FileType::whereHas('files', function ($q) use ($building, $inputSource) {
             $q = $q->withExpired()->beingProcessed();

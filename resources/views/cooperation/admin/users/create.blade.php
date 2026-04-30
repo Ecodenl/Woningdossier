@@ -25,8 +25,11 @@
         @endcomponent
     </div>
 
-    <div class="flex w-full xl:w-2/3"
-         x-data="register('{{route('cooperation.check-existing-email', ['cooperation' => $cooperation, 'forCooperation' => $cooperationToManage ?? $cooperation])}}')">
+    <div class="flex w-full"
+         x-data="register(
+             '{{route('cooperation.check-existing-email', ['cooperation' => $cooperation, 'forCooperation' => $cooperationToManage ?? $cooperation])}}',
+             '{{ old('scans.type', $currentScan) }}'
+         )">
         <form class="w-full flex flex-wrap"
               @if(isset($cooperationToManage))
                   action="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.store', compact('cooperation', 'cooperationToManage'))}}"
@@ -115,10 +118,8 @@
                 @endcomponent
             @endcomponent
 
-            <div class="w-full"></div>
-
             @component('cooperation.frontend.layouts.components.form-group', [
-                'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
+                'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
                 'label' => __('cooperation/admin/users.create.form.select-coach'),
                 'id' => 'associated-coaches',
                 'inputName' => "coach_id",
@@ -140,6 +141,71 @@
             @endcomponent
 
             {{-- TODO: Contact ID? --}}
+
+            {{-- Scan availability & small measures --}}
+            <div class="w-full flex flex-wrap" x-show="! alreadyMember && ! noBuilding">
+                {{-- Scan type select --}}
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'withInputSource' => false,
+                    'label' => __('cooperation/admin/users.create.form.scan-availability.label'),
+                    'id' => 'scans-type',
+                    'class' => 'w-full lg:w-1/2 lg:pr-3',
+                    'inputName' => 'scans.type',
+                ])
+                    <p class="text-sm text-gray-600 mb-2">
+                        @lang('cooperation/admin/users.create.form.scan-availability.description')
+                    </p>
+                    @component('cooperation.frontend.layouts.components.alpine-select')
+                        <select class="form-input hidden" name="scans[type]" id="scans-type" x-model="selectedScan">
+                            @foreach($mapping as $type => $typeTranslation)
+                                <option @if($currentScan === $type) selected @endif value="{{ $type }}">{{ $typeTranslation }}</option>
+                            @endforeach
+                        </select>
+                    @endcomponent
+                @endcomponent
+
+                {{-- Small measures checkboxes --}}
+                <div class="form-group w-full lg:w-1/2 lg:pl-3">
+                    <div class="form-header">
+                        <label class="form-label max-w-16/20">
+                            @lang('cooperation/admin/users.create.form.small-measures.label')
+                        </label>
+                    </div>
+                    <div class="w-full">
+                        <p class="text-sm text-gray-600 mb-2">
+                            @lang('cooperation/admin/users.create.form.small-measures.description')
+                        </p>
+
+                        @foreach(['quick-scan' => __('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.quick-scan'), 'lite-scan' => __('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.lite-scan')] as $scanShort => $scanName)
+                            @php
+                                $isLiteScan = $scanShort === \App\Models\Scan::LITE;
+                                $smCoopEnabled = $smallMeasuresSettings[$scanShort]['cooperation_enabled'] ?? true;
+                                $oldSmValue = $isLiteScan ? '1' : old('scans.small_measures_enabled.' . $scanShort, $smCoopEnabled ? '1' : '0');
+                            @endphp
+                            <div class="flex items-center mb-3"
+                                 x-show="selectedScan === '{{ $scanShort }}' || selectedScan === 'both-scans'"
+                                 x-cloak>
+                                <label class="flex items-center {{ $isLiteScan ? 'cursor-not-allowed opacity-60' : 'cursor-pointer' }}">
+                                    <input type="hidden" name="scans[small_measures_enabled][{{ $scanShort }}]" value="{{ $isLiteScan ? '1' : '0' }}">
+                                    <input type="checkbox"
+                                           name="scans[small_measures_enabled][{{ $scanShort }}]"
+                                           value="1"
+                                           class="form-checkbox h-5 w-5 text-green-600"
+                                           @if($isLiteScan) checked disabled @elseif($oldSmValue === '1') checked @endif>
+                                    <span class="ml-2">
+                                        {{ $scanName }}: @lang('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.label')
+                                        @if($isLiteScan)
+                                            <span class="text-sm text-gray-500 italic">
+                                                (@lang('cooperation/admin/cooperation/cooperation-admin/scans.form.small-measures.always-required'))
+                                            </span>
+                                        @endif
+                                    </span>
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
 
             <h3 class="w-full heading-4 my-4" x-show="! alreadyMember && ! noBuilding">
                 @lang('cooperation/admin/buildings.edit.address-info-title')

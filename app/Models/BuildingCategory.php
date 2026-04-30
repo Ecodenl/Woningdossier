@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingFeature> $buildingFeatures
  * @property-read int|null $building_features_count
+ * @property-read array $translatable_columns_from
  * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingCategory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BuildingCategory newQuery()

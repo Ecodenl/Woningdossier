@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FileType> $fileTypes
  * @property-read int|null $file_types_count
+ * @property-read array $translatable_columns_from
  * @property-read mixed $translations
  * @method static Builder<static>|FileTypeCategory newModelQuery()
  * @method static Builder<static>|FileTypeCategory newQuery()

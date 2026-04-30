@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property numeric $percentage
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translatable_columns_from
  * @property-read mixed $translations
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceIndexing newQuery()

@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $building_services_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Element> $elements
  * @property-read int|null $elements_count
+ * @property-read array $translatable_columns_from
  * @property-read mixed $translations
  * @method static \Database\Factories\ServiceTypeFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ServiceType newModelQuery()

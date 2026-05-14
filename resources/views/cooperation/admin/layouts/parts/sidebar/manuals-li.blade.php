@@ -1,17 +1,17 @@
 @if(in_array(HoomdossierSession::getRole(true)->name, [RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_COORDINATOR]))
     <li>
-        <a href="https://alfresco.econobis.nl/share/s/hcfoj_gOQByf_moMhrXz2w" target="_blank">
+        <a href="https://wiki.econobis.nl/books/beheerders-en-coachhandleiding/page/beheerdershandleiding" target="_blank">
             Beheerdershandleiding
         </a>
     </li>
 @endif
 <li>
-    <a href="https://alfresco.econobis.nl/share/s/ihlfTvAkSoSgzQTVaJN90A" target="_blank">
+    <a href="https://wiki.econobis.nl/books/beheerders-en-coachhandleiding/page/coachhandleiding-hoomdossier" target="_blank">
         Coachhandleiding
     </a>
 </li>
 <li>
-    <a href="https://alfresco.econobis.nl/share/s/kNtHbpHxTeq5Q5EOib1ySA" target="_blank">
+    <a href="https://wiki.econobis.nl/books/bewonerhandleiding/page/bewonerhandleiding-hoomdossier" target="_blank">
         Bewonershandleiding
     </a>
 </li>

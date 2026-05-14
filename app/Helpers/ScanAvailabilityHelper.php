@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Helpers\Models\BuildingSettingHelper;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Scan;
 use App\Models\ToolQuestion;
@@ -140,7 +141,7 @@ class ScanAvailabilityHelper
     /**
      * Sync scan availability for a building based on a type selection (quick-scan, lite-scan, or both-scans).
      */
-    public static function syncAvailability(Building $building, string $type): void
+    public static function syncAvailability(Building $building, string $type, ?Cooperation $cooperation = null): void
     {
         $enabledScans = [
             Scan::QUICK => [Scan::QUICK],
@@ -149,7 +150,10 @@ class ScanAvailabilityHelper
         ];
 
         $scansToEnable = $enabledScans[$type] ?? [Scan::QUICK];
-        $cooperationScanShorts = $building->user->cooperation->scans->pluck('short')->toArray();
+        // Fall back to the building's owning user/cooperation, bypassing the session's CooperationScope
+        // so super-admin flows targeting another cooperation still resolve correctly.
+        $cooperation ??= $building->user()->withoutGlobalScopes()->first()?->cooperation;
+        $cooperationScanShorts = $cooperation?->scans->pluck('short')->toArray() ?? [];
 
         foreach (Scan::simpleScans()->get() as $scan) {
             $shouldBeEnabled = in_array($scan->short, $scansToEnable);

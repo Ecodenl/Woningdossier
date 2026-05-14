@@ -63,7 +63,7 @@ trait CreatesUsers
 
         // Set scan availability based on selected type
         $scanType = $request->input('scans.type');
-        ScanAvailabilityHelper::syncAvailability($building, $scanType);
+        ScanAvailabilityHelper::syncAvailability($building, $scanType, $cooperation);
 
         // Set small measures overrides, only for scans enabled by the selected type
         $smallMeasuresEnabled = $request->input('scans.small_measures_enabled', []);

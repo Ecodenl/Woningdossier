@@ -48,7 +48,7 @@ class ScanSettings extends Component
             return;
         }
 
-        ScanAvailabilityHelper::syncAvailability($this->building, $value);
+        ScanAvailabilityHelper::syncAvailability($this->building, $value, $this->cooperation);
 
         // Clear small measures overrides for scans that are no longer enabled
         $enabledScanShorts = match ($value) {

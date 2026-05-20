@@ -18,7 +18,6 @@ use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Models\Role;
 use App\Models\User;
-use App\Services\Econobis\EconobisService;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
 use App\Services\Models\BuildingStatusService;
@@ -302,7 +301,12 @@ class UserService
         $building->load(['user' => fn ($q) => $q->forMyCooperation($user->cooperation_id)]);
 
         $cooperation = $user->cooperation;
-        $accountRelated = app(EconobisService::class)->forBuilding($building)->resolveAccountRelated();
+        $context = [
+            'building_id' => $building->id,
+            'user_id'     => $user->id,
+            'account_id'  => $user->account_id,
+            'extra'       => $user->extra,
+        ];
         // Convert to array (WITH the API key!) to ensure Econobis can delete the user.
         $cooperationData = $cooperation->makeVisible('econobis_api_key')->toArray();
 
@@ -342,7 +346,7 @@ class UserService
                 $account->delete();
             }
         }
-        UserDeleted::dispatch($cooperationData, $accountRelated['account_related']);
+        UserDeleted::dispatch($cooperationData, $context);
     }
 
     /**

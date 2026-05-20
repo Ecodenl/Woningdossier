@@ -3,9 +3,11 @@
 namespace App\Listeners;
 
 use App\Events\AccountVerified;
+use App\Events\UserDeleted;
 use App\Helpers\RoleHelper;
 use App\Jobs\SmartTwin\Out\CreateCoachAccount;
 use App\Jobs\SmartTwin\Out\CreateUserAccount;
+use App\Jobs\SmartTwin\Out\DeleteAccount;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Events\Dispatcher;
@@ -42,11 +44,20 @@ class SmartTwinEventSubscriber
         }
     }
 
+    public function handleUserDeleted(UserDeleted $event): void
+    {
+        $guid = $event->context['extra']['smarttwin_user_id'] ?? null;
+        if (! empty($guid)) {
+            DeleteAccount::dispatch($guid);
+        }
+    }
+
     public function subscribe(Dispatcher $events): array
     {
         return [
             AccountVerified::class => 'handleAccountVerified',
-            RoleAttached::class => 'handleRoleAttached',
+            RoleAttached::class    => 'handleRoleAttached',
+            UserDeleted::class     => 'handleUserDeleted',
         ];
     }
 

@@ -11,12 +11,7 @@ class UserDeleted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct(public array $cooperation, public array $accountRelated)
+    public function __construct(public array $cooperation, public array $context)
     {
     }
 

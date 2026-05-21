@@ -59,6 +59,12 @@ return [
                 \App\Jobs\Econobis\Out\SendPdfReportToEconobis::class => env('ECONOBIS_INTERVAL_PDF_REPORT', 30),
             ],
         ],
+        'smarttwin' => [
+            'enabled' => env('SMARTTWIN_ENABLED', false),
+            'base_uri' => env('SMARTTWIN_BASE_URI', 'https://hoomdossier.test.smarttwin.nl'),
+            'api-key' => env('SMARTTWIN_KEY', ''),
+            'debug' => env('SMARTTWIN_DEBUG', false),
+        ],
         'enable_logging' => env('SERVICES_ENABLE_LOGGING', false),
         'enable_calculation_logging' => env('SERVICES_ENABLE_CALCULATION_LOGGING', false),
     ],

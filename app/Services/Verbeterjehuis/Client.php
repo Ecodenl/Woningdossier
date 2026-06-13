@@ -31,8 +31,12 @@ class Client
         $this->config = [
             'base_uri'        => $this->baseUrl,
             'headers'         => [
-                'Accept' => 'application/json',
-                'apiKey' => config('hoomdossier.services.milieucentraal.secret'),
+                'Accept'     => 'application/json',
+                'apiKey'     => config('hoomdossier.services.milieucentraal.secret'),
+                // Identify ourselves explicitly. Without this Guzzle falls back to its
+                // default "GuzzleHttp/7 ..." User-Agent, which the Verbeterjehuis Cloudflare
+                // WAF scores as bot traffic and intermittently blocks with a 403.
+                'User-Agent' => 'Hoomdossier/' . config('app.version') . ' (+https://' . config('app.domain') . ')',
             ],
             'allow_redirects' => false,
         ];

@@ -28,7 +28,7 @@ class VerbeterjehuisWafBlockException extends Exception
 
     public function __construct(ClientException $previous)
     {
-        $statusCode = $previous->getResponse()?->getStatusCode();
+        $statusCode = $previous->getResponse()->getStatusCode();
 
         parent::__construct(
             "Verbeterjehuis Cloudflare WAF blocked the regulation request (HTTP {$statusCode}).",

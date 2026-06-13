@@ -66,7 +66,7 @@ class RefreshRegulationsForUserActionPlanAdvice extends NonHandleableJobAfterRes
             // not paper over that by faking success; instead VerbeterjehuisWafBlockException
             // throttles its own reporting (see its report() method), so Sentry receives a
             // single heartbeat per window instead of thousands of identical events.
-            if (in_array($clientException->getResponse()?->getStatusCode(), [403, 408, 429], true)) {
+            if (in_array($clientException->getResponse()->getStatusCode(), [403, 408, 429], true)) {
                 throw new VerbeterjehuisWafBlockException($clientException);
             }
 

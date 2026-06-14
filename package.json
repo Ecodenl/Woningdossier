@@ -8,12 +8,12 @@
     "devDependencies": {
         "autoprefixer": "^10.4.20",
         "jquery": "^3.4.1",
-        "laravel-vite-plugin": "^1.2.0",
+        "laravel-vite-plugin": "^3.1.0",
         "lodash": "^4.17.11",
         "postcss": "^8.4.49",
         "resolve-url-loader": "^5.0.0",
         "tailwindcss": "^3.4.16",
-        "vite": "^6.4.2",
+        "vite": "^8.0.16",
         "concurrently": "^9.0.1"
     },
     "dependencies": {

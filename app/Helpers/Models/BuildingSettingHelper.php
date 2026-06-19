@@ -11,6 +11,7 @@ class BuildingSettingHelper
     const SHORT_SMALL_MEASURES_ENABLED_LITE_SCAN = 'small_measures_enabled_lite-scan';
     const SHORT_SCAN_ENABLED_QUICK_SCAN = 'scan_enabled_quick-scan';
     const SHORT_SCAN_ENABLED_LITE_SCAN = 'scan_enabled_lite-scan';
+    const SHORT_SMARTTWIN_DOSSIER_ID = 'smarttwin_dossier_id';
 
     public static function getAvailableSettings(): array
     {

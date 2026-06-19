@@ -25,7 +25,7 @@ class SubscribeCommand extends Command
 
         $response = $api->events()->subscribe($subscriberName, $callbackUrl, $signKey);
 
-        $subscriptionId = $response['subscriptionId'] ?? null;
+        $subscriptionId = $response['subscriptionId'] ?? $response['Value'] ?? null;
 
         if (! $subscriptionId) {
             $this->error('Subscription failed: no subscriptionId in response.');

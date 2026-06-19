@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Jobs\SmartTwin\Out\GetAdviceResults;
 use App\Models\Building;
 
 class BuildingObserver
@@ -15,6 +16,21 @@ class BuildingObserver
     public function saved(Building $building): void
     {
         \App\Helpers\Cache\Building::wipe($building->id);
+    }
+
+    public function updated(Building $building): void
+    {
+        if (! $building->wasChanged('smarttwin_callback')) {
+            return;
+        }
+
+        $original = json_decode($building->getOriginal('smarttwin_callback') ?? '[]', true) ?? [];
+        $current  = $building->smarttwin_callback ?? [];
+        $added    = array_slice($current, count($original));
+
+        foreach ($added as $callbackData) {
+            GetAdviceResults::dispatch($callbackData, $building->getKey());
+        }
     }
 
     /**

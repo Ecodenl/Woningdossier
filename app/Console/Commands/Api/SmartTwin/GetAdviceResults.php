@@ -33,7 +33,7 @@ class GetAdviceResults extends Command
                 $this->line("Fallback cron to get advice results for " . $building->getKey());
 
                 foreach ($building->getSmartTwinCallbacks() as $callback) {
-                    GetAdviceResultsJob::dispatchSync($callback);
+                    GetAdviceResultsJob::dispatchSync($callback, $building->getKey());
                 }
             }
         });

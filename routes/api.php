@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api;
+use App\Http\Controllers\Api\V1\SmartTwinController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\BuildingCoachStatusController;
 use App\Http\Controllers\Api\V1\RegisterController;
@@ -28,6 +29,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))
         Route::post('building-coach-status', [BuildingCoachStatusController::class, 'buildingCoachStatus'])
             ->name('building-coach-status.store');
     });
+
+// SmartTwin webhook
+Route::post('v1/smarttwin', [SmartTwinController::class, 'store'])
+    ->middleware('smarttwin.signed')
+    ->name('v1.smarttwin.store');
 
 // Non-cooperation internal API
 Route::get('address-data/{country}', [Api\GeoController::class, 'getAddressData'])->name('get-address-data');

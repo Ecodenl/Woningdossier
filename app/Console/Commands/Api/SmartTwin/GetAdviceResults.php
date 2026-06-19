@@ -21,7 +21,7 @@ class GetAdviceResults extends Command
      *
      * @var string
      */
-    protected $description = 'Fallback cron to get advice results from the SmartTwin API which might not have been fetched by a job earlier';
+    protected $description = 'Fallback cron: get SmartTwin advice results not yet fetched by a job';
 
     /**
      * Execute the console command.
@@ -32,13 +32,13 @@ class GetAdviceResults extends Command
             ->when($this->argument('buildingId'), fn($q, $id) => $q->where('id', $id))
             ->chunk(5, function ($buildings) {
             /** @var Building $building */
-            foreach ($buildings as $building) {
-                $this->line("Fallback cron to get advice results for " . $building->getKey());
+                foreach ($buildings as $building) {
+                    $this->line("Fallback cron to get advice results for " . $building->getKey());
 
-                foreach ($building->getSmartTwinCallbacks() as $callback) {
-                    GetAdviceResultsJob::dispatchSync($callback, $building->getKey());
+                    foreach ($building->getSmartTwinCallbacks() as $callback) {
+                        GetAdviceResultsJob::dispatchSync($callback, $building->getKey());
+                    }
                 }
-            }
-        });
+            });
     }
 }

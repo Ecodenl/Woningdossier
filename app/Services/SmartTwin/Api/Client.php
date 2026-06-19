@@ -97,6 +97,8 @@ class Client
             return [];
         }
 
-        return json_decode($contents, true) ?? [];
+        $decoded = json_decode($contents, true);
+
+        return is_array($decoded) ? $decoded : [];
     }
 }

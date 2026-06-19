@@ -2,6 +2,7 @@
 
 namespace App\Services\SmartTwin\Api;
 
+use App\Services\SmartTwin\Api\Resources\Advice;
 use App\Services\SmartTwin\Api\Resources\EventSubscription;
 use App\Services\SmartTwin\Api\Resources\User;
 use App\Traits\FluentCaller;
@@ -20,6 +21,11 @@ class SmartTwinApi
     public function user(): User
     {
         return new User($this->client, 'api/account/v1/users');
+    }
+
+    public function advice(): Advice
+    {
+        return new Advice($this->client, 'api/advice/v1');
     }
 
     public function events(): EventSubscription

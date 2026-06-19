@@ -76,6 +76,13 @@ class Client
         return $this->getClient()->request($method, ltrim($uri, '/'), $options);
     }
 
+    public function get(string $uri, array $options = []): array
+    {
+        $response = $this->request('GET', $uri, $options);
+
+        return $this->decode($response);
+    }
+
     public function post(string $uri, array $options = []): array
     {
         $response = $this->request('POST', $uri, $options);

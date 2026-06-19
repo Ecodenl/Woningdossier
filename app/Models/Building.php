@@ -39,6 +39,7 @@ use Plank\Mediable\MediableInterface;
  * @property int $primary
  * @property string $bag_addressid
  * @property string|null $bag_woonplaats_id
+ * @property array|null $smarttwin_callback
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -195,7 +196,7 @@ class Building extends Model implements MediableInterface
         $answers = [];
         $where = [];
 
-        if (!$withMaster) {
+        if (! $withMaster) {
             $where = [
                 [
                     'input_source_id',
@@ -207,7 +208,7 @@ class Building extends Model implements MediableInterface
 
         // This means we should get the answer the "traditional way", from another
         // table (not from the tool_question_answers)
-        if (!is_null($toolQuestion->save_in)) {
+        if (! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table = $saveIn['table'];
             $column = $saveIn['column'];
@@ -245,7 +246,7 @@ class Building extends Model implements MediableInterface
                 // weird cases like building values.
                 if (is_array($value)) {
                     foreach ($value as $definitiveValue) {
-                        $answer = $questionValues->isNotEmpty() && !is_null($definitiveValue) && isset($questionValues[$definitiveValue])
+                        $answer = $questionValues->isNotEmpty() && ! is_null($definitiveValue) && isset($questionValues[$definitiveValue])
                             ? $questionValues[$definitiveValue]
                             : $definitiveValue;
                         $answers[$inputSource->short][] = [
@@ -254,7 +255,7 @@ class Building extends Model implements MediableInterface
                         ];
                     }
                 } else {
-                    $answer = $questionValues->isNotEmpty() && !is_null($value) && isset($questionValues[$value])
+                    $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value])
                         ? $questionValues[$value]
                         : $value;
                     $answers[$inputSource->short][] = [
@@ -293,7 +294,7 @@ class Building extends Model implements MediableInterface
 
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion): mixed
     {
-        if (!is_null($toolQuestion->for_specific_input_source_id)) {
+        if (! is_null($toolQuestion->for_specific_input_source_id)) {
             // If a tool question has a specific input source, it won't be saved to master.
             // We override to the only allowed input source, because otherwise the answer is _always_ null
             $inputSource = $toolQuestion->forSpecificInputSource;
@@ -303,7 +304,7 @@ class Building extends Model implements MediableInterface
         $where['input_source_id'] = $inputSource->id;
         // This means we should get the answer the "traditional way", from another
         // table (not from the tool_question_answers).
-        if (!is_null($toolQuestion->save_in)) {
+        if (! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table = $saveIn['table'];
             $column = $saveIn['column'];
@@ -414,24 +415,24 @@ class Building extends Model implements MediableInterface
     {
         if ($inputSource instanceof InputSource) {
             return $this->completedSteps()
-                    ->forInputSource($inputSource)
-                    ->where('step_id', $step->id)->count() > 0;
+                ->forInputSource($inputSource)
+                ->where('step_id', $step->id)->count() > 0;
         }
 
         return $this->completedSteps()
-                ->where('step_id', $step->id)->count() > 0;
+            ->where('step_id', $step->id)->count() > 0;
     }
 
     public function hasNotCompletedScan(Scan $scan, InputSource $inputSource): bool
     {
-        return !$this->hasCompletedScan($scan, $inputSource);
+        return ! $this->hasCompletedScan($scan, $inputSource);
     }
 
     public function hasCompletedScan(Scan $scan, InputSource $inputSource): bool
     {
         $steps = $scan->steps;
         foreach ($steps as $step) {
-            if (!$this->hasCompleted($step, $inputSource)) {
+            if (! $this->hasCompleted($step, $inputSource)) {
                 return false;
             }
         }
@@ -468,7 +469,7 @@ class Building extends Model implements MediableInterface
      */
     public function hasNotCompleted(Step $step, ?InputSource $inputSource = null): bool
     {
-        return !$this->hasCompleted($step, $inputSource);
+        return ! $this->hasCompleted($step, $inputSource);
     }
 
     /**
@@ -727,18 +728,18 @@ class Building extends Model implements MediableInterface
             if ($firstIncompleteSubStep instanceof SubStep) {
                 // If we didn't pass, we add the ID as not relevant, so we don't query it a second time.
                 $passes = $evaluator->evaluate($firstIncompleteSubStep->conditions ?? []);
-                if (!$passes) {
+                if (! $passes) {
                     $irrelevantSubSteps[] = $firstIncompleteSubStep->id;
                 }
             } else {
                 // Break the loop if there are no incomplete sub steps left.
                 $passes = true;
             }
-        } while (!$passes);
+        } while (! $passes);
 
         // If no sub step was found, just return to the first available one. This is a fallback, and generally should
         // not happen.
-        if (!$firstIncompleteSubStep instanceof SubStep) {
+        if (! $firstIncompleteSubStep instanceof SubStep) {
             $firstIncompleteSubStep = $step->subSteps()
                 ->orderBy('order')
                 ->first();

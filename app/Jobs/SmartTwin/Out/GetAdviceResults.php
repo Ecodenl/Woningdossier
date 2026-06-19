@@ -18,7 +18,8 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
     public function __construct(
         protected array $callbackData,
         protected int $buildingId,
-    ) {
+    )
+    {
     }
 
     public function uniqueId(): string

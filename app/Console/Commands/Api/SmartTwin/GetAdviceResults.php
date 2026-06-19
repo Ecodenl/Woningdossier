@@ -13,7 +13,8 @@ class GetAdviceResults extends Command
      *
      * @var string
      */
-    protected $signature = 'api:smarttwin:get-advice-results';
+    protected $signature = 'api:smarttwin:get-advice-results
+                            {buildingId? : Only process this specific building ID}';
 
     /**
      * The console command description.
@@ -27,7 +28,9 @@ class GetAdviceResults extends Command
      */
     public function handle()
     {
-        Building::containsPendingSmartTwinAdvices()->chunk(5, function ($buildings) {
+        Building::containsPendingSmartTwinAdvices()
+            ->when($this->argument('buildingId'), fn($q, $id) => $q->where('id', $id))
+            ->chunk(5, function ($buildings) {
             /** @var Building $building */
             foreach ($buildings as $building) {
                 $this->line("Fallback cron to get advice results for " . $building->getKey());

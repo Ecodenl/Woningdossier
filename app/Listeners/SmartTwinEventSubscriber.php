@@ -3,11 +3,13 @@
 namespace App\Listeners;
 
 use App\Events\AccountVerified;
+use App\Events\SmartTwinCallbackReceived;
 use App\Events\UserDeleted;
 use App\Helpers\RoleHelper;
 use App\Jobs\SmartTwin\Out\CreateCoachAccount;
 use App\Jobs\SmartTwin\Out\CreateUserAccount;
 use App\Jobs\SmartTwin\Out\DeleteAccount;
+use App\Jobs\SmartTwin\Out\GetAdviceResults;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Events\Dispatcher;
@@ -52,12 +54,20 @@ class SmartTwinEventSubscriber
         }
     }
 
+    public function handleSmartTwinCallbackReceived(SmartTwinCallbackReceived $event): void
+    {
+        foreach ($event->addedCallbacks as $callbackData) {
+            GetAdviceResults::dispatch($callbackData, $event->building->getKey());
+        }
+    }
+
     public function subscribe(Dispatcher $events): array
     {
         return [
-            AccountVerified::class => 'handleAccountVerified',
-            RoleAttached::class    => 'handleRoleAttached',
-            UserDeleted::class     => 'handleUserDeleted',
+            AccountVerified::class           => 'handleAccountVerified',
+            RoleAttached::class              => 'handleRoleAttached',
+            UserDeleted::class               => 'handleUserDeleted',
+            SmartTwinCallbackReceived::class => 'handleSmartTwinCallbackReceived',
         ];
     }
 

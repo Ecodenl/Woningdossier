@@ -65,11 +65,15 @@ class EconobisEventSubscriber
 
     public function sendUserDeletedToEconobis(UserDeleted $event)
     {
-        // So this is the same as the policy used above, but at this stage the user does not exist anymore.
-        // The cooperation most likely also no longer exists, and therefore we expect the data as array and do checks
-        // manually.
-        if (! empty($event->accountRelated['account_id'])) {
-            SendUserDeletedToEconobis::dispatch($event->cooperation, $event->accountRelated);
+        // The user no longer exists at this point and the cooperation may also have been removed,
+        // so we work from the snapshot the event carries.
+        if (! empty($event->context['account_id'])) {
+            SendUserDeletedToEconobis::dispatch($event->cooperation, [
+                'building_id' => $event->context['building_id'] ?? null,
+                'user_id'     => $event->context['user_id']     ?? null,
+                'account_id'  => $event->context['account_id'],
+                'contact_id'  => $event->context['extra']['contact_id'] ?? null,
+            ]);
         }
     }
 

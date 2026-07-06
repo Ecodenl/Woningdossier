@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Cooperation\Tool;
 
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BuildingTypeFormRequest extends FormRequest

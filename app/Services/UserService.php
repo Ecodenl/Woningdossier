@@ -22,7 +22,7 @@ use App\Services\Econobis\EconobisService;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
 use App\Services\Models\BuildingStatusService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;

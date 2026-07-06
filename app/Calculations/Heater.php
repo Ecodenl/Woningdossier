@@ -14,7 +14,7 @@ use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
 use App\Services\CalculatorService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class Heater extends Calculator
 {

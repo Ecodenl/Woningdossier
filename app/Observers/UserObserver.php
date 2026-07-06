@@ -6,7 +6,7 @@ use App\Models\Account;
 use App\Models\NotificationInterval;
 use App\Models\NotificationType;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class UserObserver
 {

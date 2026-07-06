@@ -9,7 +9,7 @@ use App\Models\NotificationSetting;
 use App\Models\NotificationType;
 use App\Models\PrivateMessageView;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;

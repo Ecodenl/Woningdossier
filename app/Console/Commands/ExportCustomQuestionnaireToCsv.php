@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Exports\Cooperation\CsvExport;
 use App\Models\Questionnaire;
 use App\Services\CsvService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;

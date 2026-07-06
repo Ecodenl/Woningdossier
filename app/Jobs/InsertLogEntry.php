@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Helpers\Queue;
 use App\Models\Log;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;

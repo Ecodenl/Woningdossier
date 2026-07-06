@@ -8,7 +8,7 @@ use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Services\LegacyService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

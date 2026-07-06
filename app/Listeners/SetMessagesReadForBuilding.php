@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\UserRevokedAccessToHisBuilding;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class SetMessagesReadForBuilding

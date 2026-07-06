@@ -2,7 +2,7 @@
 
 namespace App\Contracts\Queue;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 interface ShouldNotHandleAfterBuildingReset
 {

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -71,7 +73,7 @@ class ExampleBuilding extends Model
             /* @var ExampleBuilding $model */
             // delete contents
             $model->contents()->delete();
-            \Log::debug('Deleting done..');
+            Log::debug('Deleting done..');
         });
     }
 
@@ -150,7 +152,7 @@ class ExampleBuilding extends Model
     #[Scope]
     protected function forAnyOrMyCooperation(Builder $query): Builder
     {
-        $cooperationId = \Session::get('cooperation', 0);
+        $cooperationId = Session::get('cooperation', 0);
 
         return $query->where('cooperation_id', '=', $cooperationId)->orWhereNull('cooperation_id');
     }

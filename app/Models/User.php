@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -211,7 +212,7 @@ class User extends Model implements AuthorizableContract
      */
     public function getAccountProperty(string $property)
     {
-        \Log::debug('Account property ' . $property . ' is accessed via User!');
+        Log::debug('Account property ' . $property . ' is accessed via User!');
         if ($this->account instanceof Account) {
             return $this->account->$property;
         }

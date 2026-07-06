@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\Tool;
 
+use Illuminate\Support\Facades\Auth;
 use App\Helpers\ConsiderableHelper;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Models\Step;
@@ -18,7 +19,7 @@ class SolarPanelFormRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return \Auth::check();
+        return Auth::check();
     }
 
     /**

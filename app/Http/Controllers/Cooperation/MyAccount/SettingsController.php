@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use Illuminate\Support\Facades\Auth;
 use App\Enums\ApiImplementation;
 use App\Events\UserToolDataChanged;
 use App\Helpers\Hoomdossier;
@@ -90,7 +91,7 @@ class SettingsController extends Controller
 
         // delete, destroy and invalidate all session stuff.
         HoomdossierSession::destroy();
-        \Auth::logout();
+        Auth::logout();
         request()->session()->invalidate();
 
         $stillActiveForOtherCooperations = Account::where('id', '=', $accountId)->exists();

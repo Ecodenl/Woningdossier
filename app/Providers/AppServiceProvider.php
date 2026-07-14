@@ -19,7 +19,7 @@ use App\Policies\RolePolicy;
 use App\Policies\BuildingPolicy;
 use App\Models\PersonalAccessToken;
 use App\Rules\MaxFilenameLength;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;

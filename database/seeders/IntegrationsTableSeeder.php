@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class IntegrationsTableSeeder extends Seeder
@@ -19,7 +20,7 @@ class IntegrationsTableSeeder extends Seeder
         ];
 
         foreach ($datas as $data) {
-            $data = \DB::table('integrations')->updateOrInsert(['short' => $data['short']], $data);
+            $data = DB::table('integrations')->updateOrInsert(['short' => $data['short']], $data);
         }
     }
 }

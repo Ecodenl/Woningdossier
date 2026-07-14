@@ -3,7 +3,7 @@
 namespace App\Console\Commands\AVG;
 
 use App\Services\DiscordNotifier;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use OwenIt\Auditing\Models\Audit;
 

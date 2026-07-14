@@ -2,7 +2,8 @@
 
 namespace App\Http\Requests\Cooperation\Tool;
 
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BuildingTypeFormRequest extends FormRequest
@@ -12,7 +13,7 @@ class BuildingTypeFormRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return \Auth::check();
+        return Auth::check();
     }
 
     /**

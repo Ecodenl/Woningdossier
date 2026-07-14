@@ -19,7 +19,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
 use App\Services\UserActionPlanAdviceService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class RoofInsulationHelper extends ToolHelper
 {

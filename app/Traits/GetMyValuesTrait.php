@@ -227,7 +227,7 @@ trait GetMyValuesTrait
         return $query->allInputSources()
             ->where($whereUserOrBuildingId)
             ->join('input_sources', $this->getTable() . '.input_source_id', '=', 'input_sources.id')
-            ->orderBy('input_sources.order', 'ASC')
+            ->orderBy('input_sources.order')
             ->select([$this->getTable() . '.*']);
     }
 

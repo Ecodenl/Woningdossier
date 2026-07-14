@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -50,7 +51,7 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
 
         static::creating(function ($model) {
             if (static::where('group', $model->group)->where('key', $model->key)->first() instanceof LanguageLine) {
-                \Log::debug('duplicate key: ' . $model->key);
+                Log::debug('duplicate key: ' . $model->key);
             }
         });
     }

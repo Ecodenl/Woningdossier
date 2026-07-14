@@ -7,7 +7,7 @@ use App\Http\Requests\DecimalReplacementTrait;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Services\LegacyService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;

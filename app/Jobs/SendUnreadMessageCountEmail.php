@@ -11,7 +11,7 @@ use App\Models\NotificationSetting;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Services\PrivateMessageViewService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;

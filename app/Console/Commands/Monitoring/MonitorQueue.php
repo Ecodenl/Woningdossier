@@ -5,7 +5,7 @@ namespace App\Console\Commands\Monitoring;
 use App\Helpers\Queue;
 use App\Models\QueueLog;
 use App\Services\DiscordNotifier;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Queue as QueueFacade;
 

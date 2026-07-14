@@ -14,7 +14,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
 use App\Services\CalculatorService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class WallInsulation
 {

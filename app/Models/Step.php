@@ -195,7 +195,7 @@ class Step extends Model
     #[Scope]
     protected function ordered(Builder $query): Builder
     {
-        return $query->orderBy('order', 'asc');
+        return $query->orderBy('order');
     }
 
     #[Scope]

@@ -14,7 +14,7 @@ use App\Models\Service;
 use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Services\ToolQuestionService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;

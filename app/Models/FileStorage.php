@@ -8,7 +8,7 @@ use App\Scopes\AvailableScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\HasCooperationTrait;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,10 +23,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $input_source_id
  * @property int $file_type_id
  * @property string $filename
- * @property \Illuminate\Support\Carbon|null $available_until
+ * @property Carbon|null $available_until
  * @property bool $is_being_processed
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \App\Models\FileType $fileType

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Hash;
 use App\Models\FileType;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
@@ -18,7 +19,7 @@ class FileTypeService
     public function niceFileName(): string
     {
         // create a short hash to prepend on the filename.
-        $substrBycrypted = substr(\Hash::make(Str::uuid()), 7, 5);
+        $substrBycrypted = substr(Hash::make(Str::uuid()), 7, 5);
         $substrUuid = substr(Str::uuid(), 0, 8);
         $hash = $substrUuid . $substrBycrypted;
 

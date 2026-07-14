@@ -17,7 +17,7 @@ class InputSource extends BaseCache
             self::getCacheKey(static::CACHE_KEY_GET_ORDERED),
             config('hoomdossier.cache.times.default'),
             function () {
-                return InputSourceModel::orderBy('order', 'desc')->get();
+                return InputSourceModel::orderByDesc('order')->get();
             }
         );
     }

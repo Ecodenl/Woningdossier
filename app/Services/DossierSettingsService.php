@@ -6,7 +6,7 @@ use App\Models\DossierSetting;
 use App\Models\InputSource;
 use App\Traits\Services\HasBuilding;
 use App\Traits\Services\HasInputSources;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 

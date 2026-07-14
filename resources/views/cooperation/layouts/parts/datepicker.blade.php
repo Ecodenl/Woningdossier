@@ -7,8 +7,8 @@
     $livewire = $livewire ?? false;
     /** @var string $name */
     $name = $name ?? 'date';
-    /** @var \Carbon\Carbon|null $date */
-    $date = (($date ?? null) instanceof \Carbon\Carbon) ? $date->format($format) : '';
+    /** @var \Illuminate\Support\Carbon|null $date */
+    $date = (($date ?? null) instanceof \Illuminate\Support\Carbon) ? $date->format($format) : '';
 
     $htmlName = Str::convertDotToHtml($name);
 @endphp

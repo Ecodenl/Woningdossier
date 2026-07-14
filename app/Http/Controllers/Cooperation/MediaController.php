@@ -28,9 +28,7 @@ class MediaController extends Controller
 
         Gate::authorize('view', [$media, $currentInputSource]);
 
-        if (! Storage::disk($media->disk)->exists($media->getDiskPath())) {
-            abort(404);
-        }
+        abort_unless(Storage::disk($media->disk)->exists($media->getDiskPath()), 404);
 
         return response()->{$method}(
             Storage::disk($media->disk)->path($media->getDiskPath())

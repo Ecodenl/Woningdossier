@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Events\Registered;
 use App\Models\Log;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class LogRegisteredUserListener
 {

@@ -19,7 +19,7 @@ use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
 use App\Traits\Services\HasBuilding;
 use App\Traits\Services\HasInputSources;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

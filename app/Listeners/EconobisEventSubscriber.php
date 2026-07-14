@@ -77,7 +77,7 @@ class EconobisEventSubscriber
         }
     }
 
-    public function subscribe(Dispatcher $events): array
+    /*public function subscribe(Dispatcher $events): array
     {
         return [
             BuildingAppointmentDateUpdated::class => 'handleSendAppointmentDateToEconobis',
@@ -86,7 +86,7 @@ class EconobisEventSubscriber
             BuildingCompletedHisFirstSubStep::class => 'handlSendScanStatusToEconobis',
             UserResetHisBuilding::class => ['handlSendScanStatusToEconobis', 'handleSendBuildingFilledInAnswersToEconobis'],
         ];
-    }
+    }*/
 
     private function canUserSendInformationToEconobis($event)
     {

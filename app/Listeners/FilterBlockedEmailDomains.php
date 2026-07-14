@@ -10,12 +10,12 @@ use Symfony\Component\Mime\Address;
 class FilterBlockedEmailDomains
 {
 
-    public function subscribe(Dispatcher $events): array
+    /*public function subscribe(Dispatcher $events): array
     {
         return [
             MessageSending::class => 'handleMessageSending'
         ];
-    }
+    }*/
 
     public function handleMessageSending(MessageSending $event): ?bool
     {

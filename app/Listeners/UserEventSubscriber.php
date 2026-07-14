@@ -20,10 +20,10 @@ class UserEventSubscriber
         $this->userService->forUser($event->user)->toolChanged();
     }
 
-    public function subscribe(Dispatcher $events): array
+    /*public function subscribe(Dispatcher $events): array
     {
         return [
             UserToolDataChanged::class => 'handleToolDataChanged',
         ];
-    }
+    }*/
 }

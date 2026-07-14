@@ -20,7 +20,7 @@ use Spatie\Permission\Events\RoleAttached;
 class SmartTwinEventSubscriber
 {
 
-    public function subscribe(Dispatcher $events): array
+    /*public function subscribe(Dispatcher $events): array
     {
         return [
             AccountVerified::class => 'handleAccountVerified',
@@ -29,7 +29,7 @@ class SmartTwinEventSubscriber
             SmartTwinCallbackReceived::class => 'handleSmartTwinCallbackReceived',
             Login::class => 'handleLogin',
         ];
-    }
+    }*/
 
     public function handleLogin(Login $event): void
     {

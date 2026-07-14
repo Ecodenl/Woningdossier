@@ -34,10 +34,10 @@ class QueueEventSubscriber
         }
     }
 
-    public function subscribe($events): array
+    /*public function subscribe($events): array
     {
         return [
             JobProcessed::class => 'handleJobProcessed',
         ];
-    }
+    }*/
 }

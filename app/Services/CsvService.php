@@ -79,7 +79,7 @@ class CsvService
         // get the users from the cooperation, that have a building.
         $users = $cooperation
             ->users()
-            ->whereHas('buildings')
+            ->whereHas('building')
             ->get();
         /**
          * @var User $user

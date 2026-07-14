@@ -11,7 +11,7 @@ use App\Models\Cooperation;
 use App\Models\Status;
 use App\Services\Models\BuildingService;
 use App\Services\Models\BuildingStatusService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Http\Request;
 

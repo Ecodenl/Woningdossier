@@ -38,7 +38,7 @@
                         $appointmentDateFormatted = null;
 
                         if (! is_null($building->appointment_date)) {
-                            $appointmentDateFormatted = \Carbon\Carbon::create($building->appointment_date)->format('Y-m-d H:i');
+                            $appointmentDateFormatted = \Illuminate\Support\Carbon::create($building->appointment_date)->format('Y-m-d H:i');
                         }
                         $appointmentDateStrotime = strtotime($appointmentDateFormatted);
 

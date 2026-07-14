@@ -21,7 +21,7 @@ use App\Models\Scan;
 use App\Models\User;
 use App\Services\FileStorageService;
 use App\Services\FileTypeService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;

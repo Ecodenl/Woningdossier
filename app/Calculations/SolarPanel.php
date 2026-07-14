@@ -15,7 +15,7 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Services\Kengetallen\KengetallenService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class SolarPanel
 {

@@ -13,7 +13,7 @@ use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Traits\FluentCaller;
 use App\Traits\HasDynamicAnswers;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -43,7 +43,7 @@ class HighEfficiencyBoilerCalculator
         );
 
         if (! $newBoilerType instanceof ServiceValue) {
-            $newBoilerType = Service::findByShort('boiler')->values()->orderBy('order', 'desc')->first();
+            $newBoilerType = Service::findByShort('boiler')->values()->orderByDesc('order')->first();
         }
 
         // now for the new

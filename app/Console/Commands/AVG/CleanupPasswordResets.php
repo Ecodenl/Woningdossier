@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\AVG;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 

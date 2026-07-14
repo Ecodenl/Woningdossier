@@ -13,7 +13,7 @@ use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\UserEnergyHabit;
 use App\Models\WoodRotStatus;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class InsulatedGlazingCalculator

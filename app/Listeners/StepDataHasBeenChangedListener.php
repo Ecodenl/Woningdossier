@@ -6,7 +6,7 @@ use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Queue;
 use App\Jobs\InsertLogEntry;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class StepDataHasBeenChangedListener

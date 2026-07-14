@@ -26,7 +26,7 @@ use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Services\Verbeterjehuis\RegulationService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Bus\Batch;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;

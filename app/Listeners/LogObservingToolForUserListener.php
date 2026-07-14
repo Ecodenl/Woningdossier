@@ -6,7 +6,7 @@ use App\Events\ObservingToolForUserEvent;
 use App\Helpers\Queue;
 use App\Models\Log;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class LogObservingToolForUserListener implements ShouldQueue

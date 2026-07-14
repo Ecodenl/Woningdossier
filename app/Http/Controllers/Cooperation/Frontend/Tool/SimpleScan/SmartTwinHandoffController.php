@@ -24,6 +24,8 @@ class SmartTwinHandoffController extends Controller
             return $this->backToWoonplan($cooperation, $scan);
         }
 
+        // Note this now sets the role from the session. During handoff the role is explicitly checked against 'coach'. This means that if the user is
+        // currently logged in as cooperation-admin or coordinator, this will result in a resident (because fallback) handoff. Is this acceptable behavior?
         $roleName = HoomdossierSession::getRole(true)?->name ?? RoleHelper::ROLE_RESIDENT;
 
         $result = $service->handoff($user, $building, $roleName);

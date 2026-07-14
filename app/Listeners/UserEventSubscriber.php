@@ -15,7 +15,7 @@ class UserEventSubscriber
         $this->userService = $userService;
     }
 
-    public function handleToolDataChanged(UserToolDataChanged $event)
+    public function handleToolDataChanged(UserToolDataChanged $event) : void
     {
         $this->userService->forUser($event->user)->toolChanged();
     }

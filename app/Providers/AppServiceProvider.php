@@ -106,7 +106,6 @@ class AppServiceProvider extends ServiceProvider
         Translatable::fallback(App::getFallbackLocale());
 
         $this->bootAuth();
-        $this->attachSubscribers();
     }
 
     /**
@@ -140,15 +139,5 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('editAny', [RolePolicy::class, 'editAny']);
 
         Gate::define('refreshRegulations', [AccountPolicy::class, 'refreshRegulations']);
-    }
-
-    public function attachSubscribers(): void
-    {
-        Event::listen(MessageSending::class, FilterBlockedEmailDomains::class);
-
-        Event::subscribe(UserEventSubscriber::class);
-        Event::subscribe(QueueEventSubscriber::class);
-        Event::subscribe(EconobisEventSubscriber::class);
-        Event::subscribe(SmartTwinEventSubscriber::class);
     }
 }

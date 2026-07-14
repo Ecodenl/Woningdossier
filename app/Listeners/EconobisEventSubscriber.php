@@ -27,7 +27,7 @@ class EconobisEventSubscriber
         $this->userService = $userService;
     }
 
-    public function sendAppointmentDateToEconobis(BuildingAppointmentDateUpdated $event)
+    public function handleSendAppointmentDateToEconobis(BuildingAppointmentDateUpdated $event)
     {
         Log::debug(__METHOD__);
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
@@ -38,7 +38,7 @@ class EconobisEventSubscriber
         }
     }
 
-    public function sendBuildingStatusToEconobis(BuildingStatusUpdated $event)
+    public function handleSendBuildingStatusToEconobis(BuildingStatusUpdated $event)
     {
         // Econobis only wants the status if it's `executed` ("uitgevoerd")
         $econobisWantsStatus = ($status = $event->building->getMostRecentBuildingStatus()?->status) instanceof Status && $status->short === 'executed';
@@ -49,21 +49,21 @@ class EconobisEventSubscriber
         }
     }
 
-    public function sendScanStatusToEconobis(BuildingCompletedHisFirstSubStep|UserResetHisBuilding $event)
+    public function handleSendScanStatusToEconobis(BuildingCompletedHisFirstSubStep|UserResetHisBuilding $event)
     {
         if ($this->canUserSendInformationToEconobis($event)) {
             SendScanStatusToEconobis::dispatch($event->building);
         }
     }
 
-    public function sendBuildingFilledInAnswersToEconobis(UserResetHisBuilding $event)
+    public function handleSendBuildingFilledInAnswersToEconobis(UserResetHisBuilding $event)
     {
         if ($this->canUserSendInformationToEconobis($event)) {
             SendBuildingFilledInAnswersToEconobis::dispatch($event->building);
         }
     }
 
-    public function sendUserDeletedToEconobis(UserDeleted $event)
+    public function handleSendUserDeletedToEconobis(UserDeleted $event)
     {
         // The user no longer exists at this point and the cooperation may also have been removed,
         // so we work from the snapshot the event carries.
@@ -77,16 +77,16 @@ class EconobisEventSubscriber
         }
     }
 
-    public function subscribe(Dispatcher $events): array
+    /*public function subscribe(Dispatcher $events): array
     {
         return [
-            BuildingAppointmentDateUpdated::class => 'sendAppointmentDateToEconobis',
-            BuildingStatusUpdated::class => 'sendBuildingStatusToEconobis',
-            UserDeleted::class => 'sendUserDeletedToEconobis',
-            BuildingCompletedHisFirstSubStep::class => 'sendScanStatusToEconobis',
-            UserResetHisBuilding::class => ['sendScanStatusToEconobis', 'sendBuildingFilledInAnswersToEconobis'],
+            BuildingAppointmentDateUpdated::class => 'handleSendAppointmentDateToEconobis',
+            BuildingStatusUpdated::class => 'handleSendBuildingStatusToEconobis',
+            UserDeleted::class => 'handleSendUserDeletedToEconobis',
+            BuildingCompletedHisFirstSubStep::class => 'handlSendScanStatusToEconobis',
+            UserResetHisBuilding::class => ['handlSendScanStatusToEconobis', 'handleSendBuildingFilledInAnswersToEconobis'],
         ];
-    }
+    }*/
 
     private function canUserSendInformationToEconobis($event)
     {

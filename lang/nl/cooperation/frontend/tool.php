@@ -126,6 +126,17 @@ return [
             'download-report' => 'Download bestaande rapportage',
             'create-report' => 'Maak rapportage',
         ],
+        'smarttwin' => [
+            'button' => 'Ga naar SmartTwin',
+            'redirecting' => 'Je wordt ingelogd bij SmartTwin…',
+            'noscript' => 'Klik op de knop om verder te gaan naar SmartTwin.',
+            'continue' => 'Verder naar SmartTwin',
+            'errors' => [
+                'not_configured' => 'Er is nog geen SmartTwin-account voor je beschikbaar. Probeer het later opnieuw.',
+                'advice_in_progress' => 'Het adviesgesprek voor dit adres is op dit moment door een andere gebruiker geopend. Probeer het later opnieuw.',
+                'failed' => 'Er ging iets mis bij het openen van SmartTwin. Probeer het later opnieuw.',
+            ],
+        ],
     ],
     'my-regulations' => [
         'loading' => 'Maatregelen worden berekend...',

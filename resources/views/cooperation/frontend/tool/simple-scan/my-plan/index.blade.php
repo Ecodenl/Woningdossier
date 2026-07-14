@@ -10,6 +10,16 @@
     @else
         <div class="w-full">
             @php
+                $smartTwinError = in_array(request('smarttwin_error'), ['not_configured', 'advice_in_progress', 'failed'], true)
+                    ? request('smarttwin_error')
+                    : null;
+            @endphp
+            @if($smartTwinError)
+                @component('cooperation.layouts.components.alert', ['color' => 'red', 'withBackground' => true])
+                    {{ __("cooperation/frontend/tool.my-plan.smarttwin.errors.{$smartTwinError}") }}
+                @endcomponent
+            @endif
+            @php
                 $langShort = $building->hasAnsweredExpertQuestion() ? 'expert' : 'quick-scan';
                 $link = route('cooperation.my-account.messages.edit', compact('cooperation'));
 
@@ -42,5 +52,17 @@
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.calculations-table :building="$building"/>
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.download-pdf :user="$building->user" :scan="$scan"/>
         </div>
+
+        @if(Hoomdossier::hasEnabledSmartTwinCalls() && ! empty(Hoomdossier::user()->extra['smarttwin_user_id'] ?? null))
+            <div class="w-full flex flex-wrap pb-5">
+                <form method="POST"
+                      action="{{ route('cooperation.frontend.tool.simple-scan.my-plan.smarttwin', compact('cooperation', 'scan')) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-green">
+                        @lang('cooperation/frontend/tool.my-plan.smarttwin.button')
+                    </button>
+                </form>
+            </div>
+        @endif
     @endif
 @endsection

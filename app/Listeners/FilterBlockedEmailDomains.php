@@ -2,13 +2,22 @@
 
 namespace App\Listeners;
 
+use Illuminate\Events\Dispatcher;
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Mime\Address;
 
 class FilterBlockedEmailDomains
 {
-    public function handle(MessageSending $event): ?bool
+
+    /*public function subscribe(Dispatcher $events): array
+    {
+        return [
+            MessageSending::class => 'handleMessageSending'
+        ];
+    }*/
+
+    public function handleMessageSending(MessageSending $event): ?bool
     {
         $blockedDomains = array_filter(
             explode(',', config('hoomdossier.contact.email.blocked_domains', ''))

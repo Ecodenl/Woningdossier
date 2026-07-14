@@ -6,6 +6,7 @@ return [
     App\Providers\AppServiceProvider::class,
     App\Providers\ExternalServiceProvider::class,
     App\Providers\EconobisServiceProvider::class,
+    App\Providers\SmartTwinServiceProvider::class,
     App\Providers\WoningdossierServiceProvider::class,
     App\Providers\MacroServiceProvider::class,
     App\Providers\ViewServiceProvider::class,

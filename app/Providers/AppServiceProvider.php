@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Listeners\EconobisEventSubscriber;
+use App\Listeners\SmartTwinEventSubscriber;
 use App\Listeners\FilterBlockedEmailDomains;
 use App\Listeners\QueueEventSubscriber;
 use App\Listeners\UserEventSubscriber;
@@ -148,5 +149,6 @@ class AppServiceProvider extends ServiceProvider
         Event::subscribe(UserEventSubscriber::class);
         Event::subscribe(QueueEventSubscriber::class);
         Event::subscribe(EconobisEventSubscriber::class);
+        Event::subscribe(SmartTwinEventSubscriber::class);
     }
 }

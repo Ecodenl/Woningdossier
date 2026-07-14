@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\SmartTwinCallbackReceived;
 use App\Models\Building;
 
 class BuildingObserver
@@ -15,6 +16,26 @@ class BuildingObserver
     public function saved(Building $building): void
     {
         \App\Helpers\Cache\Building::wipe($building->id);
+    }
+
+    public function updated(Building $building): void
+    {
+        if ($building->wasChanged('smarttwin_callback')) {
+            SmartTwinCallbackReceived::dispatch($building, $this->extractAddedCallbacks($building));
+        }
+    }
+
+    /**
+     * Determine which callback entries were newly appended during this update.
+     *
+     * @return array<int, mixed>
+     */
+    private function extractAddedCallbacks(Building $building): array
+    {
+        $original = json_decode($building->getOriginal('smarttwin_callback') ?? '[]', true) ?? [];
+        $current  = $building->smarttwin_callback ?? [];
+
+        return array_slice($current, count($original));
     }
 
     /**

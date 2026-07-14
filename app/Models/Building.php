@@ -39,6 +39,7 @@ use Plank\Mediable\MediableInterface;
  * @property int $primary
  * @property string $bag_addressid
  * @property string|null $bag_woonplaats_id
+ * @property array|null $smarttwin_callback
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -137,7 +138,20 @@ class Building extends Model implements MediableInterface
         //'primary',
         'bag_addressid',
         'bag_woonplaats_id',
+        'smarttwin_callback',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'smarttwin_callback' => 'array',
+        ];
+    }
 
     // Static methods
     public static function boot()
@@ -671,6 +685,11 @@ class Building extends Model implements MediableInterface
         return $this->getMostRecentBuildingStatus()?->appointment_date;
     }
 
+    public function getSmartTwinCallbacks(): array
+    {
+        return $this->smarttwin_callback ?? [];
+    }
+
     public function getFirstIncompleteStep(Scan $scan, InputSource $inputSource): ?Step
     {
         $completedStepIds = $scan
@@ -728,5 +747,11 @@ class Building extends Model implements MediableInterface
 
         /** @var null|\App\Models\SubStep $firstIncompleteSubStep */
         return $firstIncompleteSubStep;
+    }
+
+    #[Scope]
+    protected function containsPendingSmartTwinAdvices(Builder $query): Builder
+    {
+        return $query->whereNotNull('smarttwin_callback');
     }
 }

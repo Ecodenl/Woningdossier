@@ -53,7 +53,7 @@ class SmartTwinEventSubscriber
                 /** @var Role $role */
                 $role = $residentRole;
             }
-            $this->dispatchForRole($user, $role);
+            $this->dispatchForRole($user, $role->name);
         }
 
 

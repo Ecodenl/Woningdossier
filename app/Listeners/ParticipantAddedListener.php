@@ -8,7 +8,7 @@ use App\Models\Client;
 use App\Models\Log;
 use App\Models\PrivateMessage;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class ParticipantAddedListener

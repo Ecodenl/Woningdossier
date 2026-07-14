@@ -14,7 +14,7 @@ use App\Models\MeasureApplication;
 use App\Models\PriceIndexing;
 use App\Models\UserEnergyHabit;
 use App\Services\Kengetallen\KengetallenService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class RawCalculator

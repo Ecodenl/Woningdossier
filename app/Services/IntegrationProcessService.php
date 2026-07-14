@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Integration;
 use App\Models\IntegrationProcess;
 use App\Traits\Services\HasBuilding;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class IntegrationProcessService
 {

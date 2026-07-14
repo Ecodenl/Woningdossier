@@ -7,7 +7,7 @@ use App\Helpers\Wrapper;
 use App\Models\Municipality;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Verbeterjehuis;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 

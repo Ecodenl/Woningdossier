@@ -14,9 +14,7 @@ class TwoFactorAuthenticatedSessionController extends FortifiesTwoFactorAuthenti
      */
     public function create(TwoFactorLoginRequest $request): TwoFactorChallengeViewResponse
     {
-        if (! $request->hasChallengedUser()) {
-            throw new HttpResponseException(to_route('cooperation.auth.login'));
-        }
+        throw_unless($request->hasChallengedUser(), new HttpResponseException(to_route('cooperation.auth.login')));
 
         return app(TwoFactorChallengeViewResponse::class);
     }

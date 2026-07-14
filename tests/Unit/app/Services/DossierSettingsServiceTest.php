@@ -7,7 +7,7 @@ use App\Models\InputSource;
 use App\Models\User;
 use App\Services\DossierSettingsService;
 use App\Services\MappingService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\InputSourcesTableSeeder;
 use Database\Seeders\RoleTableSeeder;

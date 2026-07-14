@@ -4,7 +4,7 @@ namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
 use App\Jobs\Econobis\Out\SendBuildingFilledInAnswersToEconobis;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 
 class Gebruik extends Command

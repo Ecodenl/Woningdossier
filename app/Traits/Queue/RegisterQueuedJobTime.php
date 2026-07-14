@@ -2,7 +2,7 @@
 
 namespace App\Traits\Queue;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 trait RegisterQueuedJobTime
 {

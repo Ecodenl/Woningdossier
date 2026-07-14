@@ -15,7 +15,7 @@ use App\Models\Role;
 use App\Models\Scan;
 use App\Models\Step;
 use App\Services\CooperationScanService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use PHPUnit\Framework\Attributes\DataProvider;
 use App\Console\Commands\MergeCooperations;
 use App\Models\Cooperation;

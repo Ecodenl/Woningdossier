@@ -9,7 +9,7 @@ use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Traits\FluentCaller;
 use App\Traits\Services\HasBuilding;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class RegulationService

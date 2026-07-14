@@ -6,7 +6,7 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\PrivateMessageView;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class PrivateMessageViewService

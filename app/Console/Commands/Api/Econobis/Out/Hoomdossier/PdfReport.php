@@ -8,7 +8,7 @@ use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\Integration;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\Log;

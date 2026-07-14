@@ -38,7 +38,7 @@ class Woonplan extends Command
 
         // first get all advices that have been updated in the past 30 minutes
         // than check if the user his advices weren't synced in the past 30 minutes
-        $relevantLastChangedDate = \Carbon\Carbon::now()->subMinutes(config('hoomdossier.services.econobis.send_woonplan_after_change'));
+        $relevantLastChangedDate = \Illuminate\Support\Carbon::now()->subMinutes(config('hoomdossier.services.econobis.send_woonplan_after_change'));
 
         User::econobisContacts()
             ->select(['users.*'])

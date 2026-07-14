@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\MyAccount;
 
+use Illuminate\Support\Facades\Auth;
 use App\Helpers\Hoomdossier;
 use App\Rules\HashCheck;
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,7 +15,7 @@ class HoomSettingsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return \Auth::check();
+        return Auth::check();
     }
 
     /**

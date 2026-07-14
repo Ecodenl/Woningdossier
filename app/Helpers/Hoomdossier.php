@@ -40,7 +40,7 @@ class Hoomdossier
         $baseQuery = $relation
             ->withoutGlobalScope(GetValueScope::class)
             ->join('input_sources', $relation->getRelated()->getTable() . '.input_source_id', '=', 'input_sources.id')
-            ->orderBy('input_sources.order', 'ASC');
+            ->orderBy('input_sources.order');
 
         return $baseQuery;
     }
@@ -65,7 +65,7 @@ class Hoomdossier
         $found = $relation
             ->withoutGlobalScope(GetValueScope::class)
             ->join('input_sources', $relation->getRelated()->getTable() . '.input_source_id', '=', 'input_sources.id')
-            ->orderBy('input_sources.order', 'ASC')
+            ->orderBy('input_sources.order')
             ->get([$relation->getRelated()->getTable() . '.*', 'input_sources.short']);
 
         $results = $found->pluck('short');

@@ -17,7 +17,7 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\UserEnergyHabit;
 use App\Services\CalculatorService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class RoofInsulation
 {

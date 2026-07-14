@@ -148,7 +148,7 @@ class User extends Model implements AuthorizableContract
     # Relations
     public function logs(): MorphMany
     {
-        return $this->morphMany(Log::class, 'loggable');
+        return $this->morphMany(\App\Models\Log::class, 'loggable');
     }
 
     public function considerables($related): MorphToMany

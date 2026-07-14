@@ -23,10 +23,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $input_source_id
  * @property int $file_type_id
  * @property string $filename
- * @property \Illuminate\Support\Carbon|null $available_until
+ * @property Carbon|null $available_until
  * @property bool $is_being_processed
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \App\Models\FileType $fileType

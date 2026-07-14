@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $integration_id
  * @property int $building_id
  * @property string $process
- * @property \Illuminate\Support\Carbon|null $synced_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $synced_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IntegrationProcess query()

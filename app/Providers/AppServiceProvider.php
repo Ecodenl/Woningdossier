@@ -2,17 +2,10 @@
 
 namespace App\Providers;
 
-use App\Listeners\EconobisEventSubscriber;
-use App\Listeners\SmartTwinEventSubscriber;
-use App\Listeners\FilterBlockedEmailDomains;
-use App\Listeners\QueueEventSubscriber;
-use App\Listeners\UserEventSubscriber;
-use Illuminate\Mail\Events\MessageSending;
 use App\Models\Cooperation;
 use App\Policies\AccountPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use App\Policies\UserPolicy;
 use App\Policies\RolePolicy;

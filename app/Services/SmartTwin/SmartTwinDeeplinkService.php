@@ -36,9 +36,20 @@ class SmartTwinDeeplinkService
 
         $payload = $this->buildAddressPayload($smartTwinUserId, $building);
 
-        if ($roleName === RoleHelper::ROLE_COACH) {
-            $response = $this->api->advice()->getAdvisorToolLink($payload);
+        // The tool follows the current role: resident -> quickscan, coach -> advisor tool.
+        // Any other role (coordinator, cooperation-admin, ...) is rejected rather than silently
+        // treated as a resident. A user is not supposed to hold both resident and coach at once.
+        $response = match ($roleName) {
+            RoleHelper::ROLE_RESIDENT => $this->api->advice()->getQuickScanLink($payload),
+            RoleHelper::ROLE_COACH    => $this->api->advice()->getAdvisorToolLink($payload),
+            default                   => null,
+        };
 
+        if ($response === null) {
+            return HandoffResult::unsupportedRole();
+        }
+
+        if ($roleName === RoleHelper::ROLE_COACH) {
             // AdviceSessionError: 1 = AdviceInProgressByOtherUser
             if ((int) ($response['error'] ?? 0) === 1) {
                 return HandoffResult::adviceInProgress();
@@ -46,7 +57,6 @@ class SmartTwinDeeplinkService
 
             $url = $response['adviceUrl'] ?? null;
         } else {
-            $response = $this->api->advice()->getQuickScanLink($payload);
             $url = $response['quickScanUrl'] ?? null;
         }
 

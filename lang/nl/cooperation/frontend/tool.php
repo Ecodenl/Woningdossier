@@ -134,6 +134,7 @@ return [
             'errors' => [
                 'not_configured' => 'Er is nog geen SmartTwin-account voor je beschikbaar. Probeer het later opnieuw.',
                 'advice_in_progress' => 'Het adviesgesprek voor dit adres is op dit moment door een andere gebruiker geopend. Probeer het later opnieuw.',
+                'unsupported_role' => 'SmartTwin is niet beschikbaar voor je huidige rol.',
                 'failed' => 'Er ging iets mis bij het openen van SmartTwin. Probeer het later opnieuw.',
             ],
         ],

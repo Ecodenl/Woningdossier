@@ -2,7 +2,6 @@
 
 namespace App\Listeners;
 
-use Illuminate\Events\Dispatcher;
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Mime\Address;

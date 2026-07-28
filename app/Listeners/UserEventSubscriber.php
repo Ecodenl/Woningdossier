@@ -4,7 +4,6 @@ namespace App\Listeners;
 
 use App\Events\UserToolDataChanged;
 use App\Services\UserService;
-use Illuminate\Events\Dispatcher;
 
 class UserEventSubscriber
 {

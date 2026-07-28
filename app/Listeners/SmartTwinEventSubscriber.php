@@ -14,7 +14,6 @@ use App\Models\Account;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Login;
-use Illuminate\Events\Dispatcher;
 use Spatie\Permission\Events\RoleAttached;
 
 class SmartTwinEventSubscriber

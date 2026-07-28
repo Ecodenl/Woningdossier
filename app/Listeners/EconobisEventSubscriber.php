@@ -15,7 +15,6 @@ use App\Jobs\Econobis\Out\SendUserDeletedToEconobis;
 use App\Models\Status;
 use App\Services\BuildingCoachStatusService;
 use App\Services\UserService;
-use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 
 class EconobisEventSubscriber
@@ -83,8 +82,8 @@ class EconobisEventSubscriber
             BuildingAppointmentDateUpdated::class => 'handleSendAppointmentDateToEconobis',
             BuildingStatusUpdated::class => 'handleSendBuildingStatusToEconobis',
             UserDeleted::class => 'handleSendUserDeletedToEconobis',
-            BuildingCompletedHisFirstSubStep::class => 'handlSendScanStatusToEconobis',
-            UserResetHisBuilding::class => ['handlSendScanStatusToEconobis', 'handleSendBuildingFilledInAnswersToEconobis'],
+            BuildingCompletedHisFirstSubStep::class => 'handleSendScanStatusToEconobis',
+            UserResetHisBuilding::class => ['handleSendScanStatusToEconobis', 'handleSendBuildingFilledInAnswersToEconobis'],
         ];
     }*/
 

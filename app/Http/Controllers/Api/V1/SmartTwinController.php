@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\SmartTwin\EventType;
 use App\Helpers\Models\BuildingSettingHelper;
 use App\Models\Building;
 use App\Models\BuildingSetting;
@@ -41,10 +42,14 @@ class SmartTwinController
             return response()->noContent();
         }
 
-        $callbacks = $building->getSmartTwinCallbacks();
-        $callbacks[] = $data;
+        $eventType = EventType::tryFrom($data['EventType'] ?? '');
 
-        $building->smarttwin_callback = $callbacks;
+        if (! $eventType instanceof EventType) {
+            Log::warning('SmartTwin webhook: unknown EventType', $data);
+            return response()->noContent();
+        }
+
+        $building->setSmartTwinCallback($eventType, $data);
         $building->save();
 
         Log::debug('SmartTwin webhook stored callback for building', [

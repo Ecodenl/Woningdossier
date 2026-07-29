@@ -21,21 +21,8 @@ class BuildingObserver
     public function updated(Building $building): void
     {
         if ($building->wasChanged('smarttwin_callback')) {
-            SmartTwinCallbackReceived::dispatch($building, $this->extractAddedCallbacks($building));
+            SmartTwinCallbackReceived::dispatch($building, $building->getAddedSmartTwinCallbacks());
         }
-    }
-
-    /**
-     * Determine which callback entries were newly appended during this update.
-     *
-     * @return array<int, mixed>
-     */
-    private function extractAddedCallbacks(Building $building): array
-    {
-        $original = json_decode($building->getOriginal('smarttwin_callback') ?? '[]', true) ?? [];
-        $current  = $building->smarttwin_callback ?? [];
-
-        return array_slice($current, count($original));
     }
 
     /**

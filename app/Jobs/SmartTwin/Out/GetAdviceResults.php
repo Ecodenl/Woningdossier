@@ -51,12 +51,10 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
 
         $service->processResults($building, $results, $eventType);
 
-        $remaining = array_values(array_filter(
-            $building->getSmartTwinCallbacks(),
-            fn($cb) => ($cb['EventType'] ?? null) !== $eventType->value,
-        ));
-
-        $building->smarttwin_callback = empty($remaining) ? null : $remaining;
+        // TODO: gate this on a successful mapping once SmartTwinService::processResults()
+        // signals success/failure. For now it clears unconditionally (processResults is a stub),
+        // matching the previous behaviour.
+        $building->finishSmartTwinCallback($eventType);
         $building->save();
     }
 }

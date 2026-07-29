@@ -5,6 +5,7 @@ namespace App\Jobs\SmartTwin\Out;
 use App\Enums\SmartTwin\EventType;
 use App\Helpers\Hoomdossier;
 use App\Models\Building;
+use App\Services\SmartTwin\AdviceResultStorage;
 use App\Services\SmartTwin\Api\SmartTwinApi;
 use App\Services\SmartTwin\SmartTwinService;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -29,7 +30,7 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
         return "{$eventType}_{$this->buildingId}";
     }
 
-    public function handle(SmartTwinApi $api, SmartTwinService $service): void
+    public function handle(SmartTwinApi $api, SmartTwinService $service, AdviceResultStorage $storage): void
     {
         if (! Hoomdossier::hasEnabledSmartTwinCalls()) {
             return;
@@ -48,6 +49,10 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
         };
 
         $building = Building::findOrFail($this->buildingId);
+
+        // Phase 1: persist the raw response before mapping, so a mapping retry never
+        // has to re-fetch. The fetch always returns the dossier's current state.
+        $storage->storeRaw($building, $eventType, $results);
 
         $service->processResults($building, $results, $eventType);
 

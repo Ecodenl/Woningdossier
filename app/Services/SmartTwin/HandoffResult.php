@@ -21,7 +21,8 @@ class HandoffResult
         public readonly string $status,
         public readonly ?string $url = null,
         public readonly ?string $token = null,
-    ) {
+    )
+    {
     }
 
     public static function success(string $url, string $token): self

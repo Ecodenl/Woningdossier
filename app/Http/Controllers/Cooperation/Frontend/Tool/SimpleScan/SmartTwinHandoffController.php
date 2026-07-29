@@ -27,7 +27,7 @@ class SmartTwinHandoffController extends Controller
         // The handoff follows the current session role. The service maps resident -> quickscan and
         // coach -> advisor tool, and rejects any other role (coordinator/cooperation-admin/...) as
         // unsupported rather than defaulting them into the resident flow.
-        $roleName = HoomdossierSession::getRole(true)?->name ?? RoleHelper::ROLE_RESIDENT;
+        $roleName = HoomdossierSession::getRole(true)->name ?? RoleHelper::ROLE_RESIDENT;
 
         $result = $service->handoff($user, $building, $roleName);
 

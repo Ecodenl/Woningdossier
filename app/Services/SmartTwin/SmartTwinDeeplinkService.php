@@ -73,7 +73,8 @@ class SmartTwinDeeplinkService
             'houseNumberAddition' => $building->extension !== '' ? $building->extension : null,
             // Results are delivered asynchronously via the event/webhook flow; this
             // also enables the token-in-body POST handoff on the returned URL.
-            'async'               => true,
+            //'async'               => true,
+            'async'               => false,
         ];
     }
 }

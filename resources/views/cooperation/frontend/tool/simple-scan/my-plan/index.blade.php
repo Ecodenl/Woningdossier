@@ -10,7 +10,7 @@
     @else
         <div class="w-full">
             @php
-                $smartTwinError = in_array(request('smarttwin_error'), ['not_configured', 'advice_in_progress', 'failed'], true)
+                $smartTwinError = in_array(request('smarttwin_error'), ['not_configured', 'advice_in_progress', 'unsupported_role', 'failed'], true)
                     ? request('smarttwin_error')
                     : null;
             @endphp

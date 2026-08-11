@@ -14,13 +14,15 @@ class HandoffResult
     public const STATUS_SUCCESS = 'success';
     public const STATUS_NOT_CONFIGURED = 'not_configured';
     public const STATUS_ADVICE_IN_PROGRESS = 'advice_in_progress';
+    public const STATUS_UNSUPPORTED_ROLE = 'unsupported_role';
     public const STATUS_FAILED = 'failed';
 
     private function __construct(
         public readonly string $status,
         public readonly ?string $url = null,
         public readonly ?string $token = null,
-    ) {
+    )
+    {
     }
 
     public static function success(string $url, string $token): self
@@ -38,6 +40,12 @@ class HandoffResult
     public static function adviceInProgress(): self
     {
         return new self(self::STATUS_ADVICE_IN_PROGRESS);
+    }
+
+    /** The current role is neither resident nor coach, so there is no tool to hand off to. */
+    public static function unsupportedRole(): self
+    {
+        return new self(self::STATUS_UNSUPPORTED_ROLE);
     }
 
     /** An API call failed or returned an unexpected/empty payload. */

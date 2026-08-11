@@ -14,7 +14,6 @@ use App\Models\Account;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Login;
-use Illuminate\Events\Dispatcher;
 use Spatie\Permission\Events\RoleAttached;
 
 class SmartTwinEventSubscriber
@@ -47,7 +46,7 @@ class SmartTwinEventSubscriber
             $role = $user->roles->first();
 
             // If the user for some odd reason has no role attached, attach the resident rol to him.
-            if (!$role instanceof Role) {
+            if (! $role instanceof Role) {
                 $residentRole = Role::findByName('resident');
                 $user->assignRole($residentRole);
                 /** @var Role $role */
@@ -55,8 +54,6 @@ class SmartTwinEventSubscriber
             }
             $this->dispatchForRole($user, $role->name);
         }
-
-
     }
 
     public function handleAccountVerified(AccountVerified $event): void
@@ -74,12 +71,12 @@ class SmartTwinEventSubscriber
     // markEmailAsVerified() (which fires AccountVerified). If that order ever flips, dispatches may double.
     public function handleRoleAttached(RoleAttached $event): void
     {
-        if (!$event->model instanceof User) {
+        if (! $event->model instanceof User) {
             return;
         }
 
         $user = $event->model;
-        if (!$user->account?->hasVerifiedEmail()) {
+        if (! $user->account?->hasVerifiedEmail()) {
             return;
         }
 
@@ -92,7 +89,7 @@ class SmartTwinEventSubscriber
     public function handleUserDeleted(UserDeleted $event): void
     {
         $guid = $event->context['extra']['smarttwin_user_id'] ?? null;
-        if (!empty($guid)) {
+        if (! empty($guid)) {
             DeleteAccount::dispatch($guid);
         }
     }
@@ -119,10 +116,10 @@ class SmartTwinEventSubscriber
     {
         $items = collect($event->rolesOrIds ?? [])->flatten();
 
-        $names = $items->filter(fn($r) => is_object($r) || !ctype_digit((string)$r))
-            ->map(fn($r) => is_object($r) ? $r->name : (string)$r);
+        $names = $items->filter(fn($r) => is_object($r) || ! ctype_digit((string) $r))
+            ->map(fn($r) => is_object($r) ? $r->name : (string) $r);
 
-        $ids = $items->filter(fn($r) => !is_object($r) && ctype_digit((string)$r));
+        $ids = $items->filter(fn($r) => ! is_object($r) && ctype_digit((string) $r));
 
         if ($ids->isNotEmpty()) {
             $names = $names->merge(

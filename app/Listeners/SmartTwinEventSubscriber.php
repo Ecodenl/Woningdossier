@@ -12,10 +12,16 @@ use App\Models\Account;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Events\RoleAttached;
 
 class SmartTwinEventSubscriber
 {
+    private const string DISPATCH_LOCK_PREFIX = 'smarttwin-create-account-';
+
+    // Long enough for a worker to pick the job up and write the id back, short enough that a failed
+    // attempt is retried on the next login rather than being blocked for the rest of the day.
+    private const int DISPATCH_LOCK_SECONDS = 300;
 
     /*public function subscribe(Dispatcher $events): array
     {
@@ -101,16 +107,26 @@ class SmartTwinEventSubscriber
 
         $users = $account->users()->forAllCooperations()->get();
 
-        $coach = $users->first(fn (User $user) => $user->hasRole(RoleHelper::ROLE_COACH));
-        if ($coach instanceof User) {
-            CreateCoachAccount::dispatch($coach);
+        $coach    = $users->first(fn (User $user) => $user->hasRole(RoleHelper::ROLE_COACH));
+        $resident = $coach instanceof User
+            ? null
+            : $users->first(fn (User $user) => $user->hasRole(RoleHelper::ROLE_RESIDENT));
 
+        if (! $coach instanceof User && ! $resident instanceof User) {
             return;
         }
 
-        $resident = $users->first(fn (User $user) => $user->hasRole(RoleHelper::ROLE_RESIDENT));
-        if ($resident instanceof User) {
-            CreateUserAccount::dispatch($resident);
+        // The guard at the top only sees work that has finished. A single login can reach this twice —
+        // our own resident fallback fires RoleAttached, which lands back here before the queued job has
+        // written anything — and two workers can pick up the same account at once. Either way the second
+        // create is a duplicate that SmartTwin rejects with a 400. Cache::add is atomic, so only the
+        // first caller gets through, and the lock is short-lived because every login retries anyway.
+        if (! Cache::add(self::DISPATCH_LOCK_PREFIX . $account->id, true, self::DISPATCH_LOCK_SECONDS)) {
+            return;
         }
+
+        $coach instanceof User
+            ? CreateCoachAccount::dispatch($coach)
+            : CreateUserAccount::dispatch($resident);
     }
 }

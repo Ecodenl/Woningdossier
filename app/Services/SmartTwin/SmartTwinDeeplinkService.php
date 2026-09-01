@@ -24,7 +24,7 @@ class SmartTwinDeeplinkService
 
     public function handoff(User $user, Building $building, string $roleName): HandoffResult
     {
-        $smartTwinUserId = $user->extra['smarttwin_user_id'] ?? null;
+        $smartTwinUserId = $user->account?->smartTwinUserId();
         if (empty($smartTwinUserId)) {
             return HandoffResult::notConfigured();
         }

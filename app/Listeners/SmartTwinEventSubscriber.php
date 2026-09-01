@@ -4,27 +4,30 @@ namespace App\Listeners;
 
 use App\Events\AccountVerified;
 use App\Events\SmartTwinCallbackReceived;
-use App\Events\UserDeleted;
 use App\Helpers\RoleHelper;
 use App\Jobs\SmartTwin\Out\CreateCoachAccount;
 use App\Jobs\SmartTwin\Out\CreateUserAccount;
-use App\Jobs\SmartTwin\Out\DeleteAccount;
 use App\Jobs\SmartTwin\Out\GetAdviceResults;
 use App\Models\Account;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Events\RoleAttached;
 
 class SmartTwinEventSubscriber
 {
+    private const string DISPATCH_LOCK_PREFIX = 'smarttwin-create-account-';
+
+    // Long enough for a worker to pick the job up and write the id back, short enough that a failed
+    // attempt is retried on the next login rather than being blocked for the rest of the day.
+    private const int DISPATCH_LOCK_SECONDS = 300;
 
     /*public function subscribe(Dispatcher $events): array
     {
         return [
             AccountVerified::class => 'handleAccountVerified',
             RoleAttached::class => 'handleRoleAttached',
-            UserDeleted::class => 'handleUserDeleted',
             SmartTwinCallbackReceived::class => 'handleSmartTwinCallbackReceived',
             Login::class => 'handleLogin',
         ];
@@ -39,14 +42,14 @@ class SmartTwinEventSubscriber
             return;
         }
 
-        $user = $event->user->user();
-
-        if (! $user instanceof User) {
+        // The link lives on the account, since SmartTwin keys its users on the e-mail address.
+        if (! empty($event->user->smartTwinUserId())) {
             return;
         }
 
-        // check the extra: is there already a smart_twin_user_id
-        if (! empty($user->extra['smarttwin_user_id'] ?? null)) {
+        $user = $event->user->user();
+
+        if (! $user instanceof User) {
             return;
         }
 
@@ -55,39 +58,29 @@ class SmartTwinEventSubscriber
             $user->assignRole(Role::findByName(RoleHelper::ROLE_RESIDENT));
         }
 
-        $this->dispatchForUser($user);
+        $this->dispatchForAccount($event->user);
     }
 
     public function handleAccountVerified(AccountVerified $event): void
     {
-        foreach ($event->account->users as $user) {
-            $this->dispatchForUser($user);
-        }
+        $this->dispatchForAccount($event->account);
     }
 
     // RoleAttached fires on every assignRole() / syncRoles(). When the account is not yet verified,
     // we skip — handleAccountVerified() will pick it up once verification happens. The attached role
-    // itself is not used: dispatchForUser() re-reads all roles and decides from the full set.
+    // itself is not used: dispatchForAccount() re-reads all roles and decides from the full set.
     public function handleRoleAttached(RoleAttached $event): void
     {
         if (! $event->model instanceof User) {
             return;
         }
 
-        $user = $event->model;
-        if (! $user->account?->hasVerifiedEmail()) {
+        $account = $event->model->account;
+        if (! $account?->hasVerifiedEmail()) {
             return;
         }
 
-        $this->dispatchForUser($user);
-    }
-
-    public function handleUserDeleted(UserDeleted $event): void
-    {
-        $guid = $event->context['extra']['smarttwin_user_id'] ?? null;
-        if (! empty($guid)) {
-            DeleteAccount::dispatch($guid);
-        }
+        $this->dispatchForAccount($account);
     }
 
     public function handleSmartTwinCallbackReceived(SmartTwinCallbackReceived $event): void
@@ -97,22 +90,43 @@ class SmartTwinEventSubscriber
         }
     }
 
-    // A user gets at most one SmartTwin account, so one role has to win. Coach beats resident, so a
-    // user holding both is created as UserRole::Advisor. Anything else (coordinator, cooperation-admin,
-    // ...) has no SmartTwin equivalent and is skipped — such a user gets no account at all.
-    // Roles are read fresh so a role attached moments ago is never missed by a stale relation.
-    private function dispatchForUser(User $user): void
+    // An account gets exactly one SmartTwin user (they key on e-mail address), so one role has to win
+    // across every cooperation this account is a member of. Coach beats resident: coaching is the
+    // professional function and the advisor tool is unreachable without an Advisor account. The
+    // trade-off is that a coach cannot open the quickscan for their own home — SmartTwin refuses a
+    // quick-scan/link for an Advisor account. Roles that have no SmartTwin equivalent (coordinator,
+    // cooperation-admin, ...) are skipped, so such an account gets no SmartTwin user at all.
+    //
+    // Reading roles fresh across all users keeps this deterministic: it no longer depends on which
+    // cooperation happened to trigger creation first, nor on the order jobs come off the queue.
+    private function dispatchForAccount(Account $account): void
     {
-        $roleNames = $user->roles()->pluck('name');
-
-        if ($roleNames->contains(RoleHelper::ROLE_COACH)) {
-            CreateCoachAccount::dispatch($user);
-
+        if (! empty($account->smartTwinUserId())) {
             return;
         }
 
-        if ($roleNames->contains(RoleHelper::ROLE_RESIDENT)) {
-            CreateUserAccount::dispatch($user);
+        $users = $account->users()->forAllCooperations()->get();
+
+        $coach    = $users->first(fn (User $user) => $user->hasRole(RoleHelper::ROLE_COACH));
+        $resident = $coach instanceof User
+            ? null
+            : $users->first(fn (User $user) => $user->hasRole(RoleHelper::ROLE_RESIDENT));
+
+        if (! $coach instanceof User && ! $resident instanceof User) {
+            return;
         }
+
+        // The guard at the top only sees work that has finished. A single login can reach this twice —
+        // our own resident fallback fires RoleAttached, which lands back here before the queued job has
+        // written anything — and two workers can pick up the same account at once. Either way the second
+        // create is a duplicate that SmartTwin rejects with a 400. Cache::add is atomic, so only the
+        // first caller gets through, and the lock is short-lived because every login retries anyway.
+        if (! Cache::add(self::DISPATCH_LOCK_PREFIX . $account->id, true, self::DISPATCH_LOCK_SECONDS)) {
+            return;
+        }
+
+        $coach instanceof User
+            ? CreateCoachAccount::dispatch($coach)
+            : CreateUserAccount::dispatch($resident);
     }
 }

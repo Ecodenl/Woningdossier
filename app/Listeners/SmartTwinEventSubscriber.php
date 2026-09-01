@@ -30,45 +30,44 @@ class SmartTwinEventSubscriber
         ];
     }*/
 
+    // Fires on authentication, before the user picks a role on the choose-roles screen, so there is
+    // no role in the session yet to go on. Only a backfill: users verified after this feature shipped
+    // already got their account via handleAccountVerified().
     public function handleLogin(Login $event): void
     {
-        /** @var Account $account */
-        $account = $event->user;
+        if (! $event->user instanceof Account) {
+            return;
+        }
 
-        /** @var User $user */
-        $user = $account->user();
+        $user = $event->user->user();
+
+        if (! $user instanceof User) {
+            return;
+        }
 
         // check the extra: is there already a smart_twin_user_id
-        $smartTwinUserId = $user->extra['smarttwin_user_id'] ?? null;
-
-        if (empty($smartTwinUserId)) {
-            /** @var null|Role $role */
-            $role = $user->roles->first();
-
-            // If the user for some odd reason has no role attached, attach the resident rol to him.
-            if (! $role instanceof Role) {
-                $residentRole = Role::findByName('resident');
-                $user->assignRole($residentRole);
-                /** @var Role $role */
-                $role = $residentRole;
-            }
-            $this->dispatchForRole($user, $role->name);
+        if (! empty($user->extra['smarttwin_user_id'] ?? null)) {
+            return;
         }
+
+        // If the user for some odd reason has no role attached, attach the resident rol to him.
+        if ($user->roles()->doesntExist()) {
+            $user->assignRole(Role::findByName(RoleHelper::ROLE_RESIDENT));
+        }
+
+        $this->dispatchForUser($user);
     }
 
     public function handleAccountVerified(AccountVerified $event): void
     {
         foreach ($event->account->users as $user) {
-            foreach ($user->roles as $role) {
-                $this->dispatchForRole($user, $role->name);
-            }
+            $this->dispatchForUser($user);
         }
     }
 
     // RoleAttached fires on every assignRole() / syncRoles(). When the account is not yet verified,
-    // we skip — handleAccountVerified() will pick it up once verification happens. This relies on
-    // CreatesUsers::createUser running UserService::register (which fires RoleAttached) BEFORE
-    // markEmailAsVerified() (which fires AccountVerified). If that order ever flips, dispatches may double.
+    // we skip — handleAccountVerified() will pick it up once verification happens. The attached role
+    // itself is not used: dispatchForUser() re-reads all roles and decides from the full set.
     public function handleRoleAttached(RoleAttached $event): void
     {
         if (! $event->model instanceof User) {
@@ -80,10 +79,7 @@ class SmartTwinEventSubscriber
             return;
         }
 
-        // This might need to change as it seems to be unwanted behaviour where residents can also have a coach role.
-        foreach ($this->resolveAttachedRoleNames($event) as $roleName) {
-            $this->dispatchForRole($user, $roleName);
-        }
+        $this->dispatchForUser($user);
     }
 
     public function handleUserDeleted(UserDeleted $event): void
@@ -101,32 +97,22 @@ class SmartTwinEventSubscriber
         }
     }
 
-    private function dispatchForRole(User $user, string $roleName): void
+    // A user gets at most one SmartTwin account, so one role has to win. Coach beats resident, so a
+    // user holding both is created as UserRole::Advisor. Anything else (coordinator, cooperation-admin,
+    // ...) has no SmartTwin equivalent and is skipped — such a user gets no account at all.
+    // Roles are read fresh so a role attached moments ago is never missed by a stale relation.
+    private function dispatchForUser(User $user): void
     {
-        match ($roleName) {
-            RoleHelper::ROLE_RESIDENT => CreateUserAccount::dispatch($user),
-            RoleHelper::ROLE_COACH => CreateCoachAccount::dispatch($user),
-            default => null,
-        };
-    }
+        $roleNames = $user->roles()->pluck('name');
 
-    // Spatie's RoleAttached carries roles as `$rolesOrIds` — can be names, IDs, or Role instances.
-    // Normalize to a flat list of role names so the dispatcher only needs to match on name.
-    private function resolveAttachedRoleNames(RoleAttached $event): array
-    {
-        $items = collect($event->rolesOrIds ?? [])->flatten();
+        if ($roleNames->contains(RoleHelper::ROLE_COACH)) {
+            CreateCoachAccount::dispatch($user);
 
-        $names = $items->filter(fn($r) => is_object($r) || ! ctype_digit((string) $r))
-            ->map(fn($r) => is_object($r) ? $r->name : (string) $r);
-
-        $ids = $items->filter(fn($r) => ! is_object($r) && ctype_digit((string) $r));
-
-        if ($ids->isNotEmpty()) {
-            $names = $names->merge(
-                Role::whereIn('id', $ids->all())->pluck('name')
-            );
+            return;
         }
 
-        return $names->unique()->values()->all();
+        if ($roleNames->contains(RoleHelper::ROLE_RESIDENT)) {
+            CreateUserAccount::dispatch($user);
+        }
     }
 }

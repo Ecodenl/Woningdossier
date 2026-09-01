@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Observers\AccountObserver;
+use App\Services\SmartTwin\Api\UserRole;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Notifications\ResetPasswordNotification;
@@ -60,7 +61,14 @@ class Account extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
+    // Keys used inside the `extra` JSON column. SmartTwin identifies a user by e-mail address, which
+    // belongs to the account, so the link belongs here rather than on the (per-cooperation) user.
+    public const string EXTRA_SMARTTWIN_USER_ID = 'smarttwin_user_id';
+
+    public const string EXTRA_SMARTTWIN_USER_ROLE = 'smarttwin_user_role';
+
     protected $fillable = ['email', 'password', 'email_verified_at', 'old_email', 'old_email_token',
+        'extra',
     ];
 
     protected $hidden = [
@@ -77,6 +85,7 @@ class Account extends Authenticatable implements MustVerifyEmail
         return [
             'is_admin' => 'boolean',
             'email_verified_at' => 'datetime',
+            'extra' => 'array',
         ];
     }
 
@@ -126,6 +135,33 @@ class Account extends Authenticatable implements MustVerifyEmail
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    /**
+     * The SmartTwin user linked to this account, if one has been created.
+     */
+    public function smartTwinUserId(): ?string
+    {
+        return $this->extra[self::EXTRA_SMARTTWIN_USER_ID] ?? null;
+    }
+
+    /**
+     * The role we created that SmartTwin user with. SmartTwin has no endpoint to change it
+     * afterwards, so this can drift from the roles the account currently holds.
+     */
+    public function smartTwinUserRole(): ?UserRole
+    {
+        return UserRole::tryFrom($this->extra[self::EXTRA_SMARTTWIN_USER_ROLE] ?? -1);
+    }
+
+    public function linkSmartTwinUser(string $userId, UserRole $role): void
+    {
+        $this->extra = array_merge($this->extra ?? [], [
+            self::EXTRA_SMARTTWIN_USER_ID   => $userId,
+            self::EXTRA_SMARTTWIN_USER_ROLE => $role->value,
+        ]);
+
+        $this->save();
     }
 
     /**

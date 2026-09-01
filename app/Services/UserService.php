@@ -343,6 +343,7 @@ class UserService
             // bye !
             $account = Account::find($accountId);
             if ($account instanceof Account) {
+                // AccountObserver::deleted() takes care of the SmartTwin user hanging off this account.
                 $account->delete();
             }
         }

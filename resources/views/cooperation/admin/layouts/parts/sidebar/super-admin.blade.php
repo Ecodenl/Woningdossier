@@ -63,6 +63,11 @@
         @lang('cooperation/admin/shared.sidebar.cooperation-presets')
     </a>
 </li>
+<li class="@if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.super-admin.smart-twin')) active @endif">
+    <a href="{{route('cooperation.admin.super-admin.smart-twin.index')}}">
+        @lang('cooperation/admin/super-admin/smart-twin.index.title')
+    </a>
+</li>
 <li class="@if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.super-admin.municipalities')) active @endif">
     <a href="{{route('cooperation.admin.super-admin.municipalities.index')}}">
         @lang('cooperation/admin/shared.sidebar.municipalities')

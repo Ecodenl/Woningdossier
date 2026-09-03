@@ -123,9 +123,11 @@ class SmartTwinDeeplinkService
             'postalCode'          => $building->postal_code,
             'houseNumber'         => (int) $building->number,
             'houseNumberAddition' => $building->extension !== '' ? $building->extension : null,
-            // Results are delivered asynchronously via the event/webhook flow; this
-            // also enables the token-in-body POST handoff on the returned URL.
-            'async'               => true,
+            // false = SmartTwin's server performs the redirect itself after the bridge form's
+            // POST (form-data, key "token"). true = the client would have to drive the redirect
+            // itself (JSON body, no server-side redirect) — not what our POST-and-redirect bridge
+            // page does. Confirmed with SmartTwin; do not flip this without changing the bridge too.
+            'async'               => false,
         ];
     }
 }

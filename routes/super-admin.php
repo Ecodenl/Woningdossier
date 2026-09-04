@@ -86,6 +86,12 @@ Route::resource('cooperation-presets.cooperation-preset-contents', Cooperation\A
     ->only('create', 'edit', 'destroy')
     ->parameters(['cooperation-presets' => 'cooperationPreset', 'cooperation-preset-contents' => 'cooperationPresetContent']);
 
+Route::prefix('smart-twin')->name('smart-twin.')->group(function () {
+    Route::get('', [Cooperation\Admin\SuperAdmin\SmartTwinController::class, 'index'])->name('index');
+    Route::get('{fileStorageId}/download', [Cooperation\Admin\SuperAdmin\SmartTwinController::class, 'download'])->name('download');
+    Route::post('{fileStorageId}/reprocess', [Cooperation\Admin\SuperAdmin\SmartTwinController::class, 'reprocess'])->name('reprocess');
+});
+
 Route::resource('municipalities', Cooperation\Admin\SuperAdmin\MunicipalityController::class)
     ->except('destroy');
 Route::prefix('municipalities')->as('municipalities.')->group(function () {

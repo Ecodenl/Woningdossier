@@ -30,6 +30,20 @@ return [
         'warning_size' => env('QUEUE_WARNING_SIZE', 1000),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Skip woonplan guard
+    |--------------------------------------------------------------------------
+    |
+    | Normally a building has to complete the first steps of the scan (or have
+    | measure applications) before the woonplan is reachable. On the test
+    | environment that gets in the way of testing what lives on the woonplan
+    | itself, such as the SmartTwin hand-off. Setting this to true lets anyone
+    | open the woonplan right away. Ignored on production.
+    |
+    */
+    'skip_woonplan_guard' => env('SKIP_WOONPLAN_GUARD', false),
+
     'cache' => [
         'prefix' => env('CACHE_PREFIX', 'hoomdossier_'),
         'times' => [
@@ -58,6 +72,15 @@ return [
             'interval' => [
                 \App\Jobs\Econobis\Out\SendPdfReportToEconobis::class => env('ECONOBIS_INTERVAL_PDF_REPORT', 30),
             ],
+        ],
+        'smarttwin' => [
+            'enabled' => env('SMARTTWIN_ENABLED', false),
+            'base_uri' => env('SMARTTWIN_BASE_URI', 'https://hoomdossier.test.smarttwin.nl'),
+            'api-key' => env('SMARTTWIN_KEY', ''),
+            'debug' => env('SMARTTWIN_DEBUG', false),
+            'sign-key' => env('SMARTTWIN_API_SIGN_KEY', ''),
+            'previous-sign-key' => env('SMARTTWIN_PREVIOUS_API_SIGN_KEY', ''),
+            'subscription-id' => env('SMARTTWIN_SUBSCRIPTION_ID', ''),
         ],
         'enable_logging' => env('SERVICES_ENABLE_LOGGING', false),
         'enable_calculation_logging' => env('SERVICES_ENABLE_CALCULATION_LOGGING', false),

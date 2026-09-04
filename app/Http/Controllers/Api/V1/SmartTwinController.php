@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\SmartTwin\EventType;
-use App\Helpers\Models\BuildingSettingHelper;
 use App\Models\Building;
-use App\Models\BuildingSetting;
+use App\Services\SmartTwin\BuildingResolver;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class SmartTwinController
 {
-    public function store(Request $request): Response
+    public function store(Request $request, BuildingResolver $resolver): Response
     {
         $payload = $request->json()->all();
 
@@ -25,27 +24,19 @@ class SmartTwinController
             return response()->noContent();
         }
 
-        $dossierId = $data['DossierId'] ?? null;
-
-        if (! $dossierId) {
-            Log::warning('SmartTwin webhook missing DossierId', $data);
-            return response()->noContent();
-        }
-
-        $building = BuildingSetting::forShort(BuildingSettingHelper::SHORT_SMARTTWIN_DOSSIER_ID)
-            ->where('value', $dossierId)
-            ->first()
-            ?->building;
-
-        if (! $building instanceof Building) {
-            Log::warning('SmartTwin webhook: no building found for DossierId', ['dossierId' => $dossierId]);
-            return response()->noContent();
-        }
-
+        // Resolved before the building, because the flow decides which of the account's users — and
+        // so which set of buildings — the callback can be about.
         $eventType = EventType::tryFrom($data['EventType'] ?? '');
 
         if (! $eventType instanceof EventType) {
             Log::warning('SmartTwin webhook: unknown EventType', $data);
+            return response()->noContent();
+        }
+
+        $building = $resolver->resolve($eventType, $data);
+
+        if (! $building instanceof Building) {
+            // The resolver logs why: unknown user, no reachable buildings, or no address match.
             return response()->noContent();
         }
 
@@ -54,7 +45,7 @@ class SmartTwinController
 
         Log::debug('SmartTwin webhook stored callback for building', [
             'building_id' => $building->getKey(),
-            'dossierId'   => $dossierId,
+            'dossierId'   => $data['DossierId'] ?? null,
         ]);
 
         return response()->noContent();

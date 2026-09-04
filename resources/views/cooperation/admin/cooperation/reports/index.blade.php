@@ -28,7 +28,10 @@
                         <tr>
                             <td>
                                 {{$fileType->name}}
-                                @php $fileStorage = $fileType->files()->mostRecent()->first(); @endphp
+                                {{-- leaveOutPersonalFiles: this page only lists the cooperation wide reports.
+                                     Without it a per building file could surface here, as this is a fresh
+                                     query rather than the constrained eager load. --}}
+                                @php $fileStorage = $fileType->files()->leaveOutPersonalFiles()->mostRecent()->first(); @endphp
                                 @if($fileStorage instanceof \App\Models\FileStorage && ! $fileType->isBeingProcessed())
                                     <a class="in-text block" href="{{route('cooperation.file-storage.download', compact('fileStorage'))}}">
                                         {{$fileType->name}}

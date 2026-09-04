@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 class AdviceResultStorage
 {
     public const DISK = 'downloads';
-    public const FILE_TYPE_SHORT = 'smarttwin-advice-raw';
+    public const FILE_TYPE_SHORT = SmartTwinFileTypes::ADVICE_RAW;
 
     private const RETENTION_DAYS = 30;
 
@@ -25,7 +25,7 @@ class AdviceResultStorage
      */
     public function storeRaw(Building $building, EventType $eventType, array $results): FileStorage
     {
-        $inputSource = $this->inputSourceFor($eventType);
+        $inputSource = $eventType->inputSource();
         $fileType = FileType::findByShort(self::FILE_TYPE_SHORT);
         $filename = $this->filenameFor($building, $inputSource);
 
@@ -54,12 +54,21 @@ class AdviceResultStorage
             );
     }
 
-    private function inputSourceFor(EventType $eventType): InputSource
+    /**
+     * Read back the raw response stored for a building + flow. Null when nothing was stored yet,
+     * or when the file was cleaned up (the row expires after RETENTION_DAYS).
+     *
+     * @return null|array<string, mixed>
+     */
+    public function readRaw(Building $building, EventType $eventType): ?array
     {
-        return match ($eventType) {
-            EventType::RESIDENT_SCAN_FINISHED => InputSource::resident(),
-            EventType::COACH_SCAN_FINISHED    => InputSource::coach(),
-        };
+        $filename = $this->filenameFor($building, $eventType->inputSource());
+
+        if (! Storage::disk(self::DISK)->exists($filename)) {
+            return null;
+        }
+
+        return json_decode(Storage::disk(self::DISK)->get($filename), true);
     }
 
     private function filenameFor(Building $building, InputSource $inputSource): string

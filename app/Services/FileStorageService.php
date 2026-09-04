@@ -26,12 +26,16 @@ class FileStorageService
 
     /**
      * Method to download a given file.
+     *
+     * The filename can be a path (SmartTwin stores its artifacts per building in a subdirectory),
+     * and a Content-Disposition filename may not contain slashes, so the name we hand back to the
+     * browser is the basename unless the caller wants something more descriptive.
      */
-    public static function download(FileStorage $fileStorage): StreamedResponse|RedirectResponse
+    public static function download(FileStorage $fileStorage, ?string $downloadName = null): StreamedResponse|RedirectResponse
     {
         // when exist return the download
         if (Storage::disk('downloads')->exists($fileStorage->filename)) {
-            return Storage::disk('downloads')->download($fileStorage->filename, $fileStorage->filename, [
+            return Storage::disk('downloads')->download($fileStorage->filename, $downloadName ?? basename($fileStorage->filename), [
                 'Content-type'  => $fileStorage->fileType->content_type,
                 'Pragma'        => 'no-cache',
                 'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',

@@ -20,6 +20,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  *
  * @property int $id
  * @property string $email
+ * @property array<array-key, mixed>|null $extra
  * @property string $password
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
@@ -44,6 +45,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereExtra($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereIsAdmin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereOldEmail($value)

@@ -7,6 +7,7 @@ use App\Helpers\Hoomdossier;
 use App\Models\Building;
 use App\Services\SmartTwin\AdviceResultStorage;
 use App\Services\SmartTwin\Api\SmartTwinApi;
+use App\Services\SmartTwin\MappingReportStorage;
 use App\Services\SmartTwin\SmartTwinService;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -30,7 +31,12 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
         return "{$eventType}_{$this->buildingId}";
     }
 
-    public function handle(SmartTwinApi $api, SmartTwinService $service, AdviceResultStorage $storage): void
+    public function handle(
+        SmartTwinApi $api,
+        SmartTwinService $service,
+        AdviceResultStorage $storage,
+        MappingReportStorage $reportStorage,
+    ): void
     {
         if (! Hoomdossier::hasEnabledSmartTwinCalls()) {
             return;
@@ -50,16 +56,18 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
 
         $building = Building::findOrFail($this->buildingId);
 
-        // Phase 1: persist the raw response before mapping, so a mapping retry never
-        // has to re-fetch. The fetch always returns the dossier's current state.
+        // Persist the raw response before mapping, so a mapping retry never has to re-fetch.
+        // The fetch always returns the dossier's current state.
         $storage->storeRaw($building, $eventType, $results);
 
-        $service->processResults($building, $results, $eventType);
-
-        // TODO: gate this on a successful mapping once SmartTwinService::processResults()
-        // signals success/failure. For now it clears unconditionally (processResults is a stub),
-        // matching the previous behaviour.
+        // The callback is a "still to be fetched" marker: it is what the nightly fallback cron
+        // (api:smarttwin:get-advice-results) scans for. Once the response is on disk that is done,
+        // so it is cleared here rather than after the mapping. A failed mapping is a separate
+        // problem with a separate remedy — replay it from the stored response on the super admin
+        // page — and must not make the cron pull the same results from SmartTwin all over again.
         $building->finishSmartTwinCallback($eventType);
         $building->save();
+
+        $reportStorage->store($service->processResults($building, $results, $eventType));
     }
 }

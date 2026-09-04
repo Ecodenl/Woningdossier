@@ -53,7 +53,7 @@ class FileStoragePolicy
         $user = $account->user();
         switch ($fileType->short) {
             case SmartTwinFileTypes::ADVICE_RAW:
-            case SmartTwinFileTypes::MAPPING_UNMAPPED:
+            case SmartTwinFileTypes::MAPPING_REPORT:
                 // Written by the SmartTwin pipeline itself, never generated on request.
                 return false;
             case 'pdf-report':

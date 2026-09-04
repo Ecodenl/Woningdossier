@@ -15,10 +15,11 @@ final class SmartTwinFileTypes
     public const ADVICE_RAW = 'smarttwin-advice-raw';
 
     /**
-     * Phase 2: the CSV of response fields the mapping could not place. No file type row is seeded
-     * for it yet; listing the short here already keeps it out of the cooperation reports once it is.
+     * Phase 2: what the mapping did with every field of one response, one CSV per JSON. No file
+     * type row is seeded for it yet; listing the short here already keeps it out of the cooperation
+     * reports, and out of their policy, once it is.
      */
-    public const MAPPING_UNMAPPED = 'smarttwin-mapping-unmapped';
+    public const MAPPING_REPORT = 'smarttwin-mapping-report';
 
     /**
      * @return array<int, string>
@@ -27,7 +28,7 @@ final class SmartTwinFileTypes
     {
         return [
             self::ADVICE_RAW,
-            self::MAPPING_UNMAPPED,
+            self::MAPPING_REPORT,
         ];
     }
 }

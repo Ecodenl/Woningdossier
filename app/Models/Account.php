@@ -20,7 +20,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  *
  * @property int $id
  * @property string $email
- * @property array<array-key, mixed>|null $extra
+ * @property string|null $smarttwin_user_id
+ * @property \App\Services\SmartTwin\Api\UserRole|null $smarttwin_user_role
  * @property string $password
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
@@ -45,7 +46,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereExtra($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSmarttwinUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSmarttwinUserRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereIsAdmin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereOldEmail($value)
@@ -63,14 +65,8 @@ class Account extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
-    // Keys used inside the `extra` JSON column. SmartTwin identifies a user by e-mail address, which
-    // belongs to the account, so the link belongs here rather than on the (per-cooperation) user.
-    public const string EXTRA_SMARTTWIN_USER_ID = 'smarttwin_user_id';
-
-    public const string EXTRA_SMARTTWIN_USER_ROLE = 'smarttwin_user_role';
-
     protected $fillable = ['email', 'password', 'email_verified_at', 'old_email', 'old_email_token',
-        'extra',
+        'smarttwin_user_id', 'smarttwin_user_role',
     ];
 
     protected $hidden = [
@@ -87,7 +83,7 @@ class Account extends Authenticatable implements MustVerifyEmail
         return [
             'is_admin' => 'boolean',
             'email_verified_at' => 'datetime',
-            'extra' => 'array',
+            'smarttwin_user_role' => UserRole::class,
         ];
     }
 
@@ -140,11 +136,13 @@ class Account extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * The SmartTwin user linked to this account, if one has been created.
+     * The SmartTwin user linked to this account, if one has been created. SmartTwin identifies a
+     * user by e-mail address, which belongs to the account, so the link lives here rather than on
+     * the (per-cooperation) user.
      */
     public function smartTwinUserId(): ?string
     {
-        return $this->extra[self::EXTRA_SMARTTWIN_USER_ID] ?? null;
+        return $this->smarttwin_user_id;
     }
 
     /**
@@ -153,15 +151,13 @@ class Account extends Authenticatable implements MustVerifyEmail
      */
     public function smartTwinUserRole(): ?UserRole
     {
-        return UserRole::tryFrom($this->extra[self::EXTRA_SMARTTWIN_USER_ROLE] ?? -1);
+        return $this->smarttwin_user_role;
     }
 
     public function linkSmartTwinUser(string $userId, UserRole $role): void
     {
-        $this->extra = array_merge($this->extra ?? [], [
-            self::EXTRA_SMARTTWIN_USER_ID   => $userId,
-            self::EXTRA_SMARTTWIN_USER_ROLE => $role->value,
-        ]);
+        $this->smarttwin_user_id   = $userId;
+        $this->smarttwin_user_role = $role;
 
         $this->save();
     }

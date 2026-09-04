@@ -5,6 +5,7 @@ namespace App\Jobs\SmartTwin;
 use App\Enums\SmartTwin\EventType;
 use App\Models\Building;
 use App\Services\SmartTwin\AdviceResultStorage;
+use App\Services\SmartTwin\MappingReportStorage;
 use App\Services\SmartTwin\SmartTwinService;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -30,7 +31,11 @@ class ProcessAdviceResults implements ShouldQueue, ShouldBeUnique
         return "{$this->eventType->value}_{$this->buildingId}";
     }
 
-    public function handle(SmartTwinService $service, AdviceResultStorage $storage): void
+    public function handle(
+        SmartTwinService $service,
+        AdviceResultStorage $storage,
+        MappingReportStorage $reportStorage,
+    ): void
     {
         $building = Building::findOrFail($this->buildingId);
         $results = $storage->readRaw($building, $this->eventType);
@@ -39,6 +44,6 @@ class ProcessAdviceResults implements ShouldQueue, ShouldBeUnique
             return;
         }
 
-        $service->processResults($building, $results, $this->eventType);
+        $reportStorage->store($service->processResults($building, $results, $this->eventType));
     }
 }

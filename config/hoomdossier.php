@@ -30,6 +30,20 @@ return [
         'warning_size' => env('QUEUE_WARNING_SIZE', 1000),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Skip woonplan guard
+    |--------------------------------------------------------------------------
+    |
+    | Normally a building has to complete the first steps of the scan (or have
+    | measure applications) before the woonplan is reachable. On the test
+    | environment that gets in the way of testing what lives on the woonplan
+    | itself, such as the SmartTwin hand-off. Setting this to true lets anyone
+    | open the woonplan right away. Ignored on production.
+    |
+    */
+    'skip_woonplan_guard' => env('SKIP_WOONPLAN_GUARD', false),
+
     'cache' => [
         'prefix' => env('CACHE_PREFIX', 'hoomdossier_'),
         'times' => [

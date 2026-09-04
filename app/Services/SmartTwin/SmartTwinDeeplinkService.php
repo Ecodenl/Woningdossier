@@ -7,14 +7,22 @@ use App\Helpers\RoleHelper;
 use App\Models\Building;
 use App\Models\User;
 use App\Services\SmartTwin\Api\SmartTwinApi;
+use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Orchestrates the synchronous SSO handoff into the SmartTwin tools.
  *
  * Unlike the account create/delete jobs (fire-and-forget), this runs in the
  * request/response cycle because the caller needs the deeplink + token *now*
- * to render the auto-submitting bridge form. The JWT is never persisted; only
- * the dossierId is stored so incoming webhooks can be matched to a building.
+ * to render the auto-submitting bridge form. The JWT is never persisted.
+ *
+ * The dossierId <-> building storage (needed to match incoming result webhooks to a
+ * building, see SmartTwinController) is commented out below: the link endpoints never
+ * return a dossierId (confirmed against both the test environment and the Advice API
+ * OpenAPI spec — GetLinkToAdviceResponseModel / GetLinkToQuickscanResponseModel don't
+ * have that field), so it was dead code. Left in place, commented, while the SSO
+ * handoff itself is under test; the webhook-matching problem is tracked separately.
  */
 class SmartTwinDeeplinkService
 {
@@ -29,21 +37,42 @@ class SmartTwinDeeplinkService
             return HandoffResult::notConfigured();
         }
 
-        $token = $this->api->user()->login($smartTwinUserId)['accessToken'] ?? null;
-        if (empty($token)) {
-            return HandoffResult::failed();
-        }
-
         $payload = $this->buildAddressPayload($smartTwinUserId, $building);
 
-        // The tool follows the current role: resident -> quickscan, coach -> advisor tool.
-        // Any other role (coordinator, cooperation-admin, ...) is rejected rather than silently
-        // treated as a resident. A user is not supposed to hold both resident and coach at once.
-        $response = match ($roleName) {
-            RoleHelper::ROLE_RESIDENT => $this->api->advice()->getQuickScanLink($payload),
-            RoleHelper::ROLE_COACH    => $this->api->advice()->getAdvisorToolLink($payload),
-            default                   => null,
-        };
+        try {
+            $token = $this->api->user()->login($smartTwinUserId)['accessToken'] ?? null;
+            if (empty($token)) {
+                Log::error('SmartTwin login returned no accessToken', [
+                    'building_id' => $building->id,
+                    'user_id'     => $user->id,
+                ]);
+
+                return HandoffResult::failed();
+            }
+
+            // The tool follows the current role: resident -> quickscan, coach -> advisor tool.
+            // Any other role (coordinator, cooperation-admin, ...) is rejected rather than silently
+            // treated as a resident. A user is not supposed to hold both resident and coach at once.
+            $response = match ($roleName) {
+                RoleHelper::ROLE_RESIDENT => $this->api->advice()->getQuickScanLink($payload),
+                RoleHelper::ROLE_COACH    => $this->api->advice()->getAdvisorToolLink($payload),
+                default                   => null,
+            };
+        } catch (BadResponseException $e) {
+            // This runs in the request cycle, so an uncaught Guzzle exception would hit the user as
+            // a 500 instead of a message on the woonplan. SmartTwin answers 4xx with a bare status
+            // and no machine-readable reason, so the raw body is the only diagnostic we get.
+            Log::error('SmartTwin rejected the deeplink handoff', [
+                'building_id' => $building->id,
+                'user_id'     => $user->id,
+                'role'        => $roleName,
+                'status'      => $e->getResponse()->getStatusCode(),
+                'body'        => (string) $e->getResponse()->getBody(),
+                'payload'     => $payload,
+            ]);
+
+            return HandoffResult::failed();
+        }
 
         if ($response === null) {
             return HandoffResult::unsupportedRole();
@@ -60,16 +89,29 @@ class SmartTwinDeeplinkService
             $url = $response['quickScanUrl'] ?? null;
         }
 
-        $dossierId = $response['dossierId'] ?? null;
-        if (empty($url) || empty($dossierId)) {
+        if (empty($url)) {
+            // A 200 with an unexpected shape is otherwise indistinguishable from a network failure:
+            // both end up as "er ging iets mis" on the woonplan. Log the body verbatim so we can
+            // see which field SmartTwin actually sent.
+            Log::error('SmartTwin returned an unusable deeplink response', [
+                'building_id' => $building->id,
+                'role'        => $roleName,
+                'response'    => $response,
+            ]);
+
             return HandoffResult::failed();
         }
 
-        // Store the dossierId <-> building link so the webhook (SmartTwinController)
-        // can resolve this building when results come back.
-        BuildingSettingHelper::syncSettings($building, [
-            BuildingSettingHelper::SHORT_SMARTTWIN_DOSSIER_ID => $dossierId,
-        ]);
+        // Disabled: the link endpoints never return a dossierId (see class docblock), so this
+        // check always failed / this store never ran. Kept for when SmartTwin starts sending one.
+        // $dossierId = $response['dossierId'] ?? null;
+        // if (! empty($dossierId)) {
+        //     // Store the dossierId <-> building link so the webhook (SmartTwinController)
+        //     // can resolve this building when results come back.
+        //     BuildingSettingHelper::syncSettings($building, [
+        //         BuildingSettingHelper::SHORT_SMARTTWIN_DOSSIER_ID => $dossierId,
+        //     ]);
+        // }
 
         return HandoffResult::success($url, $token);
     }
@@ -81,9 +123,10 @@ class SmartTwinDeeplinkService
             'postalCode'          => $building->postal_code,
             'houseNumber'         => (int) $building->number,
             'houseNumberAddition' => $building->extension !== '' ? $building->extension : null,
-            // Results are delivered asynchronously via the event/webhook flow; this
-            // also enables the token-in-body POST handoff on the returned URL.
-            //'async'               => true,
+            // false = SmartTwin's server performs the redirect itself after the bridge form's
+            // POST (form-data, key "token"). true = the client would have to drive the redirect
+            // itself (JSON body, no server-side redirect) — not what our POST-and-redirect bridge
+            // page does. Confirmed with SmartTwin; do not flip this without changing the bridge too.
             'async'               => false,
         ];
     }

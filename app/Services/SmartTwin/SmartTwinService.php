@@ -30,9 +30,14 @@ class SmartTwinService
      *
      * @param  array<string, mixed>  $results
      */
-    public function processResults(Building $building, array $results, EventType $eventType): MappingReport
+    public function processResults(
+        Building $building,
+        array $results,
+        EventType $eventType,
+        ?string $dossierId = null,
+    ): MappingReport
     {
-        $report = new MappingReport($building, $eventType);
+        $report = new MappingReport($building, $eventType, $dossierId);
         $debug = (bool) config('hoomdossier.services.smarttwin.debug', false);
 
         foreach ($this->flattener->flatten($results) as $leaf) {

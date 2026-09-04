@@ -2,8 +2,6 @@
 
 namespace App\Services\SmartTwin;
 
-use App\Enums\SmartTwin\EventType;
-use App\Helpers\Models\BuildingSettingHelper;
 use App\Models\Building;
 use App\Models\FileStorage;
 use App\Models\FileType;
@@ -105,11 +103,7 @@ class MappingReportStorage
             (string) $building->getKey(),
             $building->postal_code,
             $building->number . $building->extension,
-            (string) BuildingSettingHelper::getSettingValue(
-                $building,
-                BuildingSettingHelper::SHORT_SMARTTWIN_DOSSIER_ID,
-                '',
-            ),
+            (string) $report->dossierId,
             $report->eventType->inputSource()->short,
             (string) $this->retrievedAt($report),
         ];

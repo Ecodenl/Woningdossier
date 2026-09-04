@@ -20,9 +20,16 @@ final class MappingReport
      */
     private array $entries = [];
 
+    /**
+     * @param  string|null  $dossierId  The SmartTwin dossier this response came out of, for tracing
+     *                                  a row back to their side. Only known on the run that follows
+     *                                  a webhook: SmartTwin opens a new dossier per entry, so we
+     *                                  keep it nowhere and a replay has nothing to fill it with.
+     */
     public function __construct(
         public readonly Building $building,
         public readonly EventType $eventType,
+        public readonly ?string $dossierId = null,
     )
     {
     }

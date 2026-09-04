@@ -68,6 +68,6 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
         $building->finishSmartTwinCallback($eventType);
         $building->save();
 
-        $reportStorage->store($service->processResults($building, $results, $eventType));
+        $reportStorage->store($service->processResults($building, $results, $eventType, $dossierId));
     }
 }

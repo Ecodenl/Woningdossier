@@ -2,7 +2,6 @@
 
 namespace App\Services\SmartTwin;
 
-use App\Helpers\Models\BuildingSettingHelper;
 use App\Helpers\RoleHelper;
 use App\Models\Building;
 use App\Models\User;
@@ -17,12 +16,10 @@ use Illuminate\Support\Facades\Log;
  * request/response cycle because the caller needs the deeplink + token *now*
  * to render the auto-submitting bridge form. The JWT is never persisted.
  *
- * The dossierId <-> building storage (needed to match incoming result webhooks to a
- * building, see SmartTwinController) is commented out below: the link endpoints never
- * return a dossierId (confirmed against both the test environment and the Advice API
- * OpenAPI spec — GetLinkToAdviceResponseModel / GetLinkToQuickscanResponseModel don't
- * have that field), so it was dead code. Left in place, commented, while the SSO
- * handoff itself is under test; the webhook-matching problem is tracked separately.
+ * There is deliberately no dossierId <-> building bookkeeping here. The link endpoints never return
+ * one (confirmed against both the test environment and the Advice API OpenAPI spec), and SmartTwin
+ * opens a new dossier on every entry, so the id in a result webhook is always one we have never
+ * seen. The webhook matches on the address instead — see BuildingResolver.
  */
 class SmartTwinDeeplinkService
 {
@@ -101,17 +98,6 @@ class SmartTwinDeeplinkService
 
             return HandoffResult::failed();
         }
-
-        // Disabled: the link endpoints never return a dossierId (see class docblock), so this
-        // check always failed / this store never ran. Kept for when SmartTwin starts sending one.
-        // $dossierId = $response['dossierId'] ?? null;
-        // if (! empty($dossierId)) {
-        //     // Store the dossierId <-> building link so the webhook (SmartTwinController)
-        //     // can resolve this building when results come back.
-        //     BuildingSettingHelper::syncSettings($building, [
-        //         BuildingSettingHelper::SHORT_SMARTTWIN_DOSSIER_ID => $dossierId,
-        //     ]);
-        // }
 
         return HandoffResult::success($url, $token);
     }

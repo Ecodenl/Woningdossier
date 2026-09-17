@@ -3,6 +3,7 @@
 namespace Tests\Unit\app\Services\SmartTwin\Mapping\Mappers;
 
 use App\Services\SmartTwin\Mapping\Mappers\InsulationQuality;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,9 +29,7 @@ final class InsulationQualityTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider walls
-     */
+    #[DataProvider('walls')]
     public function test_it_places_a_facade_rc_value_in_its_level(float $rcValue, int $expected): void
     {
         $this->assertSame($expected, InsulationQuality::forWall($rcValue));

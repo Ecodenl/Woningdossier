@@ -74,6 +74,20 @@ final class AddReasonableInsulationValueTest extends TestCase
             ->first();
     }
 
+    /**
+     * Whether the element carries "Redelijke isolatie" at all.
+     *
+     * Asking for calculate value 4 does not answer that: before the upgrade that is where "Goede
+     * isolatie" sits, so the row exists either way and only its label says which state we are in.
+     */
+    private function hasReasonableValue(string $short): bool
+    {
+        return DB::table('element_values')
+            ->where('element_id', Element::findByShort($short)->id)
+            ->pluck('value')
+            ->contains(fn ($value) => 'Redelijke isolatie' === (json_decode($value, true)['nl'] ?? null));
+    }
+
     public function test_it_adds_the_value_to_wall_floor_and_roof(): void
     {
         $this->revertToStateBeforeTheUpgrade();
@@ -183,7 +197,7 @@ final class AddReasonableInsulationValueTest extends TestCase
         $this->artisan('upgrade:add-reasonable-insulation-value')->assertFailed();
 
         $this->assertSame($mangled, $this->stateOf('wall-insulation'));
-        $this->assertNull($this->valueAt('floor-insulation', 7));
+        $this->assertFalse($this->hasReasonableValue('floor-insulation'));
     }
 
     public function test_an_unrecognised_scale_stops_the_others_from_being_written_too(): void
@@ -204,7 +218,7 @@ final class AddReasonableInsulationValueTest extends TestCase
         $this->artisan('upgrade:add-reasonable-insulation-value')->assertFailed();
 
         $this->assertSame($before, array_map(fn (string $short) => $this->stateOf($short), self::SHORTS));
-        $this->assertNull($this->valueAt('wall-insulation', 4));
-        $this->assertNull($this->valueAt('floor-insulation', 4));
+        $this->assertFalse($this->hasReasonableValue('wall-insulation'));
+        $this->assertFalse($this->hasReasonableValue('floor-insulation'));
     }
 }

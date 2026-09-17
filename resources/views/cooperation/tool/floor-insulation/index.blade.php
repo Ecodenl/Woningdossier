@@ -391,14 +391,20 @@
                 var interestedCalculateValue = $('#interest_element_{{$floorInsulation->id}} option:selected').data('calculate-value');
                 var elementCalculateValue = $('#element_{{$floorInsulation->id}} option:selected').data('calculate-value');
 
-                if (elementCalculateValue === 6) {
+                // "Niet van toepassing" is the last option, so it carries the highest calculate
+                // value. Read off the element rather than hardcoded: the values below it shift
+                // whenever a level is added to the insulation scale, and a stale literal here would
+                // silently treat a well insulated floor as one that has none.
+                if (elementCalculateValue === {{ $floorInsulation->values->max('calculate_value') }}) {
                     // nvt
                     $(".crawlspace-accessible").hide();
                     $("#has-no-crawlspace").hide();
                     $("#no-crawlspace-error").hide();
                     $('#floor-insulation-info-alert').find('.alert').hide()
                 } else {
-                    if ((elementCalculateValue === 3 || elementCalculateValue === 4 || elementCalculateValue === 5)/* && interestedCalculateValue <= 2*/) {
+                    // Anything from "Matige isolatie" up, which is where the other steps draw the
+                    // line too.
+                    if (elementCalculateValue >= 3/* && interestedCalculateValue <= 2*/) {
                         // insulation already present and there's interest
                         $('#hideable').hide();
                         $('#floor-insulation-info-alert').find('.alert').show();

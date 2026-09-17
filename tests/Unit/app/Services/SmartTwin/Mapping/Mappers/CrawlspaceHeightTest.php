@@ -19,8 +19,8 @@ final class CrawlspaceHeightTest extends TestCase
             'net onder laag'          => [-0.29, CrawlspaceHeight::VERY_LOW],
             'ondergrens laag'         => [-0.30, CrawlspaceHeight::LOW],
             'midden in laag'          => [-0.45, CrawlspaceHeight::LOW],
-            'op de grens laag/hoog'   => [-0.50, CrawlspaceHeight::LOW],
-            'net boven de grens'      => [-0.51, CrawlspaceHeight::HIGH],
+            'net onder best hoog'     => [-0.49, CrawlspaceHeight::LOW],
+            'ondergrens best hoog'    => [-0.50, CrawlspaceHeight::HIGH],
             'diepe kruipruimte'       => [-1.20, CrawlspaceHeight::HIGH],
             'geen hoogte opgegeven'   => [null, CrawlspaceHeight::UNKNOWN],
         ];

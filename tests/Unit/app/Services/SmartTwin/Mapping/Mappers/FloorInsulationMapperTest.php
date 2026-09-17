@@ -172,17 +172,18 @@ final class FloorInsulationMapperTest extends TestCase
 
     public function test_the_crawlspace_height_is_read_off_its_depth(): void
     {
-        // Half a metre below ground, which is what the sample dossier carries.
+        // Half a metre below ground, which is what the sample dossier carries — exactly on the
+        // boundary, and the boundary belongs to the band above it.
         $mapped = $this->mappedByTarget($this->response([[[$this->floor(89.59, 0.15)], [$this->crawlspace(-0.5)]]]));
 
-        $this->assertSame(FakeElementValues::ORDER_OFFSET + CrawlspaceHeight::LOW, $mapped['crawlspace-height']->value);
+        $this->assertSame(FakeElementValues::ORDER_OFFSET + CrawlspaceHeight::HIGH, $mapped['crawlspace-height']->value);
     }
 
-    public function test_a_deep_crawlspace_reads_as_the_highest_band(): void
+    public function test_a_shallow_crawlspace_reads_as_the_lowest_band(): void
     {
-        $mapped = $this->mappedByTarget($this->response([[[$this->floor(89.59, 0.15)], [$this->crawlspace(-0.8)]]]));
+        $mapped = $this->mappedByTarget($this->response([[[$this->floor(89.59, 0.15)], [$this->crawlspace(-0.2)]]]));
 
-        $this->assertSame(FakeElementValues::ORDER_OFFSET + CrawlspaceHeight::HIGH, $mapped['crawlspace-height']->value);
+        $this->assertSame(FakeElementValues::ORDER_OFFSET + CrawlspaceHeight::VERY_LOW, $mapped['crawlspace-height']->value);
     }
 
     public function test_a_crawlspace_without_a_height_reads_as_unknown(): void

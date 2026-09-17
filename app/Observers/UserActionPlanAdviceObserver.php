@@ -20,9 +20,19 @@ class UserActionPlanAdviceObserver
 {
     /**
      * Listen to the creating event, will set the planned year based on interest.
+     *
+     * Returns false to cancel the create when this measure's advice is owned elsewhere.
      */
-    public function creating(UserActionPlanAdvice $userActionPlanAdvice): void
+    public function creating(UserActionPlanAdvice $userActionPlanAdvice): ?bool
     {
+        // The calculation runs per step and cannot know that one measure inside it was priced
+        // elsewhere. Catching it here rather than in each of the ten createAdvices() implementations
+        // is not only shorter: a helper that forgot the check would produce exactly the duplicate
+        // card this prevents, and nothing would flag it.
+        if (UserActionPlanAdviceService::isOwnedExternally($userActionPlanAdvice)) {
+            return false;
+        }
+
         // previously custom logic decided if the advice should be planned or not.
         // since the "quick scan" we ask the user if he considers the measure, when he considers it an advice will be created
         // when he considers it it might as well be planned.

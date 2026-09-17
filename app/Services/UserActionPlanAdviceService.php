@@ -21,6 +21,7 @@ use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\Models\NotificationService;
 use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Services\Verbeterjehuis\RegulationService;
@@ -147,19 +148,48 @@ class UserActionPlanAdviceService
             ->get();
 
         // now delete the old advices, the one for the given input source and the master source.
+        // Advices with a source belong to whoever produced them and survive a recalculation; see
+        // App\Enums\AdviceSource. Deleting them here would throw away an external advice the moment
+        // anything triggers a recalculation of its step.
         UserActionPlanAdvice::forUser($user)
             ->forInputSource($masterInputSource)
             ->forStep($step)
             ->withInvisible()
+            ->whereNull('source')
             ->delete();
 
         UserActionPlanAdvice::forUser($user)
             ->forInputSource($inputSource)
             ->forStep($step)
             ->withInvisible()
+            ->whereNull('source')
             ->delete();
 
         return $oldAdvices;
+    }
+
+    /**
+     * Whether something other than the calculation already owns the advice for this measure.
+     *
+     * The calculation runs per step and does not know that a measure inside it was priced
+     * elsewhere, so this is what keeps it from putting a second card for the same measure next to
+     * the first.
+     */
+    public static function isOwnedExternally(UserActionPlanAdvice $userActionPlanAdvice): bool
+    {
+        if (! is_null($userActionPlanAdvice->source)) {
+            // The externally owned advice itself, on its way in.
+            return false;
+        }
+
+        return UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+            ->allInputSources()
+            ->where('user_id', $userActionPlanAdvice->user_id)
+            ->where('input_source_id', $userActionPlanAdvice->input_source_id)
+            ->where('user_action_plan_advisable_type', $userActionPlanAdvice->user_action_plan_advisable_type)
+            ->where('user_action_plan_advisable_id', $userActionPlanAdvice->user_action_plan_advisable_id)
+            ->whereNotNull('source')
+            ->exists();
     }
 
     /**

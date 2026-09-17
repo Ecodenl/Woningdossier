@@ -263,7 +263,7 @@ class Form extends CustomMeasureForm
             $weight = $cardInvestment / max(1, $investment);
 
             // Calculate the interest just like in the expert tool
-            $interest = BankInterestCalculator::getComparableInterest($cardInvestment, $card['savings']);
+            $interest = BankInterestCalculator::getComparableInterest($cardInvestment, $card['savings'] ?? 0);
 
             // Get a rating based on interest, then multiply it by its weight, and then add it to the total
             $rating = $this->evaluateCalculationResult('investment', $interest, false);
@@ -628,7 +628,12 @@ class Form extends CustomMeasureForm
                 'from' => empty($advice->costs['from']) ? null : NumberFormatter::round($advice->costs['from']),
                 'to' => empty($advice->costs['to']) ? null : NumberFormatter::round($advice->costs['to']),
             ];
-            $cards[$category][$order]['savings'] = NumberFormatter::round($advice->savings_money ?? 0);
+            // Null rather than zero when there is no saving: an advice that came from elsewhere may
+            // carry a price without one, and "€ 0" reads to a resident as "this gains you nothing".
+            // The card hides it; the sums below treat it as zero, because an unknown cannot be added.
+            $cards[$category][$order]['savings'] = is_null($advice->savings_money)
+                ? null
+                : NumberFormatter::round($advice->savings_money);
 
             ++$order;
         }

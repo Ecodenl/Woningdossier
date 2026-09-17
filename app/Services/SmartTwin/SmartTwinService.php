@@ -6,6 +6,7 @@ use App\Enums\SmartTwin\EventType;
 use App\Models\Building;
 use App\Services\SmartTwin\Mapping\Leaf;
 use App\Services\SmartTwin\Mapping\MapperRegistry;
+use App\Services\SmartTwin\Mapping\MappingApplier;
 use App\Services\SmartTwin\Mapping\MappingReport;
 use App\Services\SmartTwin\Mapping\ResponseFlattener;
 use Illuminate\Support\Facades\Log;
@@ -16,6 +17,7 @@ class SmartTwinService
     public function __construct(
         private readonly ResponseFlattener $flattener,
         private readonly MapperRegistry $registry,
+        private readonly MappingApplier $applier,
     )
     {
     }
@@ -39,6 +41,8 @@ class SmartTwinService
     {
         $report = new MappingReport($building, $eventType, $dossierId);
         $debug = (bool) config('hoomdossier.services.smarttwin.debug', false);
+        // One response is a few hundred leaves; the flow's input source is the same for all of them.
+        $inputSource = $eventType->inputSource();
 
         foreach ($this->flattener->flatten($results) as $leaf) {
             $mapper = $this->registry->forPath($leaf->pathGroup);
@@ -51,12 +55,22 @@ class SmartTwinService
             }
 
             try {
-                $result = $mapper->map($building, $leaf, $results);
+                // Deciding and writing are one step from here: the mapper says where the value
+                // belongs, the applier puts it there and hands back the result as it should be
+                // reported — a mapping pointing at a short that does not exist comes back as
+                // TARGET_MISSING, so the report describes what happened rather than what was meant.
+                $result = $this->applier->apply(
+                    $building,
+                    $inputSource,
+                    $mapper->map($building, $leaf, $results),
+                );
+
                 $report->add($leaf, $result);
                 $this->logLeaf($debug, $building, $leaf, $result->status->value, $result->target);
             } catch (Throwable $e) {
                 // One field blowing up may not cost us the other 271. It lands in the report as an
-                // error and is logged below, so it surfaces without stopping the run.
+                // error and is logged below, so it surfaces without stopping the run. A field that
+                // threw while writing is not reported as mapped: the entry is an error instead.
                 $report->error($leaf, $e);
             }
         }

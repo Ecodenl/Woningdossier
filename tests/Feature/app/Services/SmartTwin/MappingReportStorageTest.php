@@ -10,6 +10,9 @@ use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\User;
 use App\Services\SmartTwin\AdviceResultStorage;
+use App\Services\SmartTwin\Mapping\Leaf;
+use App\Services\SmartTwin\Mapping\MappingReport;
+use App\Services\SmartTwin\Mapping\MappingResult;
 use App\Services\SmartTwin\MappingReportStorage;
 use App\Services\SmartTwin\SmartTwinFileTypes;
 use App\Services\SmartTwin\SmartTwinService;
@@ -94,6 +97,27 @@ final class MappingReportStorageTest extends TestCase
         // Nothing is mapped yet, so this is the state the report starts in — and the file explains
         // that state without the documentation at hand.
         $this->assertStringContainsString('unmapped;"Geen mapping gedefinieerd voor dit veld"', $this->csvFor($building));
+    }
+
+    public function test_a_mapped_row_shows_the_value_that_was_written(): void
+    {
+        $building = $this->building();
+
+        // Built by hand rather than through a mapper: what is under test is that the report carries
+        // the written value alongside the source value, so a row tells you both what came in and
+        // what went out.
+        $report = new MappingReport($building, EventType::RESIDENT_SCAN_FINISHED);
+        $report->add(
+            new Leaf('current.properties.facadeAssemblies.0.facades.0.area', 'current.properties.facadeAssemblies.*.facades.*.area', 26.22),
+            MappingResult::mapped('wall-surface', 105.69, 'som van alle dichte geveldelen'),
+        );
+
+        app(MappingReportStorage::class)->store($report);
+
+        $csv = $this->csvFor($building);
+
+        $this->assertStringContainsString('mapped_value', $csv);
+        $this->assertStringContainsString('wall-surface;105.69;', $csv);
     }
 
     public function test_it_identifies_the_building_on_every_row(): void

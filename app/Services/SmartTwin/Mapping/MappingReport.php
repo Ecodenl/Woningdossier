@@ -47,10 +47,9 @@ final class MappingReport
     public function error(Leaf $leaf, Throwable $exception): void
     {
         $this->entries[] = new MappingEntry(
-            $leaf,
-            MappingStatus::ERROR,
-            null,
-            $exception->getMessage(),
+            leaf: $leaf,
+            status: MappingStatus::ERROR,
+            note: $exception->getMessage(),
         );
     }
 

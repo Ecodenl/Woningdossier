@@ -28,7 +28,8 @@ class MappingReportStorage
 
     private const HEADER = [
         'cooperation', 'building_id', 'postcode', 'huisnummer', 'dossier_id', 'flow', 'retrieved_at',
-        'path', 'path_group', 'key', 'value', 'data_type', 'status', 'status_description', 'target', 'note',
+        'path', 'path_group', 'key', 'value', 'data_type', 'status', 'status_description', 'target',
+        'mapped_value', 'note',
     ];
 
     public function store(MappingReport $report): FileStorage
@@ -139,6 +140,7 @@ class MappingReportStorage
             $entry->status->value,
             $entry->status->description(),
             $entry->target ?? '',
+            $entry->displayMappedValue(),
             $entry->note ?? '',
         ];
     }

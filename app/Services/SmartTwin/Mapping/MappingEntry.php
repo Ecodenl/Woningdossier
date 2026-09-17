@@ -13,6 +13,7 @@ final class MappingEntry
         public readonly Leaf $leaf,
         public readonly MappingStatus $status,
         public readonly ?string $target = null,
+        public readonly mixed $mappedValue = null,
         public readonly ?string $note = null,
     )
     {
@@ -20,6 +21,22 @@ final class MappingEntry
 
     public static function fromResult(Leaf $leaf, MappingResult $result): self
     {
-        return new self($leaf, $result->status, $result->target, $result->note);
+        return new self($leaf, $result->status, $result->target, $result->value, $result->note);
+    }
+
+    /**
+     * The value that was written, as it goes into the report.
+     *
+     * Arrays are rendered as JSON rather than as the `[]` Leaf uses: a checkbox answer is a real
+     * list of shorts, and which shorts were saved is the whole point of the row.
+     */
+    public function displayMappedValue(): string
+    {
+        return match (true) {
+            is_null($this->mappedValue)  => '',
+            is_bool($this->mappedValue)  => $this->mappedValue ? 'true' : 'false',
+            is_array($this->mappedValue) => json_encode($this->mappedValue, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            default                      => (string) $this->mappedValue,
+        };
     }
 }

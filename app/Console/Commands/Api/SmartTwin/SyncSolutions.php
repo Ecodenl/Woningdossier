@@ -14,13 +14,18 @@ use Illuminate\Console\Command;
  * Couples SmartTwin's catalogue of solutions to our measure applications.
  *
  * Reads the whole catalogue rather than waiting for a product to turn up unmapped in somebody's
- * advice, and couples on the kind of measure rather than the individual product: one row covers
- * every EPS, wool and foam variant of cavity insulation, including the ones SmartTwin adds later.
- * A product that turns out to need a measure of its own can still be given a row on its full id,
- * which SolutionMeasures prefers over the general one.
+ * advice. Where a kind of measure covers products that are all the same measure to us — every EPS,
+ * wool and foam variant of cavity insulation — one row on the kind covers them all, including the
+ * ones SmartTwin adds later.
  *
- * Run it with --dry-run first. That prints the catalogue grouped by kind and says which kinds have
- * no coupling yet, which is the list of decisions still to make.
+ * That does not hold everywhere. "Replace Boiler" alone spans a boiler and three heat pumps, which
+ * are four different measures here, so a row on that kind would file a ground source heat pump as a
+ * gas boiler. Those kinds are listed under PER_PRODUCT and left for a row on the full solution id,
+ * which SolutionMeasures prefers over the kind anyway.
+ *
+ * Run with --dry-run first: it prints the catalogue grouped by kind, with the solution ids, and
+ * says of every kind whether it is coupled, needs per-product work, has no counterpart here, or is
+ * simply unknown.
  */
 class SyncSolutions extends Command
 {
@@ -29,24 +34,59 @@ class SyncSolutions extends Command
     protected $description = 'Couple the SmartTwin solution catalogue to our measure applications.';
 
     /**
-     * The kind of measure, as it appears before the provider in a solution id, to our measure
-     * application.
+     * Kinds where every product is the same measure to us.
      *
-     * PROVISIONAL. These are read off the five products that appeared in one real coach dossier and
-     * have not been checked against the catalogue or confirmed by anyone who knows the measures.
-     * Two in particular are a coin flip until someone says otherwise:
-     *
-     *   - "Replace Glass" could be hrpp-glass-only or hrpp-glass-frames; the name says glass only.
-     *   - The roof entries could be the "current" or the "replace-current" variants.
-     *
-     * A kind that is not in here is reported, not guessed at.
+     * The names line up almost word for word, which is what makes these safe: "Insulate Facade
+     * Inside" against Binnengevelisolatie, "Insulate Flat Roof On Top" against "Plat dak isoleren op
+     * dakbedekking".
      */
     private const KINDS = [
-        'Insulate Facade Cavity'       => 'cavity-wall-insulation',
-        'Replace Glass'                => 'hrpp-glass-only',
-        'Insulate Flat Roof Outside'   => 'roof-insulation-flat-current',
-        'Insulate Pitched Roof Inside' => 'roof-insulation-pitched-inside',
-        'Install Ventilation'          => 'ventilation-decentral-wtw',
+        'Insulate Facade Cavity'       => 'cavity-wall-insulation',          // Spouwmuurisolatie
+        'Insulate Facade Inside'       => 'facade-wall-insulation',          // Binnengevelisolatie
+        'Insulate Ground Floor'        => 'floor-insulation',                // Vloerisolatie
+        'Insulate Crawlspace Floor'    => 'bottom-insulation',               // Bodemisolatie
+        'Insulate Pitched Roof Inside' => 'roof-insulation-pitched-inside',  // Schuin dak isoleren van binnenuit
+        'Insulate Flat Roof On Top'    => 'roof-insulation-flat-current',    // Plat dak isoleren op dakbedekking
+        'Seal Cracks & Seams'          => 'crack-sealing',                   // Kierdichting verbeteren
+        'Install Solar Panels'         => 'solar-panels-place-replace',      // Zonnepanelen plaatsen/vervangen
+
+        // Insulating a roof from the outside means taking the covering off first, which is what
+        // separates these two from the ones above. Reads right, not yet confirmed by anyone who
+        // knows the measures.
+        'Insulate Pitched Roof Outside' => 'roof-insulation-pitched-replace-tiles', // + dakpannen vervangen
+        'Insulate Flat Roof Outside'    => 'roof-insulation-flat-replace-current',  // + dakbedekking vervangen
+    ];
+
+    /**
+     * Kinds that hold products of several different measures. A row on the kind would be wrong for
+     * most of them, so they wait for rows on their full solution ids.
+     *
+     * @var array<string, string>  kind => why
+     */
+    private const PER_PRODUCT = [
+        'Replace Boiler'      => 'een HR107-ketel en drie warmtepompen zijn vier maatregelen bij ons',
+        'Install Ventilation' => 'wij kennen gebalanceerde, decentrale en vraaggestuurde ventilatie apart',
+        'Replace Glass'       => 'de glassoort bepaalt of het HR++ of HR+++ wordt',
+        'Replace Window'      => 'glassoort en kozijntype bepalen samen welke maatregel het is',
+    ];
+
+    /**
+     * Kinds SmartTwin advises that Hoomdossier has no measure for. Listed so they stop showing up
+     * as an open decision, and so it is written down that the gap was seen rather than missed.
+     *
+     * @var array<string, string>  kind => why
+     */
+    private const NO_COUNTERPART = [
+        'Install Heating Network'    => 'warmtenet-aansluiting bestaat hier niet als maatregel',
+        'Install Sun Blinds'         => 'zonwering bestaat hier niet als maatregel',
+        'Replace Radiator'           => 'afgiftesysteem is bij ons een vraag (building-heating-application), geen maatregel',
+        'Replace Stove'              => 'kooktoestel is bij ons een vraag (cook-type), geen maatregel',
+        'Replace Collective Heating' => 'collectieve installaties bestaan hier niet als maatregel',
+
+        // Neither of these has an obvious counterpart: we have no exterior facade insulation at all,
+        // and our two flat roof measures are both about the covering rather than the inside.
+        'Insulate Facade Outside'   => 'wij kennen alleen spouw- en binnengevelisolatie',
+        'Insulate Flat Roof Inside' => 'onze platdak-maatregelen gaan allebei over de dakbedekking',
     ];
 
     public function handle(SmartTwinApi $api, SolutionMeasures $solutionMeasures): int
@@ -72,64 +112,75 @@ class SyncSolutions extends Command
         }
 
         $this->info(count($solutions) . ' solutions in the catalogue.');
+        $this->newLine();
 
-        // Grouped so the output reads as the decision list it is: one line per kind, however many
-        // products hang off it.
         $products = [];
 
         foreach ($solutions as $solution) {
-            $kind = $solutionMeasures->kindOf($solution['id'] ?? '') ?? '(geen provider in het id)';
-            $products[$kind][] = $solution['name'] ?? $solution['id'] ?? '?';
+            $id = $solution['id'] ?? '';
+            $kind = $solutionMeasures->kindOf($id) ?? '(geen provider in het id)';
+            $products[$kind][] = ['id' => $id, 'name' => $solution['name'] ?? $id];
         }
 
         ksort($products);
 
         $coupled = 0;
-        $unknown = [];
+        $openDecisions = 0;
 
-        foreach ($products as $kind => $names) {
-            $measureShort = self::KINDS[$kind] ?? null;
+        foreach ($products as $kind => $items) {
+            $count = count($items);
 
-            if (is_null($measureShort)) {
-                $unknown[$kind] = $names;
-                $this->warn(sprintf('%-34s geen koppeling (%d product(en))', $kind, count($names)));
+            if (isset(self::KINDS[$kind])) {
+                $measure = MeasureApplication::findByShort(self::KINDS[$kind]);
 
-                foreach ($names as $name) {
-                    $this->line("    {$name}");
+                if (! $measure instanceof MeasureApplication) {
+                    $this->error("Measure application '" . self::KINDS[$kind] . "' not found, aborting without changing anything.");
+
+                    return self::FAILURE;
                 }
+
+                $this->line(sprintf('<info>%-30s</info> -> %-38s (%d)', $kind, $measure->short, $count));
+
+                if (! $dryRun) {
+                    MappingService::init()
+                        ->from($kind)
+                        ->sync([$measure], MappingType::SMARTTWIN_SOLUTION_MEASURE_APPLICATION->value);
+                }
+
+                ++$coupled;
 
                 continue;
             }
 
-            $measure = MeasureApplication::findByShort($measureShort);
+            if (isset(self::NO_COUNTERPART[$kind])) {
+                $this->line(sprintf('<comment>%-30s</comment> -- geen maatregel: %s (%d)', $kind, self::NO_COUNTERPART[$kind], $count));
 
-            if (! $measure instanceof MeasureApplication) {
-                $this->error("Measure application '{$measureShort}' not found, aborting without changing anything.");
-
-                return self::FAILURE;
+                continue;
             }
 
-            $this->line(sprintf('%-34s -> %-38s (%d product(en))', $kind, $measureShort, count($names)));
+            // Everything left needs a decision, and the ids are what somebody couples on.
+            $reason = self::PER_PRODUCT[$kind] ?? 'onbekend soort, nog niet beoordeeld';
+            $this->warn(sprintf('%-30s ?? %s (%d)', $kind, $reason, $count));
 
-            if (! $dryRun) {
-                MappingService::init()
-                    ->from($kind)
-                    ->sync([$measure], MappingType::SMARTTWIN_SOLUTION_MEASURE_APPLICATION->value);
+            foreach ($items as $item) {
+                $this->line("      {$item['name']}");
+                $this->line("        <fg=gray>{$item['id']}</>");
             }
 
-            ++$coupled;
+            ++$openDecisions;
         }
 
         $this->newLine();
         $this->info(sprintf(
-            '%d kind(s) %s, %d without a coupling.',
+            '%d kind(s) %s, %d kind(s) without a counterpart, %d still to decide.',
             $coupled,
             $dryRun ? 'would be coupled' : 'coupled',
-            count($unknown),
+            count(self::NO_COUNTERPART),
+            $openDecisions,
         ));
 
-        if (! empty($unknown)) {
-            $this->warn('A solution of an uncoupled kind reaches no woonplan; it is reported as VALUE_UNMAPPED.');
+        if ($openDecisions > 0) {
+            $this->warn('Solutions of an undecided kind reach no woonplan; they are reported as VALUE_UNMAPPED.');
         }
 
         return self::SUCCESS;

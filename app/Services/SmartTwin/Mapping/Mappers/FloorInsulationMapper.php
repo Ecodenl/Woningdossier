@@ -14,8 +14,6 @@ use App\Services\SmartTwin\Mapping\MappingResult;
  * floor is insulated, and whether there is a crawlspace. Built the same way as the facade — each
  * answer is one number out of many parts, so one leaf of a path group carries it and the rest are
  * skipped pointing at it.
- *
- * What it does not fill is the crawlspace height; see the note on that path below.
  */
 class FloorInsulationMapper implements FieldMapper
 {
@@ -32,7 +30,6 @@ class FloorInsulationMapper implements FieldMapper
     private const PATH_SCENARIO_RC = self::SCENARIO . self::FLOOR . '.*.rcValue';
 
     private const PATH_CURRENT_CRAWLSPACES = self::CURRENT . self::CRAWLSPACE;
-    private const PATH_CURRENT_CRAWLSPACE_HEIGHT = self::CURRENT . self::CRAWLSPACE . '.*.heightAboveGroundLevel';
 
     /**
      * One field of a crawlspace answers has-crawlspace, and it has to be a named one. Anchoring on
@@ -51,6 +48,9 @@ class FloorInsulationMapper implements FieldMapper
     {
         $floorFields = ['cavity', 'description', 'floorType', 'insulationExterior', 'insulationInConstruction',
                         'insulationInterior', 'insulationThickness', 'thermoPillows'];
+        // heightAboveGroundLevel is deliberately absent: crawlspace-height could be answered from
+        // it, but nobody has decided that it should be. Leaving it unclaimed is what puts it in the
+        // report as unmapped, which is where the work still to do is listed.
         $crawlspaceFields = ['area', 'description', 'floorInsulation', 'floorRbf', 'floorRbw', 'ventilation'];
 
         return array_merge(
@@ -61,7 +61,6 @@ class FloorInsulationMapper implements FieldMapper
                 self::PATH_SCENARIO_AREA,
                 self::PATH_SCENARIO_RC,
                 self::PATH_CURRENT_CRAWLSPACES,
-                self::PATH_CURRENT_CRAWLSPACE_HEIGHT,
             ],
             array_map(fn (string $f) => self::CURRENT . self::FLOOR . ".*.{$f}", $floorFields),
             array_map(fn (string $f) => self::CURRENT . self::CRAWLSPACE . ".*.{$f}", $crawlspaceFields),
@@ -78,12 +77,6 @@ class FloorInsulationMapper implements FieldMapper
             self::PATH_CURRENT_CRAWLSPACES     => MappingResult::skipped('assembly zonder kruipruimte'),
             self::PATH_CURRENT_FLOORS      => MappingResult::skipped('assembly zonder vloeren'),
             self::PATH_SCENARIO_RC         => MappingResult::skipped('bepaalt welke vloer geïsoleerd wordt, zie insulation-floor-surface'),
-
-            // Hoomdossier's crawlspace heights are "meer dan 45 cm", "tussen 30 en 45 cm" and
-            // "minder dan 30 cm", and that last one shares calculate_value 0 with "Onbekend" — two
-            // rows the mapping cannot tell apart. Left alone until that is resolved rather than
-            // writing whichever of the two comes back first.
-            self::PATH_CURRENT_CRAWLSPACE_HEIGHT => MappingResult::skipped('crawlspace-height heeft twee opties met calculate_value 0'),
 
             default => $this->otherField($leaf),
         };

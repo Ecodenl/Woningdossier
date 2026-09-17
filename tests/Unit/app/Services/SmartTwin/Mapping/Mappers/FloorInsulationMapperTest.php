@@ -166,18 +166,6 @@ final class FloorInsulationMapperTest extends TestCase
         $this->assertArrayNotHasKey('has-crawlspace', $mapped);
     }
 
-    public function test_the_crawlspace_height_is_left_alone_with_a_reason(): void
-    {
-        // Two of Hoomdossier's three heights share calculate_value 0, so the mapping cannot tell
-        // "minder dan 30 cm" from "Onbekend".
-        $notes = array_map(
-            fn (MappingResult $r) => $r->note,
-            $this->mapClaimed($this->response([[[$this->floor(63.47, 0.15)], [$this->crawlspace()]]])),
-        );
-
-        $this->assertContains('crawlspace-height heeft twee opties met calculate_value 0', $notes);
-    }
-
     public function test_a_missing_insulation_level_is_reported_as_a_broken_mapping(): void
     {
         $elementValues = new FakeElementValues();

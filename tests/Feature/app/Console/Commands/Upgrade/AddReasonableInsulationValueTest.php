@@ -182,8 +182,29 @@ final class AddReasonableInsulationValueTest extends TestCase
 
         $this->artisan('upgrade:add-reasonable-insulation-value')->assertFailed();
 
-        // Aborts on the first element it does not recognise, before writing anything anywhere.
         $this->assertSame($mangled, $this->stateOf('wall-insulation'));
         $this->assertNull($this->valueAt('floor-insulation', 7));
+    }
+
+    public function test_an_unrecognised_scale_stops_the_others_from_being_written_too(): void
+    {
+        // The one that decides whether this can go in a deploy script: roof is inspected last, so
+        // wall and floor are already known to be fine by the time it fails. Nothing may be written
+        // regardless — all three are checked before any of them is touched, and the writes share a
+        // transaction.
+        $this->revertToStateBeforeTheUpgrade();
+
+        DB::table('element_values')
+            ->where('element_id', Element::findByShort('roof-insulation')->id)
+            ->where('calculate_value', 3)
+            ->delete();
+
+        $before = array_map(fn (string $short) => $this->stateOf($short), self::SHORTS);
+
+        $this->artisan('upgrade:add-reasonable-insulation-value')->assertFailed();
+
+        $this->assertSame($before, array_map(fn (string $short) => $this->stateOf($short), self::SHORTS));
+        $this->assertNull($this->valueAt('wall-insulation', 4));
+        $this->assertNull($this->valueAt('floor-insulation', 4));
     }
 }

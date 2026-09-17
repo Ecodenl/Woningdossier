@@ -21,6 +21,16 @@ use Illuminate\Support\Facades\DB;
  * rows no longer match their key, and the seeder inserts duplicates next to the originals instead
  * of updating them. This command puts the existing rows on their new keys so the seeder lines up
  * again; a fresh install gets the same end state from the seeder alone.
+ *
+ * In a deploy script:
+ *
+ *     php artisan migrate
+ *     php artisan upgrade:add-reasonable-insulation-value
+ *     php artisan db:seed        # if the deploy seeds at all
+ *
+ * Safe to leave in place once it has run: it recognises its own end state and does nothing. Safe to
+ * halt on as well — it exits non-zero without writing when it finds a scale it does not recognise,
+ * rather than making a mess of it.
  */
 class AddReasonableInsulationValue extends Command
 {
@@ -103,7 +113,11 @@ class AddReasonableInsulationValue extends Command
             $this->info('DRY-RUN mode: no changes will be made.');
         }
 
-        $changed = 0;
+        // Every element is inspected before any of them is written to, and the writes then happen
+        // in one transaction. A scale this does not recognise therefore leaves the database exactly
+        // as it was, whichever of the three it is — which is what makes this safe to drop into a
+        // deploy script.
+        $todo = [];
 
         foreach (array_keys(self::SHIFTS) as $short) {
             $element = Element::findByShort($short);
@@ -130,53 +144,67 @@ class AddReasonableInsulationValue extends Command
                 return self::FAILURE;
             }
 
-            if ($dryRun) {
-                $this->info("DRY-RUN {$short}: " . count(self::SHIFTS[$short]) . ' values would shift, 1 would be added.');
-                ++$changed;
-
-                continue;
-            }
-
-            $this->applyTo($element->id, $short);
-            // The element itself is cached by short. Its values are not part of that cache, but
-            // clearing it keeps a stale hit from ever being the explanation for a missing option.
-            Element::clearShortCache($short);
-
-            $this->info("{$short}: 'Redelijke isolatie' added.");
-            ++$changed;
+            $todo[$short] = $element->id;
         }
 
-        $this->info($dryRun
-            ? "Done. {$changed} element(s) would change."
-            : "Done. {$changed} element(s) changed.");
+        if (empty($todo)) {
+            $this->info('Nothing to do.');
+
+            return self::SUCCESS;
+        }
+
+        if ($dryRun) {
+            foreach ($todo as $short => $elementId) {
+                $this->info("DRY-RUN {$short}: " . count(self::SHIFTS[$short]) . ' values would shift, 1 would be added.');
+            }
+
+            $this->info('Done. ' . count($todo) . ' element(s) would change.');
+
+            return self::SUCCESS;
+        }
+
+        DB::transaction(function () use ($todo) {
+            foreach ($todo as $short => $elementId) {
+                $this->applyTo($elementId, $short);
+                $this->info("{$short}: 'Redelijke isolatie' added.");
+            }
+        });
+
+        foreach (array_keys($todo) as $short) {
+            // The element itself is cached by short. Its values are not part of that cache, but
+            // clearing it keeps a stale hit from ever being the explanation for a missing option.
+            // Outside the transaction: a cleared cache costs a query, a cleared-then-rolled-back
+            // one costs nothing at all.
+            Element::clearShortCache($short);
+        }
+
+        $this->info('Done. ' . count($todo) . ' element(s) changed.');
 
         return self::SUCCESS;
     }
 
     private function applyTo(int $elementId, string $short): void
     {
-        DB::transaction(function () use ($elementId, $short) {
-            foreach (self::SHIFTS[$short] as $shift) {
-                DB::table('element_values')
-                    ->where('element_id', $elementId)
-                    ->where('calculate_value', $shift['from'])
-                    ->update([
-                        'order'           => $shift['order'],
-                        'calculate_value' => $shift['calculate_value'],
-                        'updated_at'      => now(),
-                    ]);
-            }
+        foreach (self::SHIFTS[$short] as $shift) {
+            DB::table('element_values')
+                ->where('element_id', $elementId)
+                ->where('calculate_value', $shift['from'])
+                ->update([
+                    'order'           => $shift['order'],
+                    'calculate_value' => $shift['calculate_value'],
+                    'updated_at'      => now(),
+                ]);
+        }
 
-            DB::table('element_values')->insert([
-                'element_id'      => $elementId,
-                'value'           => json_encode(['nl' => 'Redelijke isolatie']),
-                'order'           => self::NEW_ORDER,
-                'calculate_value' => self::NEW_CALCULATE_VALUE,
-                'configurations'  => json_encode(self::NEW_CONFIGURATIONS),
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ]);
-        });
+        DB::table('element_values')->insert([
+            'element_id'      => $elementId,
+            'value'           => json_encode(['nl' => 'Redelijke isolatie']),
+            'order'           => self::NEW_ORDER,
+            'calculate_value' => self::NEW_CALCULATE_VALUE,
+            'configurations'  => json_encode(self::NEW_CONFIGURATIONS),
+            'created_at'      => now(),
+            'updated_at'      => now(),
+        ]);
     }
 
     /**

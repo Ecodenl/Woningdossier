@@ -6,9 +6,8 @@ namespace App\Services\SmartTwin\Mapping;
  * Path group -> mapper. This is the list that grows while the mapping is being built; everything
  * around it stays as it is.
  *
- * Empty is a valid state, and the state we start in: no mapper claims anything, so every field of
- * every response is reported as unmapped. That is not a broken run — it is the field inventory of a
- * real response, which is what the mapping work starts from.
+ * What a mapper does not claim is reported as unmapped, which is not a broken run but the field
+ * inventory of a real response — and the list of what is still to do.
  */
 class MapperRegistry
 {
@@ -17,7 +16,9 @@ class MapperRegistry
      *
      * @var array<int, class-string<FieldMapper>>
      */
-    private const MAPPERS = [];
+    private const MAPPERS = [
+        Mappers\WallInsulationMapper::class,
+    ];
 
     /**
      * @var null|array<string, FieldMapper>

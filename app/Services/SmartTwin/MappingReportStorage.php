@@ -139,7 +139,9 @@ class MappingReportStorage
             $entry->leaf->dataType(),
             $entry->status->value,
             $entry->status->description(),
-            $entry->kind->value,
+            // The kind describes the target, so without one there is nothing to describe. Printing
+            // a default here would label every skipped field a tool question.
+            is_null($entry->target) ? '' : $entry->kind->value,
             $entry->target ?? '',
             $entry->displayMappedValue(),
             $entry->note ?? '',

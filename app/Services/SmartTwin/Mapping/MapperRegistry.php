@@ -18,6 +18,7 @@ class MapperRegistry
      */
     private const MAPPERS = [
         Mappers\WallInsulationMapper::class,
+        Mappers\SolutionsMapper::class,
     ];
 
     /**

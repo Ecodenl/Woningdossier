@@ -10,8 +10,8 @@ use App\Services\SmartTwin\Mapping\MappingResult;
 /**
  * The ground floor of the floor insulation step.
  *
- * Fills four of its questions: the floor surface, the surface the advice insulates, how well the
- * floor is insulated, and whether there is a crawlspace. Built the same way as the facade — each
+ * Fills five of its questions: the floor surface, the surface the advice insulates, how well the
+ * floor is insulated, and whether there is a crawlspace and how high it is. Built the same way as the facade — each
  * answer is one number out of many parts, so one leaf of a path group carries it and the rest are
  * skipped pointing at it.
  */
@@ -37,6 +37,8 @@ class FloorInsulationMapper implements FieldMapper
      */
     private const PATH_CURRENT_CRAWLSPACE_AREA = self::CURRENT . self::CRAWLSPACE . '.*.area';
 
+    private const PATH_CURRENT_CRAWLSPACE_HEIGHT = self::CURRENT . self::CRAWLSPACE . '.*.heightAboveGroundLevel';
+
     /** Answers of has-crawlspace, see App\Helpers\QuestionValues\HasCrawlspace. */
     private const HAS_CRAWLSPACE_YES = 'yes';
 
@@ -48,9 +50,6 @@ class FloorInsulationMapper implements FieldMapper
     {
         $floorFields = ['cavity', 'description', 'floorType', 'insulationExterior', 'insulationInConstruction',
                         'insulationInterior', 'insulationThickness', 'thermoPillows'];
-        // heightAboveGroundLevel is deliberately absent: crawlspace-height could be answered from
-        // it, but nobody has decided that it should be. Leaving it unclaimed is what puts it in the
-        // report as unmapped, which is where the work still to do is listed.
         $crawlspaceFields = ['area', 'description', 'floorInsulation', 'floorRbf', 'floorRbw', 'ventilation'];
 
         return array_merge(
@@ -61,6 +60,7 @@ class FloorInsulationMapper implements FieldMapper
                 self::PATH_SCENARIO_AREA,
                 self::PATH_SCENARIO_RC,
                 self::PATH_CURRENT_CRAWLSPACES,
+                self::PATH_CURRENT_CRAWLSPACE_HEIGHT,
             ],
             array_map(fn (string $f) => self::CURRENT . self::FLOOR . ".*.{$f}", $floorFields),
             array_map(fn (string $f) => self::CURRENT . self::CRAWLSPACE . ".*.{$f}", $crawlspaceFields),
@@ -73,7 +73,8 @@ class FloorInsulationMapper implements FieldMapper
             self::PATH_CURRENT_AREA        => $this->floorSurface($leaf, $response),
             self::PATH_CURRENT_RC          => $this->currentFloorInsulation($leaf, $response),
             self::PATH_SCENARIO_AREA       => $this->insulationFloorSurface($leaf, $response),
-            self::PATH_CURRENT_CRAWLSPACE_AREA => $this->hasCrawlspace($leaf, $response),
+            self::PATH_CURRENT_CRAWLSPACE_AREA   => $this->hasCrawlspace($leaf, $response),
+            self::PATH_CURRENT_CRAWLSPACE_HEIGHT => $this->crawlspaceHeight($leaf, $response),
             self::PATH_CURRENT_CRAWLSPACES     => MappingResult::skipped('assembly zonder kruipruimte'),
             self::PATH_CURRENT_FLOORS      => MappingResult::skipped('assembly zonder vloeren'),
             self::PATH_SCENARIO_RC         => MappingResult::skipped('bepaalt welke vloer geïsoleerd wordt, zie insulation-floor-surface'),
@@ -189,6 +190,39 @@ class FloorInsulationMapper implements FieldMapper
             'has-crawlspace',
             self::HAS_CRAWLSPACE_YES,
             'de response beschrijft een kruipruimte',
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $response
+     */
+    private function crawlspaceHeight(Leaf $leaf, array $response): MappingResult
+    {
+        if ($this->notTheFirst($leaf, $response, self::CURRENT, 'crawlspaces', 'heightAboveGroundLevel')) {
+            // More than one crawlspace is something neither the question nor the table covers, and
+            // nothing in the response ranks them: their area is 0 in every dossier seen so far, so
+            // there is nothing to weigh with. The first one answers.
+            return MappingResult::skipped('has-crawlspace en crawlspace-height hangen aan de eerste kruipruimte');
+        }
+
+        $height = is_null($leaf->value) ? null : (float) $leaf->value;
+        $order = CrawlspaceHeight::orderFor($height);
+        $elementValueId = $this->elementValues->idForOrder('crawlspace', $order);
+
+        if (is_null($elementValueId)) {
+            return MappingResult::targetMissing(
+                'crawlspace-height',
+                $order,
+                "geen element value met order {$order} voor crawlspace",
+            );
+        }
+
+        return MappingResult::mapped(
+            'crawlspace-height',
+            $elementValueId,
+            is_null($height)
+                ? 'geen hoogte opgegeven, dus onbekend'
+                : 'hoogte ' . abs($height) . ' m ten opzichte van maaiveld',
         );
     }
 

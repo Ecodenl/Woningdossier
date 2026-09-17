@@ -15,6 +15,23 @@ class ElementValues
 {
     public function idFor(string $elementShort, int $calculateValue): ?int
     {
+        return $this->lookUp($elementShort, 'calculate_value', $calculateValue);
+    }
+
+    /**
+     * The same, by display order.
+     *
+     * Only for elements whose calculate values do not tell their options apart. The crawlspace is
+     * one: "Heel laag (minder dan 30 cm)" and "Onbekend" both carry 0, so a lookup by calculate
+     * value would return whichever came first.
+     */
+    public function idForOrder(string $elementShort, int $order): ?int
+    {
+        return $this->lookUp($elementShort, 'order', $order);
+    }
+
+    private function lookUp(string $elementShort, string $column, int $value): ?int
+    {
         $element = Element::findByShort($elementShort);
 
         if (! $element instanceof Element) {
@@ -22,7 +39,7 @@ class ElementValues
         }
 
         return $element->values()
-            ->where('calculate_value', $calculateValue)
+            ->where($column, $value)
             ->value('id');
     }
 }

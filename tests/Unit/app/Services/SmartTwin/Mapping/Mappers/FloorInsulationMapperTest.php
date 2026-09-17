@@ -4,6 +4,7 @@ namespace Tests\Unit\app\Services\SmartTwin\Mapping\Mappers;
 
 use App\Enums\SmartTwin\MappingStatus;
 use App\Models\Building;
+use App\Services\SmartTwin\Mapping\Mappers\CrawlspaceHeight;
 use App\Services\SmartTwin\Mapping\Mappers\FloorInsulationMapper;
 use App\Services\SmartTwin\Mapping\MappingResult;
 use App\Services\SmartTwin\Mapping\ResponseFlattener;
@@ -102,7 +103,10 @@ final class FloorInsulationMapperTest extends TestCase
         );
         sort($targets);
 
-        $this->assertSame(['current-floor-insulation', 'floor-surface', 'has-crawlspace'], array_values($targets));
+        $this->assertSame(
+            ['crawlspace-height', 'current-floor-insulation', 'floor-surface', 'has-crawlspace'],
+            array_values($targets),
+        );
     }
 
     public function test_the_floor_surface_is_the_floors_added_up(): void
@@ -164,6 +168,46 @@ final class FloorInsulationMapperTest extends TestCase
         $mapped = $this->mappedByTarget($this->response([[[$this->floor(63.47, 0.15)], []]]));
 
         $this->assertArrayNotHasKey('has-crawlspace', $mapped);
+    }
+
+    public function test_the_crawlspace_height_is_read_off_its_depth(): void
+    {
+        // Half a metre below ground, which is what the sample dossier carries.
+        $mapped = $this->mappedByTarget($this->response([[[$this->floor(89.59, 0.15)], [$this->crawlspace(-0.5)]]]));
+
+        $this->assertSame(FakeElementValues::ORDER_OFFSET + CrawlspaceHeight::LOW, $mapped['crawlspace-height']->value);
+    }
+
+    public function test_a_deep_crawlspace_reads_as_the_highest_band(): void
+    {
+        $mapped = $this->mappedByTarget($this->response([[[$this->floor(89.59, 0.15)], [$this->crawlspace(-0.8)]]]));
+
+        $this->assertSame(FakeElementValues::ORDER_OFFSET + CrawlspaceHeight::HIGH, $mapped['crawlspace-height']->value);
+    }
+
+    public function test_a_crawlspace_without_a_height_reads_as_unknown(): void
+    {
+        $crawlspace = $this->crawlspace();
+        $crawlspace['heightAboveGroundLevel'] = null;
+
+        $mapped = $this->mappedByTarget($this->response([[[$this->floor(89.59, 0.15)], [$crawlspace]]]));
+
+        $this->assertSame(FakeElementValues::ORDER_OFFSET + CrawlspaceHeight::UNKNOWN, $mapped['crawlspace-height']->value);
+    }
+
+    public function test_the_height_comes_from_one_crawlspace_even_when_there_are_several(): void
+    {
+        $response = $this->response([[
+            [$this->floor(89.59, 0.15)],
+            [$this->crawlspace(-0.8), $this->crawlspace(-0.2)],
+        ]]);
+
+        $heights = array_filter(
+            $this->mapClaimed($response),
+            fn (MappingResult $r) => 'crawlspace-height' === $r->target && MappingStatus::MAPPED === $r->status,
+        );
+
+        $this->assertCount(1, $heights);
     }
 
     public function test_a_missing_insulation_level_is_reported_as_a_broken_mapping(): void

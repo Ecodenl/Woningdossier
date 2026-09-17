@@ -298,6 +298,7 @@ final class WallInsulationMapperTest extends TestCase
 final class FakeElementValues extends ElementValues
 {
     public const OFFSET = 900;
+    public const ORDER_OFFSET = 800;
 
     /** Calculate values this pretends not to have. */
     public array $missing = [];
@@ -305,5 +306,10 @@ final class FakeElementValues extends ElementValues
     public function idFor(string $elementShort, int $calculateValue): ?int
     {
         return in_array($calculateValue, $this->missing, true) ? null : self::OFFSET + $calculateValue;
+    }
+
+    public function idForOrder(string $elementShort, int $order): ?int
+    {
+        return self::ORDER_OFFSET + $order;
     }
 }

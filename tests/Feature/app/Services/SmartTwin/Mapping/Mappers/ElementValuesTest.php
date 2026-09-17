@@ -3,6 +3,7 @@
 namespace Tests\Feature\app\Services\SmartTwin\Mapping\Mappers;
 
 use App\Models\Element;
+use App\Services\SmartTwin\Mapping\Mappers\CrawlspaceHeight;
 use App\Services\SmartTwin\Mapping\Mappers\ElementValues;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -59,5 +60,30 @@ final class ElementValuesTest extends TestCase
     public function test_it_returns_nothing_for_an_element_that_does_not_exist(): void
     {
         $this->assertNull($this->elementValues->idFor('bestaat-niet', 2));
+    }
+
+    public function test_the_crawlspace_options_are_only_told_apart_by_order(): void
+    {
+        // "Heel laag (minder dan 30 cm)" and "Onbekend" both carry calculate value 0, which is why
+        // CrawlspaceHeight reasons in orders and this lookup exists at all.
+        $byCalculateValue = Element::findByShort('crawlspace')->values()->where('calculate_value', 0)->count();
+
+        $this->assertSame(2, $byCalculateValue);
+        $this->assertNotSame(
+            $this->elementValues->idForOrder('crawlspace', CrawlspaceHeight::VERY_LOW),
+            $this->elementValues->idForOrder('crawlspace', CrawlspaceHeight::UNKNOWN),
+        );
+    }
+
+    public function test_every_crawlspace_band_resolves(): void
+    {
+        foreach ([CrawlspaceHeight::HIGH, CrawlspaceHeight::LOW, CrawlspaceHeight::VERY_LOW, CrawlspaceHeight::UNKNOWN] as $order) {
+            $this->assertNotNull($this->elementValues->idForOrder('crawlspace', $order), "order {$order}");
+        }
+    }
+
+    public function test_it_returns_nothing_for_an_order_that_does_not_exist(): void
+    {
+        $this->assertNull($this->elementValues->idForOrder('crawlspace', 99));
     }
 }

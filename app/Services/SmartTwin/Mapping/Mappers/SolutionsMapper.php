@@ -82,7 +82,7 @@ class SolutionsMapper implements FieldMapper
 
             self::PATH_TOP_LEVEL_SOLUTIONS => MappingResult::skipped('leeg; de maatregelen staan onder scenario'),
 
-            default => $this->partOfASolution($leaf),
+            default => $this->solutionField($leaf),
         };
     }
 
@@ -91,7 +91,7 @@ class SolutionsMapper implements FieldMapper
      *
      * @param  Leaf  $leaf
      */
-    private function partOfASolution(Leaf $leaf): MappingResult
+    private function solutionField(Leaf $leaf): MappingResult
     {
         return match (true) {
             str_contains($leaf->pathGroup, '.primaryCosts')    => MappingResult::skipped('telt mee in de kosten van de maatregel'),

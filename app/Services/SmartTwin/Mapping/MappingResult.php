@@ -3,6 +3,7 @@
 namespace App\Services\SmartTwin\Mapping;
 
 use App\Enums\SmartTwin\MappingStatus;
+use App\Enums\SmartTwin\MappingTarget;
 
 /**
  * What a mapper decided about one leaf.
@@ -17,6 +18,7 @@ final class MappingResult
         public readonly ?string $target = null,
         public readonly mixed $value = null,
         public readonly ?string $note = null,
+        public readonly MappingTarget $kind = MappingTarget::TOOL_QUESTION,
     )
     {
     }
@@ -41,6 +43,20 @@ final class MappingResult
     }
 
     /**
+     * A measure SmartTwin advises, with what it costs.
+     *
+     * Not a tool question: this becomes an entry in the action plan that the calculation does not
+     * own and will not rebuild. See App\Enums\AdviceSource.
+     *
+     * @param  string  $measureShort  The short of the measure application being advised.
+     * @param  float   $costs         What the measure costs, already totalled.
+     */
+    public static function mappedAdvice(string $measureShort, float $costs, ?string $note = null): self
+    {
+        return new self(MappingStatus::MAPPED, $measureShort, $costs, $note, MappingTarget::ADVICE);
+    }
+
+    /**
      * The field is mapped, but this value has no counterpart on our side — an unknown heating type,
      * an unknown label. The one to watch: it fails silently in production and looks like a completed
      * scan with a missing answer.
@@ -56,9 +72,14 @@ final class MappingResult
      *
      * Keeps the value it was going to write, so the report shows what was lost and not just where.
      */
-    public static function targetMissing(string $target, mixed $value = null, ?string $note = null): self
+    public static function targetMissing(
+        string $target,
+        mixed $value = null,
+        ?string $note = null,
+        MappingTarget $kind = MappingTarget::TOOL_QUESTION,
+    ): self
     {
-        return new self(MappingStatus::TARGET_MISSING, $target, $value, $note);
+        return new self(MappingStatus::TARGET_MISSING, $target, $value, $note, $kind);
     }
 
     /**

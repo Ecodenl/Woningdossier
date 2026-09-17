@@ -3,6 +3,7 @@
 namespace App\Services\SmartTwin\Mapping;
 
 use App\Enums\SmartTwin\MappingStatus;
+use App\Enums\SmartTwin\MappingTarget;
 
 /**
  * One leaf plus what the mapping decided about it. One row of the mapping report.
@@ -15,13 +16,14 @@ final class MappingEntry
         public readonly ?string $target = null,
         public readonly mixed $mappedValue = null,
         public readonly ?string $note = null,
+        public readonly MappingTarget $kind = MappingTarget::TOOL_QUESTION,
     )
     {
     }
 
     public static function fromResult(Leaf $leaf, MappingResult $result): self
     {
-        return new self($leaf, $result->status, $result->target, $result->value, $result->note);
+        return new self($leaf, $result->status, $result->target, $result->value, $result->note, $result->kind);
     }
 
     /**

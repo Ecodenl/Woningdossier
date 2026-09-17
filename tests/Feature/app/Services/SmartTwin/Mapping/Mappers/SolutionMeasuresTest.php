@@ -87,4 +87,43 @@ final class SolutionMeasuresTest extends TestCase
 
         $this->assertSame('facade-wall-insulation', $this->measures->shortFor(self::SOLUTION_ID));
     }
+
+    public function test_a_coupling_on_the_kind_covers_every_product_of_that_kind(): void
+    {
+        // What the sync command writes: one row for the kind of measure. Every EPS, wool and foam
+        // variant of cavity insulation resolves through it, including ones added after the sync.
+        $this->couple('Insulate Facade Cavity', 'cavity-wall-insulation');
+
+        $this->assertSame('cavity-wall-insulation', $this->measures->shortFor(self::SOLUTION_ID));
+        $this->assertSame(
+            'cavity-wall-insulation',
+            $this->measures->shortFor('Insulate Facade Cavity|SmartTwin:Cavity_Insulation_Mineral_Wool'),
+        );
+    }
+
+    public function test_a_coupling_on_the_product_wins_from_the_one_on_its_kind(): void
+    {
+        // A product that turns out to be a different measure can be given its own row without
+        // disturbing the rest of its kind.
+        $this->couple('Insulate Facade Cavity', 'cavity-wall-insulation');
+        $this->couple(self::SOLUTION_ID, 'facade-wall-insulation');
+
+        $this->assertSame('facade-wall-insulation', $this->measures->shortFor(self::SOLUTION_ID));
+        $this->assertSame(
+            'cavity-wall-insulation',
+            $this->measures->shortFor('Insulate Facade Cavity|SmartTwin:Cavity_Insulation_Mineral_Wool'),
+        );
+    }
+
+    public function test_an_id_without_a_provider_has_nothing_to_fall_back_to(): void
+    {
+        // The older id format, as seen in an earlier sample: no provider, so no kind to read off.
+        $this->assertNull($this->measures->kindOf('InsulateFacadeCavityInsulation'));
+        $this->assertNull($this->measures->shortFor('InsulateFacadeCavityInsulation'));
+    }
+
+    public function test_it_reads_the_kind_off_an_id(): void
+    {
+        $this->assertSame('Insulate Facade Cavity', $this->measures->kindOf(self::SOLUTION_ID));
+    }
 }

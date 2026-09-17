@@ -17,6 +17,19 @@ class Advice extends Resource
     }
 
     /**
+     * Every solution SmartTwin can advise, not just the ones a dossier happens to hold.
+     *
+     * What makes the couplings maintainable: without it we would only learn a product exists once
+     * it turned up in somebody's advice and went unmapped.
+     *
+     * @return array<string, mixed>  A `solutions` list of AdviceSolution, per GetAllSolutionsResponseModel.
+     */
+    public function getAllSolutions(): array
+    {
+        return $this->client->get($this->uri('solutions'));
+    }
+
+    /**
      * Get (or create) a deeplink to the advisor tool for an address. Coach flow.
      */
     public function getAdvisorToolLink(array $payload): array

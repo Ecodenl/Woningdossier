@@ -86,6 +86,11 @@ Route::resource('cooperation-presets.cooperation-preset-contents', Cooperation\A
     ->only('create', 'edit', 'destroy')
     ->parameters(['cooperation-presets' => 'cooperationPreset', 'cooperation-preset-contents' => 'cooperationPresetContent']);
 
+Route::prefix('smart-twin-solutions')->as('smart-twin-solutions.')->group(function () {
+    Route::get('', [Cooperation\Admin\SuperAdmin\SmartTwinSolutionController::class, 'index'])->name('index');
+    Route::put('', [Cooperation\Admin\SuperAdmin\SmartTwinSolutionController::class, 'couple'])->name('couple');
+});
+
 // Debug tooling for building the SmartTwin mapping: it exposes raw dossier data and replays the
 // mapping over a building, which has no place in production. Meant to be removed once the mapping
 // is done; the environment check is the safety net until then.

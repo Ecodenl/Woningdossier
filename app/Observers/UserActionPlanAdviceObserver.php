@@ -90,6 +90,9 @@ class UserActionPlanAdviceObserver
                 }
             }
         }
+
+        // Only false cancels the create; everything else lets it through.
+        return null;
     }
 
     public function created(UserActionPlanAdvice $userActionPlanAdvice): void

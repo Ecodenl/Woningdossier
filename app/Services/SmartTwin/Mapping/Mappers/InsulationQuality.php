@@ -9,9 +9,8 @@ namespace App\Services\SmartTwin\Mapping\Mappers;
  * already keys these options on, and the one the seeder upserts by. The ids differ per environment;
  * these numbers do not.
  *
- * The numbers assume upgrade:add-reasonable-insulation-value has run — "Redelijke isolatie" sits at
- * 4 and pushes "Goede" and "Zeer goede" up to 5 and 6. A mapper that cannot resolve one of them
- * reports it rather than writing something else.
+ * The numbers assume upgrade:extend-insulation-scales has run. A mapper that cannot resolve one of
+ * them reports it rather than writing something else.
  */
 final class InsulationQuality
 {
@@ -37,12 +36,49 @@ final class InsulationQuality
         '0.80' => 3, // Matige isolatie
     ];
 
-    /** The level below the lowest bound. */
+    /**
+     * The same for a ground floor, whose boundaries are its own and whose scale has one level more:
+     *
+     *   geen        Rc < 0,20
+     *   slecht      0,20 <= Rc < 1,00
+     *   matig       1,00 <= Rc < 1,75
+     *   redelijk    1,75 <= Rc < 3,00
+     *   goed        3,00 <= Rc < 4,35
+     *   zeer goed   Rc >= 4,35
+     *
+     * That extra level is why the floor's numbers run one higher than the wall's from Matige
+     * isolatie up; see ElementValue::insulatedFromCalculateValue(), which draws the line between
+     * needing insulation and having it at a different place for the same reason.
+     *
+     * @var array<string, int>
+     */
+    private const FLOOR = [
+        '4.35' => 7, // Zeer goede isolatie
+        '3.00' => 6, // Goede isolatie
+        '1.75' => 5, // Redelijke isolatie
+        '1.00' => 4, // Matige isolatie
+        '0.20' => 3, // Slechte isolatie
+    ];
+
+    /** The level below the lowest bound, per element. */
     private const NONE = 2; // Geen isolatie
 
     public static function forWall(float $rcValue): int
     {
-        foreach (self::WALL as $lowerBound => $calculateValue) {
+        return self::classify($rcValue, self::WALL);
+    }
+
+    public static function forFloor(float $rcValue): int
+    {
+        return self::classify($rcValue, self::FLOOR);
+    }
+
+    /**
+     * @param  array<string, int>  $bounds  Lower bound => calculate value, highest first.
+     */
+    private static function classify(float $rcValue, array $bounds): int
+    {
+        foreach ($bounds as $lowerBound => $calculateValue) {
             if ($rcValue >= (float) $lowerBound) {
                 return $calculateValue;
             }

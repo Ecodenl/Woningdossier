@@ -7,21 +7,24 @@ use App\Helpers\Hoomdossier;
 use App\Models\MeasureApplication;
 use App\Services\MappingService;
 use App\Services\SmartTwin\Api\SmartTwinApi;
-use App\Services\SmartTwin\Mapping\Mappers\SolutionMeasures;
 use Illuminate\Console\Command;
 
 /**
  * Couples SmartTwin's catalogue of solutions to our measure applications.
  *
  * Reads the whole catalogue rather than waiting for a product to turn up unmapped in somebody's
- * advice. Where a kind of measure covers products that are all the same measure to us — every EPS,
- * wool and foam variant of cavity insulation — one row on the kind covers them all, including the
- * ones SmartTwin adds later.
+ * advice, and writes a coupling per solution: one product, one measure.
  *
- * That does not hold everywhere. "Replace Boiler" alone spans a boiler and three heat pumps, which
- * are four different measures here, so a row on that kind would file a ground source heat pump as a
- * gas boiler. Those kinds are listed under PER_PRODUCT and left for a row on the full solution id,
- * which SolutionMeasures prefers over the kind anyway.
+ * The kind of measure in a solution id is how the catalogue is read here, because the products of
+ * one kind are usually the same measure to us and deciding them together is far less work. That is
+ * a convenience of this command, not something the lookup relies on — see SolutionMeasures.
+ *
+ * It does not hold everywhere. "Replace Boiler" alone spans a boiler and three heat pumps, which
+ * are four different measures here, so those kinds are listed under PER_PRODUCT and left alone
+ * until somebody couples their products individually.
+ *
+ * Temporary. Once the coupling screen exists it owns the couplings, and this keeps only the
+ * catalogue import — otherwise a re-run would silently undo manual work.
  *
  * Run with --dry-run first: it prints the catalogue grouped by kind, with the solution ids, and
  * says of every kind whether it is coupled, needs per-product work, has no counterpart here, or is
@@ -89,7 +92,23 @@ class SyncSolutions extends Command
         'Insulate Flat Roof Inside' => 'onze platdak-maatregelen gaan allebei over de dakbedekking',
     ];
 
-    public function handle(SmartTwinApi $api, SolutionMeasures $solutionMeasures): int
+    /**
+     * A solution id reads as `<kind of measure>|<provider>:<product>`. Grouping on that is a
+     * convenience for whoever does the coupling, not something the lookup relies on — see
+     * SolutionMeasures.
+     */
+    private const PROVIDER_SEPARATOR = '|';
+
+    private function kindOf(string $solutionId): ?string
+    {
+        if (! str_contains($solutionId, self::PROVIDER_SEPARATOR)) {
+            return null;
+        }
+
+        return trim(explode(self::PROVIDER_SEPARATOR, $solutionId, 2)[0]);
+    }
+
+    public function handle(SmartTwinApi $api): int
     {
         if (! Hoomdossier::hasEnabledSmartTwinCalls()) {
             $this->error('SmartTwin calls are disabled, set SMARTTWIN_ENABLED and SMARTTWIN_KEY.');
@@ -118,7 +137,7 @@ class SyncSolutions extends Command
 
         foreach ($solutions as $solution) {
             $id = $solution['id'] ?? '';
-            $kind = $solutionMeasures->kindOf($id) ?? '(geen provider in het id)';
+            $kind = $this->kindOf($id) ?? '(geen provider in het id)';
             $products[$kind][] = ['id' => $id, 'name' => $solution['name'] ?? $id];
         }
 
@@ -141,10 +160,14 @@ class SyncSolutions extends Command
 
                 $this->line(sprintf('<info>%-30s</info> -> %-38s (%d)', $kind, $measure->short, $count));
 
+                // A row per product, not per kind. The kind is how the catalogue is read here; what
+                // the lookup resolves is the solution id itself, so that is what gets written.
                 if (! $dryRun) {
-                    MappingService::init()
-                        ->from($kind)
-                        ->sync([$measure], MappingType::SMARTTWIN_SOLUTION_MEASURE_APPLICATION->value);
+                    foreach ($items as $item) {
+                        MappingService::init()
+                            ->from($item['id'])
+                            ->sync([$measure], MappingType::SMARTTWIN_SOLUTION_MEASURE_APPLICATION->value);
+                    }
                 }
 
                 ++$coupled;

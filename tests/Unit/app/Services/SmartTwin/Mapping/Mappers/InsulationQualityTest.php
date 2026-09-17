@@ -39,4 +39,36 @@ final class InsulationQualityTest extends TestCase
     {
         $this->assertSame(2, InsulationQuality::forWall(0.0));
     }
+
+    /** @return array<string, array{float, int}> */
+    public static function floors(): array
+    {
+        return [
+            'onbewerkte vloer'      => [0.15, 2],
+            'net onder slecht'      => [0.19, 2],
+            'ondergrens slecht'     => [0.20, 3],
+            'net onder matig'       => [0.99, 3],
+            'ondergrens matig'      => [1.00, 4],
+            'net onder redelijk'    => [1.74, 4],
+            'ondergrens redelijk'   => [1.75, 5],
+            'net onder goed'        => [2.99, 5],
+            'ondergrens goed'       => [3.00, 6],
+            'net onder zeer goed'   => [4.34, 6],
+            'ondergrens zeer goed'  => [4.35, 7],
+        ];
+    }
+
+    #[DataProvider('floors')]
+    public function test_it_places_a_floor_rc_value_in_its_level(float $rcValue, int $expected): void
+    {
+        $this->assertSame($expected, InsulationQuality::forFloor($rcValue));
+    }
+
+    public function test_the_two_elements_run_on_their_own_tables(): void
+    {
+        // Rc 0,5 is nothing at all on a facade and Slechte isolatie on a floor, and the floor scale
+        // sits a level higher from Matige isolatie up.
+        $this->assertSame(2, InsulationQuality::forWall(0.5));
+        $this->assertSame(3, InsulationQuality::forFloor(0.5));
+    }
 }

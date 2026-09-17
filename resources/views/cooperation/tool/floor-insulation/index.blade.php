@@ -402,9 +402,9 @@
                     $("#no-crawlspace-error").hide();
                     $('#floor-insulation-info-alert').find('.alert').hide()
                 } else {
-                    // Anything from "Matige isolatie" up, which is where the other steps draw the
-                    // line too.
-                    if (elementCalculateValue >= 3/* && interestedCalculateValue <= 2*/) {
+                    // Anything from "Matige isolatie" up. Where that sits differs per element, so
+                    // it comes from the same place the calculators read it.
+                    if (elementCalculateValue >= {{ \App\Models\ElementValue::insulatedFromCalculateValue('floor-insulation') }}/* && interestedCalculateValue <= 2*/) {
                         // insulation already present and there's interest
                         $('#hideable').hide();
                         $('#floor-insulation-info-alert').find('.alert').show();

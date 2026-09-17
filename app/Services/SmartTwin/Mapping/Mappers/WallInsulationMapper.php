@@ -155,7 +155,7 @@ class WallInsulationMapper implements FieldMapper
         $elementValueId = $this->elementValues->idFor('wall-insulation', $calculateValue);
 
         if (is_null($elementValueId)) {
-            // Most likely upgrade:add-reasonable-insulation-value has not run on this database, so
+            // Most likely upgrade:extend-insulation-scales has not run on this database, so
             // the scale is one level short. Reported as a broken mapping rather than a gap in it,
             // because that is what it is.
             return MappingResult::targetMissing(

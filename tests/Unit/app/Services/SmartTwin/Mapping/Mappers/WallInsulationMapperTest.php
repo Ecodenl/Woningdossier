@@ -261,7 +261,7 @@ final class WallInsulationMapperTest extends TestCase
 
     public function test_a_missing_insulation_level_is_reported_as_a_broken_mapping(): void
     {
-        // What an environment looks like where upgrade:add-reasonable-insulation-value has not run:
+        // What an environment looks like where upgrade:extend-insulation-scales has not run:
         // the scale is one level short. That is a deploy that went wrong, not a gap in the mapping,
         // so it has to surface rather than quietly write nothing.
         $elementValues = new FakeElementValues();

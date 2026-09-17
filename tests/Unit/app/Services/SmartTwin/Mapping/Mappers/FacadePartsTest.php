@@ -3,6 +3,7 @@
 namespace Tests\Unit\app\Services\SmartTwin\Mapping\Mappers;
 
 use App\Services\SmartTwin\Mapping\Mappers\FacadeParts;
+use App\Services\SmartTwin\Mapping\Mappers\FloorParts;
 use PHPUnit\Framework\TestCase;
 
 final class FacadePartsTest extends TestCase
@@ -117,6 +118,23 @@ final class FacadePartsTest extends TestCase
         $scenario = $this->parts([[$this->part(30.0, 1.63), $this->part(20.0, 1.63)]], 'scenario');
 
         $this->assertNull($scenario->areaImprovedOver($current));
+    }
+
+    public function test_floors_share_the_same_sums(): void
+    {
+        // The three sums live on InsulatedParts; FloorParts reads them out of a different branch of
+        // the response and gets the same answers.
+        $response = [
+            'current' => ['properties' => ['floorAssemblies' => [
+                ['floors' => [$this->part(60.0, 0.15), $this->part(30.0, 3.5)], 'crawlspaces' => []],
+            ]]],
+        ];
+
+        $floors = FloorParts::fromResponse($response, 'current');
+
+        $this->assertSame(2, $floors->count());
+        $this->assertEqualsWithDelta(90.0, $floors->totalArea(), 0.001);
+        $this->assertEqualsWithDelta(1.2666, $floors->weightedRcValue(), 0.001);
     }
 
     public function test_the_type_with_the_most_surface_wins(): void

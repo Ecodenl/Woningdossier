@@ -378,9 +378,12 @@ class UserActionPlanAdviceService
                     $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
                     $elementValue = ElementValue::find($answer);
                     if ($elementValue instanceof ElementValue) {
-                        // If the value is 1 or 2 (onbekend, geen), we want it in to-do
-                        // If it's "niet van toepassing" it should be hidden, so we don't worry about it
-                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                        // Anything that still needs insulating goes in to-do. Where that boundary
+                        // sits differs per element — the floor scale has a Slechte isolatie the
+                        // others do not — so the element value answers it rather than a literal.
+                        // "Niet van toepassing" ends up on the insulated side, which is fine: it is
+                        // hidden anyway.
+                        $category = $elementValue->countsAsInsulated() ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     }
                     break;
 
@@ -413,9 +416,7 @@ class UserActionPlanAdviceService
                     // Now we have the element value of the relevant roof type, so we set the category
                     $elementValue = ElementValue::find($elementValueId);
                     if ($elementValue instanceof ElementValue) {
-                        // If the value is 1 or 2 (onbekend, geen), we want it in to-do
-                        // If it's "niet van toepassing" it should be hidden, so we don't worry about it
-                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                        $category = $elementValue->countsAsInsulated() ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     }
                     break;
 

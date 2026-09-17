@@ -17,7 +17,7 @@ class FloorInsulationCalculator
         $kengetalEnergySaving = Temperature::energySavingFigureFloorInsulation($measureAdvice);
         self::debug('Kengetal energebesparing = ' . $kengetalEnergySaving);
 
-        if (isset($element->calculate_value) && $element->calculate_value < 3) {
+        if (! $element->countsAsInsulated()) {
             $result = min(
                 $surface * $kengetalEnergySaving,
                 RawCalculator::maxGasSavings($building, $inputSource, $element->element)

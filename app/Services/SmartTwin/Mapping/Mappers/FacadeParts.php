@@ -59,6 +59,30 @@ final class FacadeParts
     }
 
     /**
+     * The Rc value of the facade as a whole, weighted by surface, or null when there is no surface
+     * to weigh with.
+     *
+     * A dwelling can hold a well insulated extension next to an untouched original wall, and it is
+     * the combination Hoomdossier asks about. Weighting by area rather than averaging flat keeps a
+     * two square metre porch from counting as much as a whole side of the house.
+     */
+    public function weightedRcValue(): ?float
+    {
+        $area = $this->totalArea();
+
+        if ($area <= 0) {
+            return null;
+        }
+
+        $weighted = array_sum(array_map(
+            fn (array $part) => (float) ($part['rcValue'] ?? 0) * (float) ($part['area'] ?? 0),
+            $this->parts,
+        ));
+
+        return $weighted / $area;
+    }
+
+    /**
      * The surface the advice insulates, found by holding this set against the one it came from: a
      * part whose Rc goes up is a part that gets treated.
      *

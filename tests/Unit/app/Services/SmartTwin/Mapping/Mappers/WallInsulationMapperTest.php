@@ -4,6 +4,7 @@ namespace Tests\Unit\app\Services\SmartTwin\Mapping\Mappers;
 
 use App\Enums\SmartTwin\MappingStatus;
 use App\Models\Building;
+use App\Services\SmartTwin\Mapping\Mappers\ElementValues;
 use App\Services\SmartTwin\Mapping\Mappers\WallInsulationMapper;
 use App\Services\SmartTwin\Mapping\MappingResult;
 use App\Services\SmartTwin\Mapping\ResponseFlattener;
@@ -21,7 +22,10 @@ final class WallInsulationMapperTest extends TestCase
     {
         parent::setUp();
 
-        $this->mapper = new WallInsulationMapper();
+        // Element value ids differ per environment; the mapping reasons in calculate values. The
+        // step between the two is stubbed so these stay database-free — ElementValuesTest covers
+        // the real lookup.
+        $this->mapper = new WallInsulationMapper(new FakeElementValues());
     }
 
     /**
@@ -113,10 +117,10 @@ final class WallInsulationMapperTest extends TestCase
 
         $mapped = array_filter($results, fn (MappingResult $r) => MappingStatus::MAPPED === $r->status);
 
-        // Four parts and two sections produce a stack of leaves; three answers come out.
-        $this->assertCount(3, $mapped);
+        // Four parts and two sections produce a stack of leaves; four answers come out.
+        $this->assertCount(4, $mapped);
         $this->assertSame(
-            ['has-cavity-wall', 'insulation-wall-surface', 'wall-surface'],
+            ['current-wall-insulation', 'has-cavity-wall', 'insulation-wall-surface', 'wall-surface'],
             $this->sortedTargets($mapped),
         );
     }
@@ -232,6 +236,49 @@ final class WallInsulationMapperTest extends TestCase
         $this->assertNotEmpty($results);
     }
 
+    public function test_the_insulation_level_comes_from_the_weighted_rc_value(): void
+    {
+        // Rc 0,35 across the whole facade, which is what an uninsulated cavity wall reads.
+        $mapped = $this->mappedByTarget($this->dossier());
+
+        $this->assertSame(
+            FakeElementValues::OFFSET + 2, // Geen isolatie
+            $mapped['current-wall-insulation']->value,
+        );
+    }
+
+    public function test_a_partly_insulated_facade_lands_between_its_parts(): void
+    {
+        // 80 m² at Rc 4,0 next to 20 m² at Rc 0,35 weighs out at 3,27 — "Goede isolatie". A flat
+        // average would have given 2,18 and called it "Redelijk".
+        $response = $this->response([[$this->part(80.0, 4.0), $this->part(20.0, 0.35)]]);
+
+        $this->assertSame(
+            FakeElementValues::OFFSET + 5, // Goede isolatie
+            $this->mappedByTarget($response)['current-wall-insulation']->value,
+        );
+    }
+
+    public function test_a_missing_insulation_level_is_reported_as_a_broken_mapping(): void
+    {
+        // What an environment looks like where upgrade:add-reasonable-insulation-value has not run:
+        // the scale is one level short. That is a deploy that went wrong, not a gap in the mapping,
+        // so it has to surface rather than quietly write nothing.
+        $elementValues = new FakeElementValues();
+        $elementValues->missing = [4]; // Redelijke isolatie
+        $this->mapper = new WallInsulationMapper($elementValues);
+
+        $response = $this->response([[$this->part(50.0, 2.5)]]);
+
+        $results = array_filter(
+            $this->mapClaimed($response),
+            fn (MappingResult $r) => MappingStatus::TARGET_MISSING === $r->status,
+        );
+
+        $this->assertCount(1, $results);
+        $this->assertSame('current-wall-insulation', reset($results)->target);
+    }
+
     public function test_the_cavity_thickness_is_deliberately_left_alone(): void
     {
         // It drops to 0 in the scenario once the cavity is filled, so it cannot answer whether the
@@ -241,5 +288,22 @@ final class WallInsulationMapperTest extends TestCase
         $notes = array_map(fn (MappingResult $r) => $r->note, $this->mapClaimed($response));
 
         $this->assertContains('facadeType is het signaal voor has-cavity-wall', $notes);
+    }
+}
+
+/**
+ * Hands back a recognisable id per calculate value, so a test can assert which level was chosen
+ * without seeding element values.
+ */
+final class FakeElementValues extends ElementValues
+{
+    public const OFFSET = 900;
+
+    /** Calculate values this pretends not to have. */
+    public array $missing = [];
+
+    public function idFor(string $elementShort, int $calculateValue): ?int
+    {
+        return in_array($calculateValue, $this->missing, true) ? null : self::OFFSET + $calculateValue;
     }
 }

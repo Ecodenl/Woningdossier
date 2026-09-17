@@ -71,6 +71,28 @@ final class FacadePartsTest extends TestCase
         $this->assertNull(FacadeParts::fromResponse([], 'current')->dominantType());
     }
 
+    public function test_the_rc_value_is_weighted_by_surface(): void
+    {
+        // A small well insulated part next to a large bare one should read as bare, which a flat
+        // average would not give: that would be 2.175 instead of 0.85.
+        $parts = $this->parts([[$this->part(10.0, 4.0), $this->part(90.0, 0.35)]]);
+
+        $this->assertEqualsWithDelta(0.715, $parts->weightedRcValue(), 0.001);
+    }
+
+    public function test_a_uniform_facade_reads_as_its_own_rc_value(): void
+    {
+        $parts = $this->parts([[$this->part(30.0, 1.63)], [$this->part(70.0, 1.63)]]);
+
+        $this->assertEqualsWithDelta(1.63, $parts->weightedRcValue(), 0.001);
+    }
+
+    public function test_there_is_no_rc_value_without_surface_to_weigh_with(): void
+    {
+        $this->assertNull($this->parts([[$this->part(0.0, 2.5)]])->weightedRcValue());
+        $this->assertNull($this->parts([])->weightedRcValue());
+    }
+
     public function test_only_the_parts_whose_rc_goes_up_count_as_insulated(): void
     {
         $current = $this->parts([[$this->part(30.0, 0.35), $this->part(20.0, 0.35)]]);

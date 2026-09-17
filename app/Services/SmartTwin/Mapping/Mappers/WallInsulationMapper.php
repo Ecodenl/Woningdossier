@@ -10,9 +10,9 @@ use App\Services\SmartTwin\Mapping\MappingResult;
 /**
  * The facade of the wall insulation step.
  *
- * Fills three of its questions: the facade surface, the surface the advice insulates, and whether
- * the dwelling has a cavity wall. The fourth, current-wall-insulation, waits for the "Redelijk"
- * element value to exist.
+ * Fills four of its questions: the facade surface, the surface the advice insulates, whether the
+ * dwelling has a cavity wall, and how well the facade is insulated. The remaining five are about
+ * the state of the brickwork and the paintwork, which SmartTwin does not describe.
  *
  * Every answer is one number derived from many facade parts, so of the leaves in a path group
  * exactly one carries the answer — the first part in the response — and the rest are skipped
@@ -21,6 +21,10 @@ use App\Services\SmartTwin\Mapping\MappingResult;
  */
 class WallInsulationMapper implements FieldMapper
 {
+    public function __construct(private readonly ElementValues $elementValues)
+    {
+    }
+
     private const CURRENT = 'current';
     private const SCENARIO = 'scenario';
 
@@ -64,9 +68,9 @@ class WallInsulationMapper implements FieldMapper
         return match ($leaf->pathGroup) {
             self::PATH_CURRENT_AREA   => $this->wallSurface($leaf, $response),
             self::PATH_CURRENT_TYPE   => $this->hasCavityWall($leaf, $response),
+            self::PATH_CURRENT_RC     => $this->currentWallInsulation($leaf, $response),
             self::PATH_SCENARIO_AREA  => $this->insulationWallSurface($leaf, $response),
             self::PATH_CURRENT_PARTS  => MappingResult::skipped('assembly zonder dichte geveldelen'),
-            self::PATH_CURRENT_RC     => MappingResult::skipped('bepaalt straks current-wall-insulation'),
             self::PATH_SCENARIO_RC    => MappingResult::skipped('bepaalt welk geveldeel geïsoleerd wordt, zie insulation-wall-surface'),
             // The spec calls this "only relevant for cavity walls", and it drops to 0 in the
             // scenario once the cavity is filled. facadeType says the same thing and keeps saying it.
@@ -127,6 +131,44 @@ class WallInsulationMapper implements FieldMapper
             'insulation-wall-surface',
             round($area, 2),
             'geveldelen waarvan de Rc-waarde stijgt tussen current en scenario',
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $response
+     */
+    private function currentWallInsulation(Leaf $leaf, array $response): MappingResult
+    {
+        if ($this->notTheFirstPart($leaf, $response, self::CURRENT, 'rcValue')) {
+            return MappingResult::skipped('telt mee in current-wall-insulation op het eerste geveldeel');
+        }
+
+        $rcValue = FacadeParts::fromResponse($response, self::CURRENT)->weightedRcValue();
+
+        if (is_null($rcValue)) {
+            // "Onbekend" is an answer we could give here, but it is not one SmartTwin gave, and
+            // writing it would replace whatever the resident or coach knows with a shrug.
+            return MappingResult::valueUnmapped('geen Rc-waarde te bepalen zonder geveloppervlak');
+        }
+
+        $calculateValue = InsulationQuality::forWall($rcValue);
+        $elementValueId = $this->elementValues->idFor('wall-insulation', $calculateValue);
+
+        if (is_null($elementValueId)) {
+            // Most likely upgrade:add-reasonable-insulation-value has not run on this database, so
+            // the scale is one level short. Reported as a broken mapping rather than a gap in it,
+            // because that is what it is.
+            return MappingResult::targetMissing(
+                'current-wall-insulation',
+                $calculateValue,
+                "geen element value met calculate_value {$calculateValue} voor wall-insulation",
+            );
+        }
+
+        return MappingResult::mapped(
+            'current-wall-insulation',
+            $elementValueId,
+            'oppervlakte-gewogen Rc ' . round($rcValue, 2) . " valt in klasse {$calculateValue}",
         );
     }
 

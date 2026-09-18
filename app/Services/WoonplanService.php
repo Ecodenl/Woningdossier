@@ -33,7 +33,7 @@ class WoonplanService
     public function canAccessWoonplan(): bool
     {
         // when a user is observing another building, he can always see the Woonplan
-        if ($this->isObserving || app()->isLocal()) {
+        if ($this->isObserving || static::guardIsSkipped()) {
             return true;
         }
         // if the user is on the quick scan some abnormal rules apply
@@ -45,6 +45,20 @@ class WoonplanService
 
 
         return $this->building->hasCompletedScan($this->scan, $this->inputSource);
+    }
+
+    /**
+     * Escape hatch for local development and the test environment, so a tester can reach the
+     * woonplan (and everything on it, such as the SmartTwin hand-off) without first filling in
+     * the scan. Never applies on production.
+     */
+    public static function guardIsSkipped(): bool
+    {
+        if (app()->isLocal()) {
+            return true;
+        }
+
+        return config('hoomdossier.skip_woonplan_guard', false) && ! app()->environment('production');
     }
 
     public function userIsObserving(): self

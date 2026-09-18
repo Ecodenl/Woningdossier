@@ -18,7 +18,9 @@ export default (initiallyOpen = false) => ({
         }
     },
     close() {
-        this.$event.preventDefault();
+        // No preventDefault here: close() is bound to x-on:click.outside, and Alpine runs that for
+        // every click on the page while the dropdown is visible. Cancelling those events swallows
+        // the user's actual click, so a submit button elsewhere on the page would do nothing.
         this.open = false;
     },
     updatePosition(tries = 0) {

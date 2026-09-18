@@ -699,6 +699,9 @@ class ToolQuestionsTableSeeder extends Seeder
                             'icon' => 'icon-wall-insulation-good',
                         ],
                         5 => [
+                            'icon' => 'icon-wall-insulation-good',
+                        ],
+                        6 => [
                             'icon' => 'icon-wall-insulation-excellent',
                         ],
                     ],
@@ -721,15 +724,21 @@ class ToolQuestionsTableSeeder extends Seeder
                             'icon' => 'icon-floor-insulation-none',
                         ],
                         3 => [
-                            'icon' => 'icon-floor-insulation-moderate',
+                            'icon' => 'icon-floor-insulation-none',
                         ],
                         4 => [
-                            'icon' => 'icon-floor-insulation-good',
+                            'icon' => 'icon-floor-insulation-moderate',
                         ],
                         5 => [
-                            'icon' => 'icon-floor-insulation-excellent',
+                            'icon' => 'icon-floor-insulation-good',
                         ],
                         6 => [
+                            'icon' => 'icon-floor-insulation-good',
+                        ],
+                        7 => [
+                            'icon' => 'icon-floor-insulation-excellent',
+                        ],
+                        8 => [
                             'icon' => 'icon-other',
                         ],
                     ],
@@ -758,9 +767,12 @@ class ToolQuestionsTableSeeder extends Seeder
                             'icon' => 'icon-roof-insulation-good',
                         ],
                         5 => [
-                            'icon' => 'icon-roof-insulation-excellent',
+                            'icon' => 'icon-roof-insulation-good',
                         ],
                         6 => [
+                            'icon' => 'icon-roof-insulation-excellent',
+                        ],
+                        7 => [
                             'icon' => 'icon-other',
                         ],
                     ],

@@ -21,6 +21,7 @@ use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\Models\NotificationService;
 use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Services\Verbeterjehuis\RegulationService;
@@ -147,19 +148,48 @@ class UserActionPlanAdviceService
             ->get();
 
         // now delete the old advices, the one for the given input source and the master source.
+        // Advices with a source belong to whoever produced them and survive a recalculation; see
+        // App\Enums\AdviceSource. Deleting them here would throw away an external advice the moment
+        // anything triggers a recalculation of its step.
         UserActionPlanAdvice::forUser($user)
             ->forInputSource($masterInputSource)
             ->forStep($step)
             ->withInvisible()
+            ->whereNull('source')
             ->delete();
 
         UserActionPlanAdvice::forUser($user)
             ->forInputSource($inputSource)
             ->forStep($step)
             ->withInvisible()
+            ->whereNull('source')
             ->delete();
 
         return $oldAdvices;
+    }
+
+    /**
+     * Whether something other than the calculation already owns the advice for this measure.
+     *
+     * The calculation runs per step and does not know that a measure inside it was priced
+     * elsewhere, so this is what keeps it from putting a second card for the same measure next to
+     * the first.
+     */
+    public static function isOwnedExternally(UserActionPlanAdvice $userActionPlanAdvice): bool
+    {
+        if (! is_null($userActionPlanAdvice->source)) {
+            // The externally owned advice itself, on its way in.
+            return false;
+        }
+
+        return UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+            ->allInputSources()
+            ->where('user_id', $userActionPlanAdvice->user_id)
+            ->where('input_source_id', $userActionPlanAdvice->input_source_id)
+            ->where('user_action_plan_advisable_type', $userActionPlanAdvice->user_action_plan_advisable_type)
+            ->where('user_action_plan_advisable_id', $userActionPlanAdvice->user_action_plan_advisable_id)
+            ->whereNotNull('source')
+            ->exists();
     }
 
     /**
@@ -348,9 +378,12 @@ class UserActionPlanAdviceService
                     $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
                     $elementValue = ElementValue::find($answer);
                     if ($elementValue instanceof ElementValue) {
-                        // If the value is 1 or 2 (onbekend, geen), we want it in to-do
-                        // If it's "niet van toepassing" it should be hidden, so we don't worry about it
-                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                        // Anything that still needs insulating goes in to-do. Where that boundary
+                        // sits differs per element — the floor scale has a Slechte isolatie the
+                        // others do not — so the element value answers it rather than a literal.
+                        // "Niet van toepassing" ends up on the insulated side, which is fine: it is
+                        // hidden anyway.
+                        $category = $elementValue->countsAsInsulated() ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     }
                     break;
 
@@ -383,9 +416,7 @@ class UserActionPlanAdviceService
                     // Now we have the element value of the relevant roof type, so we set the category
                     $elementValue = ElementValue::find($elementValueId);
                     if ($elementValue instanceof ElementValue) {
-                        // If the value is 1 or 2 (onbekend, geen), we want it in to-do
-                        // If it's "niet van toepassing" it should be hidden, so we don't worry about it
-                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                        $category = $elementValue->countsAsInsulated() ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     }
                     break;
 

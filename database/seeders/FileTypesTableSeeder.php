@@ -85,6 +85,20 @@ class FileTypesTableSeeder extends Seeder
                 'content_type' => 'text/csv',
                 'short' => 'example-building-overview',
             ],
+            [
+                'name' => [
+                    'nl' => 'SmartTwin advies (ruwe data)',
+                ],
+                'content_type' => 'application/json',
+                'short' => 'smarttwin-advice-raw',
+            ],
+            [
+                'name' => [
+                    'nl' => 'SmartTwin mapping rapport',
+                ],
+                'content_type' => 'text/csv',
+                'short' => 'smarttwin-mapping-report',
+            ],
         ];
 
         foreach ($fileTypes as $fileType) {

@@ -69,9 +69,12 @@
                                             {{ \App\Helpers\NumberFormatter::range($card['costs']['from'], $card['costs']['to'], 0, ' - ', '€ ') }}
                                         @endif
                                     </p>
-                                    <p class="font-bold">
-                                        {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
-                                    </p>
+                                    {{-- No saving known is not the same as a saving of nothing; see MyPlan\Form. --}}
+                                    @if(! is_null($card['savings']))
+                                        <p class="font-bold">
+                                            {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
+                                        </p>
+                                    @endif
                                 </div>
                                 @if($cardCategory !== \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)
                                     @if($card['subsidy_available'])
@@ -194,9 +197,11 @@
                                                     @endif
                                                 </p>
                                             </div>
-                                            <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
-                                                {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
-                                            </p>
+                                            @if(! is_null($card['savings']))
+                                                <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
+                                                    {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
+                                                </p>
+                                            @endif
                                         </div>
                                     @endforeach
                                 </div>

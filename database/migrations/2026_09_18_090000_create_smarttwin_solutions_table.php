@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * A local copy of SmartTwin's solution catalogue, so the coupling screen has something to list.
+     * SmartTwin's solution catalogue, so the coupling screen has something to list and a coupling
+     * has something to point at.
      *
-     * The couplings themselves live in `mappings`, keyed on `external_id`, not here: an advice can
-     * name a solution this table has never seen, and that coupling still has to resolve.
+     * The couplings themselves live in `mappings`, pointing at a row here through from_model, the
+     * way the municipality mapping does.
      */
     public function up(): void
     {

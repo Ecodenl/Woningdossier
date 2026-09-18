@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * One product from SmartTwin's solution catalogue.
  *
- * Imported by api:smarttwin:import-solutions so the coupling screen has something to list. Which
- * measure application a solution is stays in `mappings` — see MappingType::SMARTTWIN_SOLUTION_MEASURE_APPLICATION
- * and SolutionMeasures — because an advice can name a product this table has never seen, and that
- * coupling has to resolve regardless.
+ * Imported by api:smarttwin:import-solutions, and the one place a solution id is stored. Which
+ * measure application it is hangs off this row in `mappings` — see the coupling screen and
+ * SolutionMeasures — so the id itself is written down once.
+ *
+ * Rows are never deleted. A withdrawn product is still named by the advices that recommended it,
+ * and deleting it would take its coupling with it; last_seen_at is what marks one instead.
  *
  * @property int $id
  * @property string $external_id

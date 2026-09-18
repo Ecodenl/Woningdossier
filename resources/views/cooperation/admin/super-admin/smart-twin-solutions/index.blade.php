@@ -21,8 +21,6 @@
                 @csrf
                 @method('PUT')
 
-                @php $previous = old('couplings'); @endphp
-
                 @foreach($kinds as $kind => $solutions)
                     <table class="table fancy-table w-full mb-8">
                         <thead>
@@ -53,18 +51,15 @@
                         <tbody data-kind="{{ $loop->index }}">
                             @foreach($solutions as $solution)
                                 @php
-                                    $currentChoice = $couplings->has($solution->external_id)
-                                        ? (is_null($couplings[$solution->external_id]) ? $notCoupled : (string) $couplings[$solution->external_id])
+                                    $currentChoice = $couplings->has($solution->id)
+                                        ? (is_null($couplings[$solution->id]) ? $notCoupled : (string) $couplings[$solution->id])
                                         : '';
-                                    // Solution ids hold dots and pipes, so old() cannot be reached by key path.
-                                    $selected = is_array($previous)
-                                        ? ($previous[$solution->external_id] ?? '')
-                                        : $currentChoice;
+                                    $selected = (string) old("couplings.{$solution->id}", $currentChoice);
                                 @endphp
                                 <tr>
                                     <td>
                                         {{ $solution->name }}
-                                        @if($withdrawn->has($solution->external_id))
+                                        @if($withdrawn->has($solution->id))
                                             <small class="text-red">
                                                 @lang('cooperation/admin/super-admin/smart-twin-solutions.index.table.withdrawn')
                                             </small>
@@ -73,7 +68,7 @@
                                         <small class="text-gray">{{ $solution->external_id }}</small>
                                     </td>
                                     <td>
-                                        <select name="couplings[{{ $solution->external_id }}]" class="form-input js-coupling">
+                                        <select name="couplings[{{ $solution->id }}]" class="form-input js-coupling">
                                             <option value="" @selected('' === $selected)>
                                                 @lang('cooperation/admin/super-admin/smart-twin-solutions.index.table.undecided')
                                             </option>

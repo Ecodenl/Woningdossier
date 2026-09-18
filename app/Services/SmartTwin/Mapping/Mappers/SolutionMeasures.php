@@ -2,8 +2,8 @@
 
 namespace App\Services\SmartTwin\Mapping\Mappers;
 
-use App\Enums\MappingType;
 use App\Models\MeasureApplication;
+use App\Models\SmartTwinSolution;
 use App\Services\MappingService;
 
 /**
@@ -15,11 +15,14 @@ use App\Services\MappingService;
  * have never seen without anything about the API changing, and a coupling nobody can add without a
  * deploy would mean that measure missing from every action plan until the next release.
  *
+ * The response carries an id; a coupling hangs off the imported product that id belongs to. So an
+ * id the catalogue does not hold resolves to nothing, exactly as an uncoupled one does — both mean
+ * no measure reaches the woonplan, and both are reported rather than guessed at.
+ *
  * A solution id reads as `<kind of measure>|<provider>:<product>`, and the products of one kind are
  * usually the same measure to us. That grouping belongs in the screen where the couplings are made,
  * not here: reading it would make the lookup depend on an id format SmartTwin has never documented,
- * for a convenience the screen can offer just as well. An uncoupled id is reported rather than
- * guessed at, so a new product is visible in two places instead of quietly missing from one.
+ * for a convenience the screen can offer just as well.
  *
  * Returns the short rather than the model, so a mapper can reason in shorts and the applier does
  * the resolving — the same split as ElementValues.
@@ -32,9 +35,15 @@ class SolutionMeasures
             return null;
         }
 
+        $solution = SmartTwinSolution::firstWhere('external_id', $solutionId);
+
+        if (! $solution instanceof SmartTwinSolution) {
+            return null;
+        }
+
         $measure = MappingService::init()
-            ->from($solutionId)
-            ->type(MappingType::SMARTTWIN_SOLUTION_MEASURE_APPLICATION->value)
+            ->from($solution)
+            ->type(SmartTwinSolution::mappingType())
             ->resolveTarget()
             ->first();
 

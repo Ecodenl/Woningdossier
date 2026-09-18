@@ -30,8 +30,8 @@ class SmartTwinSolutionCoupleRequest extends FormRequest
     }
 
     /**
-     * The whole catalogue is submitted at once, so the keys are solution ids and the values are
-     * either a measure application, the marker for "deliberately not coupled", or empty.
+     * The whole catalogue is submitted at once, so the keys are imported solutions and the values
+     * are either a measure application, the marker for "deliberately not coupled", or empty.
      */
     public function rules(): array
     {

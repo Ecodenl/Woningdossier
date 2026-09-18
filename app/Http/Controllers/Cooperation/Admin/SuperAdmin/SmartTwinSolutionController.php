@@ -35,7 +35,7 @@ class SmartTwinSolutionController extends Controller
         $solutions = SmartTwinSolution::orderBy('kind')->orderBy('name')->get();
         $couplings = $this->couplings();
 
-        $withdrawn = SmartTwinSolution::withdrawn()->pluck('external_id')->flip();
+        $withdrawn = SmartTwinSolution::withdrawn()->pluck('id')->flip();
 
         // Grouped by kind, because the products of one kind are usually the same measure to us and
         // deciding them together is far less work than 138 separate calls.
@@ -46,7 +46,7 @@ class SmartTwinSolutionController extends Controller
             ->sortBy('name')
             ->groupBy(fn (MeasureApplication $measure) => $measure->step->name ?? '');
 
-        $undecided = $solutions->reject(fn (SmartTwinSolution $s) => $couplings->has($s->external_id))->count();
+        $undecided = $solutions->reject(fn (SmartTwinSolution $s) => $couplings->has($s->id))->count();
         $notCoupled = self::NOT_COUPLED;
 
         return view('cooperation.admin.super-admin.smart-twin-solutions.index', compact(
@@ -63,24 +63,21 @@ class SmartTwinSolutionController extends Controller
     {
         $submitted = $request->validated()['couplings'] ?? [];
 
-        $known = SmartTwinSolution::pluck('external_id')->flip();
+        // The form is built from this table, so a key that is not in it was never on the page.
+        $solutions = SmartTwinSolution::whereIn('id', array_keys($submitted))->get()->keyBy('id');
         $current = $this->couplings();
         $measures = MeasureApplication::whereIn('id', array_filter($submitted, 'is_numeric'))->get()->keyBy('id');
 
         $changed = 0;
 
-        foreach ($submitted as $externalId => $choice) {
-            // The form is built from this table, so anything else was not on the page. Writing it
-            // would couple a product nobody can see here.
-            if (! $known->has($externalId)) {
+        foreach ($submitted as $solutionId => $choice) {
+            $solution = $solutions->get((int) $solutionId);
+
+            if (! $solution instanceof SmartTwinSolution || $this->unchanged($current, $solution->id, $choice)) {
                 continue;
             }
 
-            if ($this->unchanged($current, $externalId, $choice)) {
-                continue;
-            }
-
-            $service = MappingService::init()->from($externalId)->type(SmartTwinSolution::mappingType());
+            $service = MappingService::init()->from($solution)->type(SmartTwinSolution::mappingType());
 
             if ('' === $choice) {
                 // Back to undecided, which is the absence of a row rather than a row saying no.
@@ -104,28 +101,28 @@ class SmartTwinSolutionController extends Controller
     }
 
     /**
-     * What each coupled solution id currently points at: a measure application id, or null for one
-     * deliberately left uncoupled. A solution id absent here has not been decided on.
+     * What each coupled solution currently points at: a measure application id, or null for one
+     * deliberately left uncoupled. A solution absent here has not been decided on.
      *
-     * @return Collection<string, int|null>
+     * @return Collection<int, int|null>
      */
     private function couplings(): Collection
     {
         return Mapping::forType(SmartTwinSolution::mappingType())
-            ->whereNotNull('from_value')
-            ->pluck('target_model_id', 'from_value');
+            ->where('from_model_type', (new SmartTwinSolution())->getMorphClass())
+            ->pluck('target_model_id', 'from_model_id');
     }
 
     /**
-     * @param  Collection<string, int|null>  $current
+     * @param  Collection<int, int|null>  $current
      */
-    private function unchanged(Collection $current, string $externalId, string $choice): bool
+    private function unchanged(Collection $current, int $solutionId, string $choice): bool
     {
-        if (! $current->has($externalId)) {
+        if (! $current->has($solutionId)) {
             return '' === $choice;
         }
 
-        $coupledTo = $current->get($externalId);
+        $coupledTo = $current->get($solutionId);
 
         return is_null($coupledTo)
             ? self::NOT_COUPLED === $choice

@@ -4,6 +4,7 @@ namespace Tests\Feature\app\Services\SmartTwin\Mapping\Mappers;
 
 use App\Enums\MappingType;
 use App\Models\MeasureApplication;
+use App\Models\SmartTwinSolution;
 use App\Services\MappingService;
 use App\Services\SmartTwin\Mapping\Mappers\SolutionMeasures;
 use Database\Seeders\DatabaseSeeder;
@@ -15,6 +16,9 @@ use Tests\TestCase;
  *
  * The one translation in this mapping that is not in code: SmartTwin's catalogue grows without
  * their API changing, so a new product has to be couplable without a deploy.
+ *
+ * A coupling hangs off the imported product, so every case here imports first — which is what the
+ * coupling screen can only offer for products the import has seen.
  */
 final class SolutionMeasuresTest extends TestCase
 {
@@ -34,10 +38,20 @@ final class SolutionMeasuresTest extends TestCase
         $this->measures = app(SolutionMeasures::class);
     }
 
+    /** A product as api:smarttwin:import-solutions would have imported it. */
+    private function import(string $solutionId): SmartTwinSolution
+    {
+        return SmartTwinSolution::firstOrCreate(
+            ['external_id' => $solutionId],
+            ['name' => $solutionId, 'kind' => SmartTwinSolution::kindOf($solutionId), 'last_seen_at' => now()],
+        );
+    }
+
     private function couple(string $solutionId, string $measureShort): void
     {
         MappingService::init()
-            ->from($solutionId)
+            ->from($this->import($solutionId))
+            ->type(MappingType::SMARTTWIN_SOLUTION_MEASURE_APPLICATION->value)
             ->sync(
                 [MeasureApplication::findByShort($measureShort)],
                 MappingType::SMARTTWIN_SOLUTION_MEASURE_APPLICATION->value,
@@ -53,7 +67,16 @@ final class SolutionMeasuresTest extends TestCase
 
     public function test_an_uncoupled_solution_resolves_to_nothing(): void
     {
+        $this->import('Install Heat Pump|SmartTwin:Nog_Niet_Gekoppeld');
+
         $this->assertNull($this->measures->shortFor('Install Heat Pump|SmartTwin:Nog_Niet_Gekoppeld'));
+    }
+
+    public function test_a_solution_the_catalogue_does_not_hold_resolves_to_nothing(): void
+    {
+        // A product SmartTwin advises before anybody imported it. Same outcome as an uncoupled one:
+        // no measure reaches the woonplan and the mapping reports the id.
+        $this->assertNull($this->measures->shortFor('Install Heat Pump|SmartTwin:Nooit_Geimporteerd'));
     }
 
     public function test_the_id_has_to_match_exactly(): void
@@ -61,6 +84,7 @@ final class SolutionMeasuresTest extends TestCase
         // The id carries a product variant, and two variants of the same measure are different
         // couplings. A near miss is a miss.
         $this->couple(self::SOLUTION_ID, 'cavity-wall-insulation');
+        $this->import('Insulate Facade Cavity|SmartTwin:Cavity_Insulation_Wool');
 
         $this->assertNull($this->measures->shortFor('Insulate Facade Cavity|SmartTwin:Cavity_Insulation_Wool'));
     }
@@ -70,7 +94,7 @@ final class SolutionMeasuresTest extends TestCase
         // The mappings table also holds municipality and measure category couplings; a solution id
         // may only ever resolve through its own type.
         MappingService::init()
-            ->from(self::SOLUTION_ID)
+            ->from($this->import(self::SOLUTION_ID))
             ->sync(
                 [MeasureApplication::findByShort('cavity-wall-insulation')],
                 MappingType::MEASURE_APPLICATION_MEASURE_CATEGORY->value,
@@ -94,6 +118,8 @@ final class SolutionMeasuresTest extends TestCase
         // coupling screen offers; making the lookup read that format would tie it to a grammar
         // SmartTwin has never documented.
         $this->couple(self::SOLUTION_ID, 'cavity-wall-insulation');
+        $this->import('Insulate Facade Cavity');
+        $this->import('Insulate Facade Cavity|SmartTwin:Cavity_Insulation_Mineral_Wool');
 
         $this->assertNull($this->measures->shortFor('Insulate Facade Cavity'));
         $this->assertNull($this->measures->shortFor('Insulate Facade Cavity|SmartTwin:Cavity_Insulation_Mineral_Wool'));

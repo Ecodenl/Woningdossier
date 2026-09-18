@@ -163,9 +163,15 @@ final class SmartTwinSolutionControllerTest extends TestCase
 
     public function test_a_resident_cannot_reach_the_screen(): void
     {
+        $this->solution(self::CAVITY, 'EPS parels');
         $this->actAsResident();
 
-        $this->get($this->indexRoute())->assertForbidden();
+        // Not a 403: bootstrap/app.php renders UnauthorizedException as a redirect to whatever the
+        // role in the session may reach. So the assertion that counts is that the page is not shown.
+        $response = $this->get($this->indexRoute());
+
+        $response->assertRedirect();
+        $this->followRedirects($response)->assertDontSee('EPS parels');
     }
 
     private function indexRoute(): string

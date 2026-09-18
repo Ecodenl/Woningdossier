@@ -5,6 +5,7 @@ namespace Tests\Feature\app\Console\Commands\Api\SmartTwin;
 use App\Models\SmartTwinSolution;
 use App\Services\SmartTwin\Api\Resources\Advice;
 use App\Services\SmartTwin\Api\SmartTwinApi;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Mockery;
@@ -17,6 +18,16 @@ use Tests\TestCase;
 final class ImportSolutionsTest extends TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * This command needs nothing seeded, but the suite does.
+     *
+     * RefreshDatabase migrates once per process and only the first test class to run decides
+     * whether that migration seeds. This file sorts first of all feature tests, so leaving it
+     * unseeded leaves every later test without roles, elements or measures.
+     */
+    public $seed = true;
+    public $seeder = DatabaseSeeder::class;
 
     private const CAVITY = 'Insulate Facade Cavity|SmartTwin:Cavity_Insulation_EPS_Pearls';
     private const SUN_BLINDS = 'Install Sun Blinds|SmartTwin:Screens';

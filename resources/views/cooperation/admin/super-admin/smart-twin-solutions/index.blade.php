@@ -51,7 +51,7 @@
                         <tbody data-kind="{{ $loop->index }}">
                             @foreach($solutions as $solution)
                                 @php
-                                    $currentChoice = $couplings->has($solution->id)
+                                    $currentChoice = array_key_exists($solution->id, $couplings)
                                         ? (is_null($couplings[$solution->id]) ? $notCoupled : (string) $couplings[$solution->id])
                                         : '';
                                     $selected = (string) old("couplings.{$solution->id}", $currentChoice);

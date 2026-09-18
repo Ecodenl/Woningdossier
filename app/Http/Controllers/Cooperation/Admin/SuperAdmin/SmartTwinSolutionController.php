@@ -10,7 +10,6 @@ use App\Models\MeasureApplication;
 use App\Models\SmartTwinSolution;
 use App\Services\MappingService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 /**
@@ -46,7 +45,7 @@ class SmartTwinSolutionController extends Controller
             ->sortBy('name')
             ->groupBy(fn (MeasureApplication $measure) => $measure->step->name ?? '');
 
-        $undecided = $solutions->reject(fn (SmartTwinSolution $s) => $couplings->has($s->id))->count();
+        $undecided = $solutions->reject(fn (SmartTwinSolution $s) => array_key_exists($s->id, $couplings))->count();
         $notCoupled = self::NOT_COUPLED;
 
         return view('cooperation.admin.super-admin.smart-twin-solutions.index', compact(
@@ -104,25 +103,29 @@ class SmartTwinSolutionController extends Controller
      * What each coupled solution currently points at: a measure application id, or null for one
      * deliberately left uncoupled. A solution absent here has not been decided on.
      *
-     * @return Collection<int, int|null>
+     * An array rather than a collection, because it is passed on and Collection's value type is
+     * invariant — a narrowed generic would not be accepted as an argument.
+     *
+     * @return array<int, int|null>
      */
-    private function couplings(): Collection
+    private function couplings(): array
     {
         return Mapping::forType(SmartTwinSolution::mappingType())
             ->where('from_model_type', (new SmartTwinSolution())->getMorphClass())
-            ->pluck('target_model_id', 'from_model_id');
+            ->pluck('target_model_id', 'from_model_id')
+            ->all();
     }
 
     /**
-     * @param  Collection<int, int|null>  $current
+     * @param  array<int, int|null>  $current
      */
-    private function unchanged(Collection $current, int $solutionId, string $choice): bool
+    private function unchanged(array $current, int $solutionId, string $choice): bool
     {
-        if (! $current->has($solutionId)) {
+        if (! array_key_exists($solutionId, $current)) {
             return '' === $choice;
         }
 
-        $coupledTo = $current->get($solutionId);
+        $coupledTo = $current[$solutionId];
 
         return is_null($coupledTo)
             ? self::NOT_COUPLED === $choice

@@ -1,0 +1,100 @@
+/*
+ * The SmartTwin dashboard: the house on the left, the coach and the files stacked beside it.
+ */
+
+.dashboard {
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-5 xl:px-20 py-10 items-start;
+}
+
+.dashboard-full {
+    @apply lg:col-span-3;
+}
+
+/* The house takes two of the three columns and both rows beside the two smaller tiles. */
+.dashboard-main {
+    @apply lg:col-span-2 lg:row-span-2;
+}
+
+.tile {
+    @apply w-full bg-blue-100 border border-solid border-blue-500 border-opacity-25 rounded-2xl p-6;
+}
+
+.tile-heading {
+    @apply text-md font-bold text-center mb-4;
+}
+
+.tile-action {
+    @apply flex justify-center mt-6;
+}
+
+/* The house ------------------------------------------------------------------------------------ */
+
+.dashboard-building {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+}
+
+.building-facts {
+    @apply bg-white rounded-lg p-4;
+}
+
+.building-facts-intro {
+    @apply text-sm mb-4;
+}
+
+.building-fact {
+    @apply flex flex-row items-center gap-3 py-2 border-b border-solid border-blue-500 border-opacity-10;
+}
+
+.building-fact:last-child {
+    @apply border-b-0;
+}
+
+.building-fact dt {
+    @apply text-sm text-blue-500;
+}
+
+.building-fact dd {
+    @apply font-bold;
+}
+
+.building-fact-unknown {
+    @apply font-normal text-blue-500;
+}
+
+/* The photo ------------------------------------------------------------------------------------ */
+
+.building-photo {
+    @apply flex flex-col items-center justify-center w-full;
+}
+
+.building-photo img {
+    @apply w-full h-full object-cover rounded-lg;
+}
+
+/*
+ * Both the empty state and the "pick another" control are labels tied to an off screen file input,
+ * so the whole area is the click target rather than a button tucked in a corner.
+ */
+.building-photo-empty {
+    @apply flex flex-col items-center justify-center gap-3 w-full min-h-15/20 p-8
+           bg-white border-2 border-dashed border-blue-500 border-opacity-40 rounded-lg
+           text-center text-blue-500 cursor-pointer transition;
+}
+
+.building-photo-empty:hover {
+    @apply border-purple text-purple;
+}
+
+.building-photo-replace {
+    @apply mt-2 text-sm text-purple underline cursor-pointer;
+}
+
+.building-photo-status {
+    @apply mt-2 text-sm;
+}
+
+/* The files ------------------------------------------------------------------------------------ */
+
+.dashboard-files {
+    @apply flex items-center justify-center py-4;
+}

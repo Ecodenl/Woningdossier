@@ -128,6 +128,15 @@ class Step extends Model
         return in_array($this->short, ['heating']);
     }
 
+    /**
+     * The steps whose questions SmartTwin asks in its own tool and hands back to us. Hoomdossier
+     * does not ask them when SmartTwin is enabled; what is left are the questions it asks itself.
+     */
+    public function isProvidedBySmartTwin(): bool
+    {
+        return in_array($this->short, ['building-data', 'usage-quick-scan', 'residential-status']);
+    }
+
     #[Scope]
     protected function withGeneralData(Builder $query): Builder
     {

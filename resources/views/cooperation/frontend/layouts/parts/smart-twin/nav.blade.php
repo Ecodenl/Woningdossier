@@ -7,7 +7,13 @@
         $currentRoute = Route::currentRouteName();
         $isFillingForOther = Hoomdossier::user()->isFillingToolForOtherBuilding();
 
-        $woningdossierUrl = route('cooperation.frontend.tool.scan.redirect', compact('scan'));
+        // Not the scan.redirect route: for a simple scan that controller sends you to the dashboard,
+        // which is where you just came from. This is the same resolution the dashboard's own
+        // start/continue button uses, so both drop you where you left off.
+        $woningdossierUrl = $building instanceof \App\Models\Building
+            ? \App\Services\Scans\ScanFlowService::init($scan, $building, $masterInputSource)->resolveInitialUrl()
+            : route('cooperation.home');
+
         $filesUrl = route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan'));
     @endphp
 

@@ -8,6 +8,22 @@
  * file being imported later is what makes the states below actually apply.
  */
 
+/* Logo bar -------------------------------------------------------------------------------------- */
+
+/*
+ * A fixed height rather than padding around the logos. Cooperations upload their own logo and those
+ * vary wildly in aspect ratio, so with padding the bar would be a different height per cooperation
+ * and the navigation under it would shift with it. Height here, ceiling on the image below, and the
+ * bar is the same everywhere.
+ */
+.nav-header {
+    @apply h-28;
+}
+
+.nav-header .cooperation-logo {
+    @apply max-h-20 w-auto;
+}
+
 /* Main navigation ------------------------------------------------------------------------------ */
 
 a.nav-item {

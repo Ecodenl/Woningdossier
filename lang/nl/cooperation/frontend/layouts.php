@@ -19,6 +19,7 @@ return [
         'woningdossier' => 'Woningdossier',
         'shared-files' => 'Gedeelde bestanden',
         'messages' => 'Berichten',
+        'cooperation' => 'Coöperatie',
         'my-account' => 'Mijn account',
     ],
 

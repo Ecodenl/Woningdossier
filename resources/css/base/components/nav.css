@@ -1,0 +1,49 @@
+/*
+ * Navigation for the SmartTwin mode. The regular navbar is icon driven and styles itself inline;
+ * this one is text driven and repeats the same three states often enough to be worth naming.
+ */
+
+/* Main navigation ------------------------------------------------------------------------------ */
+
+.nav-item {
+    @apply relative flex items-center text-base text-blue leading-none;
+}
+
+.nav-item:hover {
+    @apply text-purple;
+}
+
+.nav-item.is-active {
+    @apply text-purple;
+}
+
+/* The count sits against the label rather than on top of it: the labels are words, not icons, so
+   there is no icon corner to hang it in. */
+.nav-badge {
+    @apply inline-flex items-center justify-center ml-2 min-w-5 h-5 px-1 rounded-full bg-orange text-white text-xs font-bold;
+}
+
+/* Sub navigation ------------------------------------------------------------------------------- */
+
+.sub-nav-item {
+    @apply flex items-center text-base leading-none;
+}
+
+/* Not reached yet. */
+.sub-nav-item.is-default {
+    @apply text-blue;
+}
+
+/* Answered. */
+.sub-nav-item.is-completed {
+    @apply text-green;
+}
+
+/* Where the resident is now. */
+.sub-nav-item.is-active {
+    @apply text-purple;
+}
+
+.sub-nav-item:hover {
+    @apply text-purple;
+}

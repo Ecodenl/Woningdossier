@@ -17,7 +17,7 @@
         $filesUrl = route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan'));
     @endphp
 
-    <div class="flex flex-row flex-wrap justify-between items-center w-full bg-gray-400 px-5 xl:px-20 h-14 relative z-140">
+    <div class="flex flex-row flex-wrap justify-between items-center w-full bg-gray-400 px-5 xl:px-20 h-14 relative z-130">
         <div class="flex flex-row items-center space-x-8 xl:space-x-12">
             {{-- A user filling in for someone else gets bounced off the dashboard by middleware, so
                  we don't offer it to them. --}}

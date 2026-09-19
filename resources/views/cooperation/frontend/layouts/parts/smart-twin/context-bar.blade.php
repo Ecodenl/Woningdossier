@@ -12,7 +12,7 @@
     @endphp
 
     @if(Hoomdossier::user()->isFillingToolForOtherBuilding() && $building instanceof \App\Models\Building)
-        <div class="sticky top-0 flex flex-row flex-wrap items-center w-full bg-blue-100 border-b border-solid border-blue-500 border-opacity-25 px-5 xl:px-20 py-2 space-x-4 z-130">
+        <div class="sticky top-0 flex flex-row flex-wrap items-center w-full bg-blue-100 border-b border-solid border-blue-500 border-opacity-25 px-5 xl:px-20 py-2 space-x-4 z-150">
             <p class="btn btn-purple mb-0">
                 @lang('cooperation/frontend/layouts.context-bar.building', [
                     'name' => $building->user->getFullName(),

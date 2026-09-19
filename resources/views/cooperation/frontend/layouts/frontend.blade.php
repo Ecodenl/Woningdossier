@@ -15,11 +15,18 @@
 @extends('cooperation.layouts.app')
 
 @section('header')
+    {{-- Deliberately outside the wrapper below, and first. A sticky element cannot leave its
+         parent's box, so nested in that wrapper the context bar would unstick the moment the header
+         scrolled past. What this section yields is a direct child of body, which is what lets it
+         stay at the top of the screen for the whole page. --}}
+    @if(Hoomdossier::hasEnabledSmartTwinCalls())
+        @include('cooperation.frontend.layouts.parts.smart-twin.context-bar')
+    @endif
+
     <div class="w-full">
         @if(Hoomdossier::hasEnabledSmartTwinCalls())
             @include('cooperation.frontend.layouts.parts.smart-twin.header')
             @include('cooperation.frontend.layouts.parts.smart-twin.nav')
-            @include('cooperation.frontend.layouts.parts.smart-twin.context-bar')
         @else
             @include('cooperation.frontend.layouts.parts.navbar')
         @endif

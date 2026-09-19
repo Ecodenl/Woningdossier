@@ -1,27 +1,24 @@
-@extends('cooperation.layouts.app')
+@extends('cooperation.frontend.layouts.frontend')
 
-@section('header')
-    <div class="w-full">
-        @include('cooperation.frontend.layouts.parts.navbar')
-        @if(RouteLogic::inSimpleScan(Route::currentRouteName()))
-            {{-- Step progress --}}
-            @include('cooperation.frontend.layouts.parts.sub-nav')
+@section('sub_nav')
+    @if(RouteLogic::inSimpleScan(Route::currentRouteName()))
+        {{-- Step progress --}}
+        @include('cooperation.frontend.layouts.parts.sub-nav')
 
-            @if(! RouteLogic::inMyPlan(Route::currentRouteName()) && ! RouteLogic::inMyRegulations(Route::currentRouteName()))
-                {{-- Progress bar --}}
-                <div class="w-full bg-gray h-2 relative z-40 -mt-1">
-                    @php
-                        // $total and $current get injected via the SimpleScanComposer in the ViewServiceProvider
-                        $total = $total ?? 100;
-                        $current = $current ?? 100;
-                        $width = 100 / $total * $current;
-                    @endphp
-                    {{-- Define style-width based on step progress divided by total steps --}}
-                    <div class="h-full bg-purple" style="width: {{$width}}%"></div>
-                </div>
-            @endif
+        @if(! RouteLogic::inMyPlan(Route::currentRouteName()) && ! RouteLogic::inMyRegulations(Route::currentRouteName()))
+            {{-- Progress bar --}}
+            <div class="w-full bg-gray h-2 relative z-40 -mt-1">
+                @php
+                    // $total and $current get injected via the SimpleScanComposer in the ViewServiceProvider
+                    $total = $total ?? 100;
+                    $current = $current ?? 100;
+                    $width = 100 / $total * $current;
+                @endphp
+                {{-- Define style-width based on step progress divided by total steps --}}
+                <div class="h-full bg-purple" style="width: {{$width}}%"></div>
+            </div>
         @endif
-    </div>
+    @endif
 @endsection
 
 {{-- Remove BG image --}}

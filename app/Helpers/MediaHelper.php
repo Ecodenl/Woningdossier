@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Building;
 use App\Models\Cooperation;
+use Illuminate\Support\Facades\Storage;
 
 class MediaHelper
 {
@@ -45,6 +46,25 @@ class MediaHelper
             default:
                 return [];
         }
+    }
+
+    /**
+     * An absolute path to the file on disk, for renderers that are not a browser.
+     *
+     * The PDF used to point its images at the media route, which meant mPDF fetching them over HTTP
+     * with no session -- the reason building images had to be viewable by anyone holding the URL.
+     * Reading off the disk takes that requirement away. Returns null if the file is missing, so the
+     * caller can fall back the way it would for missing media.
+     */
+    public static function localPath(\App\Models\Media $media): ?string
+    {
+        $disk = Storage::disk($media->disk);
+
+        if (! $disk->exists($media->getDiskPath())) {
+            return null;
+        }
+
+        return $disk->path($media->getDiskPath());
     }
 
     public static function getMimesForTag(string $tag): string

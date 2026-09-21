@@ -40,9 +40,12 @@ class SmartTwinSolutionController extends Controller
         // deciding them together is far less work than 138 separate calls.
         $kinds = $solutions->groupBy(fn (SmartTwinSolution $solution) => $solution->kind ?? '')->sortKeys();
 
+        // Listed on their short, with the name behind it. A measure application's name is editable
+        // in the admin, the short is what the mapping resolves to — so the short is what somebody
+        // coupling needs to recognise.
         $measureApplications = MeasureApplication::with('step')
             ->get()
-            ->sortBy('name')
+            ->sortBy('short')
             ->groupBy(fn (MeasureApplication $measure) => $measure->step->name ?? '');
 
         $undecided = $solutions->reject(fn (SmartTwinSolution $s) => array_key_exists($s->id, $couplings))->count();

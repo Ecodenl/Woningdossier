@@ -69,9 +69,9 @@ class NavCounters extends Component
      * Every file on the building the resident may pick a tag for, which is the same set the file
      * overview lists.
      *
-     * NOTE: this is a total, not a "new since you last looked". Media has no seen state to build
-     * that on, so if the badge is meant to signal unseen files it needs tracking that does not
-     * exist yet.
+     * A total, deliberately: the badge says how many files there are, not how many are new. It
+     * looks like the one on the messages item, which does count unread, so the difference is worth
+     * stating rather than leaving to be inferred.
      */
     private function countFiles(): int
     {

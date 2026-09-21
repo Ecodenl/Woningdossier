@@ -143,13 +143,14 @@ final class MyPlanControllerTest extends TestCase
 
         // A coordinator is skipped when SmartTwin users are created, so having no id is by design
         // rather than a fault. Reporting it would bury the case that is a fault in noise.
+        // withBuilding() because every real user has one: registration and admin creation both go
+        // through UserService::create(), which makes one. The factory does not, and
+        // isFillingToolForOtherBuilding() compares against the user's own building.
         $coordinator = User::factory()
             ->withAccount()
+            ->withBuilding()
             ->asCoordinator()
             ->create(['cooperation_id' => $this->cooperation->id]);
-
-        // Every user needs one: isFillingToolForOtherBuilding() compares against their own.
-        Building::factory()->create(['user_id' => $coordinator->id]);
 
         $inputSource = InputSource::findByShort(InputSource::COOPERATION_SHORT);
 

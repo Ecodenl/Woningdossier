@@ -21,6 +21,7 @@ use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Services\Models\NotificationService;
+use App\Services\SmartTwin\Api\UserRole;
 use App\Services\WoonplanService;
 use Illuminate\Http\Request;
 
@@ -126,7 +127,16 @@ class MyPlanController extends Controller
         $account = Hoomdossier::account();
 
         if ($account instanceof Account && ! empty($account->smartTwinUserId())) {
-            return true;
+            // An account gets one SmartTwin user, created for one role, and coach wins when an
+            // account holds both (see SmartTwinEventSubscriber). So holding an id is not the same
+            // as being able to use it in the role you are currently in: SmartTwin refuses a
+            // quick-scan link for an Advisor account, and the other way round. Offering the button
+            // in that case would be offering a round trip to an error message.
+            $needed = $roleName === RoleHelper::ROLE_COACH ? UserRole::Advisor : UserRole::Resident;
+
+            // Not reported: this is a known trade-off of one SmartTwin user per account, not a
+            // fault in ours.
+            return $account->smartTwinUserRole() === $needed;
         }
 
         // A resident or a coach is supposed to have one: it is handed out when the SmartTwin user is

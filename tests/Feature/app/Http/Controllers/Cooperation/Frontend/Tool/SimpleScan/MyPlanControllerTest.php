@@ -136,6 +136,27 @@ final class MyPlanControllerTest extends TestCase
         Exceptions::assertReported(RuntimeException::class);
     }
 
+    public function test_the_check_is_not_offered_when_the_smart_twin_user_is_for_the_other_role(): void
+    {
+        $this->enableSmartTwin(true);
+        Exceptions::fake();
+
+        // An account gets one SmartTwin user and coach wins when it holds both roles, so someone
+        // who coaches elsewhere carries an Advisor user into their own resident session. SmartTwin
+        // refuses a quick-scan link for that, so the button would lead to an error.
+        $account = $this->building->user->account;
+        $account->linkSmartTwinUser('st-user-1', UserRole::Advisor);
+        $this->actingAs($account->fresh());
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.start-check.button'), false);
+
+        // A known trade-off of one user per account, not a fault of ours.
+        Exceptions::assertNothingReported();
+    }
+
     public function test_a_role_smart_twin_has_no_tool_for_is_not_reported(): void
     {
         $this->enableSmartTwin(true);

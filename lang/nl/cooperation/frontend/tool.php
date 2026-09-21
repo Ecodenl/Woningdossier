@@ -126,6 +126,19 @@ return [
             'download-report' => 'Download bestaande rapportage',
             'create-report' => 'Maak rapportage',
         ],
+        // The woonplan before there is one: the resident still has to do the check in SmartTwin.
+        'start-check' => [
+            'body' => '<p>Waar begin je met het verduurzamen van je huis?</p>
+<p>Vul deze verbetercheck in en ontdek alvast welke maatregelen voor jou interessant zijn. Samen met je energiecoach kun je straks een passend woonplan maken.</p>',
+            'button' => 'Doe de verbetercheck',
+        ],
+
+        // The check is done and SmartTwin is working on the advice.
+        'awaiting-advice' => [
+            'body' => '<p>Je verbetercheck is binnen. We stellen je woonplan samen.</p>
+<p>Dit duurt meestal niet lang. Zodra het klaar is kom je hier vanzelf terecht.</p>',
+        ],
+
         'smarttwin' => [
             'button' => 'Ga naar SmartTwin',
             'redirecting' => 'Je wordt ingelogd bij SmartTwin…',

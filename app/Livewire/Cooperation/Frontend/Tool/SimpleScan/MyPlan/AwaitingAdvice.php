@@ -2,36 +2,27 @@
 
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
-use App\Enums\SmartTwin\EventType;
 use App\Models\Building;
 use App\Models\Scan;
+use App\Services\WoonplanService;
 use Illuminate\View\View;
 use Livewire\Component;
 
 /**
  * Sits on the woonplan while SmartTwin is still working on the advice, and moves the resident along
- * once it is in.
+ * once there is something to show.
  *
- * The callback for a flow is removed when its results have been processed, so its absence is the
- * signal that there is something to show. Polling is the only way to notice: the results arrive on
- * a webhook, in another request entirely.
+ * Polling is the only way to notice: the results arrive on a webhook, in a request of their own.
  */
 class AwaitingAdvice extends Component
 {
     public Building $building;
     public Scan $scan;
 
-    /**
-     * The enum's value rather than the enum. Livewire round-trips its properties to the browser,
-     * and assigns what it is handed straight onto the typed property before mount() gets a look in.
-     */
-    public string $eventType;
-
-    public function mount(Building $building, Scan $scan, string $eventType): void
+    public function mount(Building $building, Scan $scan): void
     {
         $this->building = $building;
         $this->scan = $scan;
-        $this->eventType = $eventType;
     }
 
     public function render(): View
@@ -42,13 +33,16 @@ class AwaitingAdvice extends Component
     // Called from wire:poll
     public function checkForAdvice(): void
     {
-        $eventType = EventType::tryFrom($this->eventType);
+        // Deliberately the same question the controller asks, rather than "has the callback gone".
+        // GetAdviceResults clears the callback once the raw response is on disk and maps it into the
+        // action plan after that, so between those two there is a moment where the callback is gone
+        // and there is still nothing to show. Asking whether the woonplan can be opened means this
+        // component and the controller cannot disagree about it.
+        $canAccess = WoonplanService::init($this->building->refresh())
+            ->scan($this->scan)
+            ->canAccessWoonplan();
 
-        if (! $eventType instanceof EventType) {
-            return;
-        }
-
-        if (! $this->building->refresh()->hasSmartTwinCallback($eventType)) {
+        if ($canAccess) {
             $this->redirectRoute(
                 'cooperation.frontend.tool.simple-scan.my-plan.index',
                 ['scan' => $this->scan],

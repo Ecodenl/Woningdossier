@@ -6,6 +6,5 @@
 
 @section('content')
     <livewire:cooperation.frontend.tool.simple-scan.my-plan.awaiting-advice :building="$building"
-                                                                            :scan="$scan"
-                                                                            :eventType="$eventType->value"/>
+                                                                            :scan="$scan"/>
 @endsection

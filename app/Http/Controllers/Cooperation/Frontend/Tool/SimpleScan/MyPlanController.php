@@ -93,7 +93,6 @@ class MyPlanController extends Controller
             return view('cooperation.frontend.tool.simple-scan.my-plan.awaiting-advice', [
                 'scan' => $scan,
                 'building' => $building,
-                'eventType' => $eventType,
             ]);
         }
 

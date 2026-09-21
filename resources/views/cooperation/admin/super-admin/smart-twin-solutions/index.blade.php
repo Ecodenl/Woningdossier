@@ -29,7 +29,8 @@
                                     {{ $kind ?: __('cooperation/admin/super-admin/smart-twin-solutions.index.table.no-kind') }}
                                     <small class="text-gray">({{ $solutions->count() }})</small>
                                 </th>
-                                <th>
+                                <th class="w-1/3">
+                                    <div class="flex w-full">
                                     <select class="form-input js-bulk" data-kind="{{ $loop->index }}">
                                         <option value="">
                                             @lang('cooperation/admin/super-admin/smart-twin-solutions.index.table.bulk')
@@ -40,11 +41,12 @@
                                         @foreach($measureApplications as $stepName => $measures)
                                             <optgroup label="{{ $stepName }}">
                                                 @foreach($measures as $measure)
-                                                    <option value="{{ $measure->id }}">{{ $measure->name }}</option>
+                                                    <option value="{{ $measure->id }}">{{ $measure->short }} — {{ $measure->name }}</option>
                                                 @endforeach
                                             </optgroup>
                                         @endforeach
                                     </select>
+                                    </div>
                                 </th>
                             </tr>
                         </thead>
@@ -57,7 +59,7 @@
                                     $selected = (string) old("couplings.{$solution->id}", $currentChoice);
                                 @endphp
                                 <tr>
-                                    <td>
+                                    <td class="whitespace-normal">
                                         {{ $solution->name }}
                                         @if($withdrawn->has($solution->id))
                                             <small class="text-red">
@@ -65,9 +67,14 @@
                                             </small>
                                         @endif
                                         <br>
-                                        <small class="text-gray">{{ $solution->external_id }}</small>
+                                        {{-- A solution id is one long token without spaces; left to itself it
+                                             stretches the column and squeezes the select next to it. --}}
+                                        <small class="text-gray break-all">{{ $solution->external_id }}</small>
                                     </td>
                                     <td>
+                                        {{-- form-input is sized to fill a flex parent (width: 1%; flex-auto),
+                                             so on its own in a cell it collapses to nothing. --}}
+                                        <div class="flex w-full">
                                         <select name="couplings[{{ $solution->id }}]" class="form-input js-coupling">
                                             <option value="" @selected('' === $selected)>
                                                 @lang('cooperation/admin/super-admin/smart-twin-solutions.index.table.undecided')
@@ -79,12 +86,13 @@
                                                 <optgroup label="{{ $stepName }}">
                                                     @foreach($measures as $measure)
                                                         <option value="{{ $measure->id }}" @selected((string) $measure->id === $selected)>
-                                                            {{ $measure->name }}
+                                                            {{ $measure->short }} — {{ $measure->name }}
                                                         </option>
                                                     @endforeach
                                                 </optgroup>
                                             @endforeach
                                         </select>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

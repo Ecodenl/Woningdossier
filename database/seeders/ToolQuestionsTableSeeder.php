@@ -677,6 +677,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op interesse en motivatie',
             ],
             [
+                // Only asked when SmartTwin drives the technical part of the scan; the sub step this
+                // hangs on carries the condition. No save_in, so the answer lives in
+                // tool_question_answers rather than a column of its own.
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string', 'max:2000'],
+                'short' => 'my-questions',
+                'translation' => 'Welke vragen heb je voor je energiecoach?',
+                'help_text' => 'Heb je vragen over het verduurzamen van je woning? Stel ze hier, dan neemt je energiecoach ze mee in het gesprek.',
+            ],
+            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_elements.{$wallInsulation->id}.element_value_id",

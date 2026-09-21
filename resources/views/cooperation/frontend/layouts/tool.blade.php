@@ -1,10 +1,11 @@
-@extends('cooperation.layouts.app')
+@extends('cooperation.frontend.layouts.frontend')
 
-@section('header')
-    <div class="w-full">
-        @include('cooperation.frontend.layouts.parts.navbar')
-        @if(RouteLogic::inSimpleScan(Route::currentRouteName()))
-            {{-- Step progress --}}
+@section('sub_nav')
+    @if(RouteLogic::inSimpleScan(Route::currentRouteName()))
+        {{-- Step progress --}}
+        @if(Hoomdossier::hasEnabledSmartTwinCalls())
+            @include('cooperation.frontend.layouts.parts.smart-twin.sub-nav')
+        @else
             @include('cooperation.frontend.layouts.parts.sub-nav')
 
             @if(! RouteLogic::inMyPlan(Route::currentRouteName()) && ! RouteLogic::inMyRegulations(Route::currentRouteName()))
@@ -21,7 +22,7 @@
                 </div>
             @endif
         @endif
-    </div>
+    @endif
 @endsection
 
 {{-- Remove BG image --}}

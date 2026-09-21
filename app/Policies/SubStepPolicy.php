@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\ScanAvailabilityHelper;
 use App\Helpers\SmallMeasuresSettingHelper;
@@ -37,6 +38,14 @@ class SubStepPolicy
             if (! SmallMeasuresSettingHelper::isEnabledForBuilding($building, $step->scan)) {
                 return false;
             }
+        }
+
+        // SmartTwin asks the technical questions in its own tool and sends the answers back, so
+        // Hoomdossier stops asking them. Refusing here rather than in each caller is what makes it
+        // stick: the sub step conditions middleware and StepHelper::completeStepIfNeeded() both ask
+        // this policy whether a sub step may be shown, and act on the answer.
+        if (Hoomdossier::hasEnabledSmartTwinCalls() && $step->isProvidedBySmartTwin()) {
+            return false;
         }
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);

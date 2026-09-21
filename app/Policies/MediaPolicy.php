@@ -51,10 +51,15 @@ class MediaPolicy
                     }
                 }
             }
-            if ($ability === 'view' && ($media->cooperations()->exists() || $media->mediable->tag === MediaHelper::BUILDING_IMAGE)) {
-                // The cooperation media is publicly viewable. Since media is only coupled to one model, we don't
-                // need to check further.
-                // If it's building image, we will make it publicly viewable so the PDF can access it.
+            // Named tags rather than "anything attached to a cooperation". These two are on the
+            // login page, so they have to be readable by someone who is not logged in yet. Nothing
+            // else does, and a rule that says "cooperation media is public" would hand that same
+            // reach to whatever tag someone adds to the settings form next, without anyone deciding
+            // it. The PDF background is the one that used to ride along; the report reads it off the
+            // disk now, as it does the building image.
+            if ($ability === 'view'
+                && $media->cooperations()->exists()
+                && in_array($media->mediable->tag, MediaHelper::PUBLICLY_VIEWABLE_TAGS, true)) {
                 return true;
             }
         } elseif ($mediable instanceof Cooperation) {
@@ -90,6 +95,19 @@ class MediaPolicy
         // - User owns media
         // - Cooperation media
         // - Coach may not see media if not coupled
+
+        // The building image is the house's photo, so whoever lives there may see it no matter who
+        // uploaded it. This used to be moot: building images were readable by anyone holding the
+        // URL. Now that they are not, a resident would otherwise lose sight of a photo their coach
+        // put there.
+        $mediable = $media->mediable->mediable;
+
+        if ($media->mediable->tag === MediaHelper::BUILDING_IMAGE
+            && $mediable instanceof Building
+            && $mediable->user_id === $user->user()?->id) {
+            return true;
+        }
+
         // Building media can be viewed if cooperation source and the media itself is shared with the cooperation.
         return ($this->isCooperationSource($inputSource) || HoomdossierSession::isUserObserving())
             && data_get($media->custom_properties, 'share_with_cooperation');
@@ -109,7 +127,9 @@ class MediaPolicy
         }
 
         if ($tag === MediaHelper::BUILDING_IMAGE) {
-            return $inputSource->short === InputSource::COACH_SHORT;
+            // Residents upload the photo of their own house from the dashboard, so this is no longer
+            // the coach's alone. A cooperation source still needs the resident to have given access.
+            return ! $this->isCooperationSource($inputSource) || $mediable->user->allowedAccess();
         }
 
         return ! $this->isCooperationSource($inputSource) || $mediable->user->allowedAccess();
@@ -158,14 +178,25 @@ class MediaPolicy
         } else {
             // Building related media
 
+            if ($media->mediable->tag === MediaHelper::BUILDING_IMAGE) {
+                // The building image is the house's photo rather than anyone's document, so resident
+                // and coach may each replace what the other put there. It is not shared with the
+                // cooperation the way uploaded documents are, so that check does not apply.
+                //
+                // The before() hook has already turned away other cooperations and coaches who are
+                // not coupled to this building. What it does not catch is a resident of the same
+                // cooperation who simply does not live here, hence the owner check.
+                $mediable = $media->mediable->mediable;
+                $livesHere = $mediable instanceof Building && $mediable->user_id === $user->user()?->id;
+
+                return ! HoomdossierSession::isUserObserving()
+                    && ($livesHere || $inputSource->short === InputSource::COACH_SHORT);
+            }
+
             // May not be observing, and should be a cooperation source. The media must be shared with the cooperation.
-            // Only a coach may manage the building image.
             return ! HoomdossierSession::isUserObserving()
                 && data_get($media->custom_properties, 'share_with_cooperation')
-                && (
-                    ($media->mediable->tag === MediaHelper::BUILDING_IMAGE && $inputSource->short === InputSource::COACH_SHORT) ||
-                    ($media->mediable->tag !== MediaHelper::BUILDING_IMAGE && $this->isCooperationSource($inputSource))
-                );
+                && $this->isCooperationSource($inputSource);
         }
     }
 

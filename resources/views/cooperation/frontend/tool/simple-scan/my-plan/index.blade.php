@@ -53,7 +53,9 @@
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.download-pdf :user="$building->user" :scan="$scan"/>
         </div>
 
-        @if(Hoomdossier::hasEnabledSmartTwinCalls() && ! empty(Hoomdossier::account()?->smartTwinUserId()))
+        {{-- $canHandOff is resolved in the controller, which reports it when an account turns out to
+             have no SmartTwin id. --}}
+        @if($canHandOff)
             <div class="w-full flex flex-wrap pb-5">
                 <form method="POST"
                       action="{{ route('cooperation.frontend.tool.simple-scan.my-plan.smarttwin', compact('cooperation', 'scan')) }}">

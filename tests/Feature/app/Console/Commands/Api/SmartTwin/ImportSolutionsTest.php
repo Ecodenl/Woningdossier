@@ -144,6 +144,8 @@ final class ImportSolutionsTest extends TestCase
     {
         $advice = Mockery::mock(Advice::class);
         $advice->shouldReceive('getAllSolutions')->andReturn(['solutions' => $solutions]);
+        // The command logs which endpoint it read, so it asks the resource for its uri.
+        $advice->shouldReceive('uri')->andReturn('api/advice/v1/solutions');
 
         $api = Mockery::mock(SmartTwinApi::class);
         $api->shouldReceive('advice')->andReturn($advice);

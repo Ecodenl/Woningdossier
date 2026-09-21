@@ -8,6 +8,7 @@ use App\Services\SmartTwin\Api\SmartTwinApi;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Imports SmartTwin's solution catalogue so the coupling screen has something to list.
@@ -40,9 +41,19 @@ class ImportSolutions extends Command
             $this->info('DRY-RUN mode: no changes will be made.');
         }
 
-        $solutions = $api->advice()->getAllSolutions()['solutions'] ?? [];
+        $advice = $api->advice();
+
+        // The raw exchange goes through the shared client, which logs it whole when SMARTTWIN_DEBUG
+        // is on. This says what it was for, which the body alone does not.
+        Log::debug('SmartTwin solution catalogue requested', ['endpoint' => $advice->uri('solutions')]);
+
+        $solutions = $advice->getAllSolutions()['solutions'] ?? [];
 
         if (empty($solutions)) {
+            Log::warning('SmartTwin solution catalogue came back empty', [
+                'endpoint' => $advice->uri('solutions'),
+            ]);
+
             // A catalogue that comes back empty is a failing call far more often than a withdrawn
             // catalogue, and acting on it would mark every product as gone.
             $this->error('The catalogue came back empty, aborting without changing anything.');
@@ -73,6 +84,16 @@ class ImportSolutions extends Command
         $this->report('New', array_map(fn (array $row) => $row['name'], $new));
         $this->report('Renamed', array_map(fn (array $row) => $row['name'], $renamed));
         $this->report('No longer in the catalogue', $gone);
+
+        Log::debug('SmartTwin solution catalogue read', [
+            'endpoint' => $advice->uri('solutions'),
+            'entries'  => count($solutions),
+            'products' => count($rows),
+            'new'      => array_keys($new),
+            'renamed'  => array_keys($renamed),
+            'gone'     => array_keys($gone),
+            'dry-run'  => $dryRun,
+        ]);
 
         if (! $dryRun) {
             $this->store($rows);

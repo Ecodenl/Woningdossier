@@ -51,14 +51,15 @@ class MediaPolicy
                     }
                 }
             }
-            if ($ability === 'view' && $media->cooperations()->exists()) {
-                // The cooperation media is publicly viewable. Since media is only coupled to one model, we don't
-                // need to check further.
-                //
-                // Building images used to be let through here too, because the PDF fetched them over
-                // HTTP and had no session to do it with. It reads them off the disk now, so they no
-                // longer have to be readable by anyone holding the URL -- which matters more now
-                // that every resident can upload a photo of their own house.
+            // Named tags rather than "anything attached to a cooperation". These two are on the
+            // login page, so they have to be readable by someone who is not logged in yet. Nothing
+            // else does, and a rule that says "cooperation media is public" would hand that same
+            // reach to whatever tag someone adds to the settings form next, without anyone deciding
+            // it. The PDF background is the one that used to ride along; the report reads it off the
+            // disk now, as it does the building image.
+            if ($ability === 'view'
+                && $media->cooperations()->exists()
+                && in_array($media->mediable->tag, MediaHelper::PUBLICLY_VIEWABLE_TAGS, true)) {
                 return true;
             }
         } elseif ($mediable instanceof Cooperation) {

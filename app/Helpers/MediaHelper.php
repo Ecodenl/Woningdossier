@@ -20,6 +20,18 @@ class MediaHelper
     const string BILL = 'bill';
 
     /**
+     * The tags a visitor who is not logged in may read.
+     *
+     * Both are on the login page, so there is no session to authorise them with. Everything else is
+     * behind the policy, including the PDF background: the report reads that off the disk, so it
+     * never needed the reach it was getting from the blanket "cooperation media is public" rule.
+     */
+    const array PUBLICLY_VIEWABLE_TAGS = [
+        self::LOGO,
+        self::BACKGROUND,
+    ];
+
+    /**
      * These are the tags that are fillable (or better said, selectable). Tags that are not set here cannot be selected
      * in e.g. the file uploader (usually tags with a dedicated purpose (such as building-image)).
      */

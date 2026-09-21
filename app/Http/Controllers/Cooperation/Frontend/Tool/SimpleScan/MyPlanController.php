@@ -9,6 +9,7 @@ use App\Enums\SmartTwin\EventType;
 use App\Models\Account;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use RuntimeException;
 use App\Http\Controllers\Controller;
 use App\Jobs\RecalculateStepForUser;
@@ -104,14 +105,20 @@ class MyPlanController extends Controller
 
     /**
      * Whether we can send this account into SmartTwin at all.
-     *
-     * The id is handed out when the account is created, so not having one means that never happened.
-     * There is nothing the resident can do about it and nothing useful to show them, but it is not
-     * supposed to occur, so it is reported rather than silently swallowed.
      */
     private function canHandOff(): bool
     {
         if (! Hoomdossier::hasEnabledSmartTwinCalls()) {
+            return false;
+        }
+
+        // SmartTwin has a tool for a resident and one for a coach, and nothing for anyone else. An
+        // account whose roles are only coordinator or cooperation-admin is skipped when SmartTwin
+        // users are created (see SmartTwinEventSubscriber::dispatchForAccount), so it has no
+        // SmartTwin user by design, and the hand-off would come back "unsupported role" anyway.
+        $roleName = HoomdossierSession::getRole(true)?->name;
+
+        if (! in_array($roleName, [RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COACH], true)) {
             return false;
         }
 
@@ -122,9 +129,14 @@ class MyPlanController extends Controller
             return true;
         }
 
+        // A resident or a coach is supposed to have one: it is handed out when the SmartTwin user is
+        // created. Not having one means that never happened. Nothing the user can do about it and
+        // nothing useful to show them, but it is not supposed to occur, so it is reported rather
+        // than silently swallowed.
         report(new RuntimeException(sprintf(
-            'Account %s has no SmartTwin user id, so the hand-off cannot be offered.',
+            'Account %s (%s) has no SmartTwin user id, so the hand-off cannot be offered.',
             $account instanceof Account ? $account->id : 'unknown',
+            $roleName,
         )));
 
         return false;

@@ -136,6 +136,36 @@ final class MyPlanControllerTest extends TestCase
         Exceptions::assertReported(RuntimeException::class);
     }
 
+    public function test_a_role_smart_twin_has_no_tool_for_is_not_reported(): void
+    {
+        $this->enableSmartTwin(true);
+        Exceptions::fake();
+
+        // A coordinator is skipped when SmartTwin users are created, so having no id is by design
+        // rather than a fault. Reporting it would bury the case that is a fault in noise.
+        $coordinator = User::factory()
+            ->withAccount()
+            ->asCoordinator()
+            ->create(['cooperation_id' => $this->cooperation->id]);
+
+        // Every user needs one: isFillingToolForOtherBuilding() compares against their own.
+        Building::factory()->create(['user_id' => $coordinator->id]);
+
+        $inputSource = InputSource::findByShort(InputSource::COOPERATION_SHORT);
+
+        $this->actingAs($coordinator->account);
+        HoomdossierSession::setHoomdossierSessions(
+            $this->building,
+            $inputSource,
+            $inputSource,
+            Role::findByName(RoleHelper::ROLE_COORDINATOR),
+        );
+
+        $this->visitWoonplan();
+
+        Exceptions::assertNothingReported();
+    }
+
     public function test_with_an_advice_in_flight_the_resident_waits_instead(): void
     {
         $this->enableSmartTwin(true);

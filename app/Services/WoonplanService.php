@@ -92,6 +92,26 @@ class WoonplanService
         return true;
     }
 
+    /**
+     * Whether there is anything to put on the woonplan.
+     *
+     * The board is built from the user's action plan advices, whatever advised them, so with none of
+     * them there are three empty columns and nothing else. This is a different question from
+     * canAccessWoonplan(): that one asks how far the scan got, which says nothing about whether the
+     * advice is in -- it is "far enough" for a building that filled the scan in before SmartTwin was
+     * switched on, and always "far enough" where the guard is skipped.
+     *
+     * Trashed advices count. They are not on the board, but the resident can put them back from it,
+     * which they cannot do from the invitation screen.
+     */
+    public function hasAdvices(): bool
+    {
+        return $this->building->user->userActionPlanAdvices()
+            ->withInvisible()
+            ->forInputSource($this->inputSource)
+            ->exists();
+    }
+
     public function buildingHasMeasureApplications(): bool
     {
         // simple method to check whether the user has measure applications

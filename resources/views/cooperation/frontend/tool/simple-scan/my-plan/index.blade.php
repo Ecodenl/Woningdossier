@@ -57,8 +57,10 @@
              have no SmartTwin id. --}}
         @if($canHandOff)
             <div class="w-full flex flex-wrap pb-5">
+                {{-- New tab, so the resident's dossier is still open behind SmartTwin. --}}
                 <form method="POST"
-                      action="{{ route('cooperation.frontend.tool.simple-scan.my-plan.smarttwin', compact('cooperation', 'scan')) }}">
+                      action="{{ route('cooperation.frontend.tool.simple-scan.my-plan.smarttwin', compact('cooperation', 'scan')) }}"
+                      target="_blank" rel="noopener">
                     @csrf
                     <button type="submit" class="btn btn-green">
                         @lang('cooperation/frontend/tool.my-plan.smarttwin.button')

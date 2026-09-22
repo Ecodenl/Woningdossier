@@ -36,13 +36,13 @@ class AwaitingAdvice extends Component
         // Deliberately the same question the controller asks, rather than "has the callback gone".
         // GetAdviceResults clears the callback once the raw response is on disk and maps it into the
         // action plan after that, so between those two there is a moment where the callback is gone
-        // and there is still nothing to show. Asking whether the woonplan can be opened means this
-        // component and the controller cannot disagree about it.
-        $canAccess = WoonplanService::init($this->building->refresh())
+        // and there is still nothing to show. Asking whether there is anything on the board means
+        // this component and the controller cannot disagree about it.
+        $hasAdvices = WoonplanService::init($this->building->refresh())
             ->scan($this->scan)
-            ->canAccessWoonplan();
+            ->hasAdvices();
 
-        if ($canAccess) {
+        if ($hasAdvices) {
             $this->redirectRoute(
                 'cooperation.frontend.tool.simple-scan.my-plan.index',
                 ['scan' => $this->scan],

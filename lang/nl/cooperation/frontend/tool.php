@@ -130,7 +130,6 @@ return [
         'start-check' => [
             'body' => '<p>Waar begin je met het verduurzamen van je huis?</p>
 <p>Vul deze verbetercheck in en ontdek alvast welke maatregelen voor jou interessant zijn. Samen met je energiecoach kun je straks een passend woonplan maken.</p>',
-            'button' => 'Doe de verbetercheck',
         ],
 
         // The check is done and SmartTwin is working on the advice.
@@ -140,7 +139,7 @@ return [
         ],
 
         'smarttwin' => [
-            'button' => 'Ga naar SmartTwin',
+            'button' => 'Doe de verbetercheck',
             'redirecting' => 'Je wordt ingelogd bij SmartTwin…',
             'noscript' => 'Klik op de knop om verder te gaan naar SmartTwin.',
             'continue' => 'Verder naar SmartTwin',

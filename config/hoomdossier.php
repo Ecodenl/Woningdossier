@@ -44,6 +44,10 @@ return [
     */
     'skip_woonplan_guard' => env('SKIP_WOONPLAN_GUARD', false),
 
+    // Demo switch: holds the woonplan on its invitation screen whatever is on the board.
+    // Temporary — remove this together with the check in WoonplanService::hasAdvices().
+    'demo_empty_woonplan' => env('DEMO_EMPTY_WOONPLAN', false),
+
     'cache' => [
         'prefix' => env('CACHE_PREFIX', 'hoomdossier_'),
         'times' => [

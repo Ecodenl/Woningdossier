@@ -106,6 +106,12 @@ class WoonplanService
      */
     public function hasAdvices(): bool
     {
+        // Demo switch: DEMO_EMPTY_WOONPLAN=true holds the woonplan on its invitation screen whatever
+        // is on the board. Temporary — drop this line and the config entry once the demo is done.
+        if (config('hoomdossier.demo_empty_woonplan', false)) {
+            return false;
+        }
+
         return $this->building->user->userActionPlanAdvices()
             ->withInvisible()
             ->forInputSource($this->inputSource)

@@ -227,6 +227,32 @@ final class MyPlanControllerTest extends TestCase
         $response->assertDontSee(__('cooperation/frontend/tool.my-plan.start-check.body'), false);
     }
 
+    public function test_the_demo_switch_holds_the_woonplan_on_its_invitation(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+
+        UserActionPlanAdvice::withoutGlobalScopes()->create([
+            'user_id' => $this->building->user->id,
+            'input_source_id' => InputSource::findByShort(InputSource::MASTER_SHORT)->id,
+            'user_action_plan_advisable_type' => MeasureApplication::class,
+            'user_action_plan_advisable_id' => MeasureApplication::first()->id,
+            'category' => \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO,
+        ]);
+
+        // Off, the advice above is enough to open the woonplan.
+        $this->assertStringNotContainsString(
+            __('cooperation/frontend/tool.my-plan.start-check.body'),
+            $this->visitWoonplan()->getContent(),
+        );
+
+        config()->set('hoomdossier.demo_empty_woonplan', true);
+
+        $response = $this->visitWoonplan();
+        $response->assertOk();
+        $response->assertSee(__('cooperation/frontend/tool.my-plan.smarttwin.button'), false);
+    }
+
     public function test_with_an_advice_in_flight_the_resident_waits_instead(): void
     {
         $this->enableSmartTwin(true);

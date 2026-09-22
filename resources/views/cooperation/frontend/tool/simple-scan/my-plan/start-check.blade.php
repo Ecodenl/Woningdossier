@@ -17,12 +17,16 @@
             </div>
 
             @if($canHandOff)
+                {{-- New tab: the resident leaves for another application and should find their
+                     dossier still open when they come back. A failed hand-off lands on the woonplan
+                     with its error there rather than here. --}}
                 <form method="POST"
                       action="{{ route('cooperation.frontend.tool.simple-scan.my-plan.smarttwin', compact('scan')) }}"
+                      target="_blank" rel="noopener"
                       class="tile-action">
                     @csrf
                     <button type="submit" class="btn btn-blue">
-                        @lang('cooperation/frontend/tool.my-plan.start-check.button')
+                        @lang('cooperation/frontend/tool.my-plan.smarttwin.button')
                     </button>
                 </form>
             @else

@@ -40,15 +40,16 @@ class MyPlanController extends Controller
             $woonplanService = $woonplanService->userIsObserving();
         }
 
-        if (! $woonplanService->canAccessWoonplan()) {
-            // In SmartTwin mode there is no incomplete step to send the resident back to: the
-            // technical questions are asked in SmartTwin. What there is instead is the check itself,
-            // or the wait for its results.
-            if (Hoomdossier::hasEnabledSmartTwinCalls()) {
+        // With SmartTwin the woonplan is the advice SmartTwin produced, so what decides whether there
+        // is one to show is whether that advice has arrived -- not how far the scan got. Asking the
+        // scan would show three empty columns to a building that filled it in before SmartTwin was
+        // switched on, and to everyone on an environment where the woonplan guard is skipped.
+        if (Hoomdossier::hasEnabledSmartTwinCalls()) {
+            if (! $woonplanService->hasAdvices()) {
                 return $this->smartTwinEmptyState($scan, $building);
             }
-
-            // Otherwise, redirect him back to the first incomplete step + substep.
+        } elseif (! $woonplanService->canAccessWoonplan()) {
+            // Redirect him back to the first incomplete step + substep.
             $firstIncompleteStep = $building->getFirstIncompleteStep($scan, $masterInputSource);
 
             // There are incomplete steps left, set the sub step

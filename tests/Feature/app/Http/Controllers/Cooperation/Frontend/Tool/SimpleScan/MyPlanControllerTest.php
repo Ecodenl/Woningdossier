@@ -8,9 +8,11 @@ use App\Helpers\RoleHelper;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\MeasureApplication;
 use App\Models\Role;
 use App\Models\Scan;
 use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use App\Services\SmartTwin\Api\UserRole;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -117,7 +119,7 @@ final class MyPlanControllerTest extends TestCase
         $response = $this->visitWoonplan();
 
         $response->assertOk();
-        $response->assertSee(__('cooperation/frontend/tool.my-plan.start-check.button'), false);
+        $response->assertSee(__('cooperation/frontend/tool.my-plan.smarttwin.button'), false);
     }
 
     public function test_the_check_is_not_offered_without_a_smart_twin_account(): void
@@ -129,7 +131,7 @@ final class MyPlanControllerTest extends TestCase
 
         $response->assertOk();
         // The factory account has no SmartTwin id, so there is nowhere to send them.
-        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.start-check.button'), false);
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.smarttwin.button'), false);
         $response->assertSee(__('cooperation/frontend/tool.my-plan.smarttwin.errors.not_configured'), false);
 
         // The page stays up, but this is not supposed to happen, so it gets reported.
@@ -151,7 +153,7 @@ final class MyPlanControllerTest extends TestCase
         $response = $this->visitWoonplan();
 
         $response->assertOk();
-        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.start-check.button'), false);
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.smarttwin.button'), false);
 
         // A known trade-off of one user per account, not a fault of ours.
         Exceptions::assertNothingReported();
@@ -188,6 +190,43 @@ final class MyPlanControllerTest extends TestCase
         Exceptions::assertNothingReported();
     }
 
+    public function test_the_invitation_shows_even_when_the_scan_says_it_is_done(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+
+        // The guard is skipped on local and accept, and a building that filled the scan in before
+        // SmartTwin was switched on has its steps completed. Either way the scan reports "done"
+        // while there is nothing to put on the board.
+        config()->set('hoomdossier.skip_woonplan_guard', true);
+        config()->set('app.env', 'accept');
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $response->assertSee(__('cooperation/frontend/tool.my-plan.smarttwin.button'), false);
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.categories.' . \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO), false);
+    }
+
+    public function test_the_woonplan_shows_as_soon_as_there_is_an_advice(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+
+        UserActionPlanAdvice::withoutGlobalScopes()->create([
+            'user_id' => $this->building->user->id,
+            'input_source_id' => InputSource::findByShort(InputSource::MASTER_SHORT)->id,
+            'user_action_plan_advisable_type' => MeasureApplication::class,
+            'user_action_plan_advisable_id' => MeasureApplication::first()->id,
+            'category' => \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO,
+        ]);
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.start-check.body'), false);
+    }
+
     public function test_with_an_advice_in_flight_the_resident_waits_instead(): void
     {
         $this->enableSmartTwin(true);
@@ -199,6 +238,6 @@ final class MyPlanControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertSee(__('cooperation/frontend/tool.my-plan.awaiting-advice.body'), false);
-        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.start-check.button'), false);
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.smarttwin.button'), false);
     }
 }

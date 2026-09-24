@@ -59,4 +59,40 @@ final class CrawlspaceHeightTest extends TestCase
 
         $this->assertSame($orders, array_values(array_unique($orders)));
     }
+
+    /** @return array<string, array{null|float, string}> */
+    public static function descriptions(): array
+    {
+        return [
+            'uit het rapport'   => [-0.50, 'hoogte 0,50 m t.o.v. maaiveld valt vanaf 0,50 m'],
+            'midden in laag'    => [-0.45, 'hoogte 0,45 m t.o.v. maaiveld valt tussen 0,30 m en 0,50 m'],
+            'heel laag'         => [-0.20, 'hoogte 0,20 m t.o.v. maaiveld valt onder 0,30 m'],
+            'geen hoogte'       => [null, 'geen hoogte opgegeven'],
+        ];
+    }
+
+    #[DataProvider('descriptions')]
+    public function test_it_describes_a_height_in_the_terms_of_the_table(?float $height, string $expected): void
+    {
+        $this->assertSame($expected, CrawlspaceHeight::describe($height));
+    }
+
+    public function test_the_description_never_contradicts_the_band(): void
+    {
+        $bands = [
+            CrawlspaceHeight::HIGH     => 'vanaf 0,50 m',
+            CrawlspaceHeight::LOW      => 'tussen 0,30 m en 0,50 m',
+            CrawlspaceHeight::VERY_LOW => 'onder 0,30 m',
+        ];
+
+        for ($centimetres = 0; $centimetres <= 150; ++$centimetres) {
+            $height = -$centimetres / 100;
+
+            $this->assertStringEndsWith(
+                $bands[CrawlspaceHeight::orderFor($height)],
+                CrawlspaceHeight::describe($height),
+                "hoogte {$height}",
+            );
+        }
+    }
 }

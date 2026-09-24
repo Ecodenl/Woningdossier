@@ -167,10 +167,12 @@ class FloorInsulationMapper implements FieldMapper
             );
         }
 
+        $label = $this->elementValues->labelFor($elementValueId) ?? "element value {$elementValueId}";
+
         return MappingResult::mapped(
             'current-floor-insulation',
             $elementValueId,
-            'oppervlakte-gewogen Rc ' . round($rcValue, 2) . " valt in klasse {$calculateValue}",
+            'oppervlakte-gewogen ' . InsulationQuality::describeFloor($rcValue) . " → {$label}",
         );
     }
 
@@ -217,12 +219,12 @@ class FloorInsulationMapper implements FieldMapper
             );
         }
 
+        $label = $this->elementValues->labelFor($elementValueId) ?? "element value {$elementValueId}";
+
         return MappingResult::mapped(
             'crawlspace-height',
             $elementValueId,
-            is_null($height)
-                ? 'geen hoogte opgegeven, dus onbekend'
-                : 'hoogte ' . abs($height) . ' m ten opzichte van maaiveld',
+            CrawlspaceHeight::describe($height) . " → {$label}",
         );
     }
 

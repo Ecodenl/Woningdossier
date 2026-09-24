@@ -44,4 +44,26 @@ final class CrawlspaceHeight
             default                     => self::VERY_LOW,
         };
     }
+
+    /**
+     * The height and the band it falls in, for the mapping report: "hoogte 0,50 m t.o.v. maaiveld
+     * valt vanaf 0,50 m". Quotes the boundaries of the table rather than an option's order or id.
+     */
+    public static function describe(?float $heightAboveGroundLevel): string
+    {
+        if (is_null($heightAboveGroundLevel)) {
+            return 'geen hoogte opgegeven';
+        }
+
+        $height = abs($heightAboveGroundLevel);
+        $metres = fn (float $value) => InsulationQuality::decimal($value) . ' m';
+
+        $band = match (true) {
+            $height >= self::HIGH_FROM => 'vanaf ' . $metres(self::HIGH_FROM),
+            $height >= self::LOW_FROM  => 'tussen ' . $metres(self::LOW_FROM) . ' en ' . $metres(self::HIGH_FROM),
+            default                    => 'onder ' . $metres(self::LOW_FROM),
+        };
+
+        return 'hoogte ' . $metres($height) . " t.o.v. maaiveld valt {$band}";
+    }
 }

@@ -74,6 +74,21 @@ final class InsulationQuality
     }
 
     /**
+     * The Rc value and the band of the table it falls in, for the mapping report:
+     * "Rc 0,69 valt onder 0,80". Written for whoever holds the report next to the classification
+     * table, so it quotes the table's own boundaries rather than a calculate value.
+     */
+    public static function describeWall(float $rcValue): string
+    {
+        return self::describe($rcValue, self::WALL);
+    }
+
+    public static function describeFloor(float $rcValue): string
+    {
+        return self::describe($rcValue, self::FLOOR);
+    }
+
+    /**
      * @param  array<string, int>  $bounds  Lower bound => calculate value, highest first.
      */
     private static function classify(float $rcValue, array $bounds): int
@@ -85,5 +100,40 @@ final class InsulationQuality
         }
 
         return self::NONE;
+    }
+
+    /**
+     * @param  array<string, int>  $bounds  Lower bound => calculate value, highest first.
+     */
+    private static function describe(float $rcValue, array $bounds): string
+    {
+        $upper = null;
+
+        foreach (array_keys($bounds) as $lowerBound) {
+            if ($rcValue >= (float) $lowerBound) {
+                $band = is_null($upper)
+                    ? 'vanaf ' . self::decimal((float) $lowerBound)
+                    : 'tussen ' . self::decimal((float) $lowerBound) . ' en ' . self::decimal((float) $upper);
+
+                return 'Rc ' . self::decimal($rcValue) . " valt {$band}";
+            }
+
+            $upper = $lowerBound;
+        }
+
+        return 'Rc ' . self::decimal($rcValue) . ' valt onder ' . self::decimal((float) $upper);
+    }
+
+    /**
+     * Two decimals with a comma, truncated rather than rounded.
+     *
+     * Rounding would print a weighted Rc of 0,7996 as "0,80 valt onder 0,80". The boundaries have
+     * two decimals themselves, so truncating keeps the printed value on the same side of every one
+     * of them as the real value. The inner round only removes float noise: 0.29 * 100 is
+     * 28.999999999999996, which floor() would otherwise take down to 0,28.
+     */
+    public static function decimal(float $value): string
+    {
+        return number_format(floor(round($value * 100, 6)) / 100, 2, ',', '');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services\SmartTwin\Mapping\Mappers;
 
 use App\Models\Element;
+use App\Models\ElementValue;
 
 /**
  * Looks up the id of an element value by the ordinal the mapping reasons in.
@@ -28,6 +29,19 @@ class ElementValues
     public function idForOrder(string $elementShort, int $order): ?int
     {
         return $this->lookUp($elementShort, 'order', $order);
+    }
+
+    /**
+     * The label of the option that was written, for the mapping report.
+     *
+     * Read back from the row itself rather than from what the mapping meant to pick, so the report
+     * says what actually landed in the dossier.
+     */
+    public function labelFor(int $elementValueId): ?string
+    {
+        $elementValue = ElementValue::find($elementValueId);
+
+        return $elementValue instanceof ElementValue ? $elementValue->getTranslation('value', 'nl') : null;
     }
 
     private function lookUp(string $elementShort, string $column, int $value): ?int

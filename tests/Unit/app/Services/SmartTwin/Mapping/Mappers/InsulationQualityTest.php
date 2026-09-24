@@ -71,4 +71,53 @@ final class InsulationQualityTest extends TestCase
         $this->assertSame(2, InsulationQuality::forWall(0.5));
         $this->assertSame(3, InsulationQuality::forFloor(0.5));
     }
+
+    /** @return array<string, array{string, float, string}> */
+    public static function descriptions(): array
+    {
+        return [
+            // The two cases the stuurgroep asked about.
+            'gevel uit het rapport'           => ['wall', 0.69, 'Rc 0,69 valt onder 0,80'],
+            'vloer uit het rapport'           => ['floor', 0.65, 'Rc 0,65 valt tussen 0,20 en 1,00'],
+
+            'gevel op een grens'              => ['wall', 0.80, 'Rc 0,80 valt tussen 0,80 en 2,08'],
+            'gevel in de hoogste band'        => ['wall', 5.10, 'Rc 5,10 valt vanaf 4,46'],
+            'vloer onder de laagste grens'    => ['floor', 0.15, 'Rc 0,15 valt onder 0,20'],
+            'vloer in de hoogste band'        => ['floor', 4.35, 'Rc 4,35 valt vanaf 4,35'],
+
+            // Rounding would print "0,80 valt onder 0,80"; truncating keeps the printed value on
+            // the same side of the boundary as the real one.
+            'gewogen net onder een grens'     => ['wall', 0.7996, 'Rc 0,79 valt onder 0,80'],
+            // 0.29 * 100 is 28.999999999999996 in floating point.
+            'geen afrondingsruis'             => ['floor', 0.29, 'Rc 0,29 valt tussen 0,20 en 1,00'],
+        ];
+    }
+
+    #[DataProvider('descriptions')]
+    public function test_it_describes_a_value_in_the_terms_of_the_table(string $element, float $rcValue, string $expected): void
+    {
+        $described = 'wall' === $element
+            ? InsulationQuality::describeWall($rcValue)
+            : InsulationQuality::describeFloor($rcValue);
+
+        $this->assertSame($expected, $described);
+    }
+
+    public function test_the_description_never_contradicts_the_classification(): void
+    {
+        // The band in the note and the level that is written come from the same table, walked by two
+        // different methods. Every hundredth from 0 to 6 has to land in the same place in both.
+        $floorNames = [2 => 'onder 0,20', 3 => 'tussen 0,20 en 1,00', 4 => 'tussen 1,00 en 1,75',
+                       5 => 'tussen 1,75 en 3,00', 6 => 'tussen 3,00 en 4,35', 7 => 'vanaf 4,35'];
+
+        for ($hundredths = 0; $hundredths <= 600; ++$hundredths) {
+            $rcValue = $hundredths / 100;
+
+            $this->assertStringEndsWith(
+                $floorNames[InsulationQuality::forFloor($rcValue)],
+                InsulationQuality::describeFloor($rcValue),
+                "Rc {$rcValue}",
+            );
+        }
+    }
 }

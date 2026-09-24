@@ -136,6 +136,16 @@ final class FloorInsulationMapperTest extends TestCase
         $this->assertSame(FakeElementValues::OFFSET + 3, $mapped['current-floor-insulation']->value);
     }
 
+    public function test_the_insulation_note_quotes_the_floor_table(): void
+    {
+        $mapped = $this->mappedByTarget($this->response([[[$this->floor(63.47, 0.65)], []]]));
+
+        $this->assertSame(
+            'oppervlakte-gewogen Rc 0,65 valt tussen 0,20 en 1,00 → optie 903',
+            $mapped['current-floor-insulation']->note,
+        );
+    }
+
     public function test_the_insulated_surface_is_what_the_scenario_improves(): void
     {
         $response = $this->response(
@@ -177,6 +187,16 @@ final class FloorInsulationMapperTest extends TestCase
         $mapped = $this->mappedByTarget($this->response([[[$this->floor(89.59, 0.15)], [$this->crawlspace(-0.5)]]]));
 
         $this->assertSame(FakeElementValues::ORDER_OFFSET + CrawlspaceHeight::HIGH, $mapped['crawlspace-height']->value);
+    }
+
+    public function test_the_height_note_names_the_band_and_the_option(): void
+    {
+        $mapped = $this->mappedByTarget($this->response([[[$this->floor(89.59, 0.15)], [$this->crawlspace(-0.5)]]]));
+
+        $this->assertSame(
+            'hoogte 0,50 m t.o.v. maaiveld valt vanaf 0,50 m → optie 800',
+            $mapped['crawlspace-height']->note,
+        );
     }
 
     public function test_a_shallow_crawlspace_reads_as_the_lowest_band(): void

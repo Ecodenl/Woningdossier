@@ -86,4 +86,22 @@ final class ElementValuesTest extends TestCase
     {
         $this->assertNull($this->elementValues->idForOrder('crawlspace', 99));
     }
+
+    public function test_the_label_is_read_back_from_the_option_that_was_found(): void
+    {
+        // What the mapping report shows next to the band, so a reader can check it against the
+        // classification table without knowing ids or calculate values.
+        $geen = $this->elementValues->idFor('wall-insulation', 2);
+        $slecht = $this->elementValues->idFor('floor-insulation', 3);
+        $bestHoog = $this->elementValues->idForOrder('crawlspace', CrawlspaceHeight::HIGH);
+
+        $this->assertSame('Geen isolatie', $this->elementValues->labelFor($geen));
+        $this->assertSame('Slechte isolatie', $this->elementValues->labelFor($slecht));
+        $this->assertSame('Best hoog (meer dan 45 cm)', $this->elementValues->labelFor($bestHoog));
+    }
+
+    public function test_an_id_that_does_not_exist_has_no_label(): void
+    {
+        $this->assertNull($this->elementValues->labelFor(999999));
+    }
 }

@@ -165,10 +165,14 @@ class WallInsulationMapper implements FieldMapper
             );
         }
 
+        // The label of the option that was written, not a calculate value: whoever reads the report
+        // checks it against the classification table, which knows names and boundaries only.
+        $label = $this->elementValues->labelFor($elementValueId) ?? "element value {$elementValueId}";
+
         return MappingResult::mapped(
             'current-wall-insulation',
             $elementValueId,
-            'oppervlakte-gewogen Rc ' . round($rcValue, 2) . " valt in klasse {$calculateValue}",
+            'oppervlakte-gewogen ' . InsulationQuality::describeWall($rcValue) . " → {$label}",
         );
     }
 

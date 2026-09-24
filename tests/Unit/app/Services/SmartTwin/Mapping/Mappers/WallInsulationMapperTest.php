@@ -259,6 +259,15 @@ final class WallInsulationMapperTest extends TestCase
         );
     }
 
+    public function test_the_note_quotes_the_table_and_names_the_option_written(): void
+    {
+        // What the stuurgroep checks the report against: the band from the classification table
+        // and the name of the option, not a calculate value they have no table for.
+        $note = $this->mappedByTarget($this->dossier())['current-wall-insulation']->note;
+
+        $this->assertSame('oppervlakte-gewogen Rc 0,35 valt onder 0,80 → optie 902', $note);
+    }
+
     public function test_a_missing_insulation_level_is_reported_as_a_broken_mapping(): void
     {
         // What an environment looks like where upgrade:extend-insulation-scales has not run:
@@ -311,5 +320,11 @@ final class FakeElementValues extends ElementValues
     public function idForOrder(string $elementShort, int $order): ?int
     {
         return self::ORDER_OFFSET + $order;
+    }
+
+    /** The id comes back in the label, so a test can see the note names the option that was written. */
+    public function labelFor(int $elementValueId): ?string
+    {
+        return "optie {$elementValueId}";
     }
 }

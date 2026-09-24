@@ -1,4 +1,7 @@
-@extends('cooperation.layouts.app')
+{{-- In SmartTwin mode these pages are reachable from the navigation rather than from the
+     account dropdown, so they need the frontend shell around them. Without it they keep the
+     bare layout they have always had. --}}
+@extends(Hoomdossier::hasEnabledSmartTwinCalls() ? 'cooperation.frontend.layouts.frontend' : 'cooperation.layouts.app')
 
 @section('main')
     <div class="w-full min-h-screen flex justify-center items-center flex-col py-20">

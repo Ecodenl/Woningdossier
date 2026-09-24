@@ -67,22 +67,22 @@ abstract class Scannable extends Component
             switch ($toolQuestion->data_type) {
                 case Caster::JSON:
                     foreach ($toolQuestion->options as $option) {
-                        $this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
+                        $this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validationRules());
                     }
                     break;
 
                 case Caster::ARRAY:
                     // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
                     // and then also set required for the main question
-                    $this->rules["filledInAnswers.{$toolQuestion->short}.*"] = $this->prepareValidationRule($toolQuestion->validation);
+                    $this->rules["filledInAnswers.{$toolQuestion->short}.*"] = $this->prepareValidationRule($toolQuestion->validationRules());
 
-                    if (in_array('required', $toolQuestion->validation)) {
+                    if ($toolQuestion->isRequired()) {
                         $this->rules["filledInAnswers.{$toolQuestion->short}"] = ['required'];
                     }
                     break;
 
                 default:
-                    $this->rules["filledInAnswers.{$toolQuestion->short}"] = $this->prepareValidationRule($toolQuestion->validation);
+                    $this->rules["filledInAnswers.{$toolQuestion->short}"] = $this->prepareValidationRule($toolQuestion->validationRules());
                     break;
             }
         }

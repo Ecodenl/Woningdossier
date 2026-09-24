@@ -180,6 +180,58 @@ class ScanFlowService
         }
     }
 
+    private function canShow(SubStep $subStep): bool
+    {
+        return $this->building->user->account->can('show', [$subStep, $this->building]);
+    }
+
+    /**
+     * The next sub step of this step the user may actually see.
+     *
+     * Picking the next one by order and letting the sub step conditions middleware bounce off
+     * anything hidden costs one redirect per hidden sub step. That is tolerable for the occasional
+     * conditional question and not tolerable when SmartTwin hides three whole steps at once.
+     */
+    private function nextShowableSubStep(Step $step, SubStep $after): ?SubStep
+    {
+        $subSteps = $step->subSteps()
+            ->where('order', '>', $after->order)
+            ->orderBy('order')
+            ->get();
+
+        /** @var SubStep $subStep */
+        foreach ($subSteps as $subStep) {
+            if ($this->canShow($subStep)) {
+                return $subStep;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * The first sub step the user may see, from this step onwards. Walks on to the step after when
+     * a step has nothing showable in it, so a step that is hidden in its entirety is stepped over
+     * rather than landed on and redirected away from.
+     *
+     * @return array{0: ?Step, 1: ?SubStep}
+     */
+    private function firstShowableSubStep(?Step $step): array
+    {
+        while ($step instanceof Step) {
+            /** @var SubStep $subStep */
+            foreach ($step->subSteps()->orderBy('order')->get() as $subStep) {
+                if ($this->canShow($subStep)) {
+                    return [$step, $subStep];
+                }
+            }
+
+            $step = $step->nextStepForScan();
+        }
+
+        return [null, null];
+    }
+
     /** Resolve the next url based on the current step and sub step */
     public function resolveNextUrl(): string
     {
@@ -192,30 +244,19 @@ class ScanFlowService
             ->step($this->step);
 
         if ($this->subStep instanceof SubStep) {
-            $nextSubStep = $this->step->subSteps()
-                ->where('order', '>', $this->subStep->order)
-                ->orderBy('order')
-                ->first();
+            $nextSubStep = $this->nextShowableSubStep($this->step, $this->subStep);
 
-            // we will check if the current sub step is the last one, that way we know we have to go to the next one.
-            $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
-
-            if ($lastSubStepForStep->id === $this->subStep->id) {
+            // Nothing left to show in this step, so we move on. This used to ask whether the current
+            // sub step was the last one, which stops being the same question once the sub steps
+            // after it can be hidden.
+            if (! $nextSubStep instanceof SubStep) {
                 // Let's check if there's questionnaires left
                 if ($questionnaireService->hasActiveQuestionnaires()) {
                     $nextQuestionnaire = $questionnaireService
                         ->resolveQuestionnaire(true);
-                } else {
+                } elseif ($this->scan->short !== Scan::EXPERT) {
                     // Unwanted behaviour for expert
-                    if ($this->scan->short !== Scan::EXPERT) {
-                        $nextStep = $this->step->nextStepForScan();
-
-                        // the last can't have a next one
-                        if ($nextStep instanceof Step) {
-                            // the previous step is a different one, so we should get the first sub step of the previous step
-                            $nextSubStep = $nextStep->subSteps()->orderBy('order')->first();
-                        }
-                    }
+                    [$nextStep, $nextSubStep] = $this->firstShowableSubStep($this->step->nextStepForScan());
                 }
             }
         } elseif ($this->questionnaire instanceof Questionnaire) {
@@ -230,12 +271,7 @@ class ScanFlowService
                 // Unwanted behaviour for expert
                 if ($this->scan->short !== Scan::EXPERT) {
                     // No more questionnaires, let's start the logic to get the next sub step
-                    $nextStep = $this->step->nextStepForScan();
-                    // the last can't have a next one
-                    if ($nextStep instanceof Step) {
-                        // the previous step is a different one, so we should get the first sub step of the previous step
-                        $nextSubStep = $nextStep->subSteps()->orderBy('order')->first();
-                    }
+                    [$nextStep, $nextSubStep] = $this->firstShowableSubStep($this->step->nextStepForScan());
                 }
             }
         }
@@ -264,12 +300,7 @@ class ScanFlowService
         // Skip small-measures step if not enabled for this building
         if ($nextStep instanceof Step && $nextStep->short === 'small-measures') {
             if (! SmallMeasuresSettingHelper::isEnabledForBuilding($this->building, $this->scan)) {
-                $nextStep = $nextStep->nextStepForScan();
-                $nextSubStep = null;
-
-                if ($nextStep instanceof Step) {
-                    $nextSubStep = $nextStep->subSteps()->orderBy('order')->first();
-                }
+                [$nextStep, $nextSubStep] = $this->firstShowableSubStep($nextStep->nextStepForScan());
             }
         }
 
@@ -350,11 +381,19 @@ class ScanFlowService
             // it could also be that there is no completed sub step, this will mean it's the user his first
             // time using the tool (yay)
             if (! $mostRecentCompletedSubStep instanceof SubStep) {
-                $mostRecentCompletedSubStep = $mostRecentCompletedStep->subSteps()->orderBy('order')->first();
+                // Not simply the first sub step of the first step: with SmartTwin enabled the first
+                // steps are hidden in full, and landing on one of those would mean a redirect for
+                // every sub step in them before the user sees a question.
+                [$firstStep, $firstSubStep] = $this->firstShowableSubStep($mostRecentCompletedStep);
 
-                $url = route('cooperation.frontend.tool.simple-scan.index', [
-                    'scan' => $scan, 'step' => $mostRecentCompletedStep, 'subStep' => $mostRecentCompletedSubStep
-                ]);
+                if ($firstStep instanceof Step && $firstSubStep instanceof SubStep) {
+                    $url = route('cooperation.frontend.tool.simple-scan.index', [
+                        'scan' => $scan, 'step' => $firstStep, 'subStep' => $firstSubStep,
+                    ]);
+                } else {
+                    // Nothing to ask at all; the plan is the only place left to go.
+                    $url = route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
+                }
             }
         }
         return $url;
@@ -421,7 +460,7 @@ class ScanFlowService
             $subSteppable = $toolQuestion->pivot;
             if ($evaluator->evaluate($subSteppable->conditions ?? [])) {
                 // If it's visible, we will check if it's required. If it's not required, it doesn't matter after all
-                if (in_array('required', $toolQuestion->validation)) {
+                if ($toolQuestion->isRequired()) {
                     $visibleQuestions++;
 
                     $answer = $this->getAnswer($toolQuestion->short, false);

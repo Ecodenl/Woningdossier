@@ -174,7 +174,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
+                            'nl' => 'Redelijke isolatie',
                         ],
                         'order' => 3,
                         'calculate_value' => 4,
@@ -185,10 +185,21 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
+                            'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
+                        ],
+                        'order' => 4,
+                        'calculate_value' => 5,
+                        'configurations' => [
+                            'comfort' => 3,
+                            'insulation_factor' => 3,
+                        ],
+                    ],
+                    [
+                        'value' => [
                             'nl' => 'Zeer goede isolatie (meer dan 20 cm isolatie)',
                         ],
                         'order' => 5,
-                        'calculate_value' => 5,
+                        'calculate_value' => 6,
                         'configurations' => [
                             'comfort' => 5,
                             'insulation_factor' => 4,
@@ -234,10 +245,21 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Matige isolatie (tot 8 cm isolatie)',
+                            'nl' => 'Slechte isolatie',
                         ],
                         'order' => 2,
                         'calculate_value' => 3,
+                        'configurations' => [
+                            'comfort' => 0,
+                            'insulation_factor' => 1,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'Matige isolatie (tot 8 cm isolatie)',
+                        ],
+                        'order' => 3,
+                        'calculate_value' => 4,
                         'configurations' => [
                             'comfort' => 3,
                             'insulation_factor' => 2,
@@ -245,10 +267,21 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
+                            'nl' => 'Redelijke isolatie',
+                        ],
+                        'order' => 4,
+                        'calculate_value' => 5,
+                        'configurations' => [
+                            'comfort' => 3,
+                            'insulation_factor' => 3,
+                        ],
+                    ],
+                    [
+                        'value' => [
                             'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
                         ],
-                        'order' => 3,
-                        'calculate_value' => 4,
+                        'order' => 5,
+                        'calculate_value' => 6,
                         'configurations' => [
                             'comfort' => 3,
                             'insulation_factor' => 3,
@@ -258,8 +291,8 @@ class ElementsValuesTableSeeder extends Seeder
                         'value' => [
                             'nl' => 'Zeer goede isolatie (meer dan 20 cm isolatie)',
                         ],
-                        'order' => 4,
-                        'calculate_value' => 5,
+                        'order' => 6,
+                        'calculate_value' => 7,
                         'configurations' => [
                             'comfort' => 5,
                             'insulation_factor' => 4,
@@ -269,8 +302,8 @@ class ElementsValuesTableSeeder extends Seeder
                         'value' => [
                             'nl' => 'Niet van toepassing',
                         ],
-                        'order' => 5,
-                        'calculate_value' => 6,
+                        'order' => 7,
+                        'calculate_value' => 8,
                         'configurations' => [
                             'comfort' => 0,
                             'insulation_factor' => 4,
@@ -327,7 +360,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
+                            'nl' => 'Redelijke isolatie',
                         ],
                         'order' => 3,
                         'calculate_value' => 4,
@@ -338,10 +371,21 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Zeer goede isolatie (meer dan 20 cm isolatie)',
+                            'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
                         ],
                         'order' => 4,
                         'calculate_value' => 5,
+                        'configurations' => [
+                            'comfort' => 3,
+                            'insulation_factor' => 3,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'Zeer goede isolatie (meer dan 20 cm isolatie)',
+                        ],
+                        'order' => 5,
+                        'calculate_value' => 6,
                         'configurations' => [
                             'comfort' => 5,
                             'insulation_factor' => 4,
@@ -351,8 +395,8 @@ class ElementsValuesTableSeeder extends Seeder
                         'value' => [
                             'nl' => 'Niet van toepassing',
                         ],
-                        'order' => 5,
-                        'calculate_value' => 6,
+                        'order' => 6,
+                        'calculate_value' => 7,
                         'configurations' => [
                             'comfort' => 0,
                             'insulation_factor' => 4,

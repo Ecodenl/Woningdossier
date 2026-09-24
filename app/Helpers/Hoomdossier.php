@@ -21,6 +21,11 @@ class Hoomdossier
         return config('hoomdossier.services.econobis.enabled', false);
     }
 
+    public static function hasEnabledSmartTwinCalls(): bool
+    {
+        return config('hoomdossier.services.smarttwin.enabled', false);
+    }
+
     /**
      * @deprecated
      * Return the most credible value from a given collection.

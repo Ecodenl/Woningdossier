@@ -15,7 +15,6 @@ use App\Jobs\Econobis\Out\SendUserDeletedToEconobis;
 use App\Models\Status;
 use App\Services\BuildingCoachStatusService;
 use App\Services\UserService;
-use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 
 class EconobisEventSubscriber
@@ -27,7 +26,7 @@ class EconobisEventSubscriber
         $this->userService = $userService;
     }
 
-    public function sendAppointmentDateToEconobis(BuildingAppointmentDateUpdated $event)
+    public function handleSendAppointmentDateToEconobis(BuildingAppointmentDateUpdated $event)
     {
         Log::debug(__METHOD__);
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
@@ -38,7 +37,7 @@ class EconobisEventSubscriber
         }
     }
 
-    public function sendBuildingStatusToEconobis(BuildingStatusUpdated $event)
+    public function handleSendBuildingStatusToEconobis(BuildingStatusUpdated $event)
     {
         // Econobis only wants the status if it's `executed` ("uitgevoerd")
         $econobisWantsStatus = ($status = $event->building->getMostRecentBuildingStatus()?->status) instanceof Status && $status->short === 'executed';
@@ -49,40 +48,44 @@ class EconobisEventSubscriber
         }
     }
 
-    public function sendScanStatusToEconobis(BuildingCompletedHisFirstSubStep|UserResetHisBuilding $event)
+    public function handleSendScanStatusToEconobis(BuildingCompletedHisFirstSubStep|UserResetHisBuilding $event)
     {
         if ($this->canUserSendInformationToEconobis($event)) {
             SendScanStatusToEconobis::dispatch($event->building);
         }
     }
 
-    public function sendBuildingFilledInAnswersToEconobis(UserResetHisBuilding $event)
+    public function handleSendBuildingFilledInAnswersToEconobis(UserResetHisBuilding $event)
     {
         if ($this->canUserSendInformationToEconobis($event)) {
             SendBuildingFilledInAnswersToEconobis::dispatch($event->building);
         }
     }
 
-    public function sendUserDeletedToEconobis(UserDeleted $event)
+    public function handleSendUserDeletedToEconobis(UserDeleted $event)
     {
-        // So this is the same as the policy used above, but at this stage the user does not exist anymore.
-        // The cooperation most likely also no longer exists, and therefore we expect the data as array and do checks
-        // manually.
-        if (! empty($event->accountRelated['account_id'])) {
-            SendUserDeletedToEconobis::dispatch($event->cooperation, $event->accountRelated);
+        // The user no longer exists at this point and the cooperation may also have been removed,
+        // so we work from the snapshot the event carries.
+        if (! empty($event->context['account_id'])) {
+            SendUserDeletedToEconobis::dispatch($event->cooperation, [
+                'building_id' => $event->context['building_id'] ?? null,
+                'user_id'     => $event->context['user_id']     ?? null,
+                'account_id'  => $event->context['account_id'],
+                'contact_id'  => $event->context['extra']['contact_id'] ?? null,
+            ]);
         }
     }
 
-    public function subscribe(Dispatcher $events): array
+    /*public function subscribe(Dispatcher $events): array
     {
         return [
-            BuildingAppointmentDateUpdated::class => 'sendAppointmentDateToEconobis',
-            BuildingStatusUpdated::class => 'sendBuildingStatusToEconobis',
-            UserDeleted::class => 'sendUserDeletedToEconobis',
-            BuildingCompletedHisFirstSubStep::class => 'sendScanStatusToEconobis',
-            UserResetHisBuilding::class => ['sendScanStatusToEconobis', 'sendBuildingFilledInAnswersToEconobis'],
+            BuildingAppointmentDateUpdated::class => 'handleSendAppointmentDateToEconobis',
+            BuildingStatusUpdated::class => 'handleSendBuildingStatusToEconobis',
+            UserDeleted::class => 'handleSendUserDeletedToEconobis',
+            BuildingCompletedHisFirstSubStep::class => 'handleSendScanStatusToEconobis',
+            UserResetHisBuilding::class => ['handleSendScanStatusToEconobis', 'handleSendBuildingFilledInAnswersToEconobis'],
         ];
-    }
+    }*/
 
     private function canUserSendInformationToEconobis($event)
     {

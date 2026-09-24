@@ -10,6 +10,16 @@
     @else
         <div class="w-full">
             @php
+                $smartTwinError = in_array(request('smarttwin_error'), ['not_configured', 'advice_in_progress', 'unsupported_role', 'failed'], true)
+                    ? request('smarttwin_error')
+                    : null;
+            @endphp
+            @if($smartTwinError)
+                @component('cooperation.layouts.components.alert', ['color' => 'red', 'withBackground' => true])
+                    {{ __("cooperation/frontend/tool.my-plan.smarttwin.errors.{$smartTwinError}") }}
+                @endcomponent
+            @endif
+            @php
                 $langShort = $building->hasAnsweredExpertQuestion() ? 'expert' : 'quick-scan';
                 $link = route('cooperation.my-account.messages.edit', compact('cooperation'));
 
@@ -42,5 +52,21 @@
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.calculations-table :building="$building"/>
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.download-pdf :user="$building->user" :scan="$scan"/>
         </div>
+
+        {{-- $canHandOff is resolved in the controller, which reports it when an account turns out to
+             have no SmartTwin id. --}}
+        @if($canHandOff)
+            <div class="w-full flex flex-wrap pb-5">
+                {{-- New tab, so the resident's dossier is still open behind SmartTwin. --}}
+                <form method="POST"
+                      action="{{ route('cooperation.frontend.tool.simple-scan.my-plan.smarttwin', compact('cooperation', 'scan')) }}"
+                      target="_blank" rel="noopener">
+                    @csrf
+                    <button type="submit" class="btn btn-green">
+                        @lang('cooperation/frontend/tool.my-plan.smarttwin.button')
+                    </button>
+                </form>
+            </div>
+        @endif
     @endif
 @endsection

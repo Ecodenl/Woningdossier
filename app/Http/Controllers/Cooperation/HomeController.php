@@ -12,7 +12,6 @@ use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Scan;
-use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\Scans\ScanFlowService;
 use Illuminate\Support\Collection;
@@ -60,7 +59,7 @@ class HomeController extends Controller
 
         return [
             'features' => $features instanceof BuildingFeature ? $features : null,
-            'coach' => $this->coachFor($building),
+            'coach' => BuildingCoachStatusService::getCoachToShow($building),
             'appointmentDate' => $building->getAppointmentDate(),
 
             // SmartTwin will deliver this later. Until it does the dashboard shows the row without a
@@ -74,16 +73,5 @@ class HomeController extends Controller
                 ? route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan'))
                 : null,
         ];
-    }
-
-    /**
-     * A building can have several coaches attached over time; the design shows one, so we take the
-     * one attached most recently.
-     */
-    private function coachFor(Building $building): ?User
-    {
-        return BuildingCoachStatusService::getConnectedCoachesByBuilding($building, true)
-            ->last()
-            ?->coach;
     }
 }

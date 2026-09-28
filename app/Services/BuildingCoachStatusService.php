@@ -7,6 +7,7 @@ use App\Models\BuildingCoachStatus;
 use App\Models\User;
 use App\Services\Models\BuildingStatusService;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 class BuildingCoachStatusService
@@ -69,13 +70,42 @@ class BuildingCoachStatusService
      */
     public static function getConnectedCoachesByBuilding(Building $building, bool $eagerLoadCoach = false): \Illuminate\Database\Eloquent\Collection
     {
+        return static::connectedCoachesQuery($building)
+            // Eager load the coaches if wanted to prevent unnecessary queries
+            ->when($eagerLoadCoach, fn (Builder $query) => $query->with(['coach']))
+            ->get();
+    }
+
+    /**
+     * The one coach a resident is shown, on the dashboard and beside their messages.
+     *
+     * A building can have several coaches attached over time and the design shows one: the coach
+     * attached most recently. That is ordered explicitly on the latest "added" row per coach — a
+     * grouped query without an order hands its rows back in whatever order the database likes, and
+     * two pages asking the same question could then show two different people.
+     *
+     * On the id rather than created_at: ids follow insertion order and never tie, while two coaches
+     * attached within the same second would.
+     */
+    public static function getCoachToShow(Building $building): ?User
+    {
+        return static::connectedCoachesQuery($building)
+            ->selectRaw('MAX(CASE WHEN status = ? THEN id END) AS last_added_id', [BuildingCoachStatus::STATUS_ADDED])
+            ->orderByDesc('last_added_id')
+            ->with(['coach'])
+            ->first()
+            ?->coach;
+    }
+
+    /**
+     * Coaches whose access to the building was granted more often than revoked, one row per coach.
+     */
+    private static function connectedCoachesQuery(Building $building): HasMany
+    {
         return $building->buildingCoachStatuses()
             ->selectRaw('coach_id, SUM(status = ?) AS added, SUM(status = ?) AS removed', [BuildingCoachStatus::STATUS_ADDED, BuildingCoachStatus::STATUS_REMOVED])
             ->has('coach')
             ->groupBy('coach_id')
-            ->havingRaw('added > removed')
-            // Eager load the coaches if wanted to prevent unnecessary queries
-            ->when($eagerLoadCoach, fn (Builder $query) => $query->with(['coach']))
-            ->get();
+            ->havingRaw('added > removed');
     }
 }

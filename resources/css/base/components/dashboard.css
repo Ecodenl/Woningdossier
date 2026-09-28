@@ -93,6 +93,20 @@
     @apply mt-2 text-sm;
 }
 
+/* The messages page ---------------------------------------------------------------------------- */
+
+/* The coach tile in the first of three columns, the conversation in the other two; stacked on small
+   screens, coach first. */
+.messages-with-coach {
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-6 items-start w-full;
+}
+
+/* The same frame the conversation has without the tile; the message box relies on it for its edges. */
+.messages-with-coach-conversation {
+    @apply flex flex-row flex-wrap w-full lg:col-span-2
+           border border-solid border-blue-500 border-opacity-50 rounded-lg;
+}
+
 /* The files ------------------------------------------------------------------------------------ */
 
 .dashboard-files {

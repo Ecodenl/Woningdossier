@@ -11,6 +11,7 @@ use App\Http\Requests\ChatRequest;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
+use App\Services\BuildingCoachStatusService;
 use App\Services\PrivateMessageService;
 use App\Services\PrivateMessageViewService;
 use Illuminate\Http\RedirectResponse;
@@ -54,7 +55,16 @@ class MessagesController extends Controller
         PrivateMessageViewService::markAsReadByUser($privateMessages, Hoomdossier::user(), $resident);
         //PrivateMessageViewService::setRead($privateMessages);
 
-        return view('cooperation.my-account.messages.edit', compact('privateMessages', 'building', 'groupParticipants'));
+        $data = compact('privateMessages', 'building', 'groupParticipants');
+
+        // With SmartTwin on, the coach tile from the dashboard sits beside the conversation, so the
+        // resident sees who they are writing to and when they meet.
+        if (Hoomdossier::hasEnabledSmartTwinCalls()) {
+            $data['coach'] = BuildingCoachStatusService::getCoachToShow($building);
+            $data['appointmentDate'] = $building->getAppointmentDate();
+        }
+
+        return view('cooperation.my-account.messages.edit', $data);
     }
 
     public function store(ChatRequest $request): RedirectResponse

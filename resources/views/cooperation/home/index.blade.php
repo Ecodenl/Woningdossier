@@ -81,35 +81,7 @@
             </section>
 
             {{-- The coach -------------------------------------------------------------------- --}}
-            <section class="tile">
-                <h3 class="tile-heading">
-                    @lang('home.dashboard.coach.title')
-                </h3>
-
-                @if($coach instanceof \App\Models\User)
-                    <p>
-                        <strong>@lang('home.dashboard.coach.name')</strong><br>
-                        {{ $coach->getFullName() }}
-                    </p>
-                @else
-                    <p>@lang('home.dashboard.coach.none')</p>
-                @endif
-
-                @if(! is_null($appointmentDate))
-                    <p>
-                        <strong>@lang('home.dashboard.coach.appointment')</strong><br>
-                        {{ $appointmentDate->translatedFormat('j F Y \o\m H.i \u\u\r') }}
-                    </p>
-                @else
-                    <p>@lang('home.dashboard.coach.no-appointment')</p>
-                @endif
-
-                <div class="tile-action">
-                    <a class="btn btn-blue" href="{{ route('cooperation.my-account.messages.edit') }}">
-                        @lang('home.dashboard.coach.contact')
-                    </a>
-                </div>
-            </section>
+            @include('cooperation.frontend.dashboard.parts.coach', compact('coach', 'appointmentDate'))
 
             {{-- The files -------------------------------------------------------------------- --}}
             @can('viewAny', [\App\Models\Media::class, $inputSource, $building])

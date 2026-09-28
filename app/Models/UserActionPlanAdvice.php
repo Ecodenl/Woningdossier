@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Observers\UserActionPlanAdviceObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use App\Enums\AdviceSource;
 use App\Helpers\Hoomdossier;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
@@ -118,7 +119,8 @@ class UserActionPlanAdvice extends Model implements Auditable
         'planned_year',
         'step_id',
         'loan_available',
-        'subsidy_available'
+        'subsidy_available',
+        'source',
     ];
 
     protected array $ignoreAttributes = [
@@ -142,6 +144,7 @@ class UserActionPlanAdvice extends Model implements Auditable
             'savings_gas' => 'decimal:2',
             'savings_electricity' => 'decimal:2',
             'savings_money' => 'decimal:2',
+            'source' => AdviceSource::class,
         ];
     }
 

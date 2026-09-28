@@ -2,6 +2,7 @@
 
 namespace App\Http\ViewComposers\Frontend\Tool;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\StepHelper;
 use App\Models\InputSource;
 use App\Models\Questionnaire;
@@ -54,6 +55,14 @@ class SimpleScanComposer
 
         */
 
+        // The steps SmartTwin fills in are never shown, so counting them would put the resident on
+        // "step 16 of 45" the moment they open the first question we do still ask. Excluding them
+        // from the two base queries below fixes both the total and the position, since the running
+        // total is built from the same queries.
+        $hiddenStepShorts = Hoomdossier::hasEnabledSmartTwinCalls()
+            ? $scan->steps->filter(fn (Step $scanStep) => $scanStep->isProvidedBySmartTwin())->pluck('short')->all()
+            : [];
+
         // This query counts all active questionnaires for the current questionnaires linked to the current scan's steps.
         $questionnaireCountQuery = DB::table('questionnaires AS q')
             ->selectRaw("COUNT(*) AS total")
@@ -61,12 +70,14 @@ class SimpleScanComposer
             ->leftJoin('steps AS s', 'qs.step_id', '=', 's.id')
             ->where('s.scan_id', $scan->id)
             ->where('q.is_active', true)
-            ->where('q.cooperation_id', $cooperation->id);
+            ->where('q.cooperation_id', $cooperation->id)
+            ->when($hiddenStepShorts, fn ($query) => $query->whereNotIn('s.short', $hiddenStepShorts));
 
         // This query counts all sub steps related to the steps of the current scan.
         $subStepCountQuery = DB::table('sub_steps AS ss')->selectRaw("COUNT(*) AS total")
             ->leftJoin('steps AS s', 'ss.step_id', '=', 's.id')
-            ->where('s.scan_id', $scan->id);
+            ->where('s.scan_id', $scan->id)
+            ->when($hiddenStepShorts, fn ($query) => $query->whereNotIn('s.short', $hiddenStepShorts));
 
         // Query for the total count of sub steps and active questionnaires, using a union of the previous query.
         // Note the "clone" method; if we don't do that, the subStepCountQuery gets the union attached. We don't

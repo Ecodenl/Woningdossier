@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Http\ViewComposers\AdminComposer;
 use App\Http\ViewComposers\CooperationComposer;
+use App\Http\ViewComposers\Frontend\Layouts\Parts\SmartTwinSubNavComposer;
 use App\Http\ViewComposers\Frontend\Layouts\Parts\SubNavComposer;
 use App\Http\ViewComposers\Frontend\Tool\NavbarComposer;
 use App\Http\ViewComposers\Cooperation\Admin\Layouts\NavbarComposer as AdminNavbarComposer;
@@ -35,6 +36,7 @@ class ViewServiceProvider extends ServiceProvider
         View::creator('cooperation.frontend.tool.expert-scan.questionnaires.index', ToolComposer::class);
         View::creator('cooperation.frontend.layouts.tool', LayoutComposer::class);
         View::creator('cooperation.frontend.layouts.parts.sub-nav', SubNavComposer::class);
+        View::creator('cooperation.frontend.layouts.parts.smart-twin.sub-nav', SmartTwinSubNavComposer::class);
 
         View::creator('*', CooperationComposer::class);
         View::creator('cooperation.admin.layouts.navbar', AdminNavbarComposer::class);
@@ -46,6 +48,11 @@ class ViewServiceProvider extends ServiceProvider
             ],
             SimpleScanComposer::class
         );
-        View::creator('cooperation.frontend.layouts.parts.navbar', NavbarComposer::class);
+        // Both modes' navigations need the same things ($scan, $building, ...); the composer already
+        // copes with routes that carry no scan, such as my account.
+        View::creator([
+            'cooperation.frontend.layouts.parts.navbar',
+            'cooperation.frontend.layouts.parts.smart-twin.nav',
+        ], NavbarComposer::class);
     }
 }

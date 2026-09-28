@@ -26,7 +26,7 @@ final class FilterBlockedEmailDomainsTest extends TestCase
             to: [new Address('user@ecogeenmail.nl')],
         );
 
-        $result = $this->listener->handle($event);
+        $result = $this->listener->handleMessageSending($event);
 
         $this->assertFalse($result);
     }
@@ -42,7 +42,7 @@ final class FilterBlockedEmailDomainsTest extends TestCase
             ],
         );
 
-        $result = $this->listener->handle($event);
+        $result = $this->listener->handleMessageSending($event);
 
         $this->assertNull($result);
         $this->assertCount(1, $event->message->getTo());
@@ -59,7 +59,7 @@ final class FilterBlockedEmailDomainsTest extends TestCase
             bcc: [new Address('bcc@ecogeenmail.nl')],
         );
 
-        $result = $this->listener->handle($event);
+        $result = $this->listener->handleMessageSending($event);
 
         $this->assertNull($result);
         $this->assertCount(1, $event->message->getTo());
@@ -78,7 +78,7 @@ final class FilterBlockedEmailDomainsTest extends TestCase
             bcc: [new Address('bcc@ecogeenmail.nl')],
         );
 
-        $result = $this->listener->handle($event);
+        $result = $this->listener->handleMessageSending($event);
 
         $this->assertFalse($result);
     }
@@ -91,7 +91,7 @@ final class FilterBlockedEmailDomainsTest extends TestCase
             to: [new Address('user@ecogeenmail.nl')],
         );
 
-        $result = $this->listener->handle($event);
+        $result = $this->listener->handleMessageSending($event);
 
         $this->assertNull($result);
         $this->assertCount(1, $event->message->getTo());
@@ -105,7 +105,7 @@ final class FilterBlockedEmailDomainsTest extends TestCase
             to: [new Address('user@echt.nl')],
         );
 
-        $result = $this->listener->handle($event);
+        $result = $this->listener->handleMessageSending($event);
 
         $this->assertNull($result);
         $this->assertCount(1, $event->message->getTo());
@@ -123,7 +123,7 @@ final class FilterBlockedEmailDomainsTest extends TestCase
             ],
         );
 
-        $result = $this->listener->handle($event);
+        $result = $this->listener->handleMessageSending($event);
 
         $this->assertNull($result);
         $this->assertCount(1, $event->message->getTo());

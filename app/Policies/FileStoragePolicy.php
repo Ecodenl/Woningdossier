@@ -9,6 +9,7 @@ use App\Models\Building;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\User;
+use App\Services\SmartTwin\SmartTwinFileTypes;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class FileStoragePolicy
@@ -18,6 +19,13 @@ class FileStoragePolicy
     public function download(Account $account, FileStorage $fileStorage, ?Building $building = null)
     {
         $user = $account->user();
+
+        // The SmartTwin artifacts are debug material, and are downloaded through the dedicated
+        // super admin route instead. They are never available here: not to the cooperation, and
+        // not to the resident whose building they describe.
+        if ($this->isSmartTwinArtifact($fileStorage)) {
+            return false;
+        }
 
         if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_SUPER_ADMIN]) && $fileStorage->fileType->short === 'example-building-overview') {
             return true;
@@ -44,6 +52,10 @@ class FileStoragePolicy
     {
         $user = $account->user();
         switch ($fileType->short) {
+            case SmartTwinFileTypes::ADVICE_RAW:
+            case SmartTwinFileTypes::MAPPING_REPORT:
+                // Written by the SmartTwin pipeline itself, never generated on request.
+                return false;
             case 'pdf-report':
                 if ($user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COORDINATOR, RoleHelper::ROLE_COOPERATION_ADMIN])) {
                     return true;
@@ -60,5 +72,10 @@ class FileStoragePolicy
         }
 
         return false;
+    }
+
+    private function isSmartTwinArtifact(FileStorage $fileStorage): bool
+    {
+        return in_array($fileStorage->fileType->short, SmartTwinFileTypes::all(), true);
     }
 }

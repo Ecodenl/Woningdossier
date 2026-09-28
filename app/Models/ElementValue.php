@@ -57,6 +57,40 @@ class ElementValue extends Model
         ];
     }
 
+    /**
+     * The lowest calculate value that counts as insulated, per insulation element.
+     *
+     * The scales do not run equally long. Wall, floor and roof all start with Onbekend and Geen
+     * isolatie, but the floor has a Slechte isolatie between Geen and Matige that the other two do
+     * not, so its boundary sits one higher. Keeping the numbers here rather than spread over the
+     * calculators is what kept the last shift of the scale from silently filing a badly insulated
+     * floor as one that needs nothing.
+     */
+    private const INSULATED_FROM = [
+        'wall-insulation'  => 3, // Matige isolatie
+        'floor-insulation' => 4, // Matige isolatie, met Slechte isolatie op 3
+        'roof-insulation'  => 3, // Matige isolatie
+    ];
+
+    /** The default for any element without an entry above, which is the boundary as it always was. */
+    private const INSULATED_FROM_DEFAULT = 3;
+
+    public static function insulatedFromCalculateValue(string $elementShort): int
+    {
+        return self::INSULATED_FROM[$elementShort] ?? self::INSULATED_FROM_DEFAULT;
+    }
+
+    /**
+     * Whether this answer describes something that already has insulation worth the name.
+     *
+     * Drives two things: whether a measure can still save gas, and whether its advice lands in the
+     * action plan as something to do or as something already done.
+     */
+    public function countsAsInsulated(): bool
+    {
+        return $this->calculate_value >= self::insulatedFromCalculateValue($this->element->short ?? '');
+    }
+
     # Attributes
     public function getInsulationFactorAttribute(): int
     {

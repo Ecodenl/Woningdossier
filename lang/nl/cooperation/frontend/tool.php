@@ -126,6 +126,30 @@ return [
             'download-report' => 'Download bestaande rapportage',
             'create-report' => 'Maak rapportage',
         ],
+        // The woonplan before there is one: the resident still has to do the check in SmartTwin.
+        'start-check' => [
+            'body' => '<p>Waar begin je met het verduurzamen van je huis?</p>
+<p>Vul deze verbetercheck in en ontdek alvast welke maatregelen voor jou interessant zijn. Samen met je energiecoach kun je straks een passend woonplan maken.</p>',
+        ],
+
+        // The check is done and SmartTwin is working on the advice.
+        'awaiting-advice' => [
+            'body' => '<p>Je verbetercheck is binnen. We stellen je woonplan samen.</p>
+<p>Dit duurt meestal niet lang. Zodra het klaar is kom je hier vanzelf terecht.</p>',
+        ],
+
+        'smarttwin' => [
+            'button' => 'Doe de verbetercheck',
+            'redirecting' => 'Je wordt ingelogd bij SmartTwin…',
+            'noscript' => 'Klik op de knop om verder te gaan naar SmartTwin.',
+            'continue' => 'Verder naar SmartTwin',
+            'errors' => [
+                'not_configured' => 'Er is nog geen SmartTwin-account voor je beschikbaar. Probeer het later opnieuw.',
+                'advice_in_progress' => 'Het adviesgesprek voor dit adres is op dit moment door een andere gebruiker geopend. Probeer het later opnieuw.',
+                'unsupported_role' => 'SmartTwin is niet beschikbaar voor je huidige rol.',
+                'failed' => 'Er ging iets mis bij het openen van SmartTwin. Probeer het later opnieuw.',
+            ],
+        ],
     ],
     'my-regulations' => [
         'loading' => 'Maatregelen worden berekend...',

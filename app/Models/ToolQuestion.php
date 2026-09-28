@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Helpers\Hoomdossier;
 use App\Services\DiscordNotifier;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
@@ -111,6 +112,52 @@ class ToolQuestion extends Model
     }
 
     # Model methods
+
+    /**
+     * Whether an answer has to be given before the resident can move on.
+     *
+     * Nothing is, with SmartTwin enabled. The data the scan used to insist on is entered in
+     * SmartTwin and comes back through the mapping; what Hoomdossier still asks sits on top of that
+     * and may be skipped. Asking the question here rather than reading the column keeps the form and
+     * ScanFlowService::hasAnsweredSubStep() on the same answer -- they disagreeing would mean a sub
+     * step the resident completed being quietly set back to incomplete.
+     */
+    public function isRequired(): bool
+    {
+        if (Hoomdossier::hasEnabledSmartTwinCalls()) {
+            return false;
+        }
+
+        return in_array('required', $this->validation ?? [], true);
+    }
+
+    /**
+     * The rules to validate an answer with.
+     *
+     * 'required' is swapped for 'nullable' rather than dropped: without it Laravel runs the rules
+     * that follow against an empty answer, so ['required', 'in:1,2,3'] would go from "you have to
+     * answer" to "your non-answer is invalid".
+     *
+     * @return array<int, mixed>
+     */
+    public function validationRules(): array
+    {
+        $validation = $this->validation ?? [];
+
+        if (! Hoomdossier::hasEnabledSmartTwinCalls()) {
+            return $validation;
+        }
+
+        $rules = array_values(array_map(
+            fn ($rule) => $rule === 'required' ? 'nullable' : $rule,
+            $validation,
+        ));
+
+        // A question that was never required needs it too: the rules behind it would otherwise
+        // still reject an answer that was not given.
+        return in_array('nullable', $rules, true) ? $rules : array_merge(['nullable'], $rules);
+    }
+
     public function hasOptions(): bool
     {
         return ! empty($this->options);

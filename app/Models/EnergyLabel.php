@@ -33,6 +33,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class EnergyLabel extends Model
 {
+    /**
+     * The icon that shows this label as the coloured arrow people recognise. Seeded names are A
+     * through G plus 'X' for none and '?' for unknown; anything else falls back to unknown rather
+     * than pointing at an icon that does not exist.
+     */
+    public function iconClass(): string
+    {
+        return match (true) {
+            $this->name === 'X' => 'icon-label-none',
+            in_array($this->name, ['A', 'B', 'C', 'D', 'E', 'F', 'G']) => 'icon-label-' . strtolower($this->name),
+            default => 'icon-label-unknown',
+        };
+    }
+
     use HasOrder;
 
     public function buildingFeatures(): HasMany

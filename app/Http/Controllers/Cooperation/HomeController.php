@@ -16,6 +16,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\Models\ScanService;
 use App\Services\Scans\ScanFlowService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 
 class HomeController extends Controller
 {
@@ -89,7 +90,7 @@ class HomeController extends Controller
                         app(ScanService::class)->scan($scan)->forBuilding($building)->hasMadeScanProgress()
                             ? 'home.start.buttons.continue'
                             : 'home.start.buttons.start',
-                        ['scan' => $scan->name],
+                        ['scan' => $scan->getTranslation('name', App::getLocale())],
                     );
                 }
 

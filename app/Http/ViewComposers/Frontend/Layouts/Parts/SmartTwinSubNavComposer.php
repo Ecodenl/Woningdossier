@@ -11,6 +11,7 @@ use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\View\View;
 
 /**
@@ -68,12 +69,12 @@ class SmartTwinSubNavComposer
     {
         $currentStep = $this->request->route('step');
 
-        return $scan->steps()
-            ->orderBy('order')
-            ->get()
+        return $scan->steps
+            ->sortBy('order')
+            ->values()
             ->map(fn (Step $step) => $this->stepItem(
                 $step,
-                $step->name,
+                $step->getTranslation('name', App::getLocale()),
                 $scan,
                 $building,
                 $master,

@@ -92,6 +92,36 @@ final class HomeControllerTest extends TestCase
         $response->assertSee(__('home.dashboard.building.to-dossier'), false);
     }
 
+    public function test_logo_takes_a_resident_to_the_dashboard(): void
+    {
+        $this->enableSmartTwin(true);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $response->assertSee($this->logoLink(route('cooperation.home', ['cooperation' => $this->cooperation])), false);
+    }
+
+    public function test_logo_takes_a_management_role_to_the_admin_index(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->resident->assignRole(RoleHelper::ROLE_COACH);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        // The admin index picks between the role's start page and the role picker itself.
+        $response->assertSee($this->logoLink(route('cooperation.admin.index', ['cooperation' => $this->cooperation])), false);
+    }
+
+    /**
+     * The nav below the logo links to the same pages, so only the logo's own markup tells them apart.
+     */
+    private function logoLink(string $url): string
+    {
+        return '<a href="' . $url . '" class="flex items-center">';
+    }
+
     public function test_dashboard_shows_what_is_known_about_the_building(): void
     {
         $this->enableSmartTwin(true);

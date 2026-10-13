@@ -38,16 +38,9 @@
         </div>
 
         @if(! $isFillingForOther)
+            {{-- No link to switch roles: the logo takes anyone with a management role to the admin
+                 index, which shows the role picker when there are several. --}}
             <div class="flex flex-row items-center space-x-8 xl:space-x-12">
-                {{-- More than one role means there is something to switch to. The admin index shows
-                     the role picker when a user has several, so linking there beats carrying a
-                     switcher around in the navigation. --}}
-                @if(Hoomdossier::user()->getRoleNames()->count() > 1)
-                    <a href="{{ route('cooperation.admin.index') }}" class="nav-item">
-                        @lang('cooperation/frontend/layouts.nav.cooperation')
-                    </a>
-                @endif
-
                 @component('cooperation.layouts.components.dropdown', [
                     'label' => __('cooperation/frontend/layouts.nav.my-account'),
                     'class' => 'nav-item' . (RouteLogic::inMyAccount($currentRoute) ? ' is-active' : ''),

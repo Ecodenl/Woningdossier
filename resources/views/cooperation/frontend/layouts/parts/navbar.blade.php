@@ -150,6 +150,14 @@
             @if(! Hoomdossier::user()->isFillingToolForOtherBuilding())
                 @component('cooperation.layouts.components.dropdown', ['label' => '<i class="icon-md icon-account-circle"></i>'])
                     @include('cooperation.frontend.layouts.parts.account-dropdown-items')
+                    {{-- SmartTwin shows the version in the footer instead, see the app layout. --}}
+                    <li>
+                        <span class="float-right" style="padding-right:.5em;line-height:100%;">
+                            <small>
+                                v{{ config('app.version') }}@if(App::environment() != 'production') - {{ App::environment() }}@endif
+                            </small>
+                        </span>
+                    </li>
                 @endcomponent
             @endif
         @endif

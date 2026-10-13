@@ -49,10 +49,3 @@
 <li>
     @include('cooperation.layouts.parts.logout')
 </li>
-<li>
-    <span class="float-right" style="padding-right:.5em;line-height:100%;">
-        <small>
-            v{{ config('app.version') }}@if(App::environment() != 'production') - {{ App::environment() }}@endif
-        </small>
-    </span>
-</li>

@@ -28,10 +28,13 @@
                 </a>
             @endif
 
-            <a href="{{ $woningdossierUrl }}"
-               class="nav-item @if(RouteLogic::inWoningdossier($currentRoute)) is-active @endif">
-                @lang('cooperation/frontend/layouts.nav.woningdossier')
-            </a>
+            {{-- Left out while a building with both scans still has to pick one on the dashboard. --}}
+            @if($showWoningdossier)
+                <a href="{{ $woningdossierUrl }}"
+                   class="nav-item @if(RouteLogic::inWoningdossier($currentRoute)) is-active @endif">
+                    @lang('cooperation/frontend/layouts.nav.woningdossier')
+                </a>
+            @endif
 
             {{-- The two counted items carry their own permission checks; they differ per item. --}}
             <livewire:cooperation.frontend.layouts.parts.smart-twin.nav-counters :fileUrl="$filesUrl"/>

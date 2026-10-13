@@ -403,6 +403,71 @@ class ScanFlowService
         return $url;
     }
 
+    /**
+     * Brings which sub steps of this scan count as done back in line with what is answered, after
+     * SmartTwin stopped driving the scan because its cooperation was switched off.
+     *
+     * With SmartTwin nothing was required, so a sub step could be completed with questions left
+     * empty, and the steps SmartTwin provided were never asked at all. Now the questions are required
+     * again:
+     * - a completed sub step with a required answer missing is incomplete again, and so is its step;
+     * - a never asked sub step of a step SmartTwin provided, whose required answers are all there
+     *   because the mapping filled them in, counts as done. The resident is not walked through what
+     *   SmartTwin already answered, only through what it left open.
+     * A sub step the building cannot see is left as it is.
+     */
+    public function reassessCompletion(User $authUser): void
+    {
+        $subSteps = SubStep::whereHas('step', fn ($query) => $query->where('scan_id', $this->scan->id))
+            ->with(['step', 'toolQuestions'])
+            ->get();
+
+        $conditions = $subSteps->pluck('conditions')
+            ->merge($subSteps->pluck('toolQuestions.*.pivot.conditions')->flatten(1))
+            ->filter()
+            ->flatten(1)
+            ->all();
+
+        $evaluator = ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->inputSource);
+
+        $evaluator->setAnswers($evaluator->getToolAnswersForConditions($conditions));
+
+        $completedSubStepIds = CompletedSubStep::allInputSources()
+            ->forInputSource($this->inputSource)
+            ->forBuilding($this->building)
+            ->pluck('sub_step_id')
+            ->all();
+
+        $subStepService = SubStepService::init()
+            ->building($this->building)
+            ->inputSource($this->currentInputSource);
+
+        $stepsToComplete = [];
+
+        foreach ($subSteps as $subStep) {
+            if (! $this->canShow($subStep)) {
+                continue;
+            }
+
+            $isCompleted = in_array($subStep->id, $completedSubStepIds);
+            $isAnswered = $this->hasAnsweredSubStep($subStep, $evaluator);
+
+            if ($isCompleted && ! $isAnswered) {
+                $subStepService->subStep($subStep)->incomplete();
+                StepHelper::incomplete($subStep->step, $this->building, $this->currentInputSource);
+            } elseif (! $isCompleted && $isAnswered && $subStep->step->isProvidedBySmartTwin()) {
+                $subStepService->subStep($subStep)->complete();
+                $stepsToComplete[$subStep->step->id] = $subStep->step;
+            }
+        }
+
+        foreach ($stepsToComplete as $step) {
+            StepHelper::completeStepIfNeeded($step, $this->building, $this->currentInputSource, $authUser);
+        }
+    }
+
     public function evaluateSubSteps(Collection $subSteps, ConditionEvaluator $evaluator): array
     {
         $building = $this->building;

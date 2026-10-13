@@ -9,6 +9,7 @@ use App\Services\SmartTwin\Mapping\MapperRegistry;
 use App\Services\SmartTwin\Mapping\MappingApplier;
 use App\Services\SmartTwin\Mapping\MappingReport;
 use App\Services\SmartTwin\Mapping\ResponseFlattener;
+use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -73,6 +74,19 @@ class SmartTwinService
                 // threw while writing is not reported as mapped: the entry is an error instead.
                 $report->error($leaf, $e);
             }
+        }
+
+        // From the first SmartTwin advice on, the woonplan is SmartTwin's advice plus what the resident
+        // chose: the calculated advices it replaces go. Only then, though. Clearing them when nothing
+        // came in would leave an empty woonplan, and that invites the resident to do the check they
+        // just did.
+        if ($report->savedAdvice()) {
+            $removed = UserActionPlanAdviceService::removeAdvicesReplacedBySmartTwin($building);
+
+            Log::debug('SmartTwin advice replaced the calculated advices', [
+                'building_id' => $building->getKey(),
+                'removed'     => $removed,
+            ]);
         }
 
         $this->logReport($building, $eventType, $report);

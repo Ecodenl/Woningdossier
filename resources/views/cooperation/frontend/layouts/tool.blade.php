@@ -4,7 +4,10 @@
     @if(RouteLogic::inSimpleScan(Route::currentRouteName()))
         {{-- Step progress --}}
         @if(Hoomdossier::hasEnabledSmartTwinCalls())
-            @include('cooperation.frontend.layouts.parts.smart-twin.sub-nav')
+            {{-- The shared files are a navigation item of their own, not a step of the scan. --}}
+            @if(! RouteLogic::inSharedFiles(Route::currentRouteName()))
+                @include('cooperation.frontend.layouts.parts.smart-twin.sub-nav')
+            @endif
         @else
             @include('cooperation.frontend.layouts.parts.sub-nav')
 

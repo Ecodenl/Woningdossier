@@ -165,11 +165,100 @@ final class HomeControllerTest extends TestCase
                 'scan' => $scan,
             ]))->assertOk();
 
-            $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+            $response = $this->get(route('cooperation.frontend.help.index', ['cooperation' => $this->cooperation]));
 
             $response->assertOk();
             $this->assertMatchesRegularExpression($this->navLink($this->dossierUrl($scan)), $response->getContent());
         }
+    }
+
+    public function test_woningdossier_stays_out_of_the_nav_on_the_dashboard_when_there_is_a_scan_to_pick(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->cooperation->scans()->attach(Scan::findByShort(Scan::LITE)->id);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $this->assertDoesNotMatchRegularExpression($this->woningdossierNavItem(), $response->getContent());
+
+        // Not even once a scan has been picked: on the dashboard, its buttons are the way in.
+        $this->get(route('cooperation.frontend.tool.simple-scan.my-plan.index', [
+            'cooperation' => $this->cooperation,
+            'scan' => Scan::findByShort(Scan::LITE),
+        ]))->assertOk();
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $this->assertDoesNotMatchRegularExpression($this->woningdossierNavItem(), $response->getContent());
+    }
+
+    public function test_woningdossier_stays_in_the_nav_on_the_dashboard_with_a_single_scan(): void
+    {
+        $this->enableSmartTwin(true);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $this->assertMatchesRegularExpression($this->woningdossierNavItem(), $response->getContent());
+    }
+
+    public function test_woningdossier_waits_for_a_scan_to_be_picked_on_pages_without_one(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->cooperation->scans()->attach(Scan::findByShort(Scan::LITE)->id);
+
+        $response = $this->get(route('cooperation.frontend.help.index', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $this->assertDoesNotMatchRegularExpression($this->woningdossierNavItem(), $response->getContent());
+    }
+
+    public function test_opening_the_files_does_not_pick_a_scan(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->cooperation->scans()->attach(Scan::findByShort(Scan::LITE)->id);
+
+        // The files belong to the building; their route only goes through a scan.
+        $this->get(route('cooperation.frontend.tool.simple-scan.my-plan.media', [
+            'cooperation' => $this->cooperation,
+            'scan' => Scan::findByShort(Scan::QUICK),
+        ]))->assertOk();
+
+        $response = $this->get(route('cooperation.frontend.help.index', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $this->assertDoesNotMatchRegularExpression($this->woningdossierNavItem(), $response->getContent());
+    }
+
+    public function test_woningdossier_stays_in_the_nav_for_someone_filling_in_for_another_building(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->cooperation->scans()->attach(Scan::findByShort(Scan::LITE)->id);
+
+        // withBuilding(): isFillingToolForOtherBuilding() compares against the user's own building.
+        $coach = User::factory()
+            ->withAccount()
+            ->withBuilding()
+            ->asCoach()
+            ->create(['cooperation_id' => $this->cooperation->id]);
+
+        $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+
+        $this->actingAs($coach->account);
+        HoomdossierSession::setHoomdossierSessions(
+            $this->building,
+            $inputSource,
+            $inputSource,
+            Role::findByName(RoleHelper::ROLE_COACH),
+        );
+
+        // A coach never gets the dashboard to pick on, so the nav is their way into the dossier.
+        $response = $this->get(route('cooperation.frontend.help.index', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $this->assertMatchesRegularExpression($this->woningdossierNavItem(), $response->getContent());
     }
 
     private function dossierUrl(Scan $scan): string
@@ -184,6 +273,14 @@ final class HomeControllerTest extends TestCase
     private function navLink(string $url): string
     {
         return '/<a href="' . preg_quote($url, '/') . '"\s+class="nav-item/';
+    }
+
+    /**
+     * The nav's own dossier item, wherever it points.
+     */
+    private function woningdossierNavItem(): string
+    {
+        return '/class="nav-item[^"]*">\s*' . preg_quote(__('cooperation/frontend/layouts.nav.woningdossier'), '/') . '\s*<\/a>/';
     }
 
     /**

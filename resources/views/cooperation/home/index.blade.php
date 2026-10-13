@@ -1,14 +1,14 @@
 {{-- With SmartTwin off this route is the old start screen and hangs off the bare layout, as it
      always has. With it on it is the dashboard, and needs the frontend shell around it. --}}
-@extends(Hoomdossier::hasEnabledSmartTwinCalls() ? 'cooperation.frontend.layouts.frontend' : 'cooperation.layouts.app')
+@extends(Hoomdossier::smartTwinEnabledFor($cooperation) ? 'cooperation.frontend.layouts.frontend' : 'cooperation.layouts.app')
 
-@if(Hoomdossier::hasEnabledSmartTwinCalls())
+@if(Hoomdossier::smartTwinEnabledFor($cooperation))
     {{-- The dashboard is a page of tiles, not a card floating on a photo. --}}
     @section('main_style', '')
 @endif
 
 @section('main')
-    @if(Hoomdossier::hasEnabledSmartTwinCalls())
+    @if(Hoomdossier::smartTwinEnabledFor($cooperation))
         <div class="dashboard">
             @if(session('verified'))
                 <div class="dashboard-full">

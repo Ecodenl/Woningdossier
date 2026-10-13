@@ -11,7 +11,7 @@
         ];
     @endphp
 
-    @if(Hoomdossier::hasEnabledSmartTwinCalls())
+    @if(Hoomdossier::smartTwinEnabledFor($cooperation))
         {{-- The coach tile from the dashboard beside the conversation. No contact button: this is
              where it would lead. --}}
         <div class="messages-with-coach">

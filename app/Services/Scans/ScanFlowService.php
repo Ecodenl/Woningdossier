@@ -3,6 +3,7 @@
 namespace App\Services\Scans;
 
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\SmallMeasuresSettingHelper;
 use App\Helpers\StepHelper;
 use App\Helpers\SubStepHelper;
@@ -38,6 +39,9 @@ class ScanFlowService
     public Cooperation $cooperation;
 
     protected array $skipSubSteps = [];
+
+    /** @var array<int, bool> Whether SmartTwin drives the scan, per scan id; see smartTwinDrivesScan(). */
+    private array $smartTwinDrivesScan = [];
 
     public function __construct(Scan $scan, Building $building, InputSource $inputSource)
     {
@@ -455,12 +459,14 @@ class ScanFlowService
         $questionsWithAnswers = 0;
         $visibleQuestions = 0;
 
+        $smartTwinDrivesScan = $this->smartTwinDrivesScan($subStep->step->scan);
+
         foreach ($subStep->toolQuestions as $toolQuestion) {
             /** @var SubSteppable $subSteppable */
             $subSteppable = $toolQuestion->pivot;
             if ($evaluator->evaluate($subSteppable->conditions ?? [])) {
                 // If it's visible, we will check if it's required. If it's not required, it doesn't matter after all
-                if ($toolQuestion->isRequired()) {
+                if ($toolQuestion->isRequired($smartTwinDrivesScan)) {
                     $visibleQuestions++;
 
                     $answer = $this->getAnswer($toolQuestion->short, false);
@@ -477,5 +483,15 @@ class ScanFlowService
         }
 
         return $questionsWithAnswers === $visibleQuestions;
+    }
+
+    /**
+     * Not necessarily the scan this service was made for: checking the conditionals walks the sub
+     * steps of every simple scan. Kept per scan, because working it out reads the building's settings
+     * and this is asked for every sub step.
+     */
+    private function smartTwinDrivesScan(Scan $scan): bool
+    {
+        return $this->smartTwinDrivesScan[$scan->id] ??= Hoomdossier::smartTwinDrivesScan($this->building, $scan);
     }
 }

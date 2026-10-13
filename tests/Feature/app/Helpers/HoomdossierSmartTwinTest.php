@@ -77,6 +77,24 @@ final class HoomdossierSmartTwinTest extends TestCase
         $this->assertFalse(Hoomdossier::smartTwinFillsWoonplanFor($off));
     }
 
+    public function test_smart_twin_drives_only_the_quick_scan(): void
+    {
+        $building = $this->buildingFor(Cooperation::factory()->create());
+
+        $this->assertTrue(Hoomdossier::smartTwinDrivesScan($building, Scan::findByShort(Scan::QUICK)));
+        // Nothing of the lite scan or the expert scan comes back from SmartTwin, so their required
+        // questions stay required.
+        $this->assertFalse(Hoomdossier::smartTwinDrivesScan($building, Scan::findByShort(Scan::LITE)));
+        $this->assertFalse(Hoomdossier::smartTwinDrivesScan($building, Scan::findByShort(Scan::EXPERT)));
+    }
+
+    public function test_smart_twin_does_not_drive_the_scan_of_a_cooperation_that_is_switched_off(): void
+    {
+        $building = $this->buildingFor(Cooperation::factory()->create(['smarttwin_enabled' => false]));
+
+        $this->assertFalse(Hoomdossier::smartTwinDrivesScan($building, Scan::findByShort(Scan::QUICK)));
+    }
+
     public function test_the_cooperation_of_a_building_is_found_without_a_session(): void
     {
         $cooperation = Cooperation::factory()->create();

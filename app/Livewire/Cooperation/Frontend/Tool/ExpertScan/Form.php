@@ -13,6 +13,7 @@ use App\Helpers\DataTypes\Caster;
 use App\Helpers\Hoomdossier;
 use App\Helpers\ToolQuestionHelper;
 use App\Livewire\Cooperation\Frontend\Tool\Scannable;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
@@ -86,6 +87,11 @@ class Form extends Scannable
         }
 
         return $toolQuestions;
+    }
+
+    protected function scanBeingAsked(): Scan
+    {
+        return $this->step->scan;
     }
 
     public function inputUpdated(): void

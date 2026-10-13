@@ -124,4 +124,16 @@ final class MessagesControllerTest extends TestCase
         $response->assertDontSee(__('home.dashboard.coach.no-appointment'), false);
         $response->assertSee('Een eerste bericht', false);
     }
+
+    public function test_the_page_is_unchanged_when_the_cooperation_does_not_take_part(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->cooperation->update(['smarttwin_enabled' => false]);
+
+        $response = $this->messagesPage();
+
+        $response->assertOk();
+        $response->assertDontSee(__('home.dashboard.coach.none'), false);
+        $response->assertDontSee(__('home.dashboard.coach.no-appointment'), false);
+    }
 }

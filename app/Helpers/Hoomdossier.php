@@ -83,6 +83,16 @@ class Hoomdossier
     }
 
     /**
+     * Whether SmartTwin drives the scan the building is being asked: its quick scan, where SmartTwin
+     * fills the woonplan. The questions of such a scan come back from SmartTwin, so none of them is
+     * required here (see ToolQuestion::isRequired()).
+     */
+    public static function smartTwinDrivesScan(Building $building, Scan $scan): bool
+    {
+        return $scan->isQuickScan() && static::smartTwinFillsWoonplanFor($building);
+    }
+
+    /**
      * @deprecated
      * Return the most credible value from a given collection.
      */

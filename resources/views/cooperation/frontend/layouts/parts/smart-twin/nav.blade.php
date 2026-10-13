@@ -44,6 +44,7 @@
                 @component('cooperation.layouts.components.dropdown', [
                     'label' => __('cooperation/frontend/layouts.nav.my-account'),
                     'class' => 'nav-item' . (RouteLogic::inMyAccount($currentRoute) ? ' is-active' : ''),
+                    'menuClass' => 'nav-dropdown',
                 ])
                     @include('cooperation.frontend.layouts.parts.account-dropdown-items')
                 @endcomponent

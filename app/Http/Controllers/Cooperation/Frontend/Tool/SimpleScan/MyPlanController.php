@@ -44,7 +44,8 @@ class MyPlanController extends Controller
         // is one to show is whether that advice has arrived -- not how far the scan got. Asking the
         // scan would show three empty columns to a building that filled it in before SmartTwin was
         // switched on, and to everyone on an environment where the woonplan guard is skipped.
-        if (Hoomdossier::hasEnabledSmartTwinCalls()) {
+        // A building with only the lite scan is not sent to SmartTwin, so it keeps the old guard.
+        if (Hoomdossier::smartTwinFillsWoonplanFor($building)) {
             if (! $woonplanService->hasAdvices()) {
                 return $this->smartTwinEmptyState($scan, $building);
             }
@@ -73,7 +74,7 @@ class MyPlanController extends Controller
             ->isActive();
 
         $inputSource = HoomdossierSession::getInputSource(true);
-        $canHandOff = $this->canHandOff();
+        $canHandOff = $this->canHandOff($building);
 
         return view('cooperation.frontend.tool.simple-scan.my-plan.index', compact(
             'scan',
@@ -101,16 +102,18 @@ class MyPlanController extends Controller
 
         return view('cooperation.frontend.tool.simple-scan.my-plan.start-check', [
             'scan' => $scan,
-            'canHandOff' => $this->canHandOff(),
+            'canHandOff' => $this->canHandOff($building),
         ]);
     }
 
     /**
      * Whether we can send this account into SmartTwin at all.
      */
-    private function canHandOff(): bool
+    private function canHandOff(Building $building): bool
     {
-        if (! Hoomdossier::hasEnabledSmartTwinCalls()) {
+        // Also covers a building with only the lite scan: SmartTwin's check is a quick scan, and
+        // what it sends back has no place in a lite scan dossier.
+        if (! Hoomdossier::smartTwinFillsWoonplanFor($building)) {
             return false;
         }
 

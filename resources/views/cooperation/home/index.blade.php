@@ -73,11 +73,15 @@
                     </div>
                 </div>
 
-                <div class="tile-action">
-                    <a class="btn btn-blue" href="{{ $dossierUrl }}">
-                        @lang('home.dashboard.building.to-dossier')
-                    </a>
-                </div>
+                @if(! empty($dossierLinks))
+                    <div class="tile-action">
+                        @foreach($dossierLinks as $dossierLink)
+                            <a class="btn btn-blue" href="{{ $dossierLink['url'] }}">
+                                {{ $dossierLink['label'] }}
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
             </section>
 
             {{-- The coach -------------------------------------------------------------------- --}}

@@ -24,6 +24,10 @@ class CooperationHasScan
         $building = HoomdossierSession::getBuilding(true);
 
         if ($building instanceof Building && ScanAvailabilityHelper::isAvailableForBuilding($building, $scan)) {
+            // Every page of a simple scan passes here, which makes it the place to note which of the
+            // two the user is in. The navigation reads it back on pages that carry no scan.
+            HoomdossierSession::setScan($scan);
+
             return $next($request);
         }
 

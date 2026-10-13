@@ -10,6 +10,7 @@ use App\Models\Scan;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionAnswer;
 use App\Services\CooperationScanService;
+use Illuminate\Support\Collection;
 
 class ScanAvailabilityHelper
 {
@@ -38,6 +39,20 @@ class ScanAvailabilityHelper
 
         // No override: follow cooperation default
         return $building->user->cooperation->scans->contains('id', $scan->id);
+    }
+
+    /**
+     * The simple scans (quick and lite) available for a building. Anything that has to pick "the"
+     * scan for a building without one in the route takes the first of these, so the dashboard and the
+     * navigation agree on which dossier they open.
+     *
+     * @return Collection<int, Scan>
+     */
+    public static function availableSimpleScans(Building $building): Collection
+    {
+        return Scan::simpleScans()->get()
+            ->filter(fn (Scan $scan) => static::isAvailableForBuilding($building, $scan))
+            ->values();
     }
 
     /**

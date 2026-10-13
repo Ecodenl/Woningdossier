@@ -3,8 +3,10 @@
 namespace App\Helpers;
 
 use App\Models\Account;
+use App\Models\Building;
 use App\Models\Client;
 use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\User;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -24,6 +26,20 @@ class Hoomdossier
     public static function hasEnabledSmartTwinCalls(): bool
     {
         return config('hoomdossier.services.smarttwin.enabled', false);
+    }
+
+    /**
+     * Whether SmartTwin fills the woonplan of this building. SmartTwin's check is a quick scan, so
+     * a building without the quick scan (lite scan only) keeps the woonplan as it was without
+     * SmartTwin, and is never sent to SmartTwin.
+     */
+    public static function smartTwinFillsWoonplanFor(Building $building): bool
+    {
+        $quickScan = Scan::quick();
+
+        return static::hasEnabledSmartTwinCalls()
+            && $quickScan instanceof Scan
+            && ScanAvailabilityHelper::isAvailableForBuilding($building, $quickScan);
     }
 
     /**

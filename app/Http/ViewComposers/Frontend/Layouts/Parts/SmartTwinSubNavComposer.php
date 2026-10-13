@@ -15,8 +15,9 @@ use Illuminate\View\View;
 
 /**
  * The sub navigation for the SmartTwin mode. Where the regular sub navigation walks every step of
- * the scan, this one is a fixed list of four: SmartTwin asks the technical questions, so only the
- * ones Hoomdossier still asks itself appear here, followed by the woonplan.
+ * the scan, for the quick scan this one is a fixed list of four: SmartTwin asks the technical
+ * questions, so only the ones Hoomdossier still asks itself appear here, followed by the woonplan.
+ * The lite scan keeps asking all of its own questions, so it lists every step before the woonplan.
  *
  * The list is assembled here rather than in the view because deciding what is completed, current or
  * still ahead is not markup, and because the first entry is a sub step while the two after it are
@@ -42,6 +43,50 @@ class SmartTwinSubNavComposer
         $building = HoomdossierSession::getBuilding(true);
         $master = InputSource::master();
 
+        $items = $scan->isLiteScan()
+            ? $this->liteScanItems($scan, $building, $master)
+            : $this->quickScanItems($scan, $building, $master);
+
+        $inMyPlan = RouteLogic::inMyPlan($this->request->route());
+
+        $items[] = [
+            'label' => __('cooperation/frontend/tool.my-plan.label'),
+            'url' => route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')),
+            'state' => $inMyPlan ? static::STATE_ACTIVE : static::STATE_DEFAULT,
+        ];
+
+        $view->with('items', $items);
+    }
+
+    /**
+     * SmartTwin takes over none of the lite scan's questions, so every one of its steps stays in
+     * the navigation, under its own name.
+     *
+     * @return array<int, array{label: string, url: string, state: string}>
+     */
+    private function liteScanItems(Scan $scan, ?Building $building, InputSource $master): array
+    {
+        $currentStep = $this->request->route('step');
+
+        return $scan->steps()
+            ->orderBy('order')
+            ->get()
+            ->map(fn (Step $step) => $this->stepItem(
+                $step,
+                $step->name,
+                $scan,
+                $building,
+                $master,
+                $currentStep instanceof Step && $currentStep->id === $step->id,
+            ))
+            ->all();
+    }
+
+    /**
+     * @return array<int, array{label: string, url: string, state: string}>
+     */
+    private function quickScanItems(Scan $scan, ?Building $building, InputSource $master): array
+    {
         $currentStep = $this->request->route('step');
         $currentSubStep = $this->request->route('subStep');
 
@@ -96,15 +141,7 @@ class SmartTwinSubNavComposer
             );
         }
 
-        $inMyPlan = RouteLogic::inMyPlan($this->request->route());
-
-        $items[] = [
-            'label' => __('cooperation/frontend/tool.my-plan.label'),
-            'url' => route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')),
-            'state' => $inMyPlan ? static::STATE_ACTIVE : static::STATE_DEFAULT,
-        ];
-
-        $view->with('items', $items);
+        return $items;
     }
 
     /**

@@ -45,7 +45,7 @@ final class MessagesControllerTest extends TestCase
         $this->building = Building::factory()->create(['user_id' => $resident->id]);
 
         // The page sends a resident without a conversation elsewhere, so there has to be one.
-        PrivateMessage::create([
+        PrivateMessage::createQuietly([
             'building_id' => $this->building->id,
             'from_user_id' => $resident->id,
             'from_user' => $resident->getFullName(),
@@ -80,7 +80,8 @@ final class MessagesControllerTest extends TestCase
     {
         $this->enableSmartTwin(true);
 
-        $coach = User::factory()->withAccount()->asCoach()->create(['cooperation_id' => $this->cooperation->id]);
+        // With a building of their own, like every user has: the participant list asks after it.
+        $coach = User::factory()->withAccount()->withBuilding()->asCoach()->create(['cooperation_id' => $this->cooperation->id]);
         BuildingCoachStatusService::giveAccess($coach, $this->building);
 
         $response = $this->messagesPage();

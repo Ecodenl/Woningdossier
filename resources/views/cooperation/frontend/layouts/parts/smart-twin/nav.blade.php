@@ -48,10 +48,12 @@
                     </a>
                 @endif
 
-                <a href="{{ route('cooperation.my-account.index', compact('cooperation')) }}"
-                   class="nav-item @if(RouteLogic::inMyAccount($currentRoute)) is-active @endif">
-                    @lang('cooperation/frontend/layouts.nav.my-account')
-                </a>
+                @component('cooperation.layouts.components.dropdown', [
+                    'label' => __('cooperation/frontend/layouts.nav.my-account'),
+                    'class' => 'nav-item' . (RouteLogic::inMyAccount($currentRoute) ? ' is-active' : ''),
+                ])
+                    @include('cooperation.frontend.layouts.parts.account-dropdown-items')
+                @endcomponent
             </div>
         @endif
     </div>

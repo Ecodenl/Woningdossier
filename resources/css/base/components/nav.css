@@ -45,6 +45,46 @@ a.nav-item.is-active {
     min-width: 1.25rem;
 }
 
+/* Account dropdown ----------------------------------------------------------------------------- */
+
+/*
+ * The default menu of the dropdown component (.dropdown in items.css) belongs to the icon driven
+ * navbar: blue borders, a divider under every option and bare links as options. The SmartTwin
+ * navigation hands this class to the component instead, so none of that has to be overridden.
+ */
+.nav-dropdown {
+    @apply absolute right-0 top-full z-100 mt-2 w-max py-2 pl-0 list-none rounded-md bg-white shadow-lg ring-1 ring-black/5;
+
+    /* Spelled out for the same reason as the min-width of .nav-badge. */
+    min-width: 14rem;
+}
+
+/* Each option is a full width row, so the whole row is clickable and not just its label. The account
+   items carry .in-text for the regular navbar, hence the selectors that outweigh clickables.css. */
+.nav-dropdown a:not(.btn).in-text,
+.nav-dropdown button.as-link.in-text {
+    @apply block w-full px-4 py-2 text-left text-base text-black font-normal no-underline;
+}
+
+/* The row lights up on hover. The base link rule fades text and background to 60% on hover, which
+   would wash out both, so that is undone. */
+.nav-dropdown a:not(.btn).in-text:hover,
+.nav-dropdown a:not(.btn).in-text:focus,
+.nav-dropdown button.as-link.in-text:hover,
+.nav-dropdown button.as-link.in-text:focus {
+    @apply bg-gray-400 !bg-opacity-100 !text-opacity-100;
+}
+
+/* The last option logs you out; a line sets it apart from the pages above it. */
+.nav-dropdown > li:last-child {
+    @apply mt-2 pt-2 border-t border-gray-500;
+}
+
+/* The building and user ids that are shown locally. */
+.nav-dropdown p {
+    @apply px-4 pb-2 text-sm text-gray-800;
+}
+
 /* Sub navigation ------------------------------------------------------------------------------- */
 
 a.sub-nav-item {

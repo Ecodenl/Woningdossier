@@ -70,7 +70,7 @@ class BuildingCoachStatusService
      */
     public static function getConnectedCoachesByBuilding(Building $building, bool $eagerLoadCoach = false): \Illuminate\Database\Eloquent\Collection
     {
-        return static::connectedCoachesQuery($building)
+        return self::connectedCoachesQuery($building)
             // Eager load the coaches if wanted to prevent unnecessary queries
             ->when($eagerLoadCoach, fn (Builder $query) => $query->with(['coach']))
             ->get();
@@ -89,7 +89,7 @@ class BuildingCoachStatusService
      */
     public static function getCoachToShow(Building $building): ?User
     {
-        return static::connectedCoachesQuery($building)
+        return self::connectedCoachesQuery($building)
             ->selectRaw('MAX(CASE WHEN status = ? THEN id END) AS last_added_id', [BuildingCoachStatus::STATUS_ADDED])
             ->orderByDesc('last_added_id')
             ->with(['coach'])

@@ -46,8 +46,22 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
             return;
         }
 
-        if (! Hoomdossier::hasEnabledSmartTwinCalls()) {
+        if (! Hoomdossier::hasSmartTwinApi()) {
             $this->drop($eventType, 'SmartTwin calls are disabled');
+
+            return;
+        }
+
+        $building = Building::find($this->buildingId);
+
+        if (! $building instanceof Building) {
+            return;
+        }
+
+        // The webhook only takes callbacks in for cooperations that take part, and switching one off
+        // clears what was still open. This catches a callback that slipped in between.
+        if (! Hoomdossier::smartTwinEnabledFor(Hoomdossier::cooperationOf($building))) {
+            $this->drop($eventType, 'SmartTwin is off for the cooperation');
 
             return;
         }
@@ -56,8 +70,6 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
             EventType::COACH_SCAN_FINISHED    => $api->advice()->getAdvisorToolResults($dossierId),
             EventType::RESIDENT_SCAN_FINISHED => $api->advice()->getQuickScanResults($dossierId),
         };
-
-        $building = Building::findOrFail($this->buildingId);
 
         // Persist the raw response before mapping, so a mapping retry never has to re-fetch.
         // The fetch always returns the dossier's current state.

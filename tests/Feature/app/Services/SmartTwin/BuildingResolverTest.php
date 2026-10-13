@@ -26,8 +26,30 @@ final class BuildingResolverTest extends TestCase
     {
         parent::setUp();
         $this->seed(RoleTableSeeder::class);
+        config()->set('hoomdossier.services.smarttwin.enabled', true);
 
         $this->resolver = app(BuildingResolver::class);
+    }
+
+    public function test_it_does_not_take_a_building_of_a_cooperation_that_does_not_take_part(): void
+    {
+        $building = $this->residentBuilding($this->linkedAccount());
+        $building->user->cooperation->update(['smarttwin_enabled' => false]);
+
+        $this->assertNull($this->resolver->resolve(EventType::RESIDENT_SCAN_FINISHED, $this->payload()));
+    }
+
+    public function test_the_cooperation_that_takes_part_settles_an_address_two_cooperations_share(): void
+    {
+        // The same home in two cooperations would otherwise be a refusal: two matches.
+        $account = $this->linkedAccount();
+        $wanted = $this->residentBuilding($account);
+        $other = $this->residentBuilding($account);
+        $other->user->cooperation->update(['smarttwin_enabled' => false]);
+
+        $this->assertTrue(
+            $wanted->is($this->resolver->resolve(EventType::RESIDENT_SCAN_FINISHED, $this->payload())),
+        );
     }
 
     public function test_it_resolves_the_residents_own_building(): void

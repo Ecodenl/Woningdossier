@@ -24,11 +24,6 @@ class Hoomdossier
         return config('hoomdossier.services.econobis.enabled', false);
     }
 
-    public static function hasEnabledSmartTwinCalls(): bool
-    {
-        return static::hasSmartTwinApi();
-    }
-
     /**
      * Whether this environment can talk to SmartTwin at all (SMARTTWIN_ENABLED). This is the switch
      * above the one per cooperation: what does not belong to a cooperation, such as the API client,

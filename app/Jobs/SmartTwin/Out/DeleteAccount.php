@@ -25,7 +25,9 @@ class DeleteAccount implements ShouldQueue
 
     public function handle(SmartTwinApi $api): void
     {
-        if (! Hoomdossier::hasEnabledSmartTwinCalls()) {
+        // Not per cooperation: the SmartTwin user exists whatever the cooperations of the account
+        // think of SmartTwin now, and is removed with the account.
+        if (! Hoomdossier::hasSmartTwinApi()) {
             Log::debug('SmartTwin calls are disabled, skipping DeleteAccount for ' . $this->smartTwinUserId);
             return;
         }

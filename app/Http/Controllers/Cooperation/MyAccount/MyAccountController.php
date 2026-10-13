@@ -6,9 +6,9 @@ use Illuminate\View\View;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
-use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\NotificationInterval;
+use App\Services\BuildingCoachStatusService;
 
 class MyAccountController extends Controller
 {
@@ -23,8 +23,11 @@ class MyAccountController extends Controller
         $notificationSettings = $user->notificationSettings;
         $notificationIntervals = NotificationInterval::all();
 
-        // for the access parts
-        $buildingPermissions = BuildingPermission::where('building_id', $building->id)->get();
+        // For the access parts: every attached coach, not only those with a building permission. A
+        // coach attached while the resident withholds access has no permission, but does sit in the
+        // conversation, and this is the one place the resident can let them go.
+        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuilding($building, true)
+            ->pluck('coach');
 
         return view('cooperation.my-account.index', compact(
             'user',
@@ -32,7 +35,7 @@ class MyAccountController extends Controller
             'building',
             'notificationIntervals',
             'notificationSettings',
-            'buildingPermissions'
+            'connectedCoaches'
         ));
     }
 }

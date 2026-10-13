@@ -20,7 +20,8 @@ class SmartTwinHandoffController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = Hoomdossier::user();
 
-        if (! Hoomdossier::hasEnabledSmartTwinCalls() || ! $building instanceof Building || ! $user) {
+        // The same check that decides whether the woonplan offers the button at all.
+        if (! $building instanceof Building || ! Hoomdossier::smartTwinFillsWoonplanFor($building) || ! $user) {
             return $this->backToWoonplan($cooperation, $scan);
         }
 

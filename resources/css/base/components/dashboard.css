@@ -23,8 +23,9 @@
     @apply text-md font-bold text-center mb-4;
 }
 
+/* Wraps: the house tile has a button per scan when a building has both. */
 .tile-action {
-    @apply flex justify-center mt-6;
+    @apply flex flex-wrap justify-center gap-4 mt-6;
 }
 
 /* The house ------------------------------------------------------------------------------------ */

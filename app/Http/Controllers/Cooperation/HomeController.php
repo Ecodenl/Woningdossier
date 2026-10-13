@@ -13,6 +13,7 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Scan;
 use App\Services\BuildingCoachStatusService;
+use App\Services\Models\ScanService;
 use App\Services\Scans\ScanFlowService;
 use Illuminate\Support\Collection;
 
@@ -23,9 +24,7 @@ class HomeController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        $scans = Scan::simpleScans()->get()
-            ->filter(fn ($scan) => ScanAvailabilityHelper::isAvailableForBuilding($building, $scan))
-            ->values();
+        $scans = ScanAvailabilityHelper::availableSimpleScans($building);
 
         $data = compact('building', 'inputSource', 'scans');
 
@@ -66,12 +65,39 @@ class HomeController extends Controller
             // value rather than leaving a hole where one is going to be.
             'estimatedEnergyLabel' => null,
 
-            'dossierUrl' => $scan instanceof Scan
-                ? ScanFlowService::init($scan, $building, $masterInputSource)->resolveInitialUrl()
-                : null,
+            'dossierLinks' => $this->dossierLinks($building, $scans, $masterInputSource),
             'filesUrl' => $scan instanceof Scan
                 ? route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan'))
                 : null,
         ];
+    }
+
+    /**
+     * One button per scan the building has. With a single scan there is nothing to choose, so it keeps
+     * the plain "go to your dossier"; with both, each names its scan the way the old start screen did.
+     *
+     * @return array<int, array{label: string, url: string}>
+     */
+    private function dossierLinks(Building $building, Collection $scans, InputSource $masterInputSource): array
+    {
+        return $scans
+            ->map(function (Scan $scan) use ($building, $scans, $masterInputSource) {
+                if ($scans->count() === 1) {
+                    $label = __('home.dashboard.building.to-dossier');
+                } else {
+                    $label = __(
+                        app(ScanService::class)->scan($scan)->forBuilding($building)->hasMadeScanProgress()
+                            ? 'home.start.buttons.continue'
+                            : 'home.start.buttons.start',
+                        ['scan' => $scan->name],
+                    );
+                }
+
+                return [
+                    'label' => $label,
+                    'url' => ScanFlowService::init($scan, $building, $masterInputSource)->resolveInitialUrl(),
+                ];
+            })
+            ->all();
     }
 }

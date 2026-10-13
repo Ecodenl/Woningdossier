@@ -4,6 +4,7 @@ namespace Tests\Feature\app\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
+use App\Helpers\ScanAvailabilityHelper;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
@@ -12,6 +13,7 @@ use App\Models\InputSource;
 use App\Models\Role;
 use App\Models\Scan;
 use App\Models\User;
+use App\Services\Scans\ScanFlowService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -112,6 +114,76 @@ final class HomeControllerTest extends TestCase
         $response->assertOk();
         // The admin index picks between the role's start page and the role picker itself.
         $response->assertSee($this->logoLink(route('cooperation.admin.index', ['cooperation' => $this->cooperation])), false);
+    }
+
+    public function test_woningdossier_in_the_nav_opens_a_scan_the_building_has(): void
+    {
+        $this->enableSmartTwin(true);
+
+        // The cooperation offers only the lite scan, but this building was switched to the quick
+        // scan. The navigation used to take the cooperation's first scan regardless of the building,
+        // and landed on a woonplan whose sub navigation had none of the steps.
+        $liteScan = Scan::findByShort(Scan::LITE);
+        $quickScan = Scan::findByShort(Scan::QUICK);
+        $this->cooperation->scans()->sync([$liteScan->id]);
+        ScanAvailabilityHelper::setAvailability($this->building, $quickScan, true);
+        ScanAvailabilityHelper::setAvailability($this->building, $liteScan, false);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $this->assertMatchesRegularExpression($this->navLink($this->dossierUrl($quickScan)), $response->getContent());
+    }
+
+    public function test_dashboard_offers_each_scan_the_building_has(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->cooperation->scans()->attach(Scan::findByShort(Scan::LITE)->id);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        foreach ([Scan::QUICK, Scan::LITE] as $short) {
+            $scan = Scan::findByShort($short);
+
+            $response->assertSee('href="' . $this->dossierUrl($scan) . '"', false);
+            $response->assertSee(__('home.start.buttons.start', ['scan' => $scan->name]), false);
+        }
+        $response->assertDontSee(__('home.dashboard.building.to-dossier'), false);
+    }
+
+    public function test_woningdossier_in_the_nav_follows_the_scan_the_user_went_into(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->cooperation->scans()->attach(Scan::findByShort(Scan::LITE)->id);
+
+        foreach ([Scan::LITE, Scan::QUICK] as $short) {
+            $scan = Scan::findByShort($short);
+
+            $this->get(route('cooperation.frontend.tool.simple-scan.my-plan.index', [
+                'cooperation' => $this->cooperation,
+                'scan' => $scan,
+            ]))->assertOk();
+
+            $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+            $response->assertOk();
+            $this->assertMatchesRegularExpression($this->navLink($this->dossierUrl($scan)), $response->getContent());
+        }
+    }
+
+    private function dossierUrl(Scan $scan): string
+    {
+        return ScanFlowService::init($scan, $this->building, InputSource::findByShort(InputSource::MASTER_SHORT))
+            ->resolveInitialUrl();
+    }
+
+    /**
+     * The dashboard tile links to the dossier too, so the nav's own markup tells the two apart.
+     */
+    private function navLink(string $url): string
+    {
+        return '/<a href="' . preg_quote($url, '/') . '"\s+class="nav-item/';
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Enums\SmartTwin\WoonplanState;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\SmartTwinPackage;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Services\Models\BuildingStatusService;
@@ -52,6 +53,16 @@ final class WoonplanLockTest extends TestCase
         ]);
     }
 
+    private function package(string $inputSourceShort): void
+    {
+        SmartTwinPackage::create([
+            'building_id'             => $this->building->id,
+            'input_source_id'         => InputSource::findByShort($inputSourceShort)->id,
+            'measure_application_ids' => [MeasureApplication::findByShort('floor-insulation')->id],
+            'imported_at'             => now(),
+        ]);
+    }
+
     private function setStatus(string $short): void
     {
         app(BuildingStatusService::class)->forBuilding($this->building)->setStatus($short);
@@ -73,10 +84,21 @@ final class WoonplanLockTest extends TestCase
 
     public function test_locked_with_a_coach_plan_shows_it_locked(): void
     {
-        $this->coachAdvice(AdviceSource::SMART_TWIN);
+        $this->package(InputSource::COACH_SHORT);
         $this->lock->lock($this->building);
 
         $this->assertSame(WoonplanState::LOCKED, $this->lock->state($this->building));
+    }
+
+    public function test_a_plan_from_the_residents_quick_scan_is_no_coach_plan(): void
+    {
+        // Every import writes the advices of every input source, so the coach has rows here too;
+        // the package says the plan came from the resident.
+        $this->coachAdvice(AdviceSource::SMART_TWIN);
+        $this->package(InputSource::RESIDENT_SHORT);
+        $this->lock->lock($this->building);
+
+        $this->assertSame(WoonplanState::AWAITING_COACH, $this->lock->state($this->building));
     }
 
     public function test_a_coach_advice_from_before_smarttwin_is_no_coach_plan(): void

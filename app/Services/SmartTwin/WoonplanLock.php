@@ -2,13 +2,11 @@
 
 namespace App\Services\SmartTwin;
 
-use App\Enums\AdviceSource;
 use App\Enums\SmartTwin\WoonplanState;
 use App\Helpers\Models\BuildingSettingHelper;
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\MeasureApplication;
-use App\Models\UserActionPlanAdvice;
+use App\Models\SmartTwinPackage;
 
 /**
  * Locks the resident's woonplan while a coach works on it in SmartTwin.
@@ -44,10 +42,13 @@ class WoonplanLock
     /**
      * Locked without a coach plan is "Nog even geduld"; locked with one shows that plan, read-only.
      *
-     * A coach plan is any SmartTwin advice in the coach's input source. On a second round that is
-     * the previous plan, which is then shown locked rather than hidden — deliberately: it is there.
-     * Advices the calculation made for the coach before SmartTwin do not count, or the very first
-     * start would skip the waiting message.
+     * A coach plan is a package the advisor tool brought in: the last import came from the coach.
+     * On a second round that is the previous plan, which is then shown locked rather than hidden --
+     * deliberately: it is there. A resident's quick scan after it replaced it, so then there is none.
+     *
+     * Read from the package rather than from the coach's advices: every import writes the advices of
+     * every input source (see the switch in Hoomdossier::smartTwinOwnsWoonplanFor()), so a coach row
+     * says nothing about which flow brought the plan.
      */
     public function state(Building $building): WoonplanState
     {
@@ -55,12 +56,9 @@ class WoonplanLock
             return WoonplanState::OPEN;
         }
 
-        $hasCoachPlan = UserActionPlanAdvice::withoutGlobalScopes()
-            ->where('user_id', $building->user_id)
-            ->where('input_source_id', InputSource::findByShort(InputSource::COACH_SHORT)->id)
-            ->where('user_action_plan_advisable_type', MeasureApplication::class)
-            ->where('source', AdviceSource::SMART_TWIN)
-            ->exists();
+        $package = $building->smartTwinPackage()->first();
+        $hasCoachPlan = $package instanceof SmartTwinPackage
+            && $package->input_source_id === InputSource::findByShort(InputSource::COACH_SHORT)->id;
 
         return $hasCoachPlan ? WoonplanState::LOCKED : WoonplanState::AWAITING_COACH;
     }

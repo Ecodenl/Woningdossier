@@ -13,6 +13,7 @@ use App\Models\RoofType;
 use App\Models\SmartTwinPackage;
 use App\Models\ToolQuestion;
 use App\Models\UserActionPlanAdvice;
+use App\Services\SmartTwin\SharedWoonplan;
 use App\Services\ToolQuestionService;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Facades\Log;
@@ -45,6 +46,10 @@ class MappingApplier
      * Whether this run cleared the action plan already; see clearActionPlanOnce().
      */
     private bool $clearedThisRun = false;
+
+    public function __construct(private readonly SharedWoonplan $sharedWoonplan)
+    {
+    }
 
     /**
      * Records the package this import put in the action plan, with what SmartTwin calculated for it:
@@ -132,9 +137,10 @@ class MappingApplier
      *
      * The calculated advices SmartTwin replaces go, and so does the package of a previous import:
      * the plan becomes exactly the solutions of this response. Small measures and the resident's
-     * and cooperation's own measures stay. This happens for every input source, master included:
-     * an advice is the same for resident and coach once SmartTwin made it, so a stale row of the
-     * other one cannot conflict with it later.
+     * and cooperation's own measures stay, made equal for every input source. This happens for
+     * every input source, master included: the woonplan is the same for resident and coach once
+     * SmartTwin made it (see SharedWoonplan), so a stale row of the other one cannot conflict with
+     * it later.
      *
      * Only once an advice actually comes in. A response that advises nothing leaves the plan as it
      * was, rather than emptying it and inviting the resident to do the check they just did.
@@ -149,6 +155,10 @@ class MappingApplier
 
         $replaced = UserActionPlanAdviceService::removeAdvicesReplacedBySmartTwin($building);
         $previous = UserActionPlanAdviceService::removeSmartTwinAdvices($building);
+
+        // What stays, the small and own measures, may still differ per input source: before the
+        // switch every input source kept its own rows. From here on they are one woonplan.
+        $this->sharedWoonplan->equalizeToMaster($building);
 
         Log::debug('SmartTwin advice replaced the action plan', [
             'building_id' => $building->getKey(),
@@ -252,7 +262,7 @@ class MappingApplier
             );
         }
 
-        UserActionPlanAdvice::withoutGlobalScopes()->updateOrCreate(
+        $advice = UserActionPlanAdvice::withoutGlobalScopes()->updateOrCreate(
             $where,
             [
                 'step_id'  => $measure->step_id,
@@ -269,6 +279,10 @@ class MappingApplier
                 'savings_money'       => null,
             ],
         );
+
+        // The flow's row and master are written; the other input source gets the same. A SmartTwin
+        // advice is one woonplan for resident and coach alike.
+        $this->sharedWoonplan->copyFromMaster($advice);
 
         $this->pricedThisRun[$measure->id] = true;
 

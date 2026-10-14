@@ -3,6 +3,7 @@
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Events\CustomMeasureApplicationChanged;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Enums\MappingType;
 use App\Helpers\NumberFormatter;
@@ -14,6 +15,7 @@ use App\Models\MeasureCategory;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\VisibleScope;
 use App\Services\MappingService;
+use App\Services\SmartTwin\SharedWoonplan;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -198,7 +200,7 @@ abstract class CustomMeasureForm extends Component
                 $measureCategory instanceof MeasureCategory ? $service->sync([$measureCategory], MappingType::CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY->value) : $service->detach();
 
                 // Update the user action plan advice linked to this custom measure
-                $customMeasureApplication
+                $advice = $customMeasureApplication
                     ->userActionPlanAdvices()
                     ->allInputSources()
                     ->withoutGlobalScope(VisibleScope::class)
@@ -209,6 +211,12 @@ abstract class CustomMeasureForm extends Component
                         ],
                         $updateData
                     );
+
+                // After the switch the woonplan is one for resident and coach: the other gets this
+                // own measure too. See SharedWoonplan.
+                if (Hoomdossier::smartTwinOwnsWoonplanFor($this->building)) {
+                    app(SharedWoonplan::class)->copyFromMaster($advice);
+                }
 
                 if ($dispatchRegulationUpdate) {
                     CustomMeasureApplicationChanged::dispatch($from);

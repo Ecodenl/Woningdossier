@@ -10,6 +10,7 @@ use App\Services\SmartTwin\Mapping\FieldMapper;
 use App\Services\SmartTwin\Mapping\Leaf;
 use App\Services\SmartTwin\Mapping\MapperRegistry;
 use App\Services\SmartTwin\Mapping\MappingApplier;
+use App\Services\SmartTwin\SharedWoonplan;
 use App\Services\SmartTwin\Mapping\MappingReport;
 use App\Services\SmartTwin\Mapping\MappingResult;
 use App\Services\SmartTwin\SmartTwinService;
@@ -43,7 +44,7 @@ final class SmartTwinServiceTest extends TestCase
 
         $this->seed(InputSourcesTableSeeder::class);
 
-        $this->applier = new RecordingApplier();
+        $this->applier = new RecordingApplier(new SharedWoonplan());
         $this->app->instance(MappingApplier::class, $this->applier);
     }
 
@@ -163,7 +164,7 @@ final class SmartTwinServiceTest extends TestCase
     {
         // A mapping pointing at a short that does not exist is a bug in the mapping, and the report
         // has to say so rather than claim the field was mapped.
-        $this->app->instance(MappingApplier::class, new DowngradingApplier());
+        $this->app->instance(MappingApplier::class, new DowngradingApplier(new SharedWoonplan()));
 
         $report = $this->process([EnergyLabelMapper::class]);
 
@@ -175,7 +176,7 @@ final class SmartTwinServiceTest extends TestCase
 
     public function test_a_write_that_throws_is_reported_as_an_error_and_not_as_mapped(): void
     {
-        $this->app->instance(MappingApplier::class, new ExplodingApplier());
+        $this->app->instance(MappingApplier::class, new ExplodingApplier(new SharedWoonplan()));
 
         $report = $this->process([EnergyLabelMapper::class]);
 

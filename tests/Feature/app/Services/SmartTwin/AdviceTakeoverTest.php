@@ -99,9 +99,10 @@ final class AdviceTakeoverTest extends TestCase
 
         $this->processSmartTwinAdvice('cavity-wall-insulation');
 
-        // The advised measure is taken over, resident and master alike.
+        // The advised measure is taken over, and is the same for resident, coach and master: one
+        // woonplan once SmartTwin made it (see SharedWoonplan).
         $cavity = $this->adviceRows('cavity-wall-insulation');
-        $this->assertCount(2, $cavity);
+        $this->assertCount(3, $cavity);
         $this->assertTrue($cavity->every(fn (UserActionPlanAdvice $advice) => AdviceSource::SMART_TWIN === $advice->source));
 
         // Not advised by SmartTwin, but calculated: gone, master included.
@@ -114,7 +115,8 @@ final class AdviceTakeoverTest extends TestCase
 
         $this->processSmartTwinAdvice('cavity-wall-insulation');
 
-        $this->assertCount(2, $this->adviceRows('save-energy-with-light'));
+        // Kept, and from the switch on the same for resident, coach and master.
+        $this->assertCount(3, $this->adviceRows('save-energy-with-light'));
     }
 
     public function test_nothing_goes_when_smart_twin_advised_nothing(): void

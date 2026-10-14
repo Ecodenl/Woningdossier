@@ -22,6 +22,7 @@ use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\Models\NotificationService;
 use App\Services\Models\UserCostService;
+use App\Services\SmartTwin\SharedWoonplan;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Collection;
 use App\Helpers\Arr;
@@ -347,8 +348,9 @@ class Form extends CustomMeasureForm
 
     /**
      * Whether this woonplan went over to SmartTwin (Hoomdossier::smartTwinOwnsWoonplanFor()). Then
-     * the expert scan is closed (App\Http\Middleware\EnsureExpertScanAvailable). Computed, so the
-     * view asks once.
+     * every action applies to resident, coach and master alike (SharedWoonplan), and the expert scan
+     * is closed (App\Http\Middleware\EnsureExpertScanAvailable). Computed, so a reorder that touches
+     * every card in a column asks once.
      */
     #[Computed]
     public function smartTwinOwnsWoonplan(): bool
@@ -373,6 +375,15 @@ class Form extends CustomMeasureForm
             ->find($id);
 
         Gate::authorize('view', $advice);
+
+        // One woonplan for everyone: master, which is what is shown and what $advice is, then the
+        // resident's and the coach's rows after it.
+        if ($this->smartTwinOwnsWoonplan) {
+            $advice->update($update);
+            app(SharedWoonplan::class)->copyFromMaster($advice);
+
+            return;
+        }
 
         // If it's a custom measure, we need to get the sibling because the custom measure also has an input source
         if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {

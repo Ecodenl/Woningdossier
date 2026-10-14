@@ -259,6 +259,54 @@ final class MappingApplierTest extends TestCase
             ->exists());
     }
 
+    public function test_an_advice_lands_for_resident_coach_and_master(): void
+    {
+        $applier = app(MappingApplier::class);
+        $applier->startRun();
+        // Written through the coach's flow.
+        $applier->apply($this->building, $this->coach, MappingResult::mappedAdvice('cavity-wall-insulation', 1622.65));
+
+        $rows = UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $this->building->user_id)
+            ->where('user_action_plan_advisable_id', MeasureApplication::findByShort('cavity-wall-insulation')->id)
+            ->get();
+
+        $this->assertEqualsCanonicalizing(
+            [InputSource::RESIDENT_SHORT, InputSource::COACH_SHORT, InputSource::MASTER_SHORT],
+            $rows->map(fn (UserActionPlanAdvice $row) => InputSource::find($row->input_source_id)->short)->all(),
+        );
+        $this->assertTrue($rows->every(fn (UserActionPlanAdvice $row) => 1622.65 === (float) $row->costs['to']));
+    }
+
+    public function test_the_first_import_makes_the_own_measures_the_same_for_everyone(): void
+    {
+        // Added by the resident before SmartTwin: only theirs and master.
+        $own = CustomMeasureApplication::factory()->create([
+            'building_id'     => $this->building->id,
+            'input_source_id' => InputSource::resident()->id,
+        ]);
+        (new UserActionPlanAdvice([
+            'user_id'                         => $this->building->user_id,
+            'input_source_id'                 => InputSource::resident()->id,
+            'user_action_plan_advisable_type' => CustomMeasureApplication::class,
+            'user_action_plan_advisable_id'   => $own->id,
+            'costs'                           => ['from' => null, 'to' => 500],
+        ]))->save();
+        $this->assertNull($own->getSibling($this->coach));
+
+        $applier = app(MappingApplier::class);
+        $applier->startRun();
+        $applier->apply($this->building, InputSource::resident(), MappingResult::mappedAdvice('cavity-wall-insulation', 1622.65));
+
+        $coachSibling = $own->getSibling($this->coach);
+        $this->assertInstanceOf(CustomMeasureApplication::class, $coachSibling);
+        $this->assertTrue(UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('input_source_id', $this->coach->id)
+            ->where('user_action_plan_advisable_type', CustomMeasureApplication::class)
+            ->where('user_action_plan_advisable_id', $coachSibling->id)
+            ->exists());
+    }
+
     public function test_the_action_plan_is_cleared_once_per_import(): void
     {
         $applier = app(MappingApplier::class);

@@ -109,6 +109,9 @@ final class SmartTwinImportTest extends TestCase
         $scenario['solutions'] = $solutions;
         $scenario['totalCostWithTax'] = 15209.57;
         $scenario['energyCostSavingsPerMonth'] = 35;
+        // As in the first response with a subsidy (dossier 100271): one scheme, many decimals.
+        $scenario['totalSubsidy'] = 6853.749263548063;
+        $scenario['subsidies'] = [['name' => 'ISDE', 'amount' => 6853.749263548063]];
 
         $current = $this->section(1.3, 1.3, $withFlatRoof ? 1.3 : null);
         $current['calculationResult'] = ['energyConsumptionGas' => 1623.6915, 'energyLabel' => 'C'];
@@ -225,7 +228,16 @@ final class SmartTwinImportTest extends TestCase
 
     public function test_the_package_is_recorded_with_what_smarttwin_calculated_for_it(): void
     {
-        $this->import($this->response());
+        $report = $this->import($this->response());
+
+        // The subsidy is claimed, so the report says where it went instead of listing it as unmapped.
+        $subsidyStatuses = collect($report->entries())
+            ->filter(fn ($entry) => str_starts_with($entry->leaf->path, 'scenario.subsidies') || 'scenario.totalSubsidy' === $entry->leaf->path)
+            ->map(fn ($entry) => $entry->status)
+            ->unique()
+            ->values()
+            ->all();
+        $this->assertSame([MappingStatus::SKIPPED], $subsidyStatuses);
 
         $package = $this->building->smartTwinPackage()->first();
 
@@ -236,6 +248,8 @@ final class SmartTwinImportTest extends TestCase
         $this->assertEqualsWithDelta(283.92, $package->gasSavings(), 0.001);
         $this->assertSame('B', $package->labelAfter());
         $this->assertEqualsWithDelta(15209.57, (float) $package->total_cost_with_tax, 0.001);
+        $this->assertEqualsWithDelta(6853.75, (float) $package->total_subsidy, 0.001);
+        $this->assertSame([['name' => 'ISDE', 'amount' => 6853.75]], $package->subsidies);
         $this->assertTrue($package->isIntactFor($package->measure_application_ids));
     }
 

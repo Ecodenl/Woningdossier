@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * The package the last SmartTwin import put in a building's action plan, with what SmartTwin
  * calculated for it.
  *
- * SmartTwin gives one saving and one energy label for the package as a whole, not per measure. They
- * only hold while "Nu aanpakken" holds exactly that package — move a package card out, trash it, or
+ * SmartTwin gives one saving, one energy label and one subsidy (per scheme) for the package as a
+ * whole, not per measure. They only hold while "Nu aanpakken" holds exactly that package — move a package card out, trash it, or
  * add another one, and the plan is no longer what SmartTwin calculated. Whether the package is still
  * intact is asked of the plan as it is shown, never stored: put the card back and it is intact again.
  *
@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array<string, mixed>|null $scenario_result
  * @property numeric|null $total_cost_with_tax
  * @property numeric|null $energy_cost_savings_per_month
+ * @property numeric|null $total_subsidy
+ * @property array<int, array{name: string|null, amount: float|null}>|null $subsidies
  * @property \Illuminate\Support\Carbon $imported_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -42,6 +44,8 @@ class SmartTwinPackage extends Model
         'scenario_result',
         'total_cost_with_tax',
         'energy_cost_savings_per_month',
+        'total_subsidy',
+        'subsidies',
         'imported_at',
     ];
 
@@ -53,6 +57,8 @@ class SmartTwinPackage extends Model
             'scenario_result'               => 'array',
             'total_cost_with_tax'           => 'decimal:2',
             'energy_cost_savings_per_month' => 'decimal:2',
+            'total_subsidy'                 => 'decimal:2',
+            'subsidies'                     => 'array',
             'imported_at'                   => 'datetime',
         ];
     }

@@ -48,8 +48,8 @@ class MappingApplier
 
     /**
      * Records the package this import put in the action plan, with what SmartTwin calculated for it:
-     * the gas use and energy label before and after, the total cost and the monthly saving. Those
-     * are only meaningful for the package as a whole; see SmartTwinPackage.
+     * the gas use and energy label before and after, the total cost, the monthly saving and the
+     * subsidy. Those are only meaningful for the package as a whole; see SmartTwinPackage.
      *
      * Called once the solutions are written, so the package is the measures that actually reached
      * the plan — a solution without a coupled measure is not part of it.
@@ -67,9 +67,31 @@ class MappingApplier
                 'scenario_result'               => $results['scenario']['calculationResult'] ?? null,
                 'total_cost_with_tax'           => $results['scenario']['totalCostWithTax'] ?? null,
                 'energy_cost_savings_per_month' => $results['scenario']['energyCostSavingsPerMonth'] ?? null,
+                'total_subsidy'                 => $results['scenario']['totalSubsidy'] ?? null,
+                'subsidies'                     => $this->subsidiesOf($results),
                 'imported_at'                   => now(),
             ],
         );
+    }
+
+    /**
+     * The subsidy per scheme, in cents, as SmartTwin gives the amounts with a dozen decimals.
+     *
+     * @param  array<string, mixed>  $results
+     * @return array<int, array{name: string|null, amount: float|null}>|null
+     */
+    private function subsidiesOf(array $results): ?array
+    {
+        $subsidies = $results['scenario']['subsidies'] ?? null;
+
+        if (! is_array($subsidies)) {
+            return null;
+        }
+
+        return array_values(array_map(fn (mixed $subsidy) => [
+            'name'   => is_array($subsidy) ? ($subsidy['name'] ?? null) : null,
+            'amount' => is_array($subsidy) && is_numeric($subsidy['amount'] ?? null) ? round((float) $subsidy['amount'], 2) : null,
+        ], $subsidies));
     }
 
     /**

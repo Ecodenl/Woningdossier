@@ -54,6 +54,8 @@ return [
                 ],
             ],
             'see-info' => 'Zie info',
+            // On a card of the package SmartTwin calculated, in whichever column it is.
+            'package-label' => 'Verbeterpakket',
             'regulations' => [
                 'subsidy-available' => 'Subsidie mogelijk',
                 'after-subsidy-cut' => 'Na aftrek subsidie',

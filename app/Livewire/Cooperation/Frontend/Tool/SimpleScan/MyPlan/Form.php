@@ -17,12 +17,14 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Scan;
+use App\Models\SmartTwinPackage;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\Models\NotificationService;
 use App\Services\Models\UserCostService;
 use App\Services\SmartTwin\SharedWoonplan;
+use App\Services\SmartTwin\WoonplanCardRules;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Collection;
 use App\Helpers\Arr;
@@ -106,6 +108,25 @@ class Form extends CustomMeasureForm
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
+        // A SmartTwin woonplan has its card rules (WoonplanCardRules). The browser already refuses
+        // what is not allowed; this is what makes it stick.
+        if ($this->smartTwinOwnsWoonplan) {
+            $outcome = WoonplanCardRules::move($this->kindOfCard($id), $fromCategory, $toCategory);
+
+            if (WoonplanCardRules::ALLOWED !== $outcome) {
+                $this->reloadCards();
+
+                if (WoonplanCardRules::EXECUTE === $outcome) {
+                    // Into "In orde" means carried out, which asks for a date first.
+                    $this->dispatch('open-executed', id: (int) $id);
+                }
+
+                $this->dispatch('moved-card');
+
+                return;
+            }
+        }
+
         // Disclaimer: We have to do it like this, because JavaScript re-sorts arrays / objects to given numeric
         // keys, so we must ENSURE the order is 100% valid from top to bottom
 
@@ -182,6 +203,13 @@ class Form extends CustomMeasureForm
     public function cardTrashed(string $fromCategory, string $id): void
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
+
+        if ($this->smartTwinOwnsWoonplan && ! WoonplanCardRules::mayTrash($this->kindOfCard($id))) {
+            $this->reloadCards();
+            $this->dispatch('trashed-card');
+
+            return;
+        }
 
         // Get the original card object
         $cardData = Arr::where($this->cards[$fromCategory], function ($card, $order) use ($id) {
@@ -356,6 +384,45 @@ class Form extends CustomMeasureForm
     public function smartTwinOwnsWoonplan(): bool
     {
         return Hoomdossier::smartTwinOwnsWoonplanFor($this->building);
+    }
+
+    /**
+     * The measures of the package SmartTwin calculated, for the "Verbeterpakket" label: a package
+     * card keeps it in every column.
+     *
+     * @return array<int, int>
+     */
+    #[Computed]
+    public function packageMeasureIds(): array
+    {
+        $package = $this->building->smartTwinPackage()->first();
+
+        return $package instanceof SmartTwinPackage ? array_map('intval', $package->measure_application_ids ?? []) : [];
+    }
+
+    private function kindOfCard(string $id): string
+    {
+        $advice = UserActionPlanAdvice::allInputSources()
+            ->withoutGlobalScope(VisibleScope::class)
+            ->where('user_id', $this->building->user->id)
+            ->findOrFail($id);
+
+        return WoonplanCardRules::kindOf($advice);
+    }
+
+    /**
+     * Puts the cards back as they are stored, after the browser moved one where it may not go.
+     */
+    private function reloadCards(): void
+    {
+        foreach (UserActionPlanAdviceService::getCategories() as $category) {
+            $this->cards[$category] = [];
+            $this->hiddenCards[$category] = [];
+        }
+
+        $this->loadVisibleCards();
+        $this->loadHiddenCards();
+        $this->recalculate();
     }
 
     #[Computed]
@@ -649,6 +716,18 @@ class Form extends CustomMeasureForm
             $cards[$category][$order]['loan_available'] = $advice->loan_available;
 
             $cards[$category][$order]['id'] = $advice->id;
+
+            // What the card may do; see WoonplanCardRules. Before the switch every card moves and goes
+            // to the trash as it always did.
+            $kind = $this->smartTwinOwnsWoonplan ? WoonplanCardRules::kindOf($advice) : null;
+            $cards[$category][$order]['kind'] = $kind;
+            $cards[$category][$order]['targets'] = is_null($kind)
+                ? array_values(UserActionPlanAdviceService::getCategories())
+                : WoonplanCardRules::targets($kind, $category);
+            $cards[$category][$order]['trashable'] = is_null($kind) || WoonplanCardRules::mayTrash($kind);
+            $cards[$category][$order]['in_package'] = ! is_null($kind)
+                && $advice->user_action_plan_advisable_type === MeasureApplication::class
+                && in_array((int) $advice->user_action_plan_advisable_id, $this->packageMeasureIds, true);
             $cards[$category][$order]['costs'] = [
                 'from' => empty($advice->costs['from']) ? null : NumberFormatter::round($advice->costs['from']),
                 'to' => empty($advice->costs['to']) ? null : NumberFormatter::round($advice->costs['to']),

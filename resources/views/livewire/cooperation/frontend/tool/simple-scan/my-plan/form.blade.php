@@ -37,6 +37,9 @@
                              wire:loading.class="disabled" wire:target="cardMoved, cardTrashed, addHiddenCardToBoard"
                              {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
                              x-bind="draggable"
+                             {{-- Where the card may go; see App\Services\SmartTwin\WoonplanCardRules. --}}
+                             data-targets='@json($card['targets'])'
+                             data-trashable="{{ $card['trashable'] ? '1' : '0' }}"
                              @if($disabled) draggable="false" @else draggable="true" @endif>
                             <div class="icon-wrapper">
                                 <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
@@ -59,6 +62,11 @@
                                     <h6 class="heading-6 max-w-17/20">
                                         {{ $card['name'] }}
                                     </h6>
+                                @endif
+                                @if($card['in_package'])
+                                    <div class="h-4 rounded-lg text-xs relative text-blue bg-blue bg-opacity-10 flex items-center px-2 w-fit">
+                                        @lang('cooperation/frontend/tool.my-plan.cards.package-label')
+                                    </div>
                                 @endif
                                 <div class="flex justify-between">
                                     <p>

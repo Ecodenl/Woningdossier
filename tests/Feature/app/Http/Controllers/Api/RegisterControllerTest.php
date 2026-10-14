@@ -4,14 +4,18 @@ namespace Tests\Feature\app\Http\Controllers\Api;
 
 use App\Enums\Country;
 use App\Helpers\Arr;
+use App\Helpers\Models\BuildingSettingHelper;
 use App\Models\Client;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\User;
+use App\Services\CooperationScanService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\Sanctum;
 use Tests\MocksLvbag;
 use Tests\TestCase;
@@ -211,5 +215,105 @@ final class RegisterControllerTest extends TestCase
         }
     }
 
+    public function test_building_follows_cooperation_scans_without_scan_settings(): void
+    {
+        $response = $this->registerWithScans(Scan::QUICK, null);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseMissing('building_settings', ['building_id' => $this->buildingIdFor($response)]);
+    }
+
+    public function test_scan_type_overrides_cooperation_scans(): void
+    {
+        $response = $this->registerWithScans(Scan::QUICK, ['type' => Scan::LITE]);
+
+        $response->assertStatus(201);
+        $buildingId = $this->buildingIdFor($response);
+        $this->assertDatabaseHas('building_settings', [
+            'building_id' => $buildingId,
+            'short' => BuildingSettingHelper::SHORT_SCAN_ENABLED_LITE_SCAN,
+            'value' => '1',
+        ]);
+        $this->assertDatabaseHas('building_settings', [
+            'building_id' => $buildingId,
+            'short' => BuildingSettingHelper::SHORT_SCAN_ENABLED_QUICK_SCAN,
+            'value' => '0',
+        ]);
+    }
+
+    public function test_scan_type_matching_cooperation_scans_stores_no_override(): void
+    {
+        $response = $this->registerWithScans('both-scans', ['type' => 'both-scans']);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseMissing('building_settings', ['building_id' => $this->buildingIdFor($response)]);
+    }
+
+    public function test_invalid_scan_type_returns_422(): void
+    {
+        $response = $this->registerWithScans(Scan::QUICK, ['type' => Scan::EXPERT]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('scans.type', null);
+    }
+
+    public function test_small_measures_override_is_stored(): void
+    {
+        $response = $this->registerWithScans(Scan::QUICK, ['type' => 'both-scans', 'small_measures_enabled' => false]);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('building_settings', [
+            'building_id' => $this->buildingIdFor($response),
+            'short' => BuildingSettingHelper::SHORT_SMALL_MEASURES_ENABLED_QUICK_SCAN,
+            'value' => '0',
+        ]);
+    }
+
+    public function test_small_measures_matching_cooperation_stores_no_override(): void
+    {
+        // Small measures are enabled for a cooperation by default.
+        $response = $this->registerWithScans(Scan::QUICK, ['small_measures_enabled' => true]);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseMissing('building_settings', ['building_id' => $this->buildingIdFor($response)]);
+    }
+
+    public function test_small_measures_without_quick_scan_type_returns_422(): void
+    {
+        $response = $this->registerWithScans(Scan::QUICK, ['type' => Scan::LITE, 'small_measures_enabled' => false]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('scans.small_measures_enabled', null);
+    }
+
+    public function test_small_measures_without_quick_scan_for_cooperation_returns_422(): void
+    {
+        $response = $this->registerWithScans(Scan::LITE, ['small_measures_enabled' => false]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('scans.small_measures_enabled', null);
+    }
+
     // TODO: Create test for duplicate contact ID in the same cooperation
+
+    private function registerWithScans(string $cooperationScanType, ?array $scans): TestResponse
+    {
+        /** @var Cooperation $cooperation */
+        $cooperation = Cooperation::factory()->create(['country' => Country::NL->value]);
+        CooperationScanService::init($cooperation)->syncScan($cooperationScanType);
+
+        Sanctum::actingAs(Client::factory()->create(), ['*']);
+
+        $formData = $this->formData[Country::NL->value];
+        if (! is_null($scans)) {
+            $formData['scans'] = $scans;
+        }
+
+        return $this->postJson(route('api.v1.cooperation.register.store', compact('cooperation')), $formData);
+    }
+
+    private function buildingIdFor(TestResponse $response): int
+    {
+        return User::find($response->json('user_id'))->building->id;
+    }
 }

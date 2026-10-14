@@ -212,6 +212,7 @@ return [
         'api' => [
             'incorrect-vbjehuis-value' => ':Attribute is geen geldige VerbeterJeHuis waarde!',
             'contact-id-unique' => 'De :attribute is al geregistreerd. Zoek in het Hoomdossier dit contact op en vul in in Econobis het Hoomaccount ID in. Vul eventueel het Econobis contact ID (wat in de URL staat) in het Hoomdossier in.',
+            'small-measures-requires-quick-scan' => ':Attribute kan alleen worden ingesteld als de quick-scan beschikbaar is voor de woning.',
         ],
     ],
 
@@ -375,6 +376,8 @@ return [
         // API
         'building_coach_statuses.coach_contact_id' => 'coach contact ID',
         'building_coach_statuses.resident_contact_id' => 'bewoner contact ID',
+        'scans.type' => 'scantype',
+        'scans.small_measures_enabled' => 'kleine maatregelen',
 
         // Questionnaires
         'questionnaires.steps' => 'na stap',

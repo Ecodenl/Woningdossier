@@ -67,24 +67,10 @@ trait CreatesUsers
 
         // Set small measures overrides, only for scans enabled by the selected type
         $smallMeasuresEnabled = $request->input('scans.small_measures_enabled', []);
-        $enabledScanShorts = match ($scanType) {
-            Scan::QUICK => [Scan::QUICK],
-            Scan::LITE => [Scan::LITE],
-            'both-scans' => [Scan::QUICK, Scan::LITE],
-            default => [Scan::QUICK],
-        };
 
-        foreach (Scan::simpleScans()->get() as $scan) {
-            if (! in_array($scan->short, $enabledScanShorts)) {
-                continue;
-            }
-
-            $enabled = filter_var($smallMeasuresEnabled[$scan->short] ?? '0', FILTER_VALIDATE_BOOLEAN);
-            $cooperationDefault = SmallMeasuresSettingHelper::isEnabledForCooperation($cooperation, $scan);
-
-            if ($enabled !== $cooperationDefault) {
-                SmallMeasuresSettingHelper::setOverride($building, $scan, $enabled);
-            }
+        foreach (ScanAvailabilityHelper::scanShortsForType($scanType) as $scanShort) {
+            $enabled = filter_var($smallMeasuresEnabled[$scanShort] ?? '0', FILTER_VALIDATE_BOOLEAN);
+            SmallMeasuresSettingHelper::syncOverride($building, Scan::findByShort($scanShort), $enabled, $cooperation);
         }
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.

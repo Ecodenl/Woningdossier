@@ -154,17 +154,26 @@ class ScanAvailabilityHelper
     }
 
     /**
+     * The simple scans enabled by a type selection (quick-scan, lite-scan, or both-scans).
+     * Unknown types fall back to the quick scan.
+     *
+     * @return array<int, string>
+     */
+    public static function scanShortsForType(string $type): array
+    {
+        return match ($type) {
+            Scan::LITE => [Scan::LITE],
+            'both-scans' => [Scan::QUICK, Scan::LITE],
+            default => [Scan::QUICK],
+        };
+    }
+
+    /**
      * Sync scan availability for a building based on a type selection (quick-scan, lite-scan, or both-scans).
      */
     public static function syncAvailability(Building $building, string $type, ?Cooperation $cooperation = null): void
     {
-        $enabledScans = [
-            Scan::QUICK => [Scan::QUICK],
-            Scan::LITE => [Scan::LITE],
-            'both-scans' => [Scan::QUICK, Scan::LITE],
-        ];
-
-        $scansToEnable = $enabledScans[$type] ?? [Scan::QUICK];
+        $scansToEnable = static::scanShortsForType($type);
         // Fall back to the building's owning user/cooperation, bypassing the session's CooperationScope
         // so super-admin flows targeting another cooperation still resolve correctly.
         $cooperation ??= $building->user()->withoutGlobalScopes()->first()?->cooperation;

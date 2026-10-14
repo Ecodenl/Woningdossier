@@ -201,9 +201,10 @@ class UserActionPlanAdviceService
      *
      * Once SmartTwin advised a building, its woonplan is SmartTwin's advice plus what the resident
      * chose; the calculated advices SmartTwin replaces are removed (removeAdvicesReplacedBySmartTwin())
-     * and must not come back with the next recalculation. That holds as long as the building has a
-     * SmartTwin advice and its cooperation takes part. Switching the cooperation off removes the
-     * SmartTwin advices, after which the calculation fills the woonplan again.
+     * and must not come back with the next recalculation. That holds from the switch on, see
+     * Hoomdossier::smartTwinOwnsWoonplanFor(). Switching the cooperation off turns the switch back
+     * at once, and removes the SmartTwin advices, after which the calculation fills the woonplan
+     * again.
      */
     private static function isReplacedBySmartTwin(UserActionPlanAdvice $userActionPlanAdvice): bool
     {
@@ -212,15 +213,16 @@ class UserActionPlanAdviceService
         }
 
         $user = User::forAllCooperations()->find($userActionPlanAdvice->user_id);
+        $building = $user?->building;
 
-        if (! $user instanceof User || ! Hoomdossier::smartTwinEnabledFor($user->cooperation)) {
+        if (! $building instanceof Building) {
             return false;
         }
 
-        return UserActionPlanAdvice::withoutGlobalScopes()
-            ->where('user_id', $user->id)
-            ->where('source', AdviceSource::SMART_TWIN)
-            ->exists();
+        // Saves looking the user up a second time to find the cooperation.
+        $building->setRelation('user', $user);
+
+        return Hoomdossier::smartTwinOwnsWoonplanFor($building);
     }
 
     /**

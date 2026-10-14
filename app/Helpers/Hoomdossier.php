@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Enums\AdviceSource;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\Client;
@@ -9,6 +10,7 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Scan;
 use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
@@ -75,6 +77,29 @@ class Hoomdossier
 
         return $quickScan instanceof Scan
             && ScanAvailabilityHelper::isAvailableForBuilding($building, $quickScan);
+    }
+
+    /**
+     * Whether the woonplan of this building has gone over to SmartTwin: its cooperation takes part
+     * and SmartTwin advised the building at least once.
+     *
+     * This is THE switch for everything that works differently in a SmartTwin woonplan: the
+     * calculation leaving the advices to SmartTwin, woonplan actions applying to every input source,
+     * "uitgevoerd", the expert scan and the Verbeterjehuis subsidies. Ask this, not
+     * smartTwinEnabledFor(), for any of those. A cooperation that switches SmartTwin on keeps
+     * finished dossiers that will never go through SmartTwin, and their woonplan has to keep working
+     * as it always did. Each building goes over with its own first SmartTwin advice instead.
+     *
+     * What has to work before that advice, such as hiding the questions SmartTwin answers or the
+     * hand-off to SmartTwin, asks smartTwinEnabledFor() or smartTwinFillsWoonplanFor() instead.
+     */
+    public static function smartTwinOwnsWoonplanFor(Building $building): bool
+    {
+        return static::smartTwinEnabledFor(static::cooperationOf($building))
+            && UserActionPlanAdvice::withoutGlobalScopes()
+                ->where('user_id', $building->user_id)
+                ->where('source', AdviceSource::SMART_TWIN)
+                ->exists();
     }
 
     /**

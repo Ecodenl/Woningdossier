@@ -5,6 +5,7 @@ namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 use App\Models\Step;
 use Illuminate\Support\Facades\Gate;
 use App\Helpers\Calculation\BankInterestCalculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
@@ -342,6 +343,17 @@ class Form extends CustomMeasureForm
         foreach ($this->cards[$category] as $order => $card) {
             $this->updateAdvice($card['id'], ['order' => $order]);
         }
+    }
+
+    /**
+     * Whether this woonplan went over to SmartTwin (Hoomdossier::smartTwinOwnsWoonplanFor()). Then
+     * the expert scan is closed (App\Http\Middleware\EnsureExpertScanAvailable). Computed, so the
+     * view asks once.
+     */
+    #[Computed]
+    public function smartTwinOwnsWoonplan(): bool
+    {
+        return Hoomdossier::smartTwinOwnsWoonplanFor($this->building);
     }
 
     #[Computed]

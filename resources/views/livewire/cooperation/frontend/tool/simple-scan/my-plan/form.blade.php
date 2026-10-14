@@ -135,7 +135,7 @@
                                             @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.button')
                                         </button>
                                     @endif
-                                    @if(! $scan->isLiteScan())
+                                    @if(! $scan->isLiteScan() && ! $this->smartTwinOwnsWoonplan)
                                         <button class="btn btn-green flex w-full items-center justify-center" wire:key="expert-button"
                                                 x-on:click="close(); document.querySelector('#expert').triggerEvent('open-modal');">
                                             @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.button')
@@ -212,7 +212,7 @@
             </div>
         @endif
         {{-- Modal for expert steps --}}
-        @if(! $scan->isLiteScan())
+        @if(! $scan->isLiteScan() && ! $this->smartTwinOwnsWoonplan)
             <div x-data="modal()" class="" wire:key="expert-modal">
                 @component('cooperation.frontend.layouts.components.modal', [
                     'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.title'),

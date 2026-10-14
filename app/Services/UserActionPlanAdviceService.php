@@ -152,12 +152,15 @@ class UserActionPlanAdviceService
         // now delete the old advices, the one for the given input source and the master source.
         // Advices with a source belong to whoever produced them and survive a recalculation; see
         // App\Enums\AdviceSource. Deleting them here would throw away an external advice the moment
-        // anything triggers a recalculation of its step.
+        // anything triggers a recalculation of its step. A measure the resident carried out survives
+        // too, with or without SmartTwin: it is their record, with documents tied to it, not a
+        // calculated result (see ExecutedAdviceService).
         UserActionPlanAdvice::forUser($user)
             ->forInputSource($masterInputSource)
             ->forStep($step)
             ->withInvisible()
             ->whereNull('source')
+            ->whereNull('executed_at')
             ->delete();
 
         UserActionPlanAdvice::forUser($user)
@@ -165,6 +168,7 @@ class UserActionPlanAdviceService
             ->forStep($step)
             ->withInvisible()
             ->whereNull('source')
+            ->whereNull('executed_at')
             ->delete();
 
         return $oldAdvices;
@@ -193,7 +197,25 @@ class UserActionPlanAdviceService
             ->whereNotNull('source')
             ->exists();
 
-        return $ownedForThisMeasure || self::isReplacedBySmartTwin($userActionPlanAdvice);
+        return $ownedForThisMeasure
+            || self::isExecuted($userActionPlanAdvice)
+            || self::isReplacedBySmartTwin($userActionPlanAdvice);
+    }
+
+    /**
+     * Whether the resident carried this measure out. Its card is theirs from then on: a calculation
+     * may not put a second card next to it, nor move it (a step recalculation would file the new
+     * card by the current situation). Asked of master, the row the woonplan shows.
+     */
+    private static function isExecuted(UserActionPlanAdvice $userActionPlanAdvice): bool
+    {
+        return UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $userActionPlanAdvice->user_id)
+            ->where('input_source_id', InputSource::master()->id)
+            ->where('user_action_plan_advisable_type', $userActionPlanAdvice->user_action_plan_advisable_type)
+            ->where('user_action_plan_advisable_id', $userActionPlanAdvice->user_action_plan_advisable_id)
+            ->whereNotNull('executed_at')
+            ->exists();
     }
 
     /**
@@ -260,6 +282,8 @@ class UserActionPlanAdviceService
             ->when($smallMeasures instanceof Step, fn ($query) => $query->where(
                 fn ($query) => $query->whereNull('step_id')->orWhere('step_id', '!=', $smallMeasures->id),
             ))
+            // A measure the resident carried out stays; see ExecutedAdviceService.
+            ->whereNull('executed_at')
             ->delete();
     }
 
@@ -273,6 +297,9 @@ class UserActionPlanAdviceService
         return UserActionPlanAdvice::withoutGlobalScopes()
             ->where('user_id', $building->user_id)
             ->where('source', AdviceSource::SMART_TWIN)
+            // A measure the resident carried out stays. An import that advises it again updates it
+            // in place, so its date, description and documents carry over (V3).
+            ->whereNull('executed_at')
             ->delete();
     }
 

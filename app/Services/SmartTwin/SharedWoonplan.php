@@ -108,7 +108,10 @@ class SharedWoonplan
             ->first();
     }
 
-    private function masterRowOf(UserActionPlanAdvice $advice): ?UserActionPlanAdvice
+    /**
+     * The master row of an advice, the one the woonplan shows, from any of its rows.
+     */
+    public function masterRowOf(UserActionPlanAdvice $advice): ?UserActionPlanAdvice
     {
         $master = InputSource::master();
 

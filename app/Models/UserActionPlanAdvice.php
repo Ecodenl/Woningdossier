@@ -47,6 +47,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $step_id
  * @property AdviceSource|null $source
  * @property array<array-key, mixed>|null $extra
+ * @property \Illuminate\Support\Carbon|null $executed_at
+ * @property string|null $executed_description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
@@ -125,6 +127,8 @@ class UserActionPlanAdvice extends Model implements Auditable
         'subsidy_available',
         'source',
         'extra',
+        'executed_at',
+        'executed_description',
     ];
 
     protected array $ignoreAttributes = [
@@ -150,7 +154,19 @@ class UserActionPlanAdvice extends Model implements Auditable
             'savings_money' => 'decimal:2',
             'source' => AdviceSource::class,
             'extra' => 'array',
+            // With the format: GetMyValuesTrait copies a row to master through attributesToArray(),
+            // and a plain date cast serialises to UTC there, which turns 1 October into 30 September
+            // once MySQL keeps the date part.
+            'executed_at' => 'date:Y-m-d',
         ];
+    }
+
+    /**
+     * Whether the resident carried this measure out; see App\Services\ExecutedAdviceService.
+     */
+    public function isExecuted(): bool
+    {
+        return ! is_null($this->getAttribute('executed_at'));
     }
 
     /**

@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Api\V1\Resources\Schemas;
  *      title="Store Register request",
  *      description="Register request body data",
  *      type="object",
- *      required={"email", "first_name", "last_name", "postal_code", "number", "street", "city", "contact_id"}
+ *      required={"email", "first_name", "last_name", "postal_code", "number", "street", "city"}
  * )
  */
 class StoreRegisterRequest
@@ -148,4 +148,27 @@ class StoreRegisterRequest
      */
 
     public $roles;
+
+    /**
+     * @OA\Property(
+     *     title="scans",
+     *     description="Scan settings for the building. When omitted, the building follows the scan settings of the cooperation.",
+     *         @OA\Property(
+     *             property="type",
+     *             description="The scans available for the building.",
+     *             type="string",
+     *             enum={"quick-scan", "lite-scan", "both-scans"},
+     *             example="both-scans"
+     *         ),
+     *         @OA\Property(
+     *             property="small_measures_enabled",
+     *             description="Whether the small measures step is part of the quick scan. Only allowed when the building has the quick scan, through the given type or the cooperation's scans. When omitted, the setting of the cooperation applies. The lite scan always includes small measures.",
+     *             type="boolean",
+     *             example=false
+     *         ),
+     * )
+     *
+     * @var array
+     */
+    public $scans;
 }

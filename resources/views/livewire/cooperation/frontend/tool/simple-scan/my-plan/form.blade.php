@@ -122,6 +122,7 @@
                 </div>
             @endforeach
         </div>
+        @php $lastIndex = array_key_last($customMeasureApplicationsFormData); @endphp
         <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 -mb-5">
             <div class="w-full">
                 {{-- White space --}}
@@ -129,7 +130,23 @@
             <div class="w-full flex flex-row flex-wrap justify-center items-center">
                 <i class="w-20 h-20 p-4 icon-ventilation-fan mx-4 animate-spin-slow @if(empty($notifications)) hidden @endif"
                    @if(! empty($notifications)) wire:poll.1s="checkNotifications" @endif></i>
-                @if(! $scan->isLiteScan() || ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
+                @if($this->smartTwinOwnsWoonplan)
+                    {{-- A SmartTwin woonplan adds an own measure in the column of its "+" (woonplan design
+                         "Pagina 2"); bringing a trashed card back is a choice of its own. --}}
+                    @if(! $disabled && ! $scan->isLiteScan())
+                        <div class="w-20 h-20 p-4 mx-4 flex items-center justify-center">
+                            <i class="icon-md icon-plus-purple clickable" wire:key="add-to-do"
+                               title="@lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.add.button')"
+                               x-on:click="$wire.set('newMeasureCategory', '{{ \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO }}', false); document.querySelector('#edit-{{$lastIndex}}').triggerEvent('open-modal');"></i>
+                        </div>
+                    @endif
+                    @if(! $disabled && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
+                        <button class="btn btn-outline-green mx-4" wire:key="trashed-button"
+                                x-on:click="document.querySelector('#trashed').triggerEvent('open-modal');">
+                            @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.button')
+                        </button>
+                    @endif
+                @elseif(! $scan->isLiteScan() || ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
                     <div x-data="modal()" class="w-20 h-20 p-4 mx-4 flex items-center justify-center">
                         <i class="icon-md icon-plus-purple clickable" x-on:click="toggle()"></i>
                         @component('cooperation.frontend.layouts.components.modal', [
@@ -143,7 +160,8 @@
                                             @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.button')
                                         </button>
                                     @endif
-                                    @if(! $scan->isLiteScan() && ! $this->smartTwinOwnsWoonplan)
+                                    {{-- Only before the switch; after it the expert scan is closed. --}}
+                                    @if(! $scan->isLiteScan())
                                         <button class="btn btn-green flex w-full items-center justify-center" wire:key="expert-button"
                                                 x-on:click="close(); document.querySelector('#expert').triggerEvent('open-modal');">
                                             @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.button')
@@ -163,6 +181,15 @@
                 @endif
 
                 <i class="w-20 h-20 p-4 mx-4 icon-trash-can-red rounded-lg transition duration-500 trash" x-bind="trash"></i>
+            </div>
+            <div class="w-full flex flex-row flex-wrap justify-center items-center">
+                @if($this->smartTwinOwnsWoonplan && ! $disabled && ! $scan->isLiteScan())
+                    <div class="w-20 h-20 p-4 mx-4 flex items-center justify-center">
+                        <i class="icon-md icon-plus-purple clickable" wire:key="add-later"
+                           title="@lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.add.button')"
+                           x-on:click="$wire.set('newMeasureCategory', '{{ \App\Services\UserActionPlanAdviceService::CATEGORY_LATER }}', false); document.querySelector('#edit-{{$lastIndex}}').triggerEvent('open-modal');"></i>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

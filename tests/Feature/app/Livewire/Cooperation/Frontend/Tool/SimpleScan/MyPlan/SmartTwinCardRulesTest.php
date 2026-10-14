@@ -17,7 +17,10 @@ use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use Database\Seeders\DatabaseSeeder;
+use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
+use App\Models\CustomMeasureApplication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Livewire\Features\SupportTesting\Testable;
@@ -183,6 +186,8 @@ final class SmartTwinCardRulesTest extends TestCase
         $this->assertTrue($smallCard['trashable']);
 
         $woonplan->assertSee(__('cooperation/frontend/tool.my-plan.cards.package-label'));
+        // A "+" under "Nu aanpakken" and one under "Later uitvoeren".
+        $woonplan->assertSeeHtml('wire:key="add-to-do"')->assertSeeHtml('wire:key="add-later"');
     }
 
     public function test_before_the_switch_every_card_moves_as_it_always_did(): void
@@ -195,8 +200,86 @@ final class SmartTwinCardRulesTest extends TestCase
         $this->assertNull($data['kind']);
         $this->assertTrue($data['trashable']);
         $woonplan->assertDontSee(__('cooperation/frontend/tool.my-plan.cards.package-label'));
+        $woonplan->assertDontSeeHtml('wire:key="add-later"');
 
         $woonplan->call('cardMoved', 'to-do', 'complete', (string) $card->id, '0');
         $this->assertSame('complete', $card->fresh()->category);
+    }
+
+    /**
+     * Adds an own measure through the form behind the "+" of a column.
+     */
+    private function addOwnMeasure(string $column, string $name = 'Zonnescherm'): void
+    {
+        // Saving asks Verbeterjehuis for regulations; not what is under test.
+        Bus::fake([RefreshRegulationsForUserActionPlanAdvice::class]);
+
+        $woonplan = $this->woonplan();
+        $index = array_key_last($woonplan->get('customMeasureApplicationsFormData'));
+
+        $woonplan->set('newMeasureCategory', $column)
+            ->set("customMeasureApplicationsFormData.{$index}.name", $name)
+            ->set("customMeasureApplicationsFormData.{$index}.info", 'Eigen idee')
+            ->set("customMeasureApplicationsFormData.{$index}.costs.from", '1200')
+            ->call('save', $index)
+            ->assertHasNoErrors();
+    }
+
+    /**
+     * @return array<int, string> The category of every row of the own measure's advice.
+     */
+    private function ownMeasureCategories(): array
+    {
+        return UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $this->building->user_id)
+            ->where('user_action_plan_advisable_type', CustomMeasureApplication::class)
+            ->pluck('category')
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    public function test_the_plus_of_later_adds_an_own_measure_there_for_everyone(): void
+    {
+        $this->packageCard();
+
+        $this->addOwnMeasure('later');
+
+        $this->assertSame(['later'], $this->ownMeasureCategories());
+        $this->assertSame(3, UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $this->building->user_id)
+            ->where('user_action_plan_advisable_type', CustomMeasureApplication::class)
+            ->count());
+    }
+
+    public function test_an_own_measure_only_ever_lands_in_now_or_later(): void
+    {
+        $this->packageCard();
+
+        // Not a column the "+" offers.
+        $this->addOwnMeasure('complete');
+
+        $this->assertSame(['to-do'], $this->ownMeasureCategories());
+    }
+
+    public function test_editing_an_own_measure_leaves_it_in_its_column(): void
+    {
+        $this->packageCard();
+        $this->addOwnMeasure('later');
+
+        $woonplan = $this->woonplan();
+        $index = collect($woonplan->get('customMeasureApplicationsFormData'))->search(fn ($data) => 'Zonnescherm' === $data['name']);
+        $woonplan->set("customMeasureApplicationsFormData.{$index}.name", 'Zonnescherm (elektrisch)')
+            ->call('save', $index)
+            ->assertHasNoErrors();
+
+        $this->assertSame(['later'], $this->ownMeasureCategories());
+    }
+
+    public function test_before_the_switch_a_new_own_measure_goes_to_now_as_it_always_did(): void
+    {
+        $this->addOwnMeasure('later');
+
+        $this->assertSame(['to-do'], $this->ownMeasureCategories());
     }
 }

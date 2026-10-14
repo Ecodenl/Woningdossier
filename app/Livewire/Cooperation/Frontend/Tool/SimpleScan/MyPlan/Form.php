@@ -52,6 +52,12 @@ class Form extends CustomMeasureForm
 
     public Scan $scan;
 
+    /**
+     * The column the "+" that opened the own-measure form belongs to: "Nu aanpakken" or
+     * "Later uitvoeren". Only offered once the woonplan is SmartTwin's.
+     */
+    public string $newMeasureCategory = UserActionPlanAdviceService::CATEGORY_TO_DO;
+
     // Details
     public float $expectedInvestment = 0;
     public float $yearlySavings = 0;
@@ -100,6 +106,8 @@ class Form extends CustomMeasureForm
         $this->reload($masterAdvice);
 
         $this->dispatch('close-modal');
+        // The next "+" says again where its measure goes.
+        $this->newMeasureCategory = UserActionPlanAdviceService::CATEGORY_TO_DO;
 
         $this->recalculate();
     }
@@ -384,6 +392,16 @@ class Form extends CustomMeasureForm
     public function smartTwinOwnsWoonplan(): bool
     {
         return Hoomdossier::smartTwinOwnsWoonplanFor($this->building);
+    }
+
+    protected function categoryForNewMeasure(): string
+    {
+        $columns = [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER];
+
+        // Whatever the browser sends, an own measure only ever lands in one of these two.
+        return $this->smartTwinOwnsWoonplan && in_array($this->newMeasureCategory, $columns, true)
+            ? $this->newMeasureCategory
+            : UserActionPlanAdviceService::CATEGORY_TO_DO;
     }
 
     /**

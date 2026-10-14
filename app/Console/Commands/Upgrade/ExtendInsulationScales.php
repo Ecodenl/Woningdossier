@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\DB;
  *
  * That classification runs geen / slecht / matig / redelijk / goed / zeer goed. Hoomdossier never
  * had the middle two. The SmartTwin mapping classifies on Rc value and needs them to exist before
- * it can answer current-wall-insulation and current-floor-insulation.
+ * it can answer current-wall-insulation, current-floor-insulation and current-roof-insulation.
  *
- * Not every element gets every level. "Redelijk" applies to wall, floor and roof; "Slecht" only to
- * the floor, whose classification is the one that uses it. The roof waits for its own table.
+ * Not every element gets every level. "Redelijk" applies to wall, floor and roof; "Slecht" to the
+ * floor and the roof, whose classifications use it. The wall table retired it.
  *
  * Why a command and not a migration: this is data, and it has to be runnable on its own around a
  * deploy rather than at whatever moment migrations happen to run.
@@ -110,8 +110,8 @@ class ExtendInsulationScales extends Command
         ],
 
         'roof-insulation' => [
-            'target' => [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7]],
-            'added'  => [4 => self::REASONABLE],
+            'target' => [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8]],
+            'added'  => [3 => self::POOR, 5 => self::REASONABLE],
             'steps'  => [
                 [
                     'name'   => 'Redelijke isolatie',
@@ -120,6 +120,18 @@ class ExtendInsulationScales extends Command
                                  ['from' => 5, 'order' => 5, 'calculate_value' => 6],
                                  ['from' => 4, 'order' => 4, 'calculate_value' => 5]],
                     'insert' => ['order' => 3, 'calculate_value' => 4, 'level' => self::REASONABLE],
+                ],
+                [
+                    // The roof table arrived after the floor's (stakeholder decision, October 2026),
+                    // with the same six levels — so the same step, one scale later.
+                    'name'   => 'Slechte isolatie',
+                    'from'   => [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7]],
+                    'shifts' => [['from' => 7, 'order' => 7, 'calculate_value' => 8],
+                                 ['from' => 6, 'order' => 6, 'calculate_value' => 7],
+                                 ['from' => 5, 'order' => 5, 'calculate_value' => 6],
+                                 ['from' => 4, 'order' => 4, 'calculate_value' => 5],
+                                 ['from' => 3, 'order' => 3, 'calculate_value' => 4]],
+                    'insert' => ['order' => 2, 'calculate_value' => 3, 'level' => self::POOR],
                 ],
             ],
         ],

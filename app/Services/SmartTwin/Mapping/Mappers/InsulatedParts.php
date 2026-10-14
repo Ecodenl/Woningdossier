@@ -97,31 +97,106 @@ abstract class InsulatedParts
     }
 
     /**
-     * The surface the advice insulates, found by holding this set against the one it came from: a
-     * part whose Rc goes up is a part that gets treated.
+     * The parts of this set whose Rc goes up compared to the set it came from: the parts that get
+     * insulated.
      *
-     * Parts are matched by position. Both sections describe the same dwelling and SmartTwin returns
-     * them in the same order, which holds for every response seen so far. Null when the two sections
-     * disagree on how many parts there are — then the pairing is a guess, and a guess here silently
-     * produces a surface that costs and savings are calculated over.
+     * Matched on SmartTwin's `id`, which a part keeps between the two sections. Matching on position
+     * held for every response seen so far, but nothing promises it, and a wrong pairing silently
+     * produces a surface. A part without an id, or one the other section does not hold, cannot be
+     * compared and is not counted.
      */
-    public function areaImprovedOver(self $before): ?float
+    public function improvedOver(self $before): static
     {
-        if ($this->count() !== $before->count()) {
-            return null;
-        }
+        $was = [];
 
-        $area = 0.0;
-
-        foreach ($this->parts as $index => $part) {
-            $was = (float) ($before->parts[$index]['rcValue'] ?? 0);
-            $becomes = (float) ($part['rcValue'] ?? 0);
-
-            if ($becomes > $was + self::IMPROVEMENT_TOLERANCE) {
-                $area += (float) ($part['area'] ?? 0);
+        foreach ($before->parts as $part) {
+            if (isset($part['id'])) {
+                $was[$part['id']] = (float) ($part['rcValue'] ?? 0);
             }
         }
 
-        return $area;
+        return $this->filter(function (array $part) use ($was) {
+            $id = $part['id'] ?? null;
+
+            return ! is_null($id)
+                && array_key_exists($id, $was)
+                && (float) ($part['rcValue'] ?? 0) > $was[$id] + self::IMPROVEMENT_TOLERANCE;
+        });
+    }
+
+    /**
+     * The surface the scenario insulates, holding this set against the one it came from.
+     */
+    public function areaImprovedOver(self $before): float
+    {
+        return $this->improvedOver($before)->totalArea();
+    }
+
+    public function filter(callable $keep): static
+    {
+        return static::of(array_values(array_filter($this->parts, $keep)));
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function ids(): array
+    {
+        return array_values(array_filter(array_map(fn (array $part) => $part['id'] ?? null, $this->parts)));
+    }
+
+    /**
+     * The type covering the most surface, or null when no part states one.
+     *
+     * A dwelling can hold parts of several types while Hoomdossier asks about one, so the largest
+     * surface decides. A tie goes to the lowest type number, which keeps the answer the same from
+     * one run to the next.
+     */
+    public function dominantType(string $typeField): ?int
+    {
+        $areaPerType = [];
+
+        foreach ($this->parts as $part) {
+            if (! isset($part[$typeField])) {
+                continue;
+            }
+
+            $type = (int) $part[$typeField];
+            $areaPerType[$type] = ($areaPerType[$type] ?? 0) + (float) ($part['area'] ?? 0);
+        }
+
+        if (empty($areaPerType)) {
+            return null;
+        }
+
+        ksort($areaPerType);
+
+        return (int) array_search(max($areaPerType), $areaPerType, true);
+    }
+
+    /**
+     * The parts grouped by type and Rc value, largest surface first: one line per kind of part, as
+     * the woonplan lists them. The Rc is grouped on two decimals, the precision of every table it
+     * is held against, so float noise does not split a line.
+     *
+     * @return array<int, array{type: mixed, rc_value: float, area: float}>
+     */
+    public function lines(string $typeField): array
+    {
+        $lines = [];
+
+        foreach ($this->parts as $part) {
+            $type = $part[$typeField] ?? null;
+            $rcValue = round((float) ($part['rcValue'] ?? 0), 2);
+            $key = ($type ?? 'null') . '|' . $rcValue;
+
+            $lines[$key] ??= ['type' => $type, 'rc_value' => $rcValue, 'area' => 0.0];
+            $lines[$key]['area'] += (float) ($part['area'] ?? 0);
+        }
+
+        $lines = array_map(fn (array $line) => array_merge($line, ['area' => round($line['area'], 2)]), array_values($lines));
+        usort($lines, fn (array $a, array $b) => $b['area'] <=> $a['area']);
+
+        return $lines;
     }
 }

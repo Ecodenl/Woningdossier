@@ -140,7 +140,9 @@ class CalculationsTable extends Component
                     );
                     $this->tableData[$toolQuestion->short]['source'] = $answers[$toolQuestion->id][$firstKey]['input_source_name'] ?? null;
 
-                    if (in_array($toolQuestion->data_type, [Caster::INT, Caster::INT_5, Caster::FLOAT])) {
+                    // getHumanReadableAnswer() already formats INT and FLOAT. Formatting its
+                    // "39,8" a second time reads the comma as the end of the number: 39,0.
+                    if ($toolQuestion->data_type === Caster::INT_5) {
                         $this->tableData[$toolQuestion->short]['value'] = Caster::init()
                             ->dataType($toolQuestion->data_type)
                             ->value($this->tableData[$toolQuestion->short]['value'])

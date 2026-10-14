@@ -19,4 +19,13 @@ enum MappingTarget: string
 
     /** The target is a measure application short; the value is what the measure costs. */
     case ADVICE = 'advice';
+
+    /**
+     * The target is a roof type short (flat, pitched) the dwelling no longer has; there is no value.
+     *
+     * Not an answer that can be emptied. Hoomdossier keeps a building_roof_types row per roof shape,
+     * and the row is what says the dwelling has that shape: writing an empty surface to it would
+     * create it. A shape SmartTwin no longer describes has its row removed instead.
+     */
+    case ROOF_TYPE_REMOVAL = 'roof-type-removal';
 }

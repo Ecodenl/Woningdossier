@@ -10,6 +10,7 @@ use App\Models\Cooperation;
 use App\Models\User;
 use App\Services\SmartTwin\Api\UserRole;
 use App\Services\SmartTwin\BuildingResolver;
+use Database\Seeders\InputSourcesTableSeeder;
 use Database\Seeders\RoleTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -25,6 +26,8 @@ final class BuildingResolverTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        // RoleTableSeeder links roles to their input source, so those have to exist first.
+        $this->seed(InputSourcesTableSeeder::class);
         $this->seed(RoleTableSeeder::class);
         config()->set('hoomdossier.services.smarttwin.enabled', true);
 

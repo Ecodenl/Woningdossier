@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Helpers\ConsiderableHelper;
+use App\Http\Requests\DecimalReplacementTrait;
 use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\ToolQuestion;
@@ -15,6 +16,22 @@ use Illuminate\Validation\Validator;
 
 class RoofInsulationFormRequest extends FormRequest
 {
+    use DecimalReplacementTrait;
+
+    public function getValidatorInstance()
+    {
+        // The surfaces are decimals, and a Dutch user types them with a comma: 39,75 would
+        // otherwise fail `numeric` and never reach the column.
+        $this->decimals([
+            'building_roof_types.pitched.roof_surface',
+            'building_roof_types.pitched.insulation_roof_surface',
+            'building_roof_types.flat.roof_surface',
+            'building_roof_types.flat.insulation_roof_surface',
+        ]);
+
+        return parent::getValidatorInstance();
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */

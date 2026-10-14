@@ -4,6 +4,7 @@ namespace App\Services\SmartTwin\Mapping;
 
 use App\Enums\SmartTwin\MappingStatus;
 use App\Enums\SmartTwin\MappingTarget;
+use App\Services\SmartTwin\SmartTwinAdviceDetails;
 
 /**
  * What a mapper decided about one leaf.
@@ -19,6 +20,7 @@ final class MappingResult
         public readonly mixed $value = null,
         public readonly ?string $note = null,
         public readonly MappingTarget $kind = MappingTarget::TOOL_QUESTION,
+        public readonly ?SmartTwinAdviceDetails $details = null,
     )
     {
     }
@@ -30,16 +32,51 @@ final class MappingResult
      *                          a checkbox. Translating the SmartTwin value into that shape is the
      *                          mapper's job; nothing downstream casts.
      *
-     * A mapper with nothing to save returns skipped() or valueUnmapped() rather than a null value.
+     * A mapper that has to empty an answer uses cleared(); one that should leave it alone returns
+     * skipped() or valueUnmapped().
      *
-     * One leaf, one write. When several leaves of a path group collapse into a single answer — the
-     * area of every facade adding up to one surface — exactly one of them returns mapped() and the
-     * rest return skipped() pointing at it. The applier writes what it is handed, so two mapped
-     * results for the same target means two writes, visible as two rows in the report.
+     * One write per answer. When several leaves collapse into a single answer — the area of every
+     * facade adding up to one surface — exactly one of them carries it and the rest return skipped()
+     * pointing at it. The applier writes what it is handed, so two mapped results for the same
+     * target means two writes, visible as two rows in the report.
      */
     public static function mapped(string $target, mixed $value, ?string $note = null): self
     {
         return new self(MappingStatus::MAPPED, $target, $value, $note);
+    }
+
+    /**
+     * An answer that has to be emptied: the response describes nothing for it any more.
+     *
+     * Not the same as skipped(). An import takes over the whole situation SmartTwin describes, so
+     * an answer a previous scan wrote and this one does not support would otherwise stay behind and
+     * contradict it. Written as null, which ToolQuestionService turns into a deleted answer or an
+     * emptied column depending on where the question saves.
+     */
+    public static function cleared(string $target, ?string $note = null): self
+    {
+        return new self(MappingStatus::MAPPED, $target, null, $note);
+    }
+
+    /**
+     * A roof shape the dwelling no longer has, see MappingTarget::ROOF_TYPE_REMOVAL.
+     *
+     * @param  string  $roofTypeShort  `flat` or `pitched`.
+     */
+    public static function roofTypeRemoved(string $roofTypeShort, ?string $note = null): self
+    {
+        return new self(MappingStatus::MAPPED, $roofTypeShort, null, $note, MappingTarget::ROOF_TYPE_REMOVAL);
+    }
+
+    /**
+     * The two halves of the response disagree: a solution next to a scenario that leaves its part of
+     * the dwelling untouched, or the other way round. SmartTwin's spec rules it out, so it is
+     * reported for Twee Snoeken — and nothing is written: answers follow the properties, advices the
+     * solutions, and neither is corrected by the other.
+     */
+    public static function specViolation(string $note): self
+    {
+        return new self(MappingStatus::SPEC_VIOLATION, null, null, $note);
     }
 
     /**
@@ -48,12 +85,18 @@ final class MappingResult
      * Not a tool question: this becomes an entry in the action plan that the calculation does not
      * own and will not rebuild. See App\Enums\AdviceSource.
      *
-     * @param  string  $measureShort  The short of the measure application being advised.
-     * @param  float   $costs         What the measure costs, already totalled.
+     * @param  string                        $measureShort  The short of the measure application being advised.
+     * @param  float                         $costs         What the measure costs, already totalled.
+     * @param  null|SmartTwinAdviceDetails   $details       What the advice carries along for the woonplan.
      */
-    public static function mappedAdvice(string $measureShort, float $costs, ?string $note = null): self
+    public static function mappedAdvice(
+        string $measureShort,
+        float $costs,
+        ?string $note = null,
+        ?SmartTwinAdviceDetails $details = null,
+    ): self
     {
-        return new self(MappingStatus::MAPPED, $measureShort, $costs, $note, MappingTarget::ADVICE);
+        return new self(MappingStatus::MAPPED, $measureShort, $costs, $note, MappingTarget::ADVICE, $details);
     }
 
     /**

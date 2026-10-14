@@ -24,7 +24,7 @@ final class InsulationQuality
      *   goed        3,19 <= Rc < 4,46
      *   zeer goed   Rc >= 4,46
      *
-     * Floor and roof run on their own boundaries and get their own table; reusing these would be
+     * Floor and roof run on their own boundaries and have their own table; reusing these would be
      * wrong in a way nothing would catch.
      *
      * @var array<string, int>  Lower bound as a string key, since PHP array keys cannot be floats.
@@ -60,6 +60,29 @@ final class InsulationQuality
         '0.20' => 3, // Slechte isolatie
     ];
 
+    /**
+     * The same for a roof, with the floor's six levels on boundaries of its own:
+     *
+     *   geen        Rc < 0,30
+     *   slecht      0,30 <= Rc < 1,10
+     *   matig       1,10 <= Rc < 1,85
+     *   redelijk    1,85 <= Rc < 3,15
+     *   goed        3,15 <= Rc < 5,00
+     *   zeer goed   Rc >= 5,00
+     *
+     * The table that was handed over puts 1,85 in both matig and redelijk; it belongs to redelijk,
+     * the same way every other boundary belongs to the band above it (confirmed).
+     *
+     * @var array<string, int>
+     */
+    private const ROOF = [
+        '5.00' => 7, // Zeer goede isolatie
+        '3.15' => 6, // Goede isolatie
+        '1.85' => 5, // Redelijke isolatie
+        '1.10' => 4, // Matige isolatie
+        '0.30' => 3, // Slechte isolatie
+    ];
+
     /** The level below the lowest bound, per element. */
     private const NONE = 2; // Geen isolatie
 
@@ -71,6 +94,11 @@ final class InsulationQuality
     public static function forFloor(float $rcValue): int
     {
         return self::classify($rcValue, self::FLOOR);
+    }
+
+    public static function forRoof(float $rcValue): int
+    {
+        return self::classify($rcValue, self::ROOF);
     }
 
     /**
@@ -86,6 +114,11 @@ final class InsulationQuality
     public static function describeFloor(float $rcValue): string
     {
         return self::describe($rcValue, self::FLOOR);
+    }
+
+    public static function describeRoof(float $rcValue): string
+    {
+        return self::describe($rcValue, self::ROOF);
     }
 
     /**

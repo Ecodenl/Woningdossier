@@ -10,6 +10,7 @@ use App\Models\InputSource;
 use App\Models\Scan;
 use App\Models\User;
 use App\Services\Scans\ScanFlowService;
+use App\Services\SmartTwin\WoonplanLock;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -49,8 +50,11 @@ class UndoSmartTwinForBuilding implements ShouldQueue
             $building->save();
         }
 
-        // 2. The SmartTwin advices go, for every input source.
+        // 2. The SmartTwin advices go, for every input source, and with them the package they were
+        // calculated as and the lock a coach put on the woonplan.
         $removed = UserActionPlanAdviceService::removeSmartTwinAdvices($building);
+        $building->smartTwinPackage()->delete();
+        app(WoonplanLock::class)->release($building);
 
         $user = $building->user()->forAllCooperations()->first();
 

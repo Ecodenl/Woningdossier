@@ -3,6 +3,8 @@
 namespace App\Services\SmartTwin\Mapping\Mappers;
 
 use App\Models\Building;
+use App\Services\SmartTwin\Mapping\Elements\AdvisedElements;
+use App\Services\SmartTwin\Mapping\Elements\Element;
 use App\Services\SmartTwin\Mapping\FieldMapper;
 use App\Services\SmartTwin\Mapping\Leaf;
 use App\Services\SmartTwin\Mapping\MappingResult;
@@ -10,148 +12,127 @@ use App\Services\SmartTwin\Mapping\MappingResult;
 /**
  * The ground floor of the floor insulation step.
  *
- * Fills five of its questions: the floor surface, the surface the advice insulates, how well the
- * floor is insulated, and whether there is a crawlspace and how high it is. Built the same way as the facade — each
- * answer is one number out of many parts, so one leaf of a path group carries it and the rest are
- * skipped pointing at it.
+ * Fills five of its questions: the floor surface, the surface the scenario insulates, how well the
+ * floor is insulated, and whether there is a crawlspace and how high it is. Every answer is one
+ * number out of many parts, so all of them are decided at one leaf — the anchor, see ElementAnchor —
+ * and every other leaf is skipped pointing at the answer it counts towards.
+ *
+ * An import takes over what SmartTwin describes. An answer the response no longer supports is
+ * emptied rather than left as the previous scan wrote it.
  */
 class FloorInsulationMapper implements FieldMapper
 {
     private const CURRENT = 'current';
     private const SCENARIO = 'scenario';
 
-    private const FLOOR = '.properties.floorAssemblies.*.floors';
-    private const CRAWLSPACE = '.properties.floorAssemblies.*.crawlspaces';
-
-    private const PATH_CURRENT_FLOORS = self::CURRENT . self::FLOOR;
-    private const PATH_CURRENT_AREA = self::CURRENT . self::FLOOR . '.*.area';
-    private const PATH_CURRENT_RC = self::CURRENT . self::FLOOR . '.*.rcValue';
-    private const PATH_SCENARIO_AREA = self::SCENARIO . self::FLOOR . '.*.area';
-    private const PATH_SCENARIO_RC = self::SCENARIO . self::FLOOR . '.*.rcValue';
-
-    private const PATH_CURRENT_CRAWLSPACES = self::CURRENT . self::CRAWLSPACE;
-
-    /**
-     * One field of a crawlspace answers has-crawlspace, and it has to be a named one. Anchoring on
-     * "whichever field this leaf happens to be" writes the answer once per field.
-     */
-    private const PATH_CURRENT_CRAWLSPACE_AREA = self::CURRENT . self::CRAWLSPACE . '.*.area';
-
-    private const PATH_CURRENT_CRAWLSPACE_HEIGHT = self::CURRENT . self::CRAWLSPACE . '.*.heightAboveGroundLevel';
+    private const ASSEMBLIES = '.properties.floorAssemblies';
+    private const FLOOR = self::ASSEMBLIES . '.*.floors';
+    private const CRAWLSPACE = self::ASSEMBLIES . '.*.crawlspaces';
 
     /** Answers of has-crawlspace, see App\Helpers\QuestionValues\HasCrawlspace. */
     private const HAS_CRAWLSPACE_YES = 'yes';
+    private const HAS_CRAWLSPACE_NO = 'no';
+    private const HAS_CRAWLSPACE_UNKNOWN = 'unknown';
 
-    public function __construct(private readonly ElementValues $elementValues)
+    /** What each claimed field of a floor or crawlspace counts towards, for the report. */
+    private const FLOOR_NOTES = [
+        'area'    => 'telt mee in floor-surface',
+        'rcValue' => 'telt mee in current-floor-insulation',
+        'id'      => 'koppelt het vloerdeel tussen current en scenario',
+    ];
+
+    private const FLOOR_FIELDS = ['cavity', 'description', 'floorType', 'insulationExterior',
+                                  'insulationInConstruction', 'insulationInterior', 'insulationThickness',
+                                  'thermoPillows'];
+
+    private const CRAWLSPACE_FIELDS = ['area', 'description', 'floorInsulation', 'floorRbf', 'floorRbw',
+                                       'ventilation', 'id'];
+
+    public function __construct(
+        private readonly ElementValues $elementValues,
+        private readonly AdvisedElements $advisedElements,
+    )
     {
     }
 
     public function paths(): array
     {
-        $floorFields = ['cavity', 'description', 'floorType', 'insulationExterior', 'insulationInConstruction',
-                        'insulationInterior', 'insulationThickness', 'thermoPillows'];
-        $crawlspaceFields = ['area', 'description', 'floorInsulation', 'floorRbf', 'floorRbw', 'ventilation'];
-
         return array_merge(
             [
-                self::PATH_CURRENT_FLOORS,
-                self::PATH_CURRENT_AREA,
-                self::PATH_CURRENT_RC,
-                self::PATH_SCENARIO_AREA,
-                self::PATH_SCENARIO_RC,
-                self::PATH_CURRENT_CRAWLSPACES,
-                self::PATH_CURRENT_CRAWLSPACE_HEIGHT,
+                self::CURRENT . self::ASSEMBLIES,
+                self::CURRENT . self::FLOOR,
+                self::CURRENT . self::CRAWLSPACE,
+                self::CURRENT . self::CRAWLSPACE . '.*.heightAboveGroundLevel',
+                self::SCENARIO . self::FLOOR . '.*.area',
+                self::SCENARIO . self::FLOOR . '.*.rcValue',
+                self::SCENARIO . self::FLOOR . '.*.id',
             ],
-            array_map(fn (string $f) => self::CURRENT . self::FLOOR . ".*.{$f}", $floorFields),
-            array_map(fn (string $f) => self::CURRENT . self::CRAWLSPACE . ".*.{$f}", $crawlspaceFields),
+            array_map(fn (string $f) => self::CURRENT . self::FLOOR . ".*.{$f}", array_keys(self::FLOOR_NOTES)),
+            array_map(fn (string $f) => self::CURRENT . self::FLOOR . ".*.{$f}", self::FLOOR_FIELDS),
+            array_map(fn (string $f) => self::CURRENT . self::CRAWLSPACE . ".*.{$f}", self::CRAWLSPACE_FIELDS),
         );
     }
 
-    public function map(Building $building, Leaf $leaf, array $response): MappingResult
+    public function map(Building $building, Leaf $leaf, array $response): MappingResult|array
     {
-        return match ($leaf->pathGroup) {
-            self::PATH_CURRENT_AREA        => $this->floorSurface($leaf, $response),
-            self::PATH_CURRENT_RC          => $this->currentFloorInsulation($leaf, $response),
-            self::PATH_SCENARIO_AREA       => $this->insulationFloorSurface($leaf, $response),
-            self::PATH_CURRENT_CRAWLSPACE_AREA   => $this->hasCrawlspace($leaf, $response),
-            self::PATH_CURRENT_CRAWLSPACE_HEIGHT => $this->crawlspaceHeight($leaf, $response),
-            self::PATH_CURRENT_CRAWLSPACES     => MappingResult::skipped('assembly zonder kruipruimte'),
-            self::PATH_CURRENT_FLOORS      => MappingResult::skipped('assembly zonder vloeren'),
-            self::PATH_SCENARIO_RC         => MappingResult::skipped('bepaalt welke vloer geïsoleerd wordt, zie insulation-floor-surface'),
+        if (ElementAnchor::is($leaf, $response, self::CURRENT . self::ASSEMBLIES, $this->paths())) {
+            return $this->answers($response);
+        }
 
-            default => $this->otherField($leaf),
-        };
-    }
-
-    private function otherField(Leaf $leaf): MappingResult
-    {
-        return str_contains($leaf->pathGroup, '.crawlspaces.')
-            ? MappingResult::skipped('has-crawlspace hangt aan het oppervlak van de kruipruimte')
-            : MappingResult::skipped('geen vraag in Hoomdossier voor dit vloerkenmerk');
+        return MappingResult::skipped($this->noteFor($leaf));
     }
 
     /**
      * @param  array<string, mixed>  $response
+     * @return array<int, MappingResult>
      */
-    private function floorSurface(Leaf $leaf, array $response): MappingResult
+    private function answers(array $response): array
     {
-        if ($this->notTheFirst($leaf, $response, self::CURRENT, 'floors', 'area')) {
-            return MappingResult::skipped('telt mee in floor-surface op de eerste vloer');
-        }
+        $current = FloorParts::fromResponse($response, self::CURRENT);
+        $insulated = FloorParts::fromResponse($response, self::SCENARIO)->improvedOver($current);
+        $crawlspaces = $this->crawlspaces($response);
 
-        $parts = FloorParts::fromResponse($response, self::CURRENT);
+        return array_values(array_filter([
+            $this->floorSurface($current),
+            $this->currentFloorInsulation($current),
+            $this->insulationFloorSurface($insulated),
+            ...$this->crawlspace($crawlspaces),
+            $this->disagreement($response, $insulated),
+        ]));
+    }
+
+    private function floorSurface(FloorParts $parts): MappingResult
+    {
         $area = $parts->totalArea();
 
         if ($area <= 0) {
-            return MappingResult::valueUnmapped('vloeren zonder oppervlak');
+            return MappingResult::cleared('floor-surface', 'geen vloer met oppervlak in de response');
         }
 
         return MappingResult::mapped('floor-surface', round($area, 2), "som van {$parts->count()} vloer(en)");
     }
 
-    /**
-     * @param  array<string, mixed>  $response
-     */
-    private function insulationFloorSurface(Leaf $leaf, array $response): MappingResult
+    private function insulationFloorSurface(FloorParts $insulated): MappingResult
     {
-        if ($this->notTheFirst($leaf, $response, self::SCENARIO, 'floors', 'area')) {
-            return MappingResult::skipped('telt mee in insulation-floor-surface op de eerste vloer');
-        }
-
-        $current = FloorParts::fromResponse($response, self::CURRENT);
-        $area = FloorParts::fromResponse($response, self::SCENARIO)->areaImprovedOver($current);
-
-        if (is_null($area)) {
-            return MappingResult::valueUnmapped('current en scenario beschrijven een verschillend aantal vloeren');
-        }
-
-        if ($area <= 0) {
-            // Same as the facade: SmartTwin advises no floor measure, so it says nothing about how
-            // much floor would be insulated. Writing 0 would put words in its mouth, and that number
-            // drives both the cost and the savings of the measure.
-            return MappingResult::skipped('het advies isoleert geen vloer');
+        if ($insulated->totalArea() <= 0) {
+            // Empty, not 0: the scenario insulates no floor, which says nothing about how much floor
+            // would be insulated if it did. 0 would also feed a cost and saving calculation.
+            return MappingResult::cleared('insulation-floor-surface', 'het scenario verhoogt bij geen vloerdeel de Rc-waarde');
         }
 
         return MappingResult::mapped(
             'insulation-floor-surface',
-            round($area, 2),
-            'vloeren waarvan de Rc-waarde stijgt tussen current en scenario',
+            round($insulated->totalArea(), 2),
+            "{$insulated->count()} vloerdeel/-delen waarvan de Rc-waarde stijgt tussen current en scenario",
         );
     }
 
-    /**
-     * @param  array<string, mixed>  $response
-     */
-    private function currentFloorInsulation(Leaf $leaf, array $response): MappingResult
+    private function currentFloorInsulation(FloorParts $parts): MappingResult
     {
-        if ($this->notTheFirst($leaf, $response, self::CURRENT, 'floors', 'rcValue')) {
-            return MappingResult::skipped('telt mee in current-floor-insulation op de eerste vloer');
-        }
-
-        $rcValue = FloorParts::fromResponse($response, self::CURRENT)->weightedRcValue();
+        $rcValue = $parts->weightedRcValue();
 
         if (is_null($rcValue)) {
-            return MappingResult::valueUnmapped('geen Rc-waarde te bepalen zonder vloeroppervlak');
+            return MappingResult::cleared('current-floor-insulation', 'geen Rc-waarde te bepalen zonder vloeroppervlak');
         }
 
         $calculateValue = InsulationQuality::forFloor($rcValue);
@@ -177,37 +158,53 @@ class FloorInsulationMapper implements FieldMapper
     }
 
     /**
-     * @param  array<string, mixed>  $response
+     * Whether there is a crawlspace, and how high.
+     *
+     * `heightAboveGroundLevel` is the height of the crawlspace floor relative to ground level, and
+     * only its size matters (stakeholder decision): any height other than 0 is a crawlspace. No
+     * crawlspace in the response, or one at height 0, is a "nee" — SmartTwin describes the dwelling,
+     * and a crawlspace it leaves out is one the dwelling does not have. A crawlspace without a height
+     * leaves it open.
+     *
+     * More than one crawlspace is something neither question covers, and nothing in the response
+     * ranks them; their area is 0 in every dossier seen so far. The first one with a height answers.
+     *
+     * @param  array<int, array<string, mixed>>  $crawlspaces
+     * @return array<int, MappingResult>
      */
-    private function hasCrawlspace(Leaf $leaf, array $response): MappingResult
+    private function crawlspace(array $crawlspaces): array
     {
-        if ($this->notTheFirst($leaf, $response, self::CURRENT, 'crawlspaces', 'area')) {
-            return MappingResult::skipped('telt mee in has-crawlspace op de eerste kruipruimte');
+        $heights = array_map(
+            fn (array $crawlspace) => isset($crawlspace['heightAboveGroundLevel']) ? (float) $crawlspace['heightAboveGroundLevel'] : null,
+            $crawlspaces,
+        );
+
+        $present = array_values(array_filter($heights, fn (?float $height) => ! is_null($height) && 0.0 !== abs($height)));
+
+        if (! empty($present)) {
+            return [
+                MappingResult::mapped('has-crawlspace', self::HAS_CRAWLSPACE_YES, 'de response beschrijft een kruipruimte met een hoogte t.o.v. maaiveld'),
+                $this->crawlspaceHeight($present[0]),
+            ];
         }
 
-        // Only the yes is written. An empty list is not SmartTwin saying there is none — it models
-        // crawlspaces explicitly but says nothing about leaving one out — and a wrong "nee" here
-        // hides the crawlspace questions from the resident entirely.
-        return MappingResult::mapped(
-            'has-crawlspace',
-            self::HAS_CRAWLSPACE_YES,
-            'de response beschrijft een kruipruimte',
-        );
+        if (in_array(null, $heights, true)) {
+            return [
+                MappingResult::mapped('has-crawlspace', self::HAS_CRAWLSPACE_UNKNOWN, 'de response beschrijft een kruipruimte zonder hoogte'),
+                $this->crawlspaceHeight(null),
+            ];
+        }
+
+        $why = empty($crawlspaces) ? 'de response beschrijft geen kruipruimte' : 'de kruipruimte ligt op maaiveldhoogte (0 m)';
+
+        return [
+            MappingResult::mapped('has-crawlspace', self::HAS_CRAWLSPACE_NO, $why),
+            MappingResult::cleared('crawlspace-height', $why),
+        ];
     }
 
-    /**
-     * @param  array<string, mixed>  $response
-     */
-    private function crawlspaceHeight(Leaf $leaf, array $response): MappingResult
+    private function crawlspaceHeight(?float $height): MappingResult
     {
-        if ($this->notTheFirst($leaf, $response, self::CURRENT, 'crawlspaces', 'heightAboveGroundLevel')) {
-            // More than one crawlspace is something neither the question nor the table covers, and
-            // nothing in the response ranks them: their area is 0 in every dossier seen so far, so
-            // there is nothing to weigh with. The first one answers.
-            return MappingResult::skipped('has-crawlspace en crawlspace-height hangen aan de eerste kruipruimte');
-        }
-
-        $height = is_null($leaf->value) ? null : (float) $leaf->value;
         $order = CrawlspaceHeight::orderFor($height);
         $elementValueId = $this->elementValues->idForOrder('crawlspace', $order);
 
@@ -229,18 +226,52 @@ class FloorInsulationMapper implements FieldMapper
     }
 
     /**
-     * Whether another leaf of this path group carries the answer.
-     *
      * @param  array<string, mixed>  $response
      */
-    private function notTheFirst(Leaf $leaf, array $response, string $section, string $key, string $field): bool
+    private function disagreement(array $response, FloorParts $insulated): ?MappingResult
     {
-        foreach ($response[$section]['properties']['floorAssemblies'] ?? [] as $assembly => $parts) {
-            foreach (array_keys($parts[$key] ?? []) as $part) {
-                return $leaf->path !== "{$section}.properties.floorAssemblies.{$assembly}.{$key}.{$part}.{$field}";
+        $advised = $this->advisedElements->covers($response, Element::FLOOR);
+        $area = round($insulated->totalArea(), 2);
+
+        return match (true) {
+            $advised && $area <= 0 => MappingResult::specViolation('er is een solution voor de vloer, maar het scenario verhoogt bij geen vloerdeel de Rc-waarde'),
+            ! $advised && $area > 0 => MappingResult::specViolation("het scenario verhoogt de Rc-waarde van {$area} m² vloer, maar er is geen solution voor de vloer"),
+            default => null,
+        };
+    }
+
+    /**
+     * Every crawlspace of the current situation, out of the floor assemblies that hold them.
+     *
+     * @param  array<string, mixed>  $response
+     * @return array<int, array<string, mixed>>
+     */
+    private function crawlspaces(array $response): array
+    {
+        $crawlspaces = [];
+
+        foreach ($response[self::CURRENT]['properties']['floorAssemblies'] ?? [] as $assembly) {
+            foreach ($assembly['crawlspaces'] ?? [] as $crawlspace) {
+                $crawlspaces[] = $crawlspace;
             }
         }
 
-        return true;
+        return $crawlspaces;
+    }
+
+    private function noteFor(Leaf $leaf): string
+    {
+        $field = $leaf->key();
+
+        return match (true) {
+            str_starts_with($leaf->pathGroup, self::SCENARIO)                          => 'bepaalt insulation-floor-surface',
+            $leaf->pathGroup === self::CURRENT . self::ASSEMBLIES                      => 'woning zonder vloer: de vloervragen worden leeggemaakt',
+            $leaf->pathGroup === self::CURRENT . self::FLOOR                           => 'assembly zonder vloeren',
+            $leaf->pathGroup === self::CURRENT . self::CRAWLSPACE                      => 'assembly zonder kruipruimte',
+            str_contains($leaf->pathGroup, '.crawlspaces.') && 'heightAboveGroundLevel' === $field => 'bepaalt has-crawlspace en crawlspace-height',
+            str_contains($leaf->pathGroup, '.crawlspaces.')                            => 'geen vraag in Hoomdossier voor dit kenmerk van de kruipruimte',
+            isset(self::FLOOR_NOTES[$field])                                           => self::FLOOR_NOTES[$field],
+            default                                                                    => 'geen vraag in Hoomdossier voor dit vloerkenmerk',
+        };
     }
 }

@@ -107,7 +107,9 @@
                                             <select id="{{ $roofCat }}_roof_insulation" class="form-input"
                                                     name="building_roof_types[{{ $roofCat }}][element_value_id]">
                                                 @foreach($roofInsulation->values as $insulation)
-                                                    @if($insulation->calculate_value < 6)
+                                                    {{-- "Niet van toepassing" is the highest level of the scale. A literal here
+                                                         went stale each time the scale grew, and hid "Zeer goede isolatie" since Redelijk. --}}
+                                                    @if($insulation->calculate_value < $roofInsulation->values->max('calculate_value'))
                                                         <option data-calculate-value="{{$insulation->calculate_value}}"
                                                                 @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'element_value_id'))) selected="selected"
                                                                 @endif value="{{ $insulation->id }}">
@@ -133,15 +135,15 @@
                                         @slot('sourceSlot')
                                             @include('cooperation.tool.components.source-list', [
                                                 'inputType' => 'input', 
-                                                'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 
-                                                'userInputColumn' => 'roof_surface'
+                                                'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat],
+                                                'userInputColumn' => 'roof_surface', 'needsFormat' => true, 'decimals' => 2
                                             ])
                                         @endslot
 
                                         <span class="input-group-prepend">@lang('general.unit.square-meters.title')</span>
                                         <input type="text" class="form-input" required="required"
                                                name="building_roof_types[{{ $roofCat }}][roof_surface]"
-                                               value="{{ old('building_roof_types.' . $roofCat . '.roof_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'roof_surface')) }}">
+                                               value="{{ \App\Helpers\NumberFormatter::format(old('building_roof_types.' . $roofCat . '.roof_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'roof_surface')) ?? '', 2) }}">
                                         {{--<input type="text" class="form-input" name="building_roof_types[{{ $roofCat }}][roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['roof_surface'] : old('building_roof_types.' . $roofCat . '.roof_surface')}}">--}}
                                     @endcomponent
                                 </div>
@@ -156,14 +158,14 @@
                                             @include('cooperation.tool.components.source-list', [
                                                 'inputType' => 'input',
                                                 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat],
-                                                'userInputColumn' => 'insulation_roof_surface'
+                                                'userInputColumn' => 'insulation_roof_surface', 'needsFormat' => true, 'decimals' => 2
                                             ])
                                         @endslot
 
                                         <span class="input-group-prepend">@lang('general.unit.square-meters.title')</span>
                                         <input type="text" required="required" class="form-input"
                                                name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]"
-                                               value="{{ old('building_roof_types.' . $roofCat . '.insulation_roof_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'insulation_roof_surface')) }}">
+                                               value="{{ \App\Helpers\NumberFormatter::format(old('building_roof_types.' . $roofCat . '.insulation_roof_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'insulation_roof_surface')) ?? '', 2) }}">
                                         {{--<input type="text"  class="form-input" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface'] : old('building_roof_types.' . $roofCat . '.insulation_roof_surface')}}">--}}
                                     @endcomponent
                                 </div>
@@ -551,7 +553,7 @@
         $('input[name*="[roof_surface]"]').on('change', function () {
             var insulationRoofSurface = $(this).parents('.roof-surface-inputs').first().next().find('input[name*="[insulation_roof_surface]"]');
             if (insulationRoofSurface.length > 0) {
-                if ($(insulationRoofSurface).val().length === 0 || $(insulationRoofSurface).val() === "0,0" || $(insulationRoofSurface).val() === "0.00") {
+                if ($(insulationRoofSurface).val().length === 0 || $(insulationRoofSurface).val() === "0,0" || $(insulationRoofSurface).val() === "0,00" || $(insulationRoofSurface).val() === "0.00") {
                     $(insulationRoofSurface).val($(this).val());
                 }
             }

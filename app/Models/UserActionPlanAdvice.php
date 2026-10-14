@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Observers\UserActionPlanAdviceObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Enums\AdviceSource;
+use App\Services\SmartTwin\SmartTwinAdviceDetails;
 use App\Helpers\Hoomdossier;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
@@ -44,6 +45,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property bool $planned
  * @property int|null $planned_year
  * @property int|null $step_id
+ * @property AdviceSource|null $source
+ * @property array<array-key, mixed>|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
@@ -121,6 +124,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         'loan_available',
         'subsidy_available',
         'source',
+        'extra',
     ];
 
     protected array $ignoreAttributes = [
@@ -145,7 +149,17 @@ class UserActionPlanAdvice extends Model implements Auditable
             'savings_electricity' => 'decimal:2',
             'savings_money' => 'decimal:2',
             'source' => AdviceSource::class,
+            'extra' => 'array',
         ];
+    }
+
+    /**
+     * What SmartTwin told us about this advice: the solution and the part of the dwelling it works on.
+     * Null for an advice SmartTwin did not make.
+     */
+    public function smartTwinDetails(): ?SmartTwinAdviceDetails
+    {
+        return SmartTwinAdviceDetails::fromExtra($this->extra);
     }
 
     // Scopes

@@ -26,7 +26,7 @@ final class ExtendInsulationScalesTest extends TestCase
     private const TARGET = [
         'wall-insulation'  => [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]],
         'floor-insulation' => [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8]],
-        'roof-insulation'  => [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7]],
+        'roof-insulation'  => [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8]],
     ];
 
     /**
@@ -37,12 +37,13 @@ final class ExtendInsulationScalesTest extends TestCase
     private const TO_ORIGINAL = [
         'wall-insulation'  => [[4], [[5, 3, 4], [6, 5, 5]]],
         'floor-insulation' => [[3, 5], [[4, 2, 3], [6, 3, 4], [7, 4, 5], [8, 5, 6]]],
-        'roof-insulation'  => [[4], [[5, 3, 4], [6, 4, 5], [7, 5, 6]]],
+        'roof-insulation'  => [[3, 5], [[4, 2, 3], [6, 3, 4], [7, 4, 5], [8, 5, 6]]],
     ];
 
     /** The same, but stopping where staging stands: Redelijk applied, Slecht not. */
     private const TO_STAGING = [
         'floor-insulation' => [[3], [[4, 2, 3], [5, 3, 4], [6, 4, 5], [7, 5, 6], [8, 6, 7]]],
+        'roof-insulation'  => [[3], [[4, 2, 3], [5, 3, 4], [6, 4, 5], [7, 5, 6], [8, 6, 7]]],
     ];
 
     /**
@@ -121,16 +122,27 @@ final class ExtendInsulationScalesTest extends TestCase
         }
     }
 
-    public function test_poor_is_added_to_the_floor_only(): void
+    public function test_poor_is_added_to_the_floor_and_the_roof(): void
     {
-        // It belongs to the floor classification; the wall table retired it and the roof has no
-        // table yet.
+        // Their classifications use it; the wall table retired it.
         $this->rewind(self::TO_ORIGINAL);
         $this->artisan(self::COMMAND)->assertSuccessful();
 
         $this->assertNotNull($this->levelNamed('floor-insulation', 'Slechte isolatie'));
+        $this->assertNotNull($this->levelNamed('roof-insulation', 'Slechte isolatie'));
         $this->assertNull($this->levelNamed('wall-insulation', 'Slechte isolatie'));
-        $this->assertNull($this->levelNamed('roof-insulation', 'Slechte isolatie'));
+    }
+
+    public function test_poor_still_counts_as_a_roof_worth_insulating(): void
+    {
+        $this->rewind(self::TO_ORIGINAL);
+        $this->artisan(self::COMMAND)->assertSuccessful();
+
+        $poor = \App\Models\ElementValue::find($this->levelNamed('roof-insulation', 'Slechte isolatie')->id);
+        $moderate = \App\Models\ElementValue::find($this->levelNamed('roof-insulation', 'Matige isolatie (tot 8 cm isolatie)')->id);
+
+        $this->assertFalse($poor->countsAsInsulated());
+        $this->assertTrue($moderate->countsAsInsulated());
     }
 
     public function test_poor_sits_between_none_and_moderate(): void
@@ -173,7 +185,7 @@ final class ExtendInsulationScalesTest extends TestCase
 
     public function test_a_database_that_already_had_reasonable_gets_only_what_it_misses(): void
     {
-        // Staging. Wall and roof are already where they should be; only the floor moves.
+        // Staging. The wall is already where it should be; floor and roof only get Slecht.
         $this->rewind(self::TO_STAGING);
 
         $this->artisan(self::COMMAND)->assertSuccessful();

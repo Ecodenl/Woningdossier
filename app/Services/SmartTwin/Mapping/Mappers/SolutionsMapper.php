@@ -3,6 +3,7 @@
 namespace App\Services\SmartTwin\Mapping\Mappers;
 
 use App\Models\Building;
+use App\Services\SmartTwin\Mapping\Elements\AdviceDetailsBuilder;
 use App\Services\SmartTwin\Mapping\FieldMapper;
 use App\Services\SmartTwin\Mapping\Leaf;
 use App\Services\SmartTwin\Mapping\MappingResult;
@@ -32,7 +33,10 @@ class SolutionsMapper implements FieldMapper
     private const PATH_SCENARIO_SAVINGS = 'scenario.energyCostSavingsPerMonth';
     private const PATH_TOP_LEVEL_SOLUTIONS = 'solutions';
 
-    public function __construct(private readonly SolutionMeasures $measures)
+    public function __construct(
+        private readonly SolutionMeasures $measures,
+        private readonly AdviceDetailsBuilder $details,
+    )
     {
     }
 
@@ -73,12 +77,12 @@ class SolutionsMapper implements FieldMapper
             // difference between € 4.254,96 and € 4.777,22.
             self::PATH_TOTAL_COST => MappingResult::skipped('bevat bijkomende kosten, de maatregel rekent met primaryCosts'),
 
-            self::PATH_SCENARIO_TOTAL => MappingResult::skipped('som van de maatregelen die elk hun eigen kosten krijgen'),
+            self::PATH_SCENARIO_TOTAL => MappingResult::skipped('som van de maatregelen die elk hun eigen kosten krijgen; vastgelegd bij het pakket'),
 
-            // The gap behind A6: one figure for the whole package, nothing per measure, while the
-            // woonplan shows a saving per card. Recorded here so the report says why every card
-            // SmartTwin produced comes without one.
-            self::PATH_SCENARIO_SAVINGS => MappingResult::skipped('besparing geldt het hele pakket, niet een losse maatregel'),
+            // One figure for the whole package, nothing per measure, while the woonplan shows a
+            // saving per card. Recorded with the package rather than on any card, so the report says
+            // why every card SmartTwin produced comes without one.
+            self::PATH_SCENARIO_SAVINGS => MappingResult::skipped('besparing geldt het hele pakket, niet een losse maatregel; vastgelegd bij het pakket'),
 
             self::PATH_TOP_LEVEL_SOLUTIONS => MappingResult::skipped('leeg; de maatregelen staan onder scenario'),
 
@@ -132,6 +136,7 @@ class SolutionsMapper implements FieldMapper
             $measureShort,
             $costs,
             "som van de basiskosten van solution '{$solutionId}'",
+            $this->details->for($response, $solution, $measureShort, $this->measures->stepFor($measureShort)),
         );
     }
 

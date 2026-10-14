@@ -29,6 +29,11 @@ interface FieldMapper
      *                                          sibling fields can reach them. Mark the siblings it
      *                                          consumes as skipped with a note pointing here, so the
      *                                          report stays honest about them.
+     * @return MappingResult|array<int, MappingResult>  Several results when the leaf anchors a whole
+     *                                                  part of the dwelling: every answer about it is
+     *                                                  decided in one place, including the ones that
+     *                                                  have to be emptied because the response no
+     *                                                  longer describes them.
      */
-    public function map(Building $building, Leaf $leaf, array $response): MappingResult;
+    public function map(Building $building, Leaf $leaf, array $response): MappingResult|array;
 }

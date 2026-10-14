@@ -128,6 +128,30 @@ final class UserActionPlanAdviceOwnershipTest extends TestCase
         $this->assertSame(1, $this->adviceCount());
     }
 
+    public function test_a_smarttwin_heat_pump_card_keeps_the_price_it_came_with(): void
+    {
+        // The observer prices a heat pump card itself when the heating step is not completed, which
+        // is the normal state of a SmartTwin dossier. On a SmartTwin card that would put our price
+        // under their name, next to a saving SmartTwin never gave.
+        $heatPump = MeasureApplication::findByShort('hybrid-heat-pump-outside-air');
+
+        $advice = new UserActionPlanAdvice([
+            'user_id'                         => $this->user->id,
+            'input_source_id'                 => $this->coach->id,
+            'user_action_plan_advisable_type' => MeasureApplication::class,
+            'user_action_plan_advisable_id'   => $heatPump->id,
+            'step_id'                         => $heatPump->step_id,
+            'costs'                           => ['from' => 7342.0, 'to' => 7342.0],
+            'source'                          => AdviceSource::SMART_TWIN,
+        ]);
+        $advice->save();
+
+        $advice->refresh();
+        $this->assertEquals(7342, $advice->costs['from']);
+        $this->assertEquals(7342, $advice->costs['to']);
+        $this->assertNull($advice->savings_money);
+    }
+
     public function test_an_advice_without_a_source_behaves_exactly_as_before(): void
     {
         $this->advice(null);

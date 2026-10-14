@@ -55,8 +55,8 @@ final class AdviceResultStorageTest extends TestCase
 
         $this->assertSame($expectedFilename, $fileStorage->filename);
         $this->assertFalse($fileStorage->is_being_processed);
-        $this->assertNotNull($fileStorage->available_until);
-        $this->assertTrue($fileStorage->available_until->isFuture());
+        // Kept until the next import replaces it: the explanation page reads the last import.
+        $this->assertNull($fileStorage->available_until);
         $this->assertSame(InputSource::resident()->id, $fileStorage->input_source_id);
         $this->assertSame(
             FileType::findByShort(AdviceResultStorage::FILE_TYPE_SHORT)->id,

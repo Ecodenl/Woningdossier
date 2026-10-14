@@ -771,18 +771,21 @@ class ToolQuestionsTableSeeder extends Seeder
                             'icon' => 'icon-roof-insulation-none',
                         ],
                         3 => [
-                            'icon' => 'icon-roof-insulation-moderate',
+                            'icon' => 'icon-roof-insulation-none',
                         ],
                         4 => [
-                            'icon' => 'icon-roof-insulation-good',
+                            'icon' => 'icon-roof-insulation-moderate',
                         ],
                         5 => [
                             'icon' => 'icon-roof-insulation-good',
                         ],
                         6 => [
-                            'icon' => 'icon-roof-insulation-excellent',
+                            'icon' => 'icon-roof-insulation-good',
                         ],
                         7 => [
+                            'icon' => 'icon-roof-insulation-excellent',
+                        ],
+                        8 => [
                             'icon' => 'icon-other',
                         ],
                     ],

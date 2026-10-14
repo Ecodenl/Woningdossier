@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Api\V1\Resources\Schemas;
  *      title="Store Register request",
  *      description="Register request body data",
  *      type="object",
- *      required={"email", "first_name", "last_name", "postal_code", "number", "street", "city", "contact_id"}
+ *      required={"email", "first_name", "last_name", "postal_code", "number", "street", "city"}
  * )
  */
 class StoreRegisterRequest

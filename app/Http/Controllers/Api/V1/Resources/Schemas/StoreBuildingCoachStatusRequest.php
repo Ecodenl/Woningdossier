@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Api\V1\Resources\Schemas;
  *      title="Store Building Coach Status request",
  *      description="Building Coach Status request body data",
  *      type="object",
- *      required={"building_coach_status"}
+ *      required={"building_coach_statuses"}
  * )
  */
 
@@ -15,7 +15,7 @@ class StoreBuildingCoachStatusRequest
 {
     /**
      * @OA\Property(
-     *     title="building_coach_status",
+     *     title="building_coach_statuses",
      *     description="Contact IDs to use for coach linking",
      *         @OA\Property(property="coach_contact_id", example=10074, type="integer"),
      *         @OA\Property(property="resident_contact_id", example=2532, type="integer"),
@@ -23,5 +23,5 @@ class StoreBuildingCoachStatusRequest
      *
      * @var array
      */
-    public $building_coach_status;
+    public $building_coach_statuses;
 }

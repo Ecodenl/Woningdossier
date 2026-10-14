@@ -23,7 +23,9 @@ use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\Models\NotificationService;
 use App\Services\Models\UserCostService;
+use App\Services\SmartTwin\PackageResults;
 use App\Services\SmartTwin\SharedWoonplan;
+use App\Services\SmartTwin\SmartTwinHandOff;
 use App\Services\SmartTwin\WoonplanCardRules;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Collection;
@@ -416,6 +418,39 @@ class Form extends CustomMeasureForm
         $package = $this->building->smartTwinPackage()->first();
 
         return $package instanceof SmartTwinPackage ? array_map('intval', $package->measure_application_ids ?? []) : [];
+    }
+
+    /**
+     * "Gekozen pakket" under the columns, once the woonplan is SmartTwin's. Read from the cards as
+     * they are now, so it follows every move.
+     */
+    #[Computed]
+    public function packageResults(): ?PackageResults
+    {
+        if (! $this->smartTwinOwnsWoonplan) {
+            return null;
+        }
+
+        $package = SmartTwinPackage::where('building_id', $this->building->id)->first();
+
+        // The woonplan as it is shown: master, visible cards included or not, isIntactIn decides.
+        $intact = $package instanceof SmartTwinPackage && $package->isIntactIn(
+            UserActionPlanAdvice::withoutGlobalScopes()
+                ->where('user_id', $this->building->user->id)
+                ->where('input_source_id', $this->masterInputSource->id)
+                ->get(),
+        );
+
+        return PackageResults::from($package, $intact, $this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] ?? []);
+    }
+
+    /**
+     * Whether "Maatregelpakket aanpassen" may send this account to SmartTwin.
+     */
+    #[Computed]
+    public function canHandOff(): bool
+    {
+        return SmartTwinHandOff::isOfferedFor($this->building);
     }
 
     private function kindOfCard(string $id): string

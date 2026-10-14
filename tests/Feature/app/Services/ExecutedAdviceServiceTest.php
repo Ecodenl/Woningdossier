@@ -103,7 +103,7 @@ final class ExecutedAdviceServiceTest extends TestCase
                 'user_action_plan_advisable_type' => MeasureApplication::class,
                 'user_action_plan_advisable_id'   => MeasureApplication::findByShort('save-energy-with-light')->id,
                 'step_id'                         => Step::findByShort('small-measures')->id,
-                'costs'                           => json_encode(['from' => 10, 'to' => 45]),
+                'costs'                           => ['from' => 10, 'to' => 45],
                 'category'                        => UserActionPlanAdviceService::CATEGORY_COMPLETE,
                 'visible'                         => true,
                 'executed_at'                     => '2026-09-01',

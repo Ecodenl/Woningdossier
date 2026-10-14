@@ -77,7 +77,7 @@ final class SharedWoonplanActionsTest extends TestCase
                 'user_action_plan_advisable_type' => MeasureApplication::class,
                 'user_action_plan_advisable_id'   => $measure->id,
                 'step_id'                         => $measure->step_id,
-                'costs'                           => json_encode(['from' => null, 'to' => 1000]),
+                'costs'                           => ['from' => null, 'to' => 1000],
                 'category'                        => 'to-do',
                 'visible'                         => true,
                 'source'                          => $source?->value,

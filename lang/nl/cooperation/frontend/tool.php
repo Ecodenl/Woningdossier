@@ -140,6 +140,26 @@ return [
 <p>Dit duurt meestal niet lang. Zodra het klaar is kom je hier vanzelf terecht.</p>',
         ],
 
+        // "Gekozen pakket" under the columns of a SmartTwin woonplan (woonplan design "Pagina 2").
+        'package-results' => [
+            'title' => 'Gekozen pakket',
+            'costs' => 'Kosten',
+            'total' => 'Totaal pakket',
+            'no-costs' => 'Geen kosten bekend',
+            'savings' => 'Besparing',
+            'per-year' => 'per jaar',
+            'subsidy' => 'Subsidie',
+            'energy-label' => 'Energielabel',
+            'gas' => 'Gasverbruik',
+            'electricity' => 'Stroomverbruik',
+            'co2-savings' => 'CO2-besparing',
+            'broken' => 'Verbeterpakket aangepast,',
+            'broken-link' => 'klik hier om een nieuwe berekening te maken.',
+            'adjust' => 'Maatregelpakket aanpassen',
+            'adjust-warning' => "Let op: bij een herberekening worden alle maatregelen in de kolommen 'Nu aanpakken' en 'Later uitvoeren' gereset!",
+            'adjust-confirm' => 'Verder naar SmartTwin',
+            'adjust-cancel' => 'Annuleren',
+        ],
         'smarttwin' => [
             'button' => 'Doe de verbetercheck',
             'redirecting' => 'Je wordt ingelogd bij SmartTwin…',

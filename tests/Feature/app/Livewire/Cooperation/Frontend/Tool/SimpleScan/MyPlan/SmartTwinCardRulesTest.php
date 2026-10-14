@@ -16,6 +16,8 @@ use App\Models\SmartTwinPackage;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
+use App\Services\ExecutedAdviceService;
+use Illuminate\Support\Carbon;
 use Database\Seeders\DatabaseSeeder;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\CustomMeasureApplication;
@@ -81,7 +83,7 @@ final class SmartTwinCardRulesTest extends TestCase
                 'user_action_plan_advisable_type' => MeasureApplication::class,
                 'user_action_plan_advisable_id'   => $measure->id,
                 'step_id'                         => is_null($stepShort) ? $measure->step_id : Step::findByShort($stepShort)->id,
-                'costs'                           => json_encode(['from' => null, 'to' => 1000]),
+                'costs'                           => ['from' => null, 'to' => 1000],
                 'category'                        => 'to-do',
                 'visible'                         => true,
                 'source'                          => $source?->value,
@@ -281,5 +283,55 @@ final class SmartTwinCardRulesTest extends TestCase
         $this->addOwnMeasure('later');
 
         $this->assertSame(['to-do'], $this->ownMeasureCategories());
+    }
+
+    private function packageWithFigures(): UserActionPlanAdvice
+    {
+        $card = $this->packageCard();
+
+        // The figures of dossier 100271.
+        $this->building->smartTwinPackage()->first()->update([
+            'current_result'                => ['energyConsumptionGas' => 1500, 'energyConsumptionElectricity' => 2500, 'totalCo2Emission' => 5826.2365, 'energyLabel' => 'C'],
+            'scenario_result'               => ['energyConsumptionGas' => 0, 'energyConsumptionElectricity' => 6035.9627, 'totalCo2Emission' => 1162.0925, 'energyLabel' => 'A+++'],
+            'energy_cost_savings_per_month' => 210,
+            'total_subsidy'                 => 6853.75,
+            'subsidies'                     => [['name' => 'ISDE', 'amount' => 6853.75]],
+        ]);
+
+        return $card;
+    }
+
+    public function test_the_results_show_the_package_its_own_measures_and_its_figures(): void
+    {
+        $this->packageWithFigures();
+        $this->addOwnMeasure('to-do', 'Zonnescherm');
+
+        $this->woonplan()
+            ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.title'))
+            // A line per card in "Nu aanpakken", the own measure by its name.
+            ->assertSeeInOrder([MeasureApplication::findByShort('cavity-wall-insulation')->measure_name, 'Zonnescherm'])
+            ->assertSee('€ 2.200')
+            ->assertSee('€ 2.520')
+            // As SmartTwin gave it, not rounded to the woonplan's steps of five.
+            ->assertSee('€ 6.854')
+            ->assertSee('ISDE')
+            ->assertSee('C → A+++');
+    }
+
+    public function test_once_the_package_no_longer_holds_its_figures_make_way_for_a_new_calculation(): void
+    {
+        $card = $this->packageWithFigures();
+        app(ExecutedAdviceService::class)->markExecuted($card, Carbon::parse('2026-10-01'));
+
+        $this->woonplan()
+            ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.broken'))
+            ->assertDontSee('€ 2.520');
+    }
+
+    public function test_before_the_switch_there_are_no_package_results(): void
+    {
+        $this->card('cavity-wall-insulation', null);
+
+        $this->woonplan()->assertDontSee(__('cooperation/frontend/tool.my-plan.package-results.title'));
     }
 }

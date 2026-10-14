@@ -288,6 +288,10 @@
         @endif
     </div>
 
+    @if($results = $this->packageResults)
+        @include('livewire.cooperation.frontend.tool.simple-scan.my-plan.package-results', ['results' => $results])
+    @endif
+
     <div class="w-full grid grid-rows-2 grid-cols-3 lg:grid-rows-1 lg:grid-cols-6 grid-flow-row gap-3 mt-5 py-8 content-center border-t-2 border-b-2 border-blue-500 border-opacity-10">
 {{--        <div class="w-full flex flex-wrap items-center space-x-3">--}}
 {{--            <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">--}}

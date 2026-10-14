@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Deprecation\ToolHelper;
+use App\Enums\AdviceSource;
 use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
+use App\Helpers\Hoomdossier;
 use App\Helpers\Queue;
 use App\Helpers\StepHelper;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
@@ -182,7 +184,7 @@ class UserActionPlanAdviceService
             return false;
         }
 
-        return UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+        $ownedForThisMeasure = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
             ->allInputSources()
             ->where('user_id', $userActionPlanAdvice->user_id)
             ->where('input_source_id', $userActionPlanAdvice->input_source_id)
@@ -190,6 +192,86 @@ class UserActionPlanAdviceService
             ->where('user_action_plan_advisable_id', $userActionPlanAdvice->user_action_plan_advisable_id)
             ->whereNotNull('source')
             ->exists();
+
+        return $ownedForThisMeasure || self::isReplacedBySmartTwin($userActionPlanAdvice);
+    }
+
+    /**
+     * Whether SmartTwin's advice takes the place of this calculated one.
+     *
+     * Once SmartTwin advised a building, its woonplan is SmartTwin's advice plus what the resident
+     * chose; the calculated advices SmartTwin replaces are removed (removeAdvicesReplacedBySmartTwin())
+     * and must not come back with the next recalculation. That holds as long as the building has a
+     * SmartTwin advice and its cooperation takes part. Switching the cooperation off removes the
+     * SmartTwin advices, after which the calculation fills the woonplan again.
+     */
+    private static function isReplacedBySmartTwin(UserActionPlanAdvice $userActionPlanAdvice): bool
+    {
+        if (! self::isReplaceableBySmartTwin($userActionPlanAdvice)) {
+            return false;
+        }
+
+        $user = User::forAllCooperations()->find($userActionPlanAdvice->user_id);
+
+        if (! $user instanceof User || ! Hoomdossier::smartTwinEnabledFor($user->cooperation)) {
+            return false;
+        }
+
+        return UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $user->id)
+            ->where('source', AdviceSource::SMART_TWIN)
+            ->exists();
+    }
+
+    /**
+     * The calculated advices SmartTwin replaces: those for a measure application, except the small
+     * measures. A small measure is something the resident said they do or want to do, not something
+     * the calculation came up with, and SmartTwin's advice does not cover it. What the resident added
+     * themselves or chose from the cooperation's offer is not a measure application and stays too.
+     */
+    private static function isReplaceableBySmartTwin(UserActionPlanAdvice $userActionPlanAdvice): bool
+    {
+        if ($userActionPlanAdvice->user_action_plan_advisable_type !== MeasureApplication::class) {
+            return false;
+        }
+
+        $smallMeasures = Step::findByShort('small-measures');
+
+        return ! ($smallMeasures instanceof Step && (int) $userActionPlanAdvice->step_id === $smallMeasures->id);
+    }
+
+    /**
+     * Removes the calculated advices SmartTwin's advice takes the place of (see
+     * isReplaceableBySmartTwin()), for every input source. Master is part of the query on purpose:
+     * deleting an advice is not passed on to master the way saving one is.
+     *
+     * @return int The number of advices removed.
+     */
+    public static function removeAdvicesReplacedBySmartTwin(Building $building): int
+    {
+        $smallMeasures = Step::findByShort('small-measures');
+
+        return UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $building->user_id)
+            ->whereNull('source')
+            ->where('user_action_plan_advisable_type', MeasureApplication::class)
+            ->when($smallMeasures instanceof Step, fn ($query) => $query->where(
+                fn ($query) => $query->whereNull('step_id')->orWhere('step_id', '!=', $smallMeasures->id),
+            ))
+            ->delete();
+    }
+
+    /**
+     * Removes the SmartTwin advices of a building, for every input source, master included.
+     *
+     * @return int The number of advices removed.
+     */
+    public static function removeSmartTwinAdvices(Building $building): int
+    {
+        return UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $building->user_id)
+            ->where('source', AdviceSource::SMART_TWIN)
+            ->delete();
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Services\SmartTwin\Mapping;
 
 use App\Enums\SmartTwin\EventType;
 use App\Enums\SmartTwin\MappingStatus;
+use App\Enums\SmartTwin\MappingTarget;
 use App\Models\Building;
 use Throwable;
 
@@ -70,6 +71,20 @@ final class MappingReport
             $this->entries,
             fn (MappingEntry $entry) => $entry->status->needsAttention(),
         ));
+    }
+
+    /**
+     * Whether at least one advised measure was written to the woonplan.
+     */
+    public function savedAdvice(): bool
+    {
+        foreach ($this->entries as $entry) {
+            if (MappingStatus::MAPPED === $entry->status && MappingTarget::ADVICE === $entry->kind) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

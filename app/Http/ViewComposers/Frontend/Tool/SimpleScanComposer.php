@@ -59,7 +59,7 @@ class SimpleScanComposer
         // "step 16 of 45" the moment they open the first question we do still ask. Excluding them
         // from the two base queries below fixes both the total and the position, since the running
         // total is built from the same queries.
-        $hiddenStepShorts = Hoomdossier::hasEnabledSmartTwinCalls()
+        $hiddenStepShorts = Hoomdossier::smartTwinEnabledFor($cooperation)
             ? $scan->steps->filter(fn (Step $scanStep) => $scanStep->isProvidedBySmartTwin())->pluck('short')->all()
             : [];
 

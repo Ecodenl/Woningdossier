@@ -3,6 +3,7 @@
 namespace App\Services\SmartTwin;
 
 use App\Enums\SmartTwin\EventType;
+use App\Helpers\Hoomdossier;
 use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\Building;
@@ -55,8 +56,9 @@ class BuildingResolver
         $candidates = $this->candidatesFor($account, $eventType);
 
         if ($candidates->isEmpty()) {
-            // Either the account holds no user with the role this flow belongs to, or the coach is
-            // no longer attached to any building. Both are a refusal, not a lookup miss.
+            // The account holds no user with the role this flow belongs to, the coach is no longer
+            // attached to any building, or the buildings are in cooperations that do not take part in
+            // SmartTwin. All are a refusal, not a lookup miss.
             Log::warning('SmartTwin webhook: account has no reachable buildings for this flow', [
                 'account_id' => $account->getKey(),
                 'flow'       => $eventType->value,
@@ -92,7 +94,11 @@ class BuildingResolver
             });
         }
 
-        return $buildings->unique('id')->values();
+        // Only buildings of cooperations that take part. A callback for any other building is not
+        // taken in: it would bring SmartTwin advice to a cooperation that has none of it.
+        return $buildings->unique('id')
+            ->filter(fn (Building $building) => Hoomdossier::smartTwinEnabledFor(Hoomdossier::cooperationOf($building)))
+            ->values();
     }
 
     /**

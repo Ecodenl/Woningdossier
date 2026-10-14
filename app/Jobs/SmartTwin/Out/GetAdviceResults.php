@@ -12,6 +12,7 @@ use App\Services\SmartTwin\SmartTwinService;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 
 class GetAdviceResults implements ShouldQueue, ShouldBeUnique
 {
@@ -38,10 +39,6 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
         MappingReportStorage $reportStorage,
     ): void
     {
-        if (! Hoomdossier::hasEnabledSmartTwinCalls()) {
-            return;
-        }
-
         $dossierId = $this->callbackData['DossierId'] ?? null;
         $eventType = EventType::tryFrom($this->callbackData['EventType'] ?? '');
 
@@ -49,12 +46,30 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
             return;
         }
 
+        if (! Hoomdossier::hasSmartTwinApi()) {
+            $this->drop($eventType, 'SmartTwin calls are disabled');
+
+            return;
+        }
+
+        $building = Building::find($this->buildingId);
+
+        if (! $building instanceof Building) {
+            return;
+        }
+
+        // The webhook only takes callbacks in for cooperations that take part, and switching one off
+        // clears what was still open. This catches a callback that slipped in between.
+        if (! Hoomdossier::smartTwinEnabledFor(Hoomdossier::cooperationOf($building))) {
+            $this->drop($eventType, 'SmartTwin is off for the cooperation');
+
+            return;
+        }
+
         $results = match ($eventType) {
             EventType::COACH_SCAN_FINISHED    => $api->advice()->getAdvisorToolResults($dossierId),
             EventType::RESIDENT_SCAN_FINISHED => $api->advice()->getQuickScanResults($dossierId),
         };
-
-        $building = Building::findOrFail($this->buildingId);
 
         // Persist the raw response before mapping, so a mapping retry never has to re-fetch.
         // The fetch always returns the dossier's current state.
@@ -69,5 +84,25 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
         $building->save();
 
         $reportStorage->store($service->processResults($building, $results, $eventType, $dossierId));
+    }
+
+    /**
+     * Give up on a callback we are not going to fetch. Returning without clearing it would leave the
+     * marker in place, and the nightly fallback cron would pick the same callback up again every night.
+     */
+    private function drop(EventType $eventType, string $reason): void
+    {
+        Log::warning("SmartTwin callback dropped: {$reason}", [
+            'building_id' => $this->buildingId,
+            'flow'        => $eventType->value,
+            'dossierId'   => $this->callbackData['DossierId'] ?? null,
+        ]);
+
+        $building = Building::find($this->buildingId);
+
+        if ($building instanceof Building && $building->hasSmartTwinCallback($eventType)) {
+            $building->finishSmartTwinCallback($eventType);
+            $building->save();
+        }
     }
 }

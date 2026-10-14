@@ -30,8 +30,9 @@ class CreateCoachAccount implements ShouldQueue
 
     public function handle(SmartTwinApi $api): void
     {
-        if (! Hoomdossier::hasEnabledSmartTwinCalls()) {
-            Log::debug('SmartTwin calls are disabled, skipping CreateCoachAccount for user ' . $this->user->id);
+        // The cooperation can have been switched off between dispatching this and running it.
+        if (! Hoomdossier::smartTwinEnabledFor($this->user->cooperation)) {
+            Log::debug('SmartTwin is off for the cooperation, skipping CreateCoachAccount for user ' . $this->user->id);
             return;
         }
 

@@ -94,6 +94,19 @@ final class HomeControllerTest extends TestCase
         $response->assertSee(__('home.dashboard.building.to-dossier'), false);
     }
 
+    public function test_start_screen_is_shown_when_the_cooperation_does_not_take_part(): void
+    {
+        // SmartTwin is on for the environment, but not for this cooperation.
+        $this->enableSmartTwin(true);
+        $this->cooperation->update(['smarttwin_enabled' => false]);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $response->assertDontSee(__('home.dashboard.building.title'), false);
+        $response->assertDontSee(__('home.dashboard.coach.title'), false);
+    }
+
     public function test_logo_takes_a_resident_to_the_dashboard(): void
     {
         $this->enableSmartTwin(true);

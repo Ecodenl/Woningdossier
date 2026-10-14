@@ -112,6 +112,22 @@ final class MyPlanControllerTest extends TestCase
         );
     }
 
+    public function test_an_empty_woonplan_redirects_into_the_scan_when_the_cooperation_does_not_take_part(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->cooperation->update(['smarttwin_enabled' => false]);
+        $this->linkSmartTwinAccount();
+
+        $response = $this->visitWoonplan();
+
+        $response->assertRedirect();
+        $this->assertStringContainsString(
+            $this->scan->short,
+            $response->headers->get('Location'),
+            'Expected to be sent back into the scan.',
+        );
+    }
+
     public function test_with_smart_twin_an_empty_woonplan_invites_the_resident_to_do_the_check(): void
     {
         $this->enableSmartTwin(true);

@@ -59,7 +59,7 @@ class MessagesController extends Controller
 
         // With SmartTwin on, the coach tile from the dashboard sits beside the conversation, so the
         // resident sees who they are writing to and when they meet.
-        if (Hoomdossier::hasEnabledSmartTwinCalls()) {
+        if (Hoomdossier::smartTwinEnabledFor($cooperation)) {
             $data['coach'] = BuildingCoachStatusService::getCoachToShow($building);
             $data['appointmentDate'] = $building->getAppointmentDate();
         }

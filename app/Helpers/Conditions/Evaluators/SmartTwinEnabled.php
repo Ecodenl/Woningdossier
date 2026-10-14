@@ -8,13 +8,15 @@ class SmartTwinEnabled extends ShouldEvaluate
 {
     public function evaluate($value = null): array
     {
-        // This evaluator checks whether this installation runs with SmartTwin driving the technical
-        // part of the scan. $value must be a bool, which indicates if that is the desired outcome.
+        // This evaluator checks whether the cooperation of this building runs with SmartTwin driving
+        // the technical part of the scan. $value must be a bool, which indicates if that is the
+        // desired outcome.
 
-        // Unlike most evaluators there is nothing building or answer specific to look at: the switch
-        // is installation wide. The key is constant for that reason, so the result is computed once
-        // per evaluation run and reused.
-        $key = md5(json_encode([null]));
+        // There is nothing answer specific to look at, only the cooperation, so that is what the key
+        // is made of. An evaluator can be pointed at another building between runs, and a constant
+        // key would hand that building the result of the previous one's cooperation.
+        $cooperation = Hoomdossier::cooperationOf($this->building);
+        $key = md5(json_encode([$cooperation?->id]));
 
         if (array_key_exists($key, $this->override)) {
             $bool = $this->override[$key];
@@ -26,7 +28,7 @@ class SmartTwinEnabled extends ShouldEvaluate
             ];
         }
 
-        $enabled = Hoomdossier::hasEnabledSmartTwinCalls();
+        $enabled = Hoomdossier::smartTwinEnabledFor($cooperation);
 
         return [
             'results' => $enabled,

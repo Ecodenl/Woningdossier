@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\Client;
+use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Scan;
 use App\Models\User;
@@ -23,9 +24,40 @@ class Hoomdossier
         return config('hoomdossier.services.econobis.enabled', false);
     }
 
-    public static function hasEnabledSmartTwinCalls(): bool
+    /**
+     * Whether this environment can talk to SmartTwin at all (SMARTTWIN_ENABLED). This is the switch
+     * above the one per cooperation: what does not belong to a cooperation, such as the API client,
+     * the solution catalogue and removing a SmartTwin user, only asks this.
+     */
+    public static function hasSmartTwinApi(): bool
     {
-        return config('hoomdossier.services.smarttwin.enabled', false);
+        return (bool) config('hoomdossier.services.smarttwin.enabled', false);
+    }
+
+    /**
+     * Whether this cooperation takes part in SmartTwin. Everything that behaves differently for a
+     * cooperation that does asks this, never the environment switch alone.
+     */
+    public static function smartTwinEnabledFor(?Cooperation $cooperation): bool
+    {
+        return $cooperation instanceof Cooperation
+            && static::hasSmartTwinApi()
+            && $cooperation->smarttwin_enabled;
+    }
+
+    /**
+     * The cooperation that decides for this building: the one of the user it belongs to.
+     *
+     * Read past the CooperationScope on User. A webhook is a plain HTTP request without a session,
+     * so the scope resolves to cooperation_id = 0 there and would hide the user altogether.
+     */
+    public static function cooperationOf(Building $building): ?Cooperation
+    {
+        $user = $building->relationLoaded('user') && $building->user instanceof User
+            ? $building->user
+            : $building->user()->forAllCooperations()->first();
+
+        return $user?->cooperation;
     }
 
     /**
@@ -35,11 +67,24 @@ class Hoomdossier
      */
     public static function smartTwinFillsWoonplanFor(Building $building): bool
     {
+        if (! static::smartTwinEnabledFor(static::cooperationOf($building))) {
+            return false;
+        }
+
         $quickScan = Scan::quick();
 
-        return static::hasEnabledSmartTwinCalls()
-            && $quickScan instanceof Scan
+        return $quickScan instanceof Scan
             && ScanAvailabilityHelper::isAvailableForBuilding($building, $quickScan);
+    }
+
+    /**
+     * Whether SmartTwin drives the scan the building is being asked: its quick scan, where SmartTwin
+     * fills the woonplan. The questions of such a scan come back from SmartTwin, so none of them is
+     * required here (see ToolQuestion::isRequired()).
+     */
+    public static function smartTwinDrivesScan(Building $building, Scan $scan): bool
+    {
+        return $scan->isQuickScan() && static::smartTwinFillsWoonplanFor($building);
     }
 
     /**

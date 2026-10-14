@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\AccountVerified;
 use App\Events\SmartTwinCallbackReceived;
+use App\Helpers\Hoomdossier;
 use App\Helpers\RoleHelper;
 use App\Jobs\SmartTwin\Out\CreateCoachAccount;
 use App\Jobs\SmartTwin\Out\CreateUserAccount;
@@ -38,7 +39,7 @@ class SmartTwinEventSubscriber
     // already got their account via handleAccountVerified().
     public function handleLogin(Login $event): void
     {
-        if (! $event->user instanceof Account) {
+        if (! $event->user instanceof Account || ! Hoomdossier::hasSmartTwinApi()) {
             return;
         }
 
@@ -99,13 +100,21 @@ class SmartTwinEventSubscriber
     //
     // Reading roles fresh across all users keeps this deterministic: it no longer depends on which
     // cooperation happened to trigger creation first, nor on the order jobs come off the queue.
+    //
+    // Only the users of cooperations that take part in SmartTwin count. A coach in a cooperation
+    // without SmartTwin is no reason to make an account an Advisor in SmartTwin, and an account
+    // whose cooperations all stay out of it gets no SmartTwin user at all.
     private function dispatchForAccount(Account $account): void
     {
-        if (! empty($account->smartTwinUserId())) {
+        if (! empty($account->smartTwinUserId()) || ! Hoomdossier::hasSmartTwinApi()) {
             return;
         }
 
-        $users = $account->users()->forAllCooperations()->get();
+        $users = $account->users()
+            ->forAllCooperations()
+            ->with('cooperation')
+            ->get()
+            ->filter(fn (User $user) => Hoomdossier::smartTwinEnabledFor($user->cooperation));
 
         $coach    = $users->first(fn (User $user) => $user->hasRole(RoleHelper::ROLE_COACH));
         $resident = $coach instanceof User

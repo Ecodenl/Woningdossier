@@ -5,6 +5,7 @@ namespace Tests\Feature\app\Http\Controllers\Api\V1;
 use App\Enums\SmartTwin\EventType;
 use App\Events\SmartTwinCallbackReceived;
 use App\Http\Middleware\Api\SmartTwinSigned;
+use App\Jobs\SmartTwin\Out\GetAdviceResults;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -13,6 +14,7 @@ use App\Models\User;
 use App\Services\SmartTwin\Api\UserRole;
 use Database\Seeders\RoleTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
@@ -27,6 +29,31 @@ final class SmartTwinWebhookTest extends TestCase
     {
         parent::setUp();
         $this->seed(RoleTableSeeder::class);
+        config()->set('hoomdossier.services.smarttwin.enabled', true);
+
+        // A stored callback dispatches the job that fetches the results from SmartTwin. That is not
+        // what these tests are about, and with SmartTwin on it would call the real API.
+        Bus::fake([GetAdviceResults::class]);
+    }
+
+    public function test_webhook_stores_nothing_for_a_cooperation_that_does_not_take_part(): void
+    {
+        $building = $this->makeResidentBuilding();
+        $building->user->cooperation->update(['smarttwin_enabled' => false]);
+
+        $this->postWebhook()->assertNoContent();
+
+        $this->assertSame([], $building->fresh()->getSmartTwinCallbacks());
+    }
+
+    public function test_webhook_stores_nothing_when_smart_twin_is_off_for_the_environment(): void
+    {
+        config()->set('hoomdossier.services.smarttwin.enabled', false);
+        $building = $this->makeResidentBuilding();
+
+        $this->postWebhook()->assertNoContent();
+
+        $this->assertSame([], $building->fresh()->getSmartTwinCallbacks());
     }
 
     /**

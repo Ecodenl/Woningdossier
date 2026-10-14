@@ -31,7 +31,7 @@ class HomeController extends Controller
 
         // The dashboard only exists in SmartTwin mode; without it this route still shows the old
         // start screen, which needs none of the below.
-        if (Hoomdossier::hasEnabledSmartTwinCalls() && $building instanceof Building) {
+        if ($building instanceof Building && Hoomdossier::smartTwinEnabledFor($cooperation)) {
             $data += $this->dashboardData($building, $scans);
         }
 

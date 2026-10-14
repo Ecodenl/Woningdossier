@@ -29,7 +29,8 @@ class ImportSolutions extends Command
 
     public function handle(SmartTwinApi $api): int
     {
-        if (! Hoomdossier::hasEnabledSmartTwinCalls()) {
+        // One catalogue for every cooperation, so only the environment switch counts.
+        if (! Hoomdossier::hasSmartTwinApi()) {
             $this->error('SmartTwin calls are disabled, set SMARTTWIN_ENABLED and SMARTTWIN_KEY.');
 
             return self::FAILURE;

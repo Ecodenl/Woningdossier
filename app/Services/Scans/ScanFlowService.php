@@ -3,6 +3,7 @@
 namespace App\Services\Scans;
 
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\SmallMeasuresSettingHelper;
 use App\Helpers\StepHelper;
 use App\Helpers\SubStepHelper;
@@ -38,6 +39,9 @@ class ScanFlowService
     public Cooperation $cooperation;
 
     protected array $skipSubSteps = [];
+
+    /** @var array<int, bool> Whether SmartTwin drives the scan, per scan id; see smartTwinDrivesScan(). */
+    private array $smartTwinDrivesScan = [];
 
     public function __construct(Scan $scan, Building $building, InputSource $inputSource)
     {
@@ -399,6 +403,71 @@ class ScanFlowService
         return $url;
     }
 
+    /**
+     * Brings which sub steps of this scan count as done back in line with what is answered, after
+     * SmartTwin stopped driving the scan because its cooperation was switched off.
+     *
+     * With SmartTwin nothing was required, so a sub step could be completed with questions left
+     * empty, and the steps SmartTwin provided were never asked at all. Now the questions are required
+     * again:
+     * - a completed sub step with a required answer missing is incomplete again, and so is its step;
+     * - a never asked sub step of a step SmartTwin provided, whose required answers are all there
+     *   because the mapping filled them in, counts as done. The resident is not walked through what
+     *   SmartTwin already answered, only through what it left open.
+     * A sub step the building cannot see is left as it is.
+     */
+    public function reassessCompletion(User $authUser): void
+    {
+        $subSteps = SubStep::whereHas('step', fn ($query) => $query->where('scan_id', $this->scan->id))
+            ->with(['step', 'toolQuestions'])
+            ->get();
+
+        $conditions = $subSteps->pluck('conditions')
+            ->merge($subSteps->pluck('toolQuestions.*.pivot.conditions')->flatten(1))
+            ->filter()
+            ->flatten(1)
+            ->all();
+
+        $evaluator = ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->inputSource);
+
+        $evaluator->setAnswers($evaluator->getToolAnswersForConditions($conditions));
+
+        $completedSubStepIds = CompletedSubStep::allInputSources()
+            ->forInputSource($this->inputSource)
+            ->forBuilding($this->building)
+            ->pluck('sub_step_id')
+            ->all();
+
+        $subStepService = SubStepService::init()
+            ->building($this->building)
+            ->inputSource($this->currentInputSource);
+
+        $stepsToComplete = [];
+
+        foreach ($subSteps as $subStep) {
+            if (! $this->canShow($subStep)) {
+                continue;
+            }
+
+            $isCompleted = in_array($subStep->id, $completedSubStepIds);
+            $isAnswered = $this->hasAnsweredSubStep($subStep, $evaluator);
+
+            if ($isCompleted && ! $isAnswered) {
+                $subStepService->subStep($subStep)->incomplete();
+                StepHelper::incomplete($subStep->step, $this->building, $this->currentInputSource);
+            } elseif (! $isCompleted && $isAnswered && $subStep->step->isProvidedBySmartTwin()) {
+                $subStepService->subStep($subStep)->complete();
+                $stepsToComplete[$subStep->step->id] = $subStep->step;
+            }
+        }
+
+        foreach ($stepsToComplete as $step) {
+            StepHelper::completeStepIfNeeded($step, $this->building, $this->currentInputSource, $authUser);
+        }
+    }
+
     public function evaluateSubSteps(Collection $subSteps, ConditionEvaluator $evaluator): array
     {
         $building = $this->building;
@@ -455,12 +524,14 @@ class ScanFlowService
         $questionsWithAnswers = 0;
         $visibleQuestions = 0;
 
+        $smartTwinDrivesScan = $this->smartTwinDrivesScan($subStep->step->scan);
+
         foreach ($subStep->toolQuestions as $toolQuestion) {
             /** @var SubSteppable $subSteppable */
             $subSteppable = $toolQuestion->pivot;
             if ($evaluator->evaluate($subSteppable->conditions ?? [])) {
                 // If it's visible, we will check if it's required. If it's not required, it doesn't matter after all
-                if ($toolQuestion->isRequired()) {
+                if ($toolQuestion->isRequired($smartTwinDrivesScan)) {
                     $visibleQuestions++;
 
                     $answer = $this->getAnswer($toolQuestion->short, false);
@@ -477,5 +548,15 @@ class ScanFlowService
         }
 
         return $questionsWithAnswers === $visibleQuestions;
+    }
+
+    /**
+     * Not necessarily the scan this service was made for: checking the conditionals walks the sub
+     * steps of every simple scan. Kept per scan, because working it out reads the building's settings
+     * and this is asked for every sub step.
+     */
+    private function smartTwinDrivesScan(Scan $scan): bool
+    {
+        return $this->smartTwinDrivesScan[$scan->id] ??= Hoomdossier::smartTwinDrivesScan($this->building, $scan);
     }
 }

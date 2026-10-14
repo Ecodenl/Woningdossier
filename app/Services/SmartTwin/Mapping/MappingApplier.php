@@ -80,6 +80,58 @@ class MappingApplier
     }
 
     /**
+     * Adds an "In orde" card for every element that is in good shape and not advised (see
+     * InOrderCards). Called once the package is written, so what is advised is known.
+     *
+     * A card of SmartTwin's, without a price: there is nothing to do. Not for a measure the resident
+     * already carried out; that card is in "In orde" already, with its record.
+     */
+    public function addInOrderCards(Building $building, InputSource $inputSource): void
+    {
+        $advised = MeasureApplication::whereIn('id', array_keys($this->pricedThisRun))->pluck('short')->all();
+
+        foreach (app(InOrderCards::class)->for($building, $advised) as $measureShort) {
+            $measure = MeasureApplication::findByShort($measureShort);
+
+            if (! $measure instanceof MeasureApplication || $this->isExecuted($building, $measure)) {
+                continue;
+            }
+
+            $advice = UserActionPlanAdvice::withoutGlobalScopes()->updateOrCreate(
+                [
+                    'user_id'                         => $building->user_id,
+                    'input_source_id'                 => $inputSource->id,
+                    'user_action_plan_advisable_type' => MeasureApplication::class,
+                    'user_action_plan_advisable_id'   => $measure->id,
+                ],
+                [
+                    'step_id'             => $measure->step_id,
+                    'costs'               => ['from' => null, 'to' => null],
+                    'source'              => AdviceSource::SMART_TWIN,
+                    'category'            => UserActionPlanAdviceService::CATEGORY_COMPLETE,
+                    'visible'             => true,
+                    'extra'               => null,
+                    'savings_gas'         => null,
+                    'savings_electricity' => null,
+                    'savings_money'       => null,
+                ],
+            );
+
+            $this->sharedWoonplan->copyFromMaster($advice);
+        }
+    }
+
+    private function isExecuted(Building $building, MeasureApplication $measure): bool
+    {
+        return UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $building->user_id)
+            ->where('user_action_plan_advisable_type', MeasureApplication::class)
+            ->where('user_action_plan_advisable_id', $measure->id)
+            ->whereNotNull('executed_at')
+            ->exists();
+    }
+
+    /**
      * The subsidy per scheme, in cents, as SmartTwin gives the amounts with a dozen decimals.
      *
      * @param  array<string, mixed>  $results

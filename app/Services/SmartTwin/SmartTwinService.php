@@ -54,9 +54,11 @@ class SmartTwinService
         $this->walk($solutions, $building, $inputSource, $results, $report, $debug);
 
         // From the first SmartTwin advice on, the woonplan is SmartTwin's advice plus what the
-        // resident chose. Only then, though: a response that advised nothing leaves the plan, and
-        // the package it was calculated for, as they were.
+        // resident chose, with "In orde" cards for what is in good shape and not advised. Only
+        // then, though: a response that advised nothing leaves the plan, and the package it was
+        // calculated for, as they were.
         if ($report->savedAdvice()) {
+            $this->applier->addInOrderCards($building, $inputSource);
             $this->applier->recordPackage($building, $inputSource, $results);
         }
 

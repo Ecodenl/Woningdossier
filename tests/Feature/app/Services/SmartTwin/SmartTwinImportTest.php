@@ -13,12 +13,14 @@ use App\Models\RoofType;
 use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
+use App\Services\ExecutedAdviceService;
 use App\Services\SmartTwin\Mapping\Mappers\ElementValues;
 use App\Services\SmartTwin\Mapping\MappingReport;
 use App\Services\SmartTwin\SmartTwinService;
 use App\Services\UserActionPlanAdviceService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 /**
@@ -272,5 +274,81 @@ final class SmartTwinImportTest extends TestCase
         $this->assertSame('yes', $this->answer('has-crawlspace'));
 
         $this->assertSame(2, $report->counts()[MappingStatus::SPEC_VIOLATION->value]);
+    }
+
+    /**
+     * A dwelling with a well insulated cavity wall and pitched roof, for which SmartTwin advises only
+     * the floor.
+     */
+    private function wellInsulatedResponse(float $facadeRc = 3.5): array
+    {
+        $current = $this->section($facadeRc, 3.5, null);
+        $current['calculationResult'] = ['energyConsumptionGas' => 1200.0, 'energyLabel' => 'B'];
+
+        $scenario = $this->section($facadeRc, 3.5, null);
+        $scenario['solutions'] = [$this->solution(self::FLOOR, 3613.26)];
+        $scenario['calculationResult'] = ['energyConsumptionGas' => 1100.0, 'energyLabel' => 'A'];
+
+        return ['current' => $current, 'scenario' => $scenario, 'solutions' => []];
+    }
+
+    /**
+     * @return array<string, string> Category by measure short, from master.
+     */
+    private function columns(): array
+    {
+        return collect($this->advices())->map(fn (UserActionPlanAdvice $advice) => $advice->category)->sort()->all();
+    }
+
+    public function test_what_is_good_and_not_advised_lands_in_order(): void
+    {
+        $this->import($this->wellInsulatedResponse());
+
+        $this->assertSame([
+            'cavity-wall-insulation'         => UserActionPlanAdviceService::CATEGORY_COMPLETE,
+            'floor-insulation'               => UserActionPlanAdviceService::CATEGORY_TO_DO,
+            'roof-insulation-pitched-inside' => UserActionPlanAdviceService::CATEGORY_COMPLETE,
+        ], collect($this->columns())->sortKeys()->all());
+
+        $inOrder = $this->advices()['cavity-wall-insulation'];
+        $this->assertSame(AdviceSource::SMART_TWIN, $inOrder->source);
+        $this->assertNull($inOrder->costs['to']);
+        // Not part of the package SmartTwin calculated.
+        $this->assertSame([MeasureApplication::findByShort('floor-insulation')->id], $this->building->smartTwinPackage()->first()->measure_application_ids);
+    }
+
+    public function test_reasonable_insulation_is_not_in_order(): void
+    {
+        // Redelijke isolatie: worth improving, so no card, even though SmartTwin does not advise it.
+        $this->import($this->wellInsulatedResponse(facadeRc: 2.5));
+
+        $this->assertArrayNotHasKey('cavity-wall-insulation', $this->advices());
+    }
+
+    public function test_an_import_without_advice_adds_no_cards_either(): void
+    {
+        $response = $this->wellInsulatedResponse();
+        $response['scenario']['solutions'] = [];
+
+        $this->import($response);
+
+        $this->assertSame([], $this->advices());
+    }
+
+    public function test_an_executed_measure_gets_no_second_card(): void
+    {
+        // "Uitgevoerd" is offered once SmartTwin owns the woonplan.
+        config()->set('hoomdossier.services.smarttwin.enabled', true);
+        $this->import($this->wellInsulatedResponse());
+        app(ExecutedAdviceService::class)->markExecuted($this->advices()['cavity-wall-insulation'], Carbon::parse('2026-10-01'));
+
+        $this->import($this->wellInsulatedResponse());
+
+        $rows = UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $this->building->user_id)
+            ->where('user_action_plan_advisable_id', MeasureApplication::findByShort('cavity-wall-insulation')->id)
+            ->get();
+        $this->assertCount(3, $rows);
+        $this->assertTrue($rows->every(fn (UserActionPlanAdvice $row) => $row->isExecuted()));
     }
 }

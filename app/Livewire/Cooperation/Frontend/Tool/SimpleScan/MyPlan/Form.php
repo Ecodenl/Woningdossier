@@ -643,7 +643,9 @@ class Form extends CustomMeasureForm
             }
 
             $cards[$category][$order]['has_user_costs'] = $hasUserCosts;
-            $cards[$category][$order]['subsidy_available'] = $advice->subsidy_available;
+            // SmartTwin gives the subsidy for the package as a whole; once the woonplan is SmartTwin's,
+            // the Verbeterjehuis subsidy per measure is not shown. Loans wait for the stuurgroep (F1c).
+            $cards[$category][$order]['subsidy_available'] = ! $this->smartTwinOwnsWoonplan && $advice->subsidy_available;
             $cards[$category][$order]['loan_available'] = $advice->loan_available;
 
             $cards[$category][$order]['id'] = $advice->id;

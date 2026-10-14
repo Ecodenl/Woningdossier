@@ -123,4 +123,24 @@ final class SharedWoonplanActionsTest extends TestCase
 
         $this->assertSame(['coach' => 'to-do', 'master' => 'later', 'resident' => 'later'], $this->categories());
     }
+
+    public function test_after_the_switch_the_verbeterjehuis_subsidy_is_not_shown_on_a_card(): void
+    {
+        $master = $this->card(AdviceSource::SMART_TWIN);
+        UserActionPlanAdvice::withoutEvents(fn () => $master->update(['subsidy_available' => true]));
+
+        $cards = Livewire::test(Form::class, ['scan' => Scan::quick(), 'building' => $this->building])->get('cards');
+
+        $this->assertFalse(collect($cards)->flatten(1)->firstWhere('id', $master->id)['subsidy_available']);
+    }
+
+    public function test_before_the_switch_the_verbeterjehuis_subsidy_stays(): void
+    {
+        $master = $this->card(null);
+        UserActionPlanAdvice::withoutEvents(fn () => $master->update(['subsidy_available' => true]));
+
+        $cards = Livewire::test(Form::class, ['scan' => Scan::quick(), 'building' => $this->building])->get('cards');
+
+        $this->assertTrue((bool) collect($cards)->flatten(1)->firstWhere('id', $master->id)['subsidy_available']);
+    }
 }

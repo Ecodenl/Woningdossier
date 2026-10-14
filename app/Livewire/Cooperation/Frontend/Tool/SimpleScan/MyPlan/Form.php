@@ -23,6 +23,7 @@ use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\Models\NotificationService;
 use App\Services\Models\UserCostService;
+use App\Services\ExecutedAdviceService;
 use App\Services\SmartTwin\PackageResults;
 use App\Services\SmartTwin\SharedWoonplan;
 use App\Services\SmartTwin\SmartTwinHandOff;
@@ -32,10 +33,15 @@ use Illuminate\Support\Collection;
 use App\Helpers\Arr;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use App\Helpers\MediaHelper;
+use App\Rules\MaxFilenameLength;
+use Illuminate\Support\Carbon;
 use Livewire\Attributes\Computed;
+use Livewire\WithFileUploads;
 
 class Form extends CustomMeasureForm
 {
+    use WithFileUploads;
 
     public array $cards = [
         UserActionPlanAdviceService::CATEGORY_COMPLETE => [],
@@ -59,6 +65,15 @@ class Form extends CustomMeasureForm
      * "Later uitvoeren". Only offered once the woonplan is SmartTwin's.
      */
     public string $newMeasureCategory = UserActionPlanAdviceService::CATEGORY_TO_DO;
+
+    // The "uitgevoerd" popup (woonplan design "Processen woonplan bewoner"); see ExecutedAdviceService.
+    public ?int $executedAdviceId = null;
+    public string $executedName = '';
+    public string $executedAt = '';
+    public ?string $executedDescription = null;
+    public bool $executedAlready = false;
+    /** @var array<int, mixed> Livewire's temporary uploads. */
+    public array $executedDocuments = [];
 
     // Details
     public float $expectedInvestment = 0;
@@ -128,7 +143,7 @@ class Form extends CustomMeasureForm
 
                 if (WoonplanCardRules::EXECUTE === $outcome) {
                     // Into "In orde" means carried out, which asks for a date first.
-                    $this->dispatch('open-executed', id: (int) $id);
+                    $this->openExecuted((int) $id);
                 }
 
                 $this->dispatch('moved-card');
@@ -418,6 +433,92 @@ class Form extends CustomMeasureForm
         $package = $this->building->smartTwinPackage()->first();
 
         return $package instanceof SmartTwinPackage ? array_map('intval', $package->measure_application_ids ?? []) : [];
+    }
+
+    /**
+     * Opens the "uitgevoerd" popup for a card: from its button, or from dragging it into "In orde".
+     * For a measure already carried out it shows what was recorded, to change or to take back.
+     */
+    public function openExecuted(int $id): void
+    {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+        abort_unless(ExecutedAdviceService::isAvailableFor($this->building), 403);
+
+        $advice = $this->woonplanAdvice($id);
+
+        $this->resetErrorBag();
+        $this->executedAdviceId = $advice->id;
+        $advisable = $advice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
+        $this->executedName = (string) ($advisable instanceof MeasureApplication ? $advisable->measure_name : $advisable?->name);
+        $this->executedAlready = $advice->isExecuted();
+        $this->executedAt = ($advice->executed_at ?? now())->format('Y-m-d');
+        $this->executedDescription = $advice->executed_description;
+        $this->executedDocuments = [];
+
+        $this->dispatch('open-executed-modal');
+    }
+
+    public function saveExecuted(ExecutedAdviceService $executed): void
+    {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
+        $this->validate([
+            'executedAt'            => ['required', 'date', 'before_or_equal:today'],
+            'executedDescription'   => ['nullable', 'string', 'max:5000'],
+            // As the "Bestanden" page takes them; the documents end up there.
+            'executedDocuments.*'   => ['file', 'mimes:' . MediaHelper::getAllMimes(), 'max:' . MediaHelper::getMaxFileSize(), new MaxFilenameLength()],
+        ], [], [
+            'executedAt'          => __('cooperation/frontend/tool.my-plan.executed.date'),
+            'executedDescription' => __('cooperation/frontend/tool.my-plan.executed.description'),
+            'executedDocuments.*' => __('cooperation/frontend/tool.my-plan.executed.documents'),
+        ]);
+
+        $advice = $this->woonplanAdvice((int) $this->executedAdviceId);
+        $executed->markExecuted($advice, Carbon::parse($this->executedAt), $this->executedDescription);
+
+        foreach ($this->executedDocuments as $document) {
+            $executed->attachDocument(
+                $advice,
+                $document->getRealPath(),
+                pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME),
+                $this->currentInputSource,
+            );
+            $document->delete();
+        }
+
+        $this->closeExecuted();
+    }
+
+    public function undoExecuted(ExecutedAdviceService $executed): void
+    {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
+        $executed->undoExecuted($this->woonplanAdvice((int) $this->executedAdviceId));
+
+        $this->closeExecuted();
+    }
+
+    private function closeExecuted(): void
+    {
+        $this->executedAdviceId = null;
+        $this->executedDocuments = [];
+        $this->reloadCards();
+        $this->dispatch('close-modal');
+    }
+
+    /**
+     * An advice of this woonplan, by the id of its card.
+     */
+    private function woonplanAdvice(int $id): UserActionPlanAdvice
+    {
+        $advice = UserActionPlanAdvice::allInputSources()
+            ->withoutGlobalScope(VisibleScope::class)
+            ->where('user_id', $this->building->user->id)
+            ->findOrFail($id);
+
+        Gate::authorize('view', $advice);
+
+        return $advice;
     }
 
     /**
@@ -769,6 +870,7 @@ class Form extends CustomMeasureForm
             $cards[$category][$order]['loan_available'] = $advice->loan_available;
 
             $cards[$category][$order]['id'] = $advice->id;
+            $cards[$category][$order]['executed_at'] = $advice->executed_at?->format('d-m-Y');
 
             // What the card may do; see WoonplanCardRules. Before the switch every card moves and goes
             // to the trash as it always did.

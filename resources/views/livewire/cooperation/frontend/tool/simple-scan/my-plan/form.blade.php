@@ -68,6 +68,19 @@
                                         @lang('cooperation/frontend/tool.my-plan.cards.package-label')
                                     </div>
                                 @endif
+                                @if(! empty($card['executed_at']))
+                                    {{-- Outside "In orde" a carried-out measure is one SmartTwin advised again: the
+                                         woonplan and SmartTwin disagree, and the resident should tell SmartTwin. --}}
+                                    @if($cardCategory === \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)
+                                        <div class="h-4 rounded-lg text-xs relative text-green bg-green bg-opacity-10 flex items-center px-2 w-fit">
+                                            @lang('cooperation/frontend/tool.my-plan.executed.executed-on', ['date' => $card['executed_at']])
+                                        </div>
+                                    @else
+                                        <div class="rounded-lg text-xs relative text-red bg-red bg-opacity-10 flex items-center px-2 w-fit">
+                                            @lang('cooperation/frontend/tool.my-plan.executed.advised-again', ['date' => $card['executed_at']])
+                                        </div>
+                                    @endif
+                                @endif
                                 <div class="flex justify-between">
                                     <p>
                                         {{-- This also triggers if both values are 0 --}}
@@ -106,6 +119,20 @@
                                     @endif
                                 @endif
                             </div>
+                            @if(! $disabled && $this->smartTwinOwnsWoonplan && $cardCategory !== \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE
+                                && in_array(\App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE, $card['targets'], true))
+                                <button type="button" class="absolute right-1 bottom-1 lg:right-3 lg:bottom-3 text-xs text-green underline"
+                                        draggable="false" x-on:dragstart.prevent.stop
+                                        wire:click="openExecuted({{ $card['id'] }})" wire:key="executed-{{ $card['id'] }}">
+                                    @lang('cooperation/frontend/tool.my-plan.executed.button')
+                                </button>
+                            @elseif(! $disabled && $this->smartTwinOwnsWoonplan && ! empty($card['executed_at']))
+                                <button type="button" class="absolute right-1 bottom-1 lg:right-3 lg:bottom-3 text-xs text-green underline"
+                                        draggable="false" x-on:dragstart.prevent.stop
+                                        wire:click="openExecuted({{ $card['id'] }})" wire:key="executed-{{ $card['id'] }}">
+                                    @lang('cooperation/frontend/tool.my-plan.executed.edit')
+                                </button>
+                            @endif
                             <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3"
                                  draggable="true" x-on:dragstart.prevent.stop>
                                 @if(! empty($card['info']))
@@ -287,6 +314,10 @@
             @endforeach
         @endif
     </div>
+
+    @if($this->smartTwinOwnsWoonplan && ! $disabled)
+        @include('livewire.cooperation.frontend.tool.simple-scan.my-plan.executed-modal')
+    @endif
 
     @if($results = $this->packageResults)
         @include('livewire.cooperation.frontend.tool.simple-scan.my-plan.package-results', ['results' => $results])

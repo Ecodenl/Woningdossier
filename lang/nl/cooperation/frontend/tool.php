@@ -140,6 +140,22 @@ return [
 <p>Dit duurt meestal niet lang. Zodra het klaar is kom je hier vanzelf terecht.</p>',
         ],
 
+        // "Maatregel uitgevoerd" (woonplan design "Processen woonplan bewoner").
+        'executed' => [
+            'button' => 'Uitgevoerd',
+            'title' => ':measure uitgevoerd',
+            'date' => 'Datum uitvoering',
+            'description' => 'Omschrijving',
+            'documents' => 'Documenten uploaden',
+            'documents-help' => 'Bijvoorbeeld de factuur. Je vindt ze daarna ook bij je bestanden.',
+            'save' => 'Opslaan',
+            'cancel' => 'Annuleren',
+            'undo' => 'Toch niet uitgevoerd',
+            'edit' => 'Bekijken of wijzigen',
+            'executed-on' => 'Uitgevoerd op :date',
+            // An executed measure that a new SmartTwin calculation put back in the package.
+            'advised-again' => 'Uitgevoerd op :date, maar opnieuw geadviseerd: pas je woning aan in SmartTwin',
+        ],
         // "Gekozen pakket" under the columns of a SmartTwin woonplan (woonplan design "Pagina 2").
         'package-results' => [
             'title' => 'Gekozen pakket',

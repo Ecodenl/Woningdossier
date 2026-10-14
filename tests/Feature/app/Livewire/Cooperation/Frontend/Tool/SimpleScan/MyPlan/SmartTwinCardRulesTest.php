@@ -22,7 +22,9 @@ use Database\Seeders\DatabaseSeeder;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\CustomMeasureApplication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Livewire\Features\SupportTesting\Testable;
@@ -145,7 +147,8 @@ final class SmartTwinCardRulesTest extends TestCase
 
         $this->woonplan()
             ->call('cardMoved', 'to-do', 'complete', (string) $card->id, '0')
-            ->assertDispatched('open-executed', id: $card->id);
+            ->assertSet('executedAdviceId', $card->id)
+            ->assertDispatched('open-executed-modal');
 
         // Not moved: it moves once the popup is saved.
         $this->assertSame(['to-do'], $this->categoriesOf($card));
@@ -190,6 +193,8 @@ final class SmartTwinCardRulesTest extends TestCase
         $woonplan->assertSee(__('cooperation/frontend/tool.my-plan.cards.package-label'));
         // A "+" under "Nu aanpakken" and one under "Later uitvoeren".
         $woonplan->assertSeeHtml('wire:key="add-to-do"')->assertSeeHtml('wire:key="add-later"');
+        // And the "Uitgevoerd" button on a card.
+        $woonplan->assertSeeHtml('wire:key="executed-' . $package->id . '"');
     }
 
     public function test_before_the_switch_every_card_moves_as_it_always_did(): void
@@ -333,5 +338,77 @@ final class SmartTwinCardRulesTest extends TestCase
         $this->card('cavity-wall-insulation', null);
 
         $this->woonplan()->assertDontSee(__('cooperation/frontend/tool.my-plan.package-results.title'));
+    }
+
+    public function test_the_popup_marks_the_measure_carried_out_with_its_documents(): void
+    {
+        Storage::fake('uploads');
+        $card = $this->packageWithFigures();
+
+        $this->woonplan()
+            ->call('openExecuted', $card->id)
+            ->set('executedAt', '2026-10-01')
+            ->set('executedDescription', 'Spouwmuur gevuld door Isoleer BV')
+            ->set('executedDocuments', [UploadedFile::fake()->create('factuur-isoleer-bv.pdf', 20, 'application/pdf')])
+            ->call('saveExecuted')
+            ->assertHasNoErrors()
+            // In "In orde", and the package no longer holds.
+            ->assertSee(__('cooperation/frontend/tool.my-plan.executed.executed-on', ['date' => '01-10-2026']))
+            ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.broken'));
+
+        $this->assertSame(['complete'], $this->categoriesOf($card));
+        $this->assertSame('Spouwmuur gevuld door Isoleer BV', $card->fresh()->executed_description);
+        $document = $this->building->media()->first();
+        $this->assertSame('factuur-isoleer-bv', $document->filename);
+        $this->assertSame('invoice', $document->pivot->tag);
+    }
+
+    public function test_a_measure_cannot_be_carried_out_in_the_future(): void
+    {
+        $card = $this->packageCard();
+
+        $this->woonplan()
+            ->call('openExecuted', $card->id)
+            ->set('executedAt', now()->addDay()->format('Y-m-d'))
+            ->call('saveExecuted')
+            ->assertHasErrors(['executedAt']);
+
+        $this->assertSame(['to-do'], $this->categoriesOf($card));
+    }
+
+    public function test_the_popup_takes_it_back(): void
+    {
+        $card = $this->packageCard();
+        app(ExecutedAdviceService::class)->markExecuted($card, Carbon::parse('2026-10-01'));
+
+        $this->woonplan()
+            ->call('openExecuted', $card->id)
+            ->assertSet('executedAlready', true)
+            ->assertSet('executedAt', '2026-10-01')
+            ->call('undoExecuted');
+
+        $this->assertSame(['to-do'], $this->categoriesOf($card));
+        $this->assertNull($card->fresh()->executed_at);
+    }
+
+    public function test_a_carried_out_measure_advised_again_is_marked(): void
+    {
+        $card = $this->packageCard();
+        // What an import leaves when SmartTwin puts a carried-out measure back in the package.
+        UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_action_plan_advisable_id', $card->user_action_plan_advisable_id)
+            ->update(['executed_at' => '2026-10-01']);
+
+        $this->woonplan()->assertSee(__('cooperation/frontend/tool.my-plan.executed.advised-again', ['date' => '01-10-2026']));
+    }
+
+    public function test_before_the_switch_there_is_no_popup(): void
+    {
+        $card = $this->card('cavity-wall-insulation', null);
+
+        $this->woonplan()
+            ->assertDontSee(__('cooperation/frontend/tool.my-plan.executed.button'))
+            ->call('openExecuted', $card->id)
+            ->assertForbidden();
     }
 }

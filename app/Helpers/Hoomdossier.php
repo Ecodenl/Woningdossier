@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Scan;
+use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
@@ -110,6 +111,21 @@ class Hoomdossier
     public static function smartTwinDrivesScan(Building $building, Scan $scan): bool
     {
         return $scan->isQuickScan() && static::smartTwinFillsWoonplanFor($building);
+    }
+
+    /**
+     * Whether SmartTwin answers this step's questions for the building, so Hoomdossier does not ask
+     * them: the steps SmartTwin provides in a cooperation that takes part (Step::isProvidedBySmartTwin()),
+     * and their lite scan counterparts for a building SmartTwin fills the woonplan for. A building
+     * with only the lite scan is never sent to SmartTwin and keeps being asked.
+     */
+    public static function smartTwinProvidesStepFor(Building $building, Step $step): bool
+    {
+        if ($step->isProvidedBySmartTwin()) {
+            return static::smartTwinEnabledFor(static::cooperationOf($building));
+        }
+
+        return $step->mirrorsStepProvidedBySmartTwin() && static::smartTwinFillsWoonplanFor($building);
     }
 
     /**

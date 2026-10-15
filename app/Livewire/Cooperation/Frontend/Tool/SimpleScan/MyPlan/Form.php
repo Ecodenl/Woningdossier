@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
+use App\Enums\AdviceSource;
 use App\Models\Step;
 use Illuminate\Support\Facades\Gate;
 use App\Helpers\Calculation\BankInterestCalculator;
@@ -17,21 +18,32 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Scan;
+use App\Models\SmartTwinPackage;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\Models\NotificationService;
 use App\Services\Models\UserCostService;
+use App\Services\ExecutedAdviceService;
+use App\Services\SmartTwin\PackageResults;
 use App\Services\SmartTwin\SharedWoonplan;
+use App\Services\SmartTwin\SmartTwinHandOff;
+use App\Services\SmartTwin\WoonplanCardRules;
+use App\Services\SmartTwin\WoonplanLock;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Collection;
 use App\Helpers\Arr;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use App\Helpers\MediaHelper;
+use App\Rules\MaxFilenameLength;
+use Illuminate\Support\Carbon;
 use Livewire\Attributes\Computed;
+use Livewire\WithFileUploads;
 
 class Form extends CustomMeasureForm
 {
+    use WithFileUploads;
 
     public array $cards = [
         UserActionPlanAdviceService::CATEGORY_COMPLETE => [],
@@ -49,6 +61,21 @@ class Form extends CustomMeasureForm
     public InputSource $coachInputSource;
 
     public Scan $scan;
+
+    /**
+     * The column the "+" that opened the own-measure form belongs to: "Nu aanpakken" or
+     * "Later uitvoeren". Only offered once the woonplan is SmartTwin's.
+     */
+    public string $newMeasureCategory = UserActionPlanAdviceService::CATEGORY_TO_DO;
+
+    // The "uitgevoerd" popup (woonplan design "Processen woonplan bewoner"); see ExecutedAdviceService.
+    public ?int $executedAdviceId = null;
+    public string $executedName = '';
+    public string $executedAt = '';
+    public ?string $executedDescription = null;
+    public bool $executedAlready = false;
+    /** @var array<int, mixed> Livewire's temporary uploads. */
+    public array $executedDocuments = [];
 
     // Details
     public float $expectedInvestment = 0;
@@ -84,6 +111,8 @@ class Form extends CustomMeasureForm
 
     public function save(int $index): void
     {
+        $this->abortIfReadOnly();
+
         $customMeasureApplication = $this->submit($index, false);
         $this->loadCustomMeasures();
 
@@ -98,13 +127,34 @@ class Form extends CustomMeasureForm
         $this->reload($masterAdvice);
 
         $this->dispatch('close-modal');
+        // The next "+" says again where its measure goes.
+        $this->newMeasureCategory = UserActionPlanAdviceService::CATEGORY_TO_DO;
 
         $this->recalculate();
     }
 
     public function cardMoved(string $fromCategory, string $toCategory, string $id, string $newOrder): void
     {
-        abort_if(HoomdossierSession::isUserObserving(), 403);
+        $this->abortIfReadOnly();
+
+        // A SmartTwin woonplan has its card rules (WoonplanCardRules). The browser already refuses
+        // what is not allowed; this is what makes it stick.
+        if ($this->smartTwinOwnsWoonplan) {
+            $outcome = WoonplanCardRules::move($this->kindOfCard($id), $fromCategory, $toCategory);
+
+            if (WoonplanCardRules::ALLOWED !== $outcome) {
+                $this->reloadCards();
+
+                if (WoonplanCardRules::EXECUTE === $outcome) {
+                    // Into "In orde" means carried out, which asks for a date first.
+                    $this->openExecuted((int) $id);
+                }
+
+                $this->dispatch('moved-card');
+
+                return;
+            }
+        }
 
         // Disclaimer: We have to do it like this, because JavaScript re-sorts arrays / objects to given numeric
         // keys, so we must ENSURE the order is 100% valid from top to bottom
@@ -181,7 +231,14 @@ class Form extends CustomMeasureForm
 
     public function cardTrashed(string $fromCategory, string $id): void
     {
-        abort_if(HoomdossierSession::isUserObserving(), 403);
+        $this->abortIfReadOnly();
+
+        if ($this->smartTwinOwnsWoonplan && ! WoonplanCardRules::mayTrash($this->kindOfCard($id))) {
+            $this->reloadCards();
+            $this->dispatch('trashed-card');
+
+            return;
+        }
 
         // Get the original card object
         $cardData = Arr::where($this->cards[$fromCategory], function ($card, $order) use ($id) {
@@ -358,6 +415,196 @@ class Form extends CustomMeasureForm
         return Hoomdossier::smartTwinOwnsWoonplanFor($this->building);
     }
 
+    protected function categoryForNewMeasure(): string
+    {
+        $columns = [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER];
+
+        // Whatever the browser sends, an own measure only ever lands in one of these two.
+        return $this->smartTwinOwnsWoonplan && in_array($this->newMeasureCategory, $columns, true)
+            ? $this->newMeasureCategory
+            : UserActionPlanAdviceService::CATEGORY_TO_DO;
+    }
+
+    /**
+     * The measures of the package SmartTwin calculated, for the "Verbeterpakket" label: a package
+     * card keeps it in every column.
+     *
+     * @return array<int, int>
+     */
+    #[Computed]
+    public function packageMeasureIds(): array
+    {
+        $package = $this->building->smartTwinPackage()->first();
+
+        return $package instanceof SmartTwinPackage ? array_map('intval', $package->measure_application_ids ?? []) : [];
+    }
+
+    /**
+     * Whether the woonplan is locked for whoever is looking: a coach working on it in SmartTwin
+     * locks it for the resident (WoonplanLock). Shown, but nothing on it can be changed.
+     */
+    #[Computed]
+    public function lockedForMe(): bool
+    {
+        return ! app(WoonplanLock::class)
+            ->stateFor($this->building, $this->currentInputSource, HoomdossierSession::isUserObserving())
+            ->residentMayEdit();
+    }
+
+    /**
+     * No changes from someone observing, nor from a resident whose woonplan a coach has locked. The
+     * page leaves the buttons out; this is what makes it stick.
+     */
+    private function abortIfReadOnly(): void
+    {
+        abort_if(HoomdossierSession::isUserObserving() || $this->lockedForMe, 403);
+    }
+
+    /**
+     * Opens the "uitgevoerd" popup for a card: from its button, or from dragging it into "In orde".
+     * For a measure already carried out it shows what was recorded, to change or to take back.
+     */
+    public function openExecuted(int $id): void
+    {
+        $this->abortIfReadOnly();
+        abort_unless(ExecutedAdviceService::isAvailableFor($this->building), 403);
+
+        $advice = $this->woonplanAdvice($id);
+
+        $this->resetErrorBag();
+        $this->executedAdviceId = $advice->id;
+        $advisable = $advice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
+        $this->executedName = (string) ($advisable instanceof MeasureApplication ? $advisable->measure_name : $advisable?->name);
+        $this->executedAlready = $advice->isExecuted();
+        $this->executedAt = ($advice->executed_at ?? now())->format('Y-m-d');
+        $this->executedDescription = $advice->executed_description;
+        $this->executedDocuments = [];
+
+        $this->dispatch('open-executed-modal');
+    }
+
+    public function saveExecuted(ExecutedAdviceService $executed): void
+    {
+        $this->abortIfReadOnly();
+
+        $this->validate([
+            'executedAt'            => ['required', 'date', 'before_or_equal:today'],
+            'executedDescription'   => ['nullable', 'string', 'max:5000'],
+            // As the "Bestanden" page takes them; the documents end up there.
+            'executedDocuments.*'   => ['file', 'mimes:' . MediaHelper::getAllMimes(), 'max:' . MediaHelper::getMaxFileSize(), new MaxFilenameLength()],
+        ], [], [
+            'executedAt'          => __('cooperation/frontend/tool.my-plan.executed.date'),
+            'executedDescription' => __('cooperation/frontend/tool.my-plan.executed.description'),
+            'executedDocuments.*' => __('cooperation/frontend/tool.my-plan.executed.documents'),
+        ]);
+
+        $advice = $this->woonplanAdvice((int) $this->executedAdviceId);
+        $executed->markExecuted($advice, Carbon::parse($this->executedAt), $this->executedDescription);
+
+        foreach ($this->executedDocuments as $document) {
+            $executed->attachDocument(
+                $advice,
+                $document->getRealPath(),
+                pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME),
+                $this->currentInputSource,
+            );
+            $document->delete();
+        }
+
+        $this->closeExecuted();
+    }
+
+    public function undoExecuted(ExecutedAdviceService $executed): void
+    {
+        $this->abortIfReadOnly();
+
+        $executed->undoExecuted($this->woonplanAdvice((int) $this->executedAdviceId));
+
+        $this->closeExecuted();
+    }
+
+    private function closeExecuted(): void
+    {
+        $this->executedAdviceId = null;
+        $this->executedDocuments = [];
+        $this->reloadCards();
+        $this->dispatch('close-modal');
+    }
+
+    /**
+     * An advice of this woonplan, by the id of its card.
+     */
+    private function woonplanAdvice(int $id): UserActionPlanAdvice
+    {
+        $advice = UserActionPlanAdvice::allInputSources()
+            ->withoutGlobalScope(VisibleScope::class)
+            ->where('user_id', $this->building->user->id)
+            ->findOrFail($id);
+
+        Gate::authorize('view', $advice);
+
+        return $advice;
+    }
+
+    /**
+     * "Gekozen pakket" under the columns, once the woonplan is SmartTwin's. Read from the cards as
+     * they are now, so it follows every move.
+     */
+    #[Computed]
+    public function packageResults(): ?PackageResults
+    {
+        if (! $this->smartTwinOwnsWoonplan) {
+            return null;
+        }
+
+        $package = SmartTwinPackage::where('building_id', $this->building->id)->first();
+
+        // The woonplan as it is shown: master, visible cards included or not, isIntactIn decides.
+        $intact = $package instanceof SmartTwinPackage && $package->isIntactIn(
+            UserActionPlanAdvice::withoutGlobalScopes()
+                ->where('user_id', $this->building->user->id)
+                ->where('input_source_id', $this->masterInputSource->id)
+                ->get(),
+        );
+
+        return PackageResults::from($package, $intact, $this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] ?? []);
+    }
+
+    /**
+     * Whether "Maatregelpakket aanpassen" may send this account to SmartTwin.
+     */
+    #[Computed]
+    public function canHandOff(): bool
+    {
+        // Not while a coach has the plan locked: no new calculation until the coach is done.
+        return ! $this->lockedForMe && SmartTwinHandOff::isOfferedFor($this->building);
+    }
+
+    private function kindOfCard(string $id): string
+    {
+        $advice = UserActionPlanAdvice::allInputSources()
+            ->withoutGlobalScope(VisibleScope::class)
+            ->where('user_id', $this->building->user->id)
+            ->findOrFail($id);
+
+        return WoonplanCardRules::kindOf($advice);
+    }
+
+    /**
+     * Puts the cards back as they are stored, after the browser moved one where it may not go.
+     */
+    private function reloadCards(): void
+    {
+        foreach (UserActionPlanAdviceService::getCategories() as $category) {
+            $this->cards[$category] = [];
+            $this->hiddenCards[$category] = [];
+        }
+
+        $this->loadVisibleCards();
+        $this->loadHiddenCards();
+        $this->recalculate();
+    }
+
     #[Computed]
     public function expertSteps(): Collection
     {
@@ -369,6 +616,8 @@ class Form extends CustomMeasureForm
 
     public function updateAdvice($id, array $update): void
     {
+        $this->abortIfReadOnly();
+
         // Get moved advice (will be for master input source)
         $advice = UserActionPlanAdvice::allInputSources()
             ->withoutGlobalScope(VisibleScope::class)
@@ -418,7 +667,7 @@ class Form extends CustomMeasureForm
 
     public function addHiddenCardToBoard(string $category, string $id): void
     {
-        abort_if(HoomdossierSession::isUserObserving(), 403);
+        $this->abortIfReadOnly();
 
         $cardData = Arr::where($this->hiddenCards[$category], function ($card, $order) use ($id) {
             return $card['id'] == $id;
@@ -649,9 +898,28 @@ class Form extends CustomMeasureForm
             $cards[$category][$order]['loan_available'] = $advice->loan_available;
 
             $cards[$category][$order]['id'] = $advice->id;
+            $cards[$category][$order]['executed_at'] = $advice->executed_at?->format('d-m-Y');
+            // What SmartTwin told us about this advice, for the (i) of the card.
+            $cards[$category][$order]['smart_twin'] = $this->smartTwinOwnsWoonplan ? $advice->smartTwinDetails()?->toArray() : null;
+
+            // What the card may do; see WoonplanCardRules. Before the switch every card moves and goes
+            // to the trash as it always did.
+            $kind = $this->smartTwinOwnsWoonplan ? WoonplanCardRules::kindOf($advice) : null;
+            $cards[$category][$order]['kind'] = $kind;
+            $cards[$category][$order]['targets'] = is_null($kind)
+                ? array_values(UserActionPlanAdviceService::getCategories())
+                : WoonplanCardRules::targets($kind, $category);
+            $cards[$category][$order]['trashable'] = is_null($kind) || WoonplanCardRules::mayTrash($kind);
+            $cards[$category][$order]['in_package'] = ! is_null($kind)
+                && $advice->user_action_plan_advisable_type === MeasureApplication::class
+                && in_array((int) $advice->user_action_plan_advisable_id, $this->packageMeasureIds, true);
+            // SmartTwin's prices are not rounded to steps of five, the woonplan's own still are; both
+            // are shown in whole euros (Patrick, 15 October 2026). The lines under the columns show
+            // these same amounts, so a card and its line never differ; see PackageResults.
+            $fromSmartTwin = AdviceSource::SMART_TWIN === $advice->source;
             $cards[$category][$order]['costs'] = [
-                'from' => empty($advice->costs['from']) ? null : NumberFormatter::round($advice->costs['from']),
-                'to' => empty($advice->costs['to']) ? null : NumberFormatter::round($advice->costs['to']),
+                'from' => empty($advice->costs['from']) ? null : ($fromSmartTwin ? (float) $advice->costs['from'] : NumberFormatter::round($advice->costs['from'])),
+                'to' => empty($advice->costs['to']) ? null : ($fromSmartTwin ? (float) $advice->costs['to'] : NumberFormatter::round($advice->costs['to'])),
             ];
             // Null rather than zero when there is no saving: an advice that came from elsewhere may
             // carry a price without one, and "€ 0" reads to a resident as "this gains you nothing".

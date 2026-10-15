@@ -3,6 +3,7 @@
 namespace App\Services\SmartTwin\Api;
 
 use App\Services\SmartTwin\Api\Resources\Advice;
+use App\Services\SmartTwin\Api\Resources\BuildingData;
 use App\Services\SmartTwin\Api\Resources\EventSubscription;
 use App\Services\SmartTwin\Api\Resources\User;
 use App\Traits\FluentCaller;
@@ -31,5 +32,10 @@ class SmartTwinApi
     public function events(): EventSubscription
     {
         return new EventSubscription($this->client, 'api/advice/v1/events');
+    }
+
+    public function buildingData(): BuildingData
+    {
+        return new BuildingData($this->client, 'api/building-data/v1');
     }
 }

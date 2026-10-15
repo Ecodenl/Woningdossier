@@ -58,6 +58,10 @@
     @apply font-bold;
 }
 
+.building-fact-label {
+    @apply inline-flex items-center gap-2;
+}
+
 .building-fact-unknown {
     @apply font-normal text-blue-500;
 }

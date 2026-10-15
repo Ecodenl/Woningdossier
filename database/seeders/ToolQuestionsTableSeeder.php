@@ -348,6 +348,24 @@ class ToolQuestionsTableSeeder extends Seeder
                 'extra' => [
                     'column' => 'name',
                     'data' => [
+                        // There are no icons above A. These take the icon of A and a caption, which
+                        // the small icon question otherwise hides, so A+++ is not mistaken for A.
+                        'A++++' => [
+                            'icon' => 'icon-label-a',
+                            'caption' => 'A++++',
+                        ],
+                        'A+++' => [
+                            'icon' => 'icon-label-a',
+                            'caption' => 'A+++',
+                        ],
+                        'A++' => [
+                            'icon' => 'icon-label-a',
+                            'caption' => 'A++',
+                        ],
+                        'A+' => [
+                            'icon' => 'icon-label-a',
+                            'caption' => 'A+',
+                        ],
                         'A' => [
                             'icon' => 'icon-label-a',
                         ],

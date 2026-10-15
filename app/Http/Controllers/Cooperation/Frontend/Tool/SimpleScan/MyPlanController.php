@@ -6,11 +6,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use App\Enums\SmartTwin\EventType;
-use App\Models\Account;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\RoleHelper;
-use RuntimeException;
 use App\Http\Controllers\Controller;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
@@ -21,7 +18,10 @@ use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Services\Models\NotificationService;
-use App\Services\SmartTwin\Api\UserRole;
+use App\Enums\SmartTwin\WoonplanState;
+use App\Services\SmartTwin\HouseData;
+use App\Services\SmartTwin\SmartTwinHandOff;
+use App\Services\SmartTwin\WoonplanLock;
 use App\Services\WoonplanService;
 use Illuminate\Http\Request;
 
@@ -39,6 +39,20 @@ class MyPlanController extends Controller
         if (HoomdossierSession::isUserObserving()) {
             $woonplanService = $woonplanService->userIsObserving();
         }
+
+        // A coach working on the plan in SmartTwin locks it for the resident; see WoonplanLock. While
+        // the coach has not delivered a plan yet, there is nothing to show but "Nog even geduld".
+        $lock = app(WoonplanLock::class);
+        $woonplanState = $lock->stateFor($building, HoomdossierSession::getInputSource(true), HoomdossierSession::isUserObserving());
+
+        if (WoonplanState::AWAITING_COACH === $woonplanState) {
+            return view('cooperation.frontend.tool.simple-scan.my-plan.awaiting-coach', compact('scan', 'building'));
+        }
+
+        // Unlocked again with the coach's plan in it: the coach is done.
+        $coachIsDone = WoonplanState::OPEN === $woonplanState
+            && WoonplanLock::appliesTo(HoomdossierSession::getInputSource(true), HoomdossierSession::isUserObserving())
+            && $lock->hasCoachPlan($building);
 
         // With SmartTwin the woonplan is the advice SmartTwin produced, so what decides whether there
         // is one to show is whether that advice has arrived -- not how far the scan got. Asking the
@@ -74,7 +88,11 @@ class MyPlanController extends Controller
             ->isActive();
 
         $inputSource = HoomdossierSession::getInputSource(true);
-        $canHandOff = $this->canHandOff($building);
+        // Once the woonplan is SmartTwin's, the hand-off sits under its results as "Maatregelpakket
+        // aanpassen", with its warning; see MyPlan\Form.
+        $canHandOff = SmartTwinHandOff::isOfferedFor($building) && ! Hoomdossier::smartTwinOwnsWoonplanFor($building);
+        // "Gegevens woning bekijken" once there is a SmartTwin plan to show it for; see houseData().
+        $showHouseData = Hoomdossier::smartTwinOwnsWoonplanFor($building);
 
         return view('cooperation.frontend.tool.simple-scan.my-plan.index', compact(
             'scan',
@@ -82,7 +100,33 @@ class MyPlanController extends Controller
             'inputSource',
             'activeNotification',
             'canHandOff',
+            'showHouseData',
+            'woonplanState',
+            'coachIsDone',
         ));
+    }
+
+    /**
+     * "Gegevens woning bekijken": the dwelling as it is now, after SmartTwin's last import. Only once
+     * the woonplan is SmartTwin's, and not while the resident waits for the coach: the woonplan, where
+     * the button is, is not there then either (decision 2026-10-15-smarttwin-gegevens-woning-pagina,
+     * S6g). Read-only, so someone observing sees it too.
+     */
+    public function houseData(Cooperation $cooperation, Scan $scan): View|RedirectResponse
+    {
+        /** @var Building $building */
+        $building = HoomdossierSession::getBuilding(true);
+
+        $woonplanState = app(WoonplanLock::class)
+            ->stateFor($building, HoomdossierSession::getInputSource(true), HoomdossierSession::isUserObserving());
+
+        if (! Hoomdossier::smartTwinOwnsWoonplanFor($building) || WoonplanState::AWAITING_COACH === $woonplanState) {
+            return to_route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('cooperation', 'scan'));
+        }
+
+        $houseData = HouseData::for($building);
+
+        return view('cooperation.frontend.tool.simple-scan.my-plan.house-data', compact('scan', 'building', 'houseData'));
     }
 
     /**
@@ -102,58 +146,8 @@ class MyPlanController extends Controller
 
         return view('cooperation.frontend.tool.simple-scan.my-plan.start-check', [
             'scan' => $scan,
-            'canHandOff' => $this->canHandOff($building),
+            'canHandOff' => SmartTwinHandOff::isOfferedFor($building),
         ]);
-    }
-
-    /**
-     * Whether we can send this account into SmartTwin at all.
-     */
-    private function canHandOff(Building $building): bool
-    {
-        // Also covers a building with only the lite scan: SmartTwin's check is a quick scan, and
-        // what it sends back has no place in a lite scan dossier.
-        if (! Hoomdossier::smartTwinFillsWoonplanFor($building)) {
-            return false;
-        }
-
-        // SmartTwin has a tool for a resident and one for a coach, and nothing for anyone else. An
-        // account whose roles are only coordinator or cooperation-admin is skipped when SmartTwin
-        // users are created (see SmartTwinEventSubscriber::dispatchForAccount), so it has no
-        // SmartTwin user by design, and the hand-off would come back "unsupported role" anyway.
-        $roleName = HoomdossierSession::getRole(true)?->name;
-
-        if (! in_array($roleName, [RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COACH], true)) {
-            return false;
-        }
-
-        // An API client can be authenticated here too, and has no SmartTwin account to speak of.
-        $account = Hoomdossier::account();
-
-        if ($account instanceof Account && ! empty($account->smartTwinUserId())) {
-            // An account gets one SmartTwin user, created for one role, and coach wins when an
-            // account holds both (see SmartTwinEventSubscriber). So holding an id is not the same
-            // as being able to use it in the role you are currently in: SmartTwin refuses a
-            // quick-scan link for an Advisor account, and the other way round. Offering the button
-            // in that case would be offering a round trip to an error message.
-            $needed = $roleName === RoleHelper::ROLE_COACH ? UserRole::Advisor : UserRole::Resident;
-
-            // Not reported: this is a known trade-off of one SmartTwin user per account, not a
-            // fault in ours.
-            return $account->smartTwinUserRole() === $needed;
-        }
-
-        // A resident or a coach is supposed to have one: it is handed out when the SmartTwin user is
-        // created. Not having one means that never happened. Nothing the user can do about it and
-        // nothing useful to show them, but it is not supposed to occur, so it is reported rather
-        // than silently swallowed.
-        report(new RuntimeException(sprintf(
-            'Account %s (%s) has no SmartTwin user id, so the hand-off cannot be offered.',
-            $account instanceof Account ? $account->id : 'unknown',
-            $roleName,
-        )));
-
-        return false;
     }
 
     public function media(Request $request, Cooperation $cooperation, Scan $scan, ?Building $building = null): View

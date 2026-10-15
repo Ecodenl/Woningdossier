@@ -51,7 +51,7 @@ class HomeController extends Controller
         $features = $building->buildingFeatures()
             ->allInputSources()
             ->forInputSource($masterInputSource)
-            ->with(['buildingType', 'energyLabel'])
+            ->with(['buildingType', 'buildingTypeCategory', 'energyLabel'])
             ->first();
 
         // The tiles link into the dossier and the file overview, both of which hang off a scan.
@@ -62,9 +62,11 @@ class HomeController extends Controller
             'coach' => BuildingCoachStatusService::getCoachToShow($building),
             'appointmentDate' => $building->getAppointmentDate(),
 
-            // SmartTwin will deliver this later. Until it does the dashboard shows the row without a
-            // value rather than leaving a hole where one is going to be.
-            'estimatedEnergyLabel' => null,
+            // SmartTwin's calculation of the dwelling as it is now, next to the registered label: the
+            // label of the current situation in the last advice. Not the label after the package,
+            // which is a plan rather than the dwelling and is shown with the woonplan's results.
+            // Unknown until the first advice.
+            'estimatedEnergyLabel' => $building->smartTwinPackage?->current_result['energyLabel'] ?? null,
 
             'dossierLinks' => $this->dossierLinks($building, $scans, $masterInputSource),
             'filesUrl' => $scan instanceof Scan

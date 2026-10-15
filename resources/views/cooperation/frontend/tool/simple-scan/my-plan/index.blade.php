@@ -27,6 +27,14 @@
                     $link = route('cooperation.admin.messages.index', compact('cooperation'));
                 }
             @endphp
+            {{-- While a coach works on the plan in SmartTwin, and once the coach is done; see WoonplanLock. --}}
+            @if(\App\Enums\SmartTwin\WoonplanState::LOCKED === $woonplanState || $coachIsDone)
+                @php $lockShort = $coachIsDone ? 'done' : 'locked'; @endphp
+                @component('cooperation.layouts.components.alert', ['withBackground' => true, 'dismissible' => false])
+                    <h5 class="heading-5">@lang("cooperation/frontend/tool.my-plan.lock.{$lockShort}.title")</h5>
+                    <p>@lang("cooperation/frontend/tool.my-plan.lock.{$lockShort}.text")</p>
+                @endcomponent
+            @endif
             <div class="w-full flex flex-wrap justify-between mb-5">
                 <h4 class="heading-4">
                     {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}
@@ -41,13 +49,20 @@
         </div>
 
         <div class="w-full flex flex-wrap pt-5 pb-5">
-            <div class="flex w-1/4">
+            <div class="flex flex-wrap w-1/4 gap-2">
                 @can('viewAny', [\App\Models\Media::class, $inputSource, $building])
                     <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('cooperation', 'scan')) }}"
                        class="btn btn-outline-green">
                         @lang('cooperation/frontend/tool.my-plan.uploader.view')
                     </a>
                 @endcan
+                {{-- The dwelling as SmartTwin's last import left it; see MyPlanController::houseData(). --}}
+                @if($showHouseData)
+                    <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.house-data', compact('cooperation', 'scan')) }}"
+                       class="btn btn-outline-green">
+                        @lang('cooperation/frontend/tool.my-plan.house-data.button')
+                    </a>
+                @endif
             </div>
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.calculations-table :building="$building"/>
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.download-pdf :user="$building->user" :scan="$scan"/>

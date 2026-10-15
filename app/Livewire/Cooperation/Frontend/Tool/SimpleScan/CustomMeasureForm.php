@@ -72,6 +72,23 @@ abstract class CustomMeasureForm extends Component
 
     abstract public function save(int $index);
 
+    /**
+     * The column a new own measure lands in. "Nu aanpakken", unless a form offers a choice.
+     */
+    protected function categoryForNewMeasure(): string
+    {
+        return 'to-do';
+    }
+
+    /**
+     * Whether editing an own measure leaves it in its column rather than moving it to
+     * "Nu aanpakken".
+     */
+    protected function keepsColumnOnEdit(): bool
+    {
+        return Hoomdossier::smartTwinOwnsWoonplanFor($this->building);
+    }
+
     public function submit(int $index, bool $dispatchRegulationUpdate = true): ?CustomMeasureApplication
     {
         // unauth the user if this happens, this means the user is just messing around.
@@ -138,7 +155,7 @@ abstract class CustomMeasureForm extends Component
 
             // Set update data for user action plan advice
             $updateData = [
-                'category' => 'to-do',
+                'category' => $this->categoryForNewMeasure(),
                 'costs' => $measureData['costs'] ?? null,
                 'input_source_id' => $this->currentInputSource->id,
                 'savings_money' => is_numeric($savingsMoney) ? $savingsMoney : 0
@@ -151,6 +168,12 @@ abstract class CustomMeasureForm extends Component
                     ->where('hash', $measure['hash'])
                     ->where('id', $measure['id'])
                     ->first();
+
+                // Editing a measure does not move it, once the woonplan is SmartTwin's: the resident
+                // put it in its column. Before that it goes back to "Nu aanpakken", as it always did.
+                if ($this->keepsColumnOnEdit()) {
+                    unset($updateData['category']);
+                }
 
                 // If it's not instanceof, something was borked by the user
                 if ($masterCustomMeasureApplication instanceof CustomMeasureApplication) {

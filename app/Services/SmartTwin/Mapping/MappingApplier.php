@@ -5,6 +5,7 @@ namespace App\Services\SmartTwin\Mapping;
 use App\Enums\AdviceSource;
 use App\Enums\SmartTwin\MappingStatus;
 use App\Enums\SmartTwin\MappingTarget;
+use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\BuildingRoofType;
 use App\Models\InputSource;
@@ -132,7 +133,8 @@ class MappingApplier
     }
 
     /**
-     * The subsidy per scheme, in cents, as SmartTwin gives the amounts with a dozen decimals.
+     * The subsidy per scheme, in cents like the package's own amounts (decimal(10,2)): SmartTwin
+     * sends a dozen decimals, which mean nothing to anyone (Patrick, 15 October 2026).
      *
      * @param  array<string, mixed>  $results
      * @return array<int, array{name: string|null, amount: float|null}>|null
@@ -297,7 +299,14 @@ class MappingApplier
 
         if (isset($this->pricedThisRun[$measure->id])) {
             $earlier = UserActionPlanAdvice::withoutGlobalScopes()->where($where)->first();
-            $costs += (float) ($earlier?->costs['to'] ?? $earlier?->costs['from'] ?? 0);
+            // Added up exactly: SmartTwin's amounts are never rounded, and floating point would add
+            // noise of its own.
+            $earlierCosts = (float) ($earlier?->costs['to'] ?? $earlier?->costs['from'] ?? 0);
+            $costs = (float) bcadd(
+                NumberFormatter::plain($costs),
+                NumberFormatter::plain($earlierCosts),
+                max(NumberFormatter::decimalsOf($costs), NumberFormatter::decimalsOf($earlierCosts)),
+            );
             $earlierDetails = $earlier?->smartTwinDetails();
             $details = is_null($earlierDetails) ? $details : (is_null($details) ? $earlierDetails : $earlierDetails->with($details));
 

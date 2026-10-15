@@ -7,11 +7,13 @@ use App\Helpers\RoleHelper;
 use App\Helpers\ScanAvailabilityHelper;
 use App\Models\Building;
 use App\Models\BuildingFeature;
+use App\Models\BuildingTypeCategory;
 use App\Models\Cooperation;
 use App\Models\EnergyLabel;
 use App\Models\InputSource;
 use App\Models\Role;
 use App\Models\Scan;
+use App\Models\SmartTwinPackage;
 use App\Models\User;
 use App\Services\Scans\ScanFlowService;
 use Database\Seeders\DatabaseSeeder;
@@ -327,6 +329,67 @@ final class HomeControllerTest extends TestCase
         $response->assertSee('icon-label-c', false);
     }
 
+    public function test_the_estimated_label_is_smart_twins_label_of_the_dwelling_as_it_is(): void
+    {
+        $this->enableSmartTwin(true);
+
+        // The current situation is C, the package would make it A+++: the dashboard is about the
+        // dwelling, so C.
+        SmartTwinPackage::create([
+            'building_id' => $this->building->id,
+            'measure_application_ids' => [],
+            'current_result' => ['energyLabel' => 'C'],
+            'scenario_result' => ['energyLabel' => 'A+++'],
+            'imported_at' => now(),
+        ]);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $response->assertSee('icon-label-c', false);
+        $response->assertDontSee('A+++', false);
+    }
+
+    public function test_a_label_above_a_shows_the_arrow_of_a_with_its_name(): void
+    {
+        $this->enableSmartTwin(true);
+
+        BuildingFeature::create([
+            'building_id' => $this->building->id,
+            'input_source_id' => InputSource::findByShort(InputSource::MASTER_SHORT)->id,
+            'energy_label_id' => EnergyLabel::where('name', 'A++')->first()->id,
+        ]);
+        SmartTwinPackage::create([
+            'building_id' => $this->building->id,
+            'measure_application_ids' => [],
+            'current_result' => ['energyLabel' => 'A+++'],
+            'imported_at' => now(),
+        ]);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $response->assertSee('icon-label-a', false);
+        $response->assertSee('A++', false);
+        $response->assertSee('A+++', false);
+    }
+
+    public function test_an_apartment_of_unknown_kind_shows_its_category(): void
+    {
+        $this->enableSmartTwin(true);
+
+        BuildingFeature::create([
+            'building_id' => $this->building->id,
+            'input_source_id' => InputSource::findByShort(InputSource::MASTER_SHORT)->id,
+            'building_type_category_id' => BuildingTypeCategory::where('short', 'apartment')->first()->id,
+        ]);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        $response->assertSee('Appartement', false);
+    }
+
     public function test_dashboard_says_so_when_nothing_is_known_yet(): void
     {
         $this->enableSmartTwin(true);
@@ -334,8 +397,9 @@ final class HomeControllerTest extends TestCase
         $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
 
         $response->assertOk();
-        // The estimated energy label has no source yet, so this row is always unknown for now.
+        // Nothing is known, the estimated energy label included: there is no SmartTwin advice yet.
         $response->assertSee(__('home.dashboard.building.unknown'), false);
+        $response->assertDontSee('icon-label-', false);
         $response->assertSee(__('home.dashboard.coach.none'), false);
         $response->assertSee(__('home.dashboard.coach.no-appointment'), false);
     }

@@ -124,7 +124,7 @@ final class SolutionsMapperTest extends TestCase
         $details = $this->advices($response)[0]->details->toArray();
 
         $this->assertSame('Insulate Pitched Roof Inside|SmartTwin:Pitched_Roof_Interior_Insulation_PIR_120', $details['solutions'][0]['id']);
-        $this->assertSame(['value' => 0.035, 'unit' => 'W/(mK)'], $details['solutions'][0]['details']['lambda']);
+        $this->assertSame(['name' => 'Lambda', 'value' => 0.035, 'unit' => 'W/(mK)'], $details['solutions'][0]['details']['lambda']);
 
         // The pitched measure covers the pitched roof only.
         $roof = $details['elements']['roof'];

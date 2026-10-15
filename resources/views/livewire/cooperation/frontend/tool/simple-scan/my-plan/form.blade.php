@@ -139,9 +139,12 @@
                             @endif
                             <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3"
                                  draggable="true" x-on:dragstart.prevent.stop>
-                                @if(! empty($card['info']))
+                                @if(! empty($card['info']) || ! empty($card['smart_twin']))
                                     <i class="icon-md icon-info-light clickable" x-on:click="toggle()"></i>
                                     @component('cooperation.frontend.layouts.components.modal')
+                                        @if(! empty($card['smart_twin']))
+                                            @include('livewire.cooperation.frontend.tool.simple-scan.my-plan.smart-twin-details', ['details' => $card['smart_twin']])
+                                        @endif
                                         <div class="as-text">
                                             {!! $card['info'] !!}
                                         </div>

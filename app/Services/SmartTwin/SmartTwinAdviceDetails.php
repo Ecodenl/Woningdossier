@@ -16,7 +16,7 @@ namespace App\Services\SmartTwin;
  * Shape of `toArray()`:
  *
  *     version   int
- *     solutions [{id, name, details: {<id>: {value, unit}}}]
+ *     solutions [{id, name, details: {<id>: {name?, value, unit}}}]
  *     elements  {<element>: {shape?, part_ids, insulated_area?, before: {summary, lines}, after: null|{summary, lines}}}
  *
  * `after` is null when the scenario leaves the element as it is — something SmartTwin's spec rules
@@ -59,7 +59,9 @@ final class SmartTwinAdviceDetails
     }
 
     /**
-     * One solution as stored: its id, name and product details, keyed by the detail's id.
+     * One solution as stored: its id, name and product details, keyed by the detail's id. A detail
+     * keeps SmartTwin's own name for it ("Dikte") since 15 October 2026; details stored before have
+     * none, and are shown by their id.
      *
      * @param  array<string, mixed>  $solution  A `scenario.solutions.*` entry of the response.
      * @return array<string, mixed>
@@ -70,7 +72,11 @@ final class SmartTwinAdviceDetails
 
         foreach ($solution['details'] ?? [] as $detail) {
             if (isset($detail['id'])) {
-                $details[$detail['id']] = ['value' => $detail['value'] ?? null, 'unit' => $detail['unit'] ?? null];
+                $details[$detail['id']] = [
+                    'name'  => $detail['displayName'] ?? null,
+                    'value' => $detail['value'] ?? null,
+                    'unit'  => $detail['unit'] ?? null,
+                ];
             }
         }
 

@@ -156,6 +156,35 @@ return [
                 'text' => 'Hier is jouw woonplan zoals je die met de energiecoach hebt besproken. Als je wilt kun je nu zelf aanpassingen doen, bijvoorbeeld aangeven dat je een maatregel hebt uitgevoerd.',
             ],
         ],
+        // The (i) of a SmartTwin card: what SmartTwin says about the advice (SmartTwinAdviceDetails).
+        'smart-twin-details' => [
+            'title' => 'Volgens SmartTwin',
+            'now' => 'Nu',
+            'after' => 'Na de maatregel',
+            'unchanged' => 'Blijft zoals het is',
+            'rc-value' => 'Rc-waarde',
+            'area' => 'Oppervlak',
+            'insulated-area' => 'Te isoleren oppervlak',
+            'elements' => [
+                'facade' => 'Gevel',
+                'roof' => 'Dak',
+                'floor' => 'Vloer',
+                'crawlspace' => 'Kruipruimte',
+                'windows' => 'Ramen',
+                'doors' => 'Deuren',
+                'panels' => 'Panelen',
+                'pv' => 'Zonnepanelen',
+                'ventilation' => 'Ventilatie',
+                'heating' => 'Verwarming',
+                'hot-water' => 'Warm tapwater',
+                'cooling' => 'Koeling',
+                'solar-thermal' => 'Zonneboiler',
+            ],
+            'shapes' => [
+                'flat' => 'plat dak',
+                'pitched' => 'hellend dak',
+            ],
+        ],
         // "Maatregel uitgevoerd" (woonplan design "Processen woonplan bewoner").
         'executed' => [
             'button' => 'Uitgevoerd',

@@ -899,6 +899,8 @@ class Form extends CustomMeasureForm
 
             $cards[$category][$order]['id'] = $advice->id;
             $cards[$category][$order]['executed_at'] = $advice->executed_at?->format('d-m-Y');
+            // What SmartTwin told us about this advice, for the (i) of the card.
+            $cards[$category][$order]['smart_twin'] = $this->smartTwinOwnsWoonplan ? $advice->smartTwinDetails()?->toArray() : null;
 
             // What the card may do; see WoonplanCardRules. Before the switch every card moves and goes
             // to the trash as it always did.

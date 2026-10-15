@@ -17,6 +17,7 @@ use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Services\ExecutedAdviceService;
+use App\Services\SmartTwin\SmartTwinAdviceDetails;
 use Illuminate\Support\Carbon;
 use Database\Seeders\DatabaseSeeder;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
@@ -428,5 +429,36 @@ final class SmartTwinCardRulesTest extends TestCase
         // ...nor in the line and the total under the columns.
         $results = substr($html, strpos($html, 'id="package-results"'));
         $this->assertSame(2, substr_count($results, '€ 1.622,65'), 'the line and the total');
+    }
+
+    public function test_the_i_of_a_package_card_tells_what_smart_twin_says(): void
+    {
+        $card = $this->packageCard();
+        $details = new SmartTwinAdviceDetails(
+            [SmartTwinAdviceDetails::solution([
+                'id'      => 'Insulate Facade Inside|SmartTwin:Facade_Interior_Insulation_PIR_Good_100',
+                'name'    => 'Spouwmuurisolatie met PIR',
+                'details' => [['id' => 'thickness', 'displayName' => 'Dikte', 'value' => 100, 'unit' => 'mm']],
+            ])],
+            ['facade' => [
+                'part_ids'       => ['facade'],
+                'insulated_area' => 40.98,
+                'before'         => ['summary' => ['type' => 1, 'rc_value' => 1.3, 'area' => 40.98], 'lines' => []],
+                'after'          => ['summary' => ['type' => 1, 'rc_value' => 2.58, 'area' => 40.98], 'lines' => []],
+            ]],
+        );
+        UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_action_plan_advisable_id', $card->user_action_plan_advisable_id)
+            ->update(['extra' => json_encode($details->intoExtra(null))]);
+
+        $this->woonplan()
+            ->assertSee(__('cooperation/frontend/tool.my-plan.smart-twin-details.title'))
+            ->assertSee('Spouwmuurisolatie met PIR')
+            ->assertSee('Dikte: 100 mm')
+            ->assertSee(__('cooperation/frontend/tool.my-plan.smart-twin-details.elements.facade'))
+            // SmartTwin's numbers as given.
+            ->assertSee('1,3 m²K/W')
+            ->assertSee('2,58 m²K/W')
+            ->assertSee('40,98 m²');
     }
 }

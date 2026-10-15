@@ -3,6 +3,7 @@
 namespace App\Services\SmartTwin;
 
 use App\Enums\SmartTwin\EventType;
+use App\Jobs\SmartTwin\Out\GetBuildingData;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\SmartTwin\Mapping\Leaf;
@@ -60,6 +61,10 @@ class SmartTwinService
         if ($report->savedAdvice()) {
             $this->applier->addInOrderCards($building, $inputSource);
             $this->applier->recordPackage($building, $inputSource, $results);
+
+            // The advice says nothing about the building type, build year, surface or registered
+            // label; SmartTwin's Building Data does, and is fetched again with every advice.
+            GetBuildingData::dispatchFor($building, $inputSource);
         }
 
         $this->logReport($building, $eventType, $report);

@@ -5,6 +5,7 @@ namespace Tests\Feature\app\Services\SmartTwin;
 use App\Enums\AdviceSource;
 use App\Enums\SmartTwin\EventType;
 use App\Enums\SmartTwin\MappingStatus;
+use App\Jobs\SmartTwin\Out\GetBuildingData;
 use App\Models\Building;
 use App\Models\BuildingRoofType;
 use App\Models\InputSource;
@@ -21,6 +22,7 @@ use App\Services\UserActionPlanAdviceService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
 /**
@@ -334,6 +336,28 @@ final class SmartTwinImportTest extends TestCase
         $this->import($response);
 
         $this->assertSame([], $this->advices());
+    }
+
+    public function test_building_data_is_fetched_again_after_an_import_with_advice(): void
+    {
+        config()->set('hoomdossier.services.smarttwin.enabled', true);
+
+        $this->import($this->response());
+
+        Bus::assertDispatched(GetBuildingData::class, fn (GetBuildingData $job) => $job->building->is($this->building)
+            && $job->inputSource->is($this->coach)
+        );
+    }
+
+    public function test_an_import_without_advice_fetches_no_building_data(): void
+    {
+        config()->set('hoomdossier.services.smarttwin.enabled', true);
+        $response = $this->wellInsulatedResponse();
+        $response['scenario']['solutions'] = [];
+
+        $this->import($response);
+
+        Bus::assertNotDispatched(GetBuildingData::class);
     }
 
     public function test_an_executed_measure_gets_no_second_card(): void

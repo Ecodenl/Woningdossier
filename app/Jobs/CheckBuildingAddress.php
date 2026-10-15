@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Exceptions\BuildingAddressCheckFailedException;
 use App\Jobs\Middleware\CheckLastResetAt;
+use App\Helpers\Hoomdossier;
 use App\Helpers\Queue;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -22,15 +23,24 @@ class CheckBuildingAddress extends NonHandleableJobAfterReset
     public $tries = 5;
 
     /**
+     * Whether BAG fills in the build year and surface. Not in a cooperation with SmartTwin: those
+     * come from SmartTwin's Building Data there, and BAG only does the address and the municipality.
+     * Null works it out from the building's cooperation; registration says so itself, as the
+     * building is not linked to its cooperation yet at that point.
+     */
+    public ?bool $withBuildingFeatures;
+
+    /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Building $building, InputSource $inputSource)
+    public function __construct(Building $building, InputSource $inputSource, ?bool $withBuildingFeatures = null)
     {
         parent::__construct();
         $this->building = $building;
         $this->inputSource = $inputSource;
+        $this->withBuildingFeatures = $withBuildingFeatures;
         $this->queue = Queue::APP_EXTERNAL;
     }
 
@@ -47,12 +57,18 @@ class CheckBuildingAddress extends NonHandleableJobAfterReset
             'extension' => $building->extension,
         ];
 
+        $withBuildingFeatures = $this->withBuildingFeatures
+            ?? ! Hoomdossier::smartTwinEnabledFor(Hoomdossier::cooperationOf($building));
+
         try {
             $buildingAddressService->forBuilding($building)
                 ->forInputSource($this->inputSource)
                 ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'))
-                ->attachMunicipality()
-                ->updateBuildingFeatures($building->only('postal_code', 'number', 'extension'));
+                ->attachMunicipality();
+
+            if ($withBuildingFeatures) {
+                $buildingAddressService->updateBuildingFeatures($building->only('postal_code', 'number', 'extension'));
+            }
         } catch (ServerException | ConnectException $e) {
             // Server errors (5xx) and connection issues are temporary - retry
             Log::warning("CheckBuildingAddress: Temporary BAG API error, will retry", $addressContext);

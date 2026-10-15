@@ -365,6 +365,27 @@ final class SmartTwinCardRulesTest extends TestCase
         $this->assertSame('invoice', $document->pivot->tag);
     }
 
+    public function test_the_cards_reload_without_the_cooperation_as_url_default(): void
+    {
+        $card = $this->packageCard();
+        $woonplan = $this->woonplan();
+        $this->assertNotNull($this->cardData($woonplan, $card)['route'], 'a card that links to the expert scan');
+
+        // A Livewire update request does not pass the cooperation middleware, which sets this default.
+        URL::defaults(['cooperation' => null]);
+
+        $woonplan->call('openExecuted', $card->id)
+            ->set('executedAt', '2026-10-01')
+            ->call('saveExecuted')
+            ->assertHasNoErrors();
+
+        $this->assertSame(['complete'], $this->categoriesOf($card));
+        $this->assertStringContainsString(
+            $this->building->user->cooperation->slug,
+            $this->cardData($woonplan, $card)['route'],
+        );
+    }
+
     public function test_a_measure_cannot_be_carried_out_in_the_future(): void
     {
         $card = $this->packageCard();

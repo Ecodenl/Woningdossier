@@ -43,7 +43,8 @@
                             @include('cooperation.frontend.dashboard.parts.fact', [
                                 'icon' => 'icon-house-dark',
                                 'label' => __('home.dashboard.building.type'),
-                                'value' => $features?->buildingType?->name,
+                                {{-- SmartTwin only knows "apartment", not which kind: then the category is all there is. --}}
+                                'value' => $features?->buildingType?->name ?? $features?->buildingTypeCategory?->name,
                             ])
                             @include('cooperation.frontend.dashboard.parts.fact', [
                                 'icon' => 'icon-calendar',
@@ -63,7 +64,7 @@
                                 'label' => __('home.dashboard.building.energy-label.official'),
                                 'energyLabel' => $features?->energyLabel,
                             ])
-                            {{-- The estimated label comes from SmartTwin later; null until it does. --}}
+                            {{-- SmartTwin's label of the dwelling as it is; unknown until its first advice. --}}
                             @include('cooperation.frontend.dashboard.parts.fact', [
                                 'icon' => 'icon-sustainability',
                                 'label' => __('home.dashboard.building.energy-label.estimated'),

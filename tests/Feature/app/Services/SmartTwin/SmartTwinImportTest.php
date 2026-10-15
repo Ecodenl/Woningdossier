@@ -5,6 +5,7 @@ namespace Tests\Feature\app\Services\SmartTwin;
 use App\Enums\AdviceSource;
 use App\Enums\SmartTwin\EventType;
 use App\Enums\SmartTwin\MappingStatus;
+use App\Enums\SmartTwin\MappingTarget;
 use App\Jobs\SmartTwin\Out\GetBuildingData;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -19,6 +20,7 @@ use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Services\ExecutedAdviceService;
 use App\Services\SmartTwin\DwellingRows;
+use App\Services\SmartTwin\Mapping\FilledQuestions;
 use App\Services\SmartTwin\Mapping\Mappers\ElementValues;
 use App\Services\SmartTwin\Mapping\MappingReport;
 use App\Services\SmartTwin\SmartTwinService;
@@ -400,6 +402,24 @@ final class SmartTwinImportTest extends TestCase
         app(SmartTwinService::class)->processResults($this->building, $this->response(), EventType::RESIDENT_SCAN_FINISHED);
 
         $this->assertEquals(EnergyLabel::fromName('B')->id, $this->masterAnswer('energy-label'));
+    }
+
+    /**
+     * "Gegevens woning bekijken" shows the questions in FilledQuestions; a question a mapper fills
+     * that is not there would silently stay off the page.
+     */
+    public function test_every_question_the_import_fills_is_in_filled_questions(): void
+    {
+        $report = $this->import($this->response());
+
+        $filled = collect($report->entries())
+            ->filter(fn ($entry) => MappingStatus::MAPPED === $entry->status && MappingTarget::TOOL_QUESTION === $entry->kind)
+            ->pluck('target')
+            ->unique()
+            ->values();
+
+        $this->assertNotEmpty($filled);
+        $this->assertSame([], $filled->diff(FilledQuestions::all())->values()->all());
     }
 
     public function test_building_data_is_fetched_again_after_an_import_with_advice(): void

@@ -5,6 +5,7 @@ namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 use App\Calculations\Heater;
 use App\Helpers\Arr;
 use App\Helpers\DataTypes\Caster;
+use App\Helpers\Hoomdossier;
 use App\Helpers\Kengetallen;
 use App\Helpers\KengetallenCodes;
 use App\Helpers\ToolQuestionHelper;
@@ -27,6 +28,8 @@ class CalculationsTable extends Component
     public array $tableData;
     public Building $building;
     public InputSource $masterInputSource;
+    /** Whether the woonplan is SmartTwin's; its calculation is then SmartTwin's, not the one below. */
+    public bool $smartTwin = false;
     private KengetallenService $kengetallenService;
 
     private array $toolQuestionShorts = [
@@ -60,6 +63,17 @@ class CalculationsTable extends Component
         $this->kengetallenService = $kengetallenService;
         $this->building = $building;
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->smartTwin = Hoomdossier::smartTwinOwnsWoonplanFor($building);
+
+        // The table explains Hoomdossier's own calculation; there is none to explain after the switch.
+        if ($this->smartTwin) {
+            $this->toolQuestions = collect();
+            $this->toolCalculationResults = collect();
+            $this->tableData = [];
+
+            return;
+        }
+
         $this->setModels();
         $this->setTableData();
     }

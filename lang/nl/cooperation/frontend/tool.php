@@ -79,6 +79,8 @@ return [
                 'source' => 'Oorsprong',
             ],
             'description' => "<p>Voor het berekenen van de prijzen maken wij gebruik van de 'Kostenkentallen energiebesparende maatregelen' van RVO. Deze online database kun je via de volgende link vinden: <a target='_blank' rel='nofollow' href='https://digipesis.com/'>Kostenkentallen | RVO</a></p>",
+            // Once the woonplan is SmartTwin's, its prices and results are SmartTwin's, not RVO's.
+            'smart-twin' => '<p>De maatregelen van het verbeterpakket, hun prijzen, de besparing, de subsidie en het energielabel zijn berekend door Smart Twin.</p>',
             'values' => [
                 'gas-cost' => 'Gerekend met kosten voor gas',
                 'electricity-cost' => 'Gerekend met kosten voor elektriciteit',
@@ -185,7 +187,26 @@ return [
                 'pitched' => 'hellend dak',
             ],
         ],
-        // "Maatregel uitgevoerd" (woonplan design "Processen woonplan bewoner").
+        // "Gegevens woning bekijken" (woonplan design "Processen woonplan bewoner").
+        'house-data' => [
+            'button' => 'Gegevens woning bekijken',
+            'title' => 'Gegevens van je woning',
+            'intro' => 'Zo is je woning nu, zoals Smart Twin haar kent.',
+            'back' => 'Terug naar het woonplan',
+            'general' => 'Algemeen',
+            'energy-label' => 'Energielabel',
+            'state' => 'Woningstatus',
+            'usage' => 'Gebruik',
+            'parts' => [
+                'facade' => 'Gevel',
+                'floor' => 'Vloer en kruipruimte',
+                'roof' => 'Dak',
+            ],
+            'according-to' => 'Volgens Smart Twin, berekening van :date',
+            'executed' => ':measure uitgevoerd op :date',
+            'nothing-known' => 'Smart Twin heeft hier nog geen gegevens over.',
+        ],
+                // "Maatregel uitgevoerd" (woonplan design "Processen woonplan bewoner").
         'executed' => [
             'button' => 'Uitgevoerd',
             'title' => ':measure uitgevoerd',

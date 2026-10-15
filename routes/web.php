@@ -154,6 +154,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             Route::as('my-plan.')->prefix('woonplan')->group(function () {
                                 Route::get('', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'index'])->name('index');
                                 Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'media'])->name('media');
+                                Route::get('gegevens-woning', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'houseData'])->name('house-data');
                                 Route::post('smarttwin', Cooperation\Frontend\Tool\SimpleScan\SmartTwinHandoffController::class)->name('smarttwin');
                             });
 

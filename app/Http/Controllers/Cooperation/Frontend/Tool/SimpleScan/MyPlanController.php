@@ -19,6 +19,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Services\Models\NotificationService;
 use App\Enums\SmartTwin\WoonplanState;
+use App\Services\SmartTwin\HouseData;
 use App\Services\SmartTwin\SmartTwinHandOff;
 use App\Services\SmartTwin\WoonplanLock;
 use App\Services\WoonplanService;
@@ -90,6 +91,8 @@ class MyPlanController extends Controller
         // Once the woonplan is SmartTwin's, the hand-off sits under its results as "Maatregelpakket
         // aanpassen", with its warning; see MyPlan\Form.
         $canHandOff = SmartTwinHandOff::isOfferedFor($building) && ! Hoomdossier::smartTwinOwnsWoonplanFor($building);
+        // "Gegevens woning bekijken" once there is a SmartTwin plan to show it for; see houseData().
+        $showHouseData = Hoomdossier::smartTwinOwnsWoonplanFor($building);
 
         return view('cooperation.frontend.tool.simple-scan.my-plan.index', compact(
             'scan',
@@ -97,9 +100,33 @@ class MyPlanController extends Controller
             'inputSource',
             'activeNotification',
             'canHandOff',
+            'showHouseData',
             'woonplanState',
             'coachIsDone',
         ));
+    }
+
+    /**
+     * "Gegevens woning bekijken": the dwelling as it is now, after SmartTwin's last import. Only once
+     * the woonplan is SmartTwin's, and not while the resident waits for the coach: the woonplan, where
+     * the button is, is not there then either (decision 2026-10-15-smarttwin-gegevens-woning-pagina,
+     * S6g). Read-only, so someone observing sees it too.
+     */
+    public function houseData(Cooperation $cooperation, Scan $scan): View|RedirectResponse
+    {
+        /** @var Building $building */
+        $building = HoomdossierSession::getBuilding(true);
+
+        $woonplanState = app(WoonplanLock::class)
+            ->stateFor($building, HoomdossierSession::getInputSource(true), HoomdossierSession::isUserObserving());
+
+        if (! Hoomdossier::smartTwinOwnsWoonplanFor($building) || WoonplanState::AWAITING_COACH === $woonplanState) {
+            return to_route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('cooperation', 'scan'));
+        }
+
+        $houseData = HouseData::for($building);
+
+        return view('cooperation.frontend.tool.simple-scan.my-plan.house-data', compact('scan', 'building', 'houseData'));
     }
 
     /**

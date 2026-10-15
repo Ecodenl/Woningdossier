@@ -3,7 +3,9 @@
 namespace App\Http\ViewComposers\Frontend\Tool;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
+use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\Step;
@@ -59,8 +61,9 @@ class SimpleScanComposer
         // "step 16 of 45" the moment they open the first question we do still ask. Excluding them
         // from the two base queries below fixes both the total and the position, since the running
         // total is built from the same queries.
-        $hiddenStepShorts = Hoomdossier::smartTwinEnabledFor($cooperation)
-            ? $scan->steps->filter(fn (Step $scanStep) => $scanStep->isProvidedBySmartTwin())->pluck('short')->all()
+        $building = HoomdossierSession::getBuilding(true);
+        $hiddenStepShorts = $building instanceof Building
+            ? $scan->steps->filter(fn (Step $scanStep) => Hoomdossier::smartTwinProvidesStepFor($building, $scanStep))->pluck('short')->all()
             : [];
 
         // This query counts all active questionnaires for the current questionnaires linked to the current scan's steps.

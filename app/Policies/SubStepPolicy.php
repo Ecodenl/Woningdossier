@@ -44,7 +44,7 @@ class SubStepPolicy
         // Hoomdossier stops asking them. Refusing here rather than in each caller is what makes it
         // stick: the sub step conditions middleware and StepHelper::completeStepIfNeeded() both ask
         // this policy whether a sub step may be shown, and act on the answer.
-        if ($step->isProvidedBySmartTwin() && Hoomdossier::smartTwinEnabledFor(Hoomdossier::cooperationOf($building))) {
+        if (Hoomdossier::smartTwinProvidesStepFor($building, $step)) {
             return false;
         }
 

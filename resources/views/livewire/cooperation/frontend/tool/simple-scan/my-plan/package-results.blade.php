@@ -99,7 +99,9 @@
                     <button type="button" class="btn btn-outline-green" x-on:click="close()">
                         @lang('cooperation/frontend/tool.my-plan.package-results.adjust-cancel')
                     </button>
-                    <button type="submit" class="btn btn-green" x-on:click="close()">
+                    {{-- close() cancels the click it runs in while the modal is open, which would stop the
+                         submit; so close only once the click (and with it the submit) is done. --}}
+                    <button type="submit" class="btn btn-green" x-on:click="setTimeout(() => close())">
                         @lang('cooperation/frontend/tool.my-plan.package-results.adjust-confirm')
                     </button>
                 </form>

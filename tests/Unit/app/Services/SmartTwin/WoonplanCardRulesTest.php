@@ -45,10 +45,10 @@ final class WoonplanCardRulesTest extends TestCase
         }
     }
 
-    public function test_a_package_card_stays_in_its_column(): void
+    public function test_a_package_card_stays_in_its_column_but_may_go(): void
     {
         $this->assertSame(Rules::DENIED, Rules::move(Rules::PACKAGE, self::NOW, self::LATER));
-        $this->assertFalse(Rules::mayTrash(Rules::PACKAGE));
+        $this->assertTrue(Rules::mayTrash(Rules::PACKAGE));
     }
 
     public function test_a_possible_measure_stays_in_its_column_but_may_go(): void

@@ -13,8 +13,10 @@ use App\Services\UserActionPlanAdviceService;
  * always did. The rules follow the woonplan design "Pagina 2", which is leading for them, and the
  * stuurgroep:
  *
- *   package    SmartTwin's chosen package, "Nu aanpakken". Reordered within its column only; not
- *              thrown away. Another package means going back to SmartTwin.
+ *   package    SmartTwin's chosen package, "Nu aanpakken". Reordered within its column only; may be
+ *              thrown away. Without it the package no longer holds, and the woonplan offers a new
+ *              calculation in place of SmartTwin's figures (SmartTwinPackage::isIntactIn()).
+ *              Another package means going back to SmartTwin.
  *   possible   a measure SmartTwin offers but the package does not hold, "Later uitvoeren".
  *              Reordered within its column; may be thrown away.
  *   in-order   a card SmartTwin's import made for what is in good shape. Stays where it is.
@@ -75,7 +77,7 @@ final class WoonplanCardRules
 
     public static function mayTrash(string $kind): bool
     {
-        return in_array($kind, [self::POSSIBLE, self::OWN], true);
+        return in_array($kind, [self::PACKAGE, self::POSSIBLE, self::OWN], true);
     }
 
     /**

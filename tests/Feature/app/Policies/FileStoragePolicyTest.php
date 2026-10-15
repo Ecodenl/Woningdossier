@@ -51,12 +51,11 @@ final class FileStoragePolicyTest extends TestCase
 
         $this->actAs($resident, RoleHelper::ROLE_RESIDENT, InputSource::RESIDENT_SHORT);
 
-        $response = $this->get(route('cooperation.file-storage.download', [
-            'cooperation' => $this->cooperation,
-            'fileStorage' => $fileStorage,
-        ]));
-
-        $response->assertForbidden();
+        // Asked of the gate rather than the route: the advice is kept without an expiry date, so the
+        // AvailableScope already hides it from the route's model binding before the policy is reached.
+        $this->assertTrue(
+            Gate::forUser($resident->account)->denies('download', [$fileStorage, $resident->building]),
+        );
     }
 
     public function test_a_cooperation_admin_cannot_download_the_advice_of_a_building_in_their_cooperation(): void

@@ -7,7 +7,10 @@ use App\Enums\SmartTwin\EventType;
 use App\Enums\SmartTwin\MappingStatus;
 use App\Jobs\SmartTwin\Out\GetBuildingData;
 use App\Models\Building;
+use App\Models\BuildingFeature;
+use App\Models\BuildingHeating;
 use App\Models\BuildingRoofType;
+use App\Models\EnergyLabel;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
@@ -15,14 +18,17 @@ use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Services\ExecutedAdviceService;
+use App\Services\SmartTwin\DwellingRows;
 use App\Services\SmartTwin\Mapping\Mappers\ElementValues;
 use App\Services\SmartTwin\Mapping\MappingReport;
 use App\Services\SmartTwin\SmartTwinService;
+use App\Services\ToolQuestionService;
 use App\Services\UserActionPlanAdviceService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 /**
@@ -336,6 +342,64 @@ final class SmartTwinImportTest extends TestCase
         $this->import($response);
 
         $this->assertSame([], $this->advices());
+    }
+
+    private function answerAsResident(string $short, mixed $value): void
+    {
+        ToolQuestionService::init()
+            ->toolQuestion(ToolQuestion::findByShort($short))
+            ->building($this->building)
+            ->currentInputSource(InputSource::findByShort(InputSource::RESIDENT_SHORT))
+            ->save($value);
+    }
+
+    private function masterAnswer(string $short): mixed
+    {
+        return $this->building->getAnswer($this->master, ToolQuestion::findByShort($short));
+    }
+
+    /**
+     * What decision 2026-10-15-smarttwin-import-overschrijft-master found: the coach, who never
+     * opened the scan, has no rows; the import created them and GetMyValuesTrait copied them to
+     * master, emptying everything the resident had filled in that SmartTwin does not write.
+     */
+    public function test_a_coach_import_keeps_what_the_resident_filled_in(): void
+    {
+        foreach (DwellingRows::TABLES as $table) {
+            DB::table($table)->where('building_id', $this->building->id)->delete();
+        }
+        $heating = BuildingHeating::first()->id;
+        $answers = [
+            'build-year' => 1975, 'surface' => 120, 'monument' => 1, 'building-layers' => 2,
+            'energy-label' => EnergyLabel::fromName('C')->id,
+            // In a row SmartTwin writes as well: the crawlspace and the pitched roof.
+            'crawlspace-accessible' => 'yes', 'pitched-roof-heating' => $heating,
+        ];
+        foreach ($answers as $short => $value) {
+            $this->answerAsResident($short, $value);
+        }
+
+        $this->import($this->response());
+
+        foreach ($answers as $short => $value) {
+            $this->assertEquals($value, $this->masterAnswer($short), $short);
+        }
+        // And what SmartTwin says is there too.
+        $this->assertEquals(40.98, $this->masterAnswer('wall-surface'));
+    }
+
+    public function test_a_resident_import_keeps_ep_onlines_label(): void
+    {
+        // EP-Online writes its label in external and straight into master, not in the resident's row.
+        $this->answerAsResident('build-year', 1975);
+        BuildingFeature::withoutGlobalScopes()
+            ->where('building_id', $this->building->id)
+            ->where('input_source_id', $this->master->id)
+            ->update(['energy_label_id' => EnergyLabel::fromName('B')->id]);
+
+        app(SmartTwinService::class)->processResults($this->building, $this->response(), EventType::RESIDENT_SCAN_FINISHED);
+
+        $this->assertEquals(EnergyLabel::fromName('B')->id, $this->masterAnswer('energy-label'));
     }
 
     public function test_building_data_is_fetched_again_after_an_import_with_advice(): void

@@ -146,6 +146,18 @@ final class BuildingDataServiceTest extends TestCase
         $this->assertEquals(EnergyLabel::fromName('C')->id, $this->answer('energy-label', $this->master));
     }
 
+    public function test_what_smart_twin_does_not_write_stays_in_master(): void
+    {
+        // The coach has no row yet; without DwellingRows the coach's new row would empty master.
+        $this->answerAs('monument', 1);
+        $this->answerAs('building-layers', 2);
+
+        $this->service()->apply($this->building, $this->coach, $this->data());
+
+        $this->assertEquals(1, $this->answer('monument', $this->master));
+        $this->assertEquals(2, $this->answer('building-layers', $this->master));
+    }
+
     public function test_an_apartment_clears_a_type_that_is_no_apartment(): void
     {
         $this->answerAs('building-type-category', $this->category('corner-house'));

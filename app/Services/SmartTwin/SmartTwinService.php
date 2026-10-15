@@ -20,6 +20,7 @@ class SmartTwinService
         private readonly ResponseFlattener $flattener,
         private readonly MapperRegistry $registry,
         private readonly MappingApplier $applier,
+        private readonly DwellingRows $dwellingRows,
     )
     {
     }
@@ -47,6 +48,11 @@ class SmartTwinService
         $inputSource = $eventType->inputSource();
 
         [$dwelling, $solutions] = $this->dwellingAndSolutions($this->flattener->flatten($results));
+
+        // The answers are written in the flow's input source, whose rows are what master becomes.
+        // Made equal to master first, or a coach who never opened the scan would empty everything
+        // in master that SmartTwin does not write. With or without advice: the dwelling always is.
+        $this->dwellingRows->equalizeToMaster($building, $inputSource);
 
         // The dwelling first, then the action plan in one go: the applier clears it right before
         // the first advice it writes, and refills it with the package.

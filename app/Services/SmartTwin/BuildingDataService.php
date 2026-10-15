@@ -37,7 +37,7 @@ class BuildingDataService
         5 => 'apartment',
     ];
 
-    public function __construct(private readonly SmartTwinApi $api)
+    public function __construct(private readonly SmartTwinApi $api, private readonly DwellingRows $dwellingRows)
     {
     }
 
@@ -136,7 +136,10 @@ class BuildingDataService
     public function apply(Building $building, InputSource $inputSource, array $data): void
     {
         DB::transaction(function () use ($building, $inputSource, $data) {
-            $category = BuildingTypeCategory::where('short', self::CATEGORIES[(int) ($data['buildingType'] ?? 0)] ?? null)->first();
+            // As for an import: the input source's row is what master becomes (see DwellingRows).
+            $this->dwellingRows->equalizeToMaster($building, $inputSource);
+
+            $category =BuildingTypeCategory::where('short', self::CATEGORIES[(int) ($data['buildingType'] ?? 0)] ?? null)->first();
 
             if ($category instanceof BuildingTypeCategory) {
                 // Read before writing: the write copies the input source's row to master.
@@ -164,9 +167,9 @@ class BuildingDataService
      *
      * SmartTwin knows an apartment, not which of the six kinds Hoomdossier has. A type that is one of
      * them stays: someone chose it, and it does not contradict SmartTwin. Any other type is left
-     * over from a category the dwelling no longer has, and goes (B14). It is written back explicitly
-     * in the input source SmartTwin writes for: that input source's row is what master gets, and it
-     * need not hold the type someone else chose.
+     * over from a category the dwelling no longer has, and goes (B14). Choosing Appartement does not
+     * clear the type by itself (QuestionAnswers\BuildingTypeCategory only sets a type for a category
+     * with one), hence the explicit write.
      */
     private function typeWithin(Building $building, BuildingTypeCategory $category): ?BuildingType
     {

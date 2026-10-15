@@ -12,9 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * calculated for it.
  *
  * SmartTwin gives one saving, one energy label and one subsidy (per scheme) for the package as a
- * whole, not per measure. They only hold while "Nu aanpakken" holds exactly that package — move a package card out, trash it, or
- * add another one, and the plan is no longer what SmartTwin calculated. Whether the package is still
- * intact is asked of the plan as it is shown, never stored: put the card back and it is intact again.
+ * whole, not per measure. They only hold while the woonplan holds exactly that package. A package
+ * card moved to "Later uitvoeren" leaves it intact (stuurgroep); trash one, mark one as carried out,
+ * or add another SmartTwin card to "Nu aanpakken", and the plan is no longer what SmartTwin
+ * calculated. Whether the package is still intact is asked of the plan as it is shown, never stored:
+ * put the card back and it is intact again.
  *
  * @property int $id
  * @property int $building_id
@@ -97,26 +99,46 @@ class SmartTwinPackage extends Model
 
     /**
      * Whether the action plan still holds the package: every package measure has a visible SmartTwin
-     * card in "Nu aanpakken", and no other SmartTwin card is there. Own measures and small measures
-     * count only when OWN_MEASURES_BREAK_PACKAGE says so. The order of the cards does not matter.
+     * card in "Nu aanpakken" or "Later uitvoeren", and no other SmartTwin card is in "Nu aanpakken".
+     * Own measures and small measures count only when OWN_MEASURES_BREAK_PACKAGE says so. The order
+     * of the cards does not matter.
+     *
+     * A SmartTwin card in "Later uitvoeren" that is not part of the package is left out: it is not
+     * something the resident is doing now, so it does not change what SmartTwin calculated.
      *
      * @param  iterable<UserActionPlanAdvice>  $advices  The cards of the action plan as shown (master).
      */
     public function isIntactIn(iterable $advices): bool
     {
+        $package = array_map('intval', $this->measure_application_ids ?? []);
         $measureIds = [];
 
         foreach ($advices as $advice) {
             // getAttribute(), not ->visible: from inside a model, ->visible on another model reaches
             // Model::$visible — the serialisation list — rather than the column.
-            if (! $advice->getAttribute('visible') || UserActionPlanAdviceService::CATEGORY_TO_DO !== $advice->getAttribute('category')) {
+            if (! $advice->getAttribute('visible')) {
                 continue;
             }
 
-            if (MeasureApplication::class === $advice->getAttribute('user_action_plan_advisable_type')
-                && AdviceSource::SMART_TWIN === $advice->getAttribute('source')
-            ) {
-                $measureIds[] = (int) $advice->getAttribute('user_action_plan_advisable_id');
+            $category = $advice->getAttribute('category');
+            $measureId = (int) $advice->getAttribute('user_action_plan_advisable_id');
+            $fromSmartTwin = MeasureApplication::class === $advice->getAttribute('user_action_plan_advisable_type')
+                && AdviceSource::SMART_TWIN === $advice->getAttribute('source');
+
+            if (UserActionPlanAdviceService::CATEGORY_LATER === $category) {
+                if ($fromSmartTwin && in_array($measureId, $package, true)) {
+                    $measureIds[] = $measureId;
+                }
+
+                continue;
+            }
+
+            if (UserActionPlanAdviceService::CATEGORY_TO_DO !== $category) {
+                continue;
+            }
+
+            if ($fromSmartTwin) {
+                $measureIds[] = $measureId;
             } elseif (static::OWN_MEASURES_BREAK_PACKAGE) {
                 return false;
             }
@@ -126,10 +148,11 @@ class SmartTwinPackage extends Model
     }
 
     /**
-     * Whether a "Nu aanpakken" column holding these standard measures is the package: the same
-     * measures, no more and no fewer, in whatever order.
+     * Whether a plan holding these standard measures is the package: the same measures, no more and
+     * no fewer, in whatever order.
      *
-     * @param  iterable<int>  $measureApplicationIds  The measures of the visible cards in "Nu aanpakken".
+     * @param  iterable<int>  $measureApplicationIds  The measures of the visible SmartTwin cards that
+     *                                                count for the package; see isIntactIn().
      */
     public function isIntactFor(iterable $measureApplicationIds): bool
     {

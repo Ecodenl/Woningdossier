@@ -32,6 +32,8 @@ class RunDeploy extends Command
             SeedCommand::class => [
                 ['--class' => 'ToolQuestionTypesTableSeeder', '--force' => true],
                 ['--class' => 'ToolLabelsTableSeeder', '--force' => true],
+                // Before the questions: the energy-label question takes its options from this table.
+                ['--class' => 'EnergyLabelsTableSeeder', '--force' => true],
                 ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
                 ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
                 ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],

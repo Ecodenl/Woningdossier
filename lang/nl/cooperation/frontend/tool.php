@@ -247,6 +247,11 @@ return [
             'redirecting' => 'Je wordt ingelogd bij SmartTwin…',
             'noscript' => 'Klik op de knop om verder te gaan naar SmartTwin.',
             'continue' => 'Verder naar SmartTwin',
+            // Above a woonplan from before SmartTwin: its first advice replaces the calculated measures.
+            'report-first' => [
+                'title' => 'Maak eerst een rapportage',
+                'text' => 'Het woonplan wordt voortaan opgesteld met SmartTwin. Zodra SmartTwin het eerste advies terugstuurt, vervangt dat de berekende maatregelen in dit woonplan. Wil je het huidige woonplan bewaren? Maak dan eerst een rapportage met de knop "Maak rapportage" onderaan deze pagina, voordat je de verbetercheck doet.',
+            ],
             'errors' => [
                 'not_configured' => 'Er is nog geen SmartTwin-account voor je beschikbaar. Probeer het later opnieuw.',
                 'advice_in_progress' => 'Het adviesgesprek voor dit adres is op dit moment door een andere gebruiker geopend. Probeer het later opnieuw.',

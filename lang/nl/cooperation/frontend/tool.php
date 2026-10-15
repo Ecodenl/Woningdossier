@@ -140,6 +140,22 @@ return [
 <p>Dit duurt meestal niet lang. Zodra het klaar is kom je hier vanzelf terecht.</p>',
         ],
 
+        // The woonplan while a coach works on it in SmartTwin (woonplan design "Processen woonplan
+        // bewoner", "Teksten op woonplanpagina bij vergrendeling door coach").
+        'lock' => [
+            'awaiting' => [
+                'title' => 'Nog even geduld.',
+                'text' => 'Jouw energiecoach werkt aan jouw woonplan. Zodra deze gereed is, kun je hier zien welke maatregelen voor jou het meest geschikt zijn, hoeveel je ermee kunt besparen en welke kosten en subsidies je kunt verwachten. Heb je vragen? Neem dan contact op met jouw coach.',
+            ],
+            'locked' => [
+                'title' => 'Jouw woonplan',
+                'text' => 'Hier is jouw woonplan zoals je die met de energiecoach hebt besproken. Om ongewenste wijzigingen te voorkomen, is hij vergrendeld totdat de energiecoach klaar is. Later kun je zelf weer aanpassingen doen, bijvoorbeeld aangeven dat je een maatregel hebt uitgevoerd.',
+            ],
+            'done' => [
+                'title' => 'Jouw woonplan',
+                'text' => 'Hier is jouw woonplan zoals je die met de energiecoach hebt besproken. Als je wilt kun je nu zelf aanpassingen doen, bijvoorbeeld aangeven dat je een maatregel hebt uitgevoerd.',
+            ],
+        ],
         // "Maatregel uitgevoerd" (woonplan design "Processen woonplan bewoner").
         'executed' => [
             'button' => 'Uitgevoerd',

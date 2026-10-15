@@ -1,5 +1,6 @@
 @php
-    $disabled = \App\Helpers\HoomdossierSession::isUserObserving();
+    // Read-only for someone observing, and for a resident whose woonplan a coach has locked.
+    $disabled = \App\Helpers\HoomdossierSession::isUserObserving() || $this->lockedForMe;
 @endphp
 <div>
     {{-- Header row --}}

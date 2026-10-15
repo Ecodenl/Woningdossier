@@ -56,10 +56,35 @@ class WoonplanLock
             return WoonplanState::OPEN;
         }
 
-        $package = $building->smartTwinPackage()->first();
-        $hasCoachPlan = $package instanceof SmartTwinPackage
-            && $package->input_source_id === InputSource::findByShort(InputSource::COACH_SHORT)->id;
+        return $this->hasCoachPlan($building) ? WoonplanState::LOCKED : WoonplanState::AWAITING_COACH;
+    }
 
-        return $hasCoachPlan ? WoonplanState::LOCKED : WoonplanState::AWAITING_COACH;
+    /**
+     * Whether the plan the woonplan shows is the coach's: the last import came from the advisor
+     * tool. Also what tells the resident, once the lock is off, that the coach is done.
+     */
+    public function hasCoachPlan(Building $building): bool
+    {
+        $package = $building->smartTwinPackage()->first();
+
+        return $package instanceof SmartTwinPackage
+            && $package->input_source_id === InputSource::findByShort(InputSource::COACH_SHORT)->id;
+    }
+
+    /**
+     * Whether the lock is about whoever is looking: only the resident's woonplan is locked (L5), and
+     * someone observing the dossier changes nothing anyway.
+     */
+    public static function appliesTo(InputSource $inputSource, bool $observing): bool
+    {
+        return ! $observing && InputSource::RESIDENT_SHORT === $inputSource->short;
+    }
+
+    /**
+     * The state as the one looking sees it: a coach, or someone observing, always sees an open plan.
+     */
+    public function stateFor(Building $building, InputSource $inputSource, bool $observing): WoonplanState
+    {
+        return static::appliesTo($inputSource, $observing) ? $this->state($building) : WoonplanState::OPEN;
     }
 }

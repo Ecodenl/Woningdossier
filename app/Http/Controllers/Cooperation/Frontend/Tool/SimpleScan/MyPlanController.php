@@ -18,7 +18,9 @@ use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Services\Models\NotificationService;
+use App\Enums\SmartTwin\WoonplanState;
 use App\Services\SmartTwin\SmartTwinHandOff;
+use App\Services\SmartTwin\WoonplanLock;
 use App\Services\WoonplanService;
 use Illuminate\Http\Request;
 
@@ -36,6 +38,20 @@ class MyPlanController extends Controller
         if (HoomdossierSession::isUserObserving()) {
             $woonplanService = $woonplanService->userIsObserving();
         }
+
+        // A coach working on the plan in SmartTwin locks it for the resident; see WoonplanLock. While
+        // the coach has not delivered a plan yet, there is nothing to show but "Nog even geduld".
+        $lock = app(WoonplanLock::class);
+        $woonplanState = $lock->stateFor($building, HoomdossierSession::getInputSource(true), HoomdossierSession::isUserObserving());
+
+        if (WoonplanState::AWAITING_COACH === $woonplanState) {
+            return view('cooperation.frontend.tool.simple-scan.my-plan.awaiting-coach', compact('scan', 'building'));
+        }
+
+        // Unlocked again with the coach's plan in it: the coach is done.
+        $coachIsDone = WoonplanState::OPEN === $woonplanState
+            && WoonplanLock::appliesTo(HoomdossierSession::getInputSource(true), HoomdossierSession::isUserObserving())
+            && $lock->hasCoachPlan($building);
 
         // With SmartTwin the woonplan is the advice SmartTwin produced, so what decides whether there
         // is one to show is whether that advice has arrived -- not how far the scan got. Asking the
@@ -81,6 +97,8 @@ class MyPlanController extends Controller
             'inputSource',
             'activeNotification',
             'canHandOff',
+            'woonplanState',
+            'coachIsDone',
         ));
     }
 

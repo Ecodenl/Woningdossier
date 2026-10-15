@@ -29,6 +29,7 @@ use App\Services\SmartTwin\PackageResults;
 use App\Services\SmartTwin\SharedWoonplan;
 use App\Services\SmartTwin\SmartTwinHandOff;
 use App\Services\SmartTwin\WoonplanCardRules;
+use App\Services\SmartTwin\WoonplanLock;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Collection;
 use App\Helpers\Arr;
@@ -110,6 +111,8 @@ class Form extends CustomMeasureForm
 
     public function save(int $index): void
     {
+        $this->abortIfReadOnly();
+
         $customMeasureApplication = $this->submit($index, false);
         $this->loadCustomMeasures();
 
@@ -132,7 +135,7 @@ class Form extends CustomMeasureForm
 
     public function cardMoved(string $fromCategory, string $toCategory, string $id, string $newOrder): void
     {
-        abort_if(HoomdossierSession::isUserObserving(), 403);
+        $this->abortIfReadOnly();
 
         // A SmartTwin woonplan has its card rules (WoonplanCardRules). The browser already refuses
         // what is not allowed; this is what makes it stick.
@@ -228,7 +231,7 @@ class Form extends CustomMeasureForm
 
     public function cardTrashed(string $fromCategory, string $id): void
     {
-        abort_if(HoomdossierSession::isUserObserving(), 403);
+        $this->abortIfReadOnly();
 
         if ($this->smartTwinOwnsWoonplan && ! WoonplanCardRules::mayTrash($this->kindOfCard($id))) {
             $this->reloadCards();
@@ -437,12 +440,33 @@ class Form extends CustomMeasureForm
     }
 
     /**
+     * Whether the woonplan is locked for whoever is looking: a coach working on it in SmartTwin
+     * locks it for the resident (WoonplanLock). Shown, but nothing on it can be changed.
+     */
+    #[Computed]
+    public function lockedForMe(): bool
+    {
+        return ! app(WoonplanLock::class)
+            ->stateFor($this->building, $this->currentInputSource, HoomdossierSession::isUserObserving())
+            ->residentMayEdit();
+    }
+
+    /**
+     * No changes from someone observing, nor from a resident whose woonplan a coach has locked. The
+     * page leaves the buttons out; this is what makes it stick.
+     */
+    private function abortIfReadOnly(): void
+    {
+        abort_if(HoomdossierSession::isUserObserving() || $this->lockedForMe, 403);
+    }
+
+    /**
      * Opens the "uitgevoerd" popup for a card: from its button, or from dragging it into "In orde".
      * For a measure already carried out it shows what was recorded, to change or to take back.
      */
     public function openExecuted(int $id): void
     {
-        abort_if(HoomdossierSession::isUserObserving(), 403);
+        $this->abortIfReadOnly();
         abort_unless(ExecutedAdviceService::isAvailableFor($this->building), 403);
 
         $advice = $this->woonplanAdvice($id);
@@ -461,7 +485,7 @@ class Form extends CustomMeasureForm
 
     public function saveExecuted(ExecutedAdviceService $executed): void
     {
-        abort_if(HoomdossierSession::isUserObserving(), 403);
+        $this->abortIfReadOnly();
 
         $this->validate([
             'executedAt'            => ['required', 'date', 'before_or_equal:today'],
@@ -492,7 +516,7 @@ class Form extends CustomMeasureForm
 
     public function undoExecuted(ExecutedAdviceService $executed): void
     {
-        abort_if(HoomdossierSession::isUserObserving(), 403);
+        $this->abortIfReadOnly();
 
         $executed->undoExecuted($this->woonplanAdvice((int) $this->executedAdviceId));
 
@@ -552,7 +576,8 @@ class Form extends CustomMeasureForm
     #[Computed]
     public function canHandOff(): bool
     {
-        return SmartTwinHandOff::isOfferedFor($this->building);
+        // Not while a coach has the plan locked: no new calculation until the coach is done.
+        return ! $this->lockedForMe && SmartTwinHandOff::isOfferedFor($this->building);
     }
 
     private function kindOfCard(string $id): string
@@ -591,6 +616,8 @@ class Form extends CustomMeasureForm
 
     public function updateAdvice($id, array $update): void
     {
+        $this->abortIfReadOnly();
+
         // Get moved advice (will be for master input source)
         $advice = UserActionPlanAdvice::allInputSources()
             ->withoutGlobalScope(VisibleScope::class)
@@ -640,7 +667,7 @@ class Form extends CustomMeasureForm
 
     public function addHiddenCardToBoard(string $category, string $id): void
     {
-        abort_if(HoomdossierSession::isUserObserving(), 403);
+        $this->abortIfReadOnly();
 
         $cardData = Arr::where($this->hiddenCards[$category], function ($card, $order) use ($id) {
             return $card['id'] == $id;

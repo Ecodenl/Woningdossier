@@ -27,6 +27,14 @@
                     $link = route('cooperation.admin.messages.index', compact('cooperation'));
                 }
             @endphp
+            {{-- While a coach works on the plan in SmartTwin, and once the coach is done; see WoonplanLock. --}}
+            @if(\App\Enums\SmartTwin\WoonplanState::LOCKED === $woonplanState || $coachIsDone)
+                @php $lockShort = $coachIsDone ? 'done' : 'locked'; @endphp
+                @component('cooperation.layouts.components.alert', ['withBackground' => true, 'dismissible' => false])
+                    <h5 class="heading-5">@lang("cooperation/frontend/tool.my-plan.lock.{$lockShort}.title")</h5>
+                    <p>@lang("cooperation/frontend/tool.my-plan.lock.{$lockShort}.text")</p>
+                @endcomponent
+            @endif
             <div class="w-full flex flex-wrap justify-between mb-5">
                 <h4 class="heading-4">
                     {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}

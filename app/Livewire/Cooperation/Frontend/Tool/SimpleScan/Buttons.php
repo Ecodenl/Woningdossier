@@ -63,7 +63,9 @@ class Buttons extends Component
         return view('livewire.cooperation.frontend.tool.simple-scan.buttons');
     }
 
-    public function setUrl(): void
+    // Private, so it cannot be called as a Livewire action: those requests skip the cooperation
+    // middleware, and the cooperation property is only set in mount().
+    private function setUrl(): void
     {
         // TODO: See if we can integrate this with the ScanFlowService
         $scan = $this->scan;
@@ -73,13 +75,14 @@ class Buttons extends Component
 
         if ($previousStep instanceof \App\Models\Step && $previousSubStep instanceof \App\Models\SubStep) {
             $previousUrl = route('cooperation.frontend.tool.simple-scan.index', [
+                'cooperation' => $this->cooperation,
                 'scan' => $scan,
                 'step' => $previousStep,
                 'subStep' => $previousSubStep
             ]);
         } elseif ($previousStep instanceof \App\Models\Step && $previousQuestionnaire instanceof \App\Models\Questionnaire) {
             $previousUrl = route('cooperation.frontend.tool.simple-scan.questionnaires.index', [
-                'scan' => $scan, 'step' => $previousStep, 'questionnaire' => $previousQuestionnaire
+                'cooperation' => $this->cooperation, 'scan' => $scan, 'step' => $previousStep, 'questionnaire' => $previousQuestionnaire
             ]);
         }
 

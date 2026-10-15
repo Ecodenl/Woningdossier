@@ -843,7 +843,12 @@ class Form extends CustomMeasureForm
                 // We only want expert scan steps to be linkable
                 $route = null;
                 if ($advisable->step->scan->short === Scan::EXPERT) {
-                    $route = route('cooperation.frontend.tool.expert-scan.index', ['step' => $advisable->step]);
+                    // Pass the cooperation explicitly: Livewire update requests skip the cooperation
+                    // middleware, so its URL default is not set when the cards are reloaded.
+                    $route = route('cooperation.frontend.tool.expert-scan.index', [
+                        'cooperation' => $this->building->user->cooperation,
+                        'step'        => $advisable->step,
+                    ]);
                 }
 
                 $cards[$category][$order] = [

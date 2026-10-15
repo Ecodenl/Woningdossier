@@ -250,9 +250,9 @@ final class SmartTwinImportTest extends TestCase
         $this->assertEqualsWithDelta(283.92, $package->gasSavings(), 0.001);
         $this->assertSame('B', $package->labelAfter());
         $this->assertEqualsWithDelta(15209.57, (float) $package->total_cost_with_tax, 0.001);
-        // As sent: SmartTwin's amounts are never rounded.
-        $this->assertSame(6853.749263548063, $package->fresh()->total_subsidy);
-        $this->assertSame([['name' => 'ISDE', 'amount' => 6853.749263548063]], $package->fresh()->subsidies);
+        // In cents: decimal(10,2), and the subsidy per scheme the same.
+        $this->assertSame('6853.75', $package->fresh()->total_subsidy);
+        $this->assertSame([['name' => 'ISDE', 'amount' => 6853.75]], $package->fresh()->subsidies);
         $this->assertTrue($package->isIntactFor($package->measure_application_ids));
     }
 

@@ -10,8 +10,9 @@ use App\Models\SmartTwinPackage;
  *
  * Every card in "Nu aanpakken" is a line with its name and costs: the package first, then the own
  * and small measures, each on a line of its own (Patrick, 15 October 2026). They all count in the
- * total. SmartTwin's amounts are never rounded (Patrick, 15 October 2026): not here, not when
- * shown, and the sums add up without floating point noise. What SmartTwin calculated (saving, subsidy, label, use, CO2) is for the package as a whole,
+ * total. A line shows the same amount as its card. SmartTwin's amounts are not rounded to the
+ * woonplan's steps of five; everything is shown in whole euros, the total being the exact sum
+ * rounded once (Patrick, 15 October 2026). Sums add up without floating point noise. What SmartTwin calculated (saving, subsidy, label, use, CO2) is for the package as a whole,
  * so it is only there while the woonplan still holds the package; otherwise the woonplan asks for a
  * new calculation instead (woonplan design "Pagina 2").
  */
@@ -46,10 +47,9 @@ final readonly class PackageResults
     {
         $lines = [];
         foreach ($nowCards as $card) {
-            // The costs as stored, not the card's: a card rounds to steps of five, a line does not.
-            $costs = $card['exact_costs'] ?? $card['costs'];
-            $from = $costs['from'] ?? null;
-            $to = $costs['to'] ?? null;
+            // The card's own costs, so a line never shows another amount than its card (R5).
+            $from = $card['costs']['from'] ?? null;
+            $to = $card['costs']['to'] ?? null;
 
             $lines[] = [
                 'name'    => (string) $card['name'],

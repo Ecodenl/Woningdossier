@@ -316,10 +316,11 @@ final class SmartTwinCardRulesTest extends TestCase
             ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.title'))
             // A line per card in "Nu aanpakken", the own measure by its name.
             ->assertSeeInOrder([MeasureApplication::findByShort('cavity-wall-insulation')->measure_name, 'Zonnescherm'])
-            ->assertSee('€ 2.200,00')
-            ->assertSee('€ 2.520,00')
+            ->assertSee('€ 2.200')
+            ->assertSee('€ 2.520')
             // As SmartTwin gave it, not rounded to the woonplan's steps of five.
-            ->assertSee('€ 6.853,749263548063')
+            // Whole euros, not the woonplan's steps of five.
+            ->assertSee('€ 6.854')
             ->assertSee('ISDE')
             ->assertSee('C → A+++');
     }
@@ -331,7 +332,7 @@ final class SmartTwinCardRulesTest extends TestCase
 
         $this->woonplan()
             ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.broken'))
-            ->assertDontSee('€ 2.520,00');
+            ->assertDontSee('€ 2.520');
     }
 
     public function test_before_the_switch_there_are_no_package_results(): void
@@ -413,7 +414,7 @@ final class SmartTwinCardRulesTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_smart_twins_amounts_are_rounded_nowhere(): void
+    public function test_a_smart_twin_amount_is_shown_in_whole_euros_alike_on_card_and_line(): void
     {
         $card = $this->packageWithFigures();
         UserActionPlanAdvice::withoutGlobalScopes()
@@ -422,13 +423,14 @@ final class SmartTwinCardRulesTest extends TestCase
 
         $woonplan = $this->woonplan();
         $html = $woonplan->html();
-
-        // Not on the card, which rounds the woonplan's own prices to steps of five...
-        $this->assertSame(1622.65, $this->cardData($woonplan, $card)['costs']['to']);
-        $this->assertStringNotContainsString('€ 1.625', $html);
-        // ...nor in the line and the total under the columns.
         $results = substr($html, strpos($html, 'id="package-results"'));
-        $this->assertSame(2, substr_count($results, '€ 1.622,65'), 'the line and the total');
+        $cards = substr($html, 0, strpos($html, 'id="package-results"'));
+
+        // Not the woonplan's steps of five (€ 1.625), but whole euros, and the same on the card as
+        // in its line (and the total, there being one line).
+        $this->assertStringContainsString('€ 1.623', $cards);
+        $this->assertSame(2, substr_count($results, '€ 1.623'), 'the line and the total');
+        $this->assertStringNotContainsString('€ 1.625', $html);
     }
 
     public function test_the_i_of_a_package_card_tells_what_smart_twin_says(): void

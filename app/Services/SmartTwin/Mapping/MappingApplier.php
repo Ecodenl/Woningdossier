@@ -133,7 +133,8 @@ class MappingApplier
     }
 
     /**
-     * The subsidy per scheme, as SmartTwin sent it: its amounts are never rounded.
+     * The subsidy per scheme, in cents like the package's own amounts (decimal(10,2)): SmartTwin
+     * sends a dozen decimals, which mean nothing to anyone (Patrick, 15 October 2026).
      *
      * @param  array<string, mixed>  $results
      * @return array<int, array{name: string|null, amount: float|null}>|null
@@ -148,7 +149,7 @@ class MappingApplier
 
         return array_values(array_map(fn (mixed $subsidy) => [
             'name'   => is_array($subsidy) ? ($subsidy['name'] ?? null) : null,
-            'amount' => is_array($subsidy) && is_numeric($subsidy['amount'] ?? null) ? (float) $subsidy['amount'] : null,
+            'amount' => is_array($subsidy) && is_numeric($subsidy['amount'] ?? null) ? round((float) $subsidy['amount'], 2) : null,
         ], $subsidies));
     }
 

@@ -64,4 +64,15 @@ final class PackageResultsTest extends TestCase
         $this->assertFalse(PackageResults::from($this->package(), false, [])->intact);
         $this->assertFalse(PackageResults::from(null, true, [])->intact);
     }
+
+    public function test_the_total_is_the_exact_sum(): void
+    {
+        // Two lines of € 100,50 show € 101 each; the total is the exact € 201, rounded once.
+        $results = PackageResults::from($this->package(), true, [
+            $this->card('Spouwmuurisolatie', null, 100.5, WoonplanCardRules::PACKAGE),
+            $this->card('Vloerisolatie', null, 100.5, WoonplanCardRules::PACKAGE),
+        ]);
+
+        $this->assertSame(201.0, $results->total);
+    }
 }

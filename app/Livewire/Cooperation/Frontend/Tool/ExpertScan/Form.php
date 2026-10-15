@@ -192,6 +192,15 @@ class Form extends Scannable
 
     public function saveFilledInAnswers(): Redirector|RedirectResponse
     {
+        // A page opened before the woonplan went over to SmartTwin can still post here; the route
+        // middleware does not see Livewire requests. See EnsureExpertScanAvailable.
+        if (Hoomdossier::smartTwinOwnsWoonplanFor($this->building)) {
+            return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index', [
+                'cooperation' => $this->building->user->cooperation,
+                'scan'        => Scan::quick(),
+            ]);
+        }
+
         if ($this->dirty) {
             $stepShortsToRecalculate = [];
             $shouldDoFullRecalculate = false;

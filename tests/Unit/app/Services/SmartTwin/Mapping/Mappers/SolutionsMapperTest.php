@@ -5,6 +5,8 @@ namespace Tests\Unit\app\Services\SmartTwin\Mapping\Mappers;
 use App\Enums\SmartTwin\MappingStatus;
 use App\Enums\SmartTwin\MappingTarget;
 use App\Models\Building;
+use App\Services\SmartTwin\Mapping\Elements\AdviceDetailsBuilder;
+use App\Services\SmartTwin\Mapping\Elements\ElementReader;
 use App\Services\SmartTwin\Mapping\Mappers\SolutionMeasures;
 use App\Services\SmartTwin\Mapping\Mappers\SolutionsMapper;
 use App\Services\SmartTwin\Mapping\MappingResult;
@@ -26,7 +28,7 @@ final class SolutionsMapperTest extends TestCase
 
         // Which measure a solution is comes from the mappings table; SolutionMeasuresTest covers
         // that lookup. Stubbed here so these stay database-free.
-        $this->mapper = new SolutionsMapper(new FakeSolutionMeasures());
+        $this->mapper = new SolutionsMapper(new FakeSolutionMeasures(), new AdviceDetailsBuilder(new ElementReader()));
     }
 
     /**
@@ -105,6 +107,34 @@ final class SolutionsMapperTest extends TestCase
         );
     }
 
+    public function test_an_advice_carries_its_solution_and_the_part_of_the_dwelling_it_works_on(): void
+    {
+        $response = $this->response([
+            $this->solution('Insulate Pitched Roof Inside|SmartTwin:Pitched_Roof_Interior_Insulation_PIR_120', [4254.96]),
+        ]);
+        $response['current']['properties']['roofAssemblies'] = [
+            ['inclination' => 47, 'roofs' => [['id' => 'r', 'area' => 39.75, 'rcValue' => 1.3, 'roofType' => 2]]],
+            ['inclination' => 1, 'roofs' => [['id' => 'f', 'area' => 30.73, 'rcValue' => 1.3, 'roofType' => 0]]],
+        ];
+        $response['scenario']['properties']['roofAssemblies'] = [
+            ['inclination' => 47, 'roofs' => [['id' => 'r', 'area' => 39.75, 'rcValue' => 4.79, 'roofType' => 2]]],
+            ['inclination' => 1, 'roofs' => [['id' => 'f', 'area' => 30.73, 'rcValue' => 1.3, 'roofType' => 0]]],
+        ];
+
+        $details = $this->advices($response)[0]->details->toArray();
+
+        $this->assertSame('Insulate Pitched Roof Inside|SmartTwin:Pitched_Roof_Interior_Insulation_PIR_120', $details['solutions'][0]['id']);
+        $this->assertSame(['name' => 'Lambda', 'value' => 0.035, 'unit' => 'W/(mK)'], $details['solutions'][0]['details']['lambda']);
+
+        // The pitched measure covers the pitched roof only.
+        $roof = $details['elements']['roof'];
+        $this->assertSame('pitched', $roof['shape']);
+        $this->assertSame(['r'], $roof['part_ids']);
+        $this->assertEqualsWithDelta(39.75, $roof['insulated_area'], 0.001);
+        $this->assertEqualsWithDelta(1.3, $roof['before']['summary']['rc_value'], 0.001);
+        $this->assertEqualsWithDelta(4.79, $roof['after']['summary']['rc_value'], 0.001);
+    }
+
     public function test_an_advised_measure_is_not_written_as_a_tool_question(): void
     {
         $advices = $this->advices($this->response([
@@ -165,7 +195,7 @@ final class SolutionsMapperTest extends TestCase
             $this->solution('Insulate Facade Cavity|SmartTwin:Cavity_Insulation_EPS_Pearls', [1622.65]),
         ])));
 
-        $this->assertContains('besparing geldt het hele pakket, niet een losse maatregel', $notes);
+        $this->assertContains('besparing geldt het hele pakket, niet een losse maatregel; vastgelegd bij het pakket', $notes);
     }
 
     public function test_nothing_a_solution_carries_is_left_unaccounted_for(): void
@@ -194,6 +224,15 @@ final class FakeSolutionMeasures extends SolutionMeasures
             str_contains($solutionId, 'Cavity')  => 'cavity-wall-insulation',
             str_contains($solutionId, 'Pitched') => 'roof-insulation-pitched-inside',
             default                              => null,
+        };
+    }
+
+    public function stepFor(string $measureShort): ?string
+    {
+        return match ($measureShort) {
+            'cavity-wall-insulation'         => 'wall-insulation',
+            'roof-insulation-pitched-inside' => 'roof-insulation',
+            default                          => null,
         };
     }
 }

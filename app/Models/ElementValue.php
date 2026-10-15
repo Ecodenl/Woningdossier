@@ -61,15 +61,15 @@ class ElementValue extends Model
      * The lowest calculate value that counts as insulated, per insulation element.
      *
      * The scales do not run equally long. Wall, floor and roof all start with Onbekend and Geen
-     * isolatie, but the floor has a Slechte isolatie between Geen and Matige that the other two do
-     * not, so its boundary sits one higher. Keeping the numbers here rather than spread over the
+     * isolatie, but floor and roof have a Slechte isolatie between Geen and Matige that the wall does
+     * not, so their boundary sits one higher. Keeping the numbers here rather than spread over the
      * calculators is what kept the last shift of the scale from silently filing a badly insulated
      * floor as one that needs nothing.
      */
     private const INSULATED_FROM = [
         'wall-insulation'  => 3, // Matige isolatie
         'floor-insulation' => 4, // Matige isolatie, met Slechte isolatie op 3
-        'roof-insulation'  => 3, // Matige isolatie
+        'roof-insulation'  => 4, // Matige isolatie, met Slechte isolatie op 3
     ];
 
     /** The default for any element without an entry above, which is the boundary as it always was. */
@@ -89,6 +89,30 @@ class ElementValue extends Model
     public function countsAsInsulated(): bool
     {
         return $this->calculate_value >= self::insulatedFromCalculateValue($this->element->short ?? '');
+    }
+
+    /**
+     * The lowest calculate value that counts as good, per insulation element: Goede isolatie. As
+     * with INSULATED_FROM, floor and roof run one higher for their Slechte isolatie.
+     */
+    private const GOOD_FROM = [
+        'wall-insulation'  => 5, // Goede isolatie
+        'floor-insulation' => 6, // Goede isolatie
+        'roof-insulation'  => 6, // Goede isolatie
+    ];
+
+    /**
+     * Whether this answer describes insulation that needs nothing more: Goede isolatie or better.
+     *
+     * The boundary for the "In orde" cards a SmartTwin import makes (Patrick, 14 October 2026). It is
+     * deliberately not used for calculated advices: those only exist until SmartTwin's first advice,
+     * and until then the woonplan stays as it was, with countsAsInsulated().
+     */
+    public function countsAsGood(): bool
+    {
+        $elementShort = $this->element->short ?? '';
+
+        return $this->calculate_value >= (self::GOOD_FROM[$elementShort] ?? self::insulatedFromCalculateValue($elementShort));
     }
 
     # Attributes

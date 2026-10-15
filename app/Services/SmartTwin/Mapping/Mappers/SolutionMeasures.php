@@ -49,4 +49,13 @@ class SolutionMeasures
 
         return $measure instanceof MeasureApplication ? $measure->short : null;
     }
+
+    /**
+     * The short of the step a measure belongs to, which is what says which part of the dwelling it
+     * works on (see ElementScope). Asked here so a mapper can reason in shorts without a database.
+     */
+    public function stepFor(string $measureShort): ?string
+    {
+        return MeasureApplication::findByShort($measureShort)?->step?->short;
+    }
 }

@@ -64,6 +64,37 @@ final class InsulationQualityTest extends TestCase
         $this->assertSame($expected, InsulationQuality::forFloor($rcValue));
     }
 
+    /** @return array<string, array{float, int}> */
+    public static function roofs(): array
+    {
+        return [
+            // Both roofs of the first example response.
+            'voorbeelddak'          => [1.30, 4],
+            'net onder slecht'      => [0.29, 2],
+            'ondergrens slecht'     => [0.30, 3],
+            'net onder matig'       => [1.09, 3],
+            'ondergrens matig'      => [1.10, 4],
+            'net onder redelijk'    => [1.84, 4],
+            // In both bands of the table as handed over; the band above it is the one (confirmed).
+            'ondergrens redelijk'   => [1.85, 5],
+            'net onder goed'        => [3.14, 5],
+            'ondergrens goed'       => [3.15, 6],
+            'net onder zeer goed'   => [4.99, 6],
+            'ondergrens zeer goed'  => [5.00, 7],
+        ];
+    }
+
+    #[DataProvider('roofs')]
+    public function test_it_places_a_roof_rc_value_in_its_level(float $rcValue, int $expected): void
+    {
+        $this->assertSame($expected, InsulationQuality::forRoof($rcValue));
+    }
+
+    public function test_the_roof_description_quotes_the_roof_table(): void
+    {
+        $this->assertSame('Rc 1,30 valt tussen 1,10 en 1,85', InsulationQuality::describeRoof(1.3));
+    }
+
     public function test_the_two_elements_run_on_their_own_tables(): void
     {
         // Rc 0,5 is nothing at all on a facade and Slechte isolatie on a floor, and the floor scale

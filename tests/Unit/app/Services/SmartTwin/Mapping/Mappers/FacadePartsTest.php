@@ -29,9 +29,10 @@ final class FacadePartsTest extends TestCase
     /**
      * @return array<string, mixed>
      */
-    private function part(float $area, float $rcValue = 0.35, ?int $facadeType = 1): array
+    private function part(float $area, float $rcValue = 0.35, ?int $facadeType = 1, ?string $id = null): array
     {
         return array_filter([
+            'id'         => $id,
             'area'       => $area,
             'rcValue'    => $rcValue,
             'facadeType' => $facadeType,
@@ -69,7 +70,7 @@ final class FacadePartsTest extends TestCase
     {
         $this->assertSame(0, FacadeParts::fromResponse([], 'current')->count());
         $this->assertSame(0.0, FacadeParts::fromResponse([], 'current')->totalArea());
-        $this->assertNull(FacadeParts::fromResponse([], 'current')->dominantType());
+        $this->assertNull(FacadeParts::fromResponse([], 'current')->dominantType('facadeType'));
     }
 
     public function test_the_rc_value_is_weighted_by_surface(): void
@@ -96,28 +97,52 @@ final class FacadePartsTest extends TestCase
 
     public function test_only_the_parts_whose_rc_goes_up_count_as_insulated(): void
     {
-        $current = $this->parts([[$this->part(30.0, 0.35), $this->part(20.0, 0.35)]]);
-        $scenario = $this->parts([[$this->part(30.0, 1.63), $this->part(20.0, 0.35)]], 'scenario');
+        $current = $this->parts([[$this->part(30.0, 0.35, id: 'a'), $this->part(20.0, 0.35, id: 'b')]]);
+        $scenario = $this->parts([[$this->part(30.0, 1.63, id: 'a'), $this->part(20.0, 0.35, id: 'b')]], 'scenario');
 
         $this->assertEqualsWithDelta(30.0, $scenario->areaImprovedOver($current), 0.001);
+        $this->assertSame(['a'], $scenario->improvedOver($current)->ids());
     }
 
     public function test_an_advice_that_leaves_the_facade_alone_insulates_nothing(): void
     {
-        $current = $this->parts([[$this->part(30.0, 0.35)]]);
-        $scenario = $this->parts([[$this->part(30.0, 0.35)]], 'scenario');
+        $current = $this->parts([[$this->part(30.0, 0.35, id: 'a')]]);
+        $scenario = $this->parts([[$this->part(30.0, 0.35, id: 'a')]], 'scenario');
 
         $this->assertSame(0.0, $scenario->areaImprovedOver($current));
     }
 
-    public function test_it_refuses_to_pair_up_sections_of_a_different_length(): void
+    public function test_parts_are_paired_on_their_id_not_their_position(): void
     {
-        // Parts are matched by position, so a different count means the pairing would be a guess —
-        // and this number is what the measure's cost and savings are calculated over.
-        $current = $this->parts([[$this->part(30.0, 0.35)]]);
-        $scenario = $this->parts([[$this->part(30.0, 1.63), $this->part(20.0, 1.63)]], 'scenario');
+        // The scenario lists the parts the other way round. Paired by position, the 20 m² part would
+        // count as insulated.
+        $current = $this->parts([[$this->part(30.0, 0.35, id: 'a'), $this->part(20.0, 0.35, id: 'b')]]);
+        $scenario = $this->parts([[$this->part(20.0, 0.35, id: 'b'), $this->part(30.0, 1.63, id: 'a')]], 'scenario');
 
-        $this->assertNull($scenario->areaImprovedOver($current));
+        $this->assertEqualsWithDelta(30.0, $scenario->areaImprovedOver($current), 0.001);
+    }
+
+    public function test_a_part_the_other_section_does_not_hold_cannot_count_as_insulated(): void
+    {
+        // A new part in the scenario, and a part without an id: neither has anything to compare with.
+        $current = $this->parts([[$this->part(30.0, 0.35, id: 'a')]]);
+        $scenario = $this->parts([[$this->part(30.0, 1.63, id: 'a'), $this->part(20.0, 1.63, id: 'new'), $this->part(5.0, 1.63)]], 'scenario');
+
+        $this->assertEqualsWithDelta(30.0, $scenario->areaImprovedOver($current), 0.001);
+    }
+
+    public function test_lines_group_parts_by_type_and_rc_largest_first(): void
+    {
+        $parts = $this->parts([
+            [$this->part(10.0, 0.35, facadeType: 1), $this->part(5.0, 1.3, facadeType: 1)],
+            [$this->part(20.0, 0.35, facadeType: 1), $this->part(8.0, 0.35, facadeType: 0)],
+        ]);
+
+        $this->assertSame([
+            ['type' => 1, 'rc_value' => 0.35, 'area' => 30.0],
+            ['type' => 0, 'rc_value' => 0.35, 'area' => 8.0],
+            ['type' => 1, 'rc_value' => 1.3, 'area' => 5.0],
+        ], $parts->lines('facadeType'));
     }
 
     public function test_floors_share_the_same_sums(): void
@@ -144,7 +169,7 @@ final class FacadePartsTest extends TestCase
             $this->part(40.0, facadeType: 0),
         ]]);
 
-        $this->assertSame(0, $parts->dominantType());
+        $this->assertSame(0, $parts->dominantType('facadeType'));
     }
 
     public function test_a_tie_resolves_to_the_lowest_type_so_the_answer_is_stable(): void
@@ -154,7 +179,7 @@ final class FacadePartsTest extends TestCase
             $this->part(25.0, facadeType: 1),
         ]]);
 
-        $this->assertSame(1, $parts->dominantType());
+        $this->assertSame(1, $parts->dominantType('facadeType'));
     }
 
     public function test_parts_without_a_type_are_left_out_of_the_tally(): void
@@ -164,6 +189,6 @@ final class FacadePartsTest extends TestCase
             $this->part(10.0, facadeType: 1),
         ]]);
 
-        $this->assertSame(1, $parts->dominantType());
+        $this->assertSame(1, $parts->dominantType('facadeType'));
     }
 }

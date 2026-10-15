@@ -83,6 +83,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'deny-if-observing-building' => \App\Http\Middleware\RedirectIfIsObservingBuilding::class,
             'duplicate-data-for-user' => \App\Http\Middleware\DuplicateDataForBuilding::class,
             'ensure-quick-scan-completed' => \App\Http\Middleware\EnsureQuickScanCompleted::class,
+            'ensure-expert-scan-available' => \App\Http\Middleware\EnsureExpertScanAvailable::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'restore-building-session-if-filling-for-other-building' => \App\Http\Middleware\RestoreBuildingSessionIfFillingForOtherBuilding::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,

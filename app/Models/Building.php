@@ -492,6 +492,12 @@ class Building extends Model implements MediableInterface
         return $this->belongsTo(User::class);
     }
 
+    /** The package the last SmartTwin import put in the action plan. */
+    public function smartTwinPackage(): HasOne
+    {
+        return $this->hasOne(SmartTwinPackage::class);
+    }
+
     public function buildingFeatures(): HasOne
     {
         return $this->hasOne(BuildingFeature::class);

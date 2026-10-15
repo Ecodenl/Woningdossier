@@ -54,6 +54,8 @@ return [
                 ],
             ],
             'see-info' => 'Zie info',
+            // On a card of the package SmartTwin calculated, in whichever column it is.
+            'package-label' => 'Verbeterpakket',
             'regulations' => [
                 'subsidy-available' => 'Subsidie mogelijk',
                 'after-subsidy-cut' => 'Na aftrek subsidie',
@@ -77,6 +79,8 @@ return [
                 'source' => 'Oorsprong',
             ],
             'description' => "<p>Voor het berekenen van de prijzen maken wij gebruik van de 'Kostenkentallen energiebesparende maatregelen' van RVO. Deze online database kun je via de volgende link vinden: <a target='_blank' rel='nofollow' href='https://digipesis.com/'>Kostenkentallen | RVO</a></p>",
+            // Once the woonplan is SmartTwin's, its prices and results are SmartTwin's, not RVO's.
+            'smart-twin' => '<p>De maatregelen van het verbeterpakket, hun prijzen, de besparing, de subsidie en het energielabel zijn berekend door Smart Twin.</p>',
             'values' => [
                 'gas-cost' => 'Gerekend met kosten voor gas',
                 'electricity-cost' => 'Gerekend met kosten voor elektriciteit',
@@ -138,6 +142,106 @@ return [
 <p>Dit duurt meestal niet lang. Zodra het klaar is kom je hier vanzelf terecht.</p>',
         ],
 
+        // The woonplan while a coach works on it in SmartTwin (woonplan design "Processen woonplan
+        // bewoner", "Teksten op woonplanpagina bij vergrendeling door coach").
+        'lock' => [
+            'awaiting' => [
+                'title' => 'Nog even geduld.',
+                'text' => 'Jouw energiecoach werkt aan jouw woonplan. Zodra deze gereed is, kun je hier zien welke maatregelen voor jou het meest geschikt zijn, hoeveel je ermee kunt besparen en welke kosten en subsidies je kunt verwachten. Heb je vragen? Neem dan contact op met jouw coach.',
+            ],
+            'locked' => [
+                'title' => 'Jouw woonplan',
+                'text' => 'Hier is jouw woonplan zoals je die met de energiecoach hebt besproken. Om ongewenste wijzigingen te voorkomen, is hij vergrendeld totdat de energiecoach klaar is. Later kun je zelf weer aanpassingen doen, bijvoorbeeld aangeven dat je een maatregel hebt uitgevoerd.',
+            ],
+            'done' => [
+                'title' => 'Jouw woonplan',
+                'text' => 'Hier is jouw woonplan zoals je die met de energiecoach hebt besproken. Als je wilt kun je nu zelf aanpassingen doen, bijvoorbeeld aangeven dat je een maatregel hebt uitgevoerd.',
+            ],
+        ],
+        // The (i) of a SmartTwin card: what SmartTwin says about the advice (SmartTwinAdviceDetails).
+        'smart-twin-details' => [
+            'title' => 'Volgens SmartTwin',
+            'now' => 'Nu',
+            'after' => 'Na de maatregel',
+            'unchanged' => 'Blijft zoals het is',
+            'rc-value' => 'Rc-waarde',
+            'area' => 'Oppervlak',
+            'insulated-area' => 'Te isoleren oppervlak',
+            'elements' => [
+                'facade' => 'Gevel',
+                'roof' => 'Dak',
+                'floor' => 'Vloer',
+                'crawlspace' => 'Kruipruimte',
+                'windows' => 'Ramen',
+                'doors' => 'Deuren',
+                'panels' => 'Panelen',
+                'pv' => 'Zonnepanelen',
+                'ventilation' => 'Ventilatie',
+                'heating' => 'Verwarming',
+                'hot-water' => 'Warm tapwater',
+                'cooling' => 'Koeling',
+                'solar-thermal' => 'Zonneboiler',
+            ],
+            'shapes' => [
+                'flat' => 'plat dak',
+                'pitched' => 'hellend dak',
+            ],
+        ],
+        // "Gegevens woning bekijken" (woonplan design "Processen woonplan bewoner").
+        'house-data' => [
+            'button' => 'Gegevens woning bekijken',
+            'title' => 'Gegevens van je woning',
+            'intro' => 'Zo is je woning nu, zoals Smart Twin haar kent.',
+            'back' => 'Terug naar het woonplan',
+            'general' => 'Algemeen',
+            'energy-label' => 'Energielabel',
+            'state' => 'Woningstatus',
+            'usage' => 'Gebruik',
+            'parts' => [
+                'facade' => 'Gevel',
+                'floor' => 'Vloer en kruipruimte',
+                'roof' => 'Dak',
+            ],
+            'according-to' => 'Volgens Smart Twin, berekening van :date',
+            'executed' => ':measure uitgevoerd op :date',
+            'nothing-known' => 'Smart Twin heeft hier nog geen gegevens over.',
+        ],
+                // "Maatregel uitgevoerd" (woonplan design "Processen woonplan bewoner").
+        'executed' => [
+            'button' => 'Uitgevoerd',
+            'title' => ':measure uitgevoerd',
+            'date' => 'Datum uitvoering',
+            'description' => 'Omschrijving',
+            'documents' => 'Documenten uploaden',
+            'documents-help' => 'Bijvoorbeeld de factuur. Je vindt ze daarna ook bij je bestanden.',
+            'save' => 'Opslaan',
+            'cancel' => 'Annuleren',
+            'undo' => 'Toch niet uitgevoerd',
+            'edit' => 'Bekijken of wijzigen',
+            'executed-on' => 'Uitgevoerd op :date',
+            // An executed measure that a new SmartTwin calculation put back in the package.
+            'advised-again' => 'Uitgevoerd op :date, maar opnieuw geadviseerd: pas je woning aan in SmartTwin',
+        ],
+        // "Gekozen pakket" under the columns of a SmartTwin woonplan (woonplan design "Pagina 2").
+        'package-results' => [
+            'title' => 'Gekozen pakket',
+            'costs' => 'Kosten',
+            'total' => 'Totaal pakket',
+            'no-costs' => 'Geen kosten bekend',
+            'savings' => 'Besparing',
+            'per-year' => 'per jaar',
+            'subsidy' => 'Subsidie',
+            'energy-label' => 'Energielabel',
+            'gas' => 'Gasverbruik',
+            'electricity' => 'Stroomverbruik',
+            'co2-savings' => 'CO2-besparing',
+            'broken' => 'Verbeterpakket aangepast,',
+            'broken-link' => 'klik hier om een nieuwe berekening te maken.',
+            'adjust' => 'Maatregelpakket aanpassen',
+            'adjust-warning' => "Let op: bij een herberekening worden alle maatregelen in de kolommen 'Nu aanpakken' en 'Later uitvoeren' gereset!",
+            'adjust-confirm' => 'Verder naar SmartTwin',
+            'adjust-cancel' => 'Annuleren',
+        ],
         'smarttwin' => [
             'button' => 'Doe de verbetercheck',
             'redirecting' => 'Je wordt ingelogd bij SmartTwin…',

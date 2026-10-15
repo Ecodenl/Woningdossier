@@ -12,11 +12,13 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Scan;
+use App\Models\SmartTwinPackage;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Services\Models\SubStepService;
+use App\Services\SmartTwin\WoonplanLock;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -113,6 +115,21 @@ final class UndoSmartTwinForBuildingTest extends TestCase
         // Resident and master of the small measure; nothing of SmartTwin on any input source.
         $this->assertCount(2, $rows);
         $this->assertTrue($rows->every(fn (UserActionPlanAdvice $advice) => is_null($advice->source)));
+    }
+
+    public function test_the_package_and_the_lock_go_with_the_advices(): void
+    {
+        SmartTwinPackage::create([
+            'building_id'             => $this->building->id,
+            'measure_application_ids' => [MeasureApplication::findByShort('cavity-wall-insulation')->id],
+            'imported_at'             => now(),
+        ]);
+        app(WoonplanLock::class)->lock($this->building);
+
+        $this->switchOffAndUndo();
+
+        $this->assertNull($this->building->smartTwinPackage()->first());
+        $this->assertFalse(app(WoonplanLock::class)->isLocked($this->building));
     }
 
     public function test_a_completed_sub_step_missing_a_required_answer_is_asked_again(): void

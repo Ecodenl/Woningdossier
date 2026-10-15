@@ -2,7 +2,6 @@
 
 namespace App\Services\EpOnline;
 
-use App\Helpers\Str;
 use App\Helpers\Wrapper;
 use App\Models\BuildingFeature;
 use App\Models\EnergyLabel;
@@ -113,22 +112,10 @@ class EnergyLabelService
      */
     private function hydrateLabel(?string $label): EnergyLabel
     {
-        $label = strtoupper($label);
-
         $this->log('Found energy label:', [$this->building->id, $label]);
 
-        // Convert A++ and A++++ like labels to just A.
-        if (Str::startsWith($label, 'A')) {
-            $label = 'A';
-        }
-
-        $model = EnergyLabel::where('name', $label)->first();
-
-        if (! $model instanceof EnergyLabel) {
-            $model = EnergyLabel::where('name', 'X')->first();
-        }
-
-        return $model;
+        // As EP-Online gives it: A+ to A++++ are labels of their own.
+        return EnergyLabel::fromName($label);
     }
 
     /**

@@ -1,5 +1,6 @@
 @php
-    $disabled = \App\Helpers\HoomdossierSession::isUserObserving();
+    // Read-only for someone observing, and for a resident whose woonplan a coach has locked.
+    $disabled = \App\Helpers\HoomdossierSession::isUserObserving() || $this->lockedForMe;
 @endphp
 <div>
     {{-- Header row --}}
@@ -37,6 +38,9 @@
                              wire:loading.class="disabled" wire:target="cardMoved, cardTrashed, addHiddenCardToBoard"
                              {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
                              x-bind="draggable"
+                             {{-- Where the card may go; see App\Services\SmartTwin\WoonplanCardRules. --}}
+                             data-targets='@json($card['targets'])'
+                             data-trashable="{{ $card['trashable'] ? '1' : '0' }}"
                              @if($disabled) draggable="false" @else draggable="true" @endif>
                             <div class="icon-wrapper">
                                 <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
@@ -59,6 +63,24 @@
                                     <h6 class="heading-6 max-w-17/20">
                                         {{ $card['name'] }}
                                     </h6>
+                                @endif
+                                @if($card['in_package'])
+                                    <div class="h-4 rounded-lg text-xs relative text-blue bg-blue bg-opacity-10 flex items-center px-2 w-fit">
+                                        @lang('cooperation/frontend/tool.my-plan.cards.package-label')
+                                    </div>
+                                @endif
+                                @if(! empty($card['executed_at']))
+                                    {{-- Outside "In orde" a carried-out measure is one SmartTwin advised again: the
+                                         woonplan and SmartTwin disagree, and the resident should tell SmartTwin. --}}
+                                    @if($cardCategory === \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)
+                                        <div class="h-4 rounded-lg text-xs relative text-green bg-green bg-opacity-10 flex items-center px-2 w-fit">
+                                            @lang('cooperation/frontend/tool.my-plan.executed.executed-on', ['date' => $card['executed_at']])
+                                        </div>
+                                    @else
+                                        <div class="rounded-lg text-xs relative text-red bg-red bg-opacity-10 flex items-center px-2 w-fit">
+                                            @lang('cooperation/frontend/tool.my-plan.executed.advised-again', ['date' => $card['executed_at']])
+                                        </div>
+                                    @endif
                                 @endif
                                 <div class="flex justify-between">
                                     <p>
@@ -98,11 +120,28 @@
                                     @endif
                                 @endif
                             </div>
+                            @if(! $disabled && $this->smartTwinOwnsWoonplan && $cardCategory !== \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE
+                                && in_array(\App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE, $card['targets'], true))
+                                <button type="button" class="absolute right-1 bottom-1 lg:right-3 lg:bottom-3 text-xs text-green underline"
+                                        draggable="false" x-on:dragstart.prevent.stop
+                                        wire:click="openExecuted({{ $card['id'] }})" wire:key="executed-{{ $card['id'] }}">
+                                    @lang('cooperation/frontend/tool.my-plan.executed.button')
+                                </button>
+                            @elseif(! $disabled && $this->smartTwinOwnsWoonplan && ! empty($card['executed_at']))
+                                <button type="button" class="absolute right-1 bottom-1 lg:right-3 lg:bottom-3 text-xs text-green underline"
+                                        draggable="false" x-on:dragstart.prevent.stop
+                                        wire:click="openExecuted({{ $card['id'] }})" wire:key="executed-{{ $card['id'] }}">
+                                    @lang('cooperation/frontend/tool.my-plan.executed.edit')
+                                </button>
+                            @endif
                             <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3"
                                  draggable="true" x-on:dragstart.prevent.stop>
-                                @if(! empty($card['info']))
+                                @if(! empty($card['info']) || ! empty($card['smart_twin']))
                                     <i class="icon-md icon-info-light clickable" x-on:click="toggle()"></i>
                                     @component('cooperation.frontend.layouts.components.modal')
+                                        @if(! empty($card['smart_twin']))
+                                            @include('livewire.cooperation.frontend.tool.simple-scan.my-plan.smart-twin-details', ['details' => $card['smart_twin']])
+                                        @endif
                                         <div class="as-text">
                                             {!! $card['info'] !!}
                                         </div>
@@ -114,6 +153,7 @@
                 </div>
             @endforeach
         </div>
+        @php $lastIndex = array_key_last($customMeasureApplicationsFormData); @endphp
         <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 -mb-5">
             <div class="w-full">
                 {{-- White space --}}
@@ -121,7 +161,23 @@
             <div class="w-full flex flex-row flex-wrap justify-center items-center">
                 <i class="w-20 h-20 p-4 icon-ventilation-fan mx-4 animate-spin-slow @if(empty($notifications)) hidden @endif"
                    @if(! empty($notifications)) wire:poll.1s="checkNotifications" @endif></i>
-                @if(! $scan->isLiteScan() || ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
+                @if($this->smartTwinOwnsWoonplan)
+                    {{-- A SmartTwin woonplan adds an own measure in the column of its "+" (woonplan design
+                         "Pagina 2"); bringing a trashed card back is a choice of its own. --}}
+                    @if(! $disabled && ! $scan->isLiteScan())
+                        <div class="w-20 h-20 p-4 mx-4 flex items-center justify-center">
+                            <i class="icon-md icon-plus-purple clickable" wire:key="add-to-do"
+                               title="@lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.add.button')"
+                               x-on:click="$wire.set('newMeasureCategory', '{{ \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO }}', false); document.querySelector('#edit-{{$lastIndex}}').triggerEvent('open-modal');"></i>
+                        </div>
+                    @endif
+                    @if(! $disabled && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
+                        <button class="btn btn-outline-green mx-4" wire:key="trashed-button"
+                                x-on:click="document.querySelector('#trashed').triggerEvent('open-modal');">
+                            @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.button')
+                        </button>
+                    @endif
+                @elseif(! $scan->isLiteScan() || ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
                     <div x-data="modal()" class="w-20 h-20 p-4 mx-4 flex items-center justify-center">
                         <i class="icon-md icon-plus-purple clickable" x-on:click="toggle()"></i>
                         @component('cooperation.frontend.layouts.components.modal', [
@@ -135,6 +191,7 @@
                                             @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.button')
                                         </button>
                                     @endif
+                                    {{-- Only before the switch; after it the expert scan is closed. --}}
                                     @if(! $scan->isLiteScan())
                                         <button class="btn btn-green flex w-full items-center justify-center" wire:key="expert-button"
                                                 x-on:click="close(); document.querySelector('#expert').triggerEvent('open-modal');">
@@ -155,6 +212,15 @@
                 @endif
 
                 <i class="w-20 h-20 p-4 mx-4 icon-trash-can-red rounded-lg transition duration-500 trash" x-bind="trash"></i>
+            </div>
+            <div class="w-full flex flex-row flex-wrap justify-center items-center">
+                @if($this->smartTwinOwnsWoonplan && ! $disabled && ! $scan->isLiteScan())
+                    <div class="w-20 h-20 p-4 mx-4 flex items-center justify-center">
+                        <i class="icon-md icon-plus-purple clickable" wire:key="add-later"
+                           title="@lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.add.button')"
+                           x-on:click="$wire.set('newMeasureCategory', '{{ \App\Services\UserActionPlanAdviceService::CATEGORY_LATER }}', false); document.querySelector('#edit-{{$lastIndex}}').triggerEvent('open-modal');"></i>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -212,7 +278,7 @@
             </div>
         @endif
         {{-- Modal for expert steps --}}
-        @if(! $scan->isLiteScan())
+        @if(! $scan->isLiteScan() && ! $this->smartTwinOwnsWoonplan)
             <div x-data="modal()" class="" wire:key="expert-modal">
                 @component('cooperation.frontend.layouts.components.modal', [
                     'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.title'),
@@ -252,6 +318,14 @@
             @endforeach
         @endif
     </div>
+
+    @if($this->smartTwinOwnsWoonplan && ! $disabled)
+        @include('livewire.cooperation.frontend.tool.simple-scan.my-plan.executed-modal')
+    @endif
+
+    @if($results = $this->packageResults)
+        @include('livewire.cooperation.frontend.tool.simple-scan.my-plan.package-results', ['results' => $results])
+    @endif
 
     <div class="w-full grid grid-rows-2 grid-cols-3 lg:grid-rows-1 lg:grid-cols-6 grid-flow-row gap-3 mt-5 py-8 content-center border-t-2 border-b-2 border-blue-500 border-opacity-10">
 {{--        <div class="w-full flex flex-wrap items-center space-x-3">--}}

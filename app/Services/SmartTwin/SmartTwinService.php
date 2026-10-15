@@ -3,13 +3,14 @@
 namespace App\Services\SmartTwin;
 
 use App\Enums\SmartTwin\EventType;
+use App\Jobs\SmartTwin\Out\GetBuildingData;
 use App\Models\Building;
+use App\Models\InputSource;
 use App\Services\SmartTwin\Mapping\Leaf;
 use App\Services\SmartTwin\Mapping\MapperRegistry;
 use App\Services\SmartTwin\Mapping\MappingApplier;
 use App\Services\SmartTwin\Mapping\MappingReport;
 use App\Services\SmartTwin\Mapping\ResponseFlattener;
-use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -19,6 +20,7 @@ class SmartTwinService
         private readonly ResponseFlattener $flattener,
         private readonly MapperRegistry $registry,
         private readonly MappingApplier $applier,
+        private readonly DwellingRows $dwellingRows,
     )
     {
     }
@@ -45,7 +47,51 @@ class SmartTwinService
         // One response is a few hundred leaves; the flow's input source is the same for all of them.
         $inputSource = $eventType->inputSource();
 
-        foreach ($this->flattener->flatten($results) as $leaf) {
+        [$dwelling, $solutions] = $this->dwellingAndSolutions($this->flattener->flatten($results));
+
+        // The answers are written in the flow's input source, whose rows are what master becomes.
+        // Made equal to master first, or a coach who never opened the scan would empty everything
+        // in master that SmartTwin does not write. With or without advice: the dwelling always is.
+        $this->dwellingRows->equalizeToMaster($building, $inputSource);
+
+        // The dwelling first, then the action plan in one go: the applier clears it right before
+        // the first advice it writes, and refills it with the package.
+        $this->applier->startRun();
+        $this->walk($dwelling, $building, $inputSource, $results, $report, $debug);
+        $this->walk($solutions, $building, $inputSource, $results, $report, $debug);
+
+        // From the first SmartTwin advice on, the woonplan is SmartTwin's advice plus what the
+        // resident chose, with "In orde" cards for what is in good shape and not advised. Only
+        // then, though: a response that advised nothing leaves the plan, and the package it was
+        // calculated for, as they were.
+        if ($report->savedAdvice()) {
+            $this->applier->addInOrderCards($building, $inputSource);
+            $this->applier->recordPackage($building, $inputSource, $results);
+
+            // The advice says nothing about the building type, build year, surface or registered
+            // label; SmartTwin's Building Data does, and is fetched again with every advice.
+            GetBuildingData::dispatchFor($building, $inputSource);
+        }
+
+        $this->logReport($building, $eventType, $report);
+
+        return $report;
+    }
+
+    /**
+     * @param  array<int, Leaf>  $leaves
+     * @param  array<string, mixed>  $results
+     */
+    private function walk(
+        array $leaves,
+        Building $building,
+        InputSource $inputSource,
+        array $results,
+        MappingReport $report,
+        bool $debug,
+    ): void
+    {
+        foreach ($leaves as $leaf) {
             $mapper = $this->registry->forPath($leaf->pathGroup);
 
             if (is_null($mapper)) {
@@ -60,14 +106,14 @@ class SmartTwinService
                 // belongs, the applier puts it there and hands back the result as it should be
                 // reported — a mapping pointing at a short that does not exist comes back as
                 // TARGET_MISSING, so the report describes what happened rather than what was meant.
-                $result = $this->applier->apply(
-                    $building,
-                    $inputSource,
-                    $mapper->map($building, $leaf, $results),
-                );
+                $decided = $mapper->map($building, $leaf, $results);
 
-                $report->add($leaf, $result);
-                $this->logLeaf($debug, $building, $leaf, $result->status->value, $result->target);
+                foreach (is_array($decided) ? $decided : [$decided] as $result) {
+                    $result = $this->applier->apply($building, $inputSource, $result);
+
+                    $report->add($leaf, $result);
+                    $this->logLeaf($debug, $building, $leaf, $result->status->value, $result->target);
+                }
             } catch (Throwable $e) {
                 // One field blowing up may not cost us the other 271. It lands in the report as an
                 // error and is logged below, so it surfaces without stopping the run. A field that
@@ -75,23 +121,26 @@ class SmartTwinService
                 $report->error($leaf, $e);
             }
         }
+    }
 
-        // From the first SmartTwin advice on, the woonplan is SmartTwin's advice plus what the resident
-        // chose: the calculated advices it replaces go. Only then, though. Clearing them when nothing
-        // came in would leave an empty woonplan, and that invites the resident to do the check they
-        // just did.
-        if ($report->savedAdvice()) {
-            $removed = UserActionPlanAdviceService::removeAdvicesReplacedBySmartTwin($building);
+    /**
+     * The leaves about the dwelling, and those of the solutions.
+     *
+     * The action plan is cleared right before the solutions are written, so they have to come
+     * together and last. The response happens to list them last; splitting here makes that a rule
+     * instead of a coincidence of how the JSON was serialised.
+     *
+     * @param  array<int, Leaf>  $leaves
+     * @return array{0: array<int, Leaf>, 1: array<int, Leaf>}
+     */
+    private function dwellingAndSolutions(array $leaves): array
+    {
+        $isSolution = fn (Leaf $leaf) => str_starts_with($leaf->path, 'scenario.solutions.');
 
-            Log::debug('SmartTwin advice replaced the calculated advices', [
-                'building_id' => $building->getKey(),
-                'removed'     => $removed,
-            ]);
-        }
-
-        $this->logReport($building, $eventType, $report);
-
-        return $report;
+        return [
+            array_values(array_filter($leaves, fn (Leaf $leaf) => ! $isSolution($leaf))),
+            array_values(array_filter($leaves, $isSolution)),
+        ];
     }
 
     private function logReport(Building $building, EventType $eventType, MappingReport $report): void

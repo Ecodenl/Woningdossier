@@ -3,13 +3,16 @@
 namespace App\Jobs\SmartTwin;
 
 use App\Console\Commands\Tool\RecalculateForUser;
+use App\Enums\AdviceSource;
 use App\Helpers\Queue;
 use App\Helpers\ScanAvailabilityHelper;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Scan;
 use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use App\Services\Scans\ScanFlowService;
+use App\Services\SmartTwin\WoonplanLock;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -49,8 +52,19 @@ class UndoSmartTwinForBuilding implements ShouldQueue
             $building->save();
         }
 
-        // 2. The SmartTwin advices go, for every input source.
+        // 2. The SmartTwin advices go, for every input source, and with them the package they were
+        // calculated as and the lock a coach put on the woonplan.
+        // A measure the resident carried out stays, as an advice of their own: SmartTwin no longer
+        // owns it, and the record and its documents are theirs.
+        UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $building->user_id)
+            ->where('source', AdviceSource::SMART_TWIN)
+            ->whereNotNull('executed_at')
+            ->update(['source' => null]);
+
         $removed = UserActionPlanAdviceService::removeSmartTwinAdvices($building);
+        $building->smartTwinPackage()->delete();
+        app(WoonplanLock::class)->release($building);
 
         $user = $building->user()->forAllCooperations()->first();
 

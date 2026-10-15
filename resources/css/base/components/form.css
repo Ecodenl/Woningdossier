@@ -327,9 +327,13 @@ input.form-input:read-only:not(.select-wrapper input):not(.datepicker input),
     @apply h-9/10 mt-0;
 }
 
-/* Potential text spans are hidden */
-.media-wrapper.media-wrapper-small > label span:not(.checkmark):not(.media-icon-wrapper) {
+/* Potential text spans are hidden, except a caption for an option the icon alone does not tell apart */
+.media-wrapper.media-wrapper-small > label span:not(.checkmark):not(.media-icon-wrapper):not(.media-caption) {
     @apply hidden;
+}
+
+.media-wrapper.media-wrapper-small > label span.media-caption {
+    @apply bottom-0 text-xs font-bold;
 }
 
 

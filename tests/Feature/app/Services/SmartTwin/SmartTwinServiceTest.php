@@ -10,6 +10,7 @@ use App\Services\SmartTwin\Mapping\FieldMapper;
 use App\Services\SmartTwin\Mapping\Leaf;
 use App\Services\SmartTwin\Mapping\MapperRegistry;
 use App\Services\SmartTwin\Mapping\MappingApplier;
+use App\Services\SmartTwin\SharedWoonplan;
 use App\Services\SmartTwin\Mapping\MappingReport;
 use App\Services\SmartTwin\Mapping\MappingResult;
 use App\Services\SmartTwin\SmartTwinService;
@@ -43,17 +44,17 @@ final class SmartTwinServiceTest extends TestCase
 
         $this->seed(InputSourcesTableSeeder::class);
 
-        $this->applier = new RecordingApplier();
+        $this->applier = new RecordingApplier(new SharedWoonplan());
         $this->app->instance(MappingApplier::class, $this->applier);
     }
 
-    private function process(array $mappers = []): MappingReport
+    private function process(array $mappers = [], array $response = self::RESPONSE): MappingReport
     {
         $this->app->instance(MapperRegistry::class, new MapperRegistry($mappers));
 
         return $this->app->make(SmartTwinService::class)->processResults(
             Building::factory()->create(),
-            self::RESPONSE,
+            $response,
             EventType::RESIDENT_SCAN_FINISHED,
         );
     }
@@ -102,6 +103,32 @@ final class SmartTwinServiceTest extends TestCase
         $this->assertSame(MappingStatus::SKIPPED, $statuses['solutions.1.id']);
     }
 
+    public function test_a_leaf_can_carry_several_answers(): void
+    {
+        // An element mapper decides everything about its part of the dwelling at one leaf.
+        $report = $this->process([TwoAnswersMapper::class]);
+
+        $entries = array_values(array_filter(
+            $report->entries(),
+            fn ($entry) => 'current.calculationResult.energyLabel' === $entry->leaf->path,
+        ));
+
+        $this->assertCount(2, $entries);
+        $this->assertSame(['energy-label', 'heat-demand'], array_column($this->applier->applied, 'target'));
+    }
+
+    public function test_the_solutions_are_written_after_the_dwelling(): void
+    {
+        // Where an advice lands is decided from the answers about the dwelling, so those go first —
+        // also when the JSON happens to list the scenario before the current situation.
+        $this->process([EnergyLabelMapper::class, ScenarioSolutionMapper::class], [
+            'scenario' => ['solutions' => [['id' => 'x']]],
+            'current'  => ['calculationResult' => ['energyLabel' => 'C']],
+        ]);
+
+        $this->assertSame(['energy-label', 'advice-x'], array_column($this->applier->applied, 'target'));
+    }
+
     public function test_a_failing_mapper_does_not_take_the_rest_of_the_run_down(): void
     {
         $report = $this->process([ExplodingMapper::class]);
@@ -137,7 +164,7 @@ final class SmartTwinServiceTest extends TestCase
     {
         // A mapping pointing at a short that does not exist is a bug in the mapping, and the report
         // has to say so rather than claim the field was mapped.
-        $this->app->instance(MappingApplier::class, new DowngradingApplier());
+        $this->app->instance(MappingApplier::class, new DowngradingApplier(new SharedWoonplan()));
 
         $report = $this->process([EnergyLabelMapper::class]);
 
@@ -149,7 +176,7 @@ final class SmartTwinServiceTest extends TestCase
 
     public function test_a_write_that_throws_is_reported_as_an_error_and_not_as_mapped(): void
     {
-        $this->app->instance(MappingApplier::class, new ExplodingApplier());
+        $this->app->instance(MappingApplier::class, new ExplodingApplier(new SharedWoonplan()));
 
         $report = $this->process([EnergyLabelMapper::class]);
 
@@ -239,5 +266,31 @@ final class ExplodingMapper implements FieldMapper
     public function map(Building $building, Leaf $leaf, array $response): MappingResult
     {
         throw new RuntimeException('kapot');
+    }
+}
+
+final class TwoAnswersMapper implements FieldMapper
+{
+    public function paths(): array
+    {
+        return ['current.calculationResult.energyLabel'];
+    }
+
+    public function map(Building $building, Leaf $leaf, array $response): array
+    {
+        return [MappingResult::mapped('energy-label', $leaf->value), MappingResult::cleared('heat-demand')];
+    }
+}
+
+final class ScenarioSolutionMapper implements FieldMapper
+{
+    public function paths(): array
+    {
+        return ['scenario.solutions.*.id'];
+    }
+
+    public function map(Building $building, Leaf $leaf, array $response): MappingResult
+    {
+        return MappingResult::mapped("advice-{$leaf->value}", 1);
     }
 }

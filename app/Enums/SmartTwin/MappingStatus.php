@@ -15,6 +15,7 @@ enum MappingStatus: string
     case VALUE_UNMAPPED = 'value-unmapped';
     case TARGET_MISSING = 'target-missing';
     case SKIPPED = 'skipped';
+    case SPEC_VIOLATION = 'spec-violation';
     case ERROR = 'error';
 
     public function description(): string
@@ -25,6 +26,7 @@ enum MappingStatus: string
             self::VALUE_UNMAPPED => 'Veld is gemapt, maar deze waarde kent geen tegenhanger',
             self::TARGET_MISSING => 'Mapping verwijst naar een bestemming die niet bestaat',
             self::SKIPPED        => 'Bewust genegeerd',
+            self::SPEC_VIOLATION => 'SmartTwin spreekt de eigen spec tegen: solutions en scenario passen niet bij elkaar',
             self::ERROR          => 'Fout tijdens het mappen',
         };
     }

@@ -42,7 +42,9 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
         $dossierId = $this->callbackData['DossierId'] ?? null;
         $eventType = EventType::tryFrom($this->callbackData['EventType'] ?? '');
 
-        if (! $dossierId || ! $eventType) {
+        // A started advice is never stored as a callback, so it should not get here; and if it did,
+        // there would be nothing to fetch yet.
+        if (! $dossierId || ! $eventType || ! $eventType->bringsResults()) {
             return;
         }
 
@@ -69,6 +71,7 @@ class GetAdviceResults implements ShouldQueue, ShouldBeUnique
         $results = match ($eventType) {
             EventType::COACH_SCAN_FINISHED    => $api->advice()->getAdvisorToolResults($dossierId),
             EventType::RESIDENT_SCAN_FINISHED => $api->advice()->getQuickScanResults($dossierId),
+            EventType::COACH_ADVICE_STARTED   => [],
         };
 
         // Persist the raw response before mapping, so a mapping retry never has to re-fetch.

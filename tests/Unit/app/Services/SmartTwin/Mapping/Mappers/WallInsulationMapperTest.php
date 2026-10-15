@@ -4,7 +4,8 @@ namespace Tests\Unit\app\Services\SmartTwin\Mapping\Mappers;
 
 use App\Enums\SmartTwin\MappingStatus;
 use App\Models\Building;
-use App\Services\SmartTwin\Mapping\Mappers\ElementValues;
+use App\Services\SmartTwin\Mapping\Elements\Element;
+use App\Services\SmartTwin\Mapping\Elements\ElementScope;
 use App\Services\SmartTwin\Mapping\Mappers\WallInsulationMapper;
 use App\Services\SmartTwin\Mapping\MappingResult;
 use App\Services\SmartTwin\Mapping\ResponseFlattener;
@@ -25,15 +26,18 @@ final class WallInsulationMapperTest extends TestCase
         // Element value ids differ per environment; the mapping reasons in calculate values. The
         // step between the two is stubbed so these stay database-free — ElementValuesTest covers
         // the real lookup.
-        $this->mapper = new WallInsulationMapper(new FakeElementValues());
+        $this->mapper = new WallInsulationMapper(new FakeElementValues(), new FakeAdvisedElements());
     }
 
     /**
      * @return array<string, mixed>
      */
-    private function part(float $area, float $rcValue, int $facadeType = 1): array
+    private function part(float $area, float $rcValue, int $facadeType = 1, ?string $id = null): array
     {
-        return ['area' => $area, 'rcValue' => $rcValue, 'facadeType' => $facadeType, 'cavityThickness' => 50];
+        // Current and scenario are paired on the id. The dossiers here have one part per surface,
+        // so the surface makes a stable one.
+        return ['area' => $area, 'rcValue' => $rcValue, 'facadeType' => $facadeType, 'cavityThickness' => 50,
+                'id' => $id ?? "part-{$area}"];
     }
 
     /**
@@ -88,7 +92,8 @@ final class WallInsulationMapperTest extends TestCase
 
         foreach ((new ResponseFlattener())->flatten($response) as $leaf) {
             if (isset($claimed[$leaf->pathGroup])) {
-                $results[] = $this->mapper->map(new Building(), $leaf, $response);
+                $result = $this->mapper->map(new Building(), $leaf, $response);
+                array_push($results, ...(is_array($result) ? $result : [$result]));
             }
         }
 
@@ -158,14 +163,47 @@ final class WallInsulationMapperTest extends TestCase
         $this->assertEqualsWithDelta(30.0, $this->mappedByTarget($response)['insulation-wall-surface']->value, 0.001);
     }
 
-    public function test_an_advice_without_facade_work_says_nothing_instead_of_zero(): void
+    public function test_a_scenario_without_facade_work_empties_the_insulated_surface_instead_of_writing_zero(): void
     {
-        // Writing 0 would claim SmartTwin measured no surface to insulate, while it simply did not
-        // advise a facade measure — and that number drives the cost and savings of one.
+        // A previous scan may have written one, and leaving it would contradict this scan. Writing 0
+        // would claim SmartTwin measured no surface to insulate — and that number drives the cost and
+        // savings of a measure.
         $mapped = $this->mappedByTarget($this->dossier(scenarioRc: 0.35));
 
-        $this->assertArrayNotHasKey('insulation-wall-surface', $mapped);
-        $this->assertArrayHasKey('wall-surface', $mapped);
+        $this->assertArrayHasKey('insulation-wall-surface', $mapped);
+        $this->assertNull($mapped['insulation-wall-surface']->value);
+        $this->assertEqualsWithDelta(105.69, $mapped['wall-surface']->value, 0.001);
+    }
+
+    public function test_a_dwelling_without_facades_empties_the_facade_answers(): void
+    {
+        $mapped = $this->mappedByTarget($this->response([]));
+
+        foreach (['wall-surface', 'current-wall-insulation', 'has-cavity-wall', 'insulation-wall-surface'] as $target) {
+            $this->assertArrayHasKey($target, $mapped);
+            $this->assertNull($mapped[$target]->value, $target);
+        }
+    }
+
+    public function test_a_facade_the_scenario_insulates_without_a_solution_is_reported(): void
+    {
+        // The first example response: four facade parts from Rc 1,3 to 2,58, and no facade solution.
+        // The answer still follows the properties.
+        $results = $this->mapClaimed($this->dossier());
+
+        $violations = array_filter($results, fn (MappingResult $r) => MappingStatus::SPEC_VIOLATION === $r->status);
+
+        $this->assertCount(1, $violations);
+        $this->assertEqualsWithDelta(105.69, $this->mappedByTarget($this->dossier())['insulation-wall-surface']->value, 0.001);
+    }
+
+    public function test_a_facade_solution_the_scenario_carries_out_is_not_reported(): void
+    {
+        $this->mapper = new WallInsulationMapper(new FakeElementValues(), new FakeAdvisedElements(new ElementScope(Element::FACADE)));
+
+        $results = $this->mapClaimed($this->dossier());
+
+        $this->assertEmpty(array_filter($results, fn (MappingResult $r) => MappingStatus::SPEC_VIOLATION === $r->status));
     }
 
     public function test_a_cavity_wall_answers_yes(): void
@@ -214,7 +252,8 @@ final class WallInsulationMapperTest extends TestCase
 
     public function test_an_assembly_without_closed_parts_is_reported_as_understood(): void
     {
-        $response = $this->response([[], [$this->part(26.22, 0.35)]]);
+        // Second, because the first leaf the mapper claims carries the answers instead.
+        $response = $this->response([[$this->part(26.22, 0.35)], []]);
 
         $notes = array_map(
             fn (MappingResult $r) => $r->note,
@@ -224,16 +263,12 @@ final class WallInsulationMapperTest extends TestCase
         $this->assertContains('assembly zonder dichte geveldelen', $notes);
     }
 
-    public function test_a_facade_without_surface_is_reported_rather_than_written_as_zero(): void
+    public function test_a_facade_without_surface_empties_its_answers_rather_than_writing_zero(): void
     {
-        $response = $this->response([[$this->part(0.0, 0.35)]]);
+        $mapped = $this->mappedByTarget($this->response([[$this->part(0.0, 0.35)]]));
 
-        $results = array_filter(
-            $this->mapClaimed($response),
-            fn (MappingResult $r) => MappingStatus::VALUE_UNMAPPED === $r->status,
-        );
-
-        $this->assertNotEmpty($results);
+        $this->assertNull($mapped['wall-surface']->value);
+        $this->assertNull($mapped['current-wall-insulation']->value);
     }
 
     public function test_the_insulation_level_comes_from_the_weighted_rc_value(): void
@@ -275,7 +310,7 @@ final class WallInsulationMapperTest extends TestCase
         // so it has to surface rather than quietly write nothing.
         $elementValues = new FakeElementValues();
         $elementValues->missing = [4]; // Redelijke isolatie
-        $this->mapper = new WallInsulationMapper($elementValues);
+        $this->mapper = new WallInsulationMapper($elementValues, new FakeAdvisedElements());
 
         $response = $this->response([[$this->part(50.0, 2.5)]]);
 
@@ -297,34 +332,5 @@ final class WallInsulationMapperTest extends TestCase
         $notes = array_map(fn (MappingResult $r) => $r->note, $this->mapClaimed($response));
 
         $this->assertContains('facadeType is het signaal voor has-cavity-wall', $notes);
-    }
-}
-
-/**
- * Hands back a recognisable id per calculate value, so a test can assert which level was chosen
- * without seeding element values.
- */
-final class FakeElementValues extends ElementValues
-{
-    public const OFFSET = 900;
-    public const ORDER_OFFSET = 800;
-
-    /** Calculate values this pretends not to have. */
-    public array $missing = [];
-
-    public function idFor(string $elementShort, int $calculateValue): ?int
-    {
-        return in_array($calculateValue, $this->missing, true) ? null : self::OFFSET + $calculateValue;
-    }
-
-    public function idForOrder(string $elementShort, int $order): ?int
-    {
-        return self::ORDER_OFFSET + $order;
-    }
-
-    /** The id comes back in the label, so a test can see the note names the option that was written. */
-    public function labelFor(int $elementValueId): ?string
-    {
-        return "optie {$elementValueId}";
     }
 }

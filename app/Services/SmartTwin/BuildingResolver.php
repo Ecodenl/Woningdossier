@@ -89,8 +89,8 @@ class BuildingResolver
 
         foreach ($users as $user) {
             $buildings = $buildings->merge(match ($eventType) {
-                EventType::RESIDENT_SCAN_FINISHED => $this->residentBuildings($user),
-                EventType::COACH_SCAN_FINISHED    => $this->coachBuildings($user),
+                EventType::RESIDENT_SCAN_FINISHED                                => $this->residentBuildings($user),
+                EventType::COACH_SCAN_FINISHED, EventType::COACH_ADVICE_STARTED => $this->coachBuildings($user),
             });
         }
 

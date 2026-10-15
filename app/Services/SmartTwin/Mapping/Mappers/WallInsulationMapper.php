@@ -3,6 +3,8 @@
 namespace App\Services\SmartTwin\Mapping\Mappers;
 
 use App\Models\Building;
+use App\Services\SmartTwin\Mapping\Elements\AdvisedElements;
+use App\Services\SmartTwin\Mapping\Elements\Element;
 use App\Services\SmartTwin\Mapping\FieldMapper;
 use App\Services\SmartTwin\Mapping\Leaf;
 use App\Services\SmartTwin\Mapping\MappingResult;
@@ -10,33 +12,22 @@ use App\Services\SmartTwin\Mapping\MappingResult;
 /**
  * The facade of the wall insulation step.
  *
- * Fills four of its questions: the facade surface, the surface the advice insulates, whether the
+ * Fills four of its questions: the facade surface, the surface the scenario insulates, whether the
  * dwelling has a cavity wall, and how well the facade is insulated. The remaining five are about
  * the state of the brickwork and the paintwork, which SmartTwin does not describe.
  *
- * Every answer is one number derived from many facade parts, so of the leaves in a path group
- * exactly one carries the answer — the first part in the response — and the rest are skipped
- * pointing at it. Which leaf that is comes from the response itself, not from a counter, so it
- * holds however the assemblies are ordered and whichever of them turn out to be empty.
+ * Every answer is one number derived from many facade parts, so all of them are decided at one leaf
+ * — the anchor, see ElementAnchor — and every other leaf is skipped pointing at the answer it counts
+ * towards. An answer the response no longer supports is emptied rather than left as the previous
+ * scan wrote it.
  */
 class WallInsulationMapper implements FieldMapper
 {
-    public function __construct(private readonly ElementValues $elementValues)
-    {
-    }
-
     private const CURRENT = 'current';
     private const SCENARIO = 'scenario';
 
-    private const PART = '.properties.facadeAssemblies.*.facades';
-
-    private const PATH_CURRENT_PARTS = self::CURRENT . self::PART;
-    private const PATH_CURRENT_AREA = self::CURRENT . self::PART . '.*.area';
-    private const PATH_CURRENT_TYPE = self::CURRENT . self::PART . '.*.facadeType';
-    private const PATH_CURRENT_RC = self::CURRENT . self::PART . '.*.rcValue';
-    private const PATH_CURRENT_CAVITY = self::CURRENT . self::PART . '.*.cavityThickness';
-    private const PATH_SCENARIO_AREA = self::SCENARIO . self::PART . '.*.area';
-    private const PATH_SCENARIO_RC = self::SCENARIO . self::PART . '.*.rcValue';
+    private const ASSEMBLIES = '.properties.facadeAssemblies';
+    private const PART = self::ASSEMBLIES . '.*.facades';
 
     /** Answers of has-cavity-wall, see WallInsulationHelper::getCavityWallValues(). */
     private const CAVITY_WALL_YES = 1;
@@ -47,54 +38,76 @@ class WallInsulationMapper implements FieldMapper
     private const TYPE_CAVITY_WALL = 1;
     private const TYPE_HSB_FACADE = 2;
 
-    public function paths(): array
+    /** What each claimed field of a facade part counts towards, for the report. */
+    private const NOTES = [
+        'area'            => 'telt mee in wall-surface',
+        'rcValue'         => 'telt mee in current-wall-insulation',
+        'facadeType'      => 'telt mee in has-cavity-wall',
+        'id'              => 'koppelt het geveldeel tussen current en scenario',
+        // The spec calls this "only relevant for cavity walls", and it drops to 0 in the scenario
+        // once the cavity is filled. facadeType says the same thing and keeps saying it.
+        'cavityThickness' => 'facadeType is het signaal voor has-cavity-wall',
+    ];
+
+    public function __construct(
+        private readonly ElementValues $elementValues,
+        private readonly AdvisedElements $advisedElements,
+    )
     {
-        return [
-            // An assembly without closed parts — a wall that is all window — is a leaf of its own:
-            // the list is empty, so none of the paths below exist for it. Claimed so the report says
-            // it was understood rather than never seen.
-            self::PATH_CURRENT_PARTS,
-            self::PATH_CURRENT_AREA,
-            self::PATH_CURRENT_TYPE,
-            self::PATH_CURRENT_RC,
-            self::PATH_CURRENT_CAVITY,
-            self::PATH_SCENARIO_AREA,
-            self::PATH_SCENARIO_RC,
-        ];
     }
 
-    public function map(Building $building, Leaf $leaf, array $response): MappingResult
+    public function paths(): array
     {
-        return match ($leaf->pathGroup) {
-            self::PATH_CURRENT_AREA   => $this->wallSurface($leaf, $response),
-            self::PATH_CURRENT_TYPE   => $this->hasCavityWall($leaf, $response),
-            self::PATH_CURRENT_RC     => $this->currentWallInsulation($leaf, $response),
-            self::PATH_SCENARIO_AREA  => $this->insulationWallSurface($leaf, $response),
-            self::PATH_CURRENT_PARTS  => MappingResult::skipped('assembly zonder dichte geveldelen'),
-            self::PATH_SCENARIO_RC    => MappingResult::skipped('bepaalt welk geveldeel geïsoleerd wordt, zie insulation-wall-surface'),
-            // The spec calls this "only relevant for cavity walls", and it drops to 0 in the
-            // scenario once the cavity is filled. facadeType says the same thing and keeps saying it.
-            self::PATH_CURRENT_CAVITY => MappingResult::skipped('facadeType is het signaal voor has-cavity-wall'),
-            // Only reachable if paths() and this match drift apart, which would be a bug here
-            // rather than a gap in the mapping.
-            default                   => MappingResult::skipped('path group wordt geclaimd maar niet afgehandeld'),
-        };
+        return array_merge(
+            [
+                self::CURRENT . self::ASSEMBLIES,
+                // An assembly without closed parts — a wall that is all window — is a leaf of its own:
+                // the list is empty, so none of the paths below exist for it.
+                self::CURRENT . self::PART,
+                self::SCENARIO . self::PART . '.*.area',
+                self::SCENARIO . self::PART . '.*.rcValue',
+                self::SCENARIO . self::PART . '.*.id',
+            ],
+            array_map(fn (string $field) => self::CURRENT . self::PART . ".*.{$field}", array_keys(self::NOTES)),
+        );
+    }
+
+    public function map(Building $building, Leaf $leaf, array $response): MappingResult|array
+    {
+        if (ElementAnchor::is($leaf, $response, self::CURRENT . self::ASSEMBLIES, $this->paths())) {
+            return $this->answers($response);
+        }
+
+        return MappingResult::skipped($this->noteFor($leaf));
     }
 
     /**
      * @param  array<string, mixed>  $response
+     * @return array<int, MappingResult>
      */
-    private function wallSurface(Leaf $leaf, array $response): MappingResult
+    private function answers(array $response): array
     {
-        if ($this->notTheFirstPart($leaf, $response, self::CURRENT, 'area')) {
-            return MappingResult::skipped('telt mee in wall-surface op het eerste geveldeel');
-        }
+        $current = FacadeParts::fromResponse($response, self::CURRENT);
+        $insulated = FacadeParts::fromResponse($response, self::SCENARIO)->improvedOver($current);
 
-        $parts = FacadeParts::fromResponse($response, self::CURRENT);
+        $results = [
+            $this->wallSurface($current),
+            $this->hasCavityWall($current),
+            $this->currentWallInsulation($current),
+            $this->insulationWallSurface($insulated),
+        ];
+
+        $disagreement = $this->disagreement($response, $insulated);
+
+        return is_null($disagreement) ? $results : [...$results, $disagreement];
+    }
+
+    private function wallSurface(FacadeParts $parts): MappingResult
+    {
         $area = $parts->totalArea();
 
         if ($area <= 0) {
-            return MappingResult::valueUnmapped('geveldelen zonder oppervlak');
+            return MappingResult::cleared('wall-surface', 'geen dicht geveldeel met oppervlak in de response');
         }
 
         return MappingResult::mapped(
@@ -104,51 +117,28 @@ class WallInsulationMapper implements FieldMapper
         );
     }
 
-    /**
-     * @param  array<string, mixed>  $response
-     */
-    private function insulationWallSurface(Leaf $leaf, array $response): MappingResult
+    private function insulationWallSurface(FacadeParts $insulated): MappingResult
     {
-        if ($this->notTheFirstPart($leaf, $response, self::SCENARIO, 'area')) {
-            return MappingResult::skipped('telt mee in insulation-wall-surface op het eerste geveldeel');
-        }
-
-        $current = FacadeParts::fromResponse($response, self::CURRENT);
-        $area = FacadeParts::fromResponse($response, self::SCENARIO)->areaImprovedOver($current);
-
-        if (is_null($area)) {
-            return MappingResult::valueUnmapped('current en scenario beschrijven een verschillend aantal geveldelen');
-        }
-
-        if ($area <= 0) {
-            // Not the same as zero: SmartTwin advises no facade measure, so it says nothing about
-            // how much facade would be insulated. Writing 0 would put words in its mouth, and that
-            // number drives both the cost and the savings of the measure.
-            return MappingResult::skipped('het advies isoleert geen gevel');
+        if ($insulated->totalArea() <= 0) {
+            // Empty, not 0: the scenario insulates no facade, which says nothing about how much
+            // facade would be insulated if it did. 0 would also feed a cost and saving calculation.
+            return MappingResult::cleared('insulation-wall-surface', 'het scenario verhoogt bij geen geveldeel de Rc-waarde');
         }
 
         return MappingResult::mapped(
             'insulation-wall-surface',
-            round($area, 2),
-            'geveldelen waarvan de Rc-waarde stijgt tussen current en scenario',
+            round($insulated->totalArea(), 2),
+            "{$insulated->count()} geveldeel/-delen waarvan de Rc-waarde stijgt tussen current en scenario",
         );
     }
 
-    /**
-     * @param  array<string, mixed>  $response
-     */
-    private function currentWallInsulation(Leaf $leaf, array $response): MappingResult
+    private function currentWallInsulation(FacadeParts $parts): MappingResult
     {
-        if ($this->notTheFirstPart($leaf, $response, self::CURRENT, 'rcValue')) {
-            return MappingResult::skipped('telt mee in current-wall-insulation op het eerste geveldeel');
-        }
-
-        $rcValue = FacadeParts::fromResponse($response, self::CURRENT)->weightedRcValue();
+        $rcValue = $parts->weightedRcValue();
 
         if (is_null($rcValue)) {
-            // "Onbekend" is an answer we could give here, but it is not one SmartTwin gave, and
-            // writing it would replace whatever the resident or coach knows with a shrug.
-            return MappingResult::valueUnmapped('geen Rc-waarde te bepalen zonder geveloppervlak');
+            // Emptied rather than "Onbekend": that is an answer, and not one SmartTwin gave.
+            return MappingResult::cleared('current-wall-insulation', 'geen Rc-waarde te bepalen zonder geveloppervlak');
         }
 
         $calculateValue = InsulationQuality::forWall($rcValue);
@@ -176,19 +166,12 @@ class WallInsulationMapper implements FieldMapper
         );
     }
 
-    /**
-     * @param  array<string, mixed>  $response
-     */
-    private function hasCavityWall(Leaf $leaf, array $response): MappingResult
+    private function hasCavityWall(FacadeParts $parts): MappingResult
     {
-        if ($this->notTheFirstPart($leaf, $response, self::CURRENT, 'facadeType')) {
-            return MappingResult::skipped('telt mee in has-cavity-wall op het eerste geveldeel');
-        }
-
-        $type = FacadeParts::fromResponse($response, self::CURRENT)->dominantType();
+        $type = $parts->dominantType('facadeType');
 
         if (is_null($type)) {
-            return MappingResult::valueUnmapped('geen geveldeel geeft een facadeType');
+            return MappingResult::cleared('has-cavity-wall', 'geen geveldeel geeft een facadeType');
         }
 
         return match ($type) {
@@ -200,21 +183,27 @@ class WallInsulationMapper implements FieldMapper
     }
 
     /**
-     * Whether another leaf of this path group carries the answer.
-     *
-     * The first part in the response is the one that does. Index 0 of assembly 0 is no good: an
-     * assembly that is all window has no parts at all, and in a real response that is the first one.
-     *
      * @param  array<string, mixed>  $response
      */
-    private function notTheFirstPart(Leaf $leaf, array $response, string $section, string $field): bool
+    private function disagreement(array $response, FacadeParts $insulated): ?MappingResult
     {
-        foreach ($response[$section]['properties']['facadeAssemblies'] ?? [] as $assembly => $parts) {
-            foreach (array_keys($parts['facades'] ?? []) as $part) {
-                return $leaf->path !== "{$section}.properties.facadeAssemblies.{$assembly}.facades.{$part}.{$field}";
-            }
-        }
+        $advised = $this->advisedElements->covers($response, Element::FACADE);
+        $area = round($insulated->totalArea(), 2);
 
-        return true;
+        return match (true) {
+            $advised && $area <= 0 => MappingResult::specViolation('er is een solution voor de gevel, maar het scenario verhoogt bij geen geveldeel de Rc-waarde'),
+            ! $advised && $area > 0 => MappingResult::specViolation("het scenario verhoogt de Rc-waarde van {$area} m² gevel, maar er is geen solution voor de gevel"),
+            default => null,
+        };
+    }
+
+    private function noteFor(Leaf $leaf): string
+    {
+        return match (true) {
+            str_starts_with($leaf->pathGroup, self::SCENARIO)     => 'bepaalt insulation-wall-surface',
+            $leaf->pathGroup === self::CURRENT . self::ASSEMBLIES => 'woning zonder gevel: de gevelvragen worden leeggemaakt',
+            $leaf->pathGroup === self::CURRENT . self::PART       => 'assembly zonder dichte geveldelen',
+            default                                               => self::NOTES[$leaf->key()] ?? 'path group wordt geclaimd maar niet afgehandeld',
+        };
     }
 }

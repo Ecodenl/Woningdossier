@@ -48,7 +48,10 @@ class NavbarComposer
 
         $view->with('scan', $scan);
         $expertScan = Scan::expert();
-        $view->with('expertSteps', Step::forScan($expertScan)->get());
+        // Closed once the woonplan has gone over to SmartTwin; see EnsureExpertScanAvailable.
+        $view->with('expertSteps', $building && Hoomdossier::smartTwinOwnsWoonplanFor($building)
+            ? collect()
+            : Step::forScan($expertScan)->get());
         $view->with('building', $building);
         $view->with('masterInputSource', InputSource::findByShort(InputSource::MASTER_SHORT));
         $view->with('showWoningdossier', $this->showWoningdossier($availableScans));

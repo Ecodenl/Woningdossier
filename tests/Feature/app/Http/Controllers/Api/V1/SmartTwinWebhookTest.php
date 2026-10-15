@@ -12,6 +12,8 @@ use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\User;
 use App\Services\SmartTwin\Api\UserRole;
+use App\Services\SmartTwin\WoonplanLock;
+use Database\Seeders\InputSourcesTableSeeder;
 use Database\Seeders\RoleTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -28,6 +30,8 @@ final class SmartTwinWebhookTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        // RoleTableSeeder links roles to their input source, so those have to exist first.
+        $this->seed(InputSourcesTableSeeder::class);
         $this->seed(RoleTableSeeder::class);
         config()->set('hoomdossier.services.smarttwin.enabled', true);
 
@@ -187,6 +191,29 @@ final class SmartTwinWebhookTest extends TestCase
      * Attach a second user to the account, in another cooperation and with the coach role, and give
      * it full access to a resident's building at the same address.
      */
+    public function test_a_started_advice_locks_the_woonplan_of_the_coached_building(): void
+    {
+        $this->makeResidentBuilding();
+        $coachBuilding = $this->giveAccountACoachedBuilding();
+
+        $this->postWebhook(['EventType' => EventType::COACH_ADVICE_STARTED->value])->assertNoContent();
+
+        $this->assertTrue(app(WoonplanLock::class)->isLocked($coachBuilding->fresh()));
+    }
+
+    public function test_a_started_advice_is_not_stored_as_a_callback(): void
+    {
+        // A stored callback is what makes the results get fetched, and there are none yet.
+        Event::fake([SmartTwinCallbackReceived::class]);
+        $this->makeResidentBuilding();
+        $coachBuilding = $this->giveAccountACoachedBuilding();
+
+        $this->postWebhook(['EventType' => EventType::COACH_ADVICE_STARTED->value])->assertNoContent();
+
+        $this->assertNull($coachBuilding->fresh()->smarttwin_callback);
+        Event::assertNotDispatched(SmartTwinCallbackReceived::class);
+    }
+
     private function giveAccountACoachedBuilding(): Building
     {
         $account = Account::where('smarttwin_user_id', self::SMARTTWIN_USER_ID)->firstOrFail();

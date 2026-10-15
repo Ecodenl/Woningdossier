@@ -47,7 +47,10 @@ class UserActionPlanAdviceObserver
             UserActionPlanAdviceService::setAdviceCategory($userActionPlanAdvice);
         }
 
-        if ($userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
+        // An advice with a source carries the price its owner gave it. Both branches below replace
+        // that price with one of ours — the heat pump calculation, or what the user once entered —
+        // and the card would show it under the owner's name.
+        if (is_null($userActionPlanAdvice->source) && $userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
             $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
             if ($advisable instanceof MeasureApplication && in_array($advisable->short, array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
                 $building = $userActionPlanAdvice->user->building;

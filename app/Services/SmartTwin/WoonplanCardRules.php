@@ -3,6 +3,7 @@
 namespace App\Services\SmartTwin;
 
 use App\Enums\AdviceSource;
+use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
 use App\Services\UserActionPlanAdviceService;
 
@@ -13,10 +14,11 @@ use App\Services\UserActionPlanAdviceService;
  * always did. The rules follow the woonplan design "Pagina 2", which is leading for them, and the
  * stuurgroep:
  *
- *   package    SmartTwin's chosen package, "Nu aanpakken". Reordered within its column only; may be
- *              thrown away. Without it the package no longer holds, and the woonplan offers a new
- *              calculation in place of SmartTwin's figures (SmartTwinPackage::isIntactIn()).
- *              Another package means going back to SmartTwin.
+ *   package    SmartTwin's chosen package. Starts in "Nu aanpakken" and moves freely between it and
+ *              "Later uitvoeren" (stuurgroep): the package stays intact, only the costs under the
+ *              columns follow the card. May be thrown away; without it the package no longer holds,
+ *              and the woonplan offers a new calculation in place of SmartTwin's figures
+ *              (SmartTwinPackage::isIntactIn()). Another package means going back to SmartTwin.
  *   possible   a measure SmartTwin offers but the package does not hold, "Later uitvoeren".
  *              Reordered within its column; may be thrown away.
  *   in-order   a card SmartTwin's import made for what is in good shape. Stays where it is.
@@ -24,6 +26,9 @@ use App\Services\UserActionPlanAdviceService;
  *   own        the resident's or the cooperation's own measure, and the small measures (Patrick,
  *              15 October 2026). Moves freely between "Nu aanpakken" and "Later uitvoeren"; may be
  *              thrown away.
+ *
+ * Whether a SmartTwin card is package or possible follows from the package, not from its column: a
+ * package card moved to "Later uitvoeren" is still a package card, and may come back.
  *
  * Moving a card into "In orde" is not a move: it marks the measure as carried out, which asks for a
  * date and a description first. That answer is EXECUTE, for the woonplan to open the popup.
@@ -40,7 +45,11 @@ final class WoonplanCardRules
     public const DENIED = 'denied';
     public const EXECUTE = 'execute';
 
-    public static function kindOf(UserActionPlanAdvice $advice): string
+    /**
+     * @param  array<int, int>  $packageMeasureIds  The measures of the building's package
+     *                                              (SmartTwinPackage::$measure_application_ids).
+     */
+    public static function kindOf(UserActionPlanAdvice $advice, array $packageMeasureIds): string
     {
         if ($advice->isExecuted()) {
             return self::EXECUTED;
@@ -50,11 +59,14 @@ final class WoonplanCardRules
             return self::OWN;
         }
 
-        return match ($advice->category) {
-            UserActionPlanAdviceService::CATEGORY_COMPLETE => self::IN_ORDER,
-            UserActionPlanAdviceService::CATEGORY_LATER    => self::POSSIBLE,
-            default                                        => self::PACKAGE,
-        };
+        if (UserActionPlanAdviceService::CATEGORY_COMPLETE === $advice->category) {
+            return self::IN_ORDER;
+        }
+
+        $inPackage = MeasureApplication::class === $advice->user_action_plan_advisable_type
+            && in_array((int) $advice->user_action_plan_advisable_id, array_map('intval', $packageMeasureIds), true);
+
+        return $inPackage ? self::PACKAGE : self::POSSIBLE;
     }
 
     public static function move(string $kind, string $from, string $to): string
@@ -72,7 +84,7 @@ final class WoonplanCardRules
             return self::EXECUTE;
         }
 
-        return self::OWN === $kind ? self::ALLOWED : self::DENIED;
+        return in_array($kind, [self::PACKAGE, self::OWN], true) ? self::ALLOWED : self::DENIED;
     }
 
     public static function mayTrash(string $kind): bool

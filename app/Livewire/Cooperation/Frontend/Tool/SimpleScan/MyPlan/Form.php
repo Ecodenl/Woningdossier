@@ -587,7 +587,7 @@ class Form extends CustomMeasureForm
             ->where('user_id', $this->building->user->id)
             ->findOrFail($id);
 
-        return WoonplanCardRules::kindOf($advice);
+        return WoonplanCardRules::kindOf($advice, $this->packageMeasureIds);
     }
 
     /**
@@ -909,7 +909,7 @@ class Form extends CustomMeasureForm
 
             // What the card may do; see WoonplanCardRules. Before the switch every card moves and goes
             // to the trash as it always did.
-            $kind = $this->smartTwinOwnsWoonplan ? WoonplanCardRules::kindOf($advice) : null;
+            $kind = $this->smartTwinOwnsWoonplan ? WoonplanCardRules::kindOf($advice, $this->packageMeasureIds) : null;
             $cards[$category][$order]['kind'] = $kind;
             $cards[$category][$order]['targets'] = is_null($kind)
                 ? array_values(UserActionPlanAdviceService::getCategories())

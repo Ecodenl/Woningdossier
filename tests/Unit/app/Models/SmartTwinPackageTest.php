@@ -38,7 +38,7 @@ final class SmartTwinPackageTest extends TestCase
         $this->assertTrue($this->package()->isIntactFor([9, 12, 7]));
     }
 
-    public function test_a_card_moved_out_breaks_the_package(): void
+    public function test_a_missing_package_measure_breaks_the_package(): void
     {
         $this->assertFalse($this->package()->isIntactFor([12, 7]));
     }
@@ -76,12 +76,44 @@ final class SmartTwinPackageTest extends TestCase
         $this->assertTrue($this->package()->isIntactIn($plan));
     }
 
-    public function test_a_package_card_moved_to_later_or_trashed_breaks_it(): void
+    public function test_a_package_card_moved_to_later_leaves_it_intact(): void
+    {
+        // The stuurgroep: moving a package card between the columns leaves the package intact.
+        $this->assertTrue($this->package()->isIntactIn([
+            $this->card(MeasureApplication::class, 12),
+            $this->card(MeasureApplication::class, 7),
+            $this->card(MeasureApplication::class, 9, 'later'),
+        ]));
+
+        $this->assertTrue($this->package()->isIntactIn([
+            $this->card(MeasureApplication::class, 12, 'later'),
+            $this->card(MeasureApplication::class, 7, 'later'),
+            $this->card(MeasureApplication::class, 9, 'later'),
+        ]));
+    }
+
+    public function test_a_smart_twin_card_outside_the_package_in_later_leaves_it_intact(): void
+    {
+        $this->assertTrue($this->package()->isIntactIn([
+            $this->card(MeasureApplication::class, 12),
+            $this->card(MeasureApplication::class, 7),
+            $this->card(MeasureApplication::class, 9),
+            $this->card(MeasureApplication::class, 30, 'later'),
+        ]));
+    }
+
+    public function test_a_package_card_trashed_or_carried_out_breaks_it(): void
     {
         $this->assertFalse($this->package()->isIntactIn([
             $this->card(MeasureApplication::class, 12),
             $this->card(MeasureApplication::class, 7),
-            $this->card(MeasureApplication::class, 9, 'later'),
+            $this->card(MeasureApplication::class, 9, 'later', visible: false),
+        ]));
+
+        $this->assertFalse($this->package()->isIntactIn([
+            $this->card(MeasureApplication::class, 12),
+            $this->card(MeasureApplication::class, 7),
+            $this->card(MeasureApplication::class, 9, 'complete'),
         ]));
 
         $this->assertFalse($this->package()->isIntactIn([

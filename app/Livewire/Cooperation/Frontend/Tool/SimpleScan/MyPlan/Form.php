@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
+use App\Enums\AdviceSource;
 use App\Models\Step;
 use Illuminate\Support\Facades\Gate;
 use App\Helpers\Calculation\BankInterestCalculator;
@@ -883,9 +884,18 @@ class Form extends CustomMeasureForm
             $cards[$category][$order]['in_package'] = ! is_null($kind)
                 && $advice->user_action_plan_advisable_type === MeasureApplication::class
                 && in_array((int) $advice->user_action_plan_advisable_id, $this->packageMeasureIds, true);
+            // SmartTwin's amounts are never rounded (Patrick, 15 October 2026); the woonplan's own
+            // prices go to steps of five, as they always did.
+            $exact = AdviceSource::SMART_TWIN === $advice->source;
+            $cards[$category][$order]['exact'] = $exact;
             $cards[$category][$order]['costs'] = [
-                'from' => empty($advice->costs['from']) ? null : NumberFormatter::round($advice->costs['from']),
-                'to' => empty($advice->costs['to']) ? null : NumberFormatter::round($advice->costs['to']),
+                'from' => empty($advice->costs['from']) ? null : ($exact ? (float) $advice->costs['from'] : NumberFormatter::round($advice->costs['from'])),
+                'to' => empty($advice->costs['to']) ? null : ($exact ? (float) $advice->costs['to'] : NumberFormatter::round($advice->costs['to'])),
+            ];
+            // As stored, for the lines under the columns, which round nothing; see PackageResults.
+            $cards[$category][$order]['exact_costs'] = [
+                'from' => is_numeric($advice->costs['from'] ?? null) ? (float) $advice->costs['from'] : null,
+                'to' => is_numeric($advice->costs['to'] ?? null) ? (float) $advice->costs['to'] : null,
             ];
             // Null rather than zero when there is no saving: an advice that came from elsewhere may
             // carry a price without one, and "€ 0" reads to a resident as "this gains you nothing".

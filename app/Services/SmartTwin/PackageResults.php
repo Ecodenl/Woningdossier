@@ -2,6 +2,7 @@
 
 namespace App\Services\SmartTwin;
 
+use App\Helpers\NumberFormatter;
 use App\Models\SmartTwinPackage;
 
 /**
@@ -9,7 +10,8 @@ use App\Models\SmartTwinPackage;
  *
  * Every card in "Nu aanpakken" is a line with its name and costs: the package first, then the own
  * and small measures, each on a line of its own (Patrick, 15 October 2026). They all count in the
- * total. What SmartTwin calculated (saving, subsidy, label, use, CO2) is for the package as a whole,
+ * total. SmartTwin's amounts are never rounded (Patrick, 15 October 2026): not here, not when
+ * shown, and the sums add up without floating point noise. What SmartTwin calculated (saving, subsidy, label, use, CO2) is for the package as a whole,
  * so it is only there while the woonplan still holds the package; otherwise the woonplan asks for a
  * new calculation instead (woonplan design "Pagina 2").
  */
@@ -44,8 +46,10 @@ final readonly class PackageResults
     {
         $lines = [];
         foreach ($nowCards as $card) {
-            $from = $card['costs']['from'] ?? null;
-            $to = $card['costs']['to'] ?? null;
+            // The costs as stored, not the card's: a card rounds to steps of five, a line does not.
+            $costs = $card['exact_costs'] ?? $card['costs'];
+            $from = $costs['from'] ?? null;
+            $to = $costs['to'] ?? null;
 
             $lines[] = [
                 'name'    => (string) $card['name'],
@@ -69,9 +73,9 @@ final readonly class PackageResults
 
         return new self(
             lines: $lines,
-            total: array_sum(array_column($lines, 'amount')),
+            total: self::sum(array_column($lines, 'amount')),
             intact: $package instanceof SmartTwinPackage && $intact,
-            savingsPerYear: is_null($savingsPerMonth) ? null : (float) $savingsPerMonth * 12,
+            savingsPerYear: is_null($savingsPerMonth) ? null : (float) bcmul(NumberFormatter::plain((float) $savingsPerMonth), '12', self::scaleOf([(float) $savingsPerMonth])),
             subsidy: is_null($package?->total_subsidy) ? null : (float) $package->total_subsidy,
             subsidies: $package->subsidies ?? [],
             labelNow: $now['energyLabel'] ?? null,
@@ -94,10 +98,36 @@ final readonly class PackageResults
         $to = (float) ($to ?? 0);
 
         return match (true) {
-            $from > 0 && $to > 0 => ($from + $to) / 2,
+            $from > 0 && $to > 0 => (float) bcdiv(bcadd(NumberFormatter::plain($from), NumberFormatter::plain($to), self::scaleOf([$from, $to])), '2', self::scaleOf([$from, $to]) + 1),
             $to > 0              => $to,
             $from > 0            => $from,
             default              => 0.0,
         };
+    }
+
+    /**
+     * Adds up without the noise of floating point: 0.1 + 0.2 is 0.3 here, not 0.30000000000000004,
+     * and SmartTwin's amounts are shown unrounded, noise included.
+     *
+     * @param  array<int, float>  $amounts
+     */
+    private static function sum(array $amounts): float
+    {
+        $total = '0';
+        foreach ($amounts as $amount) {
+            $total = bcadd($total, NumberFormatter::plain($amount), self::scaleOf($amounts));
+        }
+
+        return (float) $total;
+    }
+
+    /**
+     * The most decimals any of these amounts has.
+     *
+     * @param  array<int, float>  $amounts
+     */
+    private static function scaleOf(array $amounts): int
+    {
+        return max(0, ...array_map(NumberFormatter::decimalsOf(...), $amounts));
     }
 }

@@ -1,8 +1,8 @@
 {{-- "Gekozen pakket" under the columns of a SmartTwin woonplan; see App\Services\SmartTwin\PackageResults. --}}
 @php
     /** @var \App\Services\SmartTwin\PackageResults $results */
-    // Not rounded to the woonplan's steps of five: these are SmartTwin's figures, shown as given.
-    $euro = fn ($amount) => \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format(round((float) $amount), 0), '€ ');
+    // Amounts are never rounded (Patrick, 15 October 2026): every decimal SmartTwin gave, at least two.
+    $euro = fn ($amount) => '€ ' . \App\Helpers\NumberFormatter::formatExact($amount);
     $number = fn ($amount) => \App\Helpers\NumberFormatter::format(round((float) $amount), 0);
     $from = fn ($now, $after, $unit) => trim((is_null($now) ? '' : $number($now) . ' → ') . (is_null($after) ? '–' : $number($after)) . ' ' . $unit);
 @endphp
@@ -25,7 +25,7 @@
                                 @if(empty($line['from']) && empty($line['to']))
                                     @lang('cooperation/frontend/tool.my-plan.package-results.no-costs')
                                 @elseif(! empty($line['from']) && ! empty($line['to']) && $line['from'] != $line['to'])
-                                    {{ \App\Helpers\NumberFormatter::range($line['from'], $line['to'], 0, ' - ', '€ ') }}
+                                    {{ $euro($line['from']) }} - {{ $euro($line['to']) }}
                                 @else
                                     {{ $euro($line['to'] ?: $line['from']) }}
                                 @endif

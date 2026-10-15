@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\AdviceSource;
 use App\Services\UserActionPlanAdviceService;
+use App\Helpers\NumberFormatter;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -22,9 +24,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array<int, int> $measure_application_ids
  * @property array<string, mixed>|null $current_result
  * @property array<string, mixed>|null $scenario_result
- * @property numeric|null $total_cost_with_tax
- * @property numeric|null $energy_cost_savings_per_month
- * @property numeric|null $total_subsidy
+ * @property float|null $total_cost_with_tax
+ * @property float|null $energy_cost_savings_per_month
+ * @property float|null $total_subsidy
  * @property array<int, array{name: string|null, amount: float|null}>|null $subsidies
  * @property \Illuminate\Support\Carbon $imported_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -55,12 +57,38 @@ class SmartTwinPackage extends Model
             'measure_application_ids'       => 'array',
             'current_result'                => 'array',
             'scenario_result'               => 'array',
-            'total_cost_with_tax'           => 'decimal:2',
-            'energy_cost_savings_per_month' => 'decimal:2',
-            'total_subsidy'                 => 'decimal:2',
+            // As SmartTwin sent them: its amounts are never rounded.
+            'total_cost_with_tax'           => 'float',
+            'energy_cost_savings_per_month' => 'float',
+            'total_subsidy'                 => 'float',
             'subsidies'                     => 'array',
             'imported_at'                   => 'datetime',
         ];
+    }
+
+    /**
+     * SmartTwin's amounts are never rounded, and a PHP float handed to the database is: PDO writes
+     * it with the `precision` setting (14 digits), so 6853.749263548063 lands as 6853.7492635481.
+     * Written as the exact notation instead, which a double column keeps as sent.
+     */
+    protected function totalCostWithTax(): Attribute
+    {
+        return Attribute::make(set: fn (mixed $value) => self::exact($value));
+    }
+
+    protected function energyCostSavingsPerMonth(): Attribute
+    {
+        return Attribute::make(set: fn (mixed $value) => self::exact($value));
+    }
+
+    protected function totalSubsidy(): Attribute
+    {
+        return Attribute::make(set: fn (mixed $value) => self::exact($value));
+    }
+
+    private static function exact(mixed $value): mixed
+    {
+        return is_float($value) ? NumberFormatter::plain($value) : $value;
     }
 
     public function building(): BelongsTo

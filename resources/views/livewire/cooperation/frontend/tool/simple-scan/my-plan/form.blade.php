@@ -86,6 +86,9 @@
                                         {{-- This also triggers if both values are 0 --}}
                                         @if(empty($card['costs']['from']) && empty($card['costs']['to']))
                                             @lang('cooperation/frontend/tool.my-plan.cards.see-info')
+                                        @elseif($card['exact'] ?? false)
+                                            {{-- SmartTwin's price, never rounded. --}}
+                                            {{ collect([$card['costs']['from'], $card['costs']['to']])->filter()->unique()->map(fn ($amount) => '€ ' . \App\Helpers\NumberFormatter::formatExact($amount))->implode(' - ') }}
                                         @else
                                             {{ \App\Helpers\NumberFormatter::range($card['costs']['from'], $card['costs']['to'], 0, ' - ', '€ ') }}
                                         @endif

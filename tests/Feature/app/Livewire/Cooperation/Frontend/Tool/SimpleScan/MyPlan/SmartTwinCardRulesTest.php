@@ -299,8 +299,8 @@ final class SmartTwinCardRulesTest extends TestCase
             'current_result'                => ['energyConsumptionGas' => 1500, 'energyConsumptionElectricity' => 2500, 'totalCo2Emission' => 5826.2365, 'energyLabel' => 'C'],
             'scenario_result'               => ['energyConsumptionGas' => 0, 'energyConsumptionElectricity' => 6035.9627, 'totalCo2Emission' => 1162.0925, 'energyLabel' => 'A+++'],
             'energy_cost_savings_per_month' => 210,
-            'total_subsidy'                 => 6853.75,
-            'subsidies'                     => [['name' => 'ISDE', 'amount' => 6853.75]],
+            'total_subsidy'                 => 6853.749263548063,
+            'subsidies'                     => [['name' => 'ISDE', 'amount' => 6853.749263548063]],
         ]);
 
         return $card;
@@ -315,10 +315,10 @@ final class SmartTwinCardRulesTest extends TestCase
             ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.title'))
             // A line per card in "Nu aanpakken", the own measure by its name.
             ->assertSeeInOrder([MeasureApplication::findByShort('cavity-wall-insulation')->measure_name, 'Zonnescherm'])
-            ->assertSee('€ 2.200')
-            ->assertSee('€ 2.520')
+            ->assertSee('€ 2.200,00')
+            ->assertSee('€ 2.520,00')
             // As SmartTwin gave it, not rounded to the woonplan's steps of five.
-            ->assertSee('€ 6.854')
+            ->assertSee('€ 6.853,749263548063')
             ->assertSee('ISDE')
             ->assertSee('C → A+++');
     }
@@ -330,7 +330,7 @@ final class SmartTwinCardRulesTest extends TestCase
 
         $this->woonplan()
             ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.broken'))
-            ->assertDontSee('€ 2.520');
+            ->assertDontSee('€ 2.520,00');
     }
 
     public function test_before_the_switch_there_are_no_package_results(): void
@@ -410,5 +410,23 @@ final class SmartTwinCardRulesTest extends TestCase
             ->assertDontSee(__('cooperation/frontend/tool.my-plan.executed.button'))
             ->call('openExecuted', $card->id)
             ->assertForbidden();
+    }
+
+    public function test_smart_twins_amounts_are_rounded_nowhere(): void
+    {
+        $card = $this->packageWithFigures();
+        UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_action_plan_advisable_id', $card->user_action_plan_advisable_id)
+            ->update(['costs' => json_encode(['from' => null, 'to' => 1622.65])]);
+
+        $woonplan = $this->woonplan();
+        $html = $woonplan->html();
+
+        // Not on the card, which rounds the woonplan's own prices to steps of five...
+        $this->assertSame(1622.65, $this->cardData($woonplan, $card)['costs']['to']);
+        $this->assertStringNotContainsString('€ 1.625', $html);
+        // ...nor in the line and the total under the columns.
+        $results = substr($html, strpos($html, 'id="package-results"'));
+        $this->assertSame(2, substr_count($results, '€ 1.622,65'), 'the line and the total');
     }
 }

@@ -1297,7 +1297,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ['required', 'numeric', 'integer', 'min:1'],
+                'validation' => ['required', 'numeric', 'integer', 'min:1', 'max:18000'],
                 'save_in' => "building_pv_panels.total_installed_power",
                 'short' => 'total-installed-power',
                 // was current-state -> Geinstalleerd vermogen (totaal)

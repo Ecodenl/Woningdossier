@@ -15,7 +15,6 @@ use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Services\ExecutedAdviceService;
-use App\Services\Kengetallen\KengetallenService;
 use App\Services\ToolQuestionService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -123,7 +122,7 @@ final class PdfReportSmartTwinTest extends TestCase
             'filename'        => 'report.pdf',
         ]);
 
-        (new PdfReport($this->user, $fileType, $fileStorage, Scan::findByShort(Scan::QUICK)))->handle(app(KengetallenService::class));
+        (new PdfReport($this->user, $fileType, $fileStorage, Scan::findByShort(Scan::QUICK)))->handle();
 
         // mPDF's own markup aside, collapse whitespace so assertions read naturally.
         return (string) preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($html)));
@@ -204,7 +203,7 @@ final class PdfReportSmartTwinTest extends TestCase
             'filename'        => 'report.pdf',
         ]);
 
-        (new PdfReport($this->user, $fileType, $fileStorage, Scan::findByShort(Scan::QUICK)))->handle(app(KengetallenService::class));
+        (new PdfReport($this->user, $fileType, $fileStorage, Scan::findByShort(Scan::QUICK)))->handle();
 
         $this->assertStringStartsWith('%PDF', (string) Storage::disk('downloads')->get('report.pdf'));
     }

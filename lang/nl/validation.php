@@ -442,6 +442,8 @@ return [
 
         // Tool questions
         'tool_questions.name' => 'naam van vraag',
+        'tool_questions.building-contract-type' => 'huurwoning of koopwoning',
+        'tool_questions.monument' => 'monument',
         'tool_questions.help_text' => 'help text van vraag',
 
         // Tool calculation results

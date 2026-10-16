@@ -26,7 +26,10 @@ use Illuminate\Support\Str;
  * the quick scan steps SmartTwin takes over. Everything is read from the dossier (master), the
  * source the rest of Hoomdossier and the report use; SmartTwin's import is what filled it.
  *
- * - General: building type, build year and surface (SmartTwin's Building Data).
+ * - General: building type, build year and surface (SmartTwin's Building Data), and whether the
+ *   dwelling is rented or owned and a monument, where the dossier holds those. SmartTwin does not
+ *   deliver them; they are to be asked up front, at registration (decision
+ *   2026-10-15-smarttwin-rapport-na-omslagpunt, P5).
  * - Energy label: the registered one, and SmartTwin's calculation of the dwelling as it is.
  * - State: per part of the dwelling, the questions SmartTwin fills (FilledQuestions), with the
  *   measures marked as carried out on that part. SmartTwin's figures stay under them as SmartTwin's,
@@ -36,6 +39,9 @@ use Illuminate\Support\Str;
 final class HouseData
 {
     /** The page groups the crawlspace with the floor, which is where the dossier asks about it. */
+    /** The general questions the dossier asks itself rather than SmartTwin. */
+    public const GENERAL_QUESTIONS = ['building-contract-type', 'monument'];
+
     private const PART_OF_ELEMENT = [
         'facade'     => 'facade',
         'floor'      => 'floor',
@@ -44,6 +50,7 @@ final class HouseData
     ];
 
     /**
+     * @param  array<int, array{label: string, answer: string|array<string, mixed>}>  $general
      * @param  array<string, array{rows: array<int, array{label: string, answer: string|array<string, mixed>}>, executed: array<int, array{measure: string, date: Carbon, description: ?string}>}>  $parts
      * @param  array<int, array{label: string, answer: string|array<string, mixed>}>  $usage
      */
@@ -51,6 +58,7 @@ final class HouseData
         public readonly ?BuildingFeature $features,
         public readonly ?string $estimatedEnergyLabel,
         public readonly ?Carbon $calculatedAt,
+        public readonly array $general,
         public readonly array $parts,
         public readonly array $usage,
     )
@@ -72,6 +80,7 @@ final class HouseData
             $features instanceof BuildingFeature ? $features : null,
             $package?->current_result['energyLabel'] ?? null,
             $package?->imported_at,
+            self::rows($building, $master, self::GENERAL_QUESTIONS),
             self::parts($building, $master),
             self::usage($building, $master),
         );
@@ -208,6 +217,28 @@ final class HouseData
                 if (! is_null($row)) {
                     $rows[] = $row;
                 }
+            }
+        }
+
+        return $rows;
+    }
+
+    /**
+     * The questions that have an answer, in the order given.
+     *
+     * @param  array<int, string>  $shorts
+     * @return array<int, array{label: string, answer: string|array<string, mixed>}>
+     */
+    private static function rows(Building $building, InputSource $master, array $shorts): array
+    {
+        $rows = [];
+
+        foreach ($shorts as $short) {
+            $toolQuestion = ToolQuestion::findByShort($short);
+            $row = $toolQuestion instanceof ToolQuestion ? self::row($building, $master, $toolQuestion) : null;
+
+            if (! is_null($row)) {
+                $rows[] = $row;
             }
         }
 

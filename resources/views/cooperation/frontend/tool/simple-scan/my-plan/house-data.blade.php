@@ -41,6 +41,12 @@
                             : null,
                     ])
                 </dl>
+                {{-- Rented or owned, and monument: asked by the dossier itself, only where answered. --}}
+                @if(! empty($houseData->general))
+                    <div class="mt-2">
+                        @include('cooperation.frontend.tool.simple-scan.my-plan.parts.house-data-rows', ['rows' => $houseData->general])
+                    </div>
+                @endif
             </div>
 
             <div class="w-full md:w-1/2 px-3">

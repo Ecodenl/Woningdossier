@@ -189,6 +189,23 @@ final class HouseDataPageTest extends TestCase
         $this->assertSame(['label' => 'Hoeveel mensen wonen er in de woning?', 'answer' => 'Drie'], $usage[0]);
     }
 
+    public function test_rented_or_owned_and_monument_show_under_general_where_answered(): void
+    {
+        $this->switchToSmartTwin();
+        $this->assertSame([], HouseData::for($this->building)->general);
+
+        $contractType = ToolQuestion::findByShort('building-contract-type');
+        $this->answer('building-contract-type', $contractType->getQuestionValues()->first()['value'], InputSource::resident());
+        $this->answer('monument', ToolQuestion::findByShort('monument')->getQuestionValues()->first()['value'], InputSource::resident());
+
+        $general = HouseData::for($this->building)->general;
+        $this->assertSame(
+            [ucfirst(trim($contractType->name)), ucfirst(trim(ToolQuestion::findByShort('monument')->name))],
+            array_column($general, 'label'),
+        );
+        $this->page()->assertSee($general[0]['answer']);
+    }
+
     public function test_the_woonplan_offers_the_page_once_it_is_smart_twins(): void
     {
         $this->switchToSmartTwin();

@@ -23,6 +23,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
 use App\Services\Kengetallen\KengetallenService;
 use App\Services\Models\AlertService;
+use App\Services\SmartTwin\CardCosts;
 use App\Services\SmartTwin\HouseData;
 use App\Services\SmartTwin\WoonplanReport;
 use App\Services\UserActionPlanAdviceService;
@@ -182,18 +183,12 @@ class PdfReport extends NonHandleableJobAfterReset
             ->map(function ($advices) use (&$measureSteps, &$smallMeasureAdvices) {
                 return $advices->map(function ($userActionPlanAdvice) use (&$measureSteps, &$smallMeasureAdvices) {
                     if ($userActionPlanAdvice->category !== UserActionPlanAdviceService::CATEGORY_COMPLETE) {
-                        $costs = $userActionPlanAdvice->costs ?? [];
-                        $from = $costs['from'] ?? null;
-                        $to = $costs['to'] ?? null;
+                        // As the woonplan's card shows them. The rounding here used to be dropped
+                        // (NumberFormatter::round()'s result was not kept), so the report showed
+                        // other amounts than the cards.
+                        $costs = CardCosts::of($userActionPlanAdvice);
 
-                        if (! is_null($from)) {
-                            NumberFormatter::round($from);
-                        }
-                        if (! is_null($to)) {
-                            NumberFormatter::round($to);
-                        }
-
-                        $userActionPlanAdvice->costs = NumberFormatter::range($from, $to);
+                        $userActionPlanAdvice->costs = NumberFormatter::range($costs['from'], $costs['to']);
                         $userActionPlanAdvice->savings_money = NumberFormatter::round($userActionPlanAdvice->savings_money ?? 0);
 
                         if ($userActionPlanAdvice->userActionPlanAdvisable instanceof MeasureApplication) {

@@ -217,9 +217,8 @@ final class PdfReportSmartTwinTest extends TestCase
 
         $this->assertStringContainsString(strip_tags(__('pdf/user-report.pages.action-plan.usage.kengetallen')), $html);
         $this->assertStringContainsString(strip_tags(__('pdf/user-report.pages.action-plan.advices.savings')), $html);
-        // As it always was, rounding included: PdfReport calls NumberFormatter::round() on the costs
-        // but drops what it returns, so they are not on steps of five there (unlike on the cards).
-        $this->assertStringContainsString('Spouwmuurisolatie 1.623', $this->woonplanPageOf($html));
+        // The woonplan's own prices on steps of five, as on its cards.
+        $this->assertStringContainsString('Spouwmuurisolatie 1.625', $this->woonplanPageOf($html));
         $this->assertStringNotContainsString(__('cooperation/frontend/tool.my-plan.package-results.title'), $html);
         $this->assertStringNotContainsString('De berekeningen in dit woonplan zijn gemaakt door Smart Twin', $html);
         // Every step summarised, also those SmartTwin takes over once it is on.

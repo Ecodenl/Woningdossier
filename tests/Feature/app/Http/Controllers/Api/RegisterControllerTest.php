@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Scan;
+use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Services\CooperationScanService;
 use Database\Seeders\DatabaseSeeder;
@@ -294,7 +295,64 @@ final class RegisterControllerTest extends TestCase
         $response->assertJsonValidationErrors('scans.small_measures_enabled', null);
     }
 
+    public function test_contract_type_and_monument_are_saved_for_resident_and_master(): void
+    {
+        // Optional in any cooperation: an API client need not know whether SmartTwin is on.
+        $response = $this->registerWithToolQuestions(['building-contract-type' => 'rented-private', 'monument' => 0]);
+
+        $response->assertStatus(201);
+        $buildingId = $this->buildingIdFor($response);
+        $contractType = ToolQuestion::findByShort('building-contract-type');
+
+        foreach ([InputSource::resident(), InputSource::master()] as $inputSource) {
+            $this->assertDatabaseHas('tool_question_answers', [
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSource->id,
+                'tool_question_id' => $contractType->id,
+                'answer' => 'rented-private',
+            ]);
+            $this->assertDatabaseHas('building_features', [
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSource->id,
+                'monument' => 0,
+            ]);
+        }
+    }
+
+    public function test_contract_type_and_monument_only_accept_their_own_options(): void
+    {
+        // "2" is an option of resident-count: the question's own validation (exists on any custom value) let it through.
+        $response = $this->registerWithToolQuestions(['building-contract-type' => '2', 'monument' => 4]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['tool_questions.building-contract-type', 'tool_questions.monument'], null);
+    }
+
+    public function test_contract_type_and_monument_may_be_null(): void
+    {
+        $response = $this->registerWithToolQuestions(['building-contract-type' => null, 'monument' => null]);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseMissing('tool_question_answers', [
+            'building_id' => $this->buildingIdFor($response),
+            'tool_question_id' => ToolQuestion::findByShort('building-contract-type')->id,
+        ]);
+    }
+
     // TODO: Create test for duplicate contact ID in the same cooperation
+
+    private function registerWithToolQuestions(array $toolQuestions): TestResponse
+    {
+        /** @var Cooperation $cooperation */
+        $cooperation = Cooperation::factory()->create(['country' => Country::NL->value]);
+
+        Sanctum::actingAs(Client::factory()->create(), ['*']);
+
+        $formData = $this->formData[Country::NL->value];
+        $formData['tool_questions'] = $toolQuestions;
+
+        return $this->postJson(route('api.v1.cooperation.register.store', compact('cooperation')), $formData);
+    }
 
     private function registerWithScans(string $cooperationScanType, ?array $scans): TestResponse
     {

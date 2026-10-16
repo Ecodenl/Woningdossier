@@ -26,6 +26,7 @@ final class ElementScopeTest extends TestCase
 
         $withoutElement = MeasureApplication::all()
             ->reject(fn (MeasureApplication $measure) => in_array($measures->stepFor($measure->short), ['small-measures', 'small-measures-lite'], true))
+            ->reject(fn (MeasureApplication $measure) => in_array($measure->short, ElementScope::WITHOUT_ELEMENT, true))
             ->filter(fn (MeasureApplication $measure) => [] === ElementScope::forMeasure($measure->short, $measures->stepFor($measure->short)))
             ->pluck('short')
             ->values()

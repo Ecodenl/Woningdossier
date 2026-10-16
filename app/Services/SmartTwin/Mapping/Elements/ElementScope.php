@@ -7,7 +7,8 @@ namespace App\Services\SmartTwin\Mapping\Elements;
  *
  * Follows the measure's step rather than a list of measures. Every measure of a step works on the
  * same element, so a measure added to a step needs nothing here. The roof is the one place the step
- * is not enough: flat and pitched roofs have measures of their own.
+ * is not enough: flat and pitched roofs have measures of their own. A measure that works on no
+ * element at all is listed in WITHOUT_ELEMENT.
  */
 final class ElementScope
 {
@@ -22,6 +23,14 @@ final class ElementScope
         'heater'                 => [Element::SOLAR_THERMAL],
         'solar-panels'           => [Element::PV],
     ];
+
+    /**
+     * Measures that work on no element, whatever their step: SmartTwin's dwelling model holds nothing
+     * about sun shading or cooking. They sit on a step all the same, because every measure has one —
+     * sun shading on the glazing, the induction hob on the heating — but holding them against that
+     * step's element would store windows or heating details that have nothing to do with them.
+     */
+    public const WITHOUT_ELEMENT = ['sun-shading', 'induction-hob'];
 
     public function __construct(
         public readonly Element $element,
@@ -40,6 +49,10 @@ final class ElementScope
         // against the floor would flag every one of them as a floor SmartTwin forgot to insulate.
         if ('bottom-insulation' === $measureShort) {
             return [new self(Element::CRAWLSPACE)];
+        }
+
+        if (in_array($measureShort, self::WITHOUT_ELEMENT, true)) {
+            return [];
         }
 
         return array_map(

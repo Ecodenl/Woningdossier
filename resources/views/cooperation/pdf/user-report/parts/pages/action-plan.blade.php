@@ -6,6 +6,10 @@
         {{ strip_tags(__('pdf/user-report.pages.action-plan.text')) }}
     </p>
 
+    {{-- Once the woonplan is SmartTwin's: what the woonplan shows; see parts/smart-twin/action-plan. --}}
+    @if($smartTwin)
+        @include('cooperation.pdf.user-report.parts.smart-twin.action-plan')
+    @else
     <div class="group">
         @php $stepShort = $scanShort === \App\Models\Scan::LITE ? 'usage-lite-scan' : 'usage-quick-scan'; @endphp
         <h3>
@@ -132,6 +136,8 @@
             </div>
         @endif
     @endforeach
+
+    @endif
 
     @if($adviceComments->isNotEmpty())
         <div class="group">

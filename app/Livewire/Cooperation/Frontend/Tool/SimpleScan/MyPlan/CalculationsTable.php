@@ -5,6 +5,7 @@ namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 use App\Calculations\Heater;
 use App\Helpers\Arr;
 use App\Helpers\DataTypes\Caster;
+use App\Helpers\Hoomdossier;
 use App\Helpers\Kengetallen;
 use App\Helpers\KengetallenCodes;
 use App\Helpers\ToolQuestionHelper;
@@ -27,6 +28,8 @@ class CalculationsTable extends Component
     public array $tableData;
     public Building $building;
     public InputSource $masterInputSource;
+    /** Whether the woonplan is SmartTwin's; its calculation is then SmartTwin's, not the one below. */
+    public bool $smartTwin = false;
     private KengetallenService $kengetallenService;
 
     private array $toolQuestionShorts = [
@@ -60,6 +63,17 @@ class CalculationsTable extends Component
         $this->kengetallenService = $kengetallenService;
         $this->building = $building;
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->smartTwin = Hoomdossier::smartTwinOwnsWoonplanFor($building);
+
+        // The table explains Hoomdossier's own calculation; there is none to explain after the switch.
+        if ($this->smartTwin) {
+            $this->toolQuestions = collect();
+            $this->toolCalculationResults = collect();
+            $this->tableData = [];
+
+            return;
+        }
+
         $this->setModels();
         $this->setTableData();
     }
@@ -140,7 +154,9 @@ class CalculationsTable extends Component
                     );
                     $this->tableData[$toolQuestion->short]['source'] = $answers[$toolQuestion->id][$firstKey]['input_source_name'] ?? null;
 
-                    if (in_array($toolQuestion->data_type, [Caster::INT, Caster::INT_5, Caster::FLOAT])) {
+                    // getHumanReadableAnswer() already formats INT and FLOAT. Formatting its
+                    // "39,8" a second time reads the comma as the end of the number: 39,0.
+                    if ($toolQuestion->data_type === Caster::INT_5) {
                         $this->tableData[$toolQuestion->short]['value'] = Caster::init()
                             ->dataType($toolQuestion->data_type)
                             ->value($this->tableData[$toolQuestion->short]['value'])

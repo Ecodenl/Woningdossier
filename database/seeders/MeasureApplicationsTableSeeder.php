@@ -1191,6 +1191,8 @@ class MeasureApplicationsTableSeeder extends Seeder
             // add more onderhoudsmaatregelen here!
         ];
 
+        $measureApplications = array_merge($measureApplications, $this->externallyAdvisedMeasures());
+
         foreach ($measureApplications as $measureApplication) {
             // Some steps exist more than once but in that case it doesn't matter as we won't link to them
             // based on step.
@@ -1234,5 +1236,180 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ]
             );
         }
+    }
+
+    /**
+     * Measures that only exist so SmartTwin's solutions can be coupled to them (stuurgroep, 16 October
+     * 2026). See MeasureApplication::EXTERNALLY_ADVISED.
+     *
+     * Their step says which part of the dwelling an advice works on (ElementScope), which is why the
+     * flat roof measure carries "flat" in its short. Sun shading and the induction hob work on none;
+     * see ElementScope::WITHOUT_ELEMENT.
+     *
+     * Costs, cost unit and maintenance are required columns, but only the calculations read them, and
+     * those look measures up by their own shorts. SmartTwin prices these.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function externallyAdvisedMeasures(): array
+    {
+        $measures = [
+            [
+                'name' => 'Zonwering',
+                'short' => 'sun-shading',
+                'step' => 'insulated-glazing',
+                'icon' => 'icon-curtains',
+                'comfort' => 3,
+                'info' => 'Zonwering aan de buitenkant van je ramen houdt de zon tegen voordat die je woning opwarmt. Zo blijft het binnen in de zomer koeler zonder dat je hoeft te koelen, terwijl er nog steeds daglicht binnenkomt.',
+            ],
+            [
+                'name' => 'Gevelisolatie buitenzijde',
+                'short' => 'exterior-wall-insulation',
+                'step' => 'wall-insulation',
+                'icon' => 'icon-wall-insulation-excellent',
+                'comfort' => 5,
+                'info' => 'Geïsoleerde gevels brengen het comfort van je woning omhoog, omdat er minder kou vanuit de muren komt. Bij isolatie aan de buitenkant komt er een isolatielaag op de gevel, met daaroverheen een nieuwe afwerking zoals stucwerk of steenstrips. Je levert binnen geen ruimte in.',
+            ],
+            [
+                'name' => 'Plat dakisolatie binnenkant',
+                'short' => 'roof-insulation-flat-inside',
+                'step' => 'roof-insulation',
+                'icon' => 'icon-flat-roof',
+                'comfort' => 3,
+                'info' => 'Een geïsoleerd dak houdt je woning \'s winters warm en \'s zomers koeler. Bij isolatie aan de binnenkant komt de isolatie tegen de onderkant van het platte dak, afgewerkt met een nieuw plafond. De dakbedekking blijft liggen.',
+            ],
+            [
+                'name' => 'Collectieve combiwarmtepomp buitenlucht',
+                'short' => 'collective-combi-heat-pump-outside-air',
+                'step' => 'verwarming',
+                'icon' => 'icon-heat-pump',
+                'comfort' => 3,
+                'info' => 'Een collectieve warmtepomp haalt warmte uit de buitenlucht en verwarmt daarmee meerdere woningen tegelijk. Als combiwarmtepomp levert hij zowel de verwarming als het warme water, zodat er geen gas meer nodig is. De installatie leg je samen met je buren of de VvE aan.',
+            ],
+            [
+                'name' => 'Glas vervangen dubbelglas',
+                'short' => 'double-glass-only',
+                'step' => 'insulated-glazing',
+                'icon' => 'icon-glass-double',
+                'comfort' => 3,
+                'info' => 'Het glas in je ramen wordt vervangen door dubbel glas. Dat geeft minder warmteverlies en minder kou die van het raam afstraalt. Het kozijn blijft staan.',
+            ],
+            [
+                'name' => 'Glas en kozijn vervangen dubbelglas',
+                'short' => 'double-glass-frames',
+                'step' => 'insulated-glazing',
+                'icon' => 'icon-glass-double',
+                'comfort' => 3,
+                'info' => 'Het glas en het kozijn worden samen vervangen, met dubbel glas. Dat geeft minder warmteverlies, minder kou bij het raam en minder tocht langs het kozijn.',
+            ],
+            [
+                'name' => 'Glas vervangen vacuümglas',
+                'short' => 'vacuum-glass-only',
+                'step' => 'insulated-glazing',
+                'icon' => 'icon-glass-hr-dp',
+                'comfort' => 5,
+                'info' => 'Vacuümglas bestaat uit twee dunne glasplaten met een vacuüm ertussen. Het isoleert ongeveer zo goed als drievoudig glas, maar is veel dunner, waardoor het vaak in je bestaande kozijn past.',
+            ],
+            [
+                'name' => 'Glas en kozijn vervangen vacuümglas',
+                'short' => 'vacuum-glass-frames',
+                'step' => 'insulated-glazing',
+                'icon' => 'icon-window-frame',
+                'comfort' => 5,
+                'info' => 'Het glas en het kozijn worden samen vervangen, met vacuümglas: twee dunne glasplaten met een vacuüm ertussen. Het isoleert ongeveer zo goed als drievoudig glas, en het nieuwe kozijn sluit ook de tocht af.',
+            ],
+            [
+                'name' => 'Glas vervangen zonwerend HR++ glas',
+                'short' => 'solar-control-hrpp-glass-only',
+                'step' => 'insulated-glazing',
+                'icon' => 'icon-glass-hr-dp',
+                'comfort' => 4,
+                'info' => 'Zonwerend HR++ glas isoleert net zo goed als gewoon HR++ glas, maar laat minder zonnewarmte door. Je woning warmt daardoor in de zomer minder op, terwijl er wel daglicht binnenkomt. Het kozijn blijft staan.',
+            ],
+            [
+                'name' => 'Glas en kozijn vervangen zonwerend HR++ glas',
+                'short' => 'solar-control-hrpp-glass-frames',
+                'step' => 'insulated-glazing',
+                'icon' => 'icon-glass-hr-dp',
+                'comfort' => 4,
+                'info' => 'Het glas en het kozijn worden samen vervangen, met zonwerend HR++ glas. Dat isoleert goed en laat minder zonnewarmte door, zodat je woning in de zomer koeler blijft.',
+            ],
+            [
+                'name' => 'Glas en kozijn vervangen zonwerend tripleglas',
+                'short' => 'solar-control-triple-glass-frames',
+                'step' => 'insulated-glazing',
+                'icon' => 'icon-glass-hr-tp',
+                'comfort' => 5,
+                'info' => 'Het glas en het kozijn worden samen vervangen, met drievoudig glas met een zonwerende laag. Het isoleert het best van alle glassoorten en houdt in de zomer zonnewarmte buiten.',
+            ],
+            [
+                'name' => 'Douche wtw',
+                'short' => 'shower-heat-recovery',
+                'step' => 'verwarming',
+                'icon' => 'icon-shower-head',
+                'comfort' => 0,
+                'info' => 'Een douche-wtw (warmteterugwinning) haalt warmte uit het afvoerwater van je douche en verwarmt daarmee het koude water dat naar de douche of de boiler gaat. Zo heb je minder energie nodig voor warm water, zonder korter te douchen.',
+            ],
+            [
+                'name' => 'Aansluiten op collectief warmtenet',
+                'short' => 'district-heating-connect',
+                'step' => 'verwarming',
+                'icon' => 'icon-district-heating',
+                'comfort' => 2,
+                'info' => 'Bij een warmtenet krijg je warmte voor verwarming en warm water via een leidingnet in de wijk. Een cv-ketel en een gasaansluiting zijn dan niet meer nodig. Of er een warmtenet komt, hangt af van je gemeente en de warmteleverancier.',
+            ],
+            [
+                'name' => 'HT-radiatoren',
+                'short' => 'high-temperature-radiators',
+                'step' => 'verwarming',
+                'icon' => 'icon-radiator',
+                'comfort' => 2,
+                'info' => 'Nieuwe hogetemperatuurradiatoren vervangen versleten of te kleine radiatoren. Ze werken met de hoge watertemperatuur van bijvoorbeeld een cv-ketel of een warmtenet.',
+            ],
+            [
+                'name' => 'LT-radiatoren',
+                'short' => 'low-temperature-radiators',
+                'step' => 'verwarming',
+                'icon' => 'icon-radiator-low-temp',
+                'comfort' => 3,
+                'info' => 'Lagetemperatuurradiatoren hebben een groter oppervlak of ingebouwde ventilatoren, zodat ze je woning ook warm krijgen met water van een lagere temperatuur. Dat is nodig om goed met een warmtepomp te verwarmen, en het geeft een gelijkmatige warmte.',
+            ],
+            [
+                'name' => 'Vloerverwarming',
+                'short' => 'floor-heating',
+                'step' => 'verwarming',
+                'icon' => 'icon-floor-heating',
+                'comfort' => 4,
+                'info' => 'Vloerverwarming verwarmt je woning via leidingen in de vloer. De warmte komt gelijkmatig van onderaf. Omdat het werkt met een lage watertemperatuur, past het goed bij een warmtepomp.',
+            ],
+            [
+                'name' => 'Inductie kookplaat',
+                'short' => 'induction-hob',
+                'step' => 'verwarming',
+                'icon' => 'icon-induction',
+                'comfort' => 0,
+                'info' => 'Een inductiekookplaat kookt op elektriciteit in plaats van gas. Hij is zuinig, snel en makkelijk schoon te houden, en helpt om je woning helemaal van het gas af te halen.',
+            ],
+        ];
+
+        // has_calculations is left at its default. Without calculations, the super admin's edit form
+        // asks for a cost range and a saving, which SmartTwin gives per advice instead.
+        return array_map(fn (array $measure) => [
+            'measure_type' => MeasureApplication::EXTERNALLY_ADVISED,
+            'measure_name' => ['nl' => $measure['name']],
+            'measure_info' => ['nl' => $measure['info']],
+            'short' => $measure['short'],
+            'application' => 'place',
+            'costs' => 0,
+            'cost_unit' => ['nl' => 'per stuk'],
+            'minimal_costs' => 0,
+            'maintenance_interval' => 0,
+            'maintenance_unit' => ['nl' => 'jaar'],
+            'step' => $measure['step'],
+            'configurations' => [
+                'comfort' => $measure['comfort'],
+                'icon' => $measure['icon'],
+            ],
+        ], $measures);
     }
 }

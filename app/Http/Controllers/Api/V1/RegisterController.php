@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\RoleHelper;
+use App\Helpers\ScanAvailabilityHelper;
+use App\Helpers\SmallMeasuresSettingHelper;
 use App\Helpers\Str;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Controllers\Controller;
@@ -12,6 +14,7 @@ use App\Http\Requests\Api\V1\Cooperation\RegisterFormRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
+use App\Models\Scan;
 use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Services\ToolQuestionService;
@@ -112,6 +115,23 @@ class RegisterController extends Controller
 
         // At this point, a user can't register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user, $user->building);
+
+        // Without scan settings the building simply follows those of the cooperation.
+        $scanType = $requestData['scans']['type'] ?? null;
+        if (! is_null($scanType)) {
+            ScanAvailabilityHelper::syncAvailability($user->building, $scanType, $cooperation);
+        }
+
+        // Only the quick scan has optional small measures, the lite scan always requires them.
+        $smallMeasuresEnabled = $requestData['scans']['small_measures_enabled'] ?? null;
+        if (! is_null($smallMeasuresEnabled)) {
+            SmallMeasuresSettingHelper::syncOverride(
+                $user->building,
+                Scan::quick(),
+                filter_var($smallMeasuresEnabled, FILTER_VALIDATE_BOOLEAN),
+                $cooperation
+            );
+        }
 
         // Get input sources by name (unique)
         $inputSources = [];

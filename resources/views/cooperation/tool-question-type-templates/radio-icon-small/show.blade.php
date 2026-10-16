@@ -1,4 +1,5 @@
-<div class="w-full flex justify-between">
+{{-- Wraps: with the labels above A there are thirteen options, more than fit on one line. --}}
+<div class="w-full flex flex-wrap gap-2">
     @php
         $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
             ->forInputSource($masterInputSource)
@@ -24,6 +25,9 @@
                             </span>
                 <span class="checkmark"></span>
                 <span>{{$toolQuestionValue['name']}}</span>
+                @if(! empty($toolQuestionValue['extra']['caption']))
+                    <span class="media-caption">{{ $toolQuestionValue['extra']['caption'] }}</span>
+                @endif
             </label>
         </div>
     @endforeach

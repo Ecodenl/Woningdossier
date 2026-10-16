@@ -62,8 +62,11 @@
             </div>
         </div>
         <div class="float-right">
-            @if(($logo = $userCooperation->firstMedia(MediaHelper::LOGO)) instanceof \App\Models\Media)
-                <img class="float-right" src="{{ route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $logo]) }}" alt="{{ $userCooperation->name }}"
+            {{-- Local paths rather than the media route: mPDF would fetch those over HTTP without a
+                 session, which is what forced the media policy to hand these out to anyone. --}}
+            @if(($logo = $userCooperation->firstMedia(MediaHelper::LOGO)) instanceof \App\Models\Media
+                && ! is_null($logoPath = MediaHelper::localPath($logo)))
+                <img class="float-right" src="{{ $logoPath }}" alt="{{ $userCooperation->name }}"
                      style="max-height: 250px;">
             @else
                 <h3>
@@ -74,10 +77,12 @@
     </div>
 
     <div class="text-center mt-10" style="height: 500px;">
-        @if(($buildingBackground = $building->firstMedia(\App\Helpers\MediaHelper::BUILDING_IMAGE)) instanceof \App\Models\Media)
-            <img src="{{ route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $buildingBackground]) }}" alt="{{$userCooperation->name}}" style="max-height: 500px; width: auto;">
-        @elseif(($pdfBackground = $userCooperation->firstMedia(MediaHelper::PDF_BACKGROUND)) instanceof \App\Models\Media)
-            <img src="{{ route('cooperation.media.serve', ['cooperation' => $userCooperation, 'media' => $pdfBackground]) }}" alt="{{$userCooperation->name}}" style="max-height: 500px; width: auto;">
+        @if(($buildingBackground = $building->firstMedia(\App\Helpers\MediaHelper::BUILDING_IMAGE)) instanceof \App\Models\Media
+            && ! is_null($buildingPath = MediaHelper::localPath($buildingBackground)))
+            <img src="{{ $buildingPath }}" alt="{{$userCooperation->name}}" style="max-height: 500px; width: auto;">
+        @elseif(($pdfBackground = $userCooperation->firstMedia(MediaHelper::PDF_BACKGROUND)) instanceof \App\Models\Media
+            && ! is_null($pdfBackgroundPath = MediaHelper::localPath($pdfBackground)))
+            <img src="{{ $pdfBackgroundPath }}" alt="{{$userCooperation->name}}" style="max-height: 500px; width: auto;">
         @else
             <img src="{{ asset('images/background.jpg') }}" alt="{{$userCooperation->name}}" style="max-height: 500px; width: auto;">
         @endif

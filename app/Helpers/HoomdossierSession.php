@@ -6,6 +6,7 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Role;
+use App\Models\Scan;
 use App\Helpers\Cache\Building as BuildingCache;
 use App\Helpers\Cache\Cooperation as CooperationCache;
 use App\Helpers\Cache\InputSource as InputSourceCache;
@@ -190,6 +191,34 @@ class HoomdossierSession extends Session
     public static function setBuilding(Building $building): void
     {
         self::setHoomdossierSession('building_id', $building->id);
+    }
+
+    /**
+     * Remember the simple scan last opened for the current building, so pages without a scan in their
+     * route (the dashboard, my account) lead back into the scan the user chose rather than whichever
+     * comes first.
+     */
+    public static function setScan(Scan $scan): void
+    {
+        self::setHoomdossierSession('scan', [
+            'building_id' => (int) self::getBuilding(),
+            'scan_id' => $scan->id,
+        ]);
+    }
+
+    /**
+     * The scan remembered by setScan(). Tied to the building it was opened for: a coach moving on to
+     * the next building should not be dropped into the scan they used for the last one.
+     */
+    public static function getScan(): ?Scan
+    {
+        $remembered = self::getHoomdossierSession('scan');
+
+        if (! is_array($remembered) || $remembered['building_id'] !== (int) self::getBuilding()) {
+            return null;
+        }
+
+        return Scan::find($remembered['scan_id']);
     }
 
     /**

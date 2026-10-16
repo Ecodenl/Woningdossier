@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
  * @OA\Info(
  *      version="1.0.0",
  *      title="Hoomdossier API documentation",
- *      description="Bliep",
+ *      description="Hoomdossier API",
  *      @OA\Contact(
  *          email="info@wedesignit.nl"
  *      ),

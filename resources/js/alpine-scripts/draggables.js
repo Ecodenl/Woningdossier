@@ -29,7 +29,7 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                 let target = this.getSupportedTarget(eventTarget);
 
                 // If the dropped target is itself, we don't need to do anything
-                if (null !== target && eventTarget !== this.dragged) {
+                if (null !== target && eventTarget !== this.dragged && this.accepts(target)) {
                     let clientX = this.$event.clientX;
                     let clientY = this.$event.clientY;
 
@@ -86,7 +86,10 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
 
                 // getSupportedTarget will check eventTarget. We won't get anything back if eventTarget is an invalid
                 // nodeType. Therefore we don't need to check it multiple times
-                if (null !== target) {
+                if (null !== target && ! this.accepts(target)) {
+                    // No ghost where the card may not go.
+                    this.clearGhost();
+                } else if (null !== target) {
                     // We don't need to check anything if it's a ghost
                     if (! eventTarget.classList.contains('draggable-ghost')) {
                         if (eventTarget === this.dragged) {
@@ -138,7 +141,7 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                 let eventTarget = this.$event.target;
                 let target = this.getSupportedTarget(eventTarget);
 
-                if (null !== target) {
+                if (null !== target && this.accepts(target)) {
                     target.style.backgroundColor = this.hoverColor;
                 }
 
@@ -194,7 +197,7 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                 let eventTarget = this.$event.target;
                 let target = this.getSupportedTarget(eventTarget);
 
-                if (null !== target) {
+                if (null !== target && this.accepts(target)) {
                     target.style.backgroundColor = this.trashColor;
                     target.style.transform = 'scale(1.2)';
                 }
@@ -224,7 +227,9 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                 if (null !== target) {
                     target.style.backgroundColor = '';
                     target.style.transform = 'scale(1)';
+                }
 
+                if (null !== target && this.accepts(target)) {
                     let parentElement = this.dragged.parentElement;
                     // Remove dragged item from original parent
                     parentElement.removeChild(this.dragged);
@@ -241,6 +246,29 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                 }
             }
         },
+    },
+    accepts(target) {
+        // A card may say where it may go: data-targets lists the categories it may be dropped in,
+        // data-trashable whether the trash takes it. Without them, everything goes, as it always did.
+        // The server checks the same rules; this only spares a card the trip there and back.
+        if (null === this.dragged || null === target) {
+            return false;
+        }
+
+        if (target.classList.contains('trash')) {
+            return this.dragged.dataset.trashable !== '0';
+        }
+
+        let targets = this.dragged.dataset.targets;
+        if (! targets) {
+            return true;
+        }
+
+        try {
+            return JSON.parse(targets).includes(target.getAttribute('data-category'));
+        } catch (e) {
+            return true;
+        }
     },
     getSupportedTarget(element) {
         let target = null;

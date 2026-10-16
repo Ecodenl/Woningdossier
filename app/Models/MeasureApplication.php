@@ -82,6 +82,14 @@ class MeasureApplication extends Model
 
     const string ENERGY_SAVING = 'energy_saving';
     const string MAINTENANCE = 'maintenance';
+    /**
+     * A measure only an outside party advises — SmartTwin, through a coupling of one of its
+     * solutions. Hoomdossier asks nothing about it and calculates nothing for it; it reaches a
+     * woonplan through the SmartTwin import alone. Not being ENERGY_SAVING keeps it out of the user
+     * cost and execute questions, the old expert pages and the category logic, which all take every
+     * energy saving measure (of a step).
+     */
+    const string EXTERNALLY_ADVISED = 'externally_advised';
 
     protected $translatable = [
         'measure_name', 'measure_info', 'cost_unit', 'maintenance_unit',

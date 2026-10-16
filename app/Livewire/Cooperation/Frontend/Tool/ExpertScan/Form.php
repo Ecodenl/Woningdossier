@@ -13,6 +13,7 @@ use App\Helpers\DataTypes\Caster;
 use App\Helpers\Hoomdossier;
 use App\Helpers\ToolQuestionHelper;
 use App\Livewire\Cooperation\Frontend\Tool\Scannable;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
@@ -86,6 +87,11 @@ class Form extends Scannable
         }
 
         return $toolQuestions;
+    }
+
+    protected function scanBeingAsked(): Scan
+    {
+        return $this->step->scan;
     }
 
     public function inputUpdated(): void
@@ -186,6 +192,15 @@ class Form extends Scannable
 
     public function saveFilledInAnswers(): Redirector|RedirectResponse
     {
+        // A page opened before the woonplan went over to SmartTwin can still post here; the route
+        // middleware does not see Livewire requests. See EnsureExpertScanAvailable.
+        if (Hoomdossier::smartTwinOwnsWoonplanFor($this->building)) {
+            return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index', [
+                'cooperation' => $this->building->user->cooperation,
+                'scan'        => Scan::quick(),
+            ]);
+        }
+
         if ($this->dirty) {
             $stepShortsToRecalculate = [];
             $shouldDoFullRecalculate = false;

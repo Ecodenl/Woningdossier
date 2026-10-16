@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Deprecation\ToolHelper;
+use App\Enums\AdviceSource;
 use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
+use App\Helpers\Hoomdossier;
 use App\Helpers\Queue;
 use App\Helpers\StepHelper;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
@@ -21,6 +23,7 @@ use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\Models\NotificationService;
 use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Services\Verbeterjehuis\RegulationService;
@@ -147,19 +150,157 @@ class UserActionPlanAdviceService
             ->get();
 
         // now delete the old advices, the one for the given input source and the master source.
+        // Advices with a source belong to whoever produced them and survive a recalculation; see
+        // App\Enums\AdviceSource. Deleting them here would throw away an external advice the moment
+        // anything triggers a recalculation of its step. A measure the resident carried out survives
+        // too, with or without SmartTwin: it is their record, with documents tied to it, not a
+        // calculated result (see ExecutedAdviceService).
         UserActionPlanAdvice::forUser($user)
             ->forInputSource($masterInputSource)
             ->forStep($step)
             ->withInvisible()
+            ->whereNull('source')
+            ->whereNull('executed_at')
             ->delete();
 
         UserActionPlanAdvice::forUser($user)
             ->forInputSource($inputSource)
             ->forStep($step)
             ->withInvisible()
+            ->whereNull('source')
+            ->whereNull('executed_at')
             ->delete();
 
         return $oldAdvices;
+    }
+
+    /**
+     * Whether something other than the calculation already owns the advice for this measure.
+     *
+     * The calculation runs per step and does not know that a measure inside it was priced
+     * elsewhere, so this is what keeps it from putting a second card for the same measure next to
+     * the first.
+     */
+    public static function isOwnedExternally(UserActionPlanAdvice $userActionPlanAdvice): bool
+    {
+        if (! is_null($userActionPlanAdvice->source)) {
+            // The externally owned advice itself, on its way in.
+            return false;
+        }
+
+        $ownedForThisMeasure = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+            ->allInputSources()
+            ->where('user_id', $userActionPlanAdvice->user_id)
+            ->where('input_source_id', $userActionPlanAdvice->input_source_id)
+            ->where('user_action_plan_advisable_type', $userActionPlanAdvice->user_action_plan_advisable_type)
+            ->where('user_action_plan_advisable_id', $userActionPlanAdvice->user_action_plan_advisable_id)
+            ->whereNotNull('source')
+            ->exists();
+
+        return $ownedForThisMeasure
+            || self::isExecuted($userActionPlanAdvice)
+            || self::isReplacedBySmartTwin($userActionPlanAdvice);
+    }
+
+    /**
+     * Whether the resident carried this measure out. Its card is theirs from then on: a calculation
+     * may not put a second card next to it, nor move it (a step recalculation would file the new
+     * card by the current situation). Asked of master, the row the woonplan shows.
+     */
+    private static function isExecuted(UserActionPlanAdvice $userActionPlanAdvice): bool
+    {
+        return UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $userActionPlanAdvice->user_id)
+            ->where('input_source_id', InputSource::master()->id)
+            ->where('user_action_plan_advisable_type', $userActionPlanAdvice->user_action_plan_advisable_type)
+            ->where('user_action_plan_advisable_id', $userActionPlanAdvice->user_action_plan_advisable_id)
+            ->whereNotNull('executed_at')
+            ->exists();
+    }
+
+    /**
+     * Whether SmartTwin's advice takes the place of this calculated one.
+     *
+     * Once SmartTwin advised a building, its woonplan is SmartTwin's advice plus what the resident
+     * chose; the calculated advices SmartTwin replaces are removed (removeAdvicesReplacedBySmartTwin())
+     * and must not come back with the next recalculation. That holds from the switch on, see
+     * Hoomdossier::smartTwinOwnsWoonplanFor(). Switching the cooperation off turns the switch back
+     * at once, and removes the SmartTwin advices, after which the calculation fills the woonplan
+     * again.
+     */
+    private static function isReplacedBySmartTwin(UserActionPlanAdvice $userActionPlanAdvice): bool
+    {
+        if (! self::isReplaceableBySmartTwin($userActionPlanAdvice)) {
+            return false;
+        }
+
+        $user = User::forAllCooperations()->find($userActionPlanAdvice->user_id);
+        $building = $user?->building;
+
+        if (! $building instanceof Building) {
+            return false;
+        }
+
+        // Saves looking the user up a second time to find the cooperation.
+        $building->setRelation('user', $user);
+
+        return Hoomdossier::smartTwinOwnsWoonplanFor($building);
+    }
+
+    /**
+     * The calculated advices SmartTwin replaces: those for a measure application, except the small
+     * measures. A small measure is something the resident said they do or want to do, not something
+     * the calculation came up with, and SmartTwin's advice does not cover it. What the resident added
+     * themselves or chose from the cooperation's offer is not a measure application and stays too.
+     */
+    private static function isReplaceableBySmartTwin(UserActionPlanAdvice $userActionPlanAdvice): bool
+    {
+        if ($userActionPlanAdvice->user_action_plan_advisable_type !== MeasureApplication::class) {
+            return false;
+        }
+
+        $smallMeasures = Step::findByShort('small-measures');
+
+        return ! ($smallMeasures instanceof Step && (int) $userActionPlanAdvice->step_id === $smallMeasures->id);
+    }
+
+    /**
+     * Removes the calculated advices SmartTwin's advice takes the place of (see
+     * isReplaceableBySmartTwin()), for every input source. Master is part of the query on purpose:
+     * deleting an advice is not passed on to master the way saving one is.
+     *
+     * @return int The number of advices removed.
+     */
+    public static function removeAdvicesReplacedBySmartTwin(Building $building): int
+    {
+        $smallMeasures = Step::findByShort('small-measures');
+
+        return UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $building->user_id)
+            ->whereNull('source')
+            ->where('user_action_plan_advisable_type', MeasureApplication::class)
+            ->when($smallMeasures instanceof Step, fn ($query) => $query->where(
+                fn ($query) => $query->whereNull('step_id')->orWhere('step_id', '!=', $smallMeasures->id),
+            ))
+            // A measure the resident carried out stays; see ExecutedAdviceService.
+            ->whereNull('executed_at')
+            ->delete();
+    }
+
+    /**
+     * Removes the SmartTwin advices of a building, for every input source, master included.
+     *
+     * @return int The number of advices removed.
+     */
+    public static function removeSmartTwinAdvices(Building $building): int
+    {
+        return UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $building->user_id)
+            ->where('source', AdviceSource::SMART_TWIN)
+            // A measure the resident carried out stays. An import that advises it again updates it
+            // in place, so its date, description and documents carry over (V3).
+            ->whereNull('executed_at')
+            ->delete();
     }
 
     /**
@@ -348,9 +489,12 @@ class UserActionPlanAdviceService
                     $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
                     $elementValue = ElementValue::find($answer);
                     if ($elementValue instanceof ElementValue) {
-                        // If the value is 1 or 2 (onbekend, geen), we want it in to-do
-                        // If it's "niet van toepassing" it should be hidden, so we don't worry about it
-                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                        // Anything that still needs insulating goes in to-do. Where that boundary
+                        // sits differs per element — the floor scale has a Slechte isolatie the
+                        // others do not — so the element value answers it rather than a literal.
+                        // "Niet van toepassing" ends up on the insulated side, which is fine: it is
+                        // hidden anyway.
+                        $category = $elementValue->countsAsInsulated() ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     }
                     break;
 
@@ -383,9 +527,7 @@ class UserActionPlanAdviceService
                     // Now we have the element value of the relevant roof type, so we set the category
                     $elementValue = ElementValue::find($elementValueId);
                     if ($elementValue instanceof ElementValue) {
-                        // If the value is 1 or 2 (onbekend, geen), we want it in to-do
-                        // If it's "niet van toepassing" it should be hidden, so we don't worry about it
-                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                        $category = $elementValue->countsAsInsulated() ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     }
                     break;
 

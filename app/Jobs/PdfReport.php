@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\MyRegulationHelper;
 use App\Helpers\NumberFormatter;
@@ -22,6 +23,8 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
 use App\Services\Kengetallen\KengetallenService;
 use App\Services\Models\AlertService;
+use App\Services\SmartTwin\HouseData;
+use App\Services\SmartTwin\WoonplanReport;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Support\Facades\App;
@@ -167,7 +170,15 @@ class PdfReport extends NonHandleableJobAfterReset
             ->forInputSource($inputSource)
             ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE, $inputSource)
             ->with(['userActionPlanAdvisable' => fn ($q) => $q->withoutGlobalScope(GetValueScope::class)])
-            ->getCategorized()
+            ->getCategorized();
+
+        // Once the woonplan is SmartTwin's, the report shows what the woonplan shows (decision
+        // 2026-10-15-smarttwin-rapport-na-omslagpunt). Read before the costs below are formatted.
+        $smartTwin = Hoomdossier::smartTwinOwnsWoonplanFor($building);
+        $woonplanReport = $smartTwin ? WoonplanReport::from($building, $categorizedAdvices) : null;
+        $houseData = $smartTwin ? HouseData::for($building) : null;
+
+        $categorizedAdvices = $categorizedAdvices
             ->map(function ($advices) use (&$measureSteps, &$smallMeasureAdvices) {
                 return $advices->map(function ($userActionPlanAdvice) use (&$measureSteps, &$smallMeasureAdvices) {
                     if ($userActionPlanAdvice->category !== UserActionPlanAdviceService::CATEGORY_COMPLETE) {
@@ -260,10 +271,12 @@ class PdfReport extends NonHandleableJobAfterReset
             ->building($building)
             ->getAlerts();
 
-        $subsidyRegulations = MyRegulationHelper::getRelevantRegulations(
-            $building,
-            $inputSource
-        )[RegulationService::SUBSIDY] ?? [];
+        // With a SmartTwin woonplan its subsidy is SmartTwin's, for the package; see
+        // Hoomdossier::showsVerbeterjehuisSubsidyFor().
+        $showsVerbeterjehuisSubsidy = Hoomdossier::showsVerbeterjehuisSubsidyFor($building);
+        $subsidyRegulations = $showsVerbeterjehuisSubsidy
+            ? (MyRegulationHelper::getRelevantRegulations($building, $inputSource)[RegulationService::SUBSIDY] ?? [])
+            : [];
 
         $kengetallenService = $kengetallenService
             ->forInputSource($inputSource)
@@ -288,7 +301,11 @@ class PdfReport extends NonHandleableJobAfterReset
             'adviceComments',
             'alerts',
             'subsidyRegulations',
-            'kengetallenService'
+            'kengetallenService',
+            'smartTwin',
+            'woonplanReport',
+            'houseData',
+            'showsVerbeterjehuisSubsidy',
         ))->output();
 
         // save the pdf report

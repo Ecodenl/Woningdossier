@@ -17,6 +17,7 @@ use App\Models\Scan;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
+use App\Services\SmartTwin\RegistrationQuestions;
 use App\Services\UserService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Gate;
@@ -57,6 +58,12 @@ trait CreatesUsers
         $user = UserService::register($cooperation, $roles, $input);
         $account = $user->account;
         $building = $user->building;
+
+        // As the API does with its tool questions: for the input source of each role the user has.
+        if (RegistrationQuestions::askedFor($cooperation)) {
+            $inputSources = $user->roles()->with('inputSource')->get()->pluck('inputSource')->filter()->unique('id');
+            RegistrationQuestions::save($building, $inputSources, $requestData['tool_questions'] ?? []);
+        }
 
         // at this point, a user cant register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user, $building);

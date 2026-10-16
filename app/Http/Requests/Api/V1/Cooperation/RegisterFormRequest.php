@@ -15,6 +15,7 @@ use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
 use App\Services\CooperationScanService;
+use App\Services\SmartTwin\RegistrationQuestions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -80,12 +81,17 @@ class RegisterFormRequest extends ApiRequest
             unset($rules['email']);
         }
 
+        // Optional here, also in a cooperation with SmartTwin: requiring them would break existing calls. Their
+        // own validation would let the short of any question's option through, so they get their options instead.
+        $registrationRules = RegistrationQuestions::rules(false);
+
         $toolQuestionAnswers = $this->input('tool_questions', []);
         foreach ($toolQuestionAnswers as $toolQuestionShort => $toolQuestionAnswer) {
             if (in_array($toolQuestionShort, ToolQuestionHelper::SUPPORTED_API_SHORTS)) {
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                 if ($toolQuestion instanceof ToolQuestion) {
-                    $rules["tool_questions.{$toolQuestionShort}"] = $toolQuestion->validation;
+                    $rules["tool_questions.{$toolQuestionShort}"] = $registrationRules["tool_questions.{$toolQuestionShort}"]
+                        ?? $toolQuestion->validation;
                 }
             }
         }

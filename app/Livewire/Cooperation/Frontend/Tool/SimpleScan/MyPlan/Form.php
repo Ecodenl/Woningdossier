@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
-use App\Enums\AdviceSource;
 use App\Models\Step;
 use Illuminate\Support\Facades\Gate;
 use App\Helpers\Calculation\BankInterestCalculator;
@@ -25,6 +24,7 @@ use App\Scopes\VisibleScope;
 use App\Services\Models\NotificationService;
 use App\Services\Models\UserCostService;
 use App\Services\ExecutedAdviceService;
+use App\Services\SmartTwin\CardCosts;
 use App\Services\SmartTwin\PackageResults;
 use App\Services\SmartTwin\SharedWoonplan;
 use App\Services\SmartTwin\SmartTwinHandOff;
@@ -413,6 +413,12 @@ class Form extends CustomMeasureForm
     public function smartTwinOwnsWoonplan(): bool
     {
         return Hoomdossier::smartTwinOwnsWoonplanFor($this->building);
+    }
+
+    #[Computed]
+    public function showsVerbeterjehuisSubsidy(): bool
+    {
+        return Hoomdossier::showsVerbeterjehuisSubsidyFor($this->building);
     }
 
     protected function categoryForNewMeasure(): string
@@ -897,9 +903,8 @@ class Form extends CustomMeasureForm
             }
 
             $cards[$category][$order]['has_user_costs'] = $hasUserCosts;
-            // SmartTwin gives the subsidy for the package as a whole; once the woonplan is SmartTwin's,
-            // the Verbeterjehuis subsidy per measure is not shown. Loans wait for the stuurgroep (F1c).
-            $cards[$category][$order]['subsidy_available'] = ! $this->smartTwinOwnsWoonplan && $advice->subsidy_available;
+            // See Hoomdossier::showsVerbeterjehuisSubsidyFor(). Loans wait for the stuurgroep (F1c).
+            $cards[$category][$order]['subsidy_available'] = $this->showsVerbeterjehuisSubsidy && $advice->subsidy_available;
             $cards[$category][$order]['loan_available'] = $advice->loan_available;
 
             $cards[$category][$order]['id'] = $advice->id;
@@ -918,14 +923,8 @@ class Form extends CustomMeasureForm
             $cards[$category][$order]['in_package'] = ! is_null($kind)
                 && $advice->user_action_plan_advisable_type === MeasureApplication::class
                 && in_array((int) $advice->user_action_plan_advisable_id, $this->packageMeasureIds, true);
-            // SmartTwin's prices are not rounded to steps of five, the woonplan's own still are; both
-            // are shown in whole euros (Patrick, 15 October 2026). The lines under the columns show
-            // these same amounts, so a card and its line never differ; see PackageResults.
-            $fromSmartTwin = AdviceSource::SMART_TWIN === $advice->source;
-            $cards[$category][$order]['costs'] = [
-                'from' => empty($advice->costs['from']) ? null : ($fromSmartTwin ? (float) $advice->costs['from'] : NumberFormatter::round($advice->costs['from'])),
-                'to' => empty($advice->costs['to']) ? null : ($fromSmartTwin ? (float) $advice->costs['to'] : NumberFormatter::round($advice->costs['to'])),
-            ];
+            // The lines under the columns and the report show these same amounts; see CardCosts.
+            $cards[$category][$order]['costs'] = CardCosts::of($advice);
             // Null rather than zero when there is no saving: an advice that came from elsewhere may
             // carry a price without one, and "€ 0" reads to a resident as "this gains you nothing".
             // The card hides it; the sums below treat it as zero, because an unknown cannot be added.

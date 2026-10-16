@@ -97,4 +97,15 @@ final class SmartTwinSwitchTest extends TestCase
 
         $this->assertFalse($this->switched());
     }
+
+    public function test_the_verbeterjehuis_subsidy_shows_until_the_switch(): void
+    {
+        $this->assertTrue(Hoomdossier::showsVerbeterjehuisSubsidyFor($this->building->fresh()));
+
+        $this->advice(InputSource::COACH_SHORT, AdviceSource::SMART_TWIN);
+
+        // SmartTwin's subsidy for the package takes its place, until the stuurgroep decides otherwise.
+        $this->assertFalse(Hoomdossier::VERBETERJEHUIS_SUBSIDY_WITH_SMART_TWIN);
+        $this->assertFalse(Hoomdossier::showsVerbeterjehuisSubsidyFor($this->building->fresh()));
+    }
 }

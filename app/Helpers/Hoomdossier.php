@@ -98,9 +98,9 @@ class Hoomdossier
     {
         return static::smartTwinEnabledFor(static::cooperationOf($building))
             && UserActionPlanAdvice::withoutGlobalScopes()
-                ->where('user_id', $building->user_id)
-                ->where('source', AdviceSource::SMART_TWIN)
-                ->exists();
+            ->where('user_id', $building->user_id)
+            ->where('source', AdviceSource::SMART_TWIN)
+            ->exists();
     }
 
     /**

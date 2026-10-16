@@ -139,7 +139,7 @@ class BuildingDataService
             // As for an import: the input source's row is what master becomes (see DwellingRows).
             $this->dwellingRows->equalizeToMaster($building, $inputSource);
 
-            $category =BuildingTypeCategory::where('short', self::CATEGORIES[(int) ($data['buildingType'] ?? 0)] ?? null)->first();
+            $category = BuildingTypeCategory::where('short', self::CATEGORIES[(int) ($data['buildingType'] ?? 0)] ?? null)->first();
 
             if ($category instanceof BuildingTypeCategory) {
                 // Read before writing: the write copies the input source's row to master.

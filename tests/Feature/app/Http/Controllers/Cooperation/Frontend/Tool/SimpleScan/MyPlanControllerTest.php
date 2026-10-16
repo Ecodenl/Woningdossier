@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\app\Http\Controllers\Cooperation\Frontend\Tool\SimpleScan;
 
+use App\Enums\AdviceSource;
 use App\Enums\SmartTwin\EventType;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
@@ -340,6 +341,78 @@ final class MyPlanControllerTest extends TestCase
             'cooperation' => $this->cooperation,
             'scan' => $this->scan,
         ]));
+    }
+
+    private function addAdvice(?AdviceSource $source = null): void
+    {
+        UserActionPlanAdvice::withoutGlobalScopes()->create([
+            'user_id' => $this->building->user->id,
+            'input_source_id' => InputSource::findByShort(InputSource::MASTER_SHORT)->id,
+            'user_action_plan_advisable_type' => MeasureApplication::class,
+            'user_action_plan_advisable_id' => MeasureApplication::first()->id,
+            'category' => \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO,
+            'source' => $source,
+        ]);
+    }
+
+    public function test_a_woonplan_from_before_smart_twin_advises_a_report_first(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+
+        // SmartTwin's first advice replaces the calculated measures, so the current plan is lost
+        // unless it is kept in a report before the check.
+        $this->addAdvice();
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $response->assertSee(__('cooperation/frontend/tool.my-plan.smarttwin.report-first.title'), false);
+    }
+
+    public function test_no_report_is_advised_once_smart_twin_advised(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+
+        $this->addAdvice();
+        $this->addAdvice(AdviceSource::SMART_TWIN);
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.smarttwin.report-first.title'), false);
+    }
+
+    public function test_no_report_is_advised_when_the_cooperation_does_not_take_part(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->cooperation->update(['smarttwin_enabled' => false]);
+        $this->linkSmartTwinAccount();
+
+        $this->addAdvice();
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.smarttwin.report-first.title'), false);
+    }
+
+    public function test_no_report_is_advised_to_someone_who_cannot_go_to_smart_twin(): void
+    {
+        $this->enableSmartTwin(true);
+
+        // An Advisor user in a resident session: there is no hand-off, so nothing to advise before.
+        $account = $this->building->user->account;
+        $account->linkSmartTwinUser('st-user-1', UserRole::Advisor);
+        $this->actingAs($account->fresh());
+
+        $this->addAdvice();
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.smarttwin.report-first.title'), false);
     }
 
     /**

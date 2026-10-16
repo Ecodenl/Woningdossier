@@ -15,6 +15,9 @@ use App\Models\SmartTwinPackage;
  * rounded once (Patrick, 15 October 2026). Sums add up without floating point noise. What SmartTwin calculated (saving, subsidy, label, use, CO2) is for the package as a whole,
  * so it is only there while the woonplan still holds the package; otherwise the woonplan asks for a
  * new calculation instead (woonplan design "Pagina 2").
+ *
+ * A package card moved to "Later uitvoeren" leaves the package intact (stuurgroep): its line and its
+ * costs leave the total, while SmartTwin's figures, which include it, stay.
  */
 final readonly class PackageResults
 {

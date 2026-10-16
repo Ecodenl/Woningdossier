@@ -33,9 +33,9 @@ use Livewire\Livewire;
 use Tests\TestCase;
 
 /**
- * The card rules of a SmartTwin woonplan, enforced by the woonplan itself: a package card stays in
- * "Nu aanpakken" and out of the trash, an own or small measure moves freely, and into "In orde"
- * asks for the "uitgevoerd" popup instead of moving.
+ * The card rules of a SmartTwin woonplan, enforced by the woonplan itself: a package card and an own
+ * or small measure move freely between "Nu aanpakken" and "Later uitvoeren" and may go in the trash,
+ * and into "In orde" asks for the "uitgevoerd" popup instead of moving.
  */
 final class SmartTwinCardRulesTest extends TestCase
 {
@@ -133,13 +133,39 @@ final class SmartTwinCardRulesTest extends TestCase
         return collect($woonplan->get('cards'))->flatten(1)->firstWhere('id', $card->id);
     }
 
-    public function test_a_package_card_does_not_move_to_later(): void
+    public function test_a_package_card_moves_to_later_and_back_for_everyone(): void
     {
         $card = $this->packageCard();
 
         $this->woonplan()->call('cardMoved', 'to-do', 'later', (string) $card->id, '0');
+        $this->assertSame(['later'], $this->categoriesOf($card));
 
+        // Loaded from "Later uitvoeren", it is still a package card, so it may come back.
+        $this->assertSame('package', $this->cardData($this->woonplan(), $card)['kind']);
+
+        $this->woonplan()->call('cardMoved', 'later', 'to-do', (string) $card->id, '0');
         $this->assertSame(['to-do'], $this->categoriesOf($card));
+    }
+
+    public function test_a_package_card_in_later_leaves_the_package_intact_and_its_costs_out_of_the_total(): void
+    {
+        $card = $this->packageWithFigures();
+        $this->addOwnMeasure('to-do', 'Zonnescherm');
+
+        $this->woonplan()->call('cardMoved', 'to-do', 'later', (string) $card->id, '0');
+
+        $woonplan = $this->woonplan()
+            // SmartTwin's figures stay.
+            ->assertSee('€ 2.520')
+            ->assertDontSee(__('cooperation/frontend/tool.my-plan.package-results.broken'));
+
+        /** @var \App\Services\SmartTwin\PackageResults $results */
+        $results = $woonplan->instance()->packageResults;
+
+        $this->assertTrue($results->intact);
+        // Only "Nu aanpakken" counts: the own measure, without the package card's € 1.000.
+        $this->assertSame(['Zonnescherm'], array_column($results->lines, 'name'));
+        $this->assertEquals(1200, $results->total);
     }
 
     public function test_a_package_card_into_in_order_asks_for_the_uitgevoerd_popup(): void
@@ -155,11 +181,35 @@ final class SmartTwinCardRulesTest extends TestCase
         $this->assertSame(['to-do'], $this->categoriesOf($card));
     }
 
-    public function test_a_package_card_does_not_go_in_the_trash(): void
+    public function test_a_package_card_goes_in_the_trash_for_everyone_and_breaks_the_package(): void
     {
-        $card = $this->packageCard();
+        $card = $this->packageWithFigures();
 
-        $this->woonplan()->call('cardTrashed', 'to-do', (string) $card->id);
+        $this->woonplan()
+            ->call('cardTrashed', 'to-do', (string) $card->id)
+            ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.broken'))
+            ->assertDontSee('€ 2.520');
+
+        $this->assertSame([0], UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $this->building->user_id)
+            ->where('user_action_plan_advisable_id', $card->user_action_plan_advisable_id)
+            ->pluck('visible')
+            ->map(fn ($visible) => (int) $visible)
+            ->unique()
+            ->values()
+            ->all());
+    }
+
+    public function test_an_in_order_card_does_not_go_in_the_trash(): void
+    {
+        $this->packageCard();
+        $card = $this->card('floor-insulation', AdviceSource::SMART_TWIN);
+        UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $this->building->user_id)
+            ->where('user_action_plan_advisable_id', $card->user_action_plan_advisable_id)
+            ->update(['category' => 'complete', 'costs' => ['from' => null, 'to' => null]]);
+
+        $this->woonplan()->call('cardTrashed', 'complete', (string) $card->id);
 
         $this->assertTrue((bool) $card->fresh()->visible);
     }
@@ -184,8 +234,8 @@ final class SmartTwinCardRulesTest extends TestCase
         $smallCard = $this->cardData($woonplan, $small);
 
         $this->assertTrue($packageCard['in_package']);
-        $this->assertSame(['complete', 'to-do'], $packageCard['targets']);
-        $this->assertFalse($packageCard['trashable']);
+        $this->assertSame(['complete', 'to-do', 'later'], $packageCard['targets']);
+        $this->assertTrue($packageCard['trashable']);
 
         $this->assertFalse($smallCard['in_package']);
         $this->assertSame(['complete', 'to-do', 'later'], $smallCard['targets']);

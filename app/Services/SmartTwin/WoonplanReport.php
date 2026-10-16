@@ -42,15 +42,17 @@ final readonly class WoonplanReport
      */
     public static function from(Building $building, Collection $categorized): self
     {
+        $package = SmartTwinPackage::where('building_id', $building->id)->first();
+        $packageMeasureIds = $package instanceof SmartTwinPackage ? array_map('intval', $package->measure_application_ids ?? []) : [];
+
         $card = fn (UserActionPlanAdvice $advice): array => [
             'name'  => (string) $advice->userActionPlanAdvisable->name,
             'costs' => CardCosts::of($advice),
-            'kind'  => WoonplanCardRules::kindOf($advice),
+            'kind'  => WoonplanCardRules::kindOf($advice, $packageMeasureIds),
         ];
 
         $nowCards = ($categorized[UserActionPlanAdviceService::CATEGORY_TO_DO] ?? collect())->map($card)->values()->all();
 
-        $package = SmartTwinPackage::where('building_id', $building->id)->first();
         // As the woonplan decides it: on master, the visible cards included or not, isIntactIn decides.
         $intact = $package instanceof SmartTwinPackage && $package->isIntactIn(
             UserActionPlanAdvice::withoutGlobalScopes()

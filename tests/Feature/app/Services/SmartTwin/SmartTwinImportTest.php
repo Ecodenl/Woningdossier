@@ -222,6 +222,37 @@ final class SmartTwinImportTest extends TestCase
         }
     }
 
+    public function test_an_externally_advised_measure_becomes_a_package_card_like_any_other(): void
+    {
+        // Sun blinds as the catalogue names them; the glazing id is made up, as no response with a
+        // glazing solution has been seen yet.
+        $sunBlinds = 'Install Sun Blinds|SmartTwin:Screens';
+        $vacuumGlass = 'Replace Glass|SmartTwin:Vacuum_Glass';
+        $this->couple($sunBlinds, 'sun-shading');
+        $this->couple($vacuumGlass, 'vacuum-glass-only');
+
+        $response = $this->response();
+        $response['scenario']['solutions'][] = $this->solution($sunBlinds, 2150.5);
+        $response['scenario']['solutions'][] = $this->solution($vacuumGlass, 6400.25);
+
+        $this->import($response);
+
+        $advices = $this->advices();
+
+        foreach (['sun-shading' => 2150.5, 'vacuum-glass-only' => 6400.25] as $short => $costs) {
+            $this->assertArrayHasKey($short, $advices);
+            $this->assertSame(AdviceSource::SMART_TWIN, $advices[$short]->source, $short);
+            $this->assertSame(UserActionPlanAdviceService::CATEGORY_TO_DO, $advices[$short]->category, $short);
+            $this->assertEquals($costs, $advices[$short]->costs['to'], $short);
+        }
+
+        // Sun shading works on no element: only the product. The glazing works on the windows.
+        $sunShading = $advices['sun-shading']->smartTwinDetails();
+        $this->assertSame($sunBlinds, $sunShading->solutions[0]['id']);
+        $this->assertSame([], $sunShading->elements);
+        $this->assertSame(['windows'], array_keys($advices['vacuum-glass-only']->smartTwinDetails()->elements));
+    }
+
     public function test_each_package_card_carries_its_smarttwin_details_into_master(): void
     {
         $this->import($this->response());

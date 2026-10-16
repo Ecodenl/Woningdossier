@@ -104,6 +104,22 @@ class Hoomdossier
     }
 
     /**
+     * Whether the Verbeterjehuis subsidy is shown with a woonplan that is SmartTwin's: the label
+     * "subsidie beschikbaar" on its cards and the regulations in its report.
+     *
+     * Off: SmartTwin gives the subsidy for the package as a whole, and the woonplan and the report
+     * show that instead. The rest of the Verbeterjehuis coupling stays as it is (fetching the
+     * regulations, "Mijn regelingen", the loan label). The stuurgroep may want the subsidy back; then
+     * flipping this is the whole change (decision 2026-10-15-smarttwin-rapport-na-omslagpunt, P3).
+     */
+    public const VERBETERJEHUIS_SUBSIDY_WITH_SMART_TWIN = false;
+
+    public static function showsVerbeterjehuisSubsidyFor(Building $building): bool
+    {
+        return static::VERBETERJEHUIS_SUBSIDY_WITH_SMART_TWIN || ! static::smartTwinOwnsWoonplanFor($building);
+    }
+
+    /**
      * Whether SmartTwin drives the scan the building is being asked: its quick scan, where SmartTwin
      * fills the woonplan. The questions of such a scan come back from SmartTwin, so none of them is
      * required here (see ToolQuestion::isRequired()).

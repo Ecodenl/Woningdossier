@@ -29,6 +29,12 @@ class Search
     public function prepare(): Collection
     {
         return $this->payload->map(function (array $regulation) {
+            // Verbeterjehuis omits optional fields for some regulations, so default the ones we display.
+            $regulation += [
+                'Intro' => '',
+                'Details' => '',
+                'ProviderUrl' => null,
+            ];
             $regulation['TargetGroup'] = explode(', ', $regulation['TargetGroup']);
             return $regulation;
         });

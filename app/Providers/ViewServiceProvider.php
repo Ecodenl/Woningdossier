@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Http\ViewComposers\AdminComposer;
 use App\Http\ViewComposers\CooperationComposer;
+use App\Http\ViewComposers\Frontend\Layouts\Parts\SmartTwinCoachNoticeComposer;
 use App\Http\ViewComposers\Frontend\Layouts\Parts\SmartTwinSubNavComposer;
 use App\Http\ViewComposers\Frontend\Layouts\Parts\SubNavComposer;
 use App\Http\ViewComposers\Frontend\Tool\NavbarComposer;
@@ -37,6 +38,7 @@ class ViewServiceProvider extends ServiceProvider
         View::creator('cooperation.frontend.layouts.tool', LayoutComposer::class);
         View::creator('cooperation.frontend.layouts.parts.sub-nav', SubNavComposer::class);
         View::creator('cooperation.frontend.layouts.parts.smart-twin.sub-nav', SmartTwinSubNavComposer::class);
+        View::creator('cooperation.frontend.layouts.parts.smart-twin.coach-notice', SmartTwinCoachNoticeComposer::class);
 
         View::creator('*', CooperationComposer::class);
         View::creator('cooperation.admin.layouts.navbar', AdminNavbarComposer::class);

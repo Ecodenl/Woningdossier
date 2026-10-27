@@ -147,7 +147,7 @@ return [
         'lock' => [
             'awaiting' => [
                 'title' => 'Nog even geduld.',
-                'text' => 'Jouw energiecoach werkt aan jouw woonplan. Zodra deze gereed is, kun je hier zien welke maatregelen voor jou het meest geschikt zijn, hoeveel je ermee kunt besparen en welke kosten en subsidies je kunt verwachten. Heb je vragen? Neem dan contact op met jouw coach.',
+                'text' => 'Jouw energiecoach werkt aan jouw woonplan. Zodra deze gereed is, kun je hier zien welke maatregelen voor jou het meest geschikt zijn, hoeveel je ermee kunt besparen en welke kosten en subsidies je kunt verwachten. Heb je vragen? <a href=":link">Neem dan contact op met jouw coach.</a>',
             ],
             'locked' => [
                 'title' => 'Jouw woonplan',
@@ -157,6 +157,13 @@ return [
                 'title' => 'Jouw woonplan',
                 'text' => 'Hier is jouw woonplan zoals je die met de energiecoach hebt besproken. Als je wilt kun je nu zelf aanpassingen doen, bijvoorbeeld aangeven dat je een maatregel hebt uitgevoerd.',
             ],
+        ],
+        // Above every quick scan page for a coach while the woonplan is the resident's quick scan;
+        // see SmartTwinCoachNoticeComposer.
+        'coach-notice' => [
+            'text' => "De bewoner heeft een quickscan woonplan gemaakt. Ga eerst naar 'Gegevens woning bekijken', daarna kun je hier het 'Woonplan aanpassen'.",
+            'adjust' => 'Woonplan aanpassen',
+            'warning' => 'Let op: je moet de woninggegevens nog handmatig in Smart Twin overnemen.',
         ],
         // The (i) of a SmartTwin card: what SmartTwin says about the advice (SmartTwinAdviceDetails).
         'smart-twin-details' => [

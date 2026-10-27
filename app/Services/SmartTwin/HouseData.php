@@ -34,13 +34,20 @@ use Illuminate\Support\Str;
  * - State: per part of the dwelling, the questions SmartTwin fills (FilledQuestions), with the
  *   measures marked as carried out on that part. SmartTwin's figures stay under them as SmartTwin's,
  *   with the date of its calculation; nothing is recalculated here (S6d).
- * - Usage: the answers that are there; SmartTwin does not deliver usage (B7).
+ * - Usage: the answers that are there, except the own energy prices; SmartTwin does not deliver
+ *   usage (B7).
  */
 final class HouseData
 {
     /** The page groups the crawlspace with the floor, which is where the dossier asks about it. */
     /** The general questions the dossier asks itself rather than SmartTwin. */
     public const GENERAL_QUESTIONS = ['building-contract-type', 'monument'];
+
+    /**
+     * The resident's own energy prices are left out of usage, even where the dossier holds them:
+     * SmartTwin calculates with its own prices, so showing these would suggest they count.
+     */
+    public const HIDDEN_USAGE_QUESTIONS = ['gas-price-euro', 'electricity-price-euro'];
 
     private const PART_OF_ELEMENT = [
         'facade'     => 'facade',
@@ -166,7 +173,7 @@ final class HouseData
 
     /**
      * The answers of the quick scan's usage step that are there, in the order it asks them, leaving
-     * out what its conditions no longer ask and the comments.
+     * out what its conditions no longer ask, the comments and the own energy prices.
      *
      * @return array<int, array{label: string, answer: string|array<string, mixed>}>
      */
@@ -204,7 +211,11 @@ final class HouseData
             foreach ($subStep->subSteppables->where('sub_steppable_type', ToolQuestion::class) as $pivot) {
                 $toolQuestion = $pivot->subSteppable;
 
-                if (! $toolQuestion instanceof ToolQuestion || Str::contains($toolQuestion->short, 'comment')) {
+                if (
+                    ! $toolQuestion instanceof ToolQuestion
+                    || Str::contains($toolQuestion->short, 'comment')
+                    || in_array($toolQuestion->short, self::HIDDEN_USAGE_QUESTIONS)
+                ) {
                     continue;
                 }
 

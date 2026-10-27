@@ -7,6 +7,7 @@
 @section('content')
     <div class="w-full">
         <h4 class="heading-4 mb-5">@lang('cooperation/frontend/tool.my-plan.lock.awaiting.title')</h4>
-        <p>@lang('cooperation/frontend/tool.my-plan.lock.awaiting.text')</p>
+        {{-- Only the resident gets here (WoonplanLock::appliesTo), so their questions go to their messages. --}}
+        <p>{!! __('cooperation/frontend/tool.my-plan.lock.awaiting.text', ['link' => route('cooperation.my-account.messages.edit', compact('cooperation'))]) !!}</p>
     </div>
 @endsection

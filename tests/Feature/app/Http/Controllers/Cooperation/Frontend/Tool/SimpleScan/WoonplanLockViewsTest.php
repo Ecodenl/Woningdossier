@@ -118,6 +118,15 @@ final class WoonplanLockViewsTest extends TestCase
             ->assertDontSee(__('cooperation/frontend/tool.my-plan.lock.locked.text'));
     }
 
+    public function test_the_resident_waiting_for_the_coach_can_ask_the_coach(): void
+    {
+        app(WoonplanLock::class)->lock($this->building);
+
+        $this->woonplanPage()
+            ->assertOk()
+            ->assertSee('href="' . route('cooperation.my-account.messages.edit', ['cooperation' => $this->cooperation]) . '"', false);
+    }
+
     public function test_while_the_coach_is_not_done_the_plan_is_shown_locked(): void
     {
         $this->coachPlan();
@@ -125,7 +134,9 @@ final class WoonplanLockViewsTest extends TestCase
 
         $this->woonplanPage()
             ->assertOk()
-            ->assertSee(__('cooperation/frontend/tool.my-plan.lock.locked.text'));
+            ->assertSee(__('cooperation/frontend/tool.my-plan.lock.locked.text'))
+            ->assertDontSee(__('cooperation/frontend/tool.my-plan.title.quick-scan'))
+            ->assertDontSee('verdiepingsvragen');
     }
 
     public function test_once_the_coach_is_done_the_resident_may_change_it(): void
@@ -134,7 +145,9 @@ final class WoonplanLockViewsTest extends TestCase
 
         $this->woonplanPage()
             ->assertOk()
-            ->assertSee(__('cooperation/frontend/tool.my-plan.lock.done.text'));
+            ->assertSee(__('cooperation/frontend/tool.my-plan.lock.done.text'))
+            ->assertDontSee(__('cooperation/frontend/tool.my-plan.title.quick-scan'))
+            ->assertDontSee('verdiepingsvragen');
     }
 
     public function test_a_locked_woonplan_takes_no_changes_from_the_resident(): void

@@ -88,11 +88,12 @@ class MyPlanController extends Controller
             ->isActive();
 
         $inputSource = HoomdossierSession::getInputSource(true);
+        $smartTwinOwnsWoonplan = Hoomdossier::smartTwinOwnsWoonplanFor($building);
         // Once the woonplan is SmartTwin's, the hand-off sits under its results as "Maatregelpakket
         // aanpassen", with its warning; see MyPlan\Form.
-        $canHandOff = SmartTwinHandOff::isOfferedFor($building) && ! Hoomdossier::smartTwinOwnsWoonplanFor($building);
+        $canHandOff = SmartTwinHandOff::isOfferedFor($building) && ! $smartTwinOwnsWoonplan;
         // "Gegevens woning bekijken" once there is a SmartTwin plan to show it for; see houseData().
-        $showHouseData = Hoomdossier::smartTwinOwnsWoonplanFor($building);
+        $showHouseData = $smartTwinOwnsWoonplan;
 
         return view('cooperation.frontend.tool.simple-scan.my-plan.index', compact(
             'scan',
@@ -101,6 +102,7 @@ class MyPlanController extends Controller
             'activeNotification',
             'canHandOff',
             'showHouseData',
+            'smartTwinOwnsWoonplan',
             'woonplanState',
             'coachIsDone',
         ));

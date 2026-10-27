@@ -8,6 +8,8 @@
             @if(! RouteLogic::inSharedFiles(Route::currentRouteName()))
                 @include('cooperation.frontend.layouts.parts.smart-twin.sub-nav')
             @endif
+
+            @include('cooperation.frontend.layouts.parts.smart-twin.coach-notice')
         @else
             @include('cooperation.frontend.layouts.parts.sub-nav')
 

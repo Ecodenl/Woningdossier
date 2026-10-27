@@ -27,8 +27,9 @@
                     $link = route('cooperation.admin.messages.index', compact('cooperation'));
                 }
             @endphp
+            @php $showLockNotice = \App\Enums\SmartTwin\WoonplanState::LOCKED === $woonplanState || $coachIsDone; @endphp
             {{-- While a coach works on the plan in SmartTwin, and once the coach is done; see WoonplanLock. --}}
-            @if(\App\Enums\SmartTwin\WoonplanState::LOCKED === $woonplanState || $coachIsDone)
+            @if($showLockNotice)
                 @php $lockShort = $coachIsDone ? 'done' : 'locked'; @endphp
                 @component('cooperation.layouts.components.alert', ['withBackground' => true, 'dismissible' => false])
                     <h5 class="heading-5">@lang("cooperation/frontend/tool.my-plan.lock.{$lockShort}.title")</h5>
@@ -43,14 +44,21 @@
                     <p>@lang('cooperation/frontend/tool.my-plan.smarttwin.report-first.text')</p>
                 @endcomponent
             @endif
-            <div class="w-full flex flex-wrap justify-between mb-5">
-                <h4 class="heading-4">
-                    {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}
-                </h4>
-            </div>
-            <div class="w-full flex flex-wrap mb-5">
-                {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", compact('link')) !!}
-            </div>
+            {{-- The lock notice carries its own title. --}}
+            @unless($showLockNotice)
+                <div class="w-full flex flex-wrap justify-between mb-5">
+                    <h4 class="heading-4">
+                        {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}
+                    </h4>
+                </div>
+            @endunless
+            {{-- Points to the expert scan, which is closed once the woonplan is SmartTwin's
+                 (EnsureExpertScanAvailable). --}}
+            @unless($smartTwinOwnsWoonplan)
+                <div class="w-full flex flex-wrap mb-5">
+                    {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", compact('link')) !!}
+                </div>
+            @endunless
 
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.form :scan="$scan" :building="$building"/>
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.comments :scan="$scan" :building="$building"/>

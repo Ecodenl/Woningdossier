@@ -189,6 +189,22 @@ final class HouseDataPageTest extends TestCase
         $this->assertSame(['label' => 'Hoeveel mensen wonen er in de woning?', 'answer' => 'Drie'], $usage[0]);
     }
 
+    public function test_usage_leaves_out_the_own_energy_prices(): void
+    {
+        $this->switchToSmartTwin();
+        $this->answer('resident-count', 3, InputSource::resident());
+        // Left from before SmartTwin; it calculates with its own prices.
+        $this->answer('gas-price-euro', '1.45', InputSource::resident());
+        $this->answer('electricity-price-euro', '0.32', InputSource::resident());
+
+        $labels = array_column(HouseData::for($this->building)->usage, 'label');
+
+        $this->assertSame(['Hoeveel mensen wonen er in de woning?'], $labels);
+        $this->page()
+            ->assertDontSee(ToolQuestion::findByShort('gas-price-euro')->name)
+            ->assertDontSee(ToolQuestion::findByShort('electricity-price-euro')->name);
+    }
+
     public function test_rented_or_owned_and_monument_show_under_general_where_answered(): void
     {
         $this->switchToSmartTwin();

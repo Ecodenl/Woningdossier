@@ -3,6 +3,7 @@
 namespace Tests\Feature\app\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\ScanAvailabilityHelper;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Scan;
@@ -33,8 +34,9 @@ final class SubStepPolicyTest extends TestCase
 
     /**
      * @param  array<int, string>  $scans  The simple scans the cooperation, and so the building, has.
+     * @param  array<int, string>  $offForBuilding  Of those, the ones switched off for the building itself.
      */
-    private function canShow(string $stepShort, Cooperation $cooperation, array $scans): bool
+    private function canShow(string $stepShort, Cooperation $cooperation, array $scans, array $offForBuilding = []): bool
     {
         // Replaced, not added to: a new cooperation is given every scan.
         $cooperation->scans()->sync(array_map(fn (string $short) => Scan::findByShort($short)->id, $scans));
@@ -42,6 +44,10 @@ final class SubStepPolicyTest extends TestCase
         $user = User::factory()->withAccount()->asResident()->create(['cooperation_id' => $cooperation->id]);
         $building = Building::factory()->create(['user_id' => $user->id]);
         HoomdossierSession::setCooperation($cooperation);
+
+        foreach ($offForBuilding as $short) {
+            ScanAvailabilityHelper::setAvailability($building, Scan::findByShort($short), false);
+        }
 
         // The first sub step of a step SmartTwin provides carries no conditions of its own, so the
         // policy is all that decides.
@@ -100,6 +106,16 @@ final class SubStepPolicyTest extends TestCase
         config()->set('hoomdossier.services.smarttwin.enabled', true);
 
         $this->assertTrue($this->canShow($stepShort, Cooperation::factory()->create(), [Scan::LITE]));
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('liteCounterparts')]
+    public function test_a_lite_counterpart_is_asked_when_the_quick_scan_is_off_for_the_building(string $stepShort): void
+    {
+        config()->set('hoomdossier.services.smarttwin.enabled', true);
+
+        // The cooperation offers both scans, but this building only gets the lite scan, so it is
+        // never sent to SmartTwin either.
+        $this->assertTrue($this->canShow($stepShort, Cooperation::factory()->create(), [Scan::QUICK, Scan::LITE], [Scan::QUICK]));
     }
 
     public function test_a_lite_counterpart_is_asked_in_a_cooperation_that_does_not_take_part(): void

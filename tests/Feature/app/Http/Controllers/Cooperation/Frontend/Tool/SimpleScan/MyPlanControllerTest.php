@@ -264,15 +264,46 @@ final class MyPlanControllerTest extends TestCase
         );
     }
 
-    public function test_the_sub_nav_of_the_lite_scan_lists_all_of_its_steps(): void
+    public function test_the_sub_nav_of_the_lite_scan_leaves_out_what_smart_twin_answers(): void
     {
         $this->enableSmartTwin(true);
         $this->linkSmartTwinAccount();
 
-        // SmartTwin takes over none of the lite scan's questions, and the lite scan has no "Mijn
+        // The building also has the quick scan, so SmartTwin answers the lite scan's building data,
+        // usage and current state, and those steps are not asked. The lite scan has no "Mijn
         // vragen" of its own; with the quick scan's list the resident saw only the woonplan.
         $this->scan = Scan::findByShort(Scan::LITE);
         $this->cooperation->scans()->attach($this->scan->id);
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $this->assertSubNavItems(
+            [
+                ...$this->scan->steps()
+                    ->whereIn('short', ['living-requirements-lite', 'small-measures-lite'])
+                    ->orderBy('order')
+                    ->get()
+                    ->pluck('name')
+                    ->all(),
+                __('cooperation/frontend/tool.my-plan.label'),
+            ],
+            $response->getContent(),
+        );
+    }
+
+    public function test_the_sub_nav_of_the_lite_scan_lists_all_of_its_steps_for_a_building_with_only_the_lite_scan(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+
+        // Never sent to SmartTwin, so every question is still asked here.
+        $this->scan = Scan::findByShort(Scan::LITE);
+        $this->cooperation->scans()->sync([$this->scan->id]);
+
+        // A lite-only building gets the woonplan only once the scan is done, which is beside the
+        // point here; the navigation is the same either way.
+        config()->set('hoomdossier.skip_woonplan_guard', true);
 
         $response = $this->visitWoonplan();
 

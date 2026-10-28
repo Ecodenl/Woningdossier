@@ -3,6 +3,7 @@
 namespace App\Http\ViewComposers\Frontend\Layouts\Parts;
 
 use App\Helpers\Blade\RouteLogic;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\SmallMeasuresSettingHelper;
 use App\Models\Building;
@@ -18,7 +19,7 @@ use Illuminate\View\View;
  * The sub navigation for the SmartTwin mode. Where the regular sub navigation walks every step of
  * the scan, for the quick scan this one is a fixed list of four: SmartTwin asks the technical
  * questions, so only the ones Hoomdossier still asks itself appear here, followed by the woonplan.
- * The lite scan keeps asking all of its own questions, so it lists every step before the woonplan.
+ * The lite scan lists its steps before the woonplan, less those SmartTwin answers for the building.
  *
  * The list is assembled here rather than in the view because deciding what is completed, current or
  * still ahead is not markup, and because the first entry is a sub step while the two after it are
@@ -60,8 +61,9 @@ class SmartTwinSubNavComposer
     }
 
     /**
-     * SmartTwin takes over none of the lite scan's questions, so every one of its steps stays in
-     * the navigation, under its own name.
+     * The lite scan's steps under their own names. Those SmartTwin answers for this building are
+     * left out, as they are everywhere else: listing them offered steps that only bounced the
+     * resident on to the next one they may see, often the page they were already on.
      *
      * @return array<int, array{label: string, url: string, state: string}>
      */
@@ -71,6 +73,7 @@ class SmartTwinSubNavComposer
 
         return $scan->steps
             ->sortBy('order')
+            ->reject(fn (Step $step) => $building instanceof Building && Hoomdossier::smartTwinProvidesStepFor($building, $step))
             ->values()
             ->map(fn (Step $step) => $this->stepItem(
                 $step,

@@ -140,6 +140,24 @@ final class MyPlanControllerTest extends TestCase
         $response->assertSee(__('cooperation/frontend/tool.my-plan.smarttwin.button'), false);
     }
 
+    public function test_an_empty_woonplan_shows_why_the_hand_off_failed(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+
+        // A second coach while the first one has the advice session open: there is no advice yet,
+        // so the hand-off comes back to the invitation rather than to a filled woonplan.
+        $response = $this->get(route('cooperation.frontend.tool.simple-scan.my-plan.index', [
+            'cooperation' => $this->cooperation,
+            'scan' => $this->scan,
+            'smarttwin_error' => 'advice_in_progress',
+        ]));
+
+        $response->assertOk();
+        $response->assertSee(__('cooperation/frontend/tool.my-plan.start-check.body'), false);
+        $response->assertSee(__('cooperation/frontend/tool.my-plan.smarttwin.errors.advice_in_progress'), false);
+    }
+
     public function test_the_check_is_not_offered_without_a_smart_twin_account(): void
     {
         $this->enableSmartTwin(true);

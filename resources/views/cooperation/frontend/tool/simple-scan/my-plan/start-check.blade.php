@@ -6,6 +6,8 @@
 @extends('cooperation.frontend.layouts.tool')
 
 @section('content')
+    @include('cooperation.frontend.tool.simple-scan.my-plan.parts.smarttwin-error')
+
     <div class="w-full flex justify-center">
         <div class="tile max-w-2xl text-center">
             <h3 class="tile-heading">
@@ -17,9 +19,9 @@
             </div>
 
             @if($canHandOff)
-                {{-- New tab: the resident leaves for another application and should find their
-                     dossier still open when they come back. A failed hand-off lands on the woonplan
-                     with its error there rather than here. --}}
+                {{-- New tab: whoever does the check leaves for another application and should find
+                     the dossier still open when they come back. A failed hand-off redirects back to
+                     the woonplan, which is still this page, so the error is shown above. --}}
                 <form method="POST"
                       action="{{ route('cooperation.frontend.tool.simple-scan.my-plan.smarttwin', compact('scan')) }}"
                       target="_blank" rel="noopener"

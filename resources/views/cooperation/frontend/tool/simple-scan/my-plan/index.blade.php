@@ -9,6 +9,7 @@
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
     @else
         <div class="w-full">
+            @include('cooperation.frontend.tool.simple-scan.my-plan.parts.smarttwin-error')
             @php
                 $langShort = $building->hasAnsweredExpertQuestion() ? 'expert' : 'quick-scan';
                 $link = route('cooperation.my-account.messages.edit', compact('cooperation'));
@@ -17,30 +18,77 @@
                     $link = route('cooperation.admin.messages.index', compact('cooperation'));
                 }
             @endphp
-            <div class="w-full flex flex-wrap justify-between mb-5">
-                <h4 class="heading-4">
-                    {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}
-                </h4>
-            </div>
-            <div class="w-full flex flex-wrap mb-5">
-                {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", compact('link')) !!}
-            </div>
+            @php $showLockNotice = \App\Enums\SmartTwin\WoonplanState::LOCKED === $woonplanState || $coachIsDone; @endphp
+            {{-- While a coach works on the plan in SmartTwin, and once the coach is done; see WoonplanLock. --}}
+            @if($showLockNotice)
+                @php $lockShort = $coachIsDone ? 'done' : 'locked'; @endphp
+                @component('cooperation.layouts.components.alert', ['withBackground' => true, 'dismissible' => false])
+                    <h5 class="heading-5">@lang("cooperation/frontend/tool.my-plan.lock.{$lockShort}.title")</h5>
+                    <p>@lang("cooperation/frontend/tool.my-plan.lock.{$lockShort}.text")</p>
+                @endcomponent
+            @endif
+            {{-- A woonplan from before SmartTwin, with the hand-off under it: SmartTwin's first advice
+                 replaces its calculated measures, so this is the last moment to keep it in a report. --}}
+            @if($canHandOff)
+                @component('cooperation.layouts.components.alert', ['color' => 'blue', 'withBackground' => true, 'dismissible' => false])
+                    <h5 class="heading-5">@lang('cooperation/frontend/tool.my-plan.smarttwin.report-first.title')</h5>
+                    <p>@lang('cooperation/frontend/tool.my-plan.smarttwin.report-first.text')</p>
+                @endcomponent
+            @endif
+            {{-- The lock notice carries its own title. --}}
+            @unless($showLockNotice)
+                <div class="w-full flex flex-wrap justify-between mb-5">
+                    <h4 class="heading-4">
+                        {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}
+                    </h4>
+                </div>
+            @endunless
+            {{-- Points to the expert scan, which is closed once the woonplan is SmartTwin's
+                 (EnsureExpertScanAvailable). --}}
+            @unless($smartTwinOwnsWoonplan)
+                <div class="w-full flex flex-wrap mb-5">
+                    {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", compact('link')) !!}
+                </div>
+            @endunless
 
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.form :scan="$scan" :building="$building"/>
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.comments :scan="$scan" :building="$building"/>
         </div>
 
         <div class="w-full flex flex-wrap pt-5 pb-5">
-            <div class="flex w-1/4">
+            <div class="flex flex-wrap w-1/4 gap-2">
                 @can('viewAny', [\App\Models\Media::class, $inputSource, $building])
                     <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('cooperation', 'scan')) }}"
                        class="btn btn-outline-green">
                         @lang('cooperation/frontend/tool.my-plan.uploader.view')
                     </a>
                 @endcan
+                {{-- The dwelling as SmartTwin's last import left it; see MyPlanController::houseData(). --}}
+                @if($showHouseData)
+                    <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.house-data', compact('cooperation', 'scan')) }}"
+                       class="btn btn-outline-green">
+                        @lang('cooperation/frontend/tool.my-plan.house-data.button')
+                    </a>
+                @endif
             </div>
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.calculations-table :building="$building"/>
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.download-pdf :user="$building->user" :scan="$scan"/>
         </div>
+
+        {{-- $canHandOff is resolved in the controller, which reports it when an account turns out to
+             have no SmartTwin id. --}}
+        @if($canHandOff)
+            <div class="w-full flex flex-wrap pb-5">
+                {{-- New tab, so the resident's dossier is still open behind SmartTwin. --}}
+                <form method="POST"
+                      action="{{ route('cooperation.frontend.tool.simple-scan.my-plan.smarttwin', compact('cooperation', 'scan')) }}"
+                      target="_blank" rel="noopener">
+                    @csrf
+                    <button type="submit" class="btn btn-green">
+                        @lang('cooperation/frontend/tool.my-plan.smarttwin.button')
+                    </button>
+                </form>
+            </div>
+        @endif
     @endif
 @endsection

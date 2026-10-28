@@ -8,6 +8,7 @@ use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Helpers\Hoomdossier;
 use App\Helpers\Queue;
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\User\NotifyCoachParticipantAdded;
 use App\Mail\User\NotifyResidentParticipantAdded;
@@ -20,6 +21,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\PrivateMessageViewService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 
 class ParticipantController extends Controller
@@ -29,22 +31,22 @@ class ParticipantController extends Controller
      */
     public function revokeAccess(Cooperation $cooperation, Request $request): RedirectResponse
     {
-        // get the group participant user id (which is only a coach, but still)
-        $groupParticipantUserId = $request->input('user_id');
-        // get the building owner id
-        $buildingOwnerId = $request->input('building_owner_id');
+        $request->validate([
+            'user_id' => 'required|integer',
+            'building_owner_id' => 'required|integer',
+        ]);
 
-        // the building from the user / resident
-        $building = Building::find($buildingOwnerId);
-        $revokedParticipant = User::find($groupParticipantUserId);
+        // the building from the user / resident, and the coach to detach from it
+        $building = Building::findOrFail($request->input('building_owner_id'));
+        $revokedParticipant = User::findOrFail($request->input('user_id'));
 
-        if ($building instanceof Building) {
-            // revoke the access for the coach to talk with the resident
-            BuildingPermissionService::revokePermission($revokedParticipant, $building);
-            BuildingCoachStatusService::revokeAccess($revokedParticipant, $building);
+        Gate::authorize('revoke-coach-access', [$building, $revokedParticipant]);
 
-            ParticipantRevokedEvent::dispatch($revokedParticipant, $building);
-        }
+        // revoke the access for the coach to talk with the resident
+        BuildingPermissionService::revokePermission($revokedParticipant, $building);
+        BuildingCoachStatusService::revokeAccess($revokedParticipant, $building);
+
+        ParticipantRevokedEvent::dispatch($revokedParticipant, $building);
 
         return redirect()->back();
     }
@@ -54,16 +56,28 @@ class ParticipantController extends Controller
      */
     public function addWithBuildingAccess(Cooperation $cooperation, Request $request): RedirectResponse
     {
-        $userId = $request->input('user_id', '');
-        $buildingId = $request->input('building_id', '');
+        $request->validate([
+            'user_id' => 'required|integer',
+            'building_id' => 'required|integer',
+        ]);
+
+        $residentBuilding = Building::with('user')->findOrFail($request->input('building_id'));
+
+        // Explicitly, as the cooperation scope on users is left off in the console (and so in tests).
+        $resident = $residentBuilding->user;
+        abort_unless($resident instanceof User && $resident->cooperation_id == $cooperation->id, 404);
+
+        Gate::authorize('edit', $residentBuilding);
 
         // the receiver of the message
-        $user = $cooperation->users()->find($userId);
+        $user = $cooperation->users()->find($request->input('user_id'));
+        abort_unless($user instanceof User && $user->hasRole(RoleHelper::ROLE_COACH), 404);
 
-        if ($user instanceof User) {
-            $residentBuilding = Building::with('user')->find($buildingId);
-            $resident = $residentBuilding->user;
+        // Attaching an attached coach again would take two revokes to detach them.
+        $isAttached = BuildingCoachStatusService::getConnectedCoachesByBuilding($residentBuilding)
+            ->contains('coach_id', $user->id);
 
+        if (! $isAttached) {
             if ($resident->allowedAccess()) {
                 // give the coach permission to the resident his building
                 BuildingPermissionService::givePermission($user, $residentBuilding);
@@ -90,8 +104,16 @@ class ParticipantController extends Controller
      */
     public function setRead(Cooperation $cooperation, Request $request)
     {
+        $request->validate([
+            'building_id' => 'required|integer',
+        ]);
+
         $isPublic = (bool) $request->input('is_public');
-        $buildingId = $request->input('building_id');
+        $building = Building::findOrFail($request->input('building_id'));
+        $buildingId = $building->id;
+
+        // Called from the building overview in the admin, so whoever may see that may mark it read.
+        Gate::authorize('show', $building);
 
         $messagesToSetRead = PrivateMessage::forMyCooperation()
             ->conversation($buildingId);
@@ -105,13 +127,11 @@ class ParticipantController extends Controller
 
         $messagesToSetRead = $messagesToSetRead->get();
 
+        // The gate above lets only these through: the cooperation's staff, or a coach attached to the building.
         if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             PrivateMessageViewService::markAsReadByCooperation($messagesToSetRead, $cooperation);
-        } elseif (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
-            $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-            PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
         } else {
-            $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+            $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
             PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
         }
 

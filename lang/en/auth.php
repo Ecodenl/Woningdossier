@@ -33,6 +33,11 @@ return [
             'street'                => 'Street',
             'city'                  => 'City',
             'phone-number'          => 'Phone number',
+            'tool-questions'        => [
+                'building-contract-type' => 'Rented or owner-occupied home',
+                'monument'               => 'Is the home a listed building?',
+                'choose'                 => 'Make a choice...',
+            ],
             'button'                => 'Register',
             'message'               => [
                 'success'           => 'Thank you. We have sent you an e-mail with a confirmation link to complete your registration.',

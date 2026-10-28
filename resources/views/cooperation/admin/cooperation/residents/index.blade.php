@@ -29,10 +29,10 @@
                         $mostRecentBuildingStatus = $building->buildingStatuses->last();
 
                         $userCreatedAtFormatted = $user->created_at?->format('d-m-Y');
-                        $userCreatedAtStrToTime = strtotime($userCreatedAtFormatted);
+                        $userCreatedAtTimestamp = $user->created_at?->timestamp ?? 0;
                     @endphp
                     <tr>
-                        <td data-sort="{{$userCreatedAtStrToTime}}">
+                        <td data-sort="{{$userCreatedAtTimestamp}}">
                             {{$userCreatedAtFormatted ?? '-'}}
                         </td>
                         <td>{{$user->getFullName()}}</td>

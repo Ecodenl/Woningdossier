@@ -70,7 +70,7 @@ class WoonplanPayload extends EconobisPayload
                     'roof-insulation-pitched-replace-tiles'
                 ],
             ],
-            'roof-flat-roof-insulation-surface' => [
+            'flat-roof-insulation-surface' => [
                 'type' => 'surface',
                 'measures' => [
                     'roof-insulation-flat-current',

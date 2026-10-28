@@ -75,6 +75,13 @@
                     <input class="form-input" type="text" name="phone_number" value="{{ old('phone_number') }}"
                            placeholder="@lang('auth.register.form.phone-number')">
                 @endcomponent
+
+                {{-- Shown with the address: a member without a building only adds one. --}}
+                @if(\App\Services\SmartTwin\RegistrationQuestions::askedFor($cooperation))
+                    @include('cooperation.layouts.registration-questions', [
+                        'attr' => 'x-show="! alreadyMember"',
+                    ])
+                @endif
                 <div class="flex w-full flex-col" x-show="! alreadyMember && ! emailExists && ! noBuilding">
                     <div class="flex justify-start">
                         <span class="text-green text-sm">@lang('validation.custom.password.min')</span>

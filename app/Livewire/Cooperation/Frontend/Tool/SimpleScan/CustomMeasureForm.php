@@ -134,14 +134,20 @@ abstract class CustomMeasureForm extends Component
 
             if ($validator->fails()) {
                 // Validator failed, let's put it back as the user format
-                $costs['from'] = NumberFormatter::formatNumberForUser($costs['from'] ?? 0);
-                $costs['to'] = NumberFormatter::formatNumberForUser($costs['to'] ?? 0);
+                // Empty stays empty: as a 0 the next attempt would take "from" as filled in, and refuse "to"
+                // for being below "from".
+                $costs['from'] = NumberFormatter::formatNumberForUser($costs['from'] ?? null, false, false);
+                $costs['to'] = NumberFormatter::formatNumberForUser($costs['to'] ?? null, false, false);
                 $this->customMeasureApplicationsFormData[$index]['costs'] = $costs;
                 $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::formatNumberForUser($this->customMeasureApplicationsFormData[$index]['savings_money']);
             }
 
             // Validate, we don't need the data
             $measureData = $validator->validate()['customMeasureApplicationsFormData'][$index];
+
+            // Our own validator doesn't do this for us, as $this->validate() does. Errors of a refused attempt would
+            // stay, and a new measure keeps its index once saved, so they would show on the saved measure.
+            $this->resetErrorBag();
 
             if ($this->customMeasureApplicationsFormData[$index]['hide_costs']) {
                 $measureData['costs'] = null;

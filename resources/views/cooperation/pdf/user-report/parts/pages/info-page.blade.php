@@ -1,6 +1,5 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'info-page'])
-    {{-- With a SmartTwin woonplan the subsidy is SmartTwin's, on the woonplan page; see
-         Hoomdossier::showsVerbeterjehuisSubsidyFor(). --}}
+    {{-- See Hoomdossier::showsVerbeterjehuisSubsidyFor(). --}}
     @if($showsVerbeterjehuisSubsidy && $userCooperation->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG))
         <div class="group">
             <h2>

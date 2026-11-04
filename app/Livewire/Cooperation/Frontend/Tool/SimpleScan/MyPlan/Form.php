@@ -840,9 +840,8 @@ class Form extends CustomMeasureForm
         // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
         $order = 0;
 
-        $hasUserCosts = false;
-
         foreach ($advices as $advice) {
+            $hasUserCosts = false;
             $advisable = $advice->userActionPlanAdvisable;
 
             if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
@@ -902,7 +901,9 @@ class Form extends CustomMeasureForm
                 }
             }
 
-            $cards[$category][$order]['has_user_costs'] = $hasUserCosts;
+            // An advice with a source carries the price its owner gave it, whatever the user once
+            // entered, so nothing was deducted from it (see UserActionPlanAdviceObserver::creating()).
+            $cards[$category][$order]['has_user_costs'] = $hasUserCosts && is_null($advice->source);
             // See Hoomdossier::showsVerbeterjehuisSubsidyFor(). Loans wait for the stuurgroep (F1c).
             $cards[$category][$order]['subsidy_available'] = $this->showsVerbeterjehuisSubsidy && $advice->subsidy_available;
             $cards[$category][$order]['loan_available'] = $advice->loan_available;

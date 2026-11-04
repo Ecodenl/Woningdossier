@@ -246,8 +246,7 @@ class UserReport
             ->building($building)
             ->getAlerts();
 
-        // With a SmartTwin woonplan its subsidy is SmartTwin's, for the package; see
-        // Hoomdossier::showsVerbeterjehuisSubsidyFor().
+        // See Hoomdossier::showsVerbeterjehuisSubsidyFor().
         $showsVerbeterjehuisSubsidy = Hoomdossier::showsVerbeterjehuisSubsidyFor($building);
         $subsidyRegulations = $showsVerbeterjehuisSubsidy
             ? (MyRegulationHelper::getRelevantRegulations($building, $inputSource)[RegulationService::SUBSIDY] ?? [])

@@ -71,10 +71,20 @@ final class WoonplanCardRulesTest extends TestCase
         $this->assertTrue(Rules::mayTrash(Rules::PACKAGE));
     }
 
-    public function test_a_possible_measure_stays_in_its_column_but_may_go(): void
+    public function test_a_possible_measure_moves_between_now_and_later_and_may_go(): void
     {
-        $this->assertSame(Rules::DENIED, Rules::move(Rules::POSSIBLE, self::LATER, self::NOW));
+        $this->assertSame(Rules::ALLOWED, Rules::move(Rules::POSSIBLE, self::LATER, self::NOW));
+        $this->assertSame(Rules::ALLOWED, Rules::move(Rules::POSSIBLE, self::NOW, self::LATER));
         $this->assertTrue(Rules::mayTrash(Rules::POSSIBLE));
+    }
+
+    public function test_a_carried_out_measure_advised_again_moves_between_now_and_later(): void
+    {
+        $this->assertSame(Rules::ALLOWED, Rules::move(Rules::EXECUTED, self::NOW, self::LATER));
+        $this->assertSame(Rules::ALLOWED, Rules::move(Rules::EXECUTED, self::LATER, self::NOW));
+        // It is carried out already, so "In orde" has nothing to ask; its popup takes it back.
+        $this->assertSame(Rules::DENIED, Rules::move(Rules::EXECUTED, self::NOW, self::IN_ORDER));
+        $this->assertFalse(Rules::mayTrash(Rules::EXECUTED));
     }
 
     public function test_an_own_measure_moves_freely_and_may_go(): void
@@ -103,6 +113,8 @@ final class WoonplanCardRulesTest extends TestCase
     {
         $this->assertSame([self::IN_ORDER, self::NOW, self::LATER], Rules::targets(Rules::PACKAGE, self::NOW));
         $this->assertSame([self::IN_ORDER, self::NOW, self::LATER], Rules::targets(Rules::OWN, self::NOW));
+        $this->assertSame([self::IN_ORDER, self::NOW, self::LATER], Rules::targets(Rules::POSSIBLE, self::LATER));
+        $this->assertSame([self::NOW, self::LATER], Rules::targets(Rules::EXECUTED, self::NOW));
         $this->assertSame([self::IN_ORDER], Rules::targets(Rules::EXECUTED, self::IN_ORDER));
     }
 

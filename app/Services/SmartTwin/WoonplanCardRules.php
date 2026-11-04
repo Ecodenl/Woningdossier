@@ -19,16 +19,22 @@ use App\Services\UserActionPlanAdviceService;
  *              columns follow the card. May be thrown away; without it the package no longer holds,
  *              and the woonplan offers a new calculation in place of SmartTwin's figures
  *              (SmartTwinPackage::isIntactIn()). Another package means going back to SmartTwin.
- *   possible   a measure SmartTwin offers but the package does not hold, "Later uitvoeren".
- *              Reordered within its column; may be thrown away.
+ *   possible   a SmartTwin card the package does not hold. Moves freely between "Nu aanpakken" and
+ *              "Later uitvoeren" (customer's test remark); in "Nu aanpakken" it breaks the package
+ *              until it is back (SmartTwinPackage::isIntactIn()). May be thrown away.
  *   in-order   a card SmartTwin's import made for what is in good shape. Stays where it is.
  *   executed   a measure the resident carried out. Stays in "In orde"; taken back through its popup.
+ *              SmartTwin may advise it again, which puts it back in "Nu aanpakken" with its record;
+ *              from there it moves freely between "Nu aanpakken" and "Later uitvoeren".
  *   own        the resident's or the cooperation's own measure, and the small measures (Patrick,
  *              15 October 2026). Moves freely between "Nu aanpakken" and "Later uitvoeren"; may be
  *              thrown away.
  *
  * Whether a SmartTwin card is package or possible follows from the package, not from its column: a
- * package card moved to "Later uitvoeren" is still a package card, and may come back.
+ * package card moved to "Later uitvoeren" is still a package card.
+ *
+ * Package and possible cards are treated alike for now. They stay apart on purpose: the customer tells
+ * them apart ("In pakket", "Mogelijk"), and rules may come to depend on it.
  *
  * Moving a card into "In orde" is not a move: it marks the measure as carried out, which asks for a
  * date and a description first. That answer is EXECUTE, for the woonplan to open the popup.
@@ -76,15 +82,17 @@ final class WoonplanCardRules
             return self::ALLOWED;
         }
 
-        if (in_array($kind, [self::IN_ORDER, self::EXECUTED], true)) {
+        if (self::IN_ORDER === $kind) {
             return self::DENIED;
         }
 
-        if (UserActionPlanAdviceService::CATEGORY_COMPLETE === $to) {
-            return self::EXECUTE;
+        if (self::EXECUTED === $kind) {
+            return in_array(UserActionPlanAdviceService::CATEGORY_COMPLETE, [$from, $to], true)
+                ? self::DENIED
+                : self::ALLOWED;
         }
 
-        return in_array($kind, [self::PACKAGE, self::OWN], true) ? self::ALLOWED : self::DENIED;
+        return UserActionPlanAdviceService::CATEGORY_COMPLETE === $to ? self::EXECUTE : self::ALLOWED;
     }
 
     public static function mayTrash(string $kind): bool

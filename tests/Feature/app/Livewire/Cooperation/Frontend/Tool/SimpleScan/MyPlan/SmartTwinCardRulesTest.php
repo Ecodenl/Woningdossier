@@ -33,9 +33,9 @@ use Livewire\Livewire;
 use Tests\TestCase;
 
 /**
- * The card rules of a SmartTwin woonplan, enforced by the woonplan itself: a package card and an own
- * or small measure move freely between "Nu aanpakken" and "Later uitvoeren" and may go in the trash,
- * and into "In orde" asks for the "uitgevoerd" popup instead of moving.
+ * The card rules of a SmartTwin woonplan, enforced by the woonplan itself: every card outside "In
+ * orde" moves freely between "Nu aanpakken" and "Later uitvoeren", and into "In orde" asks for the
+ * "uitgevoerd" popup instead of moving.
  */
 final class SmartTwinCardRulesTest extends TestCase
 {
@@ -145,6 +145,86 @@ final class SmartTwinCardRulesTest extends TestCase
 
         $this->woonplan()->call('cardMoved', 'later', 'to-do', (string) $card->id, '0');
         $this->assertSame(['to-do'], $this->categoriesOf($card));
+    }
+
+    public function test_a_smart_twin_card_outside_the_package_moves_to_later_and_back_for_everyone(): void
+    {
+        $this->packageCard();
+        $card = $this->card('floor-insulation', AdviceSource::SMART_TWIN);
+
+        $woonplan = $this->woonplan();
+        $this->assertSame('possible', $this->cardData($woonplan, $card)['kind']);
+        $this->assertSame(['complete', 'to-do', 'later'], $this->cardData($woonplan, $card)['targets']);
+
+        $woonplan->call('cardMoved', 'to-do', 'later', (string) $card->id, '0');
+        $this->assertSame(['later'], $this->categoriesOf($card));
+
+        $this->woonplan()->call('cardMoved', 'later', 'to-do', (string) $card->id, '0');
+        $this->assertSame(['to-do'], $this->categoriesOf($card));
+    }
+
+    public function test_a_smart_twin_card_of_a_building_without_a_recorded_package_moves_too(): void
+    {
+        // An import from before the package was recorded: nothing says these cards are the package.
+        $card = $this->card('cavity-wall-insulation', AdviceSource::SMART_TWIN);
+
+        $this->woonplan()->call('cardMoved', 'to-do', 'later', (string) $card->id, '0')->assertOk();
+
+        $this->assertSame(['later'], $this->categoriesOf($card));
+    }
+
+    public function test_a_smart_twin_card_outside_the_package_in_now_breaks_the_package_until_it_is_back_in_later(): void
+    {
+        $this->packageWithFigures();
+        $card = $this->card('floor-insulation', AdviceSource::SMART_TWIN);
+        UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $this->building->user_id)
+            ->where('user_action_plan_advisable_id', $card->user_action_plan_advisable_id)
+            ->update(['category' => 'later']);
+
+        $this->woonplan()->assertSee('€ 2.520');
+
+        $this->woonplan()
+            ->call('cardMoved', 'later', 'to-do', (string) $card->id, '0')
+            ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.broken'))
+            ->assertDontSee('€ 2.520');
+
+        $this->woonplan()
+            ->call('cardMoved', 'to-do', 'later', (string) $card->id, '0')
+            ->assertSee('€ 2.520')
+            ->assertDontSee(__('cooperation/frontend/tool.my-plan.package-results.broken'));
+    }
+
+    public function test_a_carried_out_measure_advised_again_moves_to_later_and_back_for_everyone(): void
+    {
+        $card = $this->packageWithFigures();
+        // What an import leaves when SmartTwin puts a carried-out measure back in the package.
+        UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_action_plan_advisable_id', $card->user_action_plan_advisable_id)
+            ->update(['executed_at' => '2026-10-01']);
+
+        $woonplan = $this->woonplan();
+        $this->assertSame(['to-do', 'later'], $this->cardData($woonplan, $card)['targets']);
+
+        $woonplan->call('cardMoved', 'to-do', 'later', (string) $card->id, '0')
+            // Its record goes along, and a package card in "Later uitvoeren" leaves the package intact.
+            ->assertSee(__('cooperation/frontend/tool.my-plan.executed.advised-again', ['date' => '01-10-2026']))
+            ->assertSee('€ 2.520');
+        $this->assertSame(['later'], $this->categoriesOf($card));
+        $this->assertSame('2026-10-01', $card->fresh()->executed_at->format('Y-m-d'));
+
+        $this->woonplan()->call('cardMoved', 'later', 'to-do', (string) $card->id, '0');
+        $this->assertSame(['to-do'], $this->categoriesOf($card));
+    }
+
+    public function test_a_carried_out_measure_in_in_order_stays_there(): void
+    {
+        $card = $this->packageCard();
+        app(ExecutedAdviceService::class)->markExecuted($card, Carbon::parse('2026-10-01'));
+
+        $this->woonplan()->call('cardMoved', 'complete', 'later', (string) $card->id, '0');
+
+        $this->assertSame(['complete'], $this->categoriesOf($card));
     }
 
     public function test_a_package_card_in_later_leaves_the_package_intact_and_its_costs_out_of_the_total(): void

@@ -228,6 +228,29 @@ final class ExecutedAdviceServiceTest extends TestCase
         $this->assertSame('Gedaan', $after->executed_description);
     }
 
+    public function test_an_import_puts_a_measure_advised_again_back_in_now_from_the_column_it_was_dragged_to(): void
+    {
+        $master = $this->packageCard();
+        $this->service()->markExecuted($master, Carbon::parse('2026-10-01'));
+
+        $import = function (): void {
+            $applier = app(MappingApplier::class);
+            $applier->startRun();
+            $applier->apply($this->building, InputSource::resident(), MappingResult::mappedAdvice('cavity-wall-insulation', 1800.0));
+        };
+
+        $import();
+        UserActionPlanAdvice::withoutGlobalScopes()
+            ->whereIn('id', $this->rows('cavity-wall-insulation')->pluck('id'))
+            ->update(['category' => UserActionPlanAdviceService::CATEGORY_LATER]);
+        $import();
+
+        $this->assertSame(
+            [UserActionPlanAdviceService::CATEGORY_TO_DO],
+            $this->rows('cavity-wall-insulation')->pluck('category')->unique()->values()->all(),
+        );
+    }
+
     public function test_an_import_that_does_not_advise_it_leaves_it_in_order(): void
     {
         $master = $this->packageCard();

@@ -22,8 +22,8 @@ use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 /**
- * The notice above the quick scan telling a coach what to do with the woonplan the resident made with
- * SmartTwin's quick scan: look at the dwelling first, then adjust the woonplan in SmartTwin.
+ * The notice above the quick scan's woonplan telling a coach what to do with the woonplan the resident
+ * made with SmartTwin's quick scan: look at the dwelling first, then adjust the woonplan in SmartTwin.
  */
 final class SmartTwinCoachNoticeTest extends TestCase
 {
@@ -130,14 +130,35 @@ final class SmartTwinCoachNoticeTest extends TestCase
 
         $houseDataUrl = route('cooperation.frontend.tool.simple-scan.my-plan.house-data', ['cooperation' => $this->cooperation, 'scan' => $this->scan]);
 
-        // On every page of the quick scan, not only the woonplan.
-        foreach ([$this->woonplan(), $this->houseData()] as $page) {
-            $page->assertOk()
-                // @lang does not escape, so neither are the quotes in the text.
-                ->assertSee(__('cooperation/frontend/tool.my-plan.coach-notice.text'), false)
-                ->assertSee(__('cooperation/frontend/tool.my-plan.coach-notice.warning'))
-                ->assertSee('href="' . $houseDataUrl . '"', false);
-        }
+        $this->woonplan()
+            ->assertOk()
+            // @lang does not escape, so neither are the quotes in the text.
+            ->assertSee(__('cooperation/frontend/tool.my-plan.coach-notice.text'), false)
+            ->assertSee(__('cooperation/frontend/tool.my-plan.coach-notice.warning'))
+            ->assertSee('href="' . $houseDataUrl . '"', false);
+    }
+
+    public function test_not_on_the_other_pages_of_the_quick_scan(): void
+    {
+        $this->smartTwinPlanFrom(InputSource::resident());
+        $this->asCoach();
+
+        $this->houseData()
+            ->assertOk()
+            ->assertDontSee(__('cooperation/frontend/tool.my-plan.coach-notice.text'), false);
+    }
+
+    public function test_not_on_the_woonplan_of_the_lite_scan(): void
+    {
+        $this->smartTwinPlanFrom(InputSource::resident());
+        $this->asCoach();
+
+        $this->scan = Scan::findByShort(Scan::LITE);
+        $this->cooperation->scans()->syncWithoutDetaching([$this->scan->id]);
+
+        $this->woonplan()
+            ->assertOk()
+            ->assertDontSee(__('cooperation/frontend/tool.my-plan.coach-notice.text'), false);
     }
 
     public function test_not_once_the_coach_advised(): void

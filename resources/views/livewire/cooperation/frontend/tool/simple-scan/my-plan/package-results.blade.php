@@ -69,12 +69,14 @@
             @else
                 {{-- What SmartTwin calculated only holds for the package as a whole. --}}
                 <p class="font-bold">
-                    @lang('cooperation/frontend/tool.my-plan.package-results.broken')
                     @if($this->canHandOff)
+                        @lang('cooperation/frontend/tool.my-plan.package-results.broken-with-link')
                         <a href="#" class="in-text"
                            x-on:click.prevent="document.querySelector('#smarttwin-recalculate').triggerEvent('open-modal');">
                             @lang('cooperation/frontend/tool.my-plan.package-results.broken-link')
                         </a>
+                    @else
+                        @lang('cooperation/frontend/tool.my-plan.package-results.broken')
                     @endif
                 </p>
             @endif

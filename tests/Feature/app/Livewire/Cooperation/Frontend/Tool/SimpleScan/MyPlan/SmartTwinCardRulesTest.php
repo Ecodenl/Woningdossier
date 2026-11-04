@@ -17,7 +17,9 @@ use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Services\ExecutedAdviceService;
+use App\Services\SmartTwin\Api\UserRole;
 use App\Services\SmartTwin\SmartTwinAdviceDetails;
+use App\Services\SmartTwin\WoonplanLock;
 use Illuminate\Support\Carbon;
 use Database\Seeders\DatabaseSeeder;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
@@ -463,6 +465,54 @@ final class SmartTwinCardRulesTest extends TestCase
         $this->woonplan()
             ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.broken'))
             ->assertDontSee('€ 2.520');
+    }
+
+    private function linkSmartTwinAccount(): void
+    {
+        $account = $this->building->user->account;
+        $account->linkSmartTwinUser('st-user-1', UserRole::Resident);
+
+        // Hoomdossier::account() hands back the authenticated instance, from before the link.
+        $this->actingAs($account);
+    }
+
+    public function test_a_broken_package_offers_a_new_calculation_to_whoever_may_start_one(): void
+    {
+        $this->linkSmartTwinAccount();
+        $card = $this->packageWithFigures();
+
+        $this->woonplan()
+            ->call('cardTrashed', 'to-do', (string) $card->id)
+            ->assertSee('Verbeterpakket aangepast,')
+            ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.broken-link'));
+    }
+
+    public function test_a_broken_package_is_a_whole_sentence_for_whoever_may_not_start_one(): void
+    {
+        // No SmartTwin user, so no hand-off.
+        $card = $this->packageWithFigures();
+
+        $this->woonplan()
+            ->call('cardTrashed', 'to-do', (string) $card->id)
+            ->assertSee('Verbeterpakket aangepast.')
+            ->assertDontSee('Verbeterpakket aangepast,')
+            ->assertDontSee(__('cooperation/frontend/tool.my-plan.package-results.broken-link'));
+    }
+
+    public function test_a_broken_package_is_a_whole_sentence_while_the_coach_has_the_plan_locked(): void
+    {
+        $this->linkSmartTwinAccount();
+        $card = $this->packageWithFigures();
+        UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_action_plan_advisable_id', $card->user_action_plan_advisable_id)
+            ->update(['visible' => false]);
+        $this->building->smartTwinPackage()->first()->update(['input_source_id' => InputSource::coach()->id]);
+        app(WoonplanLock::class)->lock($this->building);
+
+        $this->woonplan()
+            ->assertSee('Verbeterpakket aangepast.')
+            ->assertDontSee('Verbeterpakket aangepast,')
+            ->assertDontSee(__('cooperation/frontend/tool.my-plan.package-results.broken-link'));
     }
 
     public function test_before_the_switch_there_are_no_package_results(): void

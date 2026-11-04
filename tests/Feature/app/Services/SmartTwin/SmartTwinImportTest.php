@@ -3,6 +3,7 @@
 namespace Tests\Feature\app\Services\SmartTwin;
 
 use App\Enums\AdviceSource;
+use App\Enums\MappingType;
 use App\Enums\SmartTwin\EventType;
 use App\Enums\SmartTwin\MappingStatus;
 use App\Enums\SmartTwin\MappingTarget;
@@ -14,11 +15,13 @@ use App\Models\BuildingRoofType;
 use App\Models\EnergyLabel;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\Municipality;
 use App\Models\RoofType;
 use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Services\ExecutedAdviceService;
+use App\Services\MappingService;
 use App\Services\SmartTwin\DwellingRows;
 use App\Services\SmartTwin\Mapping\FilledQuestions;
 use App\Services\SmartTwin\Mapping\Mappers\ElementValues;
@@ -26,11 +29,14 @@ use App\Services\SmartTwin\Mapping\MappingReport;
 use App\Services\SmartTwin\SmartTwinService;
 use App\Services\ToolQuestionService;
 use App\Services\UserActionPlanAdviceService;
+use App\Services\Verbeterjehuis\RegulationService;
+use App\Services\Verbeterjehuis\Verbeterjehuis;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
+use Mockery\MockInterface;
 use Tests\TestCase;
 
 /**
@@ -220,6 +226,35 @@ final class SmartTwinImportTest extends TestCase
             // Rc 1,3 counts as insulated on the roof scale; the package still starts in to-do.
             $this->assertSame(UserActionPlanAdviceService::CATEGORY_TO_DO, $advice->category, $short);
         }
+    }
+
+    public function test_each_package_card_asks_verbeterjehuis_what_regulations_it_has(): void
+    {
+        $municipality = Municipality::factory()->create();
+        $this->building->update(['municipality_id' => $municipality->id]);
+        MappingService::init()->from($municipality)
+            ->sync([['Id' => '1', 'Name' => 'Testgemeente']], MappingType::MUNICIPALITY_VBJEHUIS->value);
+        MappingService::init()->from(MeasureApplication::findByShort('floor-insulation'))->sync([['Value' => 'floor']]);
+        MappingService::init()->from(MeasureApplication::findByShort('roof-insulation-pitched-inside'))->sync([['Value' => 'roof']]);
+
+        $regulation = fn (string $type, array $tags) => [
+            'Type'        => $type,
+            'TargetGroup' => 'Woningeigenaar',
+            'Tags'        => array_map(fn (string $tag) => ['Value' => $tag], $tags),
+        ];
+        $this->mock(Verbeterjehuis::class, fn (MockInterface $mock) => $mock->shouldReceive('regulation->search')->andReturn([
+            $regulation(RegulationService::LOAN, ['floor', 'roof']),
+            $regulation(RegulationService::SUBSIDY, ['floor']),
+        ]));
+
+        $this->import($this->response());
+
+        $advices = $this->advices();
+
+        $this->assertTrue($advices['floor-insulation']->subsidy_available);
+        $this->assertTrue($advices['floor-insulation']->loan_available);
+        $this->assertFalse($advices['roof-insulation-pitched-inside']->subsidy_available);
+        $this->assertTrue($advices['roof-insulation-pitched-inside']->loan_available);
     }
 
     public function test_an_externally_advised_measure_becomes_a_package_card_like_any_other(): void

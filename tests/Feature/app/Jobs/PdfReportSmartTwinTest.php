@@ -158,11 +158,21 @@ final class PdfReportSmartTwinTest extends TestCase
 
         $html = $this->reportHtml();
 
-        // P3: no Verbeterjehuis subsidy. P4: SmartTwin's calculations.
-        $this->assertStringNotContainsString(__('pdf/user-report.pages.info-page.subsidy.title'), $html);
+        // P4: SmartTwin's calculations.
         $this->assertStringContainsString('De berekeningen in dit woonplan zijn gemaakt door Smart Twin', $html);
         // P6: no expert scan pages.
         $this->assertStringNotContainsString(strip_tags(__('pdf/user-report.pages.expert-scan-answers.text.nl')), $html);
+    }
+
+    public function test_after_the_switch_the_report_follows_the_cards_with_the_verbeterjehuis_subsidy(): void
+    {
+        $this->switchToSmartTwin();
+
+        // P3: one switch for the cards and the report.
+        $this->assertStringContainsString(
+            strip_tags(__('pdf/user-report.pages.info-page.subsidy.title')),
+            $this->reportHtml(),
+        );
     }
 
     public function test_after_the_switch_the_dwelling_reads_as_gegevens_woning_bekijken(): void

@@ -845,9 +845,10 @@ class Form extends CustomMeasureForm
             $advisable = $advice->userActionPlanAdvisable;
 
             if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
-                // We only want expert scan steps to be linkable
+                // We only want expert scan steps to be linkable, and only while the expert scan is
+                // open: from the switch on it is closed (EnsureExpertScanAvailable).
                 $route = null;
-                if ($advisable->step->scan->short === Scan::EXPERT) {
+                if (! $this->smartTwinOwnsWoonplan && $advisable->step->scan->short === Scan::EXPERT) {
                     // Pass the cooperation explicitly: Livewire update requests skip the cooperation
                     // middleware, so its URL default is not set when the cards are reloaded.
                     $route = route('cooperation.frontend.tool.expert-scan.index', [

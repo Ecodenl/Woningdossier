@@ -495,21 +495,32 @@ final class SmartTwinCardRulesTest extends TestCase
         $this->assertSame('invoice', $document->pivot->tag);
     }
 
-    public function test_the_cards_reload_without_the_cooperation_as_url_default(): void
+    public function test_a_card_title_does_not_link_to_the_closed_expert_scan(): void
     {
         $card = $this->packageCard();
+
+        $woonplan = $this->woonplan();
+
+        $this->assertNull($this->cardData($woonplan, $card)['route']);
+        $woonplan->assertDontSeeHtml('expert-scan');
+
+        // Still so once the card is moved and the cards are loaded anew.
+        $woonplan = $this->woonplan()->call('cardMoved', 'to-do', 'later', (string) $card->id, '0');
+        $this->assertNull($this->cardData($woonplan, $card)['route']);
+    }
+
+    public function test_the_cards_reload_without_the_cooperation_as_url_default(): void
+    {
+        // Before the switch, where a card still links to the expert scan.
+        $card = $this->card('cavity-wall-insulation', null);
         $woonplan = $this->woonplan();
         $this->assertNotNull($this->cardData($woonplan, $card)['route'], 'a card that links to the expert scan');
 
         // A Livewire update request does not pass the cooperation middleware, which sets this default.
         URL::defaults(['cooperation' => null]);
 
-        $woonplan->call('openExecuted', $card->id)
-            ->set('executedAt', '2026-10-01')
-            ->call('saveExecuted')
-            ->assertHasNoErrors();
+        $woonplan->call('reload', $card->id)->assertHasNoErrors();
 
-        $this->assertSame(['complete'], $this->categoriesOf($card));
         $this->assertStringContainsString(
             $this->building->user->cooperation->slug,
             $this->cardData($woonplan, $card)['route'],

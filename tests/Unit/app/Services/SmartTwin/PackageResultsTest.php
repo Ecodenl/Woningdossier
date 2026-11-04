@@ -29,7 +29,7 @@ final class PackageResultsTest extends TestCase
 
     private function card(string $name, ?float $from, ?float $to, ?string $kind): array
     {
-        return ['name' => $name, 'costs' => ['from' => $from, 'to' => $to], 'kind' => $kind];
+        return ['name' => $name, 'costs' => ['from' => $from, 'to' => $to], 'in_package' => WoonplanCardRules::PACKAGE === $kind];
     }
 
     public function test_every_card_in_now_is_a_line_with_the_package_first(): void

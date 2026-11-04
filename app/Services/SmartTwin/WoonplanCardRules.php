@@ -69,10 +69,21 @@ final class WoonplanCardRules
             return self::IN_ORDER;
         }
 
-        $inPackage = MeasureApplication::class === $advice->user_action_plan_advisable_type
-            && in_array((int) $advice->user_action_plan_advisable_id, array_map('intval', $packageMeasureIds), true);
+        return self::isInPackage($advice, $packageMeasureIds) ? self::PACKAGE : self::POSSIBLE;
+    }
 
-        return $inPackage ? self::PACKAGE : self::POSSIBLE;
+    /**
+     * Whether a card holds a measure of the package, whatever its kind: a measure carried out and
+     * advised again is of the kind "executed" for what it may do, and still part of the package.
+     *
+     * @param  array<int, int>  $packageMeasureIds  The measures of the building's package
+     *                                              (SmartTwinPackage::$measure_application_ids).
+     */
+    public static function isInPackage(UserActionPlanAdvice $advice, array $packageMeasureIds): bool
+    {
+        return AdviceSource::SMART_TWIN === $advice->source
+            && MeasureApplication::class === $advice->user_action_plan_advisable_type
+            && in_array((int) $advice->user_action_plan_advisable_id, array_map('intval', $packageMeasureIds), true);
     }
 
     public static function move(string $kind, string $from, string $to): string

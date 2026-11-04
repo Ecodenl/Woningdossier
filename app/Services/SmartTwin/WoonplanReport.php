@@ -46,9 +46,9 @@ final readonly class WoonplanReport
         $packageMeasureIds = $package instanceof SmartTwinPackage ? array_map('intval', $package->measure_application_ids ?? []) : [];
 
         $card = fn (UserActionPlanAdvice $advice): array => [
-            'name'  => (string) $advice->userActionPlanAdvisable->name,
-            'costs' => CardCosts::of($advice),
-            'kind'  => WoonplanCardRules::kindOf($advice, $packageMeasureIds),
+            'name'       => (string) $advice->userActionPlanAdvisable->name,
+            'costs'      => CardCosts::of($advice),
+            'in_package' => WoonplanCardRules::isInPackage($advice, $packageMeasureIds),
         ];
 
         $nowCards = ($categorized[UserActionPlanAdviceService::CATEGORY_TO_DO] ?? collect())->map($card)->values()->all();

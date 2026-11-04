@@ -923,8 +923,7 @@ class Form extends CustomMeasureForm
                 : WoonplanCardRules::targets($kind, $category);
             $cards[$category][$order]['trashable'] = is_null($kind) || WoonplanCardRules::mayTrash($kind);
             $cards[$category][$order]['in_package'] = ! is_null($kind)
-                && $advice->user_action_plan_advisable_type === MeasureApplication::class
-                && in_array((int) $advice->user_action_plan_advisable_id, $this->packageMeasureIds, true);
+                && WoonplanCardRules::isInPackage($advice, $this->packageMeasureIds);
             // The lines under the columns and the report show these same amounts; see CardCosts.
             $cards[$category][$order]['costs'] = CardCosts::of($advice);
             // Null rather than zero when there is no saving: an advice that came from elsewhere may

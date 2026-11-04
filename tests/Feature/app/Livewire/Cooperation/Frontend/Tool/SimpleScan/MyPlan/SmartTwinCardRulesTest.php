@@ -20,6 +20,7 @@ use App\Services\ExecutedAdviceService;
 use App\Services\SmartTwin\Api\UserRole;
 use App\Services\SmartTwin\SmartTwinAdviceDetails;
 use App\Services\SmartTwin\WoonplanLock;
+use App\Services\SmartTwin\WoonplanReport;
 use Illuminate\Support\Carbon;
 use Database\Seeders\DatabaseSeeder;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
@@ -474,6 +475,27 @@ final class SmartTwinCardRulesTest extends TestCase
 
         // Hoomdossier::account() hands back the authenticated instance, from before the link.
         $this->actingAs($account);
+    }
+
+    public function test_a_carried_out_measure_advised_again_is_a_package_line(): void
+    {
+        $card = $this->packageWithFigures();
+        $this->addOwnMeasure('to-do', 'Zonnescherm');
+        // What an import leaves when SmartTwin puts a carried-out measure back in the package.
+        UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_action_plan_advisable_id', $card->user_action_plan_advisable_id)
+            ->update(['executed_at' => '2026-10-01']);
+
+        $lines = $this->woonplan()->instance()->packageResults->lines;
+
+        $this->assertSame([true, false], array_column($lines, 'package'));
+        $this->assertSame('Zonnescherm', $lines[1]['name']);
+
+        // The report reads the same lines.
+        $advice = UserActionPlanAdvice::withoutGlobalScopes()->find($card->id);
+        $report = WoonplanReport::from($this->building, collect(['to-do' => collect([$advice])]));
+
+        $this->assertSame([true], array_column($report->results->lines, 'package'));
     }
 
     public function test_a_broken_package_offers_a_new_calculation_to_whoever_may_start_one(): void

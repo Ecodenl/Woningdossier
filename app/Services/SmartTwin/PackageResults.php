@@ -59,7 +59,7 @@ final readonly class PackageResults
                 'from'    => is_null($from) ? null : (float) $from,
                 'to'      => is_null($to) ? null : (float) $to,
                 'amount'  => self::amountOf($from, $to),
-                'package' => WoonplanCardRules::PACKAGE === ($card['kind'] ?? null),
+                'package' => (bool) ($card['in_package'] ?? false),
             ];
         }
 

@@ -8,7 +8,8 @@ namespace App\Services\SmartTwin\Mapping\Elements;
  * Follows the measure's step rather than a list of measures. Every measure of a step works on the
  * same element, so a measure added to a step needs nothing here. The roof is the one place the step
  * is not enough: flat and pitched roofs have measures of their own. A measure that works on no
- * element at all is listed in WITHOUT_ELEMENT.
+ * element at all is listed in WITHOUT_ELEMENT. The insulated door sits on the glazing step, there
+ * being none for doors, but works on the doors.
  */
 final class ElementScope
 {
@@ -49,6 +50,11 @@ final class ElementScope
         // against the floor would flag every one of them as a floor SmartTwin forgot to insulate.
         if ('bottom-insulation' === $measureShort) {
             return [new self(Element::CRAWLSPACE)];
+        }
+
+        // Replacing a door leaves the windows of its step as they are.
+        if ('replace-door-insulated' === $measureShort) {
+            return [new self(Element::DOORS)];
         }
 
         if (in_array($measureShort, self::WITHOUT_ELEMENT, true)) {

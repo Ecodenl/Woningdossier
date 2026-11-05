@@ -288,6 +288,26 @@ final class SmartTwinImportTest extends TestCase
         $this->assertSame(['windows'], array_keys($advices['vacuum-glass-only']->smartTwinDetails()->elements));
     }
 
+    public function test_the_insulated_door_becomes_a_package_card_on_the_doors(): void
+    {
+        // The id is made up, as no response with a door solution has been seen yet.
+        $door = 'Replace Door|SmartTwin:Insulated_Door';
+        $this->couple($door, 'replace-door-insulated');
+
+        $response = $this->response();
+        $response['scenario']['solutions'][] = $this->solution($door, 1850.75);
+
+        $this->import($response);
+
+        $advices = $this->advices();
+
+        $this->assertArrayHasKey('replace-door-insulated', $advices);
+        $this->assertSame(AdviceSource::SMART_TWIN, $advices['replace-door-insulated']->source);
+        $this->assertSame(UserActionPlanAdviceService::CATEGORY_TO_DO, $advices['replace-door-insulated']->category);
+        $this->assertEquals(1850.75, $advices['replace-door-insulated']->costs['to']);
+        $this->assertSame(['doors'], array_keys($advices['replace-door-insulated']->smartTwinDetails()->elements));
+    }
+
     public function test_each_package_card_carries_its_smarttwin_details_into_master(): void
     {
         $this->import($this->response());

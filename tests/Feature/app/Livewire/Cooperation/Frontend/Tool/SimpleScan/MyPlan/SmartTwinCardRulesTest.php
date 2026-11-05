@@ -390,6 +390,57 @@ final class SmartTwinCardRulesTest extends TestCase
             ->assertSee('C → A+++');
     }
 
+    public function test_the_chosen_measures_and_benefits_stay_when_a_card_moves_the_costs_follow(): void
+    {
+        $card = $this->packageWithFigures();
+        $name = MeasureApplication::findByShort('cavity-wall-insulation')->measure_name;
+
+        $woonplan = $this->woonplan()
+            ->assertSeeHtml('id="package-measures"')
+            ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.costs-title'))
+            ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.benefits-title'));
+        $this->assertSame([$name], array_column($woonplan->instance()->packageResults->packageMeasures, 'name'));
+        $this->assertSame([$name], array_column($woonplan->instance()->packageResults->lines, 'name'));
+
+        $woonplan = $this->woonplan()->call('cardMoved', 'to-do', 'later', (string) $card->id, '0');
+
+        $results = $woonplan->instance()->packageResults;
+        $this->assertSame([$name], array_column($results->packageMeasures, 'name'));
+        $this->assertSame([], $results->lines);
+        $woonplan->assertSeeHtml('id="package-measures"')->assertSee('€ 2.520');
+    }
+
+    public function test_the_chosen_measures_leave_with_the_package_and_come_back_with_it(): void
+    {
+        $card = $this->packageWithFigures();
+
+        $this->woonplan()
+            ->call('cardTrashed', 'to-do', (string) $card->id)
+            ->assertDontSeeHtml('id="package-measures"')
+            ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.benefits-title'))
+            ->assertSee(__('cooperation/frontend/tool.my-plan.package-results.broken'));
+
+        $this->woonplan()
+            ->call('addHiddenCardToBoard', 'to-do', (string) $card->id)
+            ->assertSeeHtml('id="package-measures"');
+    }
+
+    public function test_the_chosen_measures_keep_the_order_smart_twin_gave_them(): void
+    {
+        $floor = MeasureApplication::findByShort('floor-insulation');
+        $wall = MeasureApplication::findByShort('cavity-wall-insulation');
+
+        $package = new SmartTwinPackage(['measure_application_ids' => [$wall->id, 0, $floor->id]]);
+
+        $this->assertSame(
+            [
+                ['name' => $wall->measure_name, 'icon' => $wall->configurations['icon']],
+                ['name' => $floor->measure_name, 'icon' => $floor->configurations['icon']],
+            ],
+            $package->chosenMeasures(),
+        );
+    }
+
     public function test_once_the_package_no_longer_holds_its_figures_make_way_for_a_new_calculation(): void
     {
         $card = $this->packageWithFigures();

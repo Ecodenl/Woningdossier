@@ -232,12 +232,14 @@ return [
         // "Gekozen pakket" under the columns of a SmartTwin woonplan (woonplan design "Pagina 2").
         'package-results' => [
             'title' => 'Gekozen pakket',
+            'costs-title' => 'Kosten kolom Nu aanpakken',
+            'benefits-title' => 'Besparingen en voordelen gekozen pakket',
             'costs' => 'Kosten',
-            'total' => 'Totaal pakket',
+            'total' => 'Totaal Nu aanpakken',
             'no-costs' => 'Geen kosten bekend',
             'savings' => 'Besparing',
             'per-year' => 'per jaar',
-            'subsidy' => 'Subsidie',
+            'subsidy' => 'Subsidie totaal',
             'energy-label' => 'Energielabel',
             'gas' => 'Gasverbruik',
             'electricity' => 'Stroomverbruik',

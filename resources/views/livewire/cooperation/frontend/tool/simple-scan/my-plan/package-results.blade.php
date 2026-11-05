@@ -1,4 +1,4 @@
-{{-- "Gekozen pakket" under the columns of a SmartTwin woonplan; see App\Services\SmartTwin\PackageResults. --}}
+{{-- What is under the columns of a SmartTwin woonplan; see App\Services\SmartTwin\PackageResults. --}}
 @php
     /** @var \App\Services\SmartTwin\PackageResults $results */
     // Whole euros, not the woonplan's steps of five (Patrick, 15 October 2026).
@@ -7,9 +7,23 @@
     $from = fn ($now, $after, $unit) => trim((is_null($now) ? '' : $number($now) . ' → ') . (is_null($after) ? '–' : $number($after)) . ' ' . $unit);
 @endphp
 <div class="w-full mt-5 p-5 rounded-lg border-2 border-blue-500 border-opacity-10" id="package-results">
+    @if(! empty($results->packageMeasures))
+        <div class="mb-6" id="package-measures">
+            <h5 class="heading-5 mb-3">@lang('cooperation/frontend/tool.my-plan.package-results.title')</h5>
+            <div class="flex flex-wrap gap-x-8 gap-y-3 text-sm">
+                @foreach($results->packageMeasures as $measure)
+                    <div class="flex items-center">
+                        <i class="{{ $measure['icon'] }} w-10 h-10 mr-2 flex-shrink-0"></i>
+                        <span>{{ $measure['name'] }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-            <h5 class="heading-5 mb-3">@lang('cooperation/frontend/tool.my-plan.package-results.title')</h5>
+            <h5 class="heading-5 mb-3">@lang('cooperation/frontend/tool.my-plan.package-results.costs-title')</h5>
             <table class="w-full text-sm">
                 <thead>
                     <tr>
@@ -40,6 +54,7 @@
         </div>
 
         <div class="text-sm space-y-1">
+            <h5 class="heading-5 mb-3">@lang('cooperation/frontend/tool.my-plan.package-results.benefits-title')</h5>
             @if($results->intact)
                 @unless(is_null($results->savingsPerYear))
                     <p class="font-bold">
@@ -50,8 +65,8 @@
                 @unless(is_null($results->subsidy))
                     <p class="font-bold">
                         @lang('cooperation/frontend/tool.my-plan.package-results.subsidy'): {{ $euro($results->subsidy) }}
-                        @if(! empty($results->subsidies))
-                            <span class="font-normal">({{ collect($results->subsidies)->pluck('name')->filter()->implode(', ') }})</span>
+                        @if($results->subsidySchemes() !== '')
+                            <span class="font-normal">({{ $results->subsidySchemes() }})</span>
                         @endif
                     </p>
                 @endunless

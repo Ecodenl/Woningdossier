@@ -39,11 +39,16 @@
     <p>@lang('pdf/user-report.pages.action-plan.smart-twin.usage-source')</p>
 </div>
 
+@if(! empty($results->packageMeasures))
+    <div class="group">
+        <h3>@lang("{$package}.title")</h3>
+        {{-- Without the woonplan's icons: mPDF fails on several of them, and with it the whole report. --}}
+        <p>{{ implode(', ', array_column($results->packageMeasures, 'name')) }}</p>
+    </div>
+@endif
+
 <div class="group">
-    <h3>
-        {{ strip_tags(__('pdf/user-report.pages.action-plan.categories.' . \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO)) }}
-    </h3>
-    <h4>@lang("{$package}.title")</h4>
+    <h3>@lang("{$package}.costs-title")</h3>
 
     <div class="row">
         <div class="col-8">
@@ -72,7 +77,11 @@
         </div>
     </div>
 
-    {{-- What SmartTwin calculated holds for the package as a whole, and only while the woonplan holds it. --}}
+</div>
+
+{{-- What SmartTwin calculated holds for the package as a whole, and only while the woonplan holds it. --}}
+<div class="group">
+    <h3>@lang("{$package}.benefits-title")</h3>
     <div class="py-2">
         @if($results->intact)
             @unless(is_null($results->savingsPerYear))
@@ -81,8 +90,8 @@
             @unless(is_null($results->subsidy))
                 <p class="font-bold">
                     @lang("{$package}.subsidy"): {{ $euro($results->subsidy) }}
-                    @if(! empty($results->subsidies))
-                        ({{ collect($results->subsidies)->pluck('name')->filter()->implode(', ') }})
+                    @if($results->subsidySchemes() !== '')
+                        ({{ $results->subsidySchemes() }})
                     @endif
                 </p>
             @endunless

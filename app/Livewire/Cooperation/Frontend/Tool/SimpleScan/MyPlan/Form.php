@@ -573,7 +573,7 @@ class Form extends CustomMeasureForm
                 ->get(),
         );
 
-        return PackageResults::from($package, $intact, $this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] ?? []);
+        return PackageResults::from($package, $intact, $this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] ?? [], $package?->chosenMeasures() ?? []);
     }
 
     /**

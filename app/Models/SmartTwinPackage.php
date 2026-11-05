@@ -70,6 +70,27 @@ class SmartTwinPackage extends Model
         return $this->belongsTo(Building::class);
     }
 
+    /**
+     * The measures of the package with their icon, in the order SmartTwin gave them. Read from the
+     * package rather than from the cards, so they stay put while the cards move between the columns.
+     *
+     * @return array<int, array{name: string, icon: string}>
+     */
+    public function chosenMeasures(): array
+    {
+        $measures = MeasureApplication::whereIn('id', $this->measure_application_ids ?? [])->get()->keyBy('id');
+
+        return collect($this->measure_application_ids ?? [])
+            ->map(fn (mixed $id) => $measures->get((int) $id))
+            ->filter()
+            ->map(fn (MeasureApplication $measure) => [
+                'name' => (string) $measure->measure_name,
+                'icon' => $measure->configurations['icon'] ?? 'icon-tools',
+            ])
+            ->values()
+            ->all();
+    }
+
     /** Gas saved per year by the package, in m³: what the dwelling uses now minus after the package. */
     public function gasSavings(): ?float
     {

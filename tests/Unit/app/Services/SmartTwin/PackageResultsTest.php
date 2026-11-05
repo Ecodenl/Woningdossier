@@ -65,6 +65,27 @@ final class PackageResultsTest extends TestCase
         $this->assertFalse(PackageResults::from(null, true, [])->intact);
     }
 
+    public function test_the_chosen_measures_are_there_while_the_package_holds(): void
+    {
+        $measures = [['name' => 'Vloerisolatie', 'icon' => 'icon-floor-insulation-excellent']];
+
+        $this->assertSame($measures, PackageResults::from($this->package(), true, [], $measures)->packageMeasures);
+        $this->assertSame([], PackageResults::from($this->package(), false, [], $measures)->packageMeasures);
+        $this->assertSame([], PackageResults::from(null, true, [], $measures)->packageMeasures);
+    }
+
+    public function test_one_subsidy_scheme_goes_by_name_more_by_name_and_amount(): void
+    {
+        $this->assertSame('ISDE', PackageResults::from($this->package(), true, [])->subsidySchemes());
+
+        $package = $this->package();
+        $package->subsidies = [['name' => 'ISDE', 'amount' => 5000.4], ['name' => null, 'amount' => 1], ['name' => 'Gemeente', 'amount' => 1853.35]];
+        $this->assertSame('ISDE € 5.000, Gemeente € 1.853', PackageResults::from($package, true, [])->subsidySchemes());
+
+        $package->subsidies = [];
+        $this->assertSame('', PackageResults::from($package, true, [])->subsidySchemes());
+    }
+
     public function test_the_total_is_the_exact_sum(): void
     {
         // Two lines of € 100,50 show € 101 each; the total is the exact € 201, rounded once.

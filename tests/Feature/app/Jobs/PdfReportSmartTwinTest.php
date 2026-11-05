@@ -136,6 +136,8 @@ final class PdfReportSmartTwinTest extends TestCase
 
         // P1: "Gekozen pakket" with the card's amount in whole euros, not on steps of five.
         $this->assertStringContainsString(__('cooperation/frontend/tool.my-plan.package-results.title'), $html);
+        $this->assertStringContainsString(__('cooperation/frontend/tool.my-plan.package-results.costs-title'), $html);
+        $this->assertStringContainsString(__('cooperation/frontend/tool.my-plan.package-results.benefits-title'), $html);
         $this->assertStringContainsString('€ 1.623', $html);
         $this->assertStringNotContainsString('€ 1.625', $html);
         $this->assertStringContainsString('€ 600 ' . __('cooperation/frontend/tool.my-plan.package-results.per-year'), $html);
@@ -218,6 +220,32 @@ final class PdfReportSmartTwinTest extends TestCase
         $this->assertStringStartsWith('%PDF', (string) Storage::disk('downloads')->get('report.pdf'));
     }
 
+    public function test_mpdf_makes_the_report_with_a_measure_whose_icon_it_cannot_read(): void
+    {
+        $this->switchToSmartTwin();
+        // mPDF throws on this measure's icon, public/icons/pitched-roof.svg.
+        $this->building->smartTwinPackage()->first()->update([
+            'measure_application_ids' => [
+                MeasureApplication::findByShort('cavity-wall-insulation')->id,
+                MeasureApplication::findByShort('roof-insulation-pitched-inside')->id,
+            ],
+        ]);
+        $this->advice('roof-insulation-pitched-inside', 'to-do', 3000);
+
+        $fileType = FileType::findByShort('pdf-report');
+        $fileStorage = FileStorage::create([
+            'building_id'     => $this->building->id,
+            'cooperation_id'  => $this->user->cooperation->id,
+            'input_source_id' => InputSource::resident()->id,
+            'file_type_id'    => $fileType->id,
+            'filename'        => 'report.pdf',
+        ]);
+
+        (new PdfReport($this->user, $fileType, $fileStorage, Scan::findByShort(Scan::QUICK)))->handle();
+
+        $this->assertStringStartsWith('%PDF', (string) Storage::disk('downloads')->get('report.pdf'));
+    }
+
     public function test_before_the_switch_the_report_is_as_it_was(): void
     {
         $this->advice('cavity-wall-insulation', 'to-do', 1622.65, null);
@@ -229,6 +257,8 @@ final class PdfReportSmartTwinTest extends TestCase
         // The woonplan's own prices on steps of five, as on its cards.
         $this->assertStringContainsString('Spouwmuurisolatie 1.625', $this->woonplanPageOf($html));
         $this->assertStringNotContainsString(__('cooperation/frontend/tool.my-plan.package-results.title'), $html);
+        $this->assertStringNotContainsString(__('cooperation/frontend/tool.my-plan.package-results.costs-title'), $html);
+        $this->assertStringNotContainsString(__('cooperation/frontend/tool.my-plan.package-results.benefits-title'), $html);
         $this->assertStringNotContainsString('De berekeningen in dit woonplan zijn gemaakt door Smart Twin', $html);
         // Every step summarised, also those SmartTwin takes over once it is on.
         $this->assertStringContainsString(trim(ToolQuestion::findByShort('ventilation-type')->name), $html);

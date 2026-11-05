@@ -6,7 +6,11 @@ use App\Helpers\NumberFormatter;
 use App\Models\SmartTwinPackage;
 
 /**
- * What the woonplan shows under its columns once it is SmartTwin's: "Gekozen pakket".
+ * What the woonplan shows under its columns once it is SmartTwin's: the measures of the chosen
+ * package, the costs of "Nu aanpakken" and what the package brings.
+ *
+ * The chosen measures and what the package brings are fixed until the package is adjusted; the costs
+ * follow the cards (customer, November 2026).
  *
  * Every card in "Nu aanpakken" is a line with its name and costs: the package first, then the own
  * and small measures, each on a line of its own (Patrick, 15 October 2026). They all count in the
@@ -24,6 +28,7 @@ final readonly class PackageResults
     /**
      * @param  array<int, array{name: string, from: float|null, to: float|null, amount: float, package: bool}>  $lines
      * @param  array<int, array{name: string|null, amount: float|null}>  $subsidies
+     * @param  array<int, array{name: string, icon: string}>  $packageMeasures  Empty once the package no longer holds.
      */
     public function __construct(
         public array $lines,
@@ -39,14 +44,16 @@ final readonly class PackageResults
         public ?float $electricityNow,
         public ?float $electricityAfter,
         public ?float $co2Savings,
+        public array $packageMeasures = [],
     )
     {
     }
 
     /**
      * @param  array<int, array<string, mixed>>  $nowCards  The cards in "Nu aanpakken", in their order.
+     * @param  array<int, array{name: string, icon: string}>  $packageMeasures  SmartTwinPackage::chosenMeasures().
      */
-    public static function from(?SmartTwinPackage $package, bool $intact, array $nowCards): self
+    public static function from(?SmartTwinPackage $package, bool $intact, array $nowCards, array $packageMeasures = []): self
     {
         $lines = [];
         foreach ($nowCards as $card) {
@@ -88,7 +95,23 @@ final readonly class PackageResults
             electricityNow: $number($now, 'energyConsumptionElectricity'),
             electricityAfter: $number($after, 'energyConsumptionElectricity'),
             co2Savings: is_null($co2Now) || is_null($co2After) ? null : $co2Now - $co2After,
+            packageMeasures: $package instanceof SmartTwinPackage && $intact ? $packageMeasures : [],
         );
+    }
+
+    /**
+     * What goes behind the total subsidy: the schemes, with their amount once there is more than one.
+     * With one scheme that amount is the total itself.
+     */
+    public function subsidySchemes(): string
+    {
+        $schemes = collect($this->subsidies)->filter(fn (array $scheme) => ! empty($scheme['name']));
+
+        return $schemes
+            ->map(fn (array $scheme) => $schemes->count() > 1 && ! is_null($scheme['amount'] ?? null)
+                ? $scheme['name'] . ' ' . NumberFormatter::prefix(NumberFormatter::format($scheme['amount'], 0), '€ ')
+                : $scheme['name'])
+            ->implode(', ');
     }
 
     /**

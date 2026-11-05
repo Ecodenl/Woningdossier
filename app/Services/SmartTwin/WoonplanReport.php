@@ -79,6 +79,6 @@ final readonly class WoonplanReport
             ->values()
             ->all();
 
-        return new self(PackageResults::from($package, $intact, $nowCards), $later, $complete);
+        return new self(PackageResults::from($package, $intact, $nowCards, $package?->chosenMeasures() ?? []), $later, $complete);
     }
 }

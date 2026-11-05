@@ -620,7 +620,11 @@ class Form extends CustomMeasureForm
             ->get();
     }
 
-    public function updateAdvice($id, array $update): void
+    /**
+     * Private: a public method here can be called from the browser, with any column of the advice and
+     * past WoonplanCardRules. The browser goes through cardMoved() and the other actions instead.
+     */
+    private function updateAdvice($id, array $update): void
     {
         $this->abortIfReadOnly();
 

@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
+use Livewire\Exceptions\MethodNotFoundException;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -222,6 +223,20 @@ final class SmartTwinCardRulesTest extends TestCase
         $this->woonplan()->call('cardMoved', 'to-do', 'later', (string) $small->id, '0');
 
         $this->assertSame(['later'], $this->categoriesOf($small));
+    }
+
+    public function test_the_browser_cannot_write_an_advice_past_the_rules(): void
+    {
+        $this->packageCard();
+        $card = $this->card('floor-insulation', AdviceSource::SMART_TWIN);
+
+        try {
+            $this->woonplan()->call('updateAdvice', $card->id, ['category' => 'later', 'costs' => ['from' => 1, 'to' => 1]]);
+            $this->fail('updateAdvice can be called from the browser.');
+        } catch (MethodNotFoundException) {
+            $this->assertSame(['to-do'], $this->categoriesOf($card));
+            $this->assertEquals(1000, $card->fresh()->costs['to']);
+        }
     }
 
     public function test_the_cards_tell_the_browser_what_they_may_do(): void

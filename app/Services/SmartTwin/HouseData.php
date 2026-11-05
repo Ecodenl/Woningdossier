@@ -211,8 +211,7 @@ final class HouseData
             foreach ($subStep->subSteppables->where('sub_steppable_type', ToolQuestion::class) as $pivot) {
                 $toolQuestion = $pivot->subSteppable;
 
-                if (
-                    ! $toolQuestion instanceof ToolQuestion
+                if (! $toolQuestion instanceof ToolQuestion
                     || Str::contains($toolQuestion->short, 'comment')
                     || in_array($toolQuestion->short, self::HIDDEN_USAGE_QUESTIONS)
                 ) {

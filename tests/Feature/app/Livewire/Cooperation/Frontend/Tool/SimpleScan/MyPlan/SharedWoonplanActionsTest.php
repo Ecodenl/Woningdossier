@@ -12,6 +12,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Role;
 use App\Models\Scan;
+use App\Models\SmartTwinPackage;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use Database\Seeders\DatabaseSeeder;
@@ -103,12 +104,17 @@ final class SharedWoonplanActionsTest extends TestCase
     private function moveToLater(UserActionPlanAdvice $master): void
     {
         Livewire::test(Form::class, ['scan' => Scan::quick(), 'building' => $this->building])
-            ->call('updateAdvice', $master->id, ['category' => 'later']);
+            ->call('cardMoved', 'to-do', 'later', (string) $master->id, '0');
     }
 
     public function test_after_the_switch_the_resident_moves_the_card_for_everyone(): void
     {
         $master = $this->card(AdviceSource::SMART_TWIN);
+        SmartTwinPackage::create([
+            'building_id'             => $this->building->id,
+            'measure_application_ids' => [$master->user_action_plan_advisable_id],
+            'imported_at'             => now(),
+        ]);
 
         $this->moveToLater($master);
 

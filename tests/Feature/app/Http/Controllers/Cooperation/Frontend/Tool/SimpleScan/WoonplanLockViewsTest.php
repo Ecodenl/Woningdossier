@@ -162,7 +162,7 @@ final class WoonplanLockViewsTest extends TestCase
         // Refused by the component itself, not only left out of the page.
         $woonplan()->call('cardMoved', 'to-do', 'to-do', (string) $card->id, '0')->assertForbidden();
         $woonplan()->call('openExecuted', $card->id)->assertForbidden();
-        $woonplan()->call('updateAdvice', $card->id, ['category' => 'later'])->assertForbidden();
+        $woonplan()->call('cardMoved', 'to-do', 'later', (string) $card->id, '0')->assertForbidden();
 
         $this->assertSame('to-do', $card->fresh()->category);
     }

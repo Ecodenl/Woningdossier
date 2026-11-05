@@ -84,7 +84,7 @@ class SmartTwinPackage extends Model
             ->map(fn (mixed $id) => $measures->get((int) $id))
             ->filter()
             ->map(fn (MeasureApplication $measure) => [
-                'name' => (string) $measure->measure_name,
+                'name' => $measure->getTranslation('measure_name', app()->getLocale()),
                 'icon' => $measure->configurations['icon'] ?? 'icon-tools',
             ])
             ->values()

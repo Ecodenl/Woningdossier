@@ -187,6 +187,30 @@ final class SolutionsMapperTest extends TestCase
         $this->assertSame([], $advices);
     }
 
+    public function test_a_lump_sum_without_cost_lines_is_the_price(): void
+    {
+        // Dossier 100279: "Kierdichting kozijnen" comes as € 1.925 in totalCostWithTax and no
+        // primary costs at all, and went missing from the woonplan.
+        $solution = $this->solution('Seal Cracks & Seams|SmartTwin:Sealing_Scope_Doors_And_Windows', []);
+        $solution['adviceSolutionCost']['totalCostWithTax'] = 1925;
+
+        $advices = $this->advices($this->response([$solution]));
+
+        $this->assertCount(1, $advices);
+        $this->assertSame('crack-sealing', $advices[0]->target);
+        $this->assertEqualsWithDelta(1925.0, $advices[0]->value, 0.001);
+    }
+
+    public function test_optional_extras_stay_out_of_a_lump_sum(): void
+    {
+        $solution = $this->solution('Seal Cracks & Seams|SmartTwin:Sealing_Scope_Doors_And_Windows', [], [250.0]);
+        $solution['adviceSolutionCost']['totalCostWithTax'] = 2175;
+
+        $advices = $this->advices($this->response([$solution]));
+
+        $this->assertEqualsWithDelta(1925.0, $advices[0]->value, 0.001);
+    }
+
     public function test_the_package_saving_is_recorded_as_not_belonging_to_a_measure(): void
     {
         // SmartTwin gives one figure for the whole package while the woonplan shows a saving per
@@ -213,7 +237,7 @@ final class SolutionsMapperTest extends TestCase
 }
 
 /**
- * Couples the two solutions the real dossiers use and nothing else, so an uncoupled product is a
+ * Couples the three solutions the real dossiers use and nothing else, so an uncoupled product is a
  * case these tests can exercise rather than an accident.
  */
 final class FakeSolutionMeasures extends SolutionMeasures
@@ -223,6 +247,7 @@ final class FakeSolutionMeasures extends SolutionMeasures
         return match (true) {
             str_contains($solutionId, 'Cavity')  => 'cavity-wall-insulation',
             str_contains($solutionId, 'Pitched') => 'roof-insulation-pitched-inside',
+            str_contains($solutionId, 'Sealing') => 'crack-sealing',
             default                              => null,
         };
     }
@@ -232,6 +257,7 @@ final class FakeSolutionMeasures extends SolutionMeasures
         return match ($measureShort) {
             'cavity-wall-insulation'         => 'wall-insulation',
             'roof-insulation-pitched-inside' => 'roof-insulation',
+            'crack-sealing'                  => 'ventilation',
             default                          => null,
         };
     }

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\Scan;
 use App\Services\WoonplanService;
@@ -43,9 +44,11 @@ class AwaitingAdvice extends Component
             ->hasAdvices();
 
         if ($hasAdvices) {
+            // The poll comes in on /livewire/update, which does not run the cooperation middleware, so
+            // the cooperation is not set as a URL default and has to be passed along explicitly.
             $this->redirectRoute(
                 'cooperation.frontend.tool.simple-scan.my-plan.index',
-                ['scan' => $this->scan],
+                ['cooperation' => HoomdossierSession::getCooperation(true), 'scan' => $this->scan],
             );
         }
     }

@@ -28,6 +28,14 @@ final class ElementScopeTest extends TestCase
         $this->assertSame([], ElementScope::forMeasure('induction-hob', 'heating'));
     }
 
+    public function test_the_insulated_door_works_on_the_doors_rather_than_the_windows_of_its_step(): void
+    {
+        $scopes = ElementScope::forMeasure('replace-door-insulated', 'insulated-glazing');
+
+        $this->assertCount(1, $scopes);
+        $this->assertSame(Element::DOORS, $scopes[0]->element);
+    }
+
     public function test_another_measure_on_those_steps_keeps_its_element(): void
     {
         $this->assertSame(Element::WINDOWS, ElementScope::forMeasure('vacuum-glass-only', 'insulated-glazing')[0]->element);

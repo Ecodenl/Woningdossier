@@ -38,6 +38,7 @@ final class ExternallyAdvisedMeasuresTest extends TestCase
         'solar-control-hrpp-glass-only'          => 'insulated-glazing',
         'solar-control-hrpp-glass-frames'        => 'insulated-glazing',
         'solar-control-triple-glass-frames'      => 'insulated-glazing',
+        'replace-door-insulated'                 => 'insulated-glazing',
         'shower-heat-recovery'                   => 'heating',
         'district-heating-connect'               => 'heating',
         'high-temperature-radiators'             => 'heating',

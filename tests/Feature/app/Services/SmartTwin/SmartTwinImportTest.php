@@ -259,10 +259,9 @@ final class SmartTwinImportTest extends TestCase
 
     public function test_an_externally_advised_measure_becomes_a_package_card_like_any_other(): void
     {
-        // Sun blinds as the catalogue names them; the glazing id is made up, as no response with a
-        // glazing solution has been seen yet.
+        // Sun blinds as the catalogue names them, vacuum glass as a coach's advice does.
         $sunBlinds = 'Install Sun Blinds|SmartTwin:Screens';
-        $vacuumGlass = 'Replace Glass|SmartTwin:Vacuum_Glass';
+        $vacuumGlass = 'Replace Glass|SmartTwin:Glass_Vacuum_Glass';
         $this->couple($sunBlinds, 'sun-shading');
         $this->couple($vacuumGlass, 'vacuum-glass-only');
 
@@ -286,6 +285,54 @@ final class SmartTwinImportTest extends TestCase
         $this->assertSame($sunBlinds, $sunShading->solutions[0]['id']);
         $this->assertSame([], $sunShading->elements);
         $this->assertSame(['windows'], array_keys($advices['vacuum-glass-only']->smartTwinDetails()->elements));
+    }
+
+    public function test_lt_radiators_become_a_package_card_by_their_product(): void
+    {
+        // As a coach's advice names them. Only the product says LT: to the dwelling a radiator is a
+        // radiator, here coming in where a gas stove had no emitter.
+        $radiators = 'Replace Radiator|SmartTwin:Heat_Release_LT_Radiators';
+        $this->couple($radiators, 'low-temperature-radiators');
+
+        $response = $this->response();
+        $response['current']['properties']['heatingSystems'] = [['emitterType' => 0, 'generators' => [], 'id' => 'hs']];
+        $response['scenario']['properties']['heatingSystems'] = [['emitterType' => 1, 'generators' => [], 'id' => 'hs']];
+        $response['scenario']['solutions'][] = $this->solution($radiators, 6093.144244);
+
+        $this->import($response);
+
+        $advices = $this->advices();
+
+        $this->assertArrayHasKey('low-temperature-radiators', $advices);
+        $this->assertSame(AdviceSource::SMART_TWIN, $advices['low-temperature-radiators']->source);
+        $this->assertSame(UserActionPlanAdviceService::CATEGORY_TO_DO, $advices['low-temperature-radiators']->category);
+        $this->assertEquals(6093.144244, $advices['low-temperature-radiators']->costs['to']);
+
+        $details = $advices['low-temperature-radiators']->smartTwinDetails();
+        $this->assertSame($radiators, $details->solutions[0]['id']);
+        $this->assertSame(['heating', 'hot-water'], array_keys($details->elements));
+        $this->assertSame(0, $details->elements['heating']['before']['summary']['emitter_type']);
+        $this->assertSame(1, $details->elements['heating']['after']['summary']['emitter_type']);
+    }
+
+    public function test_the_insulated_door_becomes_a_package_card_on_the_doors(): void
+    {
+        // The id is made up, as no response with a door solution has been seen yet.
+        $door = 'Replace Door|SmartTwin:Insulated_Door';
+        $this->couple($door, 'replace-door-insulated');
+
+        $response = $this->response();
+        $response['scenario']['solutions'][] = $this->solution($door, 1850.75);
+
+        $this->import($response);
+
+        $advices = $this->advices();
+
+        $this->assertArrayHasKey('replace-door-insulated', $advices);
+        $this->assertSame(AdviceSource::SMART_TWIN, $advices['replace-door-insulated']->source);
+        $this->assertSame(UserActionPlanAdviceService::CATEGORY_TO_DO, $advices['replace-door-insulated']->category);
+        $this->assertEquals(1850.75, $advices['replace-door-insulated']->costs['to']);
+        $this->assertSame(['doors'], array_keys($advices['replace-door-insulated']->smartTwinDetails()->elements));
     }
 
     public function test_each_package_card_carries_its_smarttwin_details_into_master(): void

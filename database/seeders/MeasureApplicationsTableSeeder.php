@@ -1343,6 +1343,14 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'info' => 'Het glas en het kozijn worden samen vervangen, met drievoudig glas met een zonwerende laag. Het isoleert het best van alle glassoorten en houdt in de zomer zonnewarmte buiten.',
             ],
             [
+                'name' => 'Deur vervangen door geïsoleerde deur',
+                'short' => 'replace-door-insulated',
+                'step' => 'insulated-glazing',
+                'icon' => 'icon-window-frame',
+                'comfort' => 2,
+                'info' => 'Je bestaande deur wordt vervangen door een geïsoleerde deur. Daardoor gaat er minder warmte verloren en komt er minder kou van de deur af.',
+            ],
+            [
                 'name' => 'Douche wtw',
                 'short' => 'shower-heat-recovery',
                 'step' => 'verwarming',

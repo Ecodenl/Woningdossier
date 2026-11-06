@@ -27,9 +27,6 @@ use Illuminate\View\View;
  */
 class SmartTwinSubNavComposer
 {
-    /** The sub step that holds the resident's own questions; it leads the navigation. */
-    public const string MY_QUESTIONS_SLUG = 'mijn-vragen';
-
     public const string STATE_ACTIVE = 'active';
     public const string STATE_COMPLETED = 'completed';
     public const string STATE_DEFAULT = 'default';
@@ -99,7 +96,8 @@ class SmartTwinSubNavComposer
         $livingRequirements = $scan->steps->firstWhere('short', 'living-requirements');
 
         if ($livingRequirements instanceof Step) {
-            $myQuestions = SubStep::bySlug(static::MY_QUESTIONS_SLUG)
+            // The resident's own questions lead the navigation.
+            $myQuestions = SubStep::bySlug(SubStep::MY_QUESTIONS_SLUG)
                 ->where('step_id', $livingRequirements->id)
                 ->first();
 
@@ -163,10 +161,11 @@ class SmartTwinSubNavComposer
         $completed = $building instanceof Building && $building->hasCompleted($step, $master);
 
         // Land on the last sub step of a step that is done, the first of one that isn't; the same
-        // rule the regular sub navigation uses.
+        // rule the regular sub navigation uses. An optional sub step is passed by: "Mijn vragen"
+        // has an entry of its own, and with both pointing at it Woonwensen led nowhere else.
         $subStep = $completed
             ? $step->subSteps()->orderByDesc('order')->first()
-            : $step->subSteps()->orderBy('order')->first();
+            : $step->subSteps()->withoutOptional()->orderBy('order')->first();
 
         return [
             'label' => $label,

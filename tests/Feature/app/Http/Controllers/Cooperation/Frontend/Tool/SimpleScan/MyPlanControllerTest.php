@@ -12,6 +12,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Role;
 use App\Models\Scan;
+use App\Models\SubStep;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Services\SmartTwin\Api\UserRole;
@@ -282,6 +283,30 @@ final class MyPlanControllerTest extends TestCase
         );
     }
 
+    public function test_woonwensen_in_the_sub_nav_of_the_quick_scan_passes_my_questions_by(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+
+        // "Mijn vragen" has an entry of its own and is optional; with both entries pointing at it,
+        // the rest of Woonwensen was reachable only through its "Verder" button.
+        $step = $this->scan->steps()->where('short', 'living-requirements')->first();
+        $expectedSubStep = $step->subSteps()->withoutOptional()->orderBy('order')->first();
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $this->assertNotSame(SubStep::MY_QUESTIONS_SLUG, $expectedSubStep->slug);
+        $this->assertStringEndsWith(
+            "/{$step->slug}/{$expectedSubStep->slug}",
+            $this->subNavUrl(__('cooperation/frontend/layouts.sub-nav.living-requirements'), $response->getContent()),
+        );
+        $this->assertStringEndsWith(
+            "/{$step->slug}/" . SubStep::MY_QUESTIONS_SLUG,
+            $this->subNavUrl(__('cooperation/frontend/layouts.sub-nav.my-questions'), $response->getContent()),
+        );
+    }
+
     public function test_the_sub_nav_of_the_lite_scan_leaves_out_what_smart_twin_answers(): void
     {
         $this->enableSmartTwin(true);
@@ -472,6 +497,16 @@ final class MyPlanControllerTest extends TestCase
         preg_match_all('/class="sub-nav-item[^"]*">\s*(.*?)\s*<\/a>/s', $html, $matches);
 
         $this->assertSame($expected, $matches[1]);
+    }
+
+    private function subNavUrl(string $label, string $html): string
+    {
+        preg_match_all('/<a href="([^"]*)" class="sub-nav-item[^"]*">\s*(.*?)\s*<\/a>/s', $html, $matches);
+
+        $urls = array_combine($matches[2], $matches[1]);
+        $this->assertArrayHasKey($label, $urls);
+
+        return html_entity_decode($urls[$label]);
     }
 
     public function test_with_an_advice_in_flight_the_resident_waits_instead(): void

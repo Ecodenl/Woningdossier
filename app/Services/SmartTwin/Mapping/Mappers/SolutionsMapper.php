@@ -147,14 +147,25 @@ class SolutionsMapper implements FieldMapper
      * spec calls optional — a coach may or may not have included them, and the woonplan should not
      * quote a price that depends on which.
      *
+     * Some products come as a lump sum, without primary cost lines: the "Kierdichting kozijnen" of
+     * dossier 100279 is € 1.925 in totalCostWithTax and nothing else. Their price is the total less
+     * the optional costs, which is what the primary costs add up to whenever they are there.
+     *
      * @param  array<string, mixed>  $solution
      */
     private function primaryCostTotal(array $solution): float
     {
-        return array_sum(array_map(
-            fn (array $cost) => (float) ($cost['costWithTax'] ?? 0),
-            $solution['adviceSolutionCost']['primaryCosts'] ?? [],
+        $cost = $solution['adviceSolutionCost'] ?? [];
+        $sum = fn (string $kind) => array_sum(array_map(
+            fn (array $line) => (float) ($line['costWithTax'] ?? 0),
+            $cost[$kind] ?? [],
         ));
+
+        if (! empty($cost['primaryCosts'])) {
+            return $sum('primaryCosts');
+        }
+
+        return (float) ($cost['totalCostWithTax'] ?? 0) - $sum('additionalCosts') - $sum('exceptionalCosts');
     }
 
     /**

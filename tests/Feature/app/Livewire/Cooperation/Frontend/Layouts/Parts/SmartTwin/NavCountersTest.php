@@ -138,7 +138,9 @@ final class NavCountersTest extends TestCase
         $this->uploadFile(MediaHelper::GENERIC_FILE, true);
         $this->uploadFile(MediaHelper::REPORT, false);
 
-        $coordinator = User::factory()->withAccount()->asCoordinator()
+        // withBuilding() because every real user has one, and the messages item asks whether the
+        // coordinator is filling the tool for another building than their own.
+        $coordinator = User::factory()->withAccount()->withBuilding()->asCoordinator()
             ->create(['cooperation_id' => $this->cooperation->id]);
 
         $count = $this->fileCountFor(

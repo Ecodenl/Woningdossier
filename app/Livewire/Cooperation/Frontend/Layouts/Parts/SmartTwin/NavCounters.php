@@ -9,6 +9,7 @@ use App\Models\Building;
 use App\Models\Media;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -88,9 +89,12 @@ class NavCounters extends Component
 
         // Through the policy rather than a query of its own, so the count cannot drift from the
         // overview when the rules for who sees which file change.
-        return $building->media()
+        /** @var Collection<int, Media> $files */
+        $files = $building->media()
             ->wherePivotIn('tag', MediaHelper::getFillableTagsForClass(Building::class))
-            ->get()
+            ->get();
+
+        return $files
             ->filter(fn (Media $file) => $account->can('view', [$file, $inputSource]))
             ->count();
     }

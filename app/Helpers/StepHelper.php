@@ -123,7 +123,8 @@ class StepHelper
             })
             ->pluck('sub_step_id')->toArray();
 
-        $allSubStepIds = $step->subSteps()->pluck('id')->toArray();
+        // An optional sub step may be passed by, so the step is done without it.
+        $allSubStepIds = $step->subSteps()->withoutOptional()->pluck('id')->toArray();
 
         $diff = array_diff($allSubStepIds, $allCompletedSubStepIds);
 

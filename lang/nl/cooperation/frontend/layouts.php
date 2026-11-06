@@ -17,7 +17,7 @@ return [
     'nav' => [
         'dashboard' => 'Dashboard',
         'woningdossier' => 'Woningdossier',
-        'shared-files' => 'Gedeelde bestanden',
+        'shared-files' => '{0} Gedeelde bestanden|{1} 1 Gedeeld bestand|[2,*] :count Gedeelde bestanden',
         'messages' => 'Berichten',
         'my-account' => 'Mijn account',
     ],

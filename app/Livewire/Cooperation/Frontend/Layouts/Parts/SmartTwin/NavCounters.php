@@ -66,23 +66,32 @@ class NavCounters extends Component
     }
 
     /**
-     * Every file on the building the resident may pick a tag for, which is the same set the file
-     * overview lists.
+     * The files on the building that the file overview shows to whoever is looking: the tags a
+     * resident may pick, and of those only the ones the media policy lets them view. A coach does
+     * not see a resident's file that was not shared with the cooperation, so it does not count
+     * towards their label either.
      *
-     * A total, deliberately: the badge says how many files there are, not how many are new. It
-     * looks like the one on the messages item, which does count unread, so the difference is worth
-     * stating rather than leaving to be inferred.
+     * A total, deliberately: it says how many files there are, not how many are new. That is why
+     * it is written into the label instead of shown as a badge; the badge on the messages item
+     * counts unread, and one badge meaning two things was confusing.
      */
     private function countFiles(): int
     {
         $building = HoomdossierSession::getBuilding(true);
+        $account = Hoomdossier::account();
 
-        if (! $building instanceof Building) {
+        if (! $building instanceof Building || is_null($account)) {
             return 0;
         }
 
+        $inputSource = HoomdossierSession::getInputSource(true);
+
+        // Through the policy rather than a query of its own, so the count cannot drift from the
+        // overview when the rules for who sees which file change.
         return $building->media()
             ->wherePivotIn('tag', MediaHelper::getFillableTagsForClass(Building::class))
+            ->get()
+            ->filter(fn (Media $file) => $account->can('view', [$file, $inputSource]))
             ->count();
     }
 }

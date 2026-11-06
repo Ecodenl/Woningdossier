@@ -2,10 +2,9 @@
     @if($canViewFiles)
         <a href="{{ $fileUrl }}"
            class="nav-item @if(RouteLogic::inSharedFiles(Route::currentRouteName())) is-active @endif">
-            @lang('cooperation/frontend/layouts.nav.shared-files')
-            @if($fileCount > 0)
-                <span class="nav-badge">{{ $fileCount > 99 ? '99+' : $fileCount }}</span>
-            @endif
+            {{-- The count is part of the label rather than a badge: the badge on the messages
+                 means unread, and the files have no such thing as unread. --}}
+            {{ trans_choice('cooperation/frontend/layouts.nav.shared-files', $fileCount, ['count' => $fileCount]) }}
         </a>
     @endif
 

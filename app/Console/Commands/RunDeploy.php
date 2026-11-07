@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Console\Commands\Upgrade\AddSmartTwinGlazingOptions;
+use App\Console\Commands\Upgrade\AddSmartTwinInstallationOptions;
 use Illuminate\Console\Command;
 use Illuminate\Database\Console\Seeds\SeedCommand;
 
@@ -37,6 +38,8 @@ class RunDeploy extends Command
             [SeedCommand::class, ['--class' => 'EnergyLabelsTableSeeder', '--force' => true]],
             // The glass and frame questions link the options this adds.
             [AddSmartTwinGlazingOptions::class, []],
+            // The heat pump and panel orientation questions link the options this adds.
+            [AddSmartTwinInstallationOptions::class, []],
             [SeedCommand::class, ['--class' => 'ToolQuestionsTableSeeder', '--force' => true]],
             [SeedCommand::class, ['--class' => 'SubSteppablesTableSeeder', '--force' => true]],
             [SeedCommand::class, ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true]],

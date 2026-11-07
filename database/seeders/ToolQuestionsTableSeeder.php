@@ -11,6 +11,7 @@ use App\Models\BuildingTypeCategory;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\ServiceValue;
 use App\Models\EnergyLabel;
 use App\Models\FacadeSurface;
 use App\Models\InputSource;
@@ -20,6 +21,7 @@ use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\MeasureApplication;
+use App\Services\SmartTwin\InstallationOptions;
 use App\Models\ToolQuestion;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
@@ -1149,17 +1151,15 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'heat-pump-type',
                 'translation' => "Wat voor type warmtepomp is er?",
                 'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
+                // By order, as the heat pumps SmartTwin adds have no calculate value. Nothing in it.
                 'extra' => [
-                    'column' => 'calculate_value',
-                    'data' => [
-                        1 => [],
-                        2 => [],
-                        3 => [],
-                        4 => [],
-                        5 => [],
-                        6 => [],
-                    ],
+                    'column' => 'order',
+                    'data' => array_fill_keys(
+                        array_merge(range(1, InstallationOptions::LAST_ORIGINAL_HEAT_PUMP_ORDER), array_keys(InstallationOptions::addedHeatPumpTypes())),
+                        [],
+                    ),
                 ],
+                'shown_in_scans' => fn (ServiceValue $value) => $value->order <= InstallationOptions::LAST_ORIGINAL_HEAT_PUMP_ORDER,
             ],
             [
                 'data_type' => Caster::INT,
@@ -2434,6 +2434,12 @@ class ToolQuestionsTableSeeder extends Seeder
                             ],
                         ]
                     ],
+                    // The heat pumps SmartTwin can describe and the scans do not offer.
+                    ...array_column(array_map(fn (array $type) => [
+                        'short' => $type['new'],
+                        'name' => $type['label'],
+                        'show' => false,
+                    ], array_filter(InstallationOptions::HEAT_PUMP_TYPES, fn (array $type) => isset($type['label']))), null, 'short'),
                 ],
             ],
             [
@@ -2495,6 +2501,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => "Oriëntatie van de collector",
                 'help_text' => "Geef hier aan in welke oriëntatie de zonnecollector geplaatst wordt.",
                 'tool_question_values' => $collectorOrientations,
+                'shown_in_scans' => fn (PvPanelOrientation $value) => InstallationOptions::isOrientationAskedInScans($value->short),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -3399,6 +3406,8 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Wat is de oriëntatie van de panelen?',
                 'short' => 'solar-panel-orientation',
                 'tool_question_values' => PvPanelOrientation::all(),
+                // Horizontal and north only come from SmartTwin.
+                'shown_in_scans' => fn (PvPanelOrientation $value) => InstallationOptions::isOrientationAskedInScans($value->short),
             ],
             [
                 'data_type' => Caster::INT,
@@ -3526,7 +3535,8 @@ class ToolQuestionsTableSeeder extends Seeder
                         $insertData = [
                             'tool_question_id' => $toolQuestion->id,
                             'order' => $toolQuestionCustomValueOrder,
-                            'show' => true,
+                            // An answer only SmartTwin gives is hidden from the scans' options.
+                            'show' => $customValueData['show'] ?? true,
                             // so we will compare the short to determine what is what, but we will keep value for now
                             'short' => $short,
                             'name' => json_encode([

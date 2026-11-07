@@ -2,6 +2,7 @@
 
 namespace App\Services\SmartTwin\Mapping;
 
+use App\Enums\GlassType;
 use App\Models\Building;
 use App\Models\ElementValue;
 use App\Models\InputSource;
@@ -21,12 +22,26 @@ use App\Services\SmartTwin\Mapping\Mappers\SolutionMeasures;
  * advises a measure for is not in order, whatever its current state.
  *
  * The measure per element was decided on 13 October (V2b): facade by whether it is a cavity wall,
- * floor, and the roof per shape. Glass follows once its mapping exists.
+ * floor, and the roof per shape. Glass on 7 November (decision 2026-11-07-smarttwin-glasmapping):
+ * in order from HR+ (GlassType), and the card is Hoomdossier's own measure for the glass the dwelling
+ * has, or none.
  */
 class InOrderCards
 {
     /** has-cavity-wall: yes. See WallInsulationHelper::getCavityWallValues(). */
     private const CAVITY_WALL_YES = 1;
+
+    /**
+     * The card for glass in order, by the glass of the living rooms: the measure that names what the
+     * dwelling has. Triple glass is not put in poor frames, so HR+++ glass + frame holds for it too.
+     * HR+ glass has a measure only for this card; SmartTwin has no product for it.
+     */
+    private const GLASS_CARDS = [
+        GlassType::HR_PLUS->value      => 'hr-plus-glass-only',
+        GlassType::HR_PLUS_PLUS->value => 'hrpp-glass-only',
+        GlassType::TRIPLE->value       => 'hr3p-frames',
+        GlassType::VACUUM->value       => 'vacuum-glass-only',
+    ];
 
     public function __construct(private readonly SolutionMeasures $measures)
     {
@@ -72,7 +87,23 @@ class InOrderCards
             }
         }
 
+        if (! $advised(Element::WINDOWS) && ! is_null($glassCard = $this->glassCard($building))) {
+            $cards[] = $glassCard;
+        }
+
         return $cards;
+    }
+
+    private function glassCard(Building $building): ?string
+    {
+        $elementValue = ElementValue::find($this->answer($building, 'current-living-rooms-windows'));
+        $glassType = $elementValue instanceof ElementValue ? GlassType::of($elementValue) : null;
+
+        if (! $glassType instanceof GlassType || ! $glassType->isInOrder()) {
+            return null;
+        }
+
+        return self::GLASS_CARDS[$glassType->value] ?? null;
     }
 
     private function isGood(Building $building, string $toolQuestionShort): bool

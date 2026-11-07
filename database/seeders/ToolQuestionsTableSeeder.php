@@ -3031,6 +3031,24 @@ class ToolQuestionsTableSeeder extends Seeder
                     ],
                 ],
             ],
+            // Cooling, which only SmartTwin fills, as the doors and panels: no scan asks it. Shown under
+            // "Gegevens woning bekijken", in the report and sent to Econobis
+            // (decision 2026-11-07-smarttwin-installaties-mapping, K1).
+            [
+                'data_type' => Caster::ARRAY,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'translation' => 'Koeling',
+                'short' => 'cooling-type',
+                'tool_question_custom_values' => [
+                    'none' => ['name' => 'Geen koeling'],
+                    'compression' => ['name' => 'Compressiekoelmachine'],
+                    'absorption' => ['name' => 'Absorptiekoelmachine'],
+                    'external-cold' => ['name' => 'Externe koude'],
+                    'free-cooling' => ['name' => 'Vrije koeling'],
+                    'dew-point' => ['name' => 'Dauwpuntkoeling'],
+                    'unknown' => ['name' => 'Onbekend'],
+                ],
+            ],
             [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['nullable', 'exists:tool_question_custom_values,short'],

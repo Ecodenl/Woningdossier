@@ -236,6 +236,7 @@ class Building extends Model implements MediableInterface
                     ->forInputSource($inputSource)
                     ->forBuilding($this)
                     ->withCustomEvaluation()
+                    ->withHidden()
                     ->getQuestionValues()
                     ->pluck(
                         'name',

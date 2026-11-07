@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\GlassType;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\DataTypes\Caster;
 use App\Models\BuildingHeating;
@@ -9,6 +10,7 @@ use App\Models\BuildingType;
 use App\Models\BuildingTypeCategory;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
+use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\FacadeSurface;
 use App\Models\InputSource;
@@ -25,6 +27,9 @@ use Illuminate\Support\Facades\DB;
 
 class ToolQuestionsTableSeeder extends Seeder
 {
+    /** The last of the frames' options by share of wood ("Overig"); SmartTwin's frame types follow. */
+    private const LAST_FRAME_SHARE_ORDER = 4;
+
     /**
      * Run the database seeds.
      */
@@ -831,8 +836,19 @@ class ToolQuestionsTableSeeder extends Seeder
                         3 => [
                             'icon' => 'icon-glass-hr-tp',
                         ],
+                        4 => [
+                            'icon' => 'icon-glass-double',
+                        ],
+                        5 => [
+                            'icon' => 'icon-glass-hr-dp',
+                        ],
+                        6 => [
+                            'icon' => 'icon-glass-hr-tp',
+                        ],
                     ],
                 ],
+                // HR, HR+ and vacuum glass only come from SmartTwin.
+                'shown_in_scans' => fn (ElementValue $value) => GlassType::of($value)?->isAskedInScans() ?? true,
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -856,8 +872,19 @@ class ToolQuestionsTableSeeder extends Seeder
                         3 => [
                             'icon' => 'icon-glass-hr-tp',
                         ],
+                        4 => [
+                            'icon' => 'icon-glass-double',
+                        ],
+                        5 => [
+                            'icon' => 'icon-glass-hr-dp',
+                        ],
+                        6 => [
+                            'icon' => 'icon-glass-hr-tp',
+                        ],
                     ],
                 ],
+                // HR, HR+ and vacuum glass only come from SmartTwin.
+                'shown_in_scans' => fn (ElementValue $value) => GlassType::of($value)?->isAskedInScans() ?? true,
             ],
             [
                 'data_type' => Caster::ARRAY,
@@ -2945,6 +2972,9 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Welke kozijnen heb je in jouw huis?',
                 'short' => 'frame-type',
                 'tool_question_values' => \App\Models\ElementValue::where('element_id', $frame->id)->get(),
+                // SmartTwin's frame types (Hout to Aluminium) only come from SmartTwin; the scans ask
+                // the share of wood.
+                'shown_in_scans' => fn (ElementValue $value) => $value->order <= self::LAST_FRAME_SHARE_ORDER,
             ],
             [
                 'data_type' => Caster::ARRAY,
@@ -3392,7 +3422,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ];
 
                 $insertData = Arr::except($questionData,
-                    ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation']);
+                    ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation', 'shown_in_scans']);
 
                 // Encode data for DB insert...
                 $insertData['name'] = json_encode($insertData['name']);
@@ -3465,7 +3495,9 @@ class ToolQuestionsTableSeeder extends Seeder
                         $insertData = [
                             'tool_question_id' => $toolQuestion->id,
                             'order' => $toolQuestionValueOrder,
-                            'show' => true,
+                            // An option the scans do not offer can still be an answer, that SmartTwin
+                            // gives. It is hidden from the scans' options, not from reading it back.
+                            'show' => ($questionData['shown_in_scans'] ?? fn () => true)($toolQuestionValue),
                             'tool_question_valuable_type' => get_class($toolQuestionValue),
                             'tool_question_valuable_id' => $toolQuestionValue->id,
                             // We grab the extra data by the set column (e.g. calculate_value)

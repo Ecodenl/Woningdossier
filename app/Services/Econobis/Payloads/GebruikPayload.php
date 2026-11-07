@@ -119,7 +119,8 @@ class GebruikPayload extends EconobisPayload
                 $answers = [];
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
-                $values = $toolQuestion->getQuestionValues();
+                // With the options the scans do not offer, which SmartTwin can answer with.
+                $values = $toolQuestion->getQuestionValues(true);
 
                 $buildingAnswers = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
 

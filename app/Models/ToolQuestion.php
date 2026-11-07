@@ -170,12 +170,16 @@ class ToolQuestion extends Model
 
     /**
      * Method to return the question values  (morphed models / the options for the question)
+     *
+     * @param  bool  $withHidden  Also the options the scans do not offer, for reading an answer back:
+     *                            SmartTwin can answer with one (see ToolQuestionsTableSeeder's
+     *                            shown_in_scans). Never for a list of options to choose from.
      */
-    public function getQuestionValues(): Collection
+    public function getQuestionValues(bool $withHidden = false): Collection
     {
         if ($this->toolQuestionValuables()->exists()) {
             return $this->toolQuestionValuables()
-                ->visible()
+                ->when(! $withHidden, fn ($query) => $query->visible())
                 ->ordered()
                 ->with('toolQuestionValuables')
                 ->get()
@@ -207,7 +211,7 @@ class ToolQuestion extends Model
                 });
         }
         return $this->toolQuestionCustomValues()
-            ->visible()
+            ->when(! $withHidden, fn ($query) => $query->visible())
             ->ordered()
             ->get()
             ->map(function ($toolQuestionCustomValue) {

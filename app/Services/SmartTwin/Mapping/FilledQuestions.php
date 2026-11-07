@@ -58,14 +58,48 @@ final class FilledQuestions
             'panel-frame-type',
             'total-panel-surface',
         ],
+        // A solar boiler is an answer of heating and hot water, not a part of its own.
+        'heating' => [
+            'heat-source',
+            'heat-source-other',
+            'boiler-type',
+            'heat-pump-type',
+            'building-heating-application',
+            'building-heating-application-other',
+        ],
+        'hot-water' => [
+            'heat-source-warm-tap-water',
+            'heat-source-warm-tap-water-other',
+        ],
+        'ventilation' => [
+            'ventilation-type',
+            'ventilation-heat-recovery',
+        ],
+        'pv' => [
+            'has-solar-panels',
+            'solar-panel-count',
+            'total-installed-power',
+            'solar-panel-peak-power',
+            'solar-panel-angle',
+            'solar-panel-orientation',
+        ],
+        'cooling' => [
+            'cooling-type',
+        ],
     ];
 
     /**
-     * Filled, but not shown: the sleeping rooms get the same glass as the living rooms
-     * (GlazingMapper), and the page would only say it twice.
+     * Filled, but not shown. The sleeping rooms get the same glass as the living rooms (GlazingMapper),
+     * and the page would only say it twice. The new-situation questions (HeatMapper) describe the
+     * dwelling after the advice, not as it is.
      */
     public const NOT_SHOWN = [
         'current-sleeping-rooms-windows',
+        'new-heat-source',
+        'new-boiler-type',
+        'new-heat-pump-type',
+        'new-building-heating-application',
+        'new-heat-source-warm-tap-water',
     ];
 
     /**

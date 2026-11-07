@@ -165,15 +165,16 @@ final class HouseDataPageTest extends TestCase
     public function test_only_the_questions_smart_twin_fills_make_up_the_state(): void
     {
         $this->switchToSmartTwin();
-        // Left from before SmartTwin, in a step it does not fill yet.
-        $this->answer('ventilation-type', ToolQuestion::findByShort('ventilation-type')->getQuestionValues()->first()['value'], InputSource::resident());
+        // Left from before SmartTwin, in a question it does not fill: SmartTwin says nothing about
+        // crack sealing (decision 2026-11-07-smarttwin-installaties-mapping, I1).
+        $this->answer('crack-sealing-type', ToolQuestion::findByShort('crack-sealing-type')->getQuestionValues()->first()['value'], InputSource::resident());
         $this->answer('wall-surface', 80);
 
         $data = HouseData::for($this->building);
 
         $labels = collect($data->parts)->flatMap(fn (array $part) => array_column($part['rows'], 'label'))->all();
         $this->assertContains('Geveloppervlakte van de woning', $labels);
-        $this->assertNotContains(ToolQuestion::findByShort('ventilation-type')->name, $labels);
+        $this->assertNotContains(ToolQuestion::findByShort('crack-sealing-type')->name, $labels);
     }
 
     public function test_usage_shows_what_the_dossier_holds(): void

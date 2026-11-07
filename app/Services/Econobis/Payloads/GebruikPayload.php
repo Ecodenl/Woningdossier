@@ -60,6 +60,7 @@ class GebruikPayload extends EconobisPayload
                 "total-panel-surface",
                 "panel-quality",
                 "panel-frame-type",
+                "cooling-type",
                 "floor-surface",
                 "apply-led-light-how",
                 "current-roof-types",

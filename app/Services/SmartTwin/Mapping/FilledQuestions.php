@@ -71,6 +71,10 @@ final class FilledQuestions
             'heat-source-warm-tap-water',
             'heat-source-warm-tap-water-other',
         ],
+        'ventilation' => [
+            'ventilation-type',
+            'ventilation-heat-recovery',
+        ],
     ];
 
     /**

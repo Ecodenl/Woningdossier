@@ -23,7 +23,7 @@ use App\Services\SmartTwin\Mapping\Mappers\SolutionMeasures;
  *
  * The measure per element was decided on 13 October (V2b): facade by whether it is a cavity wall,
  * floor, and the roof per shape. Glass on 7 November (decision 2026-11-07-smarttwin-glasmapping):
- * in order from HR+ (GlassType), and the card is Hoomdossier's own measure for the glass the dwelling
+ * in order from HR (GlassType), and the card is Hoomdossier's own measure for the glass the dwelling
  * has, or none.
  */
 class InOrderCards
@@ -34,9 +34,10 @@ class InOrderCards
     /**
      * The card for glass in order, by the glass of the living rooms: the measure that names what the
      * dwelling has. Triple glass is not put in poor frames, so HR+++ glass + frame holds for it too.
-     * HR+ glass has a measure only for this card; SmartTwin has no product for it.
+     * HR and HR+ glass have a measure only for this card; SmartTwin has no product for them.
      */
     private const GLASS_CARDS = [
+        GlassType::HR->value           => 'hr-glass-only',
         GlassType::HR_PLUS->value      => 'hr-plus-glass-only',
         GlassType::HR_PLUS_PLUS->value => 'hrpp-glass-only',
         GlassType::TRIPLE->value       => 'hr3p-frames',

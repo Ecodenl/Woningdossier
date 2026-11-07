@@ -505,16 +505,16 @@ final class SmartTwinImportTest extends TestCase
     }
 
     /**
-     * Glass from HR+ is in order, and its card is the measure naming the glass the dwelling has
+     * Glass from HR is in order, and its card is the measure naming the glass the dwelling has
      * (decision 2026-11-07-smarttwin-glasmapping). SmartTwin's glassType codes.
      */
-    public function test_glass_from_hr_plus_lands_in_order_as_what_the_dwelling_has(): void
+    public function test_glass_from_hr_lands_in_order_as_what_the_dwelling_has(): void
     {
         $expected = [
             0 => ['hr3p-frames'],        // triple
             1 => ['hrpp-glass-only'],    // HR++
             2 => ['hr-plus-glass-only'], // HR+
-            3 => [],                     // HR
+            3 => ['hr-glass-only'],      // HR
             4 => [],                     // double
             5 => [],                     // single
             6 => ['vacuum-glass-only'],  // vacuum

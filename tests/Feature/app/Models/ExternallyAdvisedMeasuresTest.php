@@ -36,6 +36,7 @@ final class ExternallyAdvisedMeasuresTest extends TestCase
         'double-glass-frames'                    => 'insulated-glazing',
         'vacuum-glass-only'                      => 'insulated-glazing',
         'vacuum-glass-frames'                    => 'insulated-glazing',
+        'hr-glass-only'                          => 'insulated-glazing',
         'hr-plus-glass-only'                     => 'insulated-glazing',
         'solar-control-hrpp-glass-only'          => 'insulated-glazing',
         'solar-control-hrpp-glass-frames'        => 'insulated-glazing',

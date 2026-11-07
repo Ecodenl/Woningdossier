@@ -296,10 +296,12 @@ class ToolQuestionHelper
         }
 
         if (! empty($answer) || is_numeric($answer)) {
+            // With the options the scans do not offer: an answer SmartTwin gave is still read back.
             $questionValues = QuestionValue::init($building->user->cooperation, $toolQuestion)
                 ->forInputSource($inputSource)
                 ->forBuilding($building)
                 ->withCustomEvaluation()
+                ->withHidden()
                 ->getQuestionValues();
 
             if ($questionValues->isNotEmpty()) {

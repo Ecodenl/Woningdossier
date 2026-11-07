@@ -1205,9 +1205,11 @@ class MeasureApplicationsTableSeeder extends Seeder
             $info = $measureApplication['measure_info'];
             $configurations = $measureApplication['configurations'];
 
-            // Ensure we don't override
+            // Ensure we don't override, unless the name is still one this seeder gave and has renamed since
             if ($existingMeasureApplication instanceof \stdClass) {
-                $name = json_decode($existingMeasureApplication->measure_name, true);
+                $existingName = json_decode($existingMeasureApplication->measure_name, true);
+                $renamedFrom = $measureApplication['renamed_from'] ?? null;
+                $name = ! is_null($renamedFrom) && ($existingName['nl'] ?? null) === $renamedFrom ? $name : $existingName;
                 $info = json_decode($existingMeasureApplication->measure_info, true);
 
                 $savedConfig = json_decode($existingMeasureApplication->configurations, true);
@@ -1303,12 +1305,25 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'info' => 'Het glas en het kozijn worden samen vervangen, met dubbel glas. Dat geeft minder warmteverlies, minder kou bij het raam en minder tocht langs het kozijn.',
             ],
             [
-                'name' => 'Glas vervangen vacuümglas',
+                // A neutral name, as the card also stands in "In orde" for a dwelling that has vacuum
+                // glass (InOrderCards). It was seeded as "Glas vervangen vacuümglas".
+                'name' => 'Vacuümglas',
+                'renamed_from' => 'Glas vervangen vacuümglas',
                 'short' => 'vacuum-glass-only',
                 'step' => 'insulated-glazing',
                 'icon' => 'icon-glass-hr-dp',
                 'comfort' => 5,
                 'info' => 'Vacuümglas bestaat uit twee dunne glasplaten met een vacuüm ertussen. Het isoleert ongeveer zo goed als drievoudig glas, maar is veel dunner, waardoor het vaak in je bestaande kozijn past.',
+            ],
+            [
+                // SmartTwin has no product for it: it is there for the "In orde" card of a dwelling with
+                // HR+ glass, so that every glass type in order has one (InOrderCards).
+                'name' => 'HR+ glas',
+                'short' => 'hr-plus-glass-only',
+                'step' => 'insulated-glazing',
+                'icon' => 'icon-glass-hr-dp',
+                'comfort' => 3,
+                'info' => 'HR+ glas is dubbel glas met een coating die de warmte terugkaatst naar binnen. Het isoleert beter dan gewoon dubbel glas, maar minder goed dan HR++ glas.',
             ],
             [
                 'name' => 'Glas en kozijn vervangen vacuümglas',
@@ -1405,6 +1420,7 @@ class MeasureApplicationsTableSeeder extends Seeder
         return array_map(fn (array $measure) => [
             'measure_type' => MeasureApplication::EXTERNALLY_ADVISED,
             'measure_name' => ['nl' => $measure['name']],
+            'renamed_from' => $measure['renamed_from'] ?? null,
             'measure_info' => ['nl' => $measure['info']],
             'short' => $measure['short'],
             'application' => 'place',

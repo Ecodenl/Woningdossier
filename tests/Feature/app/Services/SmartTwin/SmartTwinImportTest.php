@@ -3,6 +3,7 @@
 namespace Tests\Feature\app\Services\SmartTwin;
 
 use App\Enums\AdviceSource;
+use App\Enums\GlassType;
 use App\Enums\MappingType;
 use App\Enums\SmartTwin\EventType;
 use App\Enums\SmartTwin\MappingStatus;
@@ -23,6 +24,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Services\ExecutedAdviceService;
 use App\Services\MappingService;
 use App\Services\SmartTwin\DwellingRows;
+use App\Services\SmartTwin\HouseData;
 use App\Services\SmartTwin\Mapping\FilledQuestions;
 use App\Services\SmartTwin\Mapping\Mappers\ElementValues;
 use App\Services\SmartTwin\Mapping\MappingReport;
@@ -170,6 +172,40 @@ final class SmartTwinImportTest extends TestCase
             ->get()
             ->mapWithKeys(fn (UserActionPlanAdvice $a) => [MeasureApplication::find($a->user_action_plan_advisable_id)->short => $a])
             ->all();
+    }
+
+    /**
+     * As in dossier 100211: double and single glass in wooden frames, uninsulated doors. The sleeping
+     * rooms get the glass of the living rooms; the page shows it once.
+     */
+    public function test_windows_and_doors_land_in_the_dossier_and_on_the_house_data_page(): void
+    {
+        $window = fn (float $area, int $glassType) => ['frameType' => 0, 'frameMaterial' => 0, 'glassType' => $glassType,
+            'glassArea' => 0, 'uValue' => 2.9, 'area' => $area, 'id' => uniqid(), 'description' => 'Kozijn'];
+
+        $response = $this->response();
+        $response['current']['properties']['facadeAssemblies'][0]['windows'] = [$window(15.48, 4), $window(12.09, 5)];
+        $response['current']['properties']['facadeAssemblies'][0]['doors'] = [
+            ['insulationInConstruction' => false, 'uValue' => 3.4, 'area' => 10.92, 'id' => 'door', 'description' => 'Deur'],
+        ];
+
+        $this->import($response);
+
+        $levels = app(ElementValues::class);
+        $this->assertSame($levels->idForOrder('living-rooms-windows', GlassType::DOUBLE->value), (int) $this->answer('current-living-rooms-windows'));
+        $this->assertSame($levels->idForOrder('sleeping-rooms-windows', GlassType::DOUBLE->value), (int) $this->answer('current-sleeping-rooms-windows'));
+        $this->assertSame($levels->idForOrder('frames', 5), (int) $this->answer('frame-type'));
+        $this->assertEquals(27.57, $this->answer('total-window-surface'));
+        $this->assertEquals(10.92, $this->answer('total-door-surface'));
+        $this->assertSame('not-insulated', $this->answer('door-quality'));
+
+        $parts = HouseData::for($this->building->fresh())->parts;
+        $this->assertSame(
+            ['Dubbelglas', 'Hout', '27,6'],
+            array_column($parts['windows']['rows'], 'answer'),
+        );
+        $this->assertSame(['Ongeïsoleerd', '10,9'], array_column($parts['doors']['rows'], 'answer'));
+        $this->assertArrayNotHasKey('panels', $parts);
     }
 
     public function test_the_roof_lands_per_shape_with_its_decimals(): void
@@ -441,6 +477,85 @@ final class SmartTwinImportTest extends TestCase
         $this->assertSame([MeasureApplication::findByShort('floor-insulation')->id], $this->building->smartTwinPackage()->first()->measure_application_ids);
     }
 
+    /**
+     * A well insulated dwelling with windows of one glass type, now and after the advice.
+     */
+    private function glazedResponse(int $glassType): array
+    {
+        $response = $this->wellInsulatedResponse();
+        $windows = [['frameType' => 0, 'frameMaterial' => 0, 'glassType' => $glassType, 'glassArea' => 0,
+                     'uValue' => 1.8, 'area' => 12.5, 'id' => 'window', 'description' => 'Kozijn 0']];
+
+        foreach (['current', 'scenario'] as $section) {
+            $response[$section]['properties']['facadeAssemblies'][0]['windows'] = $windows;
+        }
+
+        return $response;
+    }
+
+    /** @return array<int, string> The glass measures in "In orde", from master. */
+    private function glassInOrder(): array
+    {
+        return collect($this->advices())
+            ->filter(fn (UserActionPlanAdvice $advice, string $short) => UserActionPlanAdviceService::CATEGORY_COMPLETE === $advice->category
+                && 'insulated-glazing' === MeasureApplication::findByShort($short)->step->short)
+            ->keys()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Glass from HR+ is in order, and its card is the measure naming the glass the dwelling has
+     * (decision 2026-11-07-smarttwin-glasmapping). SmartTwin's glassType codes.
+     */
+    public function test_glass_from_hr_plus_lands_in_order_as_what_the_dwelling_has(): void
+    {
+        $expected = [
+            0 => ['hr3p-frames'],        // triple
+            1 => ['hrpp-glass-only'],    // HR++
+            2 => ['hr-plus-glass-only'], // HR+
+            3 => [],                     // HR
+            4 => [],                     // double
+            5 => [],                     // single
+            6 => ['vacuum-glass-only'],  // vacuum
+        ];
+
+        foreach ($expected as $glassType => $cards) {
+            $this->import($this->glazedResponse($glassType));
+
+            $this->assertSame($cards, $this->glassInOrder(), "glassType {$glassType}");
+        }
+
+        $this->assertSame('Vacuümglas', MeasureApplication::findByShort('vacuum-glass-only')->getTranslation('measure_name', 'nl'));
+    }
+
+    public function test_glass_smart_twin_advises_is_not_in_order(): void
+    {
+        $vacuumGlass = 'Replace Glass|SmartTwin:Glass_Vacuum_Glass';
+        $this->couple($vacuumGlass, 'vacuum-glass-only');
+
+        $response = $this->glazedResponse(1); // HR++
+        $response['scenario']['solutions'][] = $this->solution($vacuumGlass, 6400.25);
+
+        $this->import($response);
+
+        $this->assertSame([], $this->glassInOrder());
+        $this->assertSame(UserActionPlanAdviceService::CATEGORY_TO_DO, $this->advices()['vacuum-glass-only']->category);
+    }
+
+    public function test_a_door_smart_twin_advises_leaves_the_glass_in_order(): void
+    {
+        $door = 'Replace Door|SmartTwin:Insulated_Door';
+        $this->couple($door, 'replace-door-insulated');
+
+        $response = $this->glazedResponse(1); // HR++
+        $response['scenario']['solutions'][] = $this->solution($door, 1850.75);
+
+        $this->import($response);
+
+        $this->assertSame(['hrpp-glass-only'], $this->glassInOrder());
+    }
+
     public function test_reasonable_insulation_is_not_in_order(): void
     {
         // Redelijke isolatie: worth improving, so no card, even though SmartTwin does not advise it.
@@ -532,7 +647,7 @@ final class SmartTwinImportTest extends TestCase
             ->values();
 
         $this->assertNotEmpty($filled);
-        $this->assertSame([], $filled->diff(FilledQuestions::all())->values()->all());
+        $this->assertSame([], $filled->diff([...FilledQuestions::all(), ...FilledQuestions::NOT_SHOWN])->values()->all());
     }
 
     public function test_building_data_is_fetched_again_after_an_import_with_advice(): void

@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\LegacyService;
 use App\Services\UserActionPlanAdviceService;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\MeasureApplicationsTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -35,6 +36,7 @@ final class ExternallyAdvisedMeasuresTest extends TestCase
         'double-glass-frames'                    => 'insulated-glazing',
         'vacuum-glass-only'                      => 'insulated-glazing',
         'vacuum-glass-frames'                    => 'insulated-glazing',
+        'hr-plus-glass-only'                     => 'insulated-glazing',
         'solar-control-hrpp-glass-only'          => 'insulated-glazing',
         'solar-control-hrpp-glass-frames'        => 'insulated-glazing',
         'solar-control-triple-glass-frames'      => 'insulated-glazing',
@@ -46,6 +48,23 @@ final class ExternallyAdvisedMeasuresTest extends TestCase
         'floor-heating'                          => 'heating',
         'induction-hob'                          => 'heating',
     ];
+
+    /**
+     * Vacuum glass was seeded as "Glas vervangen vacuümglas" and is renamed to stand in "In orde" as
+     * well. A name someone changed since stays.
+     */
+    public function test_vacuum_glass_is_renamed_unless_its_name_was_changed(): void
+    {
+        $vacuumGlass = MeasureApplication::findByShort('vacuum-glass-only');
+
+        $vacuumGlass->setTranslation('measure_name', 'nl', 'Glas vervangen vacuümglas')->save();
+        $this->seed(MeasureApplicationsTableSeeder::class);
+        $this->assertSame('Vacuümglas', $vacuumGlass->fresh()->getTranslation('measure_name', 'nl'));
+
+        $vacuumGlass->setTranslation('measure_name', 'nl', 'Vacuümbeglazing')->save();
+        $this->seed(MeasureApplicationsTableSeeder::class);
+        $this->assertSame('Vacuümbeglazing', $vacuumGlass->fresh()->getTranslation('measure_name', 'nl'));
+    }
 
     public function test_they_are_seeded_as_externally_advised_on_their_step(): void
     {

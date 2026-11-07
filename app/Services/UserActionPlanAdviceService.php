@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Deprecation\ToolHelper;
 use App\Enums\AdviceSource;
-use App\Helpers\Arr;
+use App\Enums\GlassType;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
 use App\Helpers\Hoomdossier;
@@ -536,28 +536,22 @@ class UserActionPlanAdviceService
                         'current-living-rooms-windows',
                         'current-sleeping-rooms-windows',
                     ]);
-                    $answers = [];
+                    $glassTypes = [];
                     foreach ($relevantQuestions as $relevantQuestion) {
                         $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
                         $elementValue = ElementValue::find($answer);
 
-                        if ($elementValue instanceof ElementValue) {
-                            // Glass has no calculate value... we use the order
-                            $answers[$relevantQuestion->short] = $elementValue->order;
+                        // Glass has no calculate value; GlassType tells the options apart.
+                        $glassType = $elementValue instanceof ElementValue ? GlassType::of($elementValue) : null;
+                        if ($glassType instanceof GlassType) {
+                            $glassTypes[] = $glassType;
                         }
                     }
 
-                    if (! empty($answers)) {
-                        // Sort by order
-                        asort($answers);
-                        $lowestOrder = Arr::first($answers);
-                        // Ensure it's numeric. Never leave anything to chance
-                        $lowestOrder = is_numeric($lowestOrder) ? $lowestOrder : 0;
-
-                        // We grab the lowest order. If this is "dubbelglas" or worse, we need to add it to to-do
-                        // We don't need to check the second value. If the value is better than "dubbelglas", then
-                        // it's complete
-                        $category = $lowestOrder > 1 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                    if (! empty($glassTypes)) {
+                        // The worst glass decides: complete only when that one counts as in order too.
+                        usort($glassTypes, fn (GlassType $a, GlassType $b) => $a->rank() <=> $b->rank());
+                        $category = $glassTypes[0]->isInOrder() ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     }
                     break;
 

@@ -67,6 +67,38 @@ class ElementsValuesTableSeeder extends Seeder
                             'insulation_factor' => 4,
                         ],
                     ],
+                    // Only from SmartTwin, which tells these apart; the scans do not ask them
+                    // (App\Enums\GlassType). After the original four, so seeded rows keep their order.
+                    [
+                        'value' => [
+                            'nl' => 'HR glas',
+                        ],
+                        'order' => 4,
+                        'configurations' => [
+                            'comfort' => 3,
+                            'insulation_factor' => 2,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'HR+ glas',
+                        ],
+                        'order' => 5,
+                        'configurations' => [
+                            'comfort' => 4,
+                            'insulation_factor' => 2,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'Vacuümglas',
+                        ],
+                        'order' => 6,
+                        'configurations' => [
+                            'comfort' => 5,
+                            'insulation_factor' => 4,
+                        ],
+                    ],
                 ],
             ],
             [
@@ -118,6 +150,38 @@ class ElementsValuesTableSeeder extends Seeder
                             'nl' => 'Drievoudige beglazing',
                         ],
                         'order' => 3,
+                        'configurations' => [
+                            'comfort' => 5,
+                            'insulation_factor' => 4,
+                        ],
+                    ],
+                    // Only from SmartTwin, which tells these apart; the scans do not ask them
+                    // (App\Enums\GlassType). After the original four, so seeded rows keep their order.
+                    [
+                        'value' => [
+                            'nl' => 'HR glas',
+                        ],
+                        'order' => 4,
+                        'configurations' => [
+                            'comfort' => 3,
+                            'insulation_factor' => 2,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'HR+ glas',
+                        ],
+                        'order' => 5,
+                        'configurations' => [
+                            'comfort' => 4,
+                            'insulation_factor' => 2,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'Vacuümglas',
+                        ],
+                        'order' => 6,
                         'configurations' => [
                             'comfort' => 5,
                             'insulation_factor' => 4,
@@ -530,6 +594,48 @@ class ElementsValuesTableSeeder extends Seeder
                             'nl' => 'Overig',
                         ],
                         'order' => 4,
+                        'calculate_value' => 0, // 0%
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
+                    ],
+                    // SmartTwin's frame types, only from SmartTwin; the scans keep asking the share of
+                    // wood above. The calculate value is still that share.
+                    [
+                        'value' => [
+                            'nl' => 'Hout',
+                        ],
+                        'order' => 5,
+                        'calculate_value' => 1, // 100%
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'Kunststof',
+                        ],
+                        'order' => 6,
+                        'calculate_value' => 0, // 0%
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'Aluminium thermisch gescheiden',
+                        ],
+                        'order' => 7,
+                        'calculate_value' => 0, // 0%
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'Aluminium niet thermisch gescheiden',
+                        ],
+                        'order' => 8,
                         'calculate_value' => 0, // 0%
                         'configurations' => [
                             'comfort' => 0,

@@ -54,6 +54,9 @@ final class HouseData
         'floor'      => 'floor',
         'crawlspace' => 'floor',
         'roof'       => 'roof',
+        'windows'    => 'windows',
+        'doors'      => 'doors',
+        'panels'     => 'panels',
     ];
 
     /**

@@ -89,9 +89,13 @@ final class PartList
 
     /**
      * The value covering the most surface (or the most parts, without a surface field). A tie goes
-     * to the value seen first, which keeps the answer stable from one run to the next.
+     * to the value seen first, which keeps the answer stable from one run to the next, or, given a
+     * rank, to the lowest ranked: the worst, for an answer that should not paint the dwelling better
+     * than it is.
+     *
+     * @param  null|Closure(mixed): int  $rank
      */
-    public function dominant(string $field, ?string $by = 'area'): mixed
+    public function dominant(string $field, ?string $by = 'area', ?Closure $rank = null): mixed
     {
         $weights = [];
         $values = [];
@@ -110,7 +114,13 @@ final class PartList
             return null;
         }
 
-        return $values[array_search(max($weights), $weights, true)];
+        $tied = array_keys($weights, max($weights), true);
+
+        if (! is_null($rank)) {
+            usort($tied, fn (string $a, string $b) => $rank($values[$a]) <=> $rank($values[$b]));
+        }
+
+        return $values[$tied[0]];
     }
 
     /**

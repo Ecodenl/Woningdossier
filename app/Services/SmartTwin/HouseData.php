@@ -39,7 +39,10 @@ use Illuminate\Support\Str;
  */
 final class HouseData
 {
-    /** The page groups the crawlspace with the floor, which is where the dossier asks about it. */
+    /**
+     * The part of the page an element's executed measures go under. The page groups the crawlspace
+     * with the floor, which is where the dossier asks about it.
+     */
     /** The general questions the dossier asks itself rather than SmartTwin. */
     public const GENERAL_QUESTIONS = ['building-contract-type', 'monument'];
 
@@ -50,13 +53,17 @@ final class HouseData
     public const HIDDEN_USAGE_QUESTIONS = ['gas-price-euro', 'electricity-price-euro'];
 
     private const PART_OF_ELEMENT = [
-        'facade'     => 'facade',
-        'floor'      => 'floor',
-        'crawlspace' => 'floor',
-        'roof'       => 'roof',
-        'windows'    => 'windows',
-        'doors'      => 'doors',
-        'panels'     => 'panels',
+        'facade'        => 'facade',
+        'floor'         => 'floor',
+        'crawlspace'    => 'floor',
+        'roof'          => 'roof',
+        'windows'       => 'windows',
+        'doors'         => 'doors',
+        'panels'        => 'panels',
+        'heating'       => 'heating',
+        'hot-water'     => 'hot-water',
+        // A solar boiler heats water; the page has no part of its own for it.
+        'solar-thermal' => 'hot-water',
     ];
 
     /**

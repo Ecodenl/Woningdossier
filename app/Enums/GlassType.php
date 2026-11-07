@@ -26,9 +26,10 @@ enum GlassType: int
     /**
      * The glass that counts as in order, both for the category of the old woonplan
      * (UserActionPlanAdviceService) and for SmartTwin's "In orde" cards (InOrderCards). Raising or
-     * lowering the bar is this one line. Stakeholder decision of 7 November 2026: HR+ and better.
+     * lowering the bar is this one line. Stakeholder decision of 7 November 2026: HR and better, at
+     * the customer's request (first built from HR+).
      */
-    private const IN_ORDER_FROM = self::HR_PLUS;
+    private const IN_ORDER_FROM = self::HR;
 
     /** Whether the scans offer it as an option; the others only come from SmartTwin. */
     public const ASKED_IN_SCANS = [self::SINGLE, self::DOUBLE, self::HR_PLUS_PLUS, self::TRIPLE];

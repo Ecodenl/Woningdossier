@@ -20,7 +20,7 @@ use Tests\TestCase;
 
 /**
  * The glass and frame options only SmartTwin answers with: not offered by the scans, read back
- * everywhere, and glass in order from HR+. Decision 2026-11-07-smarttwin-glasmapping (B, C, D, E).
+ * everywhere, and glass in order from HR. Decision 2026-11-07-smarttwin-glasmapping (B, C, D, E).
  */
 final class GlazingOptionsTest extends TestCase
 {
@@ -93,14 +93,14 @@ final class GlazingOptionsTest extends TestCase
         $this->assertSame('HR+ glas', $answers['name']);
     }
 
-    public function test_glass_is_complete_from_hr_plus(): void
+    public function test_glass_is_complete_from_hr(): void
     {
         $measure = MeasureApplication::findByShort('hrpp-glass-only');
 
         $expectations = [
             GlassType::SINGLE->value       => UserActionPlanAdviceService::CATEGORY_TO_DO,
             GlassType::DOUBLE->value       => UserActionPlanAdviceService::CATEGORY_TO_DO,
-            GlassType::HR->value           => UserActionPlanAdviceService::CATEGORY_TO_DO,
+            GlassType::HR->value           => UserActionPlanAdviceService::CATEGORY_COMPLETE,
             GlassType::HR_PLUS->value      => UserActionPlanAdviceService::CATEGORY_COMPLETE,
             GlassType::HR_PLUS_PLUS->value => UserActionPlanAdviceService::CATEGORY_COMPLETE,
             GlassType::TRIPLE->value       => UserActionPlanAdviceService::CATEGORY_COMPLETE,
@@ -123,7 +123,7 @@ final class GlazingOptionsTest extends TestCase
     {
         $measure = MeasureApplication::findByShort('hrpp-glass-only');
         $this->save('current-living-rooms-windows', $this->glass('living-rooms-windows', GlassType::VACUUM->value)->id);
-        $this->save('current-sleeping-rooms-windows', $this->glass('sleeping-rooms-windows', GlassType::HR->value)->id);
+        $this->save('current-sleeping-rooms-windows', $this->glass('sleeping-rooms-windows', GlassType::DOUBLE->value)->id);
 
         $this->assertSame(
             UserActionPlanAdviceService::CATEGORY_TO_DO,

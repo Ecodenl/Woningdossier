@@ -1317,6 +1317,16 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 // SmartTwin has no product for it: it is there for the "In orde" card of a dwelling with
+                // HR glass, so that every glass type in order has one (InOrderCards).
+                'name' => 'HR glas',
+                'short' => 'hr-glass-only',
+                'step' => 'insulated-glazing',
+                'icon' => 'icon-glass-hr-dp',
+                'comfort' => 3,
+                'info' => 'HR glas is dubbel glas met een coating die de warmte terugkaatst naar binnen. Het isoleert beter dan gewoon dubbel glas, maar minder goed dan HR+ glas.',
+            ],
+            [
+                // SmartTwin has no product for it: it is there for the "In orde" card of a dwelling with
                 // HR+ glass, so that every glass type in order has one (InOrderCards).
                 'name' => 'HR+ glas',
                 'short' => 'hr-plus-glass-only',

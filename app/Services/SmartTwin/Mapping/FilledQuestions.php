@@ -44,6 +44,28 @@ final class FilledQuestions
             'flat-roof-surface',
             'flat-roof-insulation-surface',
         ],
+        'windows' => [
+            'current-living-rooms-windows',
+            'frame-type',
+            'total-window-surface',
+        ],
+        'doors' => [
+            'door-quality',
+            'total-door-surface',
+        ],
+        'panels' => [
+            'panel-quality',
+            'panel-frame-type',
+            'total-panel-surface',
+        ],
+    ];
+
+    /**
+     * Filled, but not shown: the sleeping rooms get the same glass as the living rooms
+     * (GlazingMapper), and the page would only say it twice.
+     */
+    public const NOT_SHOWN = [
+        'current-sleeping-rooms-windows',
     ];
 
     /**

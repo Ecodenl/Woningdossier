@@ -20,6 +20,7 @@ class MapperRegistry
         Mappers\WallInsulationMapper::class,
         Mappers\FloorInsulationMapper::class,
         Mappers\RoofInsulationMapper::class,
+        Mappers\GlazingMapper::class,
         Mappers\SolutionsMapper::class,
         Mappers\PackageResultsMapper::class,
     ];

@@ -75,6 +75,14 @@ final class FilledQuestions
             'ventilation-type',
             'ventilation-heat-recovery',
         ],
+        'pv' => [
+            'has-solar-panels',
+            'solar-panel-count',
+            'total-installed-power',
+            'solar-panel-peak-power',
+            'solar-panel-angle',
+            'solar-panel-orientation',
+        ],
     ];
 
     /**

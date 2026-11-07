@@ -65,6 +65,7 @@ final class HouseData
         // A solar boiler heats water; the page has no part of its own for it.
         'solar-thermal' => 'hot-water',
         'ventilation'   => 'ventilation',
+        'pv'            => 'pv',
     ];
 
     /**

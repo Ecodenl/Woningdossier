@@ -131,6 +131,44 @@ final class GlazingOptionsTest extends TestCase
         );
     }
 
+    public function test_the_door_and_panel_questions_are_asked_by_no_scan_and_reach_econobis(): void
+    {
+        $answers = [
+            'total-door-surface'  => 10.92,
+            'door-quality'        => 'not-insulated',
+            'total-panel-surface' => 4.5,
+            'panel-quality'       => 'unknown',
+            'panel-frame-type'    => 'metal-thermally-broken',
+        ];
+        $names = [
+            'total-door-surface'  => '10,9', // One decimal, as every surface shows
+            'door-quality'        => 'Ongeïsoleerd',
+            'total-panel-surface' => '4,5',
+            'panel-quality'       => 'Onbekend',
+            'panel-frame-type'    => 'Metaal, thermisch onderbroken',
+        ];
+
+        foreach ($answers as $short => $answer) {
+            $this->assertCount(0, ToolQuestion::findByShort($short)->subSteps, "{$short} is asked by a scan");
+            $this->save($short, $answer);
+        }
+
+        $master = InputSource::master();
+        foreach ($names as $short => $name) {
+            $this->assertStringStartsWith(
+                $name,
+                (string) ToolQuestionHelper::getHumanReadableAnswer($this->building, $master, ToolQuestion::findByShort($short)),
+                $short,
+            );
+        }
+
+        $payload = app(GebruikPayload::class)->forBuilding($this->building)->buildPayload();
+        $sent = collect($payload)->flatMap(fn ($situation) => $situation);
+        $this->assertSame('not-insulated', $sent->get('door-quality')['answers']['short']);
+        $this->assertSame('Metaal, thermisch onderbroken', $sent->get('panel-frame-type')['answers']['name']);
+        $this->assertEquals(10.92, $sent->get('total-door-surface')['answers']['value']);
+    }
+
     private function glass(string $elementShort, int $order): ElementValue
     {
         return Element::findByShort($elementShort)->values()->where('order', $order)->firstOrFail();

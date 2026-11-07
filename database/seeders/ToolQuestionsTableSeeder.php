@@ -2976,6 +2976,72 @@ class ToolQuestionsTableSeeder extends Seeder
                 // the share of wood.
                 'shown_in_scans' => fn (ElementValue $value) => $value->order <= self::LAST_FRAME_SHARE_ORDER,
             ],
+            // The doors and panels, which only SmartTwin fills: no scan asks them. Shown under
+            // "Gegevens woning bekijken", in the report and sent to Econobis
+            // (decision 2026-11-07-smarttwin-glasmapping).
+            [
+                'data_type' => Caster::FLOAT,
+                'validation' => ['nullable', 'numeric', 'min:0'],
+                'translation' => 'Totale deuroppervlakte van de woning',
+                'short' => 'total-door-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'translation' => 'Kwaliteit deuren',
+                'short' => 'door-quality',
+                'tool_question_custom_values' => [
+                    'insulated' => [
+                        'name' => 'Geïsoleerd',
+                    ],
+                    'not-insulated' => [
+                        'name' => 'Ongeïsoleerd',
+                    ],
+                ],
+            ],
+            [
+                'data_type' => Caster::FLOAT,
+                'validation' => ['nullable', 'numeric', 'min:0'],
+                'translation' => 'Totale paneeloppervlakte van de woning',
+                'short' => 'total-panel-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'translation' => 'Kwaliteit panelen',
+                'short' => 'panel-quality',
+                'tool_question_custom_values' => [
+                    'insulated' => [
+                        'name' => 'Geïsoleerd',
+                    ],
+                    'not-insulated' => [
+                        'name' => 'Ongeïsoleerd',
+                    ],
+                    'unknown' => [
+                        'name' => 'Onbekend',
+                    ],
+                ],
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'translation' => 'Kozijn panelen',
+                'short' => 'panel-frame-type',
+                'tool_question_custom_values' => [
+                    // SmartTwin does not tell wood from plastic for a panel.
+                    'wood-or-plastic' => [
+                        'name' => 'Hout / kunststof',
+                    ],
+                    'metal-thermally-broken' => [
+                        'name' => 'Metaal, thermisch onderbroken',
+                    ],
+                    'metal' => [
+                        'name' => 'Metaal',
+                    ],
+                ],
+            ],
             [
                 'data_type' => Caster::ARRAY,
                 'validation' => [

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Observers\AccountObserver;
+use App\Services\SmartTwin\Api\UserRole;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Notifications\ResetPasswordNotification;
@@ -19,6 +20,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  *
  * @property int $id
  * @property string $email
+ * @property string|null $smarttwin_user_id
+ * @property \App\Services\SmartTwin\Api\UserRole|null $smarttwin_user_role
  * @property string $password
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
@@ -43,6 +46,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSmarttwinUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSmarttwinUserRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereIsAdmin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereOldEmail($value)
@@ -61,6 +66,7 @@ class Account extends Authenticatable implements MustVerifyEmail
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     protected $fillable = ['email', 'password', 'email_verified_at', 'old_email', 'old_email_token',
+        'smarttwin_user_id', 'smarttwin_user_role',
     ];
 
     protected $hidden = [
@@ -77,6 +83,7 @@ class Account extends Authenticatable implements MustVerifyEmail
         return [
             'is_admin' => 'boolean',
             'email_verified_at' => 'datetime',
+            'smarttwin_user_role' => UserRole::class,
         ];
     }
 
@@ -126,6 +133,33 @@ class Account extends Authenticatable implements MustVerifyEmail
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    /**
+     * The SmartTwin user linked to this account, if one has been created. SmartTwin identifies a
+     * user by e-mail address, which belongs to the account, so the link lives here rather than on
+     * the (per-cooperation) user.
+     */
+    public function smartTwinUserId(): ?string
+    {
+        return $this->smarttwin_user_id;
+    }
+
+    /**
+     * The role we created that SmartTwin user with. SmartTwin has no endpoint to change it
+     * afterwards, so this can drift from the roles the account currently holds.
+     */
+    public function smartTwinUserRole(): ?UserRole
+    {
+        return $this->smarttwin_user_role;
+    }
+
+    public function linkSmartTwinUser(string $userId, UserRole $role): void
+    {
+        $this->smarttwin_user_id   = $userId;
+        $this->smarttwin_user_role = $role;
+
+        $this->save();
     }
 
     /**

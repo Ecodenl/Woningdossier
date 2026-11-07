@@ -24,7 +24,7 @@
                         $user = $building->user;
 
                         $userCreatedAtFormatted = $user->created_at?->format('d-m-Y');
-                        $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
+                        $userCreatedAtTimestamp = $user->created_at?->timestamp ?? 0;
 
                         $appointmentDateFormatted = null;
 
@@ -51,7 +51,7 @@
                         <td>
                             {{$building->city}}
                         </td>
-                        <td data-sort="{{$userCreatedAtStrotime ?? '-'}}">
+                        <td data-sort="{{$userCreatedAtTimestamp}}">
                             {{$userCreatedAtFormatted ?? '-'}}
                         </td>
                         @can('verifyEmail', $user->account)
@@ -83,6 +83,7 @@
                 language: {
                     url: '{{ asset('js/datatables-dutch.json') }}'
                 },
+                order: [[6, "desc"]],
                 layout: {
                     bottomEnd: {
                         paging: {

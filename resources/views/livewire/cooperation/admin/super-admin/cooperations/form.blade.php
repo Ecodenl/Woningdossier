@@ -125,6 +125,23 @@
         @endcomponent
     @endif
 
+    @component('cooperation.frontend.layouts.components.form-group', [
+        'withInputSource' => false,
+        'label' => __('cooperation/admin/super-admin/cooperations.form.smarttwin-enabled.label'),
+        'id' => "smarttwin-enabled",
+        'class' => 'w-full',
+        'inputName' => "smartTwinEnabled",
+    ])
+        <div class="checkbox-wrapper mb-0">
+            <input type="checkbox" id="smarttwin-enabled" value="1" wire:model="smartTwinEnabled">
+            <label for="smarttwin-enabled">
+                <span class="checkmark"></span>
+                <span>@lang('cooperation/admin/super-admin/cooperations.form.smarttwin-enabled.checkbox')</span>
+            </label>
+        </div>
+        <p class="text-sm mt-1">@lang('cooperation/admin/super-admin/cooperations.form.smarttwin-enabled.help')</p>
+    @endcomponent
+
     <div class="w-full mt-5">
         <button wire:click="save" class="btn btn-green" type="submit">
             @if($cooperationToEdit->exists)

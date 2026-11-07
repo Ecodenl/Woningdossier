@@ -27,9 +27,6 @@ return [
     ],
     'cooperation' => [
         'chat' => [
-            'group-participants' => [
-                'revoke-access' => 'Weet u zeker dat u deze gebruiker van uit het groepsgesprek wilt verwijderen? Deze gebruiker heeft hierna geen toegang meer tot de woning.',
-            ],
             'messages' => [
                 'participant-added' => ':participant is toegevoegd aan het gesprek',
                 'participant-removed' => ':participant is verwijderd uit het gesprek',

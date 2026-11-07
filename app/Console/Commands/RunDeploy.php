@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Upgrade\AddSmartTwinGlazingOptions;
 use Illuminate\Console\Command;
 use Illuminate\Database\Console\Seeds\SeedCommand;
 
@@ -28,27 +29,22 @@ class RunDeploy extends Command
      */
     public function handle(): int
     {
+        // In order: the questions take their options from the tables filled before them.
         $commands = [
-            SeedCommand::class => [
-                ['--class' => 'ToolQuestionTypesTableSeeder', '--force' => true],
-                ['--class' => 'ToolLabelsTableSeeder', '--force' => true],
-                ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
-                ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
-                ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
-                ['--class' => 'InputSourcesTableSeeder', '--force' => true],
-            ],
+            [SeedCommand::class, ['--class' => 'ToolQuestionTypesTableSeeder', '--force' => true]],
+            [SeedCommand::class, ['--class' => 'ToolLabelsTableSeeder', '--force' => true]],
+            // The energy-label question takes its options from this table.
+            [SeedCommand::class, ['--class' => 'EnergyLabelsTableSeeder', '--force' => true]],
+            // The glass and frame questions link the options this adds.
+            [AddSmartTwinGlazingOptions::class, []],
+            [SeedCommand::class, ['--class' => 'ToolQuestionsTableSeeder', '--force' => true]],
+            [SeedCommand::class, ['--class' => 'SubSteppablesTableSeeder', '--force' => true]],
+            [SeedCommand::class, ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true]],
+            [SeedCommand::class, ['--class' => 'InputSourcesTableSeeder', '--force' => true]],
         ];
 
-        foreach ($commands as $command => $variants) {
-            // Ignore the error since it only triggers if the $commands currently hold no non-variant based commands.
-            /** @phpstan-ignore empty.variable */
-            if (empty($variants)) {
-                $this->call($command);
-            }
-
-            foreach ($variants as $arguments) {
-                $this->call($command, $arguments);
-            }
+        foreach ($commands as [$command, $arguments]) {
+            $this->call($command, $arguments);
         }
 
         return self::SUCCESS;

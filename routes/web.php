@@ -154,6 +154,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             Route::as('my-plan.')->prefix('woonplan')->group(function () {
                                 Route::get('', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'index'])->name('index');
                                 Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'media'])->name('media');
+                                Route::get('gegevens-woning', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'houseData'])->name('house-data');
+                                Route::post('smarttwin', Cooperation\Frontend\Tool\SimpleScan\SmartTwinHandoffController::class)->name('smarttwin');
                             });
 
                             Route::as('my-regulations.')->prefix('mijn-regelingen')->group(function () {
@@ -163,7 +165,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     //TODO: Bind by expert shorts and route bind steps also (perhaps we can merge with above code to
                     // minify route code...)
-                    Route::as('expert-scan.')->prefix('expert-scan')->group(function () {
+                    Route::as('expert-scan.')->prefix('expert-scan')->middleware('ensure-expert-scan-available')->group(function () {
                         // Define this route as last to not match above routes as step/sub step combo
                         Route::prefix('{step}')
                             ->group(function () {
@@ -181,7 +183,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             });
 
-            Route::prefix('tool')->name('tool.')->middleware('ensure-quick-scan-completed', 'track-visited-url')->group(function () {
+            Route::prefix('tool')->name('tool.')->middleware('ensure-quick-scan-completed', 'ensure-expert-scan-available', 'track-visited-url')->group(function () {
                 Route::get('/', function () {
                     // Usually we check the scans. However, the lite scan can't come here anyway.
                     $scan = \App\Models\Scan::findByShort(\App\Models\Scan::QUICK);

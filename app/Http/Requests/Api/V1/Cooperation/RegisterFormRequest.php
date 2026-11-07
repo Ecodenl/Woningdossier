@@ -3,15 +3,19 @@
 namespace App\Http\Requests\Api\V1\Cooperation;
 
 use App\Helpers\RoleHelper;
+use App\Helpers\ScanAvailabilityHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Requests\Api\ApiRequest;
 use App\Models\Account;
 use App\Models\Cooperation;
+use App\Models\Scan;
 use App\Models\ToolQuestion;
 use App\Rules\HouseNumber;
 use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
+use App\Services\CooperationScanService;
+use App\Services\SmartTwin\RegistrationQuestions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -63,6 +67,10 @@ class RegisterFormRequest extends ApiRequest
 
             'roles' => ['nullable', 'array'],
             'roles.*' => ['string', Rule::in([RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COACH])],
+
+            'scans' => ['nullable', 'array'],
+            'scans.type' => ['nullable', 'string', Rule::in(array_keys(CooperationScanService::translationMap()))],
+            'scans.small_measures_enabled' => ['nullable', 'boolean'],
         ];
 
         // try to get the account
@@ -73,12 +81,17 @@ class RegisterFormRequest extends ApiRequest
             unset($rules['email']);
         }
 
+        // Optional here, also in a cooperation with SmartTwin: requiring them would break existing calls. Their
+        // own validation would let the short of any question's option through, so they get their options instead.
+        $registrationRules = RegistrationQuestions::rules(false);
+
         $toolQuestionAnswers = $this->input('tool_questions', []);
         foreach ($toolQuestionAnswers as $toolQuestionShort => $toolQuestionAnswer) {
             if (in_array($toolQuestionShort, ToolQuestionHelper::SUPPORTED_API_SHORTS)) {
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                 if ($toolQuestion instanceof ToolQuestion) {
-                    $rules["tool_questions.{$toolQuestionShort}"] = $toolQuestion->validation;
+                    $rules["tool_questions.{$toolQuestionShort}"] = $registrationRules["tool_questions.{$toolQuestionShort}"]
+                        ?? $toolQuestion->validation;
                 }
             }
         }
@@ -100,6 +113,25 @@ class RegisterFormRequest extends ApiRequest
                     $validator->errors()->add('extra.contact_id', __(
                         'validation.custom-rules.api.contact-id-unique',
                         ['attribute' => __('validation.attributes')['users.extra.contact_id']]
+                    ));
+                }
+            }
+
+            // Small measures can only be toggled for the quick scan, so the building must end up with one: either
+            // through the given scan type or, without one, through the cooperation's scans.
+            $smallMeasuresEnabled = $this->input('scans.small_measures_enabled');
+            if (! is_null($smallMeasuresEnabled)
+                && ! $validator->errors()->hasAny(['scans', 'scans.type', 'scans.small_measures_enabled'])
+            ) {
+                $scanType = $this->input('scans.type');
+                $scanShorts = is_null($scanType)
+                    ? $this->cooperation->scans->pluck('short')->all()
+                    : ScanAvailabilityHelper::scanShortsForType($scanType);
+
+                if (! in_array(Scan::QUICK, $scanShorts)) {
+                    $validator->errors()->add('scans.small_measures_enabled', __(
+                        'validation.custom-rules.api.small-measures-requires-quick-scan',
+                        ['attribute' => __('validation.attributes')['scans.small_measures_enabled']]
                     ));
                 }
             }

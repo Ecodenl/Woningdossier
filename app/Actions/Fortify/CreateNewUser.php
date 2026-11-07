@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Helpers\RoleHelper;
 use App\Http\Requests\AddressFormRequest;
 use App\Models\Account;
+use App\Models\InputSource;
 use App\Rules\PhoneNumber;
+use App\Services\SmartTwin\RegistrationQuestions;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -41,6 +43,12 @@ class CreateNewUser implements CreatesNewUsers
         $cooperation = $this->request->route('cooperation');
 
         $user = UserService::register($cooperation, [RoleHelper::ROLE_RESIDENT], $input);
+
+        // The resident answers these about their own dwelling.
+        if (RegistrationQuestions::askedFor($cooperation)) {
+            RegistrationQuestions::save($user->building, [InputSource::resident()], $input['tool_questions'] ?? []);
+        }
+
         return $user->account;
     }
 
@@ -63,6 +71,11 @@ class CreateNewUser implements CreatesNewUsers
             'phone_number' => ['nullable', new PhoneNumber($cooperation->country)],
             'allow_access' => 'required|accepted',
         ], (new AddressFormRequest())->setCountry($cooperation->country)->rules());
+
+        // Asked with the address, so also when only a building is added below.
+        if (RegistrationQuestions::askedFor($cooperation)) {
+            $rules = array_merge($rules, RegistrationQuestions::rules(true));
+        }
 
         // Try to get the account from the given email.
         $account = Account::where('email', $this->get('email'))->first();

@@ -20,9 +20,19 @@ class UserActionPlanAdviceObserver
 {
     /**
      * Listen to the creating event, will set the planned year based on interest.
+     *
+     * Returns false to cancel the create when this measure's advice is owned elsewhere.
      */
-    public function creating(UserActionPlanAdvice $userActionPlanAdvice): void
+    public function creating(UserActionPlanAdvice $userActionPlanAdvice): ?bool
     {
+        // The calculation runs per step and cannot know that one measure inside it was priced
+        // elsewhere. Catching it here rather than in each of the ten createAdvices() implementations
+        // is not only shorter: a helper that forgot the check would produce exactly the duplicate
+        // card this prevents, and nothing would flag it.
+        if (UserActionPlanAdviceService::isOwnedExternally($userActionPlanAdvice)) {
+            return false;
+        }
+
         // previously custom logic decided if the advice should be planned or not.
         // since the "quick scan" we ask the user if he considers the measure, when he considers it an advice will be created
         // when he considers it it might as well be planned.
@@ -37,7 +47,10 @@ class UserActionPlanAdviceObserver
             UserActionPlanAdviceService::setAdviceCategory($userActionPlanAdvice);
         }
 
-        if ($userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
+        // An advice with a source carries the price its owner gave it. Both branches below replace
+        // that price with one of ours — the heat pump calculation, or what the user once entered —
+        // and the card would show it under the owner's name.
+        if (is_null($userActionPlanAdvice->source) && $userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
             $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
             if ($advisable instanceof MeasureApplication && in_array($advisable->short, array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
                 $building = $userActionPlanAdvice->user->building;
@@ -80,6 +93,9 @@ class UserActionPlanAdviceObserver
                 }
             }
         }
+
+        // Only false cancels the create; everything else lets it through.
+        return null;
     }
 
     public function created(UserActionPlanAdvice $userActionPlanAdvice): void

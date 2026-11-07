@@ -2,9 +2,11 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
+use App\Helpers\Hoomdossier;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Services\SmartTwin\SharedWoonplan;
 use App\Services\UserActionPlanAdviceService;
 
 class SmallMeasureHelper extends ToolHelper
@@ -101,6 +103,13 @@ class SmallMeasureHelper extends ToolHelper
                     $actionPlanAdvice->save();
                 }
             }
+        }
+
+        // After the switch the woonplan is one for resident and coach. The small measures are still
+        // calculated from the answers of whoever saved them, and that outcome is what all three get;
+        // the other input source's rows would otherwise keep a measure this calculation dropped.
+        if (Hoomdossier::smartTwinOwnsWoonplanFor($this->building)) {
+            app(SharedWoonplan::class)->equalizeToMaster($this->building, $step);
         }
 
         return $this;

@@ -26,6 +26,8 @@ class QuestionValue
     // or check if we should only return specific options.
     public bool $customEvaluation = false;
 
+    public bool $withHidden = false;
+
     public function __construct(Cooperation $cooperation, ToolQuestion $toolQuestion)
     {
         $this->cooperation = $cooperation;
@@ -44,10 +46,20 @@ class QuestionValue
         return $this;
     }
 
+    /**
+     * Also the options the scans do not offer, for reading an answer back (see
+     * ToolQuestion::getQuestionValues()).
+     */
+    public function withHidden(): self
+    {
+        $this->withHidden = true;
+        return $this;
+    }
+
     public function getQuestionValues(): Collection
     {
         $toolQuestion = $this->toolQuestion;
-        $questionValues = $toolQuestion->getQuestionValues();
+        $questionValues = $toolQuestion->getQuestionValues($this->withHidden);
 
         $className = Str::studly($toolQuestion->short);
         $questionValuesClass = "App\\Helpers\\QuestionValues\\{$className}";

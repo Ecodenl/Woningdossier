@@ -15,8 +15,9 @@
             {{--
                 This may seems to be dangerous (which it somewhat is). But strip_tags is used on the message, without the second param
                 Sometimes a prefix is added which contains html, so we still need to {!!  !!}
+                nl2br keeps the line breaks the sender typed, which HTML would otherwise collapse.
             --}}
-            {!! $privateMessage->message !!}
+            {!! nl2br($privateMessage->message) !!}
         </p>
     </div>
 </li>

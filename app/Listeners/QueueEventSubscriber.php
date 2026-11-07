@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\Log;
 
 class QueueEventSubscriber
 {
-    public function deactivateNotification(JobProcessed $event): void
+    public function handleJobProcessed(JobProcessed $event): void
     {
+        // deactivate notification
         $payload = $event->job->payload();
         $command = unserialize($payload['data']['command']);
         $commandTraits = class_uses_recursive($command);
@@ -33,10 +34,10 @@ class QueueEventSubscriber
         }
     }
 
-    public function subscribe($events): array
+    /*public function subscribe($events): array
     {
         return [
-            JobProcessed::class => ['deactivateNotification'],
+            JobProcessed::class => 'handleJobProcessed',
         ];
-    }
+    }*/
 }

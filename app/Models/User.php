@@ -136,13 +136,14 @@ class User extends Model implements AuthorizableContract
     {
         // We assume $contact is an ID. Maybe in the future this won't be the case but this way it can be easily
         // expanded
-        return $query->where('extra->contact_id', $contact);
+        return $query->where($query->qualifyColumn('extra->contact_id'), $contact);
     }
 
     #[Scope]
     protected function econobisContacts(Builder $query): Builder
     {
-        return $query->whereNotNull('extra->contact_id');
+        // Qualified, as joined tables can have an `extra` of their own (user_action_plan_advices does).
+        return $query->whereNotNull($query->qualifyColumn('extra->contact_id'));
     }
 
     # Relations

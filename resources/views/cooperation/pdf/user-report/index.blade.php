@@ -45,7 +45,11 @@
         @include('cooperation.pdf.user-report.parts.pages.simple-scan-answers')
 
         @if($scanShort !== \App\Models\Scan::LITE)
-            @include('cooperation.pdf.user-report.parts.pages.expert-scan-answers')
+            {{-- The expert scan is closed once the woonplan is SmartTwin's, and its advice does not
+                 rest on these answers (decision 2026-10-15-smarttwin-rapport-na-omslagpunt, P6). --}}
+            @unless($smartTwin)
+                @include('cooperation.pdf.user-report.parts.pages.expert-scan-answers')
+            @endunless
             @include('cooperation.pdf.user-report.parts.pages.small-measures')
         @elseif(! empty($coachHelp))
             @include('cooperation.pdf.user-report.parts.pages.coach-help')

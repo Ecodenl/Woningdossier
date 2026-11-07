@@ -83,6 +83,9 @@ final class FilledQuestions
             'solar-panel-angle',
             'solar-panel-orientation',
         ],
+        'cooling' => [
+            'cooling-type',
+        ],
     ];
 
     /**

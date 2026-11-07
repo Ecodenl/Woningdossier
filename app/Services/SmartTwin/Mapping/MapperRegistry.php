@@ -24,6 +24,7 @@ class MapperRegistry
         Mappers\HeatMapper::class,
         Mappers\VentilationMapper::class,
         Mappers\PvMapper::class,
+        Mappers\CoolingMapper::class,
         Mappers\SolutionsMapper::class,
         Mappers\PackageResultsMapper::class,
     ];

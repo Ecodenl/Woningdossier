@@ -66,6 +66,7 @@ final class HouseData
         'solar-thermal' => 'hot-water',
         'ventilation'   => 'ventilation',
         'pv'            => 'pv',
+        'cooling'       => 'cooling',
     ];
 
     /**
@@ -163,12 +164,9 @@ final class HouseData
             }
 
             $parts = [];
+            // Every element has a part, now the installations are mapped too.
             foreach (ElementScope::forMeasure($measure->short, $measure->step->short) as $scope) {
-                $part = self::PART_OF_ELEMENT[$scope->element->value] ?? null;
-
-                if (! is_null($part)) {
-                    $parts[$part] = true;
-                }
+                $parts[self::PART_OF_ELEMENT[$scope->element->value]] = true;
             }
 
             foreach (array_keys($parts) as $part) {

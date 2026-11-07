@@ -215,6 +215,7 @@ return [
                 'hot-water' => 'Warm tapwater',
                 'ventilation' => 'Ventilatie',
                 'pv' => 'Zonnepanelen',
+                'cooling' => 'Koeling',
             ],
             'according-to' => 'Volgens Smart Twin, berekening van :date',
             'executed' => ':measure uitgevoerd op :date',

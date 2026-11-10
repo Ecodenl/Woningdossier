@@ -30,8 +30,10 @@ use Illuminate\Support\Facades\DB;
  *
  * So this replaces, for the tables SmartTwin writes about the dwelling and nothing else. Which
  * those are is SmartTwin's mapping's to say; checked against a real import's report: the
- * building's features, its elements and its roof types. Should the mapping start writing another
- * table with a row per input source (installations, say), it belongs in TABLES.
+ * building's features, its elements and its roof types, and since the installations are mapped
+ * (decision 2026-11-07-smarttwin-installaties-mapping) its services (boiler, heat pump, ventilation,
+ * the number of panels) and its solar panels. Should the mapping start writing another table with a
+ * row per input source, it belongs in TABLES.
  *
  * The input source's own values that differ from master are replaced by master's. That changes
  * nothing that is shown: master is what the dossier shows, and it is the same before and after.
@@ -42,9 +44,10 @@ class DwellingRows
 {
     /**
      * The tables SmartTwin writes about the dwelling, each with a row per input source (and per
-     * element or roof type). Nothing refers to their rows by id, so they can be replaced outright.
+     * element, roof type or service). Nothing refers to their rows by id, so they can be replaced
+     * outright.
      */
-    public const TABLES = ['building_features', 'building_elements', 'building_roof_types'];
+    public const TABLES = ['building_features', 'building_elements', 'building_roof_types', 'building_services', 'building_pv_panels'];
 
     /**
      * Replaces the input source's rows in TABLES with copies of master's.

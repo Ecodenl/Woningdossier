@@ -208,6 +208,49 @@ final class SmartTwinImportTest extends TestCase
         $this->assertArrayNotHasKey('panels', $parts);
     }
 
+    /**
+     * As in dossier 100211: a free standing gas stove, a gas hot water device, natural ventilation,
+     * and after the advice an outside air heat pump. Plus solar panels and no cooling.
+     */
+    public function test_the_installations_land_in_the_dossier_and_on_the_house_data_page(): void
+    {
+        $response = $this->response();
+        $response['current']['properties']['heatingSystems'] = [['individualInstallation' => true, 'emitterType' => 0,
+            'description' => 'klimaatsysteem verwarming', 'id' => 'hs', 'generators' => [
+                ['energyCarrier' => 1, 'generatorType' => 0, 'heatPumpSource' => 0, 'heatPumpSourceSystem' => 0, 'description' => 'gaskachel vrijstaand', 'id' => 'g'],
+            ]]];
+        $response['current']['properties']['hotWaterSystems'] = [['individualInstallation' => true, 'generatorType' => 9, 'cwClass' => 4,
+            'isCombiDevice' => false, 'showerHeatRecoveryPresent' => true, 'storageVesselPresent' => false, 'description' => '', 'id' => 'hw']];
+        $response['current']['properties']['ventilationSystems'] = [['systemType' => 'A1', 'hasHeatRecovery' => false, 'description' => 'Natuurlijke toe- en afvoer', 'id' => 'v']];
+        $response['current']['properties']['pvSystems'] = [['panelType' => 1, 'numberOfPanels' => 9, 'panelIntegration' => 2, 'surfaceArea' => 14.7015,
+            'wattPeakPerM2' => 165, 'inclination' => 0, 'orientation' => 0, 'description' => '', 'id' => 'pv']];
+        $response['current']['properties']['coolingSystems'] = [];
+        $response['scenario']['properties']['heatingSystems'] = [['individualInstallation' => true, 'emitterType' => 1,
+            'description' => '', 'id' => 'hs', 'generators' => [
+                ['energyCarrier' => 0, 'generatorType' => 6, 'heatPumpSource' => 4, 'heatPumpSourceSystem' => 0, 'description' => 'Combiwarmtepomp buitenlucht', 'id' => 'g'],
+            ]]];
+
+        $this->import($response);
+
+        $this->assertEquals(['none'], $this->answer('heat-source'));
+        $this->assertSame('gaskachel vrijstaand', $this->answer('heat-source-other'));
+        $this->assertEquals(['hr-boiler'], $this->answer('heat-source-warm-tap-water'));
+        $this->assertSame('full-heat-pump-outside-air', $this->answer('new-heat-pump-type'));
+        $this->assertSame(app(ElementValues::class)->serviceValueIdForOrder('house-ventilation', 1), (int) $this->answer('ventilation-type'));
+        $this->assertSame('yes', $this->answer('has-solar-panels'));
+        $this->assertSame(2426, (int) $this->answer('total-installed-power'));
+        $this->assertEquals(['none'], $this->answer('cooling-type'));
+
+        $parts = HouseData::for($this->building->fresh())->parts;
+        $answers = fn (string $part) => array_column($parts[$part]['rows'], 'answer');
+
+        $this->assertSame(['Anders...', 'gaskachel vrijstaand'], $answers('heating'));
+        $this->assertSame(['Gasketel'], $answers('hot-water'));
+        $this->assertSame(['Natuurlijke ventilatie', 'Nee'], $answers('ventilation'));
+        $this->assertContains('horizontaal', $answers('pv'));
+        $this->assertSame(['Geen koeling'], $answers('cooling'));
+    }
+
     public function test_the_roof_lands_per_shape_with_its_decimals(): void
     {
         $this->import($this->response());

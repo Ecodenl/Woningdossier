@@ -4,6 +4,8 @@ namespace App\Services\SmartTwin\Mapping\Mappers;
 
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\PvPanelOrientation;
+use App\Models\Service;
 
 /**
  * Looks up the id of an element value by the ordinal the mapping reasons in.
@@ -42,6 +44,23 @@ class ElementValues
         $elementValue = ElementValue::find($elementValueId);
 
         return $elementValue instanceof ElementValue ? $elementValue->getTranslation('value', 'nl') : null;
+    }
+
+    /**
+     * The id of a service value (a heat pump type, a boiler, a kind of ventilation) by its order,
+     * which every service numbers its options by.
+     */
+    public function serviceValueIdForOrder(string $serviceShort, int $order): ?int
+    {
+        $service = Service::findByShort($serviceShort);
+
+        return $service instanceof Service ? $service->values()->where('order', $order)->value('id') : null;
+    }
+
+    /** The id of a panel orientation by its short. */
+    public function orientationIdFor(string $short): ?int
+    {
+        return PvPanelOrientation::where('short', $short)->value('id');
     }
 
     private function lookUp(string $elementShort, string $column, int $value): ?int

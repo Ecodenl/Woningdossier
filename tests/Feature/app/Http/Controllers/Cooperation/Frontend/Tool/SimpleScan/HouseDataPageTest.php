@@ -177,6 +177,20 @@ final class HouseDataPageTest extends TestCase
         $this->assertNotContains(ToolQuestion::findByShort('crack-sealing-type')->name, $labels);
     }
 
+    public function test_the_glass_question_is_asked_about_the_whole_dwelling_on_the_page_only(): void
+    {
+        $this->switchToSmartTwin();
+        $toolQuestion = ToolQuestion::findByShort('current-living-rooms-windows');
+        $this->answer('current-living-rooms-windows', $toolQuestion->getQuestionValues()->first()['value']);
+
+        $labels = array_column(HouseData::for($this->building)->parts['windows']['rows'], 'label');
+
+        $this->assertContains('Welk type glas heb je in jouw huis?', $labels);
+        // The quick scan keeps asking about the living rooms.
+        $this->assertNotSame('Welk type glas heb je in jouw huis?', $toolQuestion->fresh()->name);
+        $this->page()->assertSee('Welk type glas heb je in jouw huis?');
+    }
+
     public function test_usage_shows_what_the_dossier_holds(): void
     {
         $this->switchToSmartTwin();

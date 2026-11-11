@@ -217,6 +217,9 @@ return [
                 'pv' => 'Zonnepanelen',
                 'cooling' => 'Koeling',
             ],
+            'labels' => [
+                'current-living-rooms-windows' => 'Welk type glas heb je in jouw huis?',
+            ],
             'according-to' => 'Volgens Smart Twin, berekening van :date',
             'executed' => ':measure uitgevoerd op :date',
             'nothing-known' => 'Smart Twin heeft hier nog geen gegevens over.',

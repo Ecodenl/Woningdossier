@@ -8,7 +8,7 @@ use App\Models\Building;
 use App\Models\Notification;
 use App\Models\User;
 use App\Services\Models\NotificationService;
-use Database\Seeders\InputSourcesTableSeeder;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -18,10 +18,11 @@ final class CleanupStaleRegulationRefreshNotificationsTest extends TestCase
 {
     use RefreshDatabase;
 
+    public bool $seed = true;
+    public string $seeder = DatabaseSeeder::class;
+
     public function test_only_stale_regulation_refresh_notifications_are_deleted(): void
     {
-        $this->seed(InputSourcesTableSeeder::class);
-
         $building = Building::factory()->create(['user_id' => User::factory()->create()->id]);
 
         $this->travelTo(Carbon::now()->subHours(3));

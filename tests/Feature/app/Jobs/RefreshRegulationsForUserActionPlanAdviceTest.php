@@ -69,6 +69,15 @@ final class RefreshRegulationsForUserActionPlanAdviceTest extends TestCase
         $this->assertNotificationIsRemoved();
     }
 
+    public function test_notification_is_removed_when_the_job_fails(): void
+    {
+        $job = $this->queueJob();
+
+        $job->failed(new \Exception('Verbeterjehuis is unavailable'));
+
+        $this->assertNotificationIsRemoved();
+    }
+
     private function queueJob(): RefreshRegulationsForUserActionPlanAdvice
     {
         $job = new RefreshRegulationsForUserActionPlanAdvice($this->advice);

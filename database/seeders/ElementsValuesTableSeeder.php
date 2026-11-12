@@ -227,7 +227,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Matige isolatie (tot 8 cm isolatie)',
+                            'nl' => 'Matige isolatie',
                         ],
                         'order' => 2,
                         'calculate_value' => 3,
@@ -249,7 +249,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
+                            'nl' => 'Goede isolatie',
                         ],
                         'order' => 4,
                         'calculate_value' => 5,
@@ -260,7 +260,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Zeer goede isolatie (meer dan 20 cm isolatie)',
+                            'nl' => 'Zeer goede isolatie',
                         ],
                         'order' => 5,
                         'calculate_value' => 6,
@@ -320,7 +320,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Matige isolatie (tot 8 cm isolatie)',
+                            'nl' => 'Matige isolatie',
                         ],
                         'order' => 3,
                         'calculate_value' => 4,
@@ -342,7 +342,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
+                            'nl' => 'Goede isolatie',
                         ],
                         'order' => 5,
                         'calculate_value' => 6,
@@ -353,7 +353,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Zeer goede isolatie (meer dan 20 cm isolatie)',
+                            'nl' => 'Zeer goede isolatie',
                         ],
                         'order' => 6,
                         'calculate_value' => 7,
@@ -424,7 +424,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Matige isolatie (tot 8 cm isolatie)',
+                            'nl' => 'Matige isolatie',
                         ],
                         'order' => 3,
                         'calculate_value' => 4,
@@ -446,7 +446,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
+                            'nl' => 'Goede isolatie',
                         ],
                         'order' => 5,
                         'calculate_value' => 6,
@@ -457,7 +457,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Zeer goede isolatie (meer dan 20 cm isolatie)',
+                            'nl' => 'Zeer goede isolatie',
                         ],
                         'order' => 6,
                         'calculate_value' => 7,

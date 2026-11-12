@@ -52,6 +52,15 @@ final class HouseData
      */
     public const HIDDEN_USAGE_QUESTIONS = ['gas-price-euro', 'electricity-price-euro'];
 
+    /**
+     * Questions the page labels in its own words, by short, as a translation key. The question's
+     * name stays what the scans ask: the page shows one glass type for the whole dwelling, where
+     * the quick scan asks about the living rooms.
+     */
+    public const LABELS = [
+        'current-living-rooms-windows' => 'cooperation/frontend/tool.my-plan.house-data.labels.current-living-rooms-windows',
+    ];
+
     private const PART_OF_ELEMENT = [
         'facade'        => 'facade',
         'floor'         => 'floor',
@@ -279,9 +288,12 @@ final class HouseData
         }
 
         $toolQuestion = ToolQuestionHelper::handleToolQuestionReplaceables($building, $master, $toolQuestion);
+        $label = isset(self::LABELS[$toolQuestion->short])
+            ? __(self::LABELS[$toolQuestion->short])
+            : $toolQuestion->getTranslation('name', app()->getLocale());
 
         return [
-            'label'  => Str::ucfirst(trim($toolQuestion->getTranslation('name', app()->getLocale()))),
+            'label'  => Str::ucfirst(trim($label)),
             'answer' => ToolQuestionHelper::getHumanReadableAnswer($building, $master, $toolQuestion, false, $answer),
         ];
     }

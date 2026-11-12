@@ -139,7 +139,7 @@ final class ExtendInsulationScalesTest extends TestCase
         $this->artisan(self::COMMAND)->assertSuccessful();
 
         $poor = \App\Models\ElementValue::find($this->levelNamed('roof-insulation', 'Slechte isolatie')->id);
-        $moderate = \App\Models\ElementValue::find($this->levelNamed('roof-insulation', 'Matige isolatie (tot 8 cm isolatie)')->id);
+        $moderate = \App\Models\ElementValue::find($this->levelNamed('roof-insulation', 'Matige isolatie')->id);
 
         $this->assertFalse($poor->countsAsInsulated());
         $this->assertTrue($moderate->countsAsInsulated());
@@ -166,7 +166,7 @@ final class ExtendInsulationScalesTest extends TestCase
         $poor = \App\Models\ElementValue::find($this->levelNamed('floor-insulation', 'Slechte isolatie')->id);
 
         $this->assertFalse($poor->countsAsInsulated());
-        $this->assertTrue(\App\Models\ElementValue::find($this->levelNamed('floor-insulation', 'Matige isolatie (tot 8 cm isolatie)')->id)->countsAsInsulated());
+        $this->assertTrue(\App\Models\ElementValue::find($this->levelNamed('floor-insulation', 'Matige isolatie')->id)->countsAsInsulated());
     }
 
     public function test_the_new_levels_behave_as_decided(): void
@@ -201,7 +201,7 @@ final class ExtendInsulationScalesTest extends TestCase
         // changes from calculate value 3 to 4; the row itself, and the answer, stay put.
         $this->rewind(self::TO_ORIGINAL);
 
-        $moderate = $this->levelNamed('floor-insulation', 'Matige isolatie (tot 8 cm isolatie)');
+        $moderate = $this->levelNamed('floor-insulation', 'Matige isolatie');
 
         $this->artisan(self::COMMAND)->assertSuccessful();
 

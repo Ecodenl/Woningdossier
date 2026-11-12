@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Exceptions\VerbeterjehuisWafBlockException;
 use App\Helpers\Queue;
-use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\UserActionPlanAdvice;
@@ -19,7 +18,9 @@ class RefreshRegulationsForUserActionPlanAdvice extends NonHandleableJobAfterRes
 {
     use Batchable, HasNotifications;
 
-    public UserActionPlanAdvice $userActionPlanAdvice;
+    // The advice is kept as an ID rather than a model: a recalculation deletes and recreates the advices while
+    // this job is still queued, and a missing model would make the job (and its notification) vanish silently.
+    public int $userActionPlanAdviceId;
     public Building $building;
     public InputSource $inputSource;
 
@@ -38,7 +39,7 @@ class RefreshRegulationsForUserActionPlanAdvice extends NonHandleableJobAfterRes
         $this->setUuid();
         $this->ignoreNotificationInputSource();
         $this->onQueue(Queue::APP_EXTERNAL);
-        $this->userActionPlanAdvice = $userActionPlanAdvice;
+        $this->userActionPlanAdviceId = $userActionPlanAdvice->id;
         $this->building = $userActionPlanAdvice->user->building;
         $this->inputSource = $userActionPlanAdvice->inputSource;
     }
@@ -48,10 +49,17 @@ class RefreshRegulationsForUserActionPlanAdvice extends NonHandleableJobAfterRes
      */
     public function handle(): void
     {
+        $userActionPlanAdvice = UserActionPlanAdvice::withoutGlobalScopes()->find($this->userActionPlanAdviceId);
+
+        // The advice has been deleted since this job was queued, so there is nothing left to refresh.
+        if (! $userActionPlanAdvice instanceof UserActionPlanAdvice) {
+            return;
+        }
+
         try {
             UserActionPlanAdviceService::init()
-                ->forUser($this->userActionPlanAdvice->user)
-                ->refreshRegulations($this->userActionPlanAdvice);
+                ->forUser($userActionPlanAdvice->user)
+                ->refreshRegulations($userActionPlanAdvice);
         } catch (ConnectException | ServerException $connectException) {
             // Server errors (5xx) and connection issues are temporary - retry
             $this->release(10);
@@ -76,10 +84,5 @@ class RefreshRegulationsForUserActionPlanAdvice extends NonHandleableJobAfterRes
     public function failed(\Throwable $exception)
     {
         $this->deactivateNotification();
-    }
-
-    public function middleware(): array
-    {
-        return [new CheckLastResetAt($this->userActionPlanAdvice->user->building)];
     }
 }

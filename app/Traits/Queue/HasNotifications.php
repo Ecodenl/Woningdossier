@@ -20,13 +20,19 @@ trait HasNotifications
         $this->caresForInputSource = false;
     }
 
-    protected function deactivateNotification(): void
+    public function deactivateNotification(): void
     {
-        NotificationService::init()
+        $service = NotificationService::init()
             ->forBuilding($this->building ?? $this->user->building)
-            ->forInputSource($this->inputSource)
             ->setType(get_class($this))
-            ->setUuid($this->uuid)
-            ->deactivate();
+            ->setUuid($this->uuid);
+
+        // The job might not care about the input source, in which case the notification was set without one, and
+        // so we must not query on it.
+        if ($this->caresForInputSource) {
+            $service->forInputSource($this->inputSource);
+        }
+
+        $service->deactivate();
     }
 }

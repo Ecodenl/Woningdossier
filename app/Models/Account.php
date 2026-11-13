@@ -21,7 +21,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property int $id
  * @property string $email
  * @property string|null $smarttwin_user_id
- * @property \App\Services\SmartTwin\Api\UserRole|null $smarttwin_user_role
+ * @property UserRole|null $smarttwin_user_role
  * @property string $password
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
@@ -46,14 +46,14 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSmarttwinUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSmarttwinUserRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereIsAdmin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereOldEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereOldEmailToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSmarttwinUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereSmarttwinUserRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereTwoFactorConfirmedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereTwoFactorRecoveryCodes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Account whereTwoFactorSecret($value)

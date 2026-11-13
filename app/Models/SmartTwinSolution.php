@@ -24,10 +24,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $last_seen_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static Builder<static>|SmartTwinSolution withdrawn()
  * @method static Builder<static>|SmartTwinSolution newModelQuery()
  * @method static Builder<static>|SmartTwinSolution newQuery()
  * @method static Builder<static>|SmartTwinSolution query()
+ * @method static Builder<static>|SmartTwinSolution whereCreatedAt($value)
+ * @method static Builder<static>|SmartTwinSolution whereExternalId($value)
+ * @method static Builder<static>|SmartTwinSolution whereId($value)
+ * @method static Builder<static>|SmartTwinSolution whereKind($value)
+ * @method static Builder<static>|SmartTwinSolution whereLastSeenAt($value)
+ * @method static Builder<static>|SmartTwinSolution whereName($value)
+ * @method static Builder<static>|SmartTwinSolution whereUpdatedAt($value)
+ * @method static Builder<static>|SmartTwinSolution withdrawn()
  * @mixin \Eloquent
  */
 class SmartTwinSolution extends Model

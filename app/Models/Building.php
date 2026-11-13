@@ -40,7 +40,7 @@ use Plank\Mediable\MediableInterface;
  * @property int $primary
  * @property string $bag_addressid
  * @property string|null $bag_woonplaats_id
- * @property array|null $smarttwin_callback
+ * @property array<array-key, mixed>|null $smarttwin_callback
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -81,12 +81,14 @@ use Plank\Mediable\MediableInterface;
  * @property-read int|null $question_answers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingRoofType> $roofTypes
  * @property-read int|null $roof_types_count
+ * @property-read \App\Models\SmartTwinPackage|null $smartTwinPackage
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StepComment> $stepComments
  * @property-read int|null $step_comments_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestionAnswer> $toolQuestionAnswers
  * @property-read int|null $tool_question_answers_count
  * @property-read \App\Models\User|null $user
  * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
+ * @method static Builder<static>|Building containsPendingSmartTwinAdvices()
  * @method static \Database\Factories\BuildingFactory factory($count = null, $state = [])
  * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
  * @method static Builder<static>|Building newModelQuery()
@@ -108,6 +110,7 @@ use Plank\Mediable\MediableInterface;
  * @method static Builder<static>|Building whereOwner($value)
  * @method static Builder<static>|Building wherePostalCode($value)
  * @method static Builder<static>|Building wherePrimary($value)
+ * @method static Builder<static>|Building whereSmarttwinCallback($value)
  * @method static Builder<static>|Building whereStreet($value)
  * @method static Builder<static>|Building whereUpdatedAt($value)
  * @method static Builder<static>|Building whereUserId($value)

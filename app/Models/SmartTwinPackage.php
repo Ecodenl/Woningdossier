@@ -21,17 +21,33 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $building_id
  * @property int|null $input_source_id
- * @property array<int, int> $measure_application_ids
- * @property array<string, mixed>|null $current_result
- * @property array<string, mixed>|null $scenario_result
+ * @property array<array-key, mixed> $measure_application_ids
+ * @property array<array-key, mixed>|null $current_result
+ * @property array<array-key, mixed>|null $scenario_result
  * @property numeric|null $total_cost_with_tax
  * @property numeric|null $energy_cost_savings_per_month
  * @property numeric|null $total_subsidy
- * @property array<int, array{name: string|null, amount: float|null}>|null $subsidies
+ * @property array<array-key, mixed>|null $subsidies
  * @property \Illuminate\Support\Carbon $imported_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read Building $building
+ * @property-read \App\Models\Building|null $building
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereCurrentResult($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereEnergyCostSavingsPerMonth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereImportedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereMeasureApplicationIds($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereScenarioResult($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereSubsidies($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereTotalCostWithTax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereTotalSubsidy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmartTwinPackage whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class SmartTwinPackage extends Model

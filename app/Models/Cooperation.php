@@ -67,6 +67,7 @@ use Plank\Mediable\MediableInterface;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereSmarttwinEnabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereWebsiteUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)

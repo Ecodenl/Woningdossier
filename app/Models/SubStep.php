@@ -57,12 +57,16 @@ use Illuminate\Support\Facades\App;
  * @method static Builder<static>|SubStep whereStepId($value)
  * @method static Builder<static>|SubStep whereSubStepTemplateId($value)
  * @method static Builder<static>|SubStep whereUpdatedAt($value)
+ * @method static Builder<static>|SubStep withoutOptional()
  * @mixin \Eloquent
  */
 class SubStep extends Model
 {
     use HasFactory,
         HasTranslations;
+
+    /** The sub step that holds the resident's own questions for their energy coach. */
+    public const string MY_QUESTIONS_SLUG = 'mijn-vragen';
 
     protected $fillable = [
         'name',
@@ -107,6 +111,18 @@ class SubStep extends Model
     protected function bySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
     {
         return $query->where("slug->{$locale}", $slug);
+    }
+
+    /**
+     * Leaves out the sub steps the resident may pass by. Their step counts as done without them,
+     * and the navigation does not land on them when pointing at their step: "Mijn vragen" has an
+     * entry of its own, and leading Woonwensen with it made the rest of that step reachable only
+     * through it.
+     */
+    #[Scope]
+    protected function withoutOptional(Builder $query): Builder
+    {
+        return $query->where('slug->nl', '!=', static::MY_QUESTIONS_SLUG);
     }
 
     #[Scope]

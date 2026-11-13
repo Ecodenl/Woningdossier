@@ -24,6 +24,15 @@ class CooperationHasScan
         $building = HoomdossierSession::getBuilding(true);
 
         if ($building instanceof Building && ScanAvailabilityHelper::isAvailableForBuilding($building, $scan)) {
+            // Every page of a simple scan passes here, which makes it the place to note which of the
+            // two the user is in. The navigation reads it back on pages that carry no scan. Not the
+            // shared files: they belong to the building, and only hang off a scan for their route.
+            // The navigation links them through whichever scan comes first, so opening them before
+            // choosing on the dashboard would otherwise make that choice for the user.
+            if (! $request->routeIs('cooperation.frontend.tool.simple-scan.my-plan.media')) {
+                HoomdossierSession::setScan($scan);
+            }
+
             return $next($request);
         }
 

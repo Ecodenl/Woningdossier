@@ -8,6 +8,13 @@
         'style' => 'width: auto; max-width: 75%;',
         'header' => __('cooperation/frontend/tool.my-plan.calculations.title'),
     ])
+        {{-- Once the woonplan is SmartTwin's, Hoomdossier's own calculation and its RVO prices are not
+             what it shows any more (decision 2026-10-15-smarttwin-gegevens-woning-pagina, S6i). --}}
+        @if($smartTwin)
+            <div class="mb-4">
+                {!! __('cooperation/frontend/tool.my-plan.calculations.smart-twin') !!}
+            </div>
+        @else
         <div class="mb-4">
             {!! __('cooperation/frontend/tool.my-plan.calculations.description') !!}
         </div>
@@ -42,5 +49,6 @@
                 @endforeach
             </tbody>
         </table>
+        @endif
     @endcomponent
 </div>

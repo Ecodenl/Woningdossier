@@ -11,6 +11,8 @@ class BuildingSettingHelper
     const SHORT_SMALL_MEASURES_ENABLED_LITE_SCAN = 'small_measures_enabled_lite-scan';
     const SHORT_SCAN_ENABLED_QUICK_SCAN = 'scan_enabled_quick-scan';
     const SHORT_SCAN_ENABLED_LITE_SCAN = 'scan_enabled_lite-scan';
+    /** See App\Services\SmartTwin\WoonplanLock. */
+    const SHORT_WOONPLAN_LOCKED = 'woonplan_locked';
 
     public static function getAvailableSettings(): array
     {
@@ -19,6 +21,7 @@ class BuildingSettingHelper
             static::SHORT_SMALL_MEASURES_ENABLED_LITE_SCAN => 'boolean',
             static::SHORT_SCAN_ENABLED_QUICK_SCAN => 'boolean',
             static::SHORT_SCAN_ENABLED_LITE_SCAN => 'boolean',
+            static::SHORT_WOONPLAN_LOCKED => 'boolean',
         ];
     }
 

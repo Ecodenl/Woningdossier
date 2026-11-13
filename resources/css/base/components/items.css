@@ -61,7 +61,9 @@
 }
 
 .card-wrapper .card .icon-wrapper i {
-    @apply w-full h-full;
+    /* An icon is an <i> with content: url(), and Chromium starts no drag from that. Without pointer
+       events the card itself is grabbed. */
+    @apply w-full h-full pointer-events-none;
 }
 
 .card-wrapper .card .info {

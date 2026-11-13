@@ -48,6 +48,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\BuildingCategory|null $buildingCategory
  * @property-read \App\Models\BuildingType|null $buildingType
+ * @property-read \App\Models\BuildingTypeCategory|null $buildingTypeCategory
  * @property-read \App\Models\FacadeSurface|null $contaminatedWallJoints
  * @property-read \App\Models\FacadeDamagedPaintwork|null $damagedPaintwork
  * @property-read \App\Models\EnergyLabel|null $energyLabel
@@ -169,6 +170,11 @@ class BuildingFeature extends Model implements Auditable
     public function buildingType(): BelongsTo
     {
         return $this->belongsTo(BuildingType::class);
+    }
+
+    public function buildingTypeCategory(): BelongsTo
+    {
+        return $this->belongsTo(BuildingTypeCategory::class);
     }
 
     public function roofType(): BelongsTo

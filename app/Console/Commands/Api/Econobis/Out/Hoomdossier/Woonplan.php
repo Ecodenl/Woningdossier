@@ -43,7 +43,7 @@ class Woonplan extends Command
         User::econobisContacts()
             ->select(['users.*'])
             ->has('building')
-            ->where('allow_access', 1)
+            ->where('users.allow_access', 1)
             ->join('user_action_plan_advices', function (JoinClause $join) use ($relevantLastChangedDate) {
                 $join
                     ->on('user_action_plan_advices.user_id', '=', 'users.id')

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Models\Building;
@@ -42,6 +43,33 @@ class BuildingPolicy
 
         // they can always view a building.
         return $user->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COOPERATION_ADMIN, RoleHelper::ROLE_COORDINATOR]);
+    }
+
+    /**
+     * Determine if a user may detach a coach from a building: the resident from their own building,
+     * or a coordinator / cooperation admin from one they manage.
+     */
+    public function revokeCoachAccess(Account $account, Building $building, User $coach): bool
+    {
+        $user = $account->user();
+
+        // Explicitly, as the cooperation scope on users is left off in the console (and so in tests).
+        $resident = $building->user;
+        if (! $resident instanceof User || $resident->cooperation_id != HoomdossierSession::getCooperation()) {
+            return false;
+        }
+
+        // Revoking a coach that is not attached would still write a "removed" status, which then
+        // cancels out the next "added" one and leaves the coach detached after being attached again.
+        if (! BuildingCoachStatusService::getConnectedCoachesByBuilding($building)->contains('coach_id', $coach->id)) {
+            return false;
+        }
+
+        if ($user->hasRoleAndIsCurrentRole(RoleHelper::ROLE_RESIDENT)) {
+            return $building->user_id === $user->id;
+        }
+
+        return $this->edit($account, $building);
     }
 
     /**

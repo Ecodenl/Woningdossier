@@ -63,6 +63,19 @@
         @lang('cooperation/admin/shared.sidebar.cooperation-presets')
     </a>
 </li>
+<li class="@if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.super-admin.smart-twin-solutions')) active @endif">
+    <a href="{{route('cooperation.admin.super-admin.smart-twin-solutions.index')}}">
+        @lang('cooperation/admin/super-admin/smart-twin-solutions.index.title')
+    </a>
+</li>
+{{-- Debug tooling, see routes/super-admin.php: the route only exists outside production. --}}
+@if(! app()->environment('production'))
+    <li class="@if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.super-admin.smart-twin.')) active @endif">
+        <a href="{{route('cooperation.admin.super-admin.smart-twin.index')}}">
+            @lang('cooperation/admin/super-admin/smart-twin.index.title')
+        </a>
+    </li>
+@endif
 <li class="@if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.super-admin.municipalities')) active @endif">
     <a href="{{route('cooperation.admin.super-admin.municipalities.index')}}">
         @lang('cooperation/admin/shared.sidebar.municipalities')

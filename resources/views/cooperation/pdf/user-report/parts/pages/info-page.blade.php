@@ -1,5 +1,6 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'info-page'])
-    @if($userCooperation->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG))
+    {{-- See Hoomdossier::showsVerbeterjehuisSubsidyFor(). --}}
+    @if($showsVerbeterjehuisSubsidy && $userCooperation->getCountry()->supportsApi(\App\Enums\ApiImplementation::LV_BAG))
         <div class="group">
             <h2>
                 {{ strip_tags(__('pdf/user-report.pages.info-page.subsidy.title')) }}
@@ -38,7 +39,11 @@
             @lang('pdf/user-report.pages.info-page.calculations-are-indicative.title')
         </h2>
         <p>
-            @lang('pdf/user-report.pages.info-page.calculations-are-indicative.text')
+            @if($smartTwin)
+                @lang('pdf/user-report.pages.info-page.calculations-are-indicative.smart-twin')
+            @else
+                @lang('pdf/user-report.pages.info-page.calculations-are-indicative.text')
+            @endif
         </p>
     </div>
     <div class="group">

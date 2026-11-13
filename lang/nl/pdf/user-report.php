@@ -35,6 +35,11 @@ return [
                 'savings' => 'Besparing [ € / jaar ]',
             ],
             'comment' => 'Toelichting op het Woonplan',
+            // Once the woonplan is SmartTwin's (decision 2026-10-15-smarttwin-rapport-na-omslagpunt).
+            'smart-twin' => [
+                'usage-source' => 'Zo heeft Smart Twin het energiegebruik van je woning berekend.',
+                'broken' => 'Het verbeterpakket is aangepast. De besparing, de subsidie en het energielabel die Smart Twin heeft berekend, horen daarom niet meer bij dit woonplan.',
+            ],
         ],
         'info-page' => [
             'subsidy' => [
@@ -45,6 +50,8 @@ return [
             ],
             'calculations-are-indicative' => [
                 'title' => 'Berekeningen zijn indicatief',
+                // Once the woonplan is SmartTwin's (P4).
+                'smart-twin' => 'De berekeningen in dit woonplan zijn gemaakt door Smart Twin, op basis van de gegevens die jij of je energiecoach in Smart Twin hebben ingevoerd. Ze geven een zo goed mogelijke inschatting, maar vervangen geen persoonlijk advies op maat. De werkelijke kosten en opbrengsten bepaal je met offertes. Aan de resultaten kun je geen garantie ontlenen voor de werkelijke energieprestaties, het energiegebruik of de besparingen.',
                 'text' => 'Met het Hoomdossier proberen we een zo goed mogelijke inschatting te maken van de kansen en mogelijkheden om jouw huis te verduurzamen. Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier inzicht geeft in de mogelijke impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. De feitelijke kosten en opbrengsten van een investering bepaal je vervolgens op basis van offertes. Je kunt het wel gebruiken als basis voor een keukentafelgesprek of een professioneel advies. Er kan geen garantie worden ontleend aan de resultaten van het Hoomdossier ten aanzien van de daadwerkelijke energieprestaties, berekend energiegebruik of besparingen. De essentie van werken met Hoomdossier is het krijgen van inzicht in de kosten en baten van energiebesparende maatregelen.',
             ],
             'more-info' => [

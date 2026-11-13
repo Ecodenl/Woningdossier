@@ -90,6 +90,19 @@ class SmallMeasuresSettingHelper
     }
 
     /**
+     * Store the building override for a scan only when it differs from the cooperation default,
+     * otherwise clear it so the building keeps following the cooperation.
+     */
+    public static function syncOverride(Building $building, Scan $scan, bool $enabled, Cooperation $cooperation): void
+    {
+        if ($enabled !== static::isEnabledForCooperation($cooperation, $scan)) {
+            static::setOverride($building, $scan, $enabled);
+        } else {
+            static::clearOverride($building, $scan);
+        }
+    }
+
+    /**
      * Remove the building override for a scan (revert to cooperation default).
      */
     public static function clearOverride(Building $building, Scan $scan): void

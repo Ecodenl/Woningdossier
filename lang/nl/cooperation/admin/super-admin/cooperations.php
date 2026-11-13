@@ -60,5 +60,10 @@ return [
             'label-replace' => 'Bestaande Econobis API key overschrijven',
             'clear' => 'API key verwijderen',
         ],
+        'smarttwin-enabled' => [
+            'label' => 'SmartTwin',
+            'checkbox' => 'Deze coöperatie gebruikt SmartTwin',
+            'help' => 'Uitzetten haalt de SmartTwin-adviezen van alle woningen van deze coöperatie weg en rekent hun woonplannen opnieuw uit. Dat is niet terug te draaien: na opnieuw aanzetten doen bewoners de check opnieuw.',
+        ],
     ],
 ];

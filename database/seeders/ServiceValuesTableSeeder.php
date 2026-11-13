@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Services\SmartTwin\InstallationOptions;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -87,6 +88,13 @@ class ServiceValuesTableSeeder extends Seeder
                             'comfort' => 3,
                         ],
                     ],
+                    // The heat pumps SmartTwin can describe and the scans do not offer. No calculate
+                    // value: the calculations only know the six above.
+                    ...array_values(array_map(fn (int $order, array $type) => [
+                        'value' => ['nl' => $type['label']],
+                        'order' => $order,
+                        'configurations' => ['comfort' => $type['comfort']],
+                    ], array_keys(InstallationOptions::addedHeatPumpTypes()), InstallationOptions::addedHeatPumpTypes())),
                 ],
             ],
             [

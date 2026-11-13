@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\SmartTwinCallbackReceived;
 use App\Models\Building;
 
 class BuildingObserver
@@ -15,6 +16,13 @@ class BuildingObserver
     public function saved(Building $building): void
     {
         \App\Helpers\Cache\Building::wipe($building->id);
+    }
+
+    public function updated(Building $building): void
+    {
+        if ($building->wasChanged('smarttwin_callback')) {
+            SmartTwinCallbackReceived::dispatch($building, $building->getAddedSmartTwinCallbacks());
+        }
     }
 
     /**

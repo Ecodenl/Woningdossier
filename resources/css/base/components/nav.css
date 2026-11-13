@@ -1,0 +1,107 @@
+/*
+ * Navigation for the SmartTwin mode. The regular navbar is icon driven and styles itself inline;
+ * this one is text driven and repeats the same states often enough to be worth naming.
+ *
+ * Every rule here is written as `a.<class>` rather than `.<class>`. The base hyperlink rule in
+ * clickables.css is `a:not(.btn)`, which outweighs a bare class and would otherwise hand these
+ * links its colour, its underline and its font size. Matching that specificity and relying on this
+ * file being imported later is what makes the states below actually apply.
+ */
+
+/* Logo bar -------------------------------------------------------------------------------------- */
+
+/*
+ * A fixed height rather than padding around the logos. Cooperations upload their own logo and those
+ * vary wildly in aspect ratio, so with padding the bar would be a different height per cooperation
+ * and the navigation under it would shift with it. Height here, ceiling on the image below, and the
+ * bar is the same everywhere.
+ */
+.nav-header {
+    @apply h-28;
+}
+
+.nav-header .cooperation-logo {
+    @apply max-h-20 w-auto;
+}
+
+/* Main navigation ------------------------------------------------------------------------------ */
+
+a.nav-item {
+    @apply relative flex items-center text-base text-black no-underline leading-none;
+}
+
+/* Only the section you are in is highlighted; the rest stay black, hover included. */
+a.nav-item.is-active {
+    @apply text-purple;
+}
+
+/* The count sits against the label rather than on top of it: the labels are words, not icons, so
+   there is no icon corner to hang it in. */
+.nav-badge {
+    @apply inline-flex items-center justify-center ml-2 h-5 px-1 rounded-full bg-orange text-white text-xs font-bold;
+
+    /* Spelled out rather than @apply min-w-5: spacing based min-width only exists from Tailwind 3.4
+       on, and an @apply that cannot resolve fails the build rather than being ignored. */
+    min-width: 1.25rem;
+}
+
+/* Account dropdown ----------------------------------------------------------------------------- */
+
+/*
+ * The default menu of the dropdown component (.dropdown in items.css) belongs to the icon driven
+ * navbar: blue borders, a divider under every option and bare links as options. The SmartTwin
+ * navigation hands this class to the component instead, so none of that has to be overridden.
+ */
+.nav-dropdown {
+    @apply absolute right-0 top-full z-100 mt-2 w-max py-2 pl-0 list-none rounded-md bg-white shadow-lg ring-1 ring-black/5;
+
+    /* Spelled out for the same reason as the min-width of .nav-badge. */
+    min-width: 14rem;
+}
+
+/* Each option is a full width row, so the whole row is clickable and not just its label. The account
+   items carry .in-text for the regular navbar, hence the selectors that outweigh clickables.css. */
+.nav-dropdown a:not(.btn).in-text,
+.nav-dropdown button.as-link.in-text {
+    @apply block w-full px-4 py-2 text-left text-base text-black font-normal no-underline;
+}
+
+/* The row lights up on hover. The base link rule fades text and background to 60% on hover, which
+   would wash out both, so that is undone. */
+.nav-dropdown a:not(.btn).in-text:hover,
+.nav-dropdown a:not(.btn).in-text:focus,
+.nav-dropdown button.as-link.in-text:hover,
+.nav-dropdown button.as-link.in-text:focus {
+    @apply bg-gray-400 !bg-opacity-100 !text-opacity-100;
+}
+
+/* The last option logs you out; a line sets it apart from the pages above it. */
+.nav-dropdown > li:last-child {
+    @apply mt-2 pt-2 border-t border-gray-500;
+}
+
+/* The building and user ids that are shown locally. */
+.nav-dropdown p {
+    @apply px-4 pb-2 text-sm text-gray-800;
+}
+
+/* Sub navigation ------------------------------------------------------------------------------- */
+
+a.sub-nav-item {
+    @apply flex items-center text-base no-underline leading-none;
+}
+
+/* Not reached yet. */
+a.sub-nav-item.is-default {
+    @apply text-black;
+}
+
+/* Answered. */
+a.sub-nav-item.is-completed {
+    @apply text-green;
+}
+
+/* Where the resident is now. */
+a.sub-nav-item.is-active {
+    @apply text-purple;
+}

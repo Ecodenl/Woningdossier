@@ -89,7 +89,6 @@ return [
 
         'uploader' => [
             'add' => 'Bestanden toevoegen',
-            'view' => 'Bestanden bekijken',
             'help' => 'Klik op een bestand om deze te bewerken.',
             'info' => [
                 'title' => 'Informatie',

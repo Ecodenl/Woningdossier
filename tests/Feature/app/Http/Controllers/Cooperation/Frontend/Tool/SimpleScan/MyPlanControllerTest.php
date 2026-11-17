@@ -264,6 +264,46 @@ final class MyPlanControllerTest extends TestCase
         $response->assertDontSee(__('cooperation/frontend/tool.my-plan.start-check.body'), false);
     }
 
+    public function test_the_woonplan_leaves_the_files_to_the_smart_twin_navigation(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+
+        $this->assertTheFilesAreOnlyInTheNavigation();
+    }
+
+    public function test_the_woonplan_leaves_the_files_to_the_navigation_without_smart_twin(): void
+    {
+        $this->enableSmartTwin(false);
+
+        $this->assertTheFilesAreOnlyInTheNavigation();
+    }
+
+    /**
+     * The files are reached through the main navigation on every page, so the woonplan has no
+     * button of its own for them.
+     */
+    private function assertTheFilesAreOnlyInTheNavigation(): void
+    {
+        UserActionPlanAdvice::withoutGlobalScopes()->create([
+            'user_id' => $this->building->user->id,
+            'input_source_id' => InputSource::findByShort(InputSource::MASTER_SHORT)->id,
+            'user_action_plan_advisable_type' => MeasureApplication::class,
+            'user_action_plan_advisable_id' => MeasureApplication::first()->id,
+            'category' => \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO,
+        ]);
+
+        $filesUrl = route('cooperation.frontend.tool.simple-scan.my-plan.media', [
+            'cooperation' => $this->cooperation,
+            'scan' => $this->scan,
+        ]);
+
+        $this->visitWoonplan()
+            ->assertOk()
+            ->assertDontSeeText('Bestanden bekijken')
+            ->assertSee($filesUrl, false);
+    }
+
     public function test_the_sub_nav_of_the_quick_scan_lists_what_hoomdossier_still_asks(): void
     {
         $this->enableSmartTwin(true);

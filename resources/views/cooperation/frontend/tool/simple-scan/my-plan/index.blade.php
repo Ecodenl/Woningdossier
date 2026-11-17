@@ -57,12 +57,7 @@
 
         <div class="w-full flex flex-wrap pt-5 pb-5">
             <div class="flex flex-wrap w-1/4 gap-2">
-                @can('viewAny', [\App\Models\Media::class, $inputSource, $building])
-                    <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('cooperation', 'scan')) }}"
-                       class="btn btn-outline-green">
-                        @lang('cooperation/frontend/tool.my-plan.uploader.view')
-                    </a>
-                @endcan
+                {{-- No button to the files: the main navigation links to them on every page. --}}
                 {{-- The dwelling as SmartTwin's last import left it; see MyPlanController::houseData(). --}}
                 @if($showHouseData)
                     <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.house-data', compact('cooperation', 'scan')) }}"

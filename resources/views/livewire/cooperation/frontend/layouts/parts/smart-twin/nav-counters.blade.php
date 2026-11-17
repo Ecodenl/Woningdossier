@@ -4,7 +4,7 @@
            class="nav-item @if(RouteLogic::inSharedFiles(Route::currentRouteName())) is-active @endif">
             {{-- The count is part of the label rather than a badge: the badge on the messages
                  means unread, and the files have no such thing as unread. --}}
-            {{ trans_choice('cooperation/frontend/layouts.nav.shared-files', $fileCount, ['count' => $fileCount]) }}
+            {{ trans_choice('cooperation/frontend/layouts.nav.files', $fileCount, ['count' => $fileCount]) }}
         </a>
     @endif
 

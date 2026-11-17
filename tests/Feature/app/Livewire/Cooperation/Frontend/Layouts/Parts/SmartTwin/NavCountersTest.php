@@ -98,8 +98,8 @@ final class NavCountersTest extends TestCase
     public function test_the_label_has_no_count_without_files(): void
     {
         $this->residentComponent()
-            ->assertSeeText('Gedeelde bestanden')
-            ->assertDontSeeText('0 Gedeelde bestanden')
+            ->assertSeeText('Bestanden')
+            ->assertDontSeeText('0 Bestanden')
             ->assertDontSeeHtml('nav-badge');
     }
 
@@ -108,8 +108,8 @@ final class NavCountersTest extends TestCase
         $this->uploadFile(MediaHelper::GENERIC_FILE, true);
 
         $this->residentComponent()
-            ->assertSeeText('1 Gedeeld bestand')
-            ->assertDontSeeText('Gedeelde bestanden');
+            ->assertSeeText('1 Bestand')
+            ->assertDontSeeText('Bestanden');
     }
 
     public function test_the_label_carries_the_count_for_more_files(): void
@@ -118,9 +118,21 @@ final class NavCountersTest extends TestCase
         $this->uploadFile(MediaHelper::REPORT, true);
 
         $this->residentComponent()
-            ->assertSeeText('2 Gedeelde bestanden')
+            ->assertSeeText('2 Bestanden')
             // The count moved into the label, so there is no badge next to it any more.
             ->assertDontSeeHtml('nav-badge');
+    }
+
+    public function test_the_label_does_not_call_the_files_shared(): void
+    {
+        // The resident's count includes the files they kept to themselves, so "shared" would lie.
+        $this->uploadFile(MediaHelper::GENERIC_FILE, true);
+        $this->uploadFile(MediaHelper::REPORT, false);
+
+        $this->residentComponent()
+            ->assertSeeText('2 Bestanden')
+            ->assertDontSeeText('Gedeeld')
+            ->assertDontSeeText('gedeeld');
     }
 
     public function test_the_resident_counts_every_file_on_their_house(): void

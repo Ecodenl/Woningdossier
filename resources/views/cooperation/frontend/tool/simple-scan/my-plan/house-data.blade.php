@@ -86,10 +86,10 @@
                     @endforeach
 
                     @if(empty($data['rows']))
-                        <p class="text-blue-500">@lang('cooperation/frontend/tool.my-plan.house-data.nothing-known')</p>
+                        <p class="text-blue">@lang('cooperation/frontend/tool.my-plan.house-data.nothing-known')</p>
                     @else
                         @if($houseData->calculatedAt)
-                            <p class="text-sm text-blue-500 mb-1">
+                            <p class="text-sm text-blue mb-1">
                                 @lang('cooperation/frontend/tool.my-plan.house-data.according-to', ['date' => $date($houseData->calculatedAt)])
                             </p>
                         @endif

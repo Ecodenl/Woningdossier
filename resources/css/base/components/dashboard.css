@@ -51,7 +51,7 @@
 }
 
 .building-fact dt {
-    @apply text-sm text-blue-500;
+    @apply text-sm text-blue;
 }
 
 .building-fact dd {
@@ -63,7 +63,7 @@
 }
 
 .building-fact-unknown {
-    @apply font-normal text-blue-500;
+    @apply font-normal text-blue;
 }
 
 /* The photo ------------------------------------------------------------------------------------ */
@@ -83,7 +83,7 @@
 .building-photo-empty {
     @apply flex flex-col items-center justify-center gap-3 w-full min-h-15/20 p-8
            bg-white border-2 border-dashed border-blue-500 border-opacity-40 rounded-lg
-           text-center text-blue-500 cursor-pointer transition;
+           text-center text-blue cursor-pointer transition;
 }
 
 .building-photo-empty:hover {

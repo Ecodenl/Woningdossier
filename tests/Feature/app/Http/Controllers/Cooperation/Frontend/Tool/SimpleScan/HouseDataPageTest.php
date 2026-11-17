@@ -191,6 +191,29 @@ final class HouseDataPageTest extends TestCase
         $this->page()->assertSee('Welk type glas heb je in jouw huis?');
     }
 
+    public function test_the_calculation_date_uses_the_default_text_colour(): void
+    {
+        $this->switchToSmartTwin();
+        $this->answer('wall-surface', 80);
+
+        $this->page()
+            ->assertOk()
+            ->assertSee('<p class="text-sm text-blue mb-1">', false)
+            ->assertDontSee('text-blue-500', false);
+    }
+
+    public function test_nothing_known_uses_the_default_text_colour(): void
+    {
+        // A measure carried out at the facade, without anything SmartTwin knows about it.
+        $advice = $this->switchToSmartTwin();
+        app(ExecutedAdviceService::class)->markExecuted($advice, Carbon::parse('2026-09-01'), null);
+
+        $this->page()
+            ->assertOk()
+            ->assertSee('<p class="text-blue">' . __('cooperation/frontend/tool.my-plan.house-data.nothing-known'), false)
+            ->assertDontSee('text-blue-500', false);
+    }
+
     public function test_usage_shows_what_the_dossier_holds(): void
     {
         $this->switchToSmartTwin();

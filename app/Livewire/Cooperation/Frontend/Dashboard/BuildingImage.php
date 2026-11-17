@@ -56,6 +56,27 @@ class BuildingImage extends Component
             && Gate::allows('view', [$this->image, $this->currentInputSource]);
     }
 
+    public function canDeleteImage(): bool
+    {
+        return $this->image instanceof Media
+            && Gate::allows('delete', [$this->image, $this->currentInputSource]);
+    }
+
+    /**
+     * Takes the photo off the house, so the dashboard falls back to the empty state. The policy is
+     * asked again here, as the button being hidden says nothing about who calls the action.
+     */
+    public function deletePhoto(): void
+    {
+        $this->refreshImage();
+
+        if (! $this->canDeleteImage()) {
+            return;
+        }
+
+        $this->replaceExisting();
+    }
+
     // Called from $listeners
     public function savePhoto(): void
     {

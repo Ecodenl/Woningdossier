@@ -90,8 +90,16 @@
     @apply border-purple text-purple;
 }
 
+.building-photo-actions {
+    @apply flex flex-wrap items-center justify-center gap-4 mt-2;
+}
+
 .building-photo-replace {
-    @apply mt-2 text-sm text-purple underline cursor-pointer;
+    @apply text-sm text-purple underline cursor-pointer;
+}
+
+.building-photo-delete {
+    @apply text-sm text-red underline cursor-pointer;
 }
 
 .building-photo-status {

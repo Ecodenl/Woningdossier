@@ -3,11 +3,21 @@
         <img src="{{ route('cooperation.media.serve', ['cooperation' => $building->user->cooperation, 'media' => $image]) }}"
              alt="@lang('home.dashboard.building.photo.alt')">
 
-        @if($this->canUpload())
-            <label class="building-photo-replace" for="building-photo-input">
-                @lang('home.dashboard.building.photo.replace')
-            </label>
-        @endif
+        <div class="building-photo-actions">
+            @if($this->canUpload())
+                <label class="building-photo-replace" for="building-photo-input">
+                    @lang('home.dashboard.building.photo.replace')
+                </label>
+            @endif
+
+            @if($this->canDeleteImage())
+                <button type="button" class="building-photo-delete" wire:loading.attr="disabled"
+                        wire:click="deletePhoto"
+                        wire:confirm="@lang('home.dashboard.building.photo.delete-confirm')">
+                    @lang('home.dashboard.building.photo.delete')
+                </button>
+            @endif
+        </div>
     @elseif($this->canUpload())
         <label class="building-photo-empty" for="building-photo-input">
             <i class="icon-xxxl icon-house-dark"></i>

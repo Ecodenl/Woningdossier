@@ -45,6 +45,8 @@ Komt u er toch niet uit, neem dan via de chat-knop in het menu contact met ons o
                 'alt' => 'Foto van jouw woning',
                 'add' => 'Voeg een foto van je woning toe',
                 'replace' => 'Andere foto kiezen',
+                'delete' => 'Foto verwijderen',
+                'delete-confirm' => 'Weet je zeker dat je de foto van je woning wilt verwijderen?',
                 'uploading' => 'Foto wordt geüpload...',
             ],
         ],

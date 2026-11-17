@@ -3,16 +3,27 @@
  */
 
 .dashboard {
-    @apply grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-5 xl:px-20 py-10 items-start;
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-5 xl:px-20 py-10;
 }
 
 .dashboard-full {
     @apply lg:col-span-3;
 }
 
-/* The house takes two of the three columns and both rows beside the two smaller tiles. */
+/* The house takes two of the three columns; the grid stretches it and the column beside it to the
+   taller of the two, so their top and bottom edges line up. */
 .dashboard-main {
-    @apply lg:col-span-2 lg:row-span-2;
+    @apply lg:col-span-2;
+}
+
+/* The coach and the files split the column evenly: flex-1 grows both from a zero basis, so it does
+   not matter how much each one holds. */
+.dashboard-side {
+    @apply flex flex-col gap-6;
+}
+
+.dashboard-side > .tile {
+    @apply lg:flex-1;
 }
 
 .tile {

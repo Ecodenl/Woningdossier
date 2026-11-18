@@ -16,6 +16,7 @@ use App\Models\Scan;
 use App\Models\SmartTwinPackage;
 use App\Models\User;
 use App\Services\Scans\ScanFlowService;
+use Carbon\Carbon;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -402,5 +403,32 @@ final class HomeControllerTest extends TestCase
         $response->assertDontSee('icon-label-', false);
         $response->assertSee(__('home.dashboard.coach.none'), false);
         $response->assertSee(__('home.dashboard.coach.no-appointment'), false);
+    }
+
+    public function test_coach_tile_marks_up_its_details_like_the_house_tile(): void
+    {
+        $html = view('cooperation.frontend.dashboard.parts.coach', [
+            'coach' => $this->resident,
+            'appointmentDate' => Carbon::create(2026, 11, 18, 14, 30),
+            'withContact' => false,
+        ])->render();
+
+        $this->assertStringContainsString('<dt>' . __('home.dashboard.coach.name') . '</dt>', $html);
+        $this->assertStringContainsString('<dd>' . e($this->resident->getFullName()) . '</dd>', $html);
+        $this->assertStringContainsString('<dt>' . __('home.dashboard.coach.appointment') . '</dt>', $html);
+        $this->assertStringContainsString('<dd>18 november 2026 om 14.30 uur</dd>', $html);
+    }
+
+    public function test_coach_tile_leaves_its_empty_states_as_plain_text(): void
+    {
+        $html = view('cooperation.frontend.dashboard.parts.coach', [
+            'coach' => null,
+            'appointmentDate' => null,
+            'withContact' => false,
+        ])->render();
+
+        $this->assertStringContainsString('<p>' . __('home.dashboard.coach.none') . '</p>', $html);
+        $this->assertStringContainsString('<p>' . __('home.dashboard.coach.no-appointment') . '</p>', $html);
+        $this->assertStringNotContainsString('coach-fact', $html);
     }
 }

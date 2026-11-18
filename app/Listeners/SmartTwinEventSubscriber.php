@@ -20,9 +20,10 @@ class SmartTwinEventSubscriber
 {
     private const string DISPATCH_LOCK_PREFIX = 'smarttwin-create-account-';
 
-    // Long enough for a worker to pick the job up and write the id back, short enough that a failed
-    // attempt is retried on the next login rather than being blocked for the rest of the day.
-    private const int DISPATCH_LOCK_SECONDS = 300;
+    // Long enough for a job to wait out a SmartTwin outage and write the id back (see
+    // RetriesSmartTwinOutage), short enough that a failed job is retried on a later login rather than
+    // being blocked for the rest of the day.
+    private const int DISPATCH_LOCK_SECONDS = 1500;
 
     /*public function subscribe(Dispatcher $events): array
     {

@@ -5,6 +5,7 @@ namespace App\Jobs\SmartTwin\Out;
 use App\Helpers\Hoomdossier;
 use App\Helpers\Queue;
 use App\Services\SmartTwin\Api\SmartTwinApi;
+use App\Traits\Queue\RetriesSmartTwinOutage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,9 +15,7 @@ use Illuminate\Support\Facades\Log;
 
 class DeleteAccount implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public int $tries = 3;
+    use Dispatchable, InteractsWithQueue, Queueable, RetriesSmartTwinOutage, SerializesModels;
 
     public function __construct(public string $smartTwinUserId)
     {

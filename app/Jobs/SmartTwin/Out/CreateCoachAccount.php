@@ -21,8 +21,6 @@ class CreateCoachAccount implements ShouldQueue
 {
     use Dispatchable, FailsOnSmartTwinClientError, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $tries = 3;
-
     public function __construct(public User $user)
     {
         $this->queue = Queue::APP_EXTERNAL;
@@ -52,8 +50,8 @@ class CreateCoachAccount implements ShouldQueue
                 UserRole::Advisor,
             );
         } catch (ClientException $e) {
-            // See CreateUserAccount: a 4xx will not change on a retry, so record it and stop.
-            $this->failWithResponse($e, $account);
+            // See CreateUserAccount: a 404 is retried, any other 4xx will not change on a retry.
+            $this->handleClientError($e, $account);
 
             return;
         }

@@ -87,4 +87,33 @@ final class SmartTwinEventSubscriberTest extends TestCase
 
         Bus::assertNotDispatched(CreateUserAccount::class);
     }
+
+    public function test_a_job_waiting_out_a_smart_twin_outage_is_not_joined_by_a_second_one(): void
+    {
+        $resident = User::factory()->withAccount()->asResident()
+            ->create(['cooperation_id' => Cooperation::factory()->create()->id]);
+
+        $this->verify($resident->account);
+
+        $job = new CreateUserAccount($resident);
+        $this->travel(array_sum($job->backoff))->seconds();
+
+        $this->verify($resident->account);
+
+        Bus::assertDispatchedTimes(CreateUserAccount::class, 1);
+    }
+
+    public function test_a_later_login_tries_again_once_the_job_has_given_up(): void
+    {
+        $resident = User::factory()->withAccount()->asResident()
+            ->create(['cooperation_id' => Cooperation::factory()->create()->id]);
+
+        $this->verify($resident->account);
+
+        $this->travel(26)->minutes();
+
+        $this->verify($resident->account);
+
+        Bus::assertDispatchedTimes(CreateUserAccount::class, 2);
+    }
 }

@@ -12,6 +12,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Role;
 use App\Models\Scan;
+use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
@@ -262,6 +263,30 @@ final class MyPlanControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertDontSee(__('cooperation/frontend/tool.my-plan.start-check.body'), false);
+    }
+
+    public function test_small_measures_alone_do_not_replace_the_invitation(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+
+        // The quick scan still asks about small measures, and answering them calculates these. They
+        // are no plan yet, and SmartTwin's first advice leaves them where they are.
+        $measure = MeasureApplication::where('step_id', Step::findByShort('small-measures')->id)->first();
+        UserActionPlanAdvice::withoutGlobalScopes()->create([
+            'user_id' => $this->building->user->id,
+            'input_source_id' => InputSource::findByShort(InputSource::MASTER_SHORT)->id,
+            'user_action_plan_advisable_type' => MeasureApplication::class,
+            'user_action_plan_advisable_id' => $measure->id,
+            'step_id' => $measure->step_id,
+            'category' => \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO,
+        ]);
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $response->assertSee(__('cooperation/frontend/tool.my-plan.start-check.body'), false);
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.smarttwin.report-first.title'), false);
     }
 
     public function test_the_woonplan_leaves_the_files_to_the_smart_twin_navigation(): void

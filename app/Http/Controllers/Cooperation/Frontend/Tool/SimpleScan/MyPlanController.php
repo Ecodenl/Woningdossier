@@ -60,7 +60,7 @@ class MyPlanController extends Controller
         // switched on, and to everyone on an environment where the woonplan guard is skipped.
         // A building with only the lite scan is not sent to SmartTwin, so it keeps the old guard.
         if (Hoomdossier::smartTwinFillsWoonplanFor($building)) {
-            if (! $woonplanService->hasAdvices()) {
+            if (! $woonplanService->hasPlan()) {
                 return $this->smartTwinEmptyState($scan, $building);
             }
         } elseif (! $woonplanService->canAccessWoonplan()) {

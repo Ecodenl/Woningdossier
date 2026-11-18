@@ -85,21 +85,24 @@
                 @endif
             </section>
 
-            {{-- The coach -------------------------------------------------------------------- --}}
-            @include('cooperation.frontend.dashboard.parts.coach', compact('coach', 'appointmentDate'))
+            {{-- One column beside the house, so the coach and the files share its height evenly. --}}
+            <div class="dashboard-side">
+                {{-- The coach ---------------------------------------------------------------- --}}
+                @include('cooperation.frontend.dashboard.parts.coach', compact('coach', 'appointmentDate'))
 
-            {{-- The files -------------------------------------------------------------------- --}}
-            @can('viewAny', [\App\Models\Media::class, $inputSource, $building])
-                <section class="tile">
-                    <h3 class="tile-heading">
-                        @lang('home.dashboard.files.title')
-                    </h3>
+                {{-- The files ---------------------------------------------------------------- --}}
+                @can('viewAny', [\App\Models\Media::class, $inputSource, $building])
+                    <section class="tile">
+                        <h3 class="tile-heading">
+                            @lang('home.dashboard.files.title')
+                        </h3>
 
-                    <a href="{{ $filesUrl }}" class="dashboard-files no-underline">
-                        <i class="icon-xxxl icon-document"></i>
-                    </a>
-                </section>
-            @endcan
+                        <a href="{{ $filesUrl }}" class="dashboard-files no-underline">
+                            <i class="icon-xxxl icon-document"></i>
+                        </a>
+                    </section>
+                @endcan
+            </div>
         </div>
     @else
         <div class="w-screen h-screen flex justify-center items-center flex-col">

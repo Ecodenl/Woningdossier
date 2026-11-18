@@ -96,6 +96,23 @@ final class HomeControllerTest extends TestCase
         $response->assertSee(__('home.dashboard.building.to-dossier'), false);
     }
 
+    public function test_coach_and_files_share_one_column_beside_the_house(): void
+    {
+        $this->enableSmartTwin(true);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        // The column is what makes the two tiles split the house tile's height evenly, so both have
+        // to be inside it rather than loose in the grid.
+        $response->assertSeeInOrder([
+            __('home.dashboard.building.title'),
+            'class="dashboard-side"',
+            __('home.dashboard.coach.title'),
+            __('home.dashboard.files.title'),
+        ], false);
+    }
+
     public function test_start_screen_is_shown_when_the_cooperation_does_not_take_part(): void
     {
         // SmartTwin is on for the environment, but not for this cooperation.

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\ApiImplementation;
+use App\Enums\SmartTwin\EventType;
 use App\Events\UserDeleted;
 use App\Events\UserResetHisBuilding;
 use App\Helpers\Hoomdossier;
@@ -23,6 +24,7 @@ use App\Models\User;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
 use App\Services\Models\BuildingStatusService;
+use App\Services\SmartTwin\WoonplanLock;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -170,6 +172,8 @@ class UserService
         // remove the progress of the completed questionnaires
         CompletedQuestionnaire::forMe($user)->forInputSource($inputSource)->delete();
 
+        $this->resetSmartTwinFor($building, $inputSource);
+
         if (! in_array($inputSource->short, [InputSource::MASTER_SHORT])) {
             // See create(): in a cooperation with SmartTwin these come from SmartTwin's Building Data.
             $smartTwin = Hoomdossier::smartTwinEnabledFor($cooperation);
@@ -205,6 +209,29 @@ class UserService
             GetBuildingData::dispatchFor($building, $inputSource, $cooperation);
         }
         UserResetHisBuilding::dispatch($building);
+    }
+
+    /**
+     * What SmartTwin left on the building for this input source. Without this the woonplan keeps
+     * saying the coach is done, or that the advice is on its way, about a plan that is gone; and an
+     * open callback would bring that plan back.
+     */
+    private function resetSmartTwinFor(Building $building, InputSource $inputSource): void
+    {
+        $eventType = EventType::tryFromInputSource($inputSource);
+
+        if ($eventType instanceof EventType && $building->hasSmartTwinCallback($eventType)) {
+            $building->finishSmartTwinCallback($eventType);
+            $building->save();
+        }
+
+        $building->smartTwinPackage()->where('input_source_id', $inputSource->id)->delete();
+
+        $lock = app(WoonplanLock::class);
+
+        if (InputSource::COACH_SHORT === $inputSource->short && $lock->isLocked($building)) {
+            $lock->release($building);
+        }
     }
 
     /**

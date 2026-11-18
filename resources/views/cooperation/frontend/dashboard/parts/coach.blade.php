@@ -17,19 +17,19 @@
     </h3>
 
     @if($coach instanceof \App\Models\User)
-        <p>
-            <strong>@lang('home.dashboard.coach.name')</strong><br>
-            {{ $coach->getFullName() }}
-        </p>
+        <dl class="coach-fact">
+            <dt>@lang('home.dashboard.coach.name')</dt>
+            <dd>{{ $coach->getFullName() }}</dd>
+        </dl>
     @else
         <p>@lang('home.dashboard.coach.none')</p>
     @endif
 
     @if(! is_null($appointmentDate))
-        <p>
-            <strong>@lang('home.dashboard.coach.appointment')</strong><br>
-            {{ $appointmentDate->translatedFormat('j F Y \o\m H.i \u\u\r') }}
-        </p>
+        <dl class="coach-fact">
+            <dt>@lang('home.dashboard.coach.appointment')</dt>
+            <dd>{{ $appointmentDate->translatedFormat('j F Y \o\m H.i \u\u\r') }}</dd>
+        </dl>
     @else
         <p>@lang('home.dashboard.coach.no-appointment')</p>
     @endif

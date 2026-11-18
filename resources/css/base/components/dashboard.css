@@ -61,11 +61,13 @@
     @apply border-b-0;
 }
 
-.building-fact dt {
-    @apply text-sm text-blue;
+.building-fact dt,
+.coach-fact dt {
+    @apply text-sm font-bold text-blue;
 }
 
-.building-fact dd {
+.building-fact dd,
+.coach-fact dd {
     @apply font-bold;
 }
 

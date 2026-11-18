@@ -21,8 +21,6 @@ class CreateUserAccount implements ShouldQueue
 {
     use Dispatchable, FailsOnSmartTwinClientError, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $tries = 3;
-
     public function __construct(public User $user)
     {
         $this->queue = Queue::APP_EXTERNAL;
@@ -53,10 +51,11 @@ class CreateUserAccount implements ShouldQueue
                 UserRole::Resident,
             );
         } catch (ClientException $e) {
-            // A 4xx is deterministic: retrying sends the identical request and gets the identical
-            // answer. SmartTwin returns a bare 400 for an e-mail address that already has an account,
-            // with no machine-readable reason, so log the body and give up rather than burn the tries.
-            $this->failWithResponse($e, $account);
+            // A 404 means SmartTwin is down, so that is retried. Any other 4xx is deterministic:
+            // retrying sends the identical request and gets the identical answer. SmartTwin returns a
+            // bare 400 for an e-mail address that already has an account, with no machine-readable
+            // reason, so log the body and give up rather than burn the tries.
+            $this->handleClientError($e, $account);
 
             return;
         }

@@ -39,11 +39,11 @@ class AwaitingAdvice extends Component
         // action plan after that, so between those two there is a moment where the callback is gone
         // and there is still nothing to show. Asking whether there is anything on the board means
         // this component and the controller cannot disagree about it.
-        $hasAdvices = WoonplanService::init($this->building->refresh())
+        $hasPlan = WoonplanService::init($this->building->refresh())
             ->scan($this->scan)
-            ->hasAdvices();
+            ->hasPlan();
 
-        if ($hasAdvices) {
+        if ($hasPlan) {
             // The poll comes in on /livewire/update, which does not run the cooperation middleware, so
             // the cooperation is not set as a URL default and has to be passed along explicitly.
             $this->redirectRoute(

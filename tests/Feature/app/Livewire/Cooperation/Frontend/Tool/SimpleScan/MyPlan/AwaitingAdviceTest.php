@@ -11,6 +11,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Role;
 use App\Models\Scan;
+use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use Database\Seeders\DatabaseSeeder;
@@ -73,6 +74,27 @@ final class AwaitingAdviceTest extends TestCase
 
     public function test_it_keeps_waiting_while_there_is_no_advice(): void
     {
+        Livewire::test(AwaitingAdvice::class, ['building' => $this->building, 'scan' => Scan::quick()])
+            ->call('checkForAdvice')
+            ->assertNoRedirect();
+    }
+
+    public function test_it_keeps_waiting_with_only_small_measures(): void
+    {
+        $measure = MeasureApplication::where('step_id', Step::findByShort('small-measures')->id)->first();
+
+        UserActionPlanAdvice::withoutEvents(fn () => UserActionPlanAdvice::withoutGlobalScopes()->forceCreate([
+            'user_id'                         => $this->building->user_id,
+            'input_source_id'                 => InputSource::master()->id,
+            'user_action_plan_advisable_type' => MeasureApplication::class,
+            'user_action_plan_advisable_id'   => $measure->id,
+            'step_id'                         => $measure->step_id,
+            'costs'                           => ['from' => null, 'to' => null],
+            'category'                        => 'to-do',
+            'visible'                         => true,
+        ]));
+
+        // The woonplan would send the resident straight back here.
         Livewire::test(AwaitingAdvice::class, ['building' => $this->building, 'scan' => Scan::quick()])
             ->call('checkForAdvice')
             ->assertNoRedirect();

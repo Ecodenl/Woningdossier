@@ -34,7 +34,7 @@
 
                         <dl>
                             @include('cooperation.frontend.dashboard.parts.fact', [
-                                'icon' => 'icon-placeholder',
+                                'icon' => 'icon-address-house',
                                 'label' => __('home.dashboard.building.address'),
                                 'value' => $building->street
                                     ? "{$building->street} {$building->number}{$building->extension}, {$building->city}"
@@ -52,7 +52,7 @@
                                 'value' => $features?->build_year,
                             ])
                             @include('cooperation.frontend.dashboard.parts.fact', [
-                                'icon' => 'icon-other',
+                                'icon' => 'icon-surface-m2',
                                 'label' => __('home.dashboard.building.surface'),
                                 {{-- The column is a decimal, so it arrives as "139.00" without this. --}}
                                 'value' => $features?->surface
@@ -60,13 +60,13 @@
                                     : null,
                             ])
                             @include('cooperation.frontend.dashboard.parts.fact', [
-                                'icon' => 'icon-sustainability',
+                                'icon' => 'icon-energy-label',
                                 'label' => __('home.dashboard.building.energy-label.official'),
                                 'energyLabel' => $features?->energyLabel,
                             ])
                             {{-- SmartTwin's label of the dwelling as it is; unknown until its first advice. --}}
                             @include('cooperation.frontend.dashboard.parts.fact', [
-                                'icon' => 'icon-sustainability',
+                                'icon' => 'icon-energy-label',
                                 'label' => __('home.dashboard.building.energy-label.estimated'),
                                 'energyLabel' => $estimatedEnergyLabel,
                             ])

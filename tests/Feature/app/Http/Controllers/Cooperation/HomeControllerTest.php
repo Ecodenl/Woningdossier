@@ -347,6 +347,34 @@ final class HomeControllerTest extends TestCase
         $response->assertSee('icon-label-c', false);
     }
 
+    public function test_each_fact_about_the_building_has_its_own_icon(): void
+    {
+        $this->enableSmartTwin(true);
+
+        $response = $this->get(route('cooperation.home', ['cooperation' => $this->cooperation]));
+
+        $response->assertOk();
+        // The icon sits right before the label of its row, so the order ties each icon to its row.
+        $response->assertSeeInOrder([
+            'icon-address-house',
+            __('home.dashboard.building.address'),
+            'icon-house-dark',
+            __('home.dashboard.building.type'),
+            'icon-calendar',
+            __('home.dashboard.building.build-year'),
+            'icon-surface-m2',
+            __('home.dashboard.building.surface'),
+            'icon-energy-label',
+            __('home.dashboard.building.energy-label.official'),
+            'icon-energy-label',
+            __('home.dashboard.building.energy-label.estimated'),
+        ], false);
+        // These were stand-ins until there were icons of its own for the dashboard.
+        $response->assertDontSee('icon-placeholder', false);
+        $response->assertDontSee('icon-md icon-other', false);
+        $response->assertDontSee('icon-md icon-sustainability', false);
+    }
+
     public function test_the_estimated_label_is_smart_twins_label_of_the_dwelling_as_it_is(): void
     {
         $this->enableSmartTwin(true);

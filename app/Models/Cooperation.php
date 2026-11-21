@@ -27,6 +27,7 @@ use Plank\Mediable\MediableInterface;
  * @property string|null $website_url
  * @property string|null $econobis_wildcard
  * @property string|null $econobis_api_key
+ * @property bool $smarttwin_enabled
  * @property string|null $cooperation_email
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -66,6 +67,7 @@ use Plank\Mediable\MediableInterface;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereSmarttwinEnabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation whereWebsiteUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cooperation withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
@@ -85,11 +87,30 @@ class Cooperation extends Model implements MediableInterface
 
     protected $fillable = [
         'name', 'slug', 'country', 'cooperation_email', 'website_url', 'econobis_wildcard', 'econobis_api_key',
+        'smarttwin_enabled',
     ];
 
     protected $hidden = [
         'econobis_api_key',
     ];
+
+    // Mirrors the column default. Without it a cooperation that was just created and not read back
+    // has no value here, and would count as switched off for SmartTwin.
+    protected $attributes = [
+        'smarttwin_enabled' => true,
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'smarttwin_enabled' => 'boolean',
+        ];
+    }
 
     public function getRouteKeyName()
     {

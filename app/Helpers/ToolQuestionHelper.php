@@ -15,12 +15,16 @@ class ToolQuestionHelper
 {
     /**
      * The tool questions (shorts) that are allowed to be filled upon register.
-     * Note: When changing this, ensure you update the Swagger Docs in the Register Controller and the related tests!
+     * Note: When changing this, ensure you update the Swagger Docs (StoreRegisterRequest) and the related tests!
+     * An example building never overwrites an answer to these (ExampleBuildingService::apply()).
      */
     const array SUPPORTED_API_SHORTS = [
         'amount-gas',
         'amount-electricity',
         'resident-count',
+        // Asked on registration in a cooperation with SmartTwin (RegistrationQuestions).
+        'building-contract-type',
+        'monument',
     ];
 
     /**
@@ -292,10 +296,12 @@ class ToolQuestionHelper
         }
 
         if (! empty($answer) || is_numeric($answer)) {
+            // With the options the scans do not offer: an answer SmartTwin gave is still read back.
             $questionValues = QuestionValue::init($building->user->cooperation, $toolQuestion)
                 ->forInputSource($inputSource)
                 ->forBuilding($building)
                 ->withCustomEvaluation()
+                ->withHidden()
                 ->getQuestionValues();
 
             if ($questionValues->isNotEmpty()) {

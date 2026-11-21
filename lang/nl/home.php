@@ -25,4 +25,41 @@ Komt u er toch niet uit, neem dan via de chat-knop in het menu contact met ons o
             'continue' => 'Ga verder met de :scan',
         ],
     ],
+
+    // The dashboard, shown in place of the start screen when SmartTwin is enabled.
+    'dashboard' => [
+        'building' => [
+            'title' => 'Dit is jouw woning',
+            'source' => 'Deze informatie hebben we aan de hand van openbare gegevens verzameld.',
+            'address' => 'Adres',
+            'type' => 'Type woning',
+            'build-year' => 'Bouwjaar',
+            'surface' => 'Woonoppervlak',
+            'energy-label' => [
+                'official' => 'Officieel energielabel',
+                'estimated' => 'Geschat energielabel',
+            ],
+            'unknown' => 'Nog niet bekend',
+            'to-dossier' => 'Ga naar jouw woningdossier',
+            'photo' => [
+                'alt' => 'Foto van jouw woning',
+                'add' => 'Voeg een foto van je woning toe',
+                'replace' => 'Andere foto kiezen',
+                'delete' => 'Foto verwijderen',
+                'delete-confirm' => 'Weet je zeker dat je de foto van je woning wilt verwijderen?',
+                'uploading' => 'Foto wordt geüpload...',
+            ],
+        ],
+        'coach' => [
+            'title' => 'Energiecoach',
+            'name' => 'Dit is jouw energiecoach:',
+            'none' => 'Er is nog geen energiecoach aan jouw woning gekoppeld.',
+            'appointment' => 'Datum energiecoachgesprek:',
+            'no-appointment' => 'Er staat nog geen gesprek gepland.',
+            'contact' => 'Neem contact op',
+        ],
+        'files' => [
+            'title' => 'Jouw bestanden',
+        ],
+    ],
 ];

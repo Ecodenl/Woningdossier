@@ -3,6 +3,7 @@
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Events\CustomMeasureApplicationChanged;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Enums\MappingType;
 use App\Helpers\NumberFormatter;
@@ -14,6 +15,7 @@ use App\Models\MeasureCategory;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\VisibleScope;
 use App\Services\MappingService;
+use App\Services\SmartTwin\SharedWoonplan;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -70,6 +72,23 @@ abstract class CustomMeasureForm extends Component
 
     abstract public function save(int $index);
 
+    /**
+     * The column a new own measure lands in. "Nu aanpakken", unless a form offers a choice.
+     */
+    protected function categoryForNewMeasure(): string
+    {
+        return 'to-do';
+    }
+
+    /**
+     * Whether editing an own measure leaves it in its column rather than moving it to
+     * "Nu aanpakken".
+     */
+    protected function keepsColumnOnEdit(): bool
+    {
+        return Hoomdossier::smartTwinOwnsWoonplanFor($this->building);
+    }
+
     public function submit(int $index, bool $dispatchRegulationUpdate = true): ?CustomMeasureApplication
     {
         // unauth the user if this happens, this means the user is just messing around.
@@ -115,14 +134,20 @@ abstract class CustomMeasureForm extends Component
 
             if ($validator->fails()) {
                 // Validator failed, let's put it back as the user format
-                $costs['from'] = NumberFormatter::formatNumberForUser($costs['from'] ?? 0);
-                $costs['to'] = NumberFormatter::formatNumberForUser($costs['to'] ?? 0);
+                // Empty stays empty: as a 0 the next attempt would take "from" as filled in, and refuse "to"
+                // for being below "from".
+                $costs['from'] = NumberFormatter::formatNumberForUser($costs['from'] ?? null, false, false);
+                $costs['to'] = NumberFormatter::formatNumberForUser($costs['to'] ?? null, false, false);
                 $this->customMeasureApplicationsFormData[$index]['costs'] = $costs;
                 $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::formatNumberForUser($this->customMeasureApplicationsFormData[$index]['savings_money']);
             }
 
             // Validate, we don't need the data
             $measureData = $validator->validate()['customMeasureApplicationsFormData'][$index];
+
+            // Our own validator doesn't do this for us, as $this->validate() does. Errors of a refused attempt would
+            // stay, and a new measure keeps its index once saved, so they would show on the saved measure.
+            $this->resetErrorBag();
 
             if ($this->customMeasureApplicationsFormData[$index]['hide_costs']) {
                 $measureData['costs'] = null;
@@ -136,7 +161,7 @@ abstract class CustomMeasureForm extends Component
 
             // Set update data for user action plan advice
             $updateData = [
-                'category' => 'to-do',
+                'category' => $this->categoryForNewMeasure(),
                 'costs' => $measureData['costs'] ?? null,
                 'input_source_id' => $this->currentInputSource->id,
                 'savings_money' => is_numeric($savingsMoney) ? $savingsMoney : 0
@@ -149,6 +174,12 @@ abstract class CustomMeasureForm extends Component
                     ->where('hash', $measure['hash'])
                     ->where('id', $measure['id'])
                     ->first();
+
+                // Editing a measure does not move it, once the woonplan is SmartTwin's: the resident
+                // put it in its column. Before that it goes back to "Nu aanpakken", as it always did.
+                if ($this->keepsColumnOnEdit()) {
+                    unset($updateData['category']);
+                }
 
                 // If it's not instanceof, something was borked by the user
                 if ($masterCustomMeasureApplication instanceof CustomMeasureApplication) {
@@ -198,7 +229,7 @@ abstract class CustomMeasureForm extends Component
                 $measureCategory instanceof MeasureCategory ? $service->sync([$measureCategory], MappingType::CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY->value) : $service->detach();
 
                 // Update the user action plan advice linked to this custom measure
-                $customMeasureApplication
+                $advice = $customMeasureApplication
                     ->userActionPlanAdvices()
                     ->allInputSources()
                     ->withoutGlobalScope(VisibleScope::class)
@@ -209,6 +240,12 @@ abstract class CustomMeasureForm extends Component
                         ],
                         $updateData
                     );
+
+                // After the switch the woonplan is one for resident and coach: the other gets this
+                // own measure too. See SharedWoonplan.
+                if (Hoomdossier::smartTwinOwnsWoonplanFor($this->building)) {
+                    app(SharedWoonplan::class)->copyFromMaster($advice);
+                }
 
                 if ($dispatchRegulationUpdate) {
                     CustomMeasureApplicationChanged::dispatch($from);

@@ -93,6 +93,12 @@
                 <input class="form-input" type="text" name="users[phone_number]" value="{{ old('users.phone_number') }}">
             @endcomponent
 
+            @if(\App\Services\SmartTwin\RegistrationQuestions::askedFor($cooperationToCheck))
+                @include('cooperation.layouts.registration-questions', [
+                    'attr' => 'x-show="! alreadyMember && ! noBuilding"',
+                ])
+            @endif
+
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
                 'label' => __('cooperation/admin/users.create.form.roles'),

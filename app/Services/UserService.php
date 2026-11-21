@@ -3,10 +3,13 @@
 namespace App\Services;
 
 use App\Enums\ApiImplementation;
+use App\Enums\SmartTwin\EventType;
 use App\Events\UserDeleted;
 use App\Events\UserResetHisBuilding;
+use App\Helpers\Hoomdossier;
 use App\Jobs\AttachEnergyLabel;
 use App\Jobs\CheckBuildingAddress;
+use App\Jobs\SmartTwin\Out\GetBuildingData;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -18,10 +21,10 @@ use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Models\Role;
 use App\Models\User;
-use App\Services\Econobis\EconobisService;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
 use App\Services\Models\BuildingStatusService;
+use App\Services\SmartTwin\WoonplanLock;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -169,7 +172,12 @@ class UserService
         // remove the progress of the completed questionnaires
         CompletedQuestionnaire::forMe($user)->forInputSource($inputSource)->delete();
 
+        $this->resetSmartTwinFor($building, $inputSource);
+
         if (! in_array($inputSource->short, [InputSource::MASTER_SHORT])) {
+            // See create(): in a cooperation with SmartTwin these come from SmartTwin's Building Data.
+            $smartTwin = Hoomdossier::smartTwinEnabledFor($cooperation);
+
             if ($cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
                 // re-query the bag
                 $addressData = app(BagService::class)->addressExpanded(
@@ -183,8 +191,8 @@ class UserService
                 }
 
                 $features = new BuildingFeature([
-                    'surface' => $addressData['surface'] ?? null,
-                    'build_year' => $addressData['build_year'] ?? null,
+                    'surface' => $smartTwin ? null : ($addressData['surface'] ?? null),
+                    'build_year' => $smartTwin ? null : ($addressData['build_year'] ?? null),
                     'input_source_id' => $inputSource->id,
                 ]);
                 $features->building()->associate(
@@ -194,11 +202,36 @@ class UserService
 
             app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
 
-            if ($cooperation->getCountry()->supportsApi(ApiImplementation::EP_ONLINE)) {
+            if (! $smartTwin && $cooperation->getCountry()->supportsApi(ApiImplementation::EP_ONLINE)) {
                 AttachEnergyLabel::dispatch($building);
             }
+
+            GetBuildingData::dispatchFor($building, $inputSource, $cooperation);
         }
         UserResetHisBuilding::dispatch($building);
+    }
+
+    /**
+     * What SmartTwin left on the building for this input source. Without this the woonplan keeps
+     * saying the coach is done, or that the advice is on its way, about a plan that is gone; and an
+     * open callback would bring that plan back.
+     */
+    private function resetSmartTwinFor(Building $building, InputSource $inputSource): void
+    {
+        $eventType = EventType::tryFromInputSource($inputSource);
+
+        if ($eventType instanceof EventType && $building->hasSmartTwinCallback($eventType)) {
+            $building->finishSmartTwinCallback($eventType);
+            $building->save();
+        }
+
+        $building->smartTwinPackage()->where('input_source_id', $inputSource->id)->delete();
+
+        $lock = app(WoonplanLock::class);
+
+        if (InputSource::COACH_SHORT === $inputSource->short && $lock->isLocked($building)) {
+            $lock->release($building);
+        }
     }
 
     /**
@@ -261,15 +294,20 @@ class UserService
         // Fallback to resident in case of illogical situation.
         $inputSource = $rolesWithSources->isNotEmpty() ? $rolesWithSources->first()->inputSource : InputSource::resident();
 
+        // In a cooperation with SmartTwin the build year, surface and energy label come from SmartTwin's
+        // Building Data rather than from BAG and EP-Online; BAG still does the address and the
+        // municipality. Asked of the cooperation passed in: the user is not linked to it yet.
+        $smartTwin = Hoomdossier::smartTwinEnabledFor($cooperation);
+
         if ($cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
-            CheckBuildingAddress::dispatchSync($building, $inputSource);
+            CheckBuildingAddress::dispatchSync($building, $inputSource, ! $smartTwin);
             // check if the connection was successful, if not dispatch it on the regular queue so it retries.
             if (! $building->municipality()->first() instanceof Municipality) {
-                CheckBuildingAddress::dispatch($building, $inputSource);
+                CheckBuildingAddress::dispatch($building, $inputSource, ! $smartTwin);
             }
         }
 
-        if ($cooperation->getCountry()->supportsApi(ApiImplementation::EP_ONLINE)) {
+        if (! $smartTwin && $cooperation->getCountry()->supportsApi(ApiImplementation::EP_ONLINE)) {
             AttachEnergyLabel::dispatch($building);
         }
 
@@ -277,6 +315,8 @@ class UserService
         $user->cooperation()->associate(
             $cooperation
         )->save();
+
+        GetBuildingData::dispatchFor($building, $inputSource, $cooperation);
         app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
 
         $user->assignRole($roles);
@@ -302,7 +342,12 @@ class UserService
         $building->load(['user' => fn ($q) => $q->forMyCooperation($user->cooperation_id)]);
 
         $cooperation = $user->cooperation;
-        $accountRelated = app(EconobisService::class)->forBuilding($building)->resolveAccountRelated();
+        $context = [
+            'building_id' => $building->id,
+            'user_id'     => $user->id,
+            'account_id'  => $user->account_id,
+            'extra'       => $user->extra,
+        ];
         // Convert to array (WITH the API key!) to ensure Econobis can delete the user.
         $cooperationData = $cooperation->makeVisible('econobis_api_key')->toArray();
 
@@ -339,10 +384,11 @@ class UserService
             // bye !
             $account = Account::find($accountId);
             if ($account instanceof Account) {
+                // AccountObserver::deleted() takes care of the SmartTwin user hanging off this account.
                 $account->delete();
             }
         }
-        UserDeleted::dispatch($cooperationData, $accountRelated['account_related']);
+        UserDeleted::dispatch($cooperationData, $context);
     }
 
     /**

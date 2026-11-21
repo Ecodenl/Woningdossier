@@ -78,17 +78,6 @@ class UserPolicy
     }
 
     /**
-     * Check if a user can remove a participant from the group chat.
-     */
-    public function removeParticipantFromChat(Account $account, User $groupParticipant): bool
-    {
-        // A coordinator and resident can remove a coach from a conversation.
-        // Also check if the current building ID is from the $groupParticipant, cause if so we can't remove him because he is the building owner
-        return $account->user()->hasRoleAndIsCurrentRole([RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COACH, RoleHelper::ROLE_COOPERATION_ADMIN])
-               && $groupParticipant->hasRole([RoleHelper::ROLE_COACH]) && $groupParticipant->building->id !== HoomdossierSession::getBuilding(false);
-    }
-
-    /**
      * Returns if a user can assign a particular role (just if the user is
      * allowed to assign roles).
      *

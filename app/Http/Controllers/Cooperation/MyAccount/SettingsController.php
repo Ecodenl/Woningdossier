@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Jobs\CheckBuildingAddress;
 use App\Jobs\ResetDossierForUser;
+use App\Jobs\SmartTwin\Out\GetBuildingData;
 use App\Models\Account;
 use App\Models\InputSource;
 use App\Models\Municipality;
@@ -41,11 +42,17 @@ class SettingsController extends Controller
 
         $currentInputSource = HoomdossierSession::getInputSource(true);
 
+        $addressChanged = $building->wasChanged(['postal_code', 'number', 'extension']);
+
         if ($cooperation->getCountry()->supportsApi(ApiImplementation::LV_BAG)) {
             CheckBuildingAddress::dispatchSync($building, $currentInputSource);
             if (! $building->municipality()->first() instanceof Municipality) {
                 CheckBuildingAddress::dispatch($building, $currentInputSource);
             }
+        }
+
+        if ($addressChanged) {
+            GetBuildingData::dispatchFor($building, $currentInputSource, $cooperation);
         }
 
         return to_route('cooperation.my-account.index')

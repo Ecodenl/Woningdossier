@@ -63,6 +63,11 @@ class Form extends Scannable
         return $this->subStep->toolQuestions;
     }
 
+    protected function scanBeingAsked(): Scan
+    {
+        return $this->scan;
+    }
+
     public function save(): Redirector|RedirectResponse
     {
         $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)

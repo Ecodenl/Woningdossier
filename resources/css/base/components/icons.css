@@ -28,6 +28,10 @@
     @apply select-none;
     content: url('/icons/account-circle.svg');
 }
+.icon-address-house {
+    @apply select-none;
+    content: url('/icons/address-house.svg');
+}
 .icon-air-conditioning {
     @apply select-none;
     content: url('/icons/air-conditioning.svg');
@@ -223,6 +227,10 @@
 .icon-electric {
     @apply select-none;
     content: url('/icons/electric.svg');
+}
+.icon-energy-label {
+    @apply select-none;
+    content: url('/icons/energy-label.svg');
 }
 .icon-end-of-terrace-house {
     @apply select-none;
@@ -604,6 +612,10 @@
 .icon-sunroom {
     @apply select-none;
     content: url('/icons/sunroom.svg');
+}
+.icon-surface-m2 {
+    @apply select-none;
+    content: url('/icons/surface-m2.svg');
 }
 .icon-sustainability {
     @apply select-none;

@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\Cooperation;
 use App\Rules\PhoneNumber;
 use App\Services\CooperationScanService;
+use App\Services\SmartTwin\RegistrationQuestions;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -44,6 +45,11 @@ class UserFormRequest extends FormRequest
             'scans.small_measures_enabled' => ['nullable', 'array'],
             'scans.small_measures_enabled.*' => ['nullable'],
         ], (new AddressFormRequest())->setCountry($cooperationToCheckFor->country)->rules());
+
+        // Required as on the registration page: in a cooperation with SmartTwin the tool no longer asks them.
+        if (RegistrationQuestions::askedFor($cooperationToCheckFor)) {
+            $rules = array_merge($rules, RegistrationQuestions::rules(true));
+        }
 
         // try to get the account
         $account = Account::where('email', $this->input('accounts.email'))->first();

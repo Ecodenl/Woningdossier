@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
@@ -10,6 +11,7 @@ use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\Scan;
 use App\Models\UserActionPlanAdvice;
+use App\Services\SmartTwin\SharedWoonplan;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 
@@ -74,7 +76,7 @@ class CustomChanges extends CustomMeasureForm
                         'visible' => $visible,
                     ]);
                 } else {
-                    $cooperationMeasureApplication->userActionPlanAdvices()
+                    $userActionPlanAdvice = $cooperationMeasureApplication->userActionPlanAdvices()
                         ->create([
                             'user_id' => $this->building->user->id,
                             'input_source_id' => $this->currentInputSource->id,
@@ -83,6 +85,10 @@ class CustomChanges extends CustomMeasureForm
                             'savings_money' => $cooperationMeasureApplication->savings_money,
                             'visible' => $visible,
                         ]);
+                }
+
+                if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
+                    $this->shareWhenSmartTwinOwnsWoonplan($userActionPlanAdvice);
                 }
             }
         }
@@ -121,26 +127,30 @@ class CustomChanges extends CustomMeasureForm
 
                 // There is a chance the measure is from the coach, so if that's the case we will just update
                 // the master input source
-                if ($customMeasureApplication instanceof CustomMeasureApplication) {
-                    $customMeasureApplication->userActionPlanAdvices()
-                        ->forInputSource($this->currentInputSource)
-                        ->first()
-                        ->update([
-                            'visible' => $visible,
-                        ]);
-                } else {
-                    $masterCustomMeasureApplication->userActionPlanAdvices()
-                        ->forInputSource($this->masterInputSource)
-                        ->first()
-                        ->update([
-                            'visible' => $visible,
-                        ]);
-                }
+                $advice = $customMeasureApplication instanceof CustomMeasureApplication
+                    ? $customMeasureApplication->userActionPlanAdvices()->forInputSource($this->currentInputSource)->first()
+                    : $masterCustomMeasureApplication->userActionPlanAdvices()->forInputSource($this->masterInputSource)->first();
+
+                $advice->update([
+                    'visible' => $visible,
+                ]);
+
+                $this->shareWhenSmartTwinOwnsWoonplan($advice);
             }
         }
 
         // Update selected state
         $this->previousSelectedState[$key] = $this->selectedCustomMeasureApplications;
+    }
+
+    /**
+     * After the switch the woonplan is one for resident and coach; see SharedWoonplan.
+     */
+    private function shareWhenSmartTwinOwnsWoonplan(UserActionPlanAdvice $advice): void
+    {
+        if (Hoomdossier::smartTwinOwnsWoonplanFor($this->building)) {
+            app(SharedWoonplan::class)->copyFromMaster($advice);
+        }
     }
 
     public function save(int $index)

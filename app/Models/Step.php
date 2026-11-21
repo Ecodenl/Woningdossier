@@ -128,6 +128,26 @@ class Step extends Model
         return in_array($this->short, ['heating']);
     }
 
+    /**
+     * The steps whose questions SmartTwin asks in its own tool and hands back to us. Hoomdossier
+     * does not ask them when SmartTwin is enabled; what is left are the questions it asks itself.
+     */
+    public function isProvidedBySmartTwin(): bool
+    {
+        return in_array($this->short, ['building-data', 'usage-quick-scan', 'residential-status']);
+    }
+
+    /**
+     * The lite scan's counterparts of the steps SmartTwin provides: they ask the same questions, or
+     * some of them, into the same answers. The lite scan itself never goes to SmartTwin, so these
+     * only stop being asked where SmartTwin fills the building's woonplan through its quick scan;
+     * see Hoomdossier::smartTwinProvidesStepFor().
+     */
+    public function mirrorsStepProvidedBySmartTwin(): bool
+    {
+        return in_array($this->short, ['building-data-lite', 'usage-lite-scan', 'residential-status-lite']);
+    }
+
     #[Scope]
     protected function withGeneralData(Builder $query): Builder
     {

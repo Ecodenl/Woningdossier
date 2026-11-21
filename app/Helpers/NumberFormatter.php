@@ -88,6 +88,57 @@ class NumberFormatter
         }
     }
 
+    /**
+     * A number exactly as given: the shortest notation that reads back as the same value, without
+     * rounding. 6853.749263548063 stays 6853.749263548063, where a cast to string would cut it to
+     * the `precision` setting. For amounts that may never be rounded, such as SmartTwin's.
+     */
+    public static function plain(int|float|string $number): string
+    {
+        if (! is_float($number)) {
+            return (string) $number;
+        }
+
+        // json_encode writes the shortest round-trip notation (serialize_precision -1).
+        $plain = json_encode($number);
+
+        return str_contains(strtolower($plain), 'e')
+            ? rtrim(rtrim(number_format($number, 20, '.', ''), '0'), '.')
+            : $plain;
+    }
+
+    /**
+     * How many decimals a number has, written as plain() writes it. The scale for bcmath when
+     * adding amounts that may not be rounded.
+     */
+    public static function decimalsOf(int|float|string $number): int
+    {
+        $plain = static::plain($number);
+
+        return str_contains($plain, '.') ? strlen($plain) - strpos($plain, '.') - 1 : 0;
+    }
+
+    /**
+     * Formats a number for display without rounding it: every decimal it has, and at least
+     * $minDecimals. For SmartTwin's amounts, which are never rounded (Patrick, 15 October 2026).
+     */
+    public static function formatExact(null|int|float|string $number, int $minDecimals = 2): string
+    {
+        if (is_null($number) || ! is_numeric($number)) {
+            return (string) $number;
+        }
+
+        $locale = app()->getLocale();
+        $plain = static::plain(is_string($number) ? (float) $number : $number);
+        $negative = str_starts_with($plain, '-');
+        [$integer, $decimals] = array_pad(explode('.', ltrim($plain, '-')), 2, '');
+        $decimals = str_pad(rtrim($decimals, '0'), $minDecimals, '0');
+
+        return ($negative ? '-' : '')
+            . number_format((float) $integer, 0, '', self::$formatLocaleSeparators[$locale]['thousands'])
+            . ('' === $decimals ? '' : self::$formatLocaleSeparators[$locale]['decimal'] . $decimals);
+    }
+
     public static function mathableFormat(string $number, int $decimals = 0): string
     {
         $number = str_replace(',', '.', $number);

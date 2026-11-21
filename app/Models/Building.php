@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Enums\SmartTwin\EventType;
 use App\Observers\BuildingObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -39,6 +40,7 @@ use Plank\Mediable\MediableInterface;
  * @property int $primary
  * @property string $bag_addressid
  * @property string|null $bag_woonplaats_id
+ * @property array<array-key, mixed>|null $smarttwin_callback
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -79,12 +81,14 @@ use Plank\Mediable\MediableInterface;
  * @property-read int|null $question_answers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BuildingRoofType> $roofTypes
  * @property-read int|null $roof_types_count
+ * @property-read \App\Models\SmartTwinPackage|null $smartTwinPackage
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StepComment> $stepComments
  * @property-read int|null $step_comments_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ToolQuestionAnswer> $toolQuestionAnswers
  * @property-read int|null $tool_question_answers_count
  * @property-read \App\Models\User|null $user
  * @method static \Plank\Mediable\MediableCollection<int, static> all($columns = ['*'])
+ * @method static Builder<static>|Building containsPendingSmartTwinAdvices()
  * @method static \Database\Factories\BuildingFactory factory($count = null, $state = [])
  * @method static \Plank\Mediable\MediableCollection<int, static> get($columns = ['*'])
  * @method static Builder<static>|Building newModelQuery()
@@ -106,6 +110,7 @@ use Plank\Mediable\MediableInterface;
  * @method static Builder<static>|Building whereOwner($value)
  * @method static Builder<static>|Building wherePostalCode($value)
  * @method static Builder<static>|Building wherePrimary($value)
+ * @method static Builder<static>|Building whereSmarttwinCallback($value)
  * @method static Builder<static>|Building whereStreet($value)
  * @method static Builder<static>|Building whereUpdatedAt($value)
  * @method static Builder<static>|Building whereUserId($value)
@@ -137,7 +142,20 @@ class Building extends Model implements MediableInterface
         //'primary',
         'bag_addressid',
         'bag_woonplaats_id',
+        'smarttwin_callback',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'smarttwin_callback' => 'array',
+        ];
+    }
 
     // Static methods
     public static function boot()
@@ -221,6 +239,7 @@ class Building extends Model implements MediableInterface
                     ->forInputSource($inputSource)
                     ->forBuilding($this)
                     ->withCustomEvaluation()
+                    ->withHidden()
                     ->getQuestionValues()
                     ->pluck(
                         'name',
@@ -477,6 +496,12 @@ class Building extends Model implements MediableInterface
         return $this->belongsTo(User::class);
     }
 
+    /** The package the last SmartTwin import put in the action plan. */
+    public function smartTwinPackage(): HasOne
+    {
+        return $this->hasOne(SmartTwinPackage::class);
+    }
+
     public function buildingFeatures(): HasOne
     {
         return $this->hasOne(BuildingFeature::class);
@@ -671,6 +696,64 @@ class Building extends Model implements MediableInterface
         return $this->getMostRecentBuildingStatus()?->appointment_date;
     }
 
+    public function getSmartTwinCallbacks(): array
+    {
+        return $this->smarttwin_callback ?? [];
+    }
+
+    public function getSmartTwinCallback(EventType $eventType): ?array
+    {
+        return $this->getSmartTwinCallbacks()[$eventType->value] ?? null;
+    }
+
+    public function hasSmartTwinCallback(EventType $eventType): bool
+    {
+        return isset($this->getSmartTwinCallbacks()[$eventType->value]);
+    }
+
+    /**
+     * Store (or overwrite) the callback for a flow. Latest-wins per EventType, so the map
+     * holds at most one entry per flow (resident / coach). Mutates only; the caller saves.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    public function setSmartTwinCallback(EventType $eventType, array $data): void
+    {
+        $callbacks = $this->getSmartTwinCallbacks();
+        $callbacks[$eventType->value] = $data;
+        $this->smarttwin_callback = $callbacks;
+    }
+
+    /**
+     * Remove the callback for a flow once its result has been processed. Mutates only; the
+     * caller saves. An empty map collapses to null so containsPendingSmartTwinAdvices() no
+     * longer matches the building.
+     */
+    public function finishSmartTwinCallback(EventType $eventType): void
+    {
+        $callbacks = $this->getSmartTwinCallbacks();
+        unset($callbacks[$eventType->value]);
+        $this->smarttwin_callback = $callbacks ?: null;
+    }
+
+    /**
+     * The callbacks whose EventType is new, or whose payload changed, since the last save.
+     * Used by the observer to dispatch processing only for freshly (re)received results.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getAddedSmartTwinCallbacks(): array
+    {
+        $original = json_decode($this->getRawOriginal('smarttwin_callback') ?? '[]', true) ?? [];
+        $current  = $this->getSmartTwinCallbacks();
+
+        return array_values(array_filter(
+            $current,
+            fn ($data, $eventType) => ($original[$eventType] ?? null) !== $data,
+            ARRAY_FILTER_USE_BOTH,
+        ));
+    }
+
     public function getFirstIncompleteStep(Scan $scan, InputSource $inputSource): ?Step
     {
         $completedStepIds = $scan
@@ -728,5 +811,11 @@ class Building extends Model implements MediableInterface
 
         /** @var null|\App\Models\SubStep $firstIncompleteSubStep */
         return $firstIncompleteSubStep;
+    }
+
+    #[Scope]
+    protected function containsPendingSmartTwinAdvices(Builder $query): Builder
+    {
+        return $query->whereNotNull('smarttwin_callback');
     }
 }

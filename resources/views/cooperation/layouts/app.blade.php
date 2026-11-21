@@ -67,6 +67,16 @@
             @yield('main')
         </main>
 
+        {{-- Without SmartTwin the version hangs at the bottom of the account dropdown. With SmartTwin
+             it sits under the page instead, so the account dropdown leaves it out. --}}
+        @if(Hoomdossier::smartTwinEnabledFor($cooperation) && ! request()->input('iframe', false))
+            <footer class="w-full flex justify-end px-5 xl:px-20 py-2">
+                <small>
+                    v{{ config('app.version') }}@if(App::environment() != 'production') - {{ App::environment() }}@endif
+                </small>
+            </footer>
+        @endif
+
         @livewireScriptConfig(['nonce' => $cspNonce])
         {{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
         @vite('resources/js/app.js')

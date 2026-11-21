@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\GlassType;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\DataTypes\Caster;
 use App\Models\BuildingHeating;
@@ -9,6 +10,8 @@ use App\Models\BuildingType;
 use App\Models\BuildingTypeCategory;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
+use App\Models\ElementValue;
+use App\Models\ServiceValue;
 use App\Models\EnergyLabel;
 use App\Models\FacadeSurface;
 use App\Models\InputSource;
@@ -18,6 +21,7 @@ use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\MeasureApplication;
+use App\Services\SmartTwin\InstallationOptions;
 use App\Models\ToolQuestion;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
@@ -25,6 +29,9 @@ use Illuminate\Support\Facades\DB;
 
 class ToolQuestionsTableSeeder extends Seeder
 {
+    /** The last of the frames' options by share of wood ("Overig"); SmartTwin's frame types follow. */
+    private const LAST_FRAME_SHARE_ORDER = 4;
+
     /**
      * Run the database seeds.
      */
@@ -348,6 +355,24 @@ class ToolQuestionsTableSeeder extends Seeder
                 'extra' => [
                     'column' => 'name',
                     'data' => [
+                        // There are no icons above A. These take the icon of A and a caption, which
+                        // the small icon question otherwise hides, so A+++ is not mistaken for A.
+                        'A++++' => [
+                            'icon' => 'icon-label-a',
+                            'caption' => 'A++++',
+                        ],
+                        'A+++' => [
+                            'icon' => 'icon-label-a',
+                            'caption' => 'A+++',
+                        ],
+                        'A++' => [
+                            'icon' => 'icon-label-a',
+                            'caption' => 'A++',
+                        ],
+                        'A+' => [
+                            'icon' => 'icon-label-a',
+                            'caption' => 'A+',
+                        ],
                         'A' => [
                             'icon' => 'icon-label-a',
                         ],
@@ -677,6 +702,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op interesse en motivatie',
             ],
             [
+                // Only asked when SmartTwin drives the technical part of the scan; the sub step this
+                // hangs on carries the condition. No save_in, so the answer lives in
+                // tool_question_answers rather than a column of its own.
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string', 'max:2000'],
+                'short' => 'my-questions',
+                'translation' => 'Welke vragen heb je voor je energiecoach?',
+                'help_text' => 'Heb je vragen over het verduurzamen van je woning? Stel ze hier, dan neemt je energiecoach ze mee in het gesprek.',
+            ],
+            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_elements.{$wallInsulation->id}.element_value_id",
@@ -699,6 +734,9 @@ class ToolQuestionsTableSeeder extends Seeder
                             'icon' => 'icon-wall-insulation-good',
                         ],
                         5 => [
+                            'icon' => 'icon-wall-insulation-good',
+                        ],
+                        6 => [
                             'icon' => 'icon-wall-insulation-excellent',
                         ],
                     ],
@@ -721,15 +759,21 @@ class ToolQuestionsTableSeeder extends Seeder
                             'icon' => 'icon-floor-insulation-none',
                         ],
                         3 => [
-                            'icon' => 'icon-floor-insulation-moderate',
+                            'icon' => 'icon-floor-insulation-none',
                         ],
                         4 => [
-                            'icon' => 'icon-floor-insulation-good',
+                            'icon' => 'icon-floor-insulation-moderate',
                         ],
                         5 => [
-                            'icon' => 'icon-floor-insulation-excellent',
+                            'icon' => 'icon-floor-insulation-good',
                         ],
                         6 => [
+                            'icon' => 'icon-floor-insulation-good',
+                        ],
+                        7 => [
+                            'icon' => 'icon-floor-insulation-excellent',
+                        ],
+                        8 => [
                             'icon' => 'icon-other',
                         ],
                     ],
@@ -752,15 +796,21 @@ class ToolQuestionsTableSeeder extends Seeder
                             'icon' => 'icon-roof-insulation-none',
                         ],
                         3 => [
-                            'icon' => 'icon-roof-insulation-moderate',
+                            'icon' => 'icon-roof-insulation-none',
                         ],
                         4 => [
-                            'icon' => 'icon-roof-insulation-good',
+                            'icon' => 'icon-roof-insulation-moderate',
                         ],
                         5 => [
-                            'icon' => 'icon-roof-insulation-excellent',
+                            'icon' => 'icon-roof-insulation-good',
                         ],
                         6 => [
+                            'icon' => 'icon-roof-insulation-good',
+                        ],
+                        7 => [
+                            'icon' => 'icon-roof-insulation-excellent',
+                        ],
+                        8 => [
                             'icon' => 'icon-other',
                         ],
                     ],
@@ -788,8 +838,19 @@ class ToolQuestionsTableSeeder extends Seeder
                         3 => [
                             'icon' => 'icon-glass-hr-tp',
                         ],
+                        4 => [
+                            'icon' => 'icon-glass-double',
+                        ],
+                        5 => [
+                            'icon' => 'icon-glass-hr-dp',
+                        ],
+                        6 => [
+                            'icon' => 'icon-glass-hr-tp',
+                        ],
                     ],
                 ],
+                // HR, HR+ and vacuum glass only come from SmartTwin.
+                'shown_in_scans' => fn (ElementValue $value) => GlassType::of($value)?->isAskedInScans() ?? true,
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -813,8 +874,19 @@ class ToolQuestionsTableSeeder extends Seeder
                         3 => [
                             'icon' => 'icon-glass-hr-tp',
                         ],
+                        4 => [
+                            'icon' => 'icon-glass-double',
+                        ],
+                        5 => [
+                            'icon' => 'icon-glass-hr-dp',
+                        ],
+                        6 => [
+                            'icon' => 'icon-glass-hr-tp',
+                        ],
                     ],
                 ],
+                // HR, HR+ and vacuum glass only come from SmartTwin.
+                'shown_in_scans' => fn (ElementValue $value) => GlassType::of($value)?->isAskedInScans() ?? true,
             ],
             [
                 'data_type' => Caster::ARRAY,
@@ -1079,17 +1151,15 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'heat-pump-type',
                 'translation' => "Wat voor type warmtepomp is er?",
                 'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
+                // By order, as the heat pumps SmartTwin adds have no calculate value. Nothing in it.
                 'extra' => [
-                    'column' => 'calculate_value',
-                    'data' => [
-                        1 => [],
-                        2 => [],
-                        3 => [],
-                        4 => [],
-                        5 => [],
-                        6 => [],
-                    ],
+                    'column' => 'order',
+                    'data' => array_fill_keys(
+                        array_merge(range(1, InstallationOptions::LAST_ORIGINAL_HEAT_PUMP_ORDER), array_keys(InstallationOptions::addedHeatPumpTypes())),
+                        [],
+                    ),
                 ],
+                'shown_in_scans' => fn (ServiceValue $value) => $value->order <= InstallationOptions::LAST_ORIGINAL_HEAT_PUMP_ORDER,
             ],
             [
                 'data_type' => Caster::INT,
@@ -2364,6 +2434,12 @@ class ToolQuestionsTableSeeder extends Seeder
                             ],
                         ]
                     ],
+                    // The heat pumps SmartTwin can describe and the scans do not offer.
+                    ...array_column(array_map(fn (array $type) => [
+                        'short' => $type['new'],
+                        'name' => $type['label'],
+                        'show' => false,
+                    ], array_filter(InstallationOptions::HEAT_PUMP_TYPES, fn (array $type) => isset($type['label']))), null, 'short'),
                 ],
             ],
             [
@@ -2425,6 +2501,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => "Oriëntatie van de collector",
                 'help_text' => "Geef hier aan in welke oriëntatie de zonnecollector geplaatst wordt.",
                 'tool_question_values' => $collectorOrientations,
+                'shown_in_scans' => fn (PvPanelOrientation $value) => InstallationOptions::isOrientationAskedInScans($value->short),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2902,6 +2979,93 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Welke kozijnen heb je in jouw huis?',
                 'short' => 'frame-type',
                 'tool_question_values' => \App\Models\ElementValue::where('element_id', $frame->id)->get(),
+                // SmartTwin's frame types (Hout to Aluminium) only come from SmartTwin; the scans ask
+                // the share of wood.
+                'shown_in_scans' => fn (ElementValue $value) => $value->order <= self::LAST_FRAME_SHARE_ORDER,
+            ],
+            // The doors and panels, which only SmartTwin fills: no scan asks them. Shown under
+            // "Gegevens woning bekijken", in the report and sent to Econobis
+            // (decision 2026-11-07-smarttwin-glasmapping).
+            [
+                'data_type' => Caster::FLOAT,
+                'validation' => ['nullable', 'numeric', 'min:0'],
+                'translation' => 'Totale deuroppervlakte van de woning',
+                'short' => 'total-door-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'translation' => 'Kwaliteit deuren',
+                'short' => 'door-quality',
+                'tool_question_custom_values' => [
+                    'insulated' => [
+                        'name' => 'Geïsoleerd',
+                    ],
+                    'not-insulated' => [
+                        'name' => 'Ongeïsoleerd',
+                    ],
+                ],
+            ],
+            [
+                'data_type' => Caster::FLOAT,
+                'validation' => ['nullable', 'numeric', 'min:0'],
+                'translation' => 'Totale paneeloppervlakte van de woning',
+                'short' => 'total-panel-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'translation' => 'Kwaliteit panelen',
+                'short' => 'panel-quality',
+                'tool_question_custom_values' => [
+                    'insulated' => [
+                        'name' => 'Geïsoleerd',
+                    ],
+                    'not-insulated' => [
+                        'name' => 'Ongeïsoleerd',
+                    ],
+                    'unknown' => [
+                        'name' => 'Onbekend',
+                    ],
+                ],
+            ],
+            // Cooling, which only SmartTwin fills, as the doors and panels: no scan asks it. Shown under
+            // "Gegevens woning bekijken", in the report and sent to Econobis
+            // (decision 2026-11-07-smarttwin-installaties-mapping, K1).
+            [
+                'data_type' => Caster::ARRAY,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'translation' => 'Koeling',
+                'short' => 'cooling-type',
+                'tool_question_custom_values' => [
+                    'none' => ['name' => 'Geen koeling'],
+                    'compression' => ['name' => 'Compressiekoelmachine'],
+                    'absorption' => ['name' => 'Absorptiekoelmachine'],
+                    'external-cold' => ['name' => 'Externe koude'],
+                    'free-cooling' => ['name' => 'Vrije koeling'],
+                    'dew-point' => ['name' => 'Dauwpuntkoeling'],
+                    'unknown' => ['name' => 'Onbekend'],
+                ],
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'translation' => 'Kozijn panelen',
+                'short' => 'panel-frame-type',
+                'tool_question_custom_values' => [
+                    // SmartTwin does not tell wood from plastic for a panel.
+                    'wood-or-plastic' => [
+                        'name' => 'Hout / kunststof',
+                    ],
+                    'metal-thermally-broken' => [
+                        'name' => 'Metaal, thermisch onderbroken',
+                    ],
+                    'metal' => [
+                        'name' => 'Metaal',
+                    ],
+                ],
             ],
             [
                 'data_type' => Caster::ARRAY,
@@ -3260,6 +3424,8 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Wat is de oriëntatie van de panelen?',
                 'short' => 'solar-panel-orientation',
                 'tool_question_values' => PvPanelOrientation::all(),
+                // Horizontal and north only come from SmartTwin.
+                'shown_in_scans' => fn (PvPanelOrientation $value) => InstallationOptions::isOrientationAskedInScans($value->short),
             ],
             [
                 'data_type' => Caster::INT,
@@ -3349,7 +3515,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ];
 
                 $insertData = Arr::except($questionData,
-                    ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation']);
+                    ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation', 'shown_in_scans']);
 
                 // Encode data for DB insert...
                 $insertData['name'] = json_encode($insertData['name']);
@@ -3387,7 +3553,8 @@ class ToolQuestionsTableSeeder extends Seeder
                         $insertData = [
                             'tool_question_id' => $toolQuestion->id,
                             'order' => $toolQuestionCustomValueOrder,
-                            'show' => true,
+                            // An answer only SmartTwin gives is hidden from the scans' options.
+                            'show' => $customValueData['show'] ?? true,
                             // so we will compare the short to determine what is what, but we will keep value for now
                             'short' => $short,
                             'name' => json_encode([
@@ -3422,7 +3589,9 @@ class ToolQuestionsTableSeeder extends Seeder
                         $insertData = [
                             'tool_question_id' => $toolQuestion->id,
                             'order' => $toolQuestionValueOrder,
-                            'show' => true,
+                            // An option the scans do not offer can still be an answer, that SmartTwin
+                            // gives. It is hidden from the scans' options, not from reading it back.
+                            'show' => ($questionData['shown_in_scans'] ?? fn () => true)($toolQuestionValue),
                             'tool_question_valuable_type' => get_class($toolQuestionValue),
                             'tool_question_valuable_id' => $toolQuestionValue->id,
                             // We grab the extra data by the set column (e.g. calculate_value)

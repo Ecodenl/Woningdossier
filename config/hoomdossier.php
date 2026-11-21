@@ -75,7 +75,7 @@ return [
         ],
         'smarttwin' => [
             'enabled' => env('SMARTTWIN_ENABLED', false),
-            'base_uri' => env('SMARTTWIN_BASE_URI', 'https://hoomdossier.test.smarttwin.nl'),
+            'base_uri' => env('SMARTTWIN_BASE_URI', 'https://hoomdossier.acc.smarttwin.nl'),
             'api-key' => env('SMARTTWIN_KEY', ''),
             'debug' => env('SMARTTWIN_DEBUG', false),
             'sign-key' => env('SMARTTWIN_API_SIGN_KEY', ''),

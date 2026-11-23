@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\AdviceSource;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -103,7 +104,7 @@ class WoonplanService
      * advice is in -- it is "far enough" for a building that filled the scan in before SmartTwin was
      * switched on, and always "far enough" where the guard is skipped.
      *
-     * What counts is a calculated measure, of SmartTwin or from before it. What comes
+     * What counts is an advice of SmartTwin, or a calculated measure from before SmartTwin. What comes
      * from the resident's own answers does not, as those can be in before the check:
      * - the small measures, which the quick scan calculates from its own questions, also for a
      *   building SmartTwin has yet to advise;
@@ -122,10 +123,13 @@ class WoonplanService
             ->withInvisible()
             ->forInputSource($this->inputSource)
             ->where(fn (Builder $query) => $query
-                ->where('user_action_plan_advisable_type', MeasureApplication::class)
-                ->where(fn (Builder $query) => $query
-                    ->whereNull('step_id')
-                    ->orWhere('step_id', '!=', $smallMeasures->id)))
+                // Whatever it was mapped onto, including a small measure coupled to a solution.
+                ->where('source', AdviceSource::SMART_TWIN)
+                ->orWhere(fn (Builder $query) => $query
+                    ->where('user_action_plan_advisable_type', MeasureApplication::class)
+                    ->where(fn (Builder $query) => $query
+                        ->whereNull('step_id')
+                        ->orWhere('step_id', '!=', $smallMeasures->id))))
             ->exists();
     }
 

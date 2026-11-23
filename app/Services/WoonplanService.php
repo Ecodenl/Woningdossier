@@ -103,8 +103,13 @@ class WoonplanService
      * advice is in -- it is "far enough" for a building that filled the scan in before SmartTwin was
      * switched on, and always "far enough" where the guard is skipped.
      *
-     * The small measures do not count. The quick scan calculates them from its own questions, also
-     * for a building SmartTwin has yet to advise, and they are still there after its first advice.
+     * What counts is a calculated measure, of SmartTwin or from before it. What comes
+     * from the resident's own answers does not, as those can be in before the check:
+     * - the small measures, which the quick scan calculates from its own questions, also for a
+     *   building SmartTwin has yet to advise;
+     * - the cooperation's measures and own measures ticked under Woonwensen ("Welke zaken
+     *   vervangen"), which go into the action plan as soon as they are ticked.
+     * All of them are still there after SmartTwin's first advice, and show on the woonplan then.
      *
      * Trashed advices count. They are not on the board, but the resident can put them back from it,
      * which they cannot do from the invitation screen.
@@ -117,10 +122,10 @@ class WoonplanService
             ->withInvisible()
             ->forInputSource($this->inputSource)
             ->where(fn (Builder $query) => $query
-                ->where('user_action_plan_advisable_type', '!=', MeasureApplication::class)
-                ->orWhereNull('step_id')
-                ->orWhere('step_id', '!=', $smallMeasures->id)
-            )
+                ->where('user_action_plan_advisable_type', MeasureApplication::class)
+                ->where(fn (Builder $query) => $query
+                    ->whereNull('step_id')
+                    ->orWhere('step_id', '!=', $smallMeasures->id)))
             ->exists();
     }
 

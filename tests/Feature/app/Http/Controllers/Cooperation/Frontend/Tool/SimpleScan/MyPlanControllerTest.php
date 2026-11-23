@@ -6,8 +6,13 @@ use App\Enums\AdviceSource;
 use App\Enums\SmartTwin\EventType;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
+use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
+use App\Jobs\SmartTwin\Out\GetBuildingData;
+use App\Livewire\Cooperation\Frontend\Tool\SimpleScan\CustomChanges;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\CooperationMeasureApplication;
+use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Role;
@@ -20,7 +25,9 @@ use App\Services\SmartTwin\Api\UserRole;
 use App\Services\SmartTwin\SmartTwinDeeplinkService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Exceptions;
+use Livewire\Livewire;
 use RuntimeException;
 use Tests\TestCase;
 
@@ -287,6 +294,64 @@ final class MyPlanControllerTest extends TestCase
         $response->assertOk();
         $response->assertSee(__('cooperation/frontend/tool.my-plan.start-check.body'), false);
         $response->assertDontSee(__('cooperation/frontend/tool.my-plan.smarttwin.report-first.title'), false);
+    }
+
+    public function test_measures_ticked_under_woonwensen_do_not_replace_the_invitation(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+        Bus::fake([GetBuildingData::class, RefreshRegulationsForUserActionPlanAdvice::class]);
+
+        // "Welke zaken vervangen" can be answered before the check, for instance right after a
+        // reset. Ticking a measure there puts it in the action plan straight away, but that is no
+        // plan yet: it waits for SmartTwin's first advice.
+        CooperationMeasureApplication::factory()->create([
+            'cooperation_id' => $this->cooperation->id,
+            'is_extensive_measure' => false,
+        ]);
+
+        Livewire::test(CustomChanges::class, ['scan' => $this->scan])
+            ->set('selectedCooperationMeasureApplications', ['0'])
+            ->set('customMeasureApplicationsFormData.0.name', 'Nieuwe vloer')
+            ->set('customMeasureApplicationsFormData.0.info', 'Een beschrijving')
+            ->set('customMeasureApplicationsFormData.0.costs.from', '1000')
+            ->call('save', 0)
+            ->assertHasNoErrors();
+
+        $master = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $advices = $this->building->user->userActionPlanAdvices()->withInvisible()->forInputSource($master);
+        $this->assertTrue((clone $advices)->where('user_action_plan_advisable_type', CooperationMeasureApplication::class)->exists());
+        $this->assertTrue((clone $advices)->where('user_action_plan_advisable_type', CustomMeasureApplication::class)->exists());
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $response->assertSee(__('cooperation/frontend/tool.my-plan.start-check.body'), false);
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.smarttwin.report-first.title'), false);
+    }
+
+    public function test_an_advice_of_smart_twin_is_a_plan_even_for_a_small_measure(): void
+    {
+        $this->enableSmartTwin(true);
+        $this->linkSmartTwinAccount();
+
+        // A small measure coupled to a SmartTwin solution comes in as an advice in the small
+        // measures step. It is SmartTwin's advice all the same, so the woonplan has to show it.
+        $measure = MeasureApplication::where('step_id', Step::findByShort('small-measures')->id)->first();
+        UserActionPlanAdvice::withoutGlobalScopes()->create([
+            'user_id' => $this->building->user->id,
+            'input_source_id' => InputSource::findByShort(InputSource::MASTER_SHORT)->id,
+            'user_action_plan_advisable_type' => MeasureApplication::class,
+            'user_action_plan_advisable_id' => $measure->id,
+            'step_id' => $measure->step_id,
+            'category' => \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO,
+            'source' => AdviceSource::SMART_TWIN,
+        ]);
+
+        $response = $this->visitWoonplan();
+
+        $response->assertOk();
+        $response->assertDontSee(__('cooperation/frontend/tool.my-plan.start-check.body'), false);
     }
 
     public function test_the_woonplan_leaves_the_files_to_the_smart_twin_navigation(): void

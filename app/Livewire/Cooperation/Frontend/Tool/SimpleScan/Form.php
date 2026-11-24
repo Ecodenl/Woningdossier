@@ -268,6 +268,19 @@ class Form extends Scannable
                     '--with-old-advices' => false,
                 ]);
             }
+        } elseif (Hoomdossier::smartTwinDrivesScan($this->building, $this->scan)
+            && (in_array('small-measures', $stepShortsToRecalculate) || $completedSubStep->wasRecentlyCreated)
+        ) {
+            // SmartTwin answers the steps that would make the quick scan calculable, so a building
+            // waiting for its first SmartTwin advice never gets there. The small measures are the
+            // resident's own and not SmartTwin's to advise: they are calculated from the answers all
+            // the same, as the lite scan does, and are still there when SmartTwin's advice comes in.
+            Artisan::call(RecalculateForUser::class, [
+                '--user' => [$this->building->user->id],
+                '--input-source' => [$this->currentInputSource->short],
+                '--step-short' => ['small-measures'],
+                '--with-old-advices' => false,
+            ]);
         }
 
         return redirect()->to($flowService->resolveNextUrl());

@@ -3,9 +3,11 @@
 namespace App\Services\SmartTwin;
 
 use App\Enums\SmartTwin\EventType;
+use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
 use App\Jobs\SmartTwin\Out\GetBuildingData;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\User;
 use App\Services\SmartTwin\Mapping\Leaf;
 use App\Services\SmartTwin\Mapping\MapperRegistry;
 use App\Services\SmartTwin\Mapping\MappingApplier;
@@ -67,6 +69,7 @@ class SmartTwinService
         if ($report->savedAdvice()) {
             $this->applier->addInOrderCards($building, $inputSource);
             $this->applier->recordPackage($building, $inputSource, $results);
+            $this->recalculateSmallMeasures($building);
 
             // The advice says nothing about the building type, build year, surface or registered
             // label; SmartTwin's Building Data does, and is fetched again with every advice.
@@ -76,6 +79,30 @@ class SmartTwinService
         $this->logReport($building, $eventType, $report);
 
         return $report;
+    }
+
+    /**
+     * Puts the small measures in the woonplan next to SmartTwin's advice, from the answers as they
+     * stand in master.
+     *
+     * Before its first advice a building could not be calculated (SmartTwin answers the steps that
+     * would allow it), so the small measures the resident ticked may never have been calculated.
+     * Master holds the latest answer of whoever gave it, and is what the woonplan shows; resident
+     * and coach get the same rows (SmallMeasureHelper equalizes once SmartTwin owns the woonplan).
+     * Cards that were there keep their column.
+     */
+    private function recalculateSmallMeasures(Building $building): void
+    {
+        // Past the CooperationScope: a webhook has no session, see Hoomdossier::cooperationOf().
+        $user = $building->relationLoaded('user') && $building->user instanceof User
+            ? $building->user
+            : $building->user()->forAllCooperations()->first();
+
+        if (! $user instanceof User) {
+            return;
+        }
+
+        (new SmallMeasureHelper($user, InputSource::master()))->createValues()->createAdvices();
     }
 
     /**

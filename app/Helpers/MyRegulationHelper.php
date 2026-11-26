@@ -117,10 +117,8 @@ class MyRegulationHelper
 
                 foreach ($tagsForRegulation as $tagForRegulation) {
                     // Small energy saving measures never get a loan, so a loan does not list them (HD-18).
-                    if (
-                        $regulationType == RegulationService::LOAN
-                        && $tagForRegulation['Value'] == RegulationService::SMALL_ENERGY_SAVING_MEASURES
-                    ) {
+                    $isSmallMeasureTag = $tagForRegulation['Value'] == RegulationService::SMALL_ENERGY_SAVING_MEASURES;
+                    if ($regulationType == RegulationService::LOAN && $isSmallMeasureTag) {
                         continue;
                     }
 

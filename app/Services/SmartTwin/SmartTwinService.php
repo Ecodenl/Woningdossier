@@ -69,7 +69,7 @@ class SmartTwinService
         // then, though: a response that advised nothing leaves the plan, and the package it was
         // calculated for, as they were.
         if ($report->savedAdvice()) {
-            $this->applier->addInOrderCards($building, $inputSource);
+            $this->applier->addInOrderCards($building, $inputSource, $results);
             $this->applier->recordPackage($building, $inputSource, $results);
             $this->calculateMissingSmallMeasures($building);
 

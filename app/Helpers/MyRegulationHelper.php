@@ -116,6 +116,14 @@ class MyRegulationHelper
                 $relatedAdvices = $advicesWithAdvisableMapping;
 
                 foreach ($tagsForRegulation as $tagForRegulation) {
+                    // Small energy saving measures never get a loan, so a loan does not list them (HD-18).
+                    if (
+                        $regulationType == RegulationService::LOAN
+                        && $tagForRegulation['Value'] == RegulationService::SMALL_ENERGY_SAVING_MEASURES
+                    ) {
+                        continue;
+                    }
+
                     // All advices from the $advicesWithAdvisableMapping are relevant, as long
                     // as they match the "tags" with measures.
                     if ($regulationType == RegulationService::OTHER) {

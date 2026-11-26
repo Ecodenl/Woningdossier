@@ -234,8 +234,9 @@ final class SmartTwinImportTest extends TestCase
 
         $this->import($response);
 
-        $this->assertEquals(['none'], $this->answer('heat-source'));
-        $this->assertSame('gaskachel vrijstaand', $this->answer('heat-source-other'));
+        // A local heater has an option only SmartTwin gives (HD-21).
+        $this->assertEquals(['local-heating'], $this->answer('heat-source'));
+        $this->assertNull($this->answer('heat-source-other'));
         $this->assertEquals(['hr-boiler'], $this->answer('heat-source-warm-tap-water'));
         $this->assertSame('full-heat-pump-outside-air', $this->answer('new-heat-pump-type'));
         $this->assertSame(app(ElementValues::class)->serviceValueIdForOrder('house-ventilation', 1), (int) $this->answer('ventilation-type'));
@@ -246,7 +247,7 @@ final class SmartTwinImportTest extends TestCase
         $parts = HouseData::for($this->building->fresh())->parts;
         $answers = fn (string $part) => array_column($parts[$part]['rows'], 'answer');
 
-        $this->assertSame(['Anders...', 'gaskachel vrijstaand'], $answers('heating'));
+        $this->assertSame(['Lokale verwarming'], $answers('heating'));
         $this->assertSame(['Gasketel'], $answers('hot-water'));
         $this->assertSame(['Natuurlijke ventilatie', 'Nee'], $answers('ventilation'));
         $this->assertContains('horizontaal', $answers('pv'));

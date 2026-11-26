@@ -14,6 +14,9 @@ use App\Services\SmartTwin\Mapping\MappingResult;
  *
  * - heat-source and heat-source-warm-tap-water are multiple choice: every generator and system
  *   counts. What has no option becomes "Anders...", with SmartTwin's description in the -other text.
+ *   For heating the client mapped a few more (HD-21): a local heater (0) is Lokale verwarming, the
+ *   stoves and fired boilers (7–12) are Biomassa, both options only SmartTwin gives, and an unknown
+ *   or other generator (14, 15) is "Anders..." with "onbekend".
  *   A central electric heater beside a heat pump in the same system is left out: it is the heat
  *   pump's backup heater, part of most heat pump installations (HD-22). A stove beside it stays.
  * - boiler-type and heat-pump-type have one answer: the worst wins. A heat pump is hybrid when a gas
@@ -35,8 +38,13 @@ class HeatMapper extends InstallationMapper
     /** HeatingGenerator.generatorType. */
     private const BOILERS = [1, 2, 3, 4, 5]; // CR, VR, HR100, HR104, HR107: the order of the boiler service value
     private const HEAT_PUMP = 6;
+    private const LOCAL = 0;
+    private const BIOMASS = [7, 8, 9, 10, 11, 12]; // stoves, pellet stove, accumulating device, fired boilers
     private const CENTRAL_ELECTRIC = 13;
-    private const UNKNOWN_GENERATOR = 14;
+    private const UNKNOWN_GENERATORS = [14, 15]; // unknown, other
+
+    /** The text of "Anders..." for an unknown or other generator (HD-21). */
+    private const UNKNOWN_TEXT = 'onbekend';
 
     /** generatorType of a boiler => new-boiler-type. */
     private const NEW_BOILER_TYPES = [1 => 'conventional', 2 => 'improved-efficiency', 3 => 'hr100', 4 => 'hr104', 5 => 'hr107'];
@@ -57,6 +65,9 @@ class HeatMapper extends InstallationMapper
     private const HOT_WATER_HEAT_PUMP = 15;
     private const HOT_WATER_UNKNOWN = 0;
 
+    /** The heat-source options the new situation has no counterpart for: left out there, like "Anders...". */
+    private const ONLY_CURRENT = ['local-heating', 'biomass'];
+
     /** SolarSystem.systemType. */
     private const SOLAR_HOT_WATER = 1;
     private const SOLAR_HOT_WATER_AND_HEATING = 2;
@@ -73,7 +84,7 @@ class HeatMapper extends InstallationMapper
         'generatorType'        => 'telt mee in heat-source, boiler-type en heat-pump-type',
         'heatPumpSource'       => 'telt mee in heat-pump-type',
         'heatPumpSourceSystem' => 'niet vastgelegd: collectief of individueel',
-        'description'          => 'telt mee in heat-source-other, bij een opwekker zonder eigen optie',
+        'description'          => 'telt mee in heat-source-other, bij een opwekker zonder eigen optie (13 zonder warmtepomp, 16)',
         'id'                   => 'niet gebruikt',
     ];
 
@@ -142,7 +153,7 @@ class HeatMapper extends InstallationMapper
 
         return [
             // No "Anders..." in the new situation: what has no option is left out.
-            ...$this->multipleChoice('new-heat-source', array_diff($heating['sources'], ['none']), [], $note, false),
+            ...$this->multipleChoice('new-heat-source', array_diff($heating['sources'], ['none', ...self::ONLY_CURRENT]), [], $note, false),
             is_null($boiler)
                 ? MappingResult::cleared('new-boiler-type', "{$note}: geen gasketel")
                 : MappingResult::mapped('new-boiler-type', self::NEW_BOILER_TYPES[$boiler], $note),
@@ -209,7 +220,14 @@ class HeatMapper extends InstallationMapper
                     $result['sources'][] = 'hr-boiler';
                     // The worst boiler: CR (1) is worse than HR107 (5).
                     $result['boiler'] = is_null($result['boiler']) ? $type : min($result['boiler'], $type);
-                } elseif (self::UNKNOWN_GENERATOR !== $type && ! is_null($type)) {
+                } elseif (self::LOCAL === $type) {
+                    $result['sources'][] = 'local-heating';
+                } elseif (in_array($type, self::BIOMASS, true)) {
+                    $result['sources'][] = 'biomass';
+                } elseif (in_array($type, self::UNKNOWN_GENERATORS, true)) {
+                    $result['sources'][] = 'none';
+                    $result['other'][] = self::UNKNOWN_TEXT;
+                } elseif (! is_null($type)) {
                     $result['sources'][] = 'none';
                     $result['other'][] = $generator['description'] ?? null;
                 }

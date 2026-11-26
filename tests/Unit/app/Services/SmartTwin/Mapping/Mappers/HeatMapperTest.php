@@ -73,8 +73,9 @@ final class HeatMapperTest extends TestCase
         ));
 
         $this->assertSame([
-            'heat-source'                        => ['none'],
-            'heat-source-other'                  => 'gaskachel vrijstaand',
+            // A local heater has an option of its own (HD-21).
+            'heat-source'                        => ['local-heating'],
+            'heat-source-other'                  => null,
             'boiler-type'                        => null,
             'heat-pump-type'                     => null,
             'building-heating-application'       => null,
@@ -116,8 +117,27 @@ final class HeatMapperTest extends TestCase
             ])],
         ]));
 
-        $this->assertSame(['heat-pump', 'none'], $answers['heat-source']);
-        $this->assertSame('houtkachel', $answers['heat-source-other']);
+        $this->assertSame(['heat-pump', 'biomass'], $answers['heat-source']);
+        $this->assertNull($answers['heat-source-other']);
+    }
+
+    public function test_the_client_mapping_of_the_other_heaters(): void
+    {
+        // HD-21: 0 is a local heater, 7–12 biomass, 14 and 15 "Anders..." with "onbekend".
+        foreach ([0 => ['local-heating'], 7 => ['biomass'], 9 => ['biomass'], 12 => ['biomass'], 14 => ['none'], 15 => ['none']] as $type => $expected) {
+            $answers = $this->answers($this->response([
+                'heatingSystems' => [$this->heating([$this->generator($type, 5, 0, 'omschrijving')])],
+            ]));
+
+            $this->assertSame($expected, $answers['heat-source'], "generatorType {$type}");
+            $this->assertSame(['none'] === $expected ? 'onbekend' : null, $answers['heat-source-other'], "generatorType {$type}");
+        }
+
+        // Without a counterpart in the new situation, they are left out there.
+        $answers = $this->answers($this->response([], [
+            'heatingSystems' => [$this->heating([$this->generator(0, 1), $this->generator(11, 3)])],
+        ]));
+        $this->assertNull($answers['new-heat-source']);
     }
 
     public function test_a_central_electric_heater_without_a_heat_pump_stays(): void

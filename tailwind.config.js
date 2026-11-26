@@ -271,6 +271,17 @@ module.exports = {
                 '500': '#647585',
                 '100': '#F0F1F2'
             },
+            // Alert boxes (cooperation.layouts.components.alert). Text always uses the default text colour (blue).
+            alert: {
+                'success-border': '#0F7D15',
+                'success-bg': '#F4FDF4',
+                'warning-border': '#FF4B00',
+                'warning-bg': '#FEE3D3',
+                'error-border': '#D8002E',
+                'error-bg': '#FCDBDB',
+                'info-border': '#414C57',
+                'info-bg': '#FFFFFF',
+            },
             orange: '#FF7F4A',
             yellow: '#FFBD5A',
             red: {

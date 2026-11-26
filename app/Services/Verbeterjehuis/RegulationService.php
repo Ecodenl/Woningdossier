@@ -21,6 +21,11 @@ class RegulationService
     const string LOAN = 'loan';
     const string OTHER = 'other';
 
+    /**
+     * Verbeterjehuis measure "Kleine energiebesparende maatregelen". Loans are never shown for it (HD-18).
+     */
+    const int SMALL_ENERGY_SAVING_MEASURES = 1603;
+
     public array $context = [];
 
     public function getFilters(): array

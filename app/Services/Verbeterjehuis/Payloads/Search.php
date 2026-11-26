@@ -20,6 +20,11 @@ class Search
     public Collection $payload;
     public Collection $transformedPayload;
 
+    /**
+     * The Verbeterjehuis measure values set by forMeasure(), null when not filtered on a measure.
+     */
+    public ?array $measureValues = null;
+
     public function __construct(array $payload)
     {
         $this->payload = collect($payload);
@@ -40,7 +45,10 @@ class Search
         });
     }
 
-    public function forMeasure(Model $measureModel): self
+    /**
+     * The Verbeterjehuis measure values this measure is mapped to.
+     */
+    public static function resolveMeasureValues(Model $measureModel): array
     {
         $targets = MappingService::init()->from($measureModel)->resolveTarget();
         if (! $measureModel instanceof MeasureApplication) {
@@ -52,13 +60,37 @@ class Search
         }
 
         $values = [];
-        if ($targets->isNotEmpty()) {
-            foreach ($targets as $target) {
-                if (is_array($target)) {
-                    $values[] = $target['Value'];
-                }
+        foreach ($targets as $target) {
+            if (is_array($target)) {
+                $values[] = $target['Value'];
             }
         }
+
+        return $values;
+    }
+
+    /**
+     * Whether the measure is only mapped to the small energy saving measures. Those never get a loan.
+     */
+    public static function isSmallEnergySavingMeasure(Model $measureModel): bool
+    {
+        $values = static::resolveMeasureValues($measureModel);
+
+        return ! empty($values) && empty(static::withoutSmallEnergySavingMeasures($values));
+    }
+
+    public static function withoutSmallEnergySavingMeasures(array $values): array
+    {
+        return array_values(array_filter(
+            $values,
+            fn ($value) => $value != RegulationService::SMALL_ENERGY_SAVING_MEASURES
+        ));
+    }
+
+    public function forMeasure(Model $measureModel): self
+    {
+        $values = static::resolveMeasureValues($measureModel);
+        $this->measureValues = $values;
 
         if (! empty($values)) {
             $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($values) {
@@ -105,7 +137,19 @@ class Search
 
     public function getLoans(): Collection
     {
-        return $this->transformedPayload->where('Type', RegulationService::LOAN);
+        $loans = $this->transformedPayload->where('Type', RegulationService::LOAN);
+
+        if (is_null($this->measureValues)) {
+            return $loans;
+        }
+
+        // A loan that only matches the measure through the small energy saving measures is not a loan for it.
+        $values = static::withoutSmallEnergySavingMeasures($this->measureValues);
+
+        return $loans->filter(function ($regulation) use ($values) {
+            $relevantTags = array_filter($regulation['Tags'], fn ($tag) => in_array($tag['Value'], $values));
+            return ! empty($relevantTags);
+        });
     }
 
     public function getSubsidies(): Collection

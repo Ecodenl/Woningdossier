@@ -8,6 +8,7 @@ use App\Enums\MappingType;
 use App\Enums\SmartTwin\EventType;
 use App\Enums\SmartTwin\MappingStatus;
 use App\Enums\SmartTwin\MappingTarget;
+use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
 use App\Jobs\SmartTwin\Out\GetBuildingData;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -18,6 +19,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Municipality;
 use App\Models\RoofType;
+use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
@@ -730,5 +732,73 @@ final class SmartTwinImportTest extends TestCase
             ->get();
         $this->assertCount(3, $rows);
         $this->assertTrue($rows->every(fn (UserActionPlanAdvice $row) => $row->isExecuted()));
+    }
+
+    /**
+     * @return array<int, string> The shorts of the small measures of an input source.
+     */
+    private function smallMeasures(InputSource $inputSource): array
+    {
+        return UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $this->building->user_id)
+            ->where('input_source_id', $inputSource->id)
+            ->where('step_id', Step::findByShort('small-measures')->id)
+            ->get()
+            ->map(fn (UserActionPlanAdvice $a) => MeasureApplication::find($a->user_action_plan_advisable_id)->short)
+            ->all();
+    }
+
+    /**
+     * HD-20: a new resident cannot be calculated before SmartTwin's first advice, as SmartTwin answers
+     * the steps that would allow it. What they ticked under "Kleine maatregelen en gedrag" comes with
+     * the advice, for resident, coach and master alike.
+     */
+    public function test_the_small_measures_ticked_before_the_advice_come_with_it(): void
+    {
+        config()->set('hoomdossier.services.smarttwin.enabled', true);
+        $this->answerAsResident('apply-led-light', 'want-to');
+        $this->answerAsResident('shower-shorter', 'already-do');
+        $this->answerAsResident('radiator-foil', 'not-interested');
+        $resident = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->assertSame([], $this->smallMeasures($this->master));
+
+        $this->import($this->response());
+
+        $expected = ['save-energy-with-light', 'save-energy-with-warm-tap-water'];
+        $this->assertEqualsCanonicalizing($expected, $this->smallMeasures($this->master));
+        $this->assertEqualsCanonicalizing($expected, $this->smallMeasures($resident));
+        $this->assertEqualsCanonicalizing($expected, $this->smallMeasures($this->coach));
+        // Next to the package, not in its place.
+        $this->assertArrayHasKey('floor-insulation', $this->advices());
+    }
+
+    public function test_a_small_measure_keeps_its_column_through_the_import(): void
+    {
+        config()->set('hoomdossier.services.smarttwin.enabled', true);
+        $this->answerAsResident('apply-led-light', 'want-to');
+        (new SmallMeasureHelper($this->building->user, InputSource::findByShort(InputSource::RESIDENT_SHORT)))
+            ->createValues()->createAdvices();
+        $led = fn () => UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $this->building->user_id)
+            ->where('input_source_id', $this->master->id)
+            ->where('user_action_plan_advisable_id', MeasureApplication::findByShort('save-energy-with-light')->id)
+            ->first();
+        $led()->update(['category' => UserActionPlanAdviceService::CATEGORY_LATER]);
+
+        $this->import($this->response());
+
+        $this->assertSame(UserActionPlanAdviceService::CATEGORY_LATER, $led()->category);
+    }
+
+    public function test_an_import_without_advice_leaves_the_small_measures_alone(): void
+    {
+        config()->set('hoomdossier.services.smarttwin.enabled', true);
+        $this->answerAsResident('apply-led-light', 'want-to');
+        $response = $this->wellInsulatedResponse();
+        $response['scenario']['solutions'] = [];
+
+        $this->import($response);
+
+        $this->assertSame([], $this->smallMeasures($this->master));
     }
 }

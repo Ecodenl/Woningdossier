@@ -3,9 +3,13 @@
 namespace App\Services\SmartTwin;
 
 use App\Enums\SmartTwin\EventType;
+use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
 use App\Jobs\SmartTwin\Out\GetBuildingData;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Step;
+use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use App\Services\SmartTwin\Mapping\Leaf;
 use App\Services\SmartTwin\Mapping\MapperRegistry;
 use App\Services\SmartTwin\Mapping\MappingApplier;
@@ -67,6 +71,7 @@ class SmartTwinService
         if ($report->savedAdvice()) {
             $this->applier->addInOrderCards($building, $inputSource);
             $this->applier->recordPackage($building, $inputSource, $results);
+            $this->calculateMissingSmallMeasures($building);
 
             // The advice says nothing about the building type, build year, surface or registered
             // label; SmartTwin's Building Data does, and is fetched again with every advice.
@@ -76,6 +81,42 @@ class SmartTwinService
         $this->logReport($building, $eventType, $report);
 
         return $report;
+    }
+
+    /**
+     * Puts the small measures in the woonplan next to SmartTwin's advice, from the answers as they
+     * stand in master, when the woonplan has none yet.
+     *
+     * Until HD-20 a building could not be calculated before its first advice (SmartTwin answers the
+     * steps that would allow it), so the small measures the resident ticked were never calculated.
+     * Master holds the latest answer of whoever gave it; resident and coach get the same rows
+     * (SmallMeasureHelper equalizes once SmartTwin owns the woonplan).
+     *
+     * Only when there are none, in any input source: small measures that were calculated are the
+     * outcome of whoever saved them, and recalculating them from master could take a card away.
+     */
+    private function calculateMissingSmallMeasures(Building $building): void
+    {
+        // Past the CooperationScope: a webhook has no session, see Hoomdossier::cooperationOf().
+        $user = $building->relationLoaded('user') && $building->user instanceof User
+            ? $building->user
+            : $building->user()->forAllCooperations()->first();
+        $step = Step::findByShort('small-measures');
+
+        if (! $user instanceof User || ! $step instanceof Step) {
+            return;
+        }
+
+        $hasSmallMeasures = UserActionPlanAdvice::withoutGlobalScopes()
+            ->where('user_id', $user->id)
+            ->where('step_id', $step->id)
+            ->exists();
+
+        if ($hasSmallMeasures) {
+            return;
+        }
+
+        (new SmallMeasureHelper($user, InputSource::master()))->createValues()->createAdvices();
     }
 
     /**

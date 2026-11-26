@@ -7,6 +7,7 @@ use App\Helpers\RoleHelper;
 use App\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan\AwaitingAdvice;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\CooperationMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Role;
@@ -90,6 +91,29 @@ final class AwaitingAdviceTest extends TestCase
             'user_action_plan_advisable_id'   => $measure->id,
             'step_id'                         => $measure->step_id,
             'costs'                           => ['from' => null, 'to' => null],
+            'category'                        => 'to-do',
+            'visible'                         => true,
+        ]));
+
+        // The woonplan would send the resident straight back here.
+        Livewire::test(AwaitingAdvice::class, ['building' => $this->building, 'scan' => Scan::quick()])
+            ->call('checkForAdvice')
+            ->assertNoRedirect();
+    }
+
+    public function test_it_keeps_waiting_with_only_measures_ticked_under_woonwensen(): void
+    {
+        $measure = CooperationMeasureApplication::factory()->create([
+            'cooperation_id' => $this->cooperation->id,
+            'is_extensive_measure' => false,
+        ]);
+
+        UserActionPlanAdvice::withoutEvents(fn () => UserActionPlanAdvice::withoutGlobalScopes()->forceCreate([
+            'user_id'                         => $this->building->user_id,
+            'input_source_id'                 => InputSource::master()->id,
+            'user_action_plan_advisable_type' => CooperationMeasureApplication::class,
+            'user_action_plan_advisable_id'   => $measure->id,
+            'costs'                           => $measure->costs,
             'category'                        => 'to-do',
             'visible'                         => true,
         ]));

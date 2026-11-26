@@ -90,6 +90,49 @@ final class HeatMapperTest extends TestCase
         ], $answers);
     }
 
+    public function test_the_electric_backup_heater_beside_a_heat_pump_is_left_out(): void
+    {
+        // Dossier 100281: an outside air heat pump with an electric backup heater, on floor heating.
+        $answers = $this->answers($this->response([
+            'heatingSystems' => [$this->heating([
+                $this->generator(6, 0, 4, 'combiwarmtepomp buitenlucht-water zonder koeling'),
+                $this->generator(13, 0, 0, 'elektrische bijverwarmer elektrische doorstroom'),
+            ], 5)],
+        ]));
+
+        $this->assertSame(['heat-pump'], $answers['heat-source']);
+        $this->assertNull($answers['heat-source-other']);
+        $this->assertSame($this->heatPump(4), $answers['heat-pump-type']); // Volledige warmtepomp buitenlucht
+        $this->assertSame(['floor-heating'], $answers['building-heating-application']);
+    }
+
+    public function test_a_stove_beside_a_heat_pump_stays(): void
+    {
+        $answers = $this->answers($this->response([
+            'heatingSystems' => [$this->heating([
+                $this->generator(6, 0, 4, 'combiwarmtepomp buitenlucht'),
+                $this->generator(13, 0, 0, 'elektrische bijverwarmer'),
+                $this->generator(8, 3, 0, 'houtkachel'),
+            ])],
+        ]));
+
+        $this->assertSame(['heat-pump', 'none'], $answers['heat-source']);
+        $this->assertSame('houtkachel', $answers['heat-source-other']);
+    }
+
+    public function test_a_central_electric_heater_without_a_heat_pump_stays(): void
+    {
+        $answers = $this->answers($this->response([
+            'heatingSystems' => [
+                $this->heating([$this->generator(6, 0, 4, 'combiwarmtepomp buitenlucht')]),
+                $this->heating([$this->generator(13, 0, 0, 'elektrische cv-ketel')]),
+            ],
+        ]));
+
+        $this->assertSame(['heat-pump', 'none'], $answers['heat-source']);
+        $this->assertSame('elektrische cv-ketel', $answers['heat-source-other']);
+    }
+
     public function test_a_gas_boiler_beside_the_heat_pump_makes_it_hybrid(): void
     {
         $answers = $this->answers($this->response([

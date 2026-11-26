@@ -63,8 +63,21 @@ final class VentilationMapperTest extends TestCase
         $answers = $this->answers($this->response(['ventilationSystems' => [$this->system('E1', true)]]));
 
         $this->assertSame(1, $answers['ventilation-heat-recovery']);
-        // Left alone until SmartTwin explains the codes.
-        $this->assertArrayNotHasKey('ventilation-demand-driven', $answers);
+        $this->assertSame(1, $answers['ventilation-demand-driven']);
+    }
+
+    public function test_the_variant_decides_demand_driven(): void
+    {
+        $demandDriven = ['C4a', 'C4b', 'C4c', 'C5a', 'C5b', 'D3', 'D5a', 'D5b', 'D5c', 'E1', 'D.5c'];
+        $not = ['A1', 'A2a', 'B1', 'C1', 'C2a', 'C3c', 'D1', 'D2', 'D4b'];
+
+        foreach ([1 => $demandDriven, 0 => $not] as $expected => $codes) {
+            foreach ($codes as $code) {
+                $answers = $this->answers($this->response(['ventilationSystems' => [$this->system($code)]]));
+
+                $this->assertSame($expected, $answers['ventilation-demand-driven'], $code);
+            }
+        }
     }
 
     public function test_with_more_than_one_system_the_worst_wins(): void
@@ -73,12 +86,13 @@ final class VentilationMapperTest extends TestCase
 
         $this->assertSame($this->type(1), $answers['ventilation-type']);
         $this->assertSame(0, $answers['ventilation-heat-recovery']);
+        $this->assertSame(0, $answers['ventilation-demand-driven']);
     }
 
     public function test_none_empties_the_answers(): void
     {
         $this->assertSame(
-            ['ventilation-type' => null, 'ventilation-heat-recovery' => null],
+            ['ventilation-type' => null, 'ventilation-heat-recovery' => null, 'ventilation-demand-driven' => null],
             $this->answers($this->response([])),
         );
     }

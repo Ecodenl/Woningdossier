@@ -31,6 +31,7 @@ use App\Services\SmartTwin\SmartTwinHandOff;
 use App\Services\SmartTwin\WoonplanCardRules;
 use App\Services\SmartTwin\WoonplanLock;
 use App\Services\UserActionPlanAdviceService;
+use App\Services\Verbeterjehuis\Payloads\Search;
 use Illuminate\Support\Collection;
 use App\Helpers\Arr;
 use Illuminate\Support\Str;
@@ -908,9 +909,12 @@ class Form extends CustomMeasureForm
             // An advice with a source carries the price its owner gave it, whatever the user once
             // entered, so nothing was deducted from it (see UserActionPlanAdviceObserver::creating()).
             $cards[$category][$order]['has_user_costs'] = $hasUserCosts && is_null($advice->source);
-            // See Hoomdossier::showsVerbeterjehuisSubsidyFor(). Loans wait for the stuurgroep (F1c).
+            // See Hoomdossier::showsVerbeterjehuisSubsidyFor(). Loans stay after the switch (F1c), except for
+            // small energy saving measures (HD-18).
             $cards[$category][$order]['subsidy_available'] = $this->showsVerbeterjehuisSubsidy && $advice->subsidy_available;
-            $cards[$category][$order]['loan_available'] = $advice->loan_available;
+            // The stored flag can predate HD-18, so small energy saving measures are checked here as well.
+            $cards[$category][$order]['loan_available'] = $advice->loan_available
+                && ! Search::isSmallEnergySavingMeasure($advisable);
 
             $cards[$category][$order]['id'] = $advice->id;
             $cards[$category][$order]['executed_at'] = $advice->executed_at?->format('d-m-Y');

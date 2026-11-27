@@ -106,7 +106,7 @@ final class SmartTwinSwitchTest extends TestCase
 
         $this->assertTrue(
             Hoomdossier::VERBETERJEHUIS_SUBSIDY_WITH_SMART_TWIN,
-            'Turning the subsidy off? Decide first whether the loans go as well (F1c); see the docblock of this constant.',
+            'Turning the subsidy off? Decide again whether the loans go as well (F1c); see the docblock of this constant.',
         );
         $this->assertTrue(Hoomdossier::showsVerbeterjehuisSubsidyFor($this->building->fresh()));
     }

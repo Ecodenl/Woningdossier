@@ -692,7 +692,9 @@
 .icon-window-frame {
     @apply select-none;
     content: url('/icons/window-frame.svg');
-}/* Supplied by Econobis (HD-24) for the small measures, heaters, heating temperatures and vacuum glass */
+}
+
+/* Supplied by Econobis (HD-24) for the small measures, heaters, heating temperatures and vacuum glass */
 .icon-small-measure-lighting {
     @apply select-none;
     content: url('/icons/small-measure-lighting.svg');

@@ -16,7 +16,9 @@ use App\Services\SmartTwin\Mapping\MappingResult;
  *   counts. What has no option becomes "Anders...", with SmartTwin's description in the -other text.
  *   For heating the client mapped a few more (HD-21): a local heater (0) is Lokale verwarming, the
  *   stoves and fired boilers (7–12) are Biomassa, both options only SmartTwin gives, and an unknown
- *   or other generator (14, 15) is "Anders..." with "onbekend".
+ *   or other generator (14, 15) is "Anders..." with "onbekend". Any other generator that burns
+ *   biomass is Biomassa too (HD-26): SmartTwin's resident scan sends a biomass combi boiler as a
+ *   central device (13) on biomass, not as one of 7–12.
  *   A central electric heater beside a heat pump in the same system is left out: it is the heat
  *   pump's backup heater, part of most heat pump installations (HD-22). A stove beside it stays.
  * - boiler-type and heat-pump-type have one answer: the worst wins. A heat pump is hybrid when a gas
@@ -34,6 +36,7 @@ class HeatMapper extends InstallationMapper
     /** HeatingGenerator.energyCarrier. */
     private const GAS = 1;
     private const EXTERNAL_HEAT = [6, 7];
+    private const BIOMASS_CARRIERS = [3, 4, 5]; // biomass activity decree, appendix R, other
 
     /** HeatingGenerator.generatorType. */
     private const BOILERS = [1, 2, 3, 4, 5]; // CR, VR, HR100, HR104, HR107: the order of the boiler service value
@@ -80,7 +83,7 @@ class HeatMapper extends InstallationMapper
     ];
 
     private const NOTES_GENERATOR = [
-        'energyCarrier'        => 'telt mee in heat-source en heat-pump-type (hybride)',
+        'energyCarrier'        => 'telt mee in heat-source (stadsverwarming, biomassa) en heat-pump-type (hybride)',
         'generatorType'        => 'telt mee in heat-source, boiler-type en heat-pump-type',
         'heatPumpSource'       => 'telt mee in heat-pump-type',
         'heatPumpSourceSystem' => 'niet vastgelegd: collectief of individueel',
@@ -199,7 +202,9 @@ class HeatMapper extends InstallationMapper
                 $type = $generator['generatorType'] ?? null;
                 $carrier = $generator['energyCarrier'] ?? null;
 
-                if ($hasHeatPump && self::CENTRAL_ELECTRIC === $type) {
+                $burnsBiomass = in_array($carrier, self::BIOMASS_CARRIERS, true);
+
+                if ($hasHeatPump && self::CENTRAL_ELECTRIC === $type && ! $burnsBiomass) {
                     // The heat pump's electric backup heater: showing it confuses more than it tells (HD-22).
                     continue;
                 }
@@ -222,7 +227,7 @@ class HeatMapper extends InstallationMapper
                     $result['boiler'] = is_null($result['boiler']) ? $type : min($result['boiler'], $type);
                 } elseif (self::LOCAL === $type) {
                     $result['sources'][] = 'local-heating';
-                } elseif (in_array($type, self::BIOMASS, true)) {
+                } elseif (in_array($type, self::BIOMASS, true) || $burnsBiomass) {
                     $result['sources'][] = 'biomass';
                 } elseif (in_array($type, self::UNKNOWN_GENERATORS, true)) {
                     $result['sources'][] = 'none';

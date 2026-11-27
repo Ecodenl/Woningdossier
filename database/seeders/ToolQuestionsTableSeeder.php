@@ -910,13 +910,13 @@ class ToolQuestionsTableSeeder extends Seeder
                     'infrared' => [
                         'name' => 'Warmtepanelen / Infrarood',
                         'extra' => [
-                            'icon' => 'icon-infrared-heater',
+                            'icon' => 'icon-infrared-panels',
                         ],
                     ],
                     'district-heating' => [
                         'name' => 'Stadsverwarming',
                         'extra' => [
-                            'icon' => 'icon-district-heating',
+                            'icon' => 'icon-district-heating-city',
                         ],
                     ],
                     'sun-boiler' => [
@@ -986,7 +986,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'kitchen-geyser' => [
                         'name' => 'Bad/keukengeiser',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-kitchen-geyser',
                         ],
                         'conditions' => [
                             [
@@ -1008,7 +1008,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'electric-boiler' => [
                         'name' => 'Elektrische boiler',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-electric-boiler',
                         ],
                         'conditions' => [
                             [
@@ -1030,7 +1030,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'heat-pump-boiler' => [
                         'name' => 'Warmtepomp boiler',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-heat-pump-boiler',
                         ],
                         'conditions' => [
                             [
@@ -1085,7 +1085,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'district-heating' => [
                         'name' => 'Stadsverwarming',
                         'extra' => [
-                            'icon' => 'icon-district-heating',
+                            'icon' => 'icon-district-heating-city',
                         ],
                         'conditions' => [
                             [
@@ -1257,19 +1257,19 @@ class ToolQuestionsTableSeeder extends Seeder
                     'temp-high' => [
                         'name' => 'Op hoge temperatuur',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-heating-temperature-high',
                         ],
                     ],
                     'temp-50' => [
                         'name' => 'Op 50 graden',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-heating-temperature-50',
                         ],
                     ],
                     'temp-low' => [
                         'name' => 'Op lage temperatuur',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-heating-temperature-low',
                         ],
                     ],
                     'unsure' => [
@@ -2034,13 +2034,13 @@ class ToolQuestionsTableSeeder extends Seeder
                     'infrared' => [
                         'name' => 'Warmtepanelen / Infrarood',
                         'extra' => [
-                            'icon' => 'icon-infrared-heater',
+                            'icon' => 'icon-infrared-panels',
                         ],
                     ],
                     'district-heating' => [
                         'name' => 'Stadsverwarming',
                         'extra' => [
-                            'icon' => 'icon-district-heating',
+                            'icon' => 'icon-district-heating-city',
                         ],
                     ],
                     'sun-boiler' => [
@@ -2083,7 +2083,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'kitchen-geyser' => [
                         'name' => 'Bad/keukengeiser',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-kitchen-geyser',
                         ],
                         'conditions' => [
                             [
@@ -2105,7 +2105,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'electric-boiler' => [
                         'name' => 'Elektrische boiler',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-electric-boiler',
                         ],
                         'conditions' => [
                             [
@@ -2127,7 +2127,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'heat-pump-boiler' => [
                         'name' => 'Warmtepomp boiler',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-heat-pump-boiler',
                         ],
                         'conditions' => [
                             [
@@ -2182,7 +2182,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'district-heating' => [
                         'name' => 'Stadsverwarming',
                         'extra' => [
-                            'icon' => 'icon-district-heating',
+                            'icon' => 'icon-district-heating-city',
                         ],
                         'conditions' => [
                             [
@@ -2321,19 +2321,19 @@ class ToolQuestionsTableSeeder extends Seeder
                     'temp-high' => [
                         'name' => 'Op hoge temperatuur',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-heating-temperature-high',
                         ],
                     ],
                     'temp-50' => [
                         'name' => 'Op 50 graden',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-heating-temperature-50',
                         ],
                     ],
                     'temp-low' => [
                         'name' => 'Op lage temperatuur',
                         'extra' => [
-                            'icon' => 'icon-placeholder',
+                            'icon' => 'icon-heating-temperature-low',
                         ],
                     ],
                 ],

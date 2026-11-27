@@ -14,6 +14,8 @@ use App\Services\SmartTwin\Mapping\MappingResult;
  *
  * - heat-source and heat-source-warm-tap-water are multiple choice: every generator and system
  *   counts. What has no option becomes "Anders...", with SmartTwin's description in the -other text.
+ *   A central electric heater beside a heat pump in the same system is left out: it is the heat
+ *   pump's backup heater, part of most heat pump installations (HD-22). A stove beside it stays.
  * - boiler-type and heat-pump-type have one answer: the worst wins. A heat pump is hybrid when a gas
  *   boiler works beside it in the same system; SmartTwin gives its source. The combinations the
  *   scans have no option for are options only SmartTwin gives (InstallationOptions).
@@ -33,6 +35,7 @@ class HeatMapper extends InstallationMapper
     /** HeatingGenerator.generatorType. */
     private const BOILERS = [1, 2, 3, 4, 5]; // CR, VR, HR100, HR104, HR107: the order of the boiler service value
     private const HEAT_PUMP = 6;
+    private const CENTRAL_ELECTRIC = 13;
     private const UNKNOWN_GENERATOR = 14;
 
     /** generatorType of a boiler => new-boiler-type. */
@@ -120,7 +123,7 @@ class HeatMapper extends InstallationMapper
         $hotWater = $this->hotWater($response, self::CURRENT);
 
         return [
-            ...$this->multipleChoice('heat-source', $heating['sources'], $heating['other'], 'elke opwekker van elk verwarmingssysteem, en een zonneboiler'),
+            ...$this->multipleChoice('heat-source', $heating['sources'], $heating['other'], 'elke opwekker van elk verwarmingssysteem, behalve een elektrische bijverwarmer naast een warmtepomp, en een zonneboiler'),
             $this->boilerType($heating),
             $this->heatPumpType($heating),
             ...$this->multipleChoice('building-heating-application', $heating['emitters'], $heating['otherEmitters'], 'de afgifte van elk verwarmingssysteem'),
@@ -167,8 +170,13 @@ class HeatMapper extends InstallationMapper
             // Hybrid: a boiler or anything on gas works beside the heat pump (V1). A central electric
             // device beside it, as in dossier 100211, leaves it a full heat pump.
             $hasGasBoiler = false;
+            $hasHeatPump = false;
 
             foreach ($generators as $generator) {
+                if (self::HEAT_PUMP === ($generator['generatorType'] ?? null)) {
+                    $hasHeatPump = true;
+                }
+
                 if (self::HEAT_PUMP !== ($generator['generatorType'] ?? null)
                     && (in_array($generator['generatorType'] ?? null, self::BOILERS, true) || self::GAS === ($generator['energyCarrier'] ?? null))
                 ) {
@@ -179,6 +187,11 @@ class HeatMapper extends InstallationMapper
             foreach ($generators as $generator) {
                 $type = $generator['generatorType'] ?? null;
                 $carrier = $generator['energyCarrier'] ?? null;
+
+                if ($hasHeatPump && self::CENTRAL_ELECTRIC === $type) {
+                    // The heat pump's electric backup heater: showing it confuses more than it tells (HD-22).
+                    continue;
+                }
 
                 if (in_array($carrier, self::EXTERNAL_HEAT, true)) {
                     $result['sources'][] = 'district-heating';

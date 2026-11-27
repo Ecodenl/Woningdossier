@@ -111,6 +111,58 @@ class ToolQuestion extends Model
     }
 
     # Model methods
+
+    /**
+     * Whether an answer has to be given before the resident can move on.
+     *
+     * Nothing is where SmartTwin drives the scan: the data the scan used to insist on is entered in
+     * SmartTwin and comes back through the mapping, and what Hoomdossier still asks sits on top of
+     * that and may be skipped. That only holds for the quick scan of a building SmartTwin fills the
+     * woonplan for (Hoomdossier::smartTwinDrivesScan()); the lite scan and the expert scan get nothing
+     * back from SmartTwin and keep their required questions.
+     *
+     * The caller works that out once and passes it in, rather than this asking per question: it
+     * reads the building's settings, and a sub step is checked question by question. Asking here
+     * rather than reading the column keeps the form and ScanFlowService::hasAnsweredSubStep() on the
+     * same answer -- they disagreeing would mean a sub step the resident completed being quietly set
+     * back to incomplete.
+     */
+    public function isRequired(bool $smartTwinDrivesScan): bool
+    {
+        if ($smartTwinDrivesScan) {
+            return false;
+        }
+
+        return in_array('required', $this->validation ?? [], true);
+    }
+
+    /**
+     * The rules to validate an answer with. See isRequired() for $smartTwinDrivesScan.
+     *
+     * 'required' is swapped for 'nullable' rather than dropped: without it Laravel runs the rules
+     * that follow against an empty answer, so ['required', 'in:1,2,3'] would go from "you have to
+     * answer" to "your non-answer is invalid".
+     *
+     * @return array<int, mixed>
+     */
+    public function validationRules(bool $smartTwinDrivesScan): array
+    {
+        $validation = $this->validation ?? [];
+
+        if (! $smartTwinDrivesScan) {
+            return $validation;
+        }
+
+        $rules = array_values(array_map(
+            fn ($rule) => $rule === 'required' ? 'nullable' : $rule,
+            $validation,
+        ));
+
+        // A question that was never required needs it too: the rules behind it would otherwise
+        // still reject an answer that was not given.
+        return in_array('nullable', $rules, true) ? $rules : array_merge(['nullable'], $rules);
+    }
+
     public function hasOptions(): bool
     {
         return ! empty($this->options);
@@ -118,12 +170,16 @@ class ToolQuestion extends Model
 
     /**
      * Method to return the question values  (morphed models / the options for the question)
+     *
+     * @param  bool  $withHidden  Also the options the scans do not offer, for reading an answer back:
+     *                            SmartTwin can answer with one (see ToolQuestionsTableSeeder's
+     *                            shown_in_scans). Never for a list of options to choose from.
      */
-    public function getQuestionValues(): Collection
+    public function getQuestionValues(bool $withHidden = false): Collection
     {
         if ($this->toolQuestionValuables()->exists()) {
             return $this->toolQuestionValuables()
-                ->visible()
+                ->when(! $withHidden, fn ($query) => $query->visible())
                 ->ordered()
                 ->with('toolQuestionValuables')
                 ->get()
@@ -155,7 +211,7 @@ class ToolQuestion extends Model
                 });
         }
         return $this->toolQuestionCustomValues()
-            ->visible()
+            ->when(! $withHidden, fn ($query) => $query->visible())
             ->ordered()
             ->get()
             ->map(function ($toolQuestionCustomValue) {

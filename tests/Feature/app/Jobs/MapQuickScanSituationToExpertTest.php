@@ -42,7 +42,8 @@ final class MapQuickScanSituationToExpertTest extends TestCase
         $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $this->inputSource = $inputSource;
 
-        $heatPumpType = Service::findByShort('heat-pump')->values()->orderBy('calculate_value')->first()->id;
+        // The heat pumps only SmartTwin describes have no calculate value; the calculations know the others.
+        $heatPumpType = Service::findByShort('heat-pump')->values()->whereNotNull('calculate_value')->orderBy('calculate_value')->first()->id;
         $advisable = MeasureApplication::findByShort(array_flip(HeatPumpHelper::MEASURE_SERVICE_LINK)[$heatPumpType]);
 
         // First define basic mapping.

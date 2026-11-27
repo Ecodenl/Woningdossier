@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Api\V1\Resources\Schemas;
  *      title="Store Register request",
  *      description="Register request body data",
  *      type="object",
- *      required={"email", "first_name", "last_name", "postal_code", "number", "street", "city", "contact_id"}
+ *      required={"email", "first_name", "last_name", "postal_code", "number", "street", "city"}
  * )
  */
 class StoreRegisterRequest
@@ -126,10 +126,24 @@ class StoreRegisterRequest
     /**
      * @OA\Property(
      *     title="tool_questions",
-     *     description="Tool questions keyed by short with given answer, these are currently the only supported tool questions.",
+     *     description="Tool questions keyed by short with given answer, these are currently the only supported tool questions. Each of them may be left out.",
      *         @OA\Property(property="resident-count", example=2, type="integer"),
      *         @OA\Property(property="amount-gas", example=2000, type="string"),
      *         @OA\Property(property="amount-electricity", example=2421, type="string"),
+     *         @OA\Property(
+     *             property="building-contract-type",
+     *             description="Whether the home is rented or owned: bought (owner-occupied), rented (rented from a housing corporation) or rented-private (rented from a private landlord). A cooperation with SmartTwin no longer asks this in the tool, so pass it when known.",
+     *             type="string",
+     *             enum={"bought", "rented", "rented-private"},
+     *             example="bought"
+     *         ),
+     *         @OA\Property(
+     *             property="monument",
+     *             description="Whether the home is a monument: 1 (yes), 2 (no), 0 (unknown) or 3 (protected townscape or village view). A cooperation with SmartTwin no longer asks this in the tool, so pass it when known.",
+     *             type="integer",
+     *             enum={1, 2, 0, 3},
+     *             example=2
+     *         ),
      * )
      *
      * @var array
@@ -148,4 +162,27 @@ class StoreRegisterRequest
      */
 
     public $roles;
+
+    /**
+     * @OA\Property(
+     *     title="scans",
+     *     description="Scan settings for the building. When omitted, the building follows the scan settings of the cooperation.",
+     *         @OA\Property(
+     *             property="type",
+     *             description="The scans available for the building.",
+     *             type="string",
+     *             enum={"quick-scan", "lite-scan", "both-scans"},
+     *             example="both-scans"
+     *         ),
+     *         @OA\Property(
+     *             property="small_measures_enabled",
+     *             description="Whether the small measures step is part of the quick scan. Only allowed when the building has the quick scan, through the given type or the cooperation's scans. When omitted, the setting of the cooperation applies. The lite scan always includes small measures.",
+     *             type="boolean",
+     *             example=false
+     *         ),
+     * )
+     *
+     * @var array
+     */
+    public $scans;
 }

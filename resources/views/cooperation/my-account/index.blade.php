@@ -362,20 +362,20 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($buildingPermissions as $i => $buildingPermission)
-                                    <form id="revoke-access-{{$buildingPermission->id}}"
+                                @foreach($connectedCoaches as $connectedCoach)
+                                    <form id="revoke-access-{{$connectedCoach->id}}"
                                           action="{{route('cooperation.messages.participants.revoke-access')}}"
                                           method="post">
                                         @csrf
                                         <input type="hidden" name="user_id"
-                                               value="{{$buildingPermission->user_id}}">
+                                               value="{{$connectedCoach->id}}">
                                         <input type="hidden" name="building_owner_id"
-                                               value="{{$buildingPermission->building_id}}">
+                                               value="{{$building->id}}">
                                     </form>
                                     <tr>
-                                        <td>{{ $buildingPermission->user->getFullName() }}</td>
+                                        <td>{{ $connectedCoach->getFullName() }}</td>
                                         <td>
-                                            <a data-form-id="revoke-access-{{$buildingPermission->id}}"
+                                            <a data-form-id="revoke-access-{{$connectedCoach->id}}"
                                                class="revoke-access btn btn-orange flex items-center justify-center w-10">
                                                 <i class="icon-sm icon-error-cross"></i>
                                             </a>

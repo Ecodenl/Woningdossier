@@ -215,4 +215,34 @@ final class NumberFormatterTest extends TestCase
         // Note: Test currently does not support locale. When we do add a second locale, this will need revisiting.
         $this->assertSame($expected, NumberFormatter::formatNumberForUser($number, $isInteger, $alwaysNumber));
     }
+
+    public static function formatExactProvider(): array
+    {
+        return [
+            // SmartTwin sends doubles; not a decimal of them is dropped.
+            ['nl', 6853.749263548063, '6.853,749263548063'],
+            ['nl', 1622.65, '1.622,65'],
+            ['nl', 2520.0, '2.520,00'],
+            ['nl', 1200, '1.200,00'],
+            ['nl', '45', '45,00'],
+            ['nl', -12.5, '-12,50'],
+            ['en', 1234567.891, '1,234,567.891'],
+            ['nl', null, ''],
+        ];
+    }
+
+    #[DataProvider('formatExactProvider')]
+    public function testFormatExact(string $locale, null|string|int|float $number, string $expected): void
+    {
+        $this->app->setLocale($locale);
+
+        $this->assertSame($expected, NumberFormatter::formatExact($number));
+    }
+
+    public function testPlainKeepsEveryDecimal(): void
+    {
+        $this->assertSame('6853.749263548063', NumberFormatter::plain(6853.749263548063));
+        $this->assertSame(12, NumberFormatter::decimalsOf(6853.749263548063));
+        $this->assertSame(0, NumberFormatter::decimalsOf(2520.0));
+    }
 }

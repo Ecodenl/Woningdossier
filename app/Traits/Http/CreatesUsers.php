@@ -17,6 +17,7 @@ use App\Models\Scan;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
+use App\Services\SmartTwin\RegistrationQuestions;
 use App\Services\UserService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Gate;
@@ -58,6 +59,12 @@ trait CreatesUsers
         $account = $user->account;
         $building = $user->building;
 
+        // As the API does with its tool questions: for the input source of each role the user has.
+        if (RegistrationQuestions::askedFor($cooperation)) {
+            $inputSources = $user->roles()->with('inputSource')->get()->pluck('inputSource')->filter()->unique('id');
+            RegistrationQuestions::save($building, $inputSources, $requestData['tool_questions'] ?? []);
+        }
+
         // at this point, a user cant register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user, $building);
 
@@ -67,24 +74,10 @@ trait CreatesUsers
 
         // Set small measures overrides, only for scans enabled by the selected type
         $smallMeasuresEnabled = $request->input('scans.small_measures_enabled', []);
-        $enabledScanShorts = match ($scanType) {
-            Scan::QUICK => [Scan::QUICK],
-            Scan::LITE => [Scan::LITE],
-            'both-scans' => [Scan::QUICK, Scan::LITE],
-            default => [Scan::QUICK],
-        };
 
-        foreach (Scan::simpleScans()->get() as $scan) {
-            if (! in_array($scan->short, $enabledScanShorts)) {
-                continue;
-            }
-
-            $enabled = filter_var($smallMeasuresEnabled[$scan->short] ?? '0', FILTER_VALIDATE_BOOLEAN);
-            $cooperationDefault = SmallMeasuresSettingHelper::isEnabledForCooperation($cooperation, $scan);
-
-            if ($enabled !== $cooperationDefault) {
-                SmallMeasuresSettingHelper::setOverride($building, $scan, $enabled);
-            }
+        foreach (ScanAvailabilityHelper::scanShortsForType($scanType) as $scanShort) {
+            $enabled = filter_var($smallMeasuresEnabled[$scanShort] ?? '0', FILTER_VALIDATE_BOOLEAN);
+            SmallMeasuresSettingHelper::syncOverride($building, Scan::findByShort($scanShort), $enabled, $cooperation);
         }
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.

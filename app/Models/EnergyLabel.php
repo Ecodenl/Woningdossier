@@ -33,6 +33,51 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class EnergyLabel extends Model
 {
+    /**
+     * The icon that shows this label as the coloured arrow people recognise. Seeded names are A++++
+     * through G plus 'X' for none and '?' for unknown. There are no icons above A, so A+ to A++++
+     * show the one of A (see isAboveA()); anything else falls back to unknown rather than pointing
+     * at an icon that does not exist.
+     */
+    public function iconClass(): string
+    {
+        return static::iconClassFor($this->name);
+    }
+
+    /**
+     * iconClass() for a label known by its name only, such as one SmartTwin calculated.
+     */
+    public static function iconClassFor(?string $name): string
+    {
+        return match (true) {
+            $name === 'X' => 'icon-label-none',
+            static::isAboveA($name) => 'icon-label-a',
+            in_array($name, ['A', 'B', 'C', 'D', 'E', 'F', 'G'], true) => 'icon-label-' . strtolower($name),
+            default => 'icon-label-unknown',
+        };
+    }
+
+    /**
+     * Whether this is one of the labels above A (A+ to A++++). They share the icon of A, so wherever
+     * one is shown as an icon it needs its name next to it to be told apart from A.
+     */
+    public static function isAboveA(?string $name): bool
+    {
+        return in_array($name, ['A+', 'A++', 'A+++', 'A++++'], true);
+    }
+
+    /**
+     * The label for a name as an external source gives it ("C", "a+++"), or 'X' (none) when it is
+     * empty or not a label we know.
+     */
+    public static function fromName(?string $name): self
+    {
+        $name = strtoupper(trim((string) $name));
+
+        return static::where('name', $name)->first()
+            ?? static::where('name', 'X')->firstOrFail();
+    }
+
     use HasOrder;
 
     public function buildingFeatures(): HasMany

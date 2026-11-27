@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Services\SmartTwin\InstallationOptions;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -104,6 +105,12 @@ class PvPanelOrientationsTableSeeder extends Seeder
                 'short' => 'n-w',
                 'order' => 12,
             ],
+            // Horizontal and north only come from SmartTwin; the scans do not offer them.
+            ...array_values(array_map(fn (string $short, array $orientation) => [
+                'name' => ['nl' => $orientation['label']],
+                'short' => $short,
+                'order' => $orientation['order'],
+            ], array_keys(InstallationOptions::addedOrientations()), InstallationOptions::addedOrientations())),
         ];
 
         foreach ($statuses as $status) {

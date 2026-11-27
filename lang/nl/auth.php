@@ -49,6 +49,11 @@ return [
             'street' => 'Straat',
             'city' => 'Plaats',
             'phone-number' => 'Telefoonnummer',
+            'tool-questions' => [
+                'building-contract-type' => 'Huurwoning of koopwoning',
+                'monument' => 'Is de woning een monument?',
+                'choose' => 'Maak een keuze...',
+            ],
             'submit' => 'Registreren',
             'message' => [
                 'success' => 'Bedankt. We hebben een e-mail met een bevestigingslink naar u toegestuurd om uw registratie te voltooien.',

@@ -33,7 +33,7 @@
                         $user = $building->user;
 
                         $userCreatedAtFormatted = $user->created_at?->format('d-m-Y');
-                        $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
+                        $userCreatedAtTimestamp = $user->created_at?->timestamp ?? 0;
 
                         $appointmentDateFormatted = null;
 
@@ -45,7 +45,7 @@
                         $userIsAuthUser = $user->id == Hoomdossier::user()->id;
                     @endphp
                     <tr>
-                        <td data-sort="{{$userCreatedAtStrotime}}">
+                        <td data-sort="{{$userCreatedAtTimestamp}}">
                             {{$userCreatedAtFormatted ?? '-'}}
                         </td>
                         <td>{{$user->getFullName()}}</td>

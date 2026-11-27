@@ -16,6 +16,13 @@ export default () => ({
         this.dispatchEvent(this.$el);
     },
     close() {
+        // Bound to x-on:click.outside, which Alpine runs for every click on the page while the
+        // modal is visible. With nothing to close we must leave the event alone, else we swallow
+        // the user's actual click (a submit button elsewhere would silently do nothing).
+        if (! this.opened) {
+            return;
+        }
+
         this.$event?.preventDefault();
         this.opened = false;
         this.dispatchEvent(this.$el);

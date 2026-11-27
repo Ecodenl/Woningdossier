@@ -5,6 +5,7 @@ namespace App\Livewire\Cooperation\Admin\SuperAdmin\Cooperations;
 use App\Enums\Country;
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
+use App\Services\SmartTwin\CooperationSwitch;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Crypt;
@@ -19,6 +20,7 @@ class Form extends Component
     public ?Cooperation $cooperationToEdit;
     public bool $clearApiKey = false;
     public bool $hasApiKey = false;
+    public bool $smartTwinEnabled = true;
 
     public array $cooperationToEditFormData = [
         'name' => null,
@@ -45,6 +47,7 @@ class Form extends Component
             'cooperationToEditFormData.website_url' => ['nullable', 'url'],
             'cooperationToEditFormData.econobis_wildcard' => 'nullable',
             'cooperationToEditFormData.econobis_api_key' => ['nullable', 'string'],
+            'smartTwinEnabled' => ['boolean'],
         ];
     }
 
@@ -75,6 +78,7 @@ class Form extends Component
                 ]),
             ]);
             $this->hasApiKey = ! is_null($cooperationToEdit->econobis_api_key);
+            $this->smartTwinEnabled = $cooperationToEdit->smarttwin_enabled;
         }
 
         // Ensure set with default
@@ -148,9 +152,12 @@ class Form extends Component
         if ($this->cooperationToEdit->exists) {
             $message = __('cooperation/admin/super-admin/cooperations.update.success');
             $this->cooperationToEdit->update($cooperationToEditFormData);
+            // Not part of the update: switching SmartTwin is audited and has consequences for every
+            // building of the cooperation, which the switch takes care of.
+            CooperationSwitch::set($this->cooperationToEdit, $this->smartTwinEnabled);
         } else {
             $message = __('cooperation/admin/super-admin/cooperations.store.success');
-            Cooperation::create($cooperationToEditFormData);
+            Cooperation::create($cooperationToEditFormData + ['smarttwin_enabled' => $this->smartTwinEnabled]);
         }
 
         return to_route(

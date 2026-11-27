@@ -16,8 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $input_source_id
  * @property int $roof_type_id
  * @property int|null $element_value_id
- * @property int|null $roof_surface
- * @property int|null $insulation_roof_surface
+ * @property numeric|null $roof_surface
+ * @property numeric|null $insulation_roof_surface
  * @property int|null $zinc_surface
  * @property int|null $building_heating_id
  * @property array<array-key, mixed>|null $extra

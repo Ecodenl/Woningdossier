@@ -41,7 +41,7 @@ class RawCalculator
         $kengetalEnergySaving = Temperature::energySavingFigureWallInsulation($measureAdvice, $averageHouseTemperature);
         self::debug(__METHOD__ . ' Kengetal energiebesparing = ' . $kengetalEnergySaving);
 
-        if (isset($element->calculate_value) && $element->calculate_value < 3) {
+        if (! $element->countsAsInsulated()) {
             $result = min(
                 $surface * $kengetalEnergySaving,
                 self::maxGasSavings($building, $inputSource, $element->element)

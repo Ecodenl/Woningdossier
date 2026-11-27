@@ -356,8 +356,32 @@ class SubSteppablesTableSeeder extends Seeder
                 ],
             ],
             'living-requirements' => [
-                'Hoelang blijven wonen' => [
+                // Only shown when SmartTwin drives the technical part of the scan. It leads the step
+                // because it leads the sub nav in that mode; the four below shifted up one order to
+                // make room. Sub step completion keys on sub_step_id, not order, so re-seeding this
+                // does not disturb residents halfway through the scan.
+                'Mijn vragen' => [
                     'order' => 0,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'fn',
+                                'operator' => 'SmartTwinEnabled',
+                                'value' => true,
+                            ],
+                        ],
+                    ],
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('my-questions'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Hoelang blijven wonen' => [
+                    'order' => 1,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
@@ -368,7 +392,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ],
                 ],
                 'Welke zaken vindt u belangrijk?' => [
-                    'order' => 1,
+                    'order' => 2,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
@@ -379,12 +403,12 @@ class SubSteppablesTableSeeder extends Seeder
                     ],
                 ],
                 'Welke zaken vervangen' => [
-                    'order' => 2,
+                    'order' => 3,
                     // note: dit is een custom vraag, zie CustomChanges
                     'sub_step_template_id' => $templateCustomChanges->id,
                 ],
                 'Samenvatting woonwensen' => [
-                    'order' => 3,
+                    'order' => 4,
                     'sub_step_template_id' => $templateSummary->id,
                     'morphs' => [
                         [

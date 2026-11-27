@@ -51,12 +51,7 @@ class ScanSettings extends Component
         ScanAvailabilityHelper::syncAvailability($this->building, $value, $this->cooperation);
 
         // Clear small measures overrides for scans that are no longer enabled
-        $enabledScanShorts = match ($value) {
-            Scan::QUICK => [Scan::QUICK],
-            Scan::LITE => [Scan::LITE],
-            'both-scans' => [Scan::QUICK, Scan::LITE],
-            default => [Scan::QUICK],
-        };
+        $enabledScanShorts = ScanAvailabilityHelper::scanShortsForType($value);
 
         foreach (Scan::simpleScans()->get() as $scan) {
             if (! in_array($scan->short, $enabledScanShorts)) {

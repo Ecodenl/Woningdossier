@@ -11,6 +11,7 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
 use App\Jobs\CheckBuildingAddress;
+use App\Jobs\SmartTwin\Out\GetBuildingData;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -108,6 +109,7 @@ class BuildingController extends Controller
 
         $validatedData['address']['extension'] ??= null;
         $building->update($validatedData['address']);
+        $addressChanged = $building->wasChanged(['postal_code', 'number', 'extension']);
 
         $buildingFeature = $building->buildingFeatures()->allInputSources()
             ->whereHas('inputSource', fn ($q) => $q->whereNotIn('input_source_id', [InputSource::master()->id, InputSource::exampleBuilding()->id]))
@@ -121,6 +123,10 @@ class BuildingController extends Controller
             if (! $building->municipality()->first() instanceof Municipality) {
                 CheckBuildingAddress::dispatch($building, $inputSource);
             }
+        }
+
+        if ($addressChanged) {
+            GetBuildingData::dispatchFor($building, $inputSource);
         }
 
         $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';

@@ -55,6 +55,12 @@ class GebruikPayload extends EconobisPayload
                 "apply-led-light-how",
                 "total-window-surface",
                 "frame-type",
+                "total-door-surface",
+                "door-quality",
+                "total-panel-surface",
+                "panel-quality",
+                "panel-frame-type",
+                "cooling-type",
                 "floor-surface",
                 "apply-led-light-how",
                 "current-roof-types",
@@ -119,7 +125,8 @@ class GebruikPayload extends EconobisPayload
                 $answers = [];
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
-                $values = $toolQuestion->getQuestionValues();
+                // With the options the scans do not offer, which SmartTwin can answer with.
+                $values = $toolQuestion->getQuestionValues(true);
 
                 $buildingAnswers = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
 

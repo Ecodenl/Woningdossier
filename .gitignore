@@ -49,6 +49,9 @@ nb-configuration.xml
 .DS_Store
 .sass-cache
 
+# Agent workspace: scratch files shared between agents, never part of the repo
+/.context
+
 # Local
 ubuntu-*-cloudimg-console.log
 _ide_helper_models.php

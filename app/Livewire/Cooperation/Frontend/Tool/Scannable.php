@@ -5,10 +5,12 @@ namespace App\Livewire\Cooperation\Frontend\Tool;
 use App\Helpers\Arr;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
 use Illuminate\Support\Collection;
@@ -61,28 +63,36 @@ abstract class Scannable extends Component
 
     abstract public function save();
 
+    /**
+     * The scan the questions on this page belong to.
+     */
+    abstract protected function scanBeingAsked(): Scan;
+
     protected function setValidationForToolQuestions(): void
     {
+        // Once for the page rather than per question; see ToolQuestion::isRequired().
+        $smartTwinDrivesScan = Hoomdossier::smartTwinDrivesScan($this->building, $this->scanBeingAsked());
+
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             switch ($toolQuestion->data_type) {
                 case Caster::JSON:
                     foreach ($toolQuestion->options as $option) {
-                        $this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
+                        $this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validationRules($smartTwinDrivesScan));
                     }
                     break;
 
                 case Caster::ARRAY:
                     // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
                     // and then also set required for the main question
-                    $this->rules["filledInAnswers.{$toolQuestion->short}.*"] = $this->prepareValidationRule($toolQuestion->validation);
+                    $this->rules["filledInAnswers.{$toolQuestion->short}.*"] = $this->prepareValidationRule($toolQuestion->validationRules($smartTwinDrivesScan));
 
-                    if (in_array('required', $toolQuestion->validation)) {
+                    if ($toolQuestion->isRequired($smartTwinDrivesScan)) {
                         $this->rules["filledInAnswers.{$toolQuestion->short}"] = ['required'];
                     }
                     break;
 
                 default:
-                    $this->rules["filledInAnswers.{$toolQuestion->short}"] = $this->prepareValidationRule($toolQuestion->validation);
+                    $this->rules["filledInAnswers.{$toolQuestion->short}"] = $this->prepareValidationRule($toolQuestion->validationRules($smartTwinDrivesScan));
                     break;
             }
         }

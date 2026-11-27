@@ -21,6 +21,24 @@ class EnergyLabelsTableSeeder extends Seeder
                 'name' => '?',
                 'country_code' => 'nl'
             ],
+            // The labels above A, official since NTA 8800 (2021). Ahead of A so that the question,
+            // which lists the labels in descending order, shows them after A.
+            [
+                'name' => 'A++++',
+                'country_code' => 'nl',
+            ],
+            [
+                'name' => 'A+++',
+                'country_code' => 'nl',
+            ],
+            [
+                'name' => 'A++',
+                'country_code' => 'nl',
+            ],
+            [
+                'name' => 'A+',
+                'country_code' => 'nl',
+            ],
             [
                 'name' => 'A',
                 'country_code' => 'nl',

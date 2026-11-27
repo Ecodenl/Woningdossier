@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 64 64"><style>.d{fill:none;stroke:#3B4452;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.w{fill:#fff;stroke:#3B4452;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.f{fill:#2DA97E;stroke:#3B4452;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.s{fill:none;stroke:#2DA97E;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.n{fill:#2DA97E;stroke:none}
+.k{fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}</style><rect class="w" x="12" y="22" width="40" height="34" rx="6"/><path class="d" d="M22 22V56M32 22V56M42 22V56M5 48H12M52 30H59"/><circle class="w" cx="32" cy="16" r="11"/><path class="s" style="stroke-width:1.8" d="M28.5 11H24.5V15C24.5 15 26 14.2 27 14.2C28.8 14.2 29.5 15.500 29.5 17C29.5 18.700 28.500 20 26.800 20C25.600 20 24.800 19.600 24.300 19M34 11C32.200 11 31.500 12.800 31.500 15.500C31.500 18.200 32.200 20 34 20C35.800 20 36.500 18.200 36.500 15.500C36.500 12.800 35.800 11 34 11Z"/><circle class="n" cx="39.500" cy="12" r="1.300"/></svg>

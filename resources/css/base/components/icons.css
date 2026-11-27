@@ -28,6 +28,10 @@
     @apply select-none;
     content: url('/icons/account-circle.svg');
 }
+.icon-address-house {
+    @apply select-none;
+    content: url('/icons/address-house.svg');
+}
 .icon-air-conditioning {
     @apply select-none;
     content: url('/icons/air-conditioning.svg');
@@ -223,6 +227,10 @@
 .icon-electric {
     @apply select-none;
     content: url('/icons/electric.svg');
+}
+.icon-energy-label {
+    @apply select-none;
+    content: url('/icons/energy-label.svg');
 }
 .icon-end-of-terrace-house {
     @apply select-none;
@@ -605,6 +613,10 @@
     @apply select-none;
     content: url('/icons/sunroom.svg');
 }
+.icon-surface-m2 {
+    @apply select-none;
+    content: url('/icons/surface-m2.svg');
+}
 .icon-sustainability {
     @apply select-none;
     content: url('/icons/sustainability.svg');
@@ -680,4 +692,74 @@
 .icon-window-frame {
     @apply select-none;
     content: url('/icons/window-frame.svg');
+}
+
+/* Supplied by Econobis (HD-24) for the small measures, heaters, heating temperatures and vacuum glass */
+.icon-small-measure-lighting {
+    @apply select-none;
+    content: url('/icons/small-measure-lighting.svg');
+}
+.icon-small-measure-equipment {
+    @apply select-none;
+    content: url('/icons/small-measure-equipment.svg');
+}
+.icon-small-measure-installations {
+    @apply select-none;
+    content: url('/icons/small-measure-installations.svg');
+}
+.icon-small-measure-crack-sealing {
+    @apply select-none;
+    content: url('/icons/small-measure-crack-sealing.svg');
+}
+.icon-small-measure-radiators {
+    @apply select-none;
+    content: url('/icons/small-measure-radiators.svg');
+}
+.icon-small-measure-heating-installation {
+    @apply select-none;
+    content: url('/icons/small-measure-heating-installation.svg');
+}
+.icon-small-measure-hot-tap-water {
+    @apply select-none;
+    content: url('/icons/small-measure-hot-tap-water.svg');
+}
+.icon-small-measure-general {
+    @apply select-none;
+    content: url('/icons/small-measure-general.svg');
+}
+.icon-infrared-panels {
+    @apply select-none;
+    content: url('/icons/infrared-panels.svg');
+}
+.icon-district-heating-city {
+    @apply select-none;
+    content: url('/icons/district-heating-city.svg');
+}
+.icon-kitchen-geyser {
+    @apply select-none;
+    content: url('/icons/kitchen-geyser.svg');
+}
+.icon-electric-boiler {
+    @apply select-none;
+    content: url('/icons/electric-boiler.svg');
+}
+.icon-heat-pump-boiler {
+    @apply select-none;
+    content: url('/icons/heat-pump-boiler.svg');
+}
+.icon-heating-temperature-high {
+    @apply select-none;
+    content: url('/icons/heating-temperature-high.svg');
+}
+.icon-heating-temperature-50 {
+    @apply select-none;
+    content: url('/icons/heating-temperature-50.svg');
+}
+.icon-heating-temperature-low {
+    @apply select-none;
+    content: url('/icons/heating-temperature-low.svg');
+}
+.icon-glass-vacuum {
+    @apply select-none;
+    content: url('/icons/glass-vacuum.svg');
 }

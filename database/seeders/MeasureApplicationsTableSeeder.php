@@ -723,8 +723,9 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'step' => 'verwarming',
                 'configurations' => [
                     'comfort' => 3,
-                    'icon' => 'icon-placeholder',
+                    'icon' => 'icon-heat-pump-boiler',
                 ],
+                'replaces_icons' => ['icon-placeholder'],
             ],
             [
                 'measure_type' => MeasureApplication::ENERGY_SAVING,
@@ -749,8 +750,9 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
-                    'icon' => 'icon-tools',
+                    'icon' => 'icon-small-measure-lighting',
                 ],
+                'replaces_icons' => ['icon-tools'],
             ],
             [
                 'measure_type' => MeasureApplication::ENERGY_SAVING,
@@ -775,8 +777,9 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
-                    'icon' => 'icon-tools',
+                    'icon' => 'icon-small-measure-equipment',
                 ],
+                'replaces_icons' => ['icon-tools'],
             ],
             [
                 'measure_type' => MeasureApplication::ENERGY_SAVING,
@@ -801,8 +804,9 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
-                    'icon' => 'icon-tools',
+                    'icon' => 'icon-small-measure-installations',
                 ],
+                'replaces_icons' => ['icon-tools'],
             ],
             [
                 'measure_type' => MeasureApplication::ENERGY_SAVING,
@@ -827,8 +831,9 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
-                    'icon' => 'icon-tools',
+                    'icon' => 'icon-small-measure-crack-sealing',
                 ],
+                'replaces_icons' => ['icon-tools'],
             ],
             [
                 'measure_type' => MeasureApplication::ENERGY_SAVING,
@@ -853,8 +858,9 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
-                    'icon' => 'icon-tools',
+                    'icon' => 'icon-small-measure-radiators',
                 ],
+                'replaces_icons' => ['icon-tools'],
             ],
             [
                 'measure_type' => MeasureApplication::ENERGY_SAVING,
@@ -879,8 +885,9 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
-                    'icon' => 'icon-tools',
+                    'icon' => 'icon-small-measure-heating-installation',
                 ],
+                'replaces_icons' => ['icon-tools'],
             ],
             [
                 'measure_type' => MeasureApplication::ENERGY_SAVING,
@@ -905,8 +912,9 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
-                    'icon' => 'icon-tools',
+                    'icon' => 'icon-small-measure-hot-tap-water',
                 ],
+                'replaces_icons' => ['icon-tools'],
             ],
             [
                 'measure_type' => MeasureApplication::ENERGY_SAVING,
@@ -931,8 +939,9 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
-                    'icon' => 'icon-tools',
+                    'icon' => 'icon-small-measure-general',
                 ],
+                'replaces_icons' => ['icon-tools'],
             ],
             // add more energiebesparende maatregelen here!
 
@@ -1212,8 +1221,11 @@ class MeasureApplicationsTableSeeder extends Seeder
                 $name = ! is_null($renamedFrom) && ($existingName['nl'] ?? null) === $renamedFrom ? $name : $existingName;
                 $info = json_decode($existingMeasureApplication->measure_info, true);
 
+                // A saved icon stays, unless it is one this seeder gave before the measure got its own
+                // (replaces_icons). An icon chosen since then is left alone.
                 $savedConfig = json_decode($existingMeasureApplication->configurations, true);
-                if (! empty($savedConfig['icon'])) {
+                $replacesIcons = $measureApplication['replaces_icons'] ?? [];
+                if (! empty($savedConfig['icon']) && ! in_array($savedConfig['icon'], $replacesIcons, true)) {
                     $configurations['icon'] = $savedConfig['icon'];
                 }
             }
@@ -1311,7 +1323,8 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'renamed_from' => 'Glas vervangen vacuümglas',
                 'short' => 'vacuum-glass-only',
                 'step' => 'insulated-glazing',
-                'icon' => 'icon-glass-hr-dp',
+                'icon' => 'icon-glass-vacuum',
+                'replaces_icons' => ['icon-glass-hr-dp'],
                 'comfort' => 5,
                 'info' => 'Vacuümglas bestaat uit twee dunne glasplaten met een vacuüm ertussen. Het isoleert ongeveer zo goed als drievoudig glas, maar is veel dunner, waardoor het vaak in je bestaande kozijn past.',
             ],
@@ -1387,7 +1400,8 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'name' => 'Aansluiten op collectief warmtenet',
                 'short' => 'district-heating-connect',
                 'step' => 'verwarming',
-                'icon' => 'icon-district-heating',
+                'icon' => 'icon-district-heating-city',
+                'replaces_icons' => ['icon-district-heating'],
                 'comfort' => 2,
                 'info' => 'Bij een warmtenet krijg je warmte voor verwarming en warm water via een leidingnet in de wijk. Een cv-ketel en een gasaansluiting zijn dan niet meer nodig. Of er een warmtenet komt, hangt af van je gemeente en de warmteleverancier.',
             ],
@@ -1441,6 +1455,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             'measure_type' => MeasureApplication::EXTERNALLY_ADVISED,
             'measure_name' => ['nl' => $measure['name']],
             'renamed_from' => $measure['renamed_from'] ?? null,
+            'replaces_icons' => $measure['replaces_icons'] ?? [],
             'measure_info' => ['nl' => $measure['info']],
             'short' => $measure['short'],
             'application' => 'place',

@@ -696,6 +696,8 @@ final class SmartTwinImportTest extends TestCase
         $expected = [
             'district heating'               => [[$this->heatingSystem([5, 6])], ['district-heating-connect']],
             'biomass'                        => [[$this->heatingSystem([11, 5])], ['biomass-boiler']],
+            // Dossier 100279 (HD-26): a biomass combi boiler, sent as a central device on biomass.
+            'biomass combi boiler'           => [[$this->heatingSystem([13, 5])], ['biomass-boiler']],
             'hybrid on outside air'          => [[$this->heatingSystem([6, 0, 4], [5, 1])], ['hybrid-heat-pump-outside-air']],
             // Only SmartTwin gives these heat pumps; they get the nearest card.
             'hybrid on ground heat'          => [[$this->heatingSystem([6, 0, 1], [5, 1])], ['hybrid-heat-pump-outside-air']],

@@ -124,9 +124,10 @@ final class HeatMapperTest extends TestCase
     public function test_the_client_mapping_of_the_other_heaters(): void
     {
         // HD-21: 0 is a local heater, 7–12 biomass, 14 and 15 "Anders..." with "onbekend".
+        // On electricity (0), so that only the type decides; a biomass carrier has a test of its own.
         foreach ([0 => ['local-heating'], 7 => ['biomass'], 9 => ['biomass'], 12 => ['biomass'], 14 => ['none'], 15 => ['none']] as $type => $expected) {
             $answers = $this->answers($this->response([
-                'heatingSystems' => [$this->heating([$this->generator($type, 5, 0, 'omschrijving')])],
+                'heatingSystems' => [$this->heating([$this->generator($type, 0, 0, 'omschrijving')])],
             ]));
 
             $this->assertSame($expected, $answers['heat-source'], "generatorType {$type}");
@@ -138,6 +139,47 @@ final class HeatMapperTest extends TestCase
             'heatingSystems' => [$this->heating([$this->generator(0, 1), $this->generator(11, 3)])],
         ]));
         $this->assertNull($answers['new-heat-source']);
+    }
+
+    public function test_a_generator_on_biomass_is_biomass_whatever_its_type(): void
+    {
+        // Dossier 100279 (HD-26): the resident scan sends a biomass combi boiler as a central device on
+        // "biomass other", and its hot water as a pellet stove (21).
+        $answers = $this->answers($this->response([
+            'heatingSystems'  => [$this->heating([$this->generator(13, 5, 0, 'Biomassa combiketel')])],
+            'hotWaterSystems' => [$this->hotWater(21, true, 'Biomassa combiketel')],
+        ]));
+
+        $this->assertSame(['biomass'], $answers['heat-source']);
+        $this->assertNull($answers['heat-source-other']);
+
+        // Every biomass carrier counts, and so does an unknown or other generator burning it.
+        foreach ([[13, 3], [13, 4], [14, 5], [15, 4]] as [$type, $carrier]) {
+            $answers = $this->answers($this->response([
+                'heatingSystems' => [$this->heating([$this->generator($type, $carrier, 0, 'omschrijving')])],
+            ]));
+
+            $this->assertSame(['biomass'], $answers['heat-source'], "generatorType {$type}, energyCarrier {$carrier}");
+            $this->assertNull($answers['heat-source-other'], "generatorType {$type}, energyCarrier {$carrier}");
+        }
+
+        // The client's mapping of a local heater stands, whatever it burns.
+        $answers = $this->answers($this->response([
+            'heatingSystems' => [$this->heating([$this->generator(0, 5)])],
+        ]));
+        $this->assertSame(['local-heating'], $answers['heat-source']);
+    }
+
+    public function test_a_central_device_on_biomass_beside_a_heat_pump_is_no_backup_heater(): void
+    {
+        $answers = $this->answers($this->response([
+            'heatingSystems' => [$this->heating([
+                $this->generator(6, 0, 4, 'combiwarmtepomp buitenlucht'),
+                $this->generator(13, 5, 0, 'Biomassa combiketel'),
+            ])],
+        ]));
+
+        $this->assertSame(['heat-pump', 'biomass'], $answers['heat-source']);
     }
 
     public function test_a_central_electric_heater_without_a_heat_pump_stays(): void

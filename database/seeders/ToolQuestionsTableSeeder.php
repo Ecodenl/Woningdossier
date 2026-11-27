@@ -931,6 +931,21 @@ class ToolQuestionsTableSeeder extends Seeder
                             'icon' => 'icon-other',
                         ],
                     ],
+                    // Heaters only SmartTwin describes (HeatMapper, HD-21), hidden from the scans.
+                    'local-heating' => [
+                        'name' => 'Lokale verwarming',
+                        'show' => false,
+                        'extra' => [
+                            'icon' => 'icon-other',
+                        ],
+                    ],
+                    'biomass' => [
+                        'name' => 'Biomassa',
+                        'show' => false,
+                        'extra' => [
+                            'icon' => 'icon-other',
+                        ],
+                    ],
                 ],
             ],
             [

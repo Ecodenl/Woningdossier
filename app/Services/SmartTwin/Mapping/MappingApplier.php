@@ -86,12 +86,14 @@ class MappingApplier
      *
      * A card of SmartTwin's, without a price: there is nothing to do. Not for a measure the resident
      * already carried out; that card is in "In orde" already, with its record.
+     *
+     * @param  array<string, mixed>  $results  The response, for what the dossier has no question for.
      */
-    public function addInOrderCards(Building $building, InputSource $inputSource): void
+    public function addInOrderCards(Building $building, InputSource $inputSource, array $results = []): void
     {
         $advised = MeasureApplication::whereIn('id', array_keys($this->pricedThisRun))->pluck('short')->all();
 
-        foreach (app(InOrderCards::class)->for($building, $advised) as $measureShort) {
+        foreach (app(InOrderCards::class)->for($building, $advised, $results) as $measureShort) {
             $measure = MeasureApplication::findByShort($measureShort);
 
             if (! $measure instanceof MeasureApplication || $this->isExecuted($building, $measure)) {

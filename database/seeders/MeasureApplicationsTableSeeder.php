@@ -1392,6 +1392,16 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'info' => 'Bij een warmtenet krijg je warmte voor verwarming en warm water via een leidingnet in de wijk. Een cv-ketel en een gasaansluiting zijn dan niet meer nodig. Of er een warmtenet komt, hangt af van je gemeente en de warmteleverancier.',
             ],
             [
+                // SmartTwin has no product for it: it is there for the "In orde" card of a dwelling
+                // heated with biomass (InOrderCards, HD-21).
+                'name' => 'Biomassaketel',
+                'short' => 'biomass-boiler',
+                'step' => 'verwarming',
+                'icon' => 'icon-central-heater',
+                'comfort' => 3,
+                'info' => 'Een biomassaketel of -kachel verwarmt je woning met hout, houtpellets of ander plantaardig materiaal in plaats van gas. Er komt bij het verbranden wel CO2 vrij, maar dat hebben de planten eerder uit de lucht opgenomen.',
+            ],
+            [
                 'name' => 'HT-radiatoren',
                 'short' => 'high-temperature-radiators',
                 'step' => 'verwarming',

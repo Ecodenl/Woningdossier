@@ -234,8 +234,9 @@ final class SmartTwinImportTest extends TestCase
 
         $this->import($response);
 
-        $this->assertEquals(['none'], $this->answer('heat-source'));
-        $this->assertSame('gaskachel vrijstaand', $this->answer('heat-source-other'));
+        // A local heater has an option only SmartTwin gives (HD-21).
+        $this->assertEquals(['local-heating'], $this->answer('heat-source'));
+        $this->assertNull($this->answer('heat-source-other'));
         $this->assertEquals(['hr-boiler'], $this->answer('heat-source-warm-tap-water'));
         $this->assertSame('full-heat-pump-outside-air', $this->answer('new-heat-pump-type'));
         $this->assertSame(app(ElementValues::class)->serviceValueIdForOrder('house-ventilation', 1), (int) $this->answer('ventilation-type'));
@@ -246,7 +247,7 @@ final class SmartTwinImportTest extends TestCase
         $parts = HouseData::for($this->building->fresh())->parts;
         $answers = fn (string $part) => array_column($parts[$part]['rows'], 'answer');
 
-        $this->assertSame(['Anders...', 'gaskachel vrijstaand'], $answers('heating'));
+        $this->assertSame(['Lokale verwarming'], $answers('heating'));
         $this->assertSame(['Gasketel'], $answers('hot-water'));
         $this->assertSame(['Natuurlijke ventilatie', 'Nee'], $answers('ventilation'));
         $this->assertContains('horizontaal', $answers('pv'));
@@ -617,6 +618,176 @@ final class SmartTwinImportTest extends TestCase
         $this->import($response);
 
         $this->assertSame([], $this->advices());
+    }
+
+    /**
+     * A well insulated dwelling with these installations now, and the same after the advice.
+     *
+     * @param  array<string, array<int, array<string, mixed>>>  $installations  By the response's list.
+     */
+    private function installedResponse(array $installations, array $extraSolutions = []): array
+    {
+        $response = $this->wellInsulatedResponse();
+        $response['current']['properties'] = [...$response['current']['properties'], ...$installations];
+        $response['scenario']['properties'] = [...$response['scenario']['properties'], ...$installations];
+        array_push($response['scenario']['solutions'], ...$extraSolutions);
+
+        return $response;
+    }
+
+    private function heatingSystem(array ...$generators): array
+    {
+        return ['individualInstallation' => true, 'emitterType' => 1, 'description' => '', 'id' => uniqid(), 'generators' => array_map(
+            fn (array $generator) => ['energyCarrier' => $generator[1], 'generatorType' => $generator[0], 'heatPumpSource' => $generator[2] ?? 0,
+                                      'heatPumpSourceSystem' => 0, 'description' => '', 'id' => uniqid()],
+            $generators,
+        )];
+    }
+
+    private function ventilationSystem(string $type, bool $heatRecovery): array
+    {
+        return ['systemType' => $type, 'hasHeatRecovery' => $heatRecovery, 'description' => '', 'id' => uniqid()];
+    }
+
+    /** @return array<int, string> The installation measures in "In orde", from master. */
+    private function installationsInOrder(): array
+    {
+        $building = ['wall-insulation', 'floor-insulation', 'roof-insulation', 'insulated-glazing'];
+
+        return collect($this->advices())
+            ->filter(fn (UserActionPlanAdvice $advice, string $short) => UserActionPlanAdviceService::CATEGORY_COMPLETE === $advice->category
+                && ! in_array(MeasureApplication::findByShort($short)->step->short, $building, true))
+            ->keys()
+            ->sort()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Dossier 100281 (HD-21): an outside air combi heat pump with an electric backup heater, a shower
+     * heat recovery unit, balanced ventilation SmartTwin says has no heat recovery, and six panels.
+     * SmartTwin advised crack sealing and an induction hob.
+     */
+    public function test_installations_smart_twin_does_not_advise_land_in_order_as_in_dossier_100281(): void
+    {
+        $hob = 'Replace Stove|SmartTwin:Stove_Induction_Stove';
+        $this->couple($hob, 'induction-hob');
+        $this->answerAsResident('cook-type', 'gas');
+
+        $this->import($this->installedResponse([
+            'heatingSystems'     => [$this->heatingSystem([6, 0, 4], [13, 0])],
+            'hotWaterSystems'    => [['individualInstallation' => true, 'generatorType' => 15, 'cwClass' => 0, 'isCombiDevice' => true,
+                                      'showerHeatRecoveryPresent' => true, 'storageVesselPresent' => false, 'description' => '', 'id' => 'hw']],
+            'ventilationSystems' => [$this->ventilationSystem('D2', false)],
+            'pvSystems'          => [['panelType' => 1, 'numberOfPanels' => 6, 'panelIntegration' => 2, 'surfaceArea' => 9.801,
+                                      'wattPeakPerM2' => 165, 'inclination' => 45, 'orientation' => 4, 'description' => '', 'id' => 'pv']],
+        ], [$this->solution($hob, 1086.74)]));
+
+        $this->assertSame(
+            ['full-heat-pump-outside-air', 'shower-heat-recovery', 'solar-panels-place-replace'],
+            $this->installationsInOrder(),
+        );
+        $this->assertSame(UserActionPlanAdviceService::CATEGORY_TO_DO, $this->advices()['induction-hob']->category);
+        $this->assertSame(AdviceSource::SMART_TWIN, $this->advices()['shower-heat-recovery']->source);
+    }
+
+    public function test_heat_generators_in_order_get_the_card_of_what_the_dwelling_has(): void
+    {
+        $expected = [
+            'district heating'               => [[$this->heatingSystem([5, 6])], ['district-heating-connect']],
+            'biomass'                        => [[$this->heatingSystem([11, 5])], ['biomass-boiler']],
+            'hybrid on outside air'          => [[$this->heatingSystem([6, 0, 4], [5, 1])], ['hybrid-heat-pump-outside-air']],
+            // Only SmartTwin gives these heat pumps; they get the nearest card.
+            'hybrid on ground heat'          => [[$this->heatingSystem([6, 0, 1], [5, 1])], ['hybrid-heat-pump-outside-air']],
+            'full on groundwater'            => [[$this->heatingSystem([6, 0, 2])], ['full-heat-pump-ground-heat']],
+            'full on ventilation air'        => [[$this->heatingSystem([6, 0, 5])], ['full-heat-pump-outside-air']],
+            'a gas boiler is not in order'   => [[$this->heatingSystem([5, 1])], []],
+            'a local heater is not in order' => [[$this->heatingSystem([0, 1])], []],
+        ];
+
+        foreach ($expected as $case => [$heating, $cards]) {
+            $this->import($this->installedResponse(['heatingSystems' => $heating]));
+
+            $this->assertSame($cards, $this->installationsInOrder(), $case);
+        }
+    }
+
+    public function test_a_heat_generator_smart_twin_advises_leaves_none_in_order(): void
+    {
+        $heatPump = 'Install Heat Pump|SmartTwin:Hybrid_Heat_Pump_Outside_Air';
+        $this->couple($heatPump, 'hybrid-heat-pump-outside-air');
+        $radiators = 'Replace Radiators|SmartTwin:Low_Temperature_Radiators';
+        $this->couple($radiators, 'low-temperature-radiators');
+
+        // Radiators work on the emitters: the generator stays in order.
+        $this->import($this->installedResponse(['heatingSystems' => [$this->heatingSystem([6, 0, 4])]], [$this->solution($radiators, 4000)]));
+        $this->assertSame(['full-heat-pump-outside-air'], $this->installationsInOrder());
+
+        // A heat pump replaces the generator: the heating is not in order.
+        $this->import($this->installedResponse(['heatingSystems' => [$this->heatingSystem([6, 0, 4])]], [$this->solution($heatPump, 9000)]));
+        $this->assertSame([], $this->installationsInOrder());
+        $this->assertSame(UserActionPlanAdviceService::CATEGORY_TO_DO, $this->advices()['hybrid-heat-pump-outside-air']->category);
+    }
+
+    public function test_ventilation_in_order(): void
+    {
+        $expected = [
+            'balanced with heat recovery'    => [$this->ventilationSystem('D5c', true), ['ventilation-balanced-wtw']],
+            'balanced without'               => [$this->ventilationSystem('D2', false), []],
+            'decentral with heat recovery'   => [$this->ventilationSystem('E1', true), ['ventilation-decentral-wtw']],
+            'decentral without'              => [$this->ventilationSystem('E1', false), []],
+            'mechanical, demand driven'      => [$this->ventilationSystem('C4a', false), ['ventilation-demand-driven']],
+            'mechanical, not demand driven'  => [$this->ventilationSystem('C1', false), []],
+            'natural'                        => [$this->ventilationSystem('A1', false), []],
+        ];
+
+        foreach ($expected as $case => [$system, $cards]) {
+            $this->import($this->installedResponse(['ventilationSystems' => [$system]]));
+
+            $this->assertSame($cards, $this->installationsInOrder(), $case);
+        }
+    }
+
+    public function test_ventilation_smart_twin_advises_is_not_in_order(): void
+    {
+        $ventilation = 'Install Ventilation|SmartTwin:Balanced_Ventilation_WTW';
+        $this->couple($ventilation, 'ventilation-balanced-wtw');
+
+        $this->import($this->installedResponse(['ventilationSystems' => [$this->ventilationSystem('E1', true)]], [$this->solution($ventilation, 5000)]));
+
+        $this->assertSame([], $this->installationsInOrder());
+    }
+
+    public function test_solar_panels_and_boiler_are_in_order_unless_advised(): void
+    {
+        $panels = 'Install PV|SmartTwin:PV_Panels';
+        $this->couple($panels, 'solar-panels-place-replace');
+        $installations = [
+            'pvSystems'    => [['panelType' => 1, 'numberOfPanels' => 1, 'panelIntegration' => 2, 'surfaceArea' => 1.6,
+                                'wattPeakPerM2' => 200, 'inclination' => 30, 'orientation' => 5, 'description' => '', 'id' => 'pv']],
+            'solarSystems' => [['systemType' => 1, 'description' => '', 'id' => 'sun']],
+        ];
+
+        $this->import($this->installedResponse($installations));
+        $this->assertSame(['heater-place-replace', 'solar-panels-place-replace'], $this->installationsInOrder());
+
+        $this->import($this->installedResponse($installations, [$this->solution($panels, 5000)]));
+        $this->assertSame(['heater-place-replace'], $this->installationsInOrder());
+        $this->assertSame(UserActionPlanAdviceService::CATEGORY_TO_DO, $this->advices()['solar-panels-place-replace']->category);
+    }
+
+    public function test_electric_cooking_is_in_order_when_the_resident_said_so(): void
+    {
+        // SmartTwin says nothing about cooking; only an answer of the resident's tells.
+        $this->import($this->installedResponse([]));
+        $this->assertSame([], $this->installationsInOrder());
+
+        foreach (['electric' => ['induction-hob'], 'induction' => ['induction-hob'], 'gas' => []] as $cookType => $cards) {
+            $this->answerAsResident('cook-type', $cookType);
+            $this->import($this->installedResponse([]));
+
+            $this->assertSame($cards, $this->installationsInOrder(), $cookType);
+        }
     }
 
     private function answerAsResident(string $short, mixed $value): void

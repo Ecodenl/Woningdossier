@@ -44,6 +44,7 @@ final class ExternallyAdvisedMeasuresTest extends TestCase
         'replace-door-insulated'                 => 'insulated-glazing',
         'shower-heat-recovery'                   => 'heating',
         'district-heating-connect'               => 'heating',
+        'biomass-boiler'                         => 'heating',
         'high-temperature-radiators'             => 'heating',
         'low-temperature-radiators'              => 'heating',
         'floor-heating'                          => 'heating',

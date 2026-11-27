@@ -111,7 +111,10 @@ class Hoomdossier
      * goes on to the loan only when there is none. SmartTwin's subsidy for the package as a whole stays
      * next to it, in the woonplan and the report.
      *
-     * Before turning this off, decide whether the loans go as well (F1c). A card shows the subsidy
+     * Loans and the other regulations stay after the switch, for now (F1c, Patrick, 27 November 2026).
+     * Small energy saving measures never get a loan (HD-18, see Search::getLoans()).
+     *
+     * Before turning this off, decide again whether the loans go as well. A card shows the subsidy
      * before the loan, so with only the subsidy off every card with both says "Lening mogelijk": the
      * customer's complaint that turned this on (decision
      * 2026-11-04-smarttwin-verbeterjehuis-subsidie-terug-op-kaarten).

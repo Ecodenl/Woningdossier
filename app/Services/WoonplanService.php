@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\AdviceSource;
+use App\Helpers\Hoomdossier;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -133,14 +134,32 @@ class WoonplanService
             ->exists();
     }
 
+    /**
+     * Whether the user has advices for a measure application in their action plan.
+     *
+     * While a building waits for SmartTwin's first advice, the small measures do not count: the quick
+     * scan calculates them from the resident's own answers before anything else is calculable (see
+     * SimpleScan\Form::save()). Counting them would make the quick scan calculable, after which the next
+     * completed sub step starts a full recalculation, puts measures such as crack sealing and
+     * ventilation on the woonplan and opens the expert scan, all before SmartTwin has advised.
+     */
     public function buildingHasMeasureApplications(): bool
     {
-        // simple method to check whether the user has measure applications
-        // in his user action plan advice.
-        return $this->building->user->userActionPlanAdvices()
+        $query = $this->building->user->userActionPlanAdvices()
             ->withInvisible()
             ->forInputSource($this->inputSource)
-            ->where('user_action_plan_advisable_type', MeasureApplication::class)
-            ->exists();
+            ->where('user_action_plan_advisable_type', MeasureApplication::class);
+
+        if (Hoomdossier::smartTwinFillsWoonplanFor($this->building)
+            && ! Hoomdossier::smartTwinOwnsWoonplanFor($this->building)
+        ) {
+            $smallMeasures = Step::findByShort('small-measures');
+
+            $query->where(fn (Builder $query) => $query
+                ->whereNull('step_id')
+                ->orWhere('step_id', '!=', $smallMeasures->id));
+        }
+
+        return $query->exists();
     }
 }
